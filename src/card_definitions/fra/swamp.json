@@ -8,5 +8,42 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3f48352f438bb3503b1c727434736447bb66d343a3e7952360d5c2ac245420c3"
   },
-  "physical_metadata_sha256": "b89422fcb086cbe1ed7f140d88a440dcc1741fd72734decc5ddc9b81b87697af"
+  "physical_metadata_sha256": "b89422fcb086cbe1ed7f140d88a440dcc1741fd72734decc5ddc9b81b87697af",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/cards/basiclands/Swamp.java",
+  "java_sha256": "b292314acab07bf9e658419b7c2cebf25c9cf7fe0267792c1cdfb73d9ebd3855",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/basiclands/BasicLand.java",
+      "sha256": "4eb89e2e86f2d29dd2bd4990f7f72089edbe07f6c17b0eb9fb48b3493ef79215"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+      "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+      "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
+    }
+  ],
+  "inherited_audit": "Full pinned Oracle and XMage basic land/mana/cost implementations read; existing typed behavior retained. ECL inherited scenarios verify actual land play, mana payment, restrictions, secrecy, raw/index branching and restore."
 }

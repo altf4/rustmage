@@ -30,6 +30,9 @@ impl Game {
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
+            if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
+                return a.sneak_base_costs().next().expect("captured Sneak cost");
+            }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.item.source_card.warp_cost().expect("fixed Warp cost");
             }
@@ -178,6 +181,48 @@ impl Game {
             .cost_options()
             .any(|cost| self.announcement_cost_fundable(&proposal, cost))
     }
+    /// Nonmana kicker shares the base spell's mana and exact sacrifice witness.
+    pub(super) fn kicker_additional_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        let spec = a
+            .item
+            .source_card
+            .kicker_additional_cost()
+            .expect("declared nonmana kicker");
+        let mut proposal = a.clone();
+        if proposal.cost.is_some_and(|old| old != cost) {
+            proposal.total_cost = None;
+        }
+        proposal.cost = Some(cost);
+        let goal = self.funding_goal(&proposal);
+        let purpose = self.purpose_for_item(&proposal.item);
+        if let Some(object) = a.additional {
+            return self.additional_candidate(spec, a.item.controller, a.item.object, object)
+                && self.can_fund_for(goal, purpose);
+        }
+        if self.linked_funding_can_probe(a.item.controller)
+            && let Some(result) = self.linked_deferred_funding(
+                goal.clone(),
+                purpose,
+                linked_funding::DeferredFundingCost::Additional {
+                    source: a.item.object,
+                    spec,
+                },
+            )
+        {
+            return result;
+        }
+        (0..self.state.objects.len()).any(|id| {
+            let object = self.object_ref(id as CardId);
+            self.additional_candidate(spec, a.item.controller, a.item.object, object)
+                && self.can_fund_for(
+                    FundingGoal {
+                        reserve: Some((object, spec)),
+                        ..goal.clone()
+                    },
+                    purpose,
+                )
+        })
+    }
     pub(super) fn with_offspring_cost(mut base: ManaCost, card: Card, pay: bool) -> ManaCost {
         if pay {
             let extra = card.offspring_cost().expect("offspring recipe");
@@ -194,6 +239,13 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
+        if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
+            let mut proposal = a.clone();
+            proposal.item.cast.as_mut().unwrap().offspring = Some(pay);
+            return proposal
+                .cost_options()
+                .any(|cost| self.announcement_cost_fundable(&proposal, cost));
+        }
         if a.item.source_card.target_cost_reduction().is_some() {
             return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
         }
@@ -232,19 +284,26 @@ impl Game {
         let departing = (recipient.zone == Zone::Hand).then_some(id);
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = &self.state.objects[source as usize];
-            rule.filter.matches_mana_value(definition, mana_value)
-                && match rule.turn {
-                    CostTurn::Any => true,
-                    CostTurn::Own => self.state.active == actor,
-                    CostTurn::Other => self.state.active != actor,
+            (match rule.filter {
+                crate::cards::CastFilter::CreatureToughnessGreaterThanPower => {
+                    let stats = self.stats_without_hand(id, departing);
+                    definition.is_creature() && stats.toughness > stats.power
                 }
-                && self.step_guard_without_hand(
-                    rule.guard,
-                    actor,
-                    self.object_ref(source),
-                    object.tapped,
-                    departing,
-                )
+                crate::cards::CastFilter::SourceChosenCreatureType => self
+                    .source_chosen_creature_type(self.object_ref(source))
+                    .is_some_and(|kind| definition.has_subtype(kind.name())),
+                _ => rule.filter.matches_mana_value(definition, mana_value),
+            }) && match rule.turn {
+                CostTurn::Any => true,
+                CostTurn::Own => self.state.active == actor,
+                CostTurn::Other => self.state.active != actor,
+            } && self.step_guard_without_hand(
+                rule.guard,
+                actor,
+                self.object_ref(source),
+                object.tapped,
+                departing,
+            )
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
             crate::cards::SpellReductionAmount::CreaturePowerCount { minimum } => {
@@ -318,7 +377,7 @@ impl Game {
         };
         // Raw scalar requirements fit u64; discounts above u64::MAX are
         // equivalent and impose no artificial reducer-count limit.
-        let mut reduction = 0u64;
+        let mut reduction = self.next_noncreature_affinity_reduction(actor, definition);
         for rule in definition.cost_reductions() {
             if rule.source_only && applies(rule, id) {
                 reduction = reduction.saturating_add(amount(rule, id));
@@ -330,9 +389,14 @@ impl Game {
                 continue;
             }
             for (index, rule) in object.card.cost_reductions().iter().enumerate() {
+                // Intrinsic reductions apply only while casting their own card,
+                // and have no continuous battlefield source-group identity.
+                if rule.source_only {
+                    continue;
+                }
                 if !self.continuous_fragment_available(source, |fragment| matches!(fragment,
                     crate::cards::StaticAbilityFragment::CostReduction(slot, _) if usize::from(*slot) == index)) { continue; }
-                if !rule.source_only && applies(rule, source) {
+                if applies(rule, source) {
                     reduction = reduction.saturating_add(amount(rule, source));
                 }
             }

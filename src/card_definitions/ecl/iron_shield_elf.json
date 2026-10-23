@@ -8,5 +8,45 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5b4658be3e8ba7964c974a64b56ea6981c681484755191bc28ec3badfc072d68"
   },
-  "physical_metadata_sha256": "305f4cdd3a6b2921a6027c33c18a16a47449a99f8a9f0db89f2d74c87c9b16bb"
+  "physical_metadata_sha256": "305f4cdd3a6b2921a6027c33c18a16a47449a99f8a9f0db89f2d74c87c9b16bb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IronShieldElf.java",
+  "java_sha256": "266ff01f446286ea9b57e44974c276064b3d19f748dd1083f94a03dd4d8fad5e",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_activation_discard_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+      "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceEffect.java",
+      "sha256": "a912f8d2328afba2be2060a9b044621afd2d83bf48f05489962eec2ee29cff0d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    }
+  ],
+  "inherited_audit": "Full Oracle and XMage card/relevant behavior dependencies read; typed behavior preserved. Paid body matrix complements existing complete shared rule scenarios, reviewed for printed obligations and passed in combined232 release."
 }

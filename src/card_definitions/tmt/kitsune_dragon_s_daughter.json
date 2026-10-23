@@ -3,10 +3,45 @@
   "catalogue_id": 2380,
   "oracle_id": "9be19bdf-db1e-433e-8be4-8b985a568211",
   "facts_sha256": "57bf54712dd6d64133858b0925769dc0af64b2201447962bf9da1eef34a03a35",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e92c78a22c88945c72e54e6f306fdb20d8043c71c04dda5527cf524158f1d30c"
   },
-  "physical_metadata_sha256": "1154140ccd7672531d367ac96062add16027d43295aea4551c259ada5d7dc151"
+  "physical_metadata_sha256": "1154140ccd7672531d367ac96062add16027d43295aea4551c259ada5d7dc151",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KitsuneDragonsDaughter.java",
+  "java_sha256": "c62cc48e72d9852c35a9288cf0e75198d966f76dbdae4115e2fd4148f20bd6db",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/meta/OrTriggeredAbility.java",
+      "sha256": "c9914e0f4ca4c5081ba6240285f9190d1969bef1f9f42ba9f23f245250a0a4a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/ExchangeControlTargetEffect.java",
+      "sha256": "5f8ad7b5c00c2f908e9649cb00107a9595979e02d6b8d8242b41d7f6aab88d20"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    }
+  ]
 }

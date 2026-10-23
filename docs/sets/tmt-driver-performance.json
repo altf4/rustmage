@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "status": "Initial focused driver experiment retained; final combined verification is recorded in tmt-performance-validation.json",
+  "baseline_seconds": 32.023919806,
+  "reused_seconds": 21.415243385,
+  "speedup": 1.4953796802716095,
+  "profile": "unoptimized test; identical24theme games, fourdeclaredseeds, bothstarters; timing excludescompilation",
+  "games": 24,
+  "decisions": 16258,
+  "owned_branches": 270,
+  "private_decisions": 5,
+  "wins": [
+    14,
+    10
+  ],
+  "identical_executed_mechanics_and_cast_trigger_sets": true,
+  "changes": [
+    "Extract observation-only existing policy helper; wrapper preserved and both-seat private top-library regression passes.",
+    "Reuse one same-revision actor observation for policy/privacy/evidence; initially compared two calls to the same legal-action query; this redundant comparison is removed in the final driver.",
+    "Index previous visible objects by cardID with exact-generation guard for per-object evidence; preserve all metric definitions.",
+    "Compare full serialized observation bytes rather than allocatingJSONValue trees; normalize onlyrevision for replay asbefore."
+  ],
+  "assertions_removed": [],
+  "workload_reduced": false,
+  "logs": [
+    {
+      "path": "<cache>/rustmage-tmt-driver-reuse-focus.log",
+      "sha256": "39e0551e35653574f9de77064062976651cabb7158183612299e45714711058d"
+    },
+    {
+      "path": "<cache>/rustmage-tmt-policy-reuse-focus.log",
+      "sha256": "145ee17452a7816b0d843f261e38ba64c0bfe84e8af796f5db79aa70b97b58f1"
+    }
+  ],
+  "historical": true,
+  "superseded_by": "docs/sets/tmt-performance-validation.json",
+  "final_driver_note": "The initial actor-view equality assertion called the same immutable legal_actions function twice. Final drivers reuse actor-view actions and retain action validation, rejection atomicity, owned branches, privacy and full replay."
+}

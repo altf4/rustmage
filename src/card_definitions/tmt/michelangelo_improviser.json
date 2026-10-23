@@ -3,10 +3,45 @@
   "catalogue_id": 2740,
   "oracle_id": "1939679b-ea2e-4a75-b3ce-d7af68437484",
   "facts_sha256": "4dbd540abada0fdcd7e145a86e112892b27aad17033802e434c5cd25b73eb026",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4c83664fa23eb2638e4601a05c6978e91063dc6219e88da104a850af4bfd55aa"
   },
-  "physical_metadata_sha256": "54e2ce416716bd09ab05d29305fba8a2903fd45a16d42f76eecb330ad71161a1"
+  "physical_metadata_sha256": "54e2ce416716bd09ab05d29305fba8a2903fd45a16d42f76eecb330ad71161a1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MichelangeloImproviser.java",
+  "java_sha256": "6a6687ad6c9ddf4c2b57c18e38df82276b3b25f661af94bb323b1952321faa28",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCreatureAndOrLandFromHandOntoBattlefieldEffect.java",
+      "sha256": "7d26fdb6ea92a4b3fb199812cd63a1c83e1f539a421e52b171115dd4616dcdd3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+      "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/assignment/common/CardTypeAssignment.java",
+      "sha256": "4e0d4a014ef15a347681b8cde3701598640d9385b27bab97649a8c9538a15599"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/assignment/RoleAssignment.java",
+      "sha256": "7b8e9145af672e13d0970346d5602bc16c7b434f7db9040b9a7a2d4a0d05478f"
+    }
+  ]
 }

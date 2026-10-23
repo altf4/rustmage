@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "66355545087ee19345831d22640d7bb49bb8ff89b5e7387627a7e088818f596d"
   },
-  "physical_metadata_sha256": "2400bdce0060a822190f9e3b32ede153a207f9be2df9ab1bbd61b9b86ec9847e"
+  "physical_metadata_sha256": "2400bdce0060a822190f9e3b32ede153a207f9be2df9ab1bbd61b9b86ec9847e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChitinousGraspling.java",
+  "java_sha256": "ca3db656a1f2e49284eb73779063360e5919c61734a4cbc9f855f58c8f4e329f",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_changeling_tests.rs",
+    "src/engine_card_quantities_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+      "sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/IsAllCreatureTypesSourceEffect.java",
+      "sha256": "6c340da9dc171835b171f118084f41d65fcbcdc629b20c0d0c14f5c2bd727cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ],
+  "inherited_audit": "Complete Oracle and XMage bodies/relevant behavior helpers read. Typed behavior preserved; actual paid bodies and private Shore Lurker choices complement existing complete changeling, optional search/removal and vivid interaction suites."
 }

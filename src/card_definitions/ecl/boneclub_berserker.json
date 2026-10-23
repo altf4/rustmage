@@ -8,5 +8,41 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e88987af1dc3bd8ce586e3d8ea1269cf6c235b3808c9c63cd929ca8d27ab3d89"
   },
-  "physical_metadata_sha256": "fc7bc897d87f96f95f68cb4b5f15be34ee3dc729e86484f26dfc4617b28af7c6"
+  "physical_metadata_sha256": "fc7bc897d87f96f95f68cb4b5f15be34ee3dc729e86484f26dfc4617b28af7c6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BoneclubBerserker.java",
+  "java_sha256": "b7427e7f6277b641027c9452e68e535d248423ff2d0331f2f51895324317ffa7",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "rules_test_files": [
+    "src/engine_dynamic_stat_tests.rs",
+    "src/engine_ecl_inherited_br_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    }
+  ],
+  "audit_notes": "Full pinned Oracle and Java card/helper reads; typed behavior preserved. Actual paid both-seat whole-card matrices supplement the listed adversarial rules suites."
 }

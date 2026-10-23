@@ -3,10 +3,84 @@
   "catalogue_id": 3017,
   "oracle_id": "66d4370e-19b9-4680-9b1e-a192537bc002",
   "facts_sha256": "3407d6b1fde78defb83682bb15acb422c91fb13d6b5b20ff714cf5d30756a0a4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a4da38ed9635cad831ad823872087668dae7a5464a62ffe32414092be33e1d94"
   },
-  "physical_metadata_sha256": "e23647412800805ade0d23f972eb76c0dd480e5b7e5bf565f5b8ecede5969255"
+  "physical_metadata_sha256": "e23647412800805ade0d23f972eb76c0dd480e5b7e5bf565f5b8ecede5969255",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OmniChangeling.java",
+  "java_sha256": "836763b1e5771bf11f435f0e7218d2aee7ad22c1d557e06ec2637f0e2dd96840",
+  "rules_tests": "src/engine_ecl_copy_entry_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+      "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
+      "sha256": "256e2224f1087a614a7e4826dcdd43873e9e5b50236b9904affb8408698fe8fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+      "sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/IsAllCreatureTypesSourceEffect.java",
+      "sha256": "6c340da9dc171835b171f118084f41d65fcbcdc629b20c0d0c14f5c2bd727cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+      "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyApplier.java",
+      "sha256": "82b30d931a3e310abd321918f97eb3ec6d8bf1e93bd665e7ddc66ed032a2fcdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/EmptyCopyApplier.java",
+      "sha256": "b7a59355b96283deb3cb3cf79a0b2c00576637990d87efc64cd8aa82ede040ca"
+    }
+  ],
+  "rules_notes": {
+    "source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "release_notes": "https://magic.wizards.com/en/news/feature/lorwyn-eclipsed-release-notes",
+    "rules": [
+      "303.4c",
+      "506.3a",
+      "601.2",
+      "604.3",
+      "607.5a",
+      "614.12",
+      "616.1c",
+      "702.51",
+      "707.2",
+      "707.8a",
+      "707.9a",
+      "707.9e",
+      "707.10b",
+      "712.8e",
+      "712.9"
+    ],
+    "interpretation": "An optional nontargeted exact creature choice freezes a copiable recipe with Changeling before other entry replacements. Fresh copied entry choices and counters apply; noncopy modifications, counters and attachments do not transfer. Newly acquired as-entry copy replacements may apply again, with each later copy overwriting previous copy characteristics and exceptions. Declining a later replacement retains the current prototype. Native physical face shape and identity survive copying and departure. Cast-qualified entry triggers use actual paid or free casting provenance and exclude permanent spell copies. Ability-resolution history distinguishes acquired intrinsic ability epochs while retaining old queued packets."
+  },
+  "test_scope_notes": [
+    "Actual paid normal and convoke casts use public raw/index actions and owned branch/restore checks for copy, decline, repeated copy choices, copied ETBs, counters and fresh type choices. A real paid Kindle the Inner Flame creates a copying token whose new entry copy overwrites the initial copy exceptions.",
+    "Free-cast permission, simultaneous private hand entry, animation, native transformation and generic creature spell-copy allocation are explicitly typed setup boundaries. The ensuing cast/entry choices and transactions use public actions; these fixtures do not claim new animation, transform-cost or spell-copy consumer implementations.",
+    "The narrow Aura SBA correction rejects creature Auras after the atomic entry transaction completes. Copying a prospectively animated Aura may require a fresh legal attachment; impossible stack entry puts the native Omni-Changeling into its graveyard."
+  ]
 }

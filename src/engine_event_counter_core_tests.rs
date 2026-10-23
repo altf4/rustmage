@@ -3,7 +3,7 @@ use super::tests::spawn;
 use super::*;
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap();
-    assert_eq!(card.is_supported(), name != "Boggart Mischief");
+    assert!(card.is_supported(), "{name}");
     spawn(g, p, card, zone)
 }
 fn activate(g: &mut Game, id: CardId, index: u16, target: Option<Target>) {
@@ -305,7 +305,7 @@ fn event_counter_core_bomber_oracle_allows_noncreature_goblin_permanent() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let bomber = fixture(&mut g, p, "Dropkick Bomber", Zone::Battlefield);
-        // Metadata-only gated fixture: its unrelated card behavior remains absent.
+        // A supported noncreature Goblin exposes the printed target restriction.
         // Oracle says Goblin, whereas the old Java filter wrongly says creature.
         let kindred = fixture(&mut g, p, "Boggart Mischief", Zone::Battlefield);
         assert!(!g.is_creature(kindred));

@@ -3,10 +3,36 @@
   "catalogue_id": 4968,
   "oracle_id": "7e1da4a1-5922-4a2e-8bbc-25fbcbf20935",
   "facts_sha256": "028b0e8b77948aaa2fcfbca00f28e03385971d26d6e877ecbdfb1d3ab01ce140",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cb49ee0b6a15ffb28a3ea46c38cf142832a62aa8a6bae0637f78705f295553ad"
   },
-  "physical_metadata_sha256": "de309b546e849b3b869196027493d55c2dc7f892ea4592179bb5c8a46d30faea"
+  "physical_metadata_sha256": "de309b546e849b3b869196027493d55c2dc7f892ea4592179bb5c8a46d30faea",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WanderwineFarewell.java",
+  "java_sha256": "b87cde1c91f77214f549c34729041876240cab7269729579ce4d8ba540b53e36",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+      "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/MerfolkWhiteBlueToken.java",
+      "sha256": "3d9c8493e814f9c3f7689bd231978c47133c2bf9edc338c71876b878f90f691c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    }
+  ],
+  "rules_notes": "Oracle counts permanents actually returned to their owners' hands; the pinned XMage implementation instead counts selected battlefield permanents before movement. Rust counts successful hand-destination events, including token departures, then checks the post-movement Merfolk condition."
 }

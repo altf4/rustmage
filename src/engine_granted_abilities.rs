@@ -9,7 +9,12 @@ impl Game {
             && self.on_battlefield(recipient.card)
             && self.object_ref(recipient.card) == recipient
             && if giver.card.aura().is_some() {
-                self.aura_can_enchant(giver.card, giver.controller, recipient)
+                self.aura_can_enchant_colored(
+                    giver.card,
+                    giver.controller,
+                    recipient,
+                    ability_world::CharacteristicWorld::colors(self, grantor),
+                )
             } else {
                 self.is_creature(recipient.card)
             })
@@ -21,8 +26,12 @@ impl Game {
         ids: &[CardId],
     ) -> Vec<(ObjectView, Option<AttachmentTriggerView>)> {
         let mut out = Vec::new();
+        if ids.is_empty() {
+            return out;
+        }
+        let query = self.characteristic_query();
         for &id in ids {
-            let giver = self.object_view(id);
+            let giver = query.object_view(id);
             if giver.card.triggers().iter().any(|a| {
                 !a.condition.is_granted()
                     && matches!(
@@ -42,7 +51,7 @@ impl Game {
                 && let Some(recipient) = self.attachment_recipient(id)
             {
                 out.push((
-                    self.object_view(recipient.card),
+                    query.object_view(recipient.card),
                     Some(AttachmentTriggerView {
                         grantor: giver.reference,
                         granting_card: giver.card,

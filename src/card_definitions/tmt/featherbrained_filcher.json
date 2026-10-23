@@ -3,10 +3,35 @@
   "catalogue_id": 1477,
   "oracle_id": "79a9fc1c-a6a9-483a-9ba7-d09fe41760c3",
   "facts_sha256": "519776dfe332d1dccda8c9c72700a7267fb6e62aae5eadf1ac6773568f63019b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d3d88a9ddc688b0face8bfcf50d5816b41f06fcbb81f59d80e10f43e2df8fa3e"
   },
-  "physical_metadata_sha256": "f0c1c4e5aca422a3e269555e4594e644a14a9516182408e8c3fe9aa867abebb2"
+  "physical_metadata_sha256": "f0c1c4e5aca422a3e269555e4594e644a14a9516182408e8c3fe9aa867abebb2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FeatherbrainedFilcher.java",
+  "java_sha256": "6a421cce4171d62db7d875ec51234ef648a28b59bef979e19ed82644636ec462",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+      "sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+      "sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+      "sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+    }
+  ]
 }

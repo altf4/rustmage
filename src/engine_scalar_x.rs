@@ -37,6 +37,18 @@ impl Game {
         id: CardId,
         card: Card,
     ) -> Vec<XInterval> {
+        self.scalar_x_intervals_with(actor, id, card, None)
+    }
+    pub(super) fn scalar_x_intervals_for_announcement(&self, a: &Announcement) -> Vec<XInterval> {
+        self.scalar_x_intervals_with(a.item.controller, a.item.card, a.item.source_card, Some(a))
+    }
+    fn scalar_x_intervals_with(
+        &self,
+        actor: Player,
+        id: CardId,
+        card: Card,
+        announcement: Option<&Announcement>,
+    ) -> Vec<XInterval> {
         let symbols = u64::from(card.x_symbols());
         if symbols == 0 {
             return Vec::new();
@@ -64,7 +76,7 @@ impl Game {
                         thresholds(*f, base, symbols, end, cuts);
                     }
                 }
-                CastFilter::Targeted { filter, .. } => {
+                CastFilter::Targeted { filter, .. } | CastFilter::TargetCount { filter, .. } => {
                     thresholds(*filter, base, symbols, end, cuts)
                 }
                 _ => {}
@@ -93,14 +105,43 @@ impl Game {
                 }
             }
         }
+        // Funding is monotone only between restriction thresholds. Restricted mana
+        // may first become usable at a positive X, independently of cost reductions.
+        if let Some(lots) = &self.state.mana_lots {
+            for lot in &lots.pools[actor.index()] {
+                if let mana_lots::ManaRestrictionView::SpellManaValueAtLeast(minimum) =
+                    lot.quality.restriction
+                {
+                    cuts.push(
+                        minimum
+                            .saturating_sub(card.fixed_mana_value())
+                            .div_ceil(symbols)
+                            .min(end),
+                    );
+                }
+            }
+        }
         cuts.sort_unstable();
         cuts.dedup();
         let (colored, generic) = card.cost();
         let base = ManaCost { colored, generic };
         let fundable = |x| {
+            if let Some(a) = announcement {
+                let mut proposal = a.clone();
+                proposal.item.x = Some(x);
+                return proposal
+                    .cost_options()
+                    .any(|cost| self.announcement_cost_fundable(&proposal, cost));
+            }
             self.scalar_x_total_for_definition(actor, id, base, x, card)
                 .is_some_and(|cost| {
-                    self.spell_can_fund_total_for_definition(actor, id, cost, None, card)
+                    self.spell_can_fund_total_at_mana_value(
+                        actor,
+                        id,
+                        cost,
+                        card,
+                        card.fixed_mana_value() + symbols * u64::from(x),
+                    )
                 })
         };
         let mut intervals: Vec<XInterval> = Vec::new();
@@ -133,6 +174,81 @@ impl Game {
         }
         intervals
     }
+    pub(super) fn blight_x_cost_fundable(&self, a: &Announcement, cost: ManaCost, x: u32) -> bool {
+        let mut proposal = a.clone();
+        proposal.item.x = Some(x);
+        proposal.cost = Some(cost);
+        proposal.total_cost = None;
+        let spec = proposal.additional_cost().expect("variable blight cost");
+        let goal = self.funding_goal(&proposal);
+        let purpose = self.purpose_for_item(&proposal.item);
+        let fund = |object| {
+            self.additional_candidate(spec, a.item.controller, a.item.object, object)
+                && self.can_fund_for(
+                    FundingGoal {
+                        reserve: Some((object, spec)),
+                        ..goal.clone()
+                    },
+                    purpose,
+                )
+        };
+        if let Some(object) = a.additional {
+            return fund(object);
+        }
+        if self.linked_funding_can_probe(a.item.controller)
+            && let Some(result) = self.linked_deferred_funding(
+                goal.clone(),
+                purpose,
+                linked_funding::DeferredFundingCost::Additional {
+                    source: a.item.object,
+                    spec,
+                },
+            )
+        {
+            return result;
+        }
+        (0..self.state.objects.len()).any(|id| fund(self.object_ref(id as CardId)))
+    }
+    fn blight_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        // This domain is consulted only during the declaration, before mana
+        // abilities and counter placement. The selected X is never rebound to
+        // the later toughness of the blighted creature.
+        let maximum = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == a.item.controller
+                    && self.is_creature(*id as CardId)
+            })
+            .map(|(id, _)| self.stats(id as CardId).toughness)
+            .max()
+            .unwrap_or(0)
+            .clamp(0, i128::from(u32::MAX)) as u32;
+        let fundable = |x| {
+            a.cost_options()
+                .any(|cost| self.blight_x_cost_fundable(a, cost, x))
+        };
+        let zero = fundable(0);
+        let positive = maximum > 0 && fundable(1);
+        match (zero, positive) {
+            (true, true) => vec![XInterval {
+                minimum: 0,
+                maximum,
+            }],
+            (true, false) => vec![XInterval {
+                minimum: 0,
+                maximum: 0,
+            }],
+            (false, true) => vec![XInterval {
+                minimum: 1,
+                maximum,
+            }],
+            (false, false) => Vec::new(),
+        }
+    }
     fn activation_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             return Vec::new();
@@ -144,12 +260,20 @@ impl Game {
         });
         let fundable = |value: u32| {
             base.generic.checked_add(value).is_some_and(|generic| {
+                let cost = self.reduced_activation_cost(
+                    a.item.controller,
+                    a.item.object.card,
+                    ManaCost {
+                        colored: base.colored,
+                        generic,
+                    },
+                );
                 self.activation_can_fund(
                     FundingGoal {
                         reserve: None,
                         actor: a.item.controller,
-                        required: base.colored,
-                        generic,
+                        required: cost.colored,
+                        generic: cost.generic,
                         source: Some((
                             a.item.object,
                             ability,
@@ -210,7 +334,16 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         Some(XChoiceView {
             card: a.item.object,
-            intervals: if a.item.kind == StackKind::Spell {
+            intervals: if a.item.kind == StackKind::Spell && a.item.source_card.has_blight_x_cost()
+            {
+                self.blight_x_intervals(a)
+            } else if a.item.kind == StackKind::Spell
+                && a.item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::LinkedExileCounterCost)
+            {
+                self.scalar_x_intervals_for_announcement(a)
+            } else if a.item.kind == StackKind::Spell {
                 self.scalar_x_intervals(a.item.controller, a.item.card)
             } else {
                 self.activation_x_intervals(a)
@@ -225,6 +358,9 @@ impl Game {
                     .map(u64::from)
                     .sum::<u64>(),
             ),
+            AmountValue::CastCardTypeCount => self.state.players[item.controller.index()]
+                .cast_card_types_this_turn
+                .count_ones() as u128,
             AmountValue::CastSpellManaValue => item
                 .cast_event
                 .as_ref()
@@ -242,6 +378,45 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::DepartureCounterCount(kind) => u128::from(
+                item.death_event
+                    .as_ref()
+                    .and_then(|e| e.counter_snapshot.as_deref())
+                    .expect("saved departure counters")
+                    .get(kind),
+            ),
+            AmountValue::DeathEventCounterTotal => {
+                item.death_event
+                    .as_ref()
+                    .expect("saved death event")
+                    .counter_total
+            }
+            AmountValue::DeathEventToughness => item
+                .death_event
+                .as_ref()
+                .expect("saved dying creature")
+                .toughness
+                .max(0) as u128,
+            AmountValue::SourceCounterTotal => {
+                if self
+                    .state
+                    .objects
+                    .get(item.object.card as usize)
+                    .is_some_and(|object| object.generation == item.object.generation)
+                {
+                    self.counter_amounts(item.object.card).total()
+                } else {
+                    item.source_counter_lki.as_ref().map_or(0, |facts| {
+                        facts.iter().map(|fact| u128::from(fact.count)).sum()
+                    })
+                }
+            }
+            AmountValue::DeathEventPower => item
+                .death_event
+                .as_ref()
+                .expect("saved death event")
+                .power
+                .max(0) as u128,
             AmountValue::DamageEventAmount => item.damage_event.expect("saved damage event").amount,
             AmountValue::SourceCounterQuantity(kind) => self
                 .source_counter_quantity_live(item.object, kind)
@@ -252,6 +427,16 @@ impl Game {
                         .and_then(|facts| facts.iter().find(|fact| fact.kind == kind))
                         .map_or(0, |fact| u128::from(fact.count))
                 }),
+            AmountValue::GreatestCreaturePower(filter) => {
+                let query = self.characteristic_query();
+                (0..self.state.objects.len())
+                    .map(|id| id as CardId)
+                    .filter(|&id| query.creature_matches(filter, item.controller, item.object, id))
+                    .map(|id| query.stats(id).power)
+                    .max()
+                    .unwrap_or(0)
+                    .max(0) as u128
+            }
             AmountValue::SourcePower => {
                 if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
                     self.stats(item.card).power.max(0) as u128
@@ -263,6 +448,13 @@ impl Game {
                 item.life_event.expect("saved life event").amount.max(0) as u128
             }
             AmountValue::ChosenX => u128::from(item.x.unwrap_or(0)),
+            AmountValue::MovedCount => u128::from(
+                self.state
+                    .resolving
+                    .as_ref()
+                    .and_then(|r| r.moved_count)
+                    .unwrap_or(0),
+            ),
             AmountValue::MilledCreatures => self
                 .state
                 .resolving

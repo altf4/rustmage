@@ -125,7 +125,13 @@ impl Game {
             return Vec::new();
         }
         if let Some(d) = defenders {
-            assert_eq!(d.len(), amount);
+            let attackers = groups
+                .iter()
+                .enumerate()
+                .filter(|(index, g)| accepted(*index) && g.token.is_creature())
+                .map(|(_, g)| usize::try_from(g.amount).capacity("attacker quantity exhausted"))
+                .sum::<usize>();
+            assert_eq!(d.len(), attackers);
             self.state
                 .attackers
                 .try_reserve(amount)
@@ -197,12 +203,15 @@ impl Game {
                     .capacity("object generation exhausted");
                 object.tapped = tapped;
                 object.summoning_sick = true;
-                if let Some(d) = defenders {
+                if token.is_creature()
+                    && let Some(d) = defenders
+                {
                     self.state.attackers.push(Attacker {
                         card: id,
                         defender: Some(d[index]),
                         blocked: false,
                     });
+                    index += 1;
                 }
                 if token.role().is_some() {
                     let recipient = attachment.expect("Role creation requires an attachment");
@@ -212,19 +221,23 @@ impl Game {
                 self.record_nonland_entry(controller, token);
                 self.register_battlefield_sources(id);
                 events.push(ZoneChange {
+                    trigger_providers: None,
+                    departure_sources: None,
                     gift: None,
                     before,
                     after: self.object_ref(id),
                     destination: Zone::Battlefield,
                     moved: true,
                     sacrificed_by: None,
+                    evoked: false,
+                    cast_origin: None,
+                    cast_payment: None,
                     offspring_paid: false,
                     kicked: false,
                     bargained: false,
                     x: 0,
                     evidence_collected: false,
                 });
-                index += 1;
             }
         }
         // Every newcomer exists before any entry event inspects the battlefield.

@@ -1,0 +1,151 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "incomplete checkpoint",
+  "source_revision": "f04dc2ff2bfdc92c249fa560d3dbced39b78787b",
+  "scope": {
+    "total": 195,
+    "admitted": 97,
+    "gated": 98,
+    "unresolved": 0,
+    "inherited_admission": 71,
+    "inherited_audits_completed": 0,
+    "newly_tested_candidates": 26,
+    "independently_reviewed": 0
+  },
+  "batch": 4,
+  "newly_tested_cards": [
+    "Donatello's Technique",
+    "Foot Ninjas",
+    "Jennika's Technique",
+    "Karai's Technique",
+    "Leonardo's Technique",
+    "Leonardo, Big Brother",
+    "Leonardo, Cutting Edge",
+    "New Generation's Technique",
+    "Oroku Saki, Shredder Rising",
+    "Raphael, the Nightwatcher",
+    "Shredder, Unrelenting",
+    "Splinter's Technique",
+    "Splinter, Hamato Yoshi"
+  ],
+  "validation": {
+    "command": "python3 scripts/validate.py --release --python smoke",
+    "success": true,
+    "terminal": true,
+    "seconds": 616.5319298350078,
+    "files_verified": 11852,
+    "changed_inputs": [],
+    "report": "<cache>/rustmage-validation-zay7p6o4/report/result.json",
+    "report_sha256": "702eb8b9f19e624fcbaee8f8702d99846db49c78b2f1ea332d86b58413158d62",
+    "phases": [
+      {
+        "index": 1,
+        "exit": 0,
+        "seconds": 2.187511705997167,
+        "log": "<cache>/rustmage-validation-zay7p6o4/report/0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "exit": 0,
+        "seconds": 0.9315803599893115,
+        "log": "<cache>/rustmage-validation-zay7p6o4/report/1.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "exit": 0,
+        "seconds": 0.45135537200258113,
+        "log": "<cache>/rustmage-validation-zay7p6o4/report/2.log",
+        "log_sha256": "008c30dd45373518cc1a62f9f113bf1b35245ebd0e046c7f85e2f05e405d3ecc"
+      },
+      {
+        "index": 4,
+        "exit": 0,
+        "seconds": 8.043262332008453,
+        "log": "<cache>/rustmage-validation-zay7p6o4/report/3.log",
+        "log_sha256": "c19db432b91df807fbb093fdf6b366cff36e3973249faf191628502e8f4f7841"
+      },
+      {
+        "index": 5,
+        "exit": 0,
+        "seconds": 47.31383286500932,
+        "log": "<cache>/rustmage-validation-zay7p6o4/report/4.log",
+        "log_sha256": "d5a0cb951c5c8910532ba3c1f8d8320d21eb7c00c28e3d3eff4ad414ce8992e2"
+      },
+      {
+        "index": 6,
+        "exit": 0,
+        "seconds": 467.11990579299163,
+        "log": "<cache>/rustmage-validation-zay7p6o4/report/5.log",
+        "log_sha256": "68b41dc0fcaea57c1eafc96dfc51d996075b03563f763c0b53762dee57c25a5d"
+      },
+      {
+        "index": 7,
+        "exit": 0,
+        "seconds": 89.71073616101057,
+        "log": "<cache>/rustmage-validation-zay7p6o4/report/6.log",
+        "log_sha256": "f849ca99c88b266c2700985b5c626c43ea6f103bcc3401b38a35285316f34d3c"
+      },
+      {
+        "index": 8,
+        "exit": 0,
+        "seconds": 0.29354453799896874,
+        "log": "<cache>/rustmage-validation-zay7p6o4/report/7.log",
+        "log_sha256": "30828891d313bc280ba7ea39f9676e3f109ba18b8b65770dc0444659b3f97eb3"
+      },
+      {
+        "index": 9,
+        "exit": 0,
+        "seconds": 0.380718040978536,
+        "log": "<cache>/rustmage-validation-zay7p6o4/report/8.log",
+        "log_sha256": "141a87f090f715c46666d73e75560e8c0ab86bdf6ede1d638fed991ecce38611"
+      }
+    ],
+    "shared_libraries": {
+      "<cache>/rustmage-validation-zay7p6o4/release/librustmage.so": "3a6199e9f18047288ce138909c688275981a0684bb016e4c5bf455bc2ea1578e",
+      "<cache>/rustmage-validation-zay7p6o4/release/deps/librustmage.so": "3a6199e9f18047288ce138909c688275981a0684bb016e4c5bf455bc2ea1578e",
+      "<cache>/rustmage-validation-zay7p6o4/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-zay7p6o4/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-zay7p6o4/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-zay7p6o4/release-test/deps/librustmage.so": "d74f56f39d392c2af9690429ac398b4fc81c86fa3c65cdc51cb39cb50574812c"
+    },
+    "cleaned_allocated_bytes": 838946816
+  },
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-sneak-library-paths.json",
+    "sha256": "b722bf93614fe13d02fa91b5de15f2ed99f9aca59bf4d6f6cf07602feaaff726"
+  },
+  "rules_tests": {
+    "library_passed": 3295,
+    "ignored": 1,
+    "sneak_scenarios": 24,
+    "python_smoke": 7
+  },
+  "freeform_smoke_regression": {
+    "clone_ns": 158.93088,
+    "decisions": 49832,
+    "decisions_per_second": 191326.15768863718,
+    "games": 100,
+    "games_per_second": 383.9423617126288,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21128,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 141.08279,
+    "seconds": 0.260455761
+  },
+  "implementation_throughput": {
+    "start": "2026-10-23T05:34:30+00:00",
+    "end": "2026-10-23T06:45:46.315795+00:00",
+    "seconds": 4276.315795,
+    "newly_verified_physical_cards": 13,
+    "cards_per_hour": 10.943999985856983,
+    "scope": "Elapsed continuation interval, including source intake, implementation, repairs and validation; excludes inherited cards"
+  },
+  "tmt_simulation_throughput": null,
+  "tmt_full_game_acceptance": "pending",
+  "reviews": [],
+  "known_external_blockers": [],
+  "next_action": "Implement source-incarnation Sneak history and conditional consumers Leonardo Leader in Blue, Karai Future of the Foot, Turncoat Kunoichi, plus Donatello Gadget Master."
+}

@@ -2,6 +2,9 @@
 use super::*;
 impl Game {
     pub(super) fn create_emblem(&mut self, controller: Player, factory: Card) {
+        self.create_emblem_object(controller, factory);
+    }
+    pub(super) fn create_emblem_object(&mut self, controller: Player, factory: Card) -> CardId {
         assert!(factory.is_emblem());
         let id = CardId::try_from(self.state.objects.len()).capacity("object slots exhausted");
         self.state.objects.push(Object {
@@ -25,5 +28,6 @@ impl Game {
             attached_to: None,
         });
         self.register_battlefield_sources(id);
+        id
     }
 }

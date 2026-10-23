@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ed04ef6966b1e1a7aaebfe5a930572035e475a995a2331ecccaf658c11ef5570"
   },
-  "physical_metadata_sha256": "5f80ee2e5bab3802b66d49599ad547eff112f147cbb8a599780c14faed8e4257"
+  "physical_metadata_sha256": "5f80ee2e5bab3802b66d49599ad547eff112f147cbb8a599780c14faed8e4257",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PesteredWellguard.java",
+  "java_sha256": "cbd6a61825ee4b22544bfed903e4e49a5bd54ed9b5a1fbdae1b515c0502cd99c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FaerieBlueBlackToken.java",
+      "sha256": "0e23f453aedcbd99fb52a924610703ba7116a4f21978d7381d389a556c854ad5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

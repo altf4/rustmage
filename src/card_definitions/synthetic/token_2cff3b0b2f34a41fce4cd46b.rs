@@ -1,4 +1,4 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Vanilla token body audited against the complete pinned XMage factory and shared helpers.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 1),
     triggers: &[],

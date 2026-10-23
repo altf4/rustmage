@@ -3,10 +3,54 @@
   "catalogue_id": 2786,
   "oracle_id": "353db389-b829-4e66-85d5-6018bc87c3e0",
   "facts_sha256": "e8404e4040d89cdc7c2a8d63a2100b63f525ab8bd4630e80996c35ad2e880aec",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cec029660ad8e9bf8da043b472d7f8beca76d634dcdeafcacacc6d5d0d75cccb"
   },
-  "physical_metadata_sha256": "8d63c2932ded00da7c401d0a3d5353c3ae3b2ca71c786261db0e42e3dd140abd"
+  "physical_metadata_sha256": "8d63c2932ded00da7c401d0a3d5353c3ae3b2ca71c786261db0e42e3dd140abd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MirrormindCrown.java",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "java_sha256": "a3c8926c89f1c11e8975394a009c8f363a7fbde227c13a2f9ce4f026289836cc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CreatedTokenWatcher.java",
+      "sha256": "e584fb15744823fe5cdbca4add163445cb36bb7a32b02d7dcf23d1b2a9ca232b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/EmptyCopyApplier.java",
+      "sha256": "b7a59355b96283deb3cb3cf79a0b2c00576637990d87efc64cd8aa82ede040ca"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyEffect.java",
+      "sha256": "4e27230c09fc613d065b165fb57332f3ac4f8bf1fb2f7b33212f155535d8df0b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    }
+  ],
+  "rules_rulings": [
+    {
+      "source": "https://magic.wizards.com/en/news/feature/wilds-of-eldraine-release-notes",
+      "accessed": "2026-10-22",
+      "card": "Curse of the Werefox",
+      "ruling": "Its reflexive fight requires a Monster Role actually attached to the targeted creature; replacement creature copies do not satisfy this requirement."
+    }
+  ]
 }

@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e4d26ba4ded73e58f093417bb682380fd97be5eebb58a44fe59be60813871284"
   },
-  "physical_metadata_sha256": "fc390d2a28334705c09d71a44097a2c8614093e85a2ef31b7d8dc7e6065c9c3c"
+  "physical_metadata_sha256": "fc390d2a28334705c09d71a44097a2c8614093e85a2ef31b7d8dc7e6065c9c3c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/BlackGreenElfToken.java",
+  "java_sha256": "5ee3aff2723c9da62fddabeafe4bf269d1918070e5b9d47bfe05505d5f83d604"
 }

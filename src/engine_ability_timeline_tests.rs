@@ -52,7 +52,7 @@ pub(super) fn checked(g: &mut Game, action: Action) {
     g.apply(actor, action).unwrap();
     assert_eq!(g.snapshot(), after);
 }
-fn settle_on(g: &mut Game, chosen: Option<Target>) {
+pub(super) fn settle_on(g: &mut Game, chosen: Option<Target>) {
     g.prepare_triggers();
     for _ in 0..100 {
         if g.state.pending == Pending::Priority

@@ -66,6 +66,13 @@ impl ManaPaymentDomain {
     }
 }
 impl CastInfo {
+    pub const fn stash_origin(self) -> bool {
+        self.origin_permissions.stash_origin()
+    }
+    pub const fn exile_any_mana(self) -> bool {
+        self.origin_permissions.exile_any_mana()
+    }
+
     pub fn mana_spent(self) -> u64 {
         self.payment.into_iter().map(u64::from).sum()
     }
@@ -256,6 +263,12 @@ impl Game {
         source: ObjectRef,
         event: Option<&CastPaymentEvent>,
     ) -> bool {
+        if condition.requires_discounted_cast()
+            && !event
+                .is_some_and(|e| e.payment.into_iter().map(u64::from).sum::<u64>() < e.mana_value)
+        {
+            return false;
+        }
         let Some((minimum, increment)) = condition.mana_spent_rule() else {
             return true;
         };

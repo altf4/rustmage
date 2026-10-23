@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2fcb525be35224f00ff4e4fd7c37c59f96fa7673f9a889f56ee8486b71eaef7d"
   },
-  "physical_metadata_sha256": "9b35723ce0a3123186aefa38acc7b4ccb54b9e658d942c3f950b6a6ed54fec2f"
+  "physical_metadata_sha256": "9b35723ce0a3123186aefa38acc7b4ccb54b9e658d942c3f950b6a6ed54fec2f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BoggartPrankster.java",
+  "java_sha256": "d46bcf8db7a2523b96c488392017536bdc83554a7cfe0ac85ee0c83f8985d7c0",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_attack_declaration_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ],
+  "inherited_audit": "Full Oracle and XMage card/relevant behavior dependencies read; typed behavior preserved. Paid body matrix complements existing complete shared rule scenarios, reviewed for printed obligations and passed in combined232 release."
 }

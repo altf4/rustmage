@@ -3,10 +3,74 @@
   "catalogue_id": 2038,
   "oracle_id": "dd27c5fa-4355-4e5c-8219-b74cfe209da0",
   "facts_sha256": "419803a690e338aec0c78e20a0a83eea865987627209b526d1c1eada43a0d8ee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "49a0f26e9a53e412907398505d59f3275ef125a6d1e29d16270a51b9da301d20"
   },
-  "physical_metadata_sha256": "9949f0b43e9e91270710223b8da45fa7952c1f45b23c3ac0559f41e556c9ed72"
+  "physical_metadata_sha256": "9949f0b43e9e91270710223b8da45fa7952c1f45b23c3ac0559f41e556c9ed72",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HighPerfectMorcant.java",
+  "java_sha256": "84a08f5f8d4ea9d13e676e93f704669ccda717b4a5b6c523339e0ccf9813123e",
+  "rules_tests": "src/engine_ecl_morcant_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/ProliferateEffect.java",
+      "sha256": "b6f4e1da90b6a0ed7ff2a0bcb76f05eac05bd3f87c62bda4b543740c48469b9f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+      "sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+      "sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterPermanentOrPlayerWithCounter.java",
+      "sha256": "6dc6daf2310a6577cb9e1610461add6e00b997e68e7615af5b20876583fba47d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayer.java",
+      "sha256": "f43a3bbef4f7d2f923cddf063aa48211aad59848ccefcdace9b08a40b5cd67ab"
+    }
+  ],
+  "rules_notes": {
+    "source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "rules": [
+      "701.34a",
+      "613.7c"
+    ],
+    "interpretation": "Proliferate is a non-targeting optional set selection; every existing kind on each chosen permanent receives one counter in a mixed replacement event. The Elf tap cost includes Kindred noncreatures and is not a tap-symbol cost."
+  },
+  "player_counter_scope": {
+    "supported": "All permanent counter kinds and the only player counter kind reachable in the implemented card pool, poison.",
+    "audit": "Audited complete pinned Oracle definitions for energy, experience, radiation, ticket and other player-counter producers; only Fynn, the Fangbearer; Persuasive Interrogators; and Virulent Silencer produce player counters, all poison."
+  }
 }

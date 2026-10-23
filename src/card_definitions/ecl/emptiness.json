@@ -3,10 +3,65 @@
   "catalogue_id": 1322,
   "oracle_id": "dc5dd7f7-375e-4d51-85cb-1abf16ca3854",
   "facts_sha256": "1d8c4e724f7284ff2297dae29971f7d756489bc1a44d71ed1af8fdacd5dc1170",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "19acc0470be5e2ad34dfb25131025644ee63b45546b339cb5ce265a0339b6661"
   },
-  "physical_metadata_sha256": "aab0bcc63113c6ad4f3e30c810d979c4960395c2a218cf0e0e494a8030a7b8a8"
+  "physical_metadata_sha256": "aab0bcc63113c6ad4f3e30c810d979c4960395c2a218cf0e0e494a8030a7b8a8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/Emptiness.java",
+  "java_sha256": "21609d9abe36f347d95a00a04cd2d0e72beda02c61f9791103aa6c0e3143b0ea",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EvokeAbility.java",
+      "sha256": "5f2bd6dfc0dcf9b02cad0659656e175bdb985472feb1d0e56c3387c1a2f96601"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/EvokedCondition.java",
+      "sha256": "d93e83a6045bb122571bc05291da4cca101cd8131383aad80579d1ed1bc418d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TwoOfManaColorSpentCondition.java",
+      "sha256": "db65399e04dc16757d2241377e11f45c2f91836767a8d4e3a1740f8e78b44026"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/AlternativeSourceCostsImpl.java",
+      "sha256": "5bbc595021e5cdd25c7b878fda2b6654b9b6b89979ff5bc76d9560cd9f9c47c8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+      "sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/ManaSpentToCastWatcher.java",
+      "sha256": "3bdca200d2d19ba2e46d11f37fcf4d355e78430ce4fed8c82fcf7161d2329211"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+      "sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739"
+    }
+  ]
 }

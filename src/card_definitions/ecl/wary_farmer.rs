@@ -1,7 +1,19 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior; full Oracle and pinned XMage dependencies reviewed.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
+    effect: Effect::Creature(3, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::End,
+            relation: CastRelation::You,
+            guard: StepGuard::Expression {
+                value: StatValue::CreatureEntriesThisTurn { other: true },
+                minimum: Some(1),
+                maximum: None,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Surveil(1)],
+    }],
     activated: &[],
     enters: Counters {
         plus_one: 0,

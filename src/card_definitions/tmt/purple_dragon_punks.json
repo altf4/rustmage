@@ -3,10 +3,40 @@
   "catalogue_id": 3285,
   "oracle_id": "d1edb950-a118-4b4d-a0ef-9a6683d74c9f",
   "facts_sha256": "b5a0e156ba58ac0acd860a47e9a7eee5119a9fc7f01ed79b738f487319a510a7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1d6c0ccc4a03e063f7b0afd7d7e4147ec899a4a7999e65b25174dea69d8450b5"
   },
-  "physical_metadata_sha256": "f010baf62bb3973fe5f440af1455b6f624de5f391068451857ad6789e1f0f23f"
+  "physical_metadata_sha256": "f010baf62bb3973fe5f440af1455b6f624de5f391068451857ad6789e1f0f23f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PurpleDragonPunks.java",
+  "java_sha256": "811527903fc9478439b9f3990bb146048624a95b77ab6128d23ad8511b3838ff",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColoredManaAbility.java",
+      "sha256": "4ca1b322894c2f7924ad49114c8e57fdbbab4313acec60374aa74b144eb18493"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+      "sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaEffect.java",
+      "sha256": "4690e27d03738e7052453428d8854b1ca8986ce292f25b579b33ab88cb953c23"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+      "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5"
+    }
+  ]
 }

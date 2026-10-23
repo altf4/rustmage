@@ -155,9 +155,14 @@ fn announce(g: &mut Game, p: Player, n: &str, foreign: bool) -> CardId {
     );
     if foreign {
         g.state.exile_permissions.push(ExilePlayPermission {
+            cast_only: false,
+            without_mana: false,
             object: g.object_ref(id),
             player: p,
             expires_turn: g.state.turn,
+            next_end_step: None,
+            source: None,
+            any_mana: false,
         });
         g.state.exile_permissions.sort_by_key(|v| v.object.card);
         act(g, Action::AnnounceExile { card: id });

@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "status": "fixed focused regression; complete release/game rerun pending",
+  "failed_source": "7a1d7a3d",
+  "failed_release_report": "<cache>/rustmage-validation-pb94ie0x/report/result.json",
+  "failed_release_report_sha256": "f30f4e1bebb16e1db7477af84c28b40f6f8353f32f9688cf4bb3c1c7b67de5e5",
+  "failed_release_success": false,
+  "passed_library_tests": 3746,
+  "passed_tmt_library_scenarios": 493,
+  "completed_pool_games_before_failure": 75,
+  "failure": "Observation-only smoke policy looked for a legal private top-library legacy Cast only in public objects and unwrapped None.",
+  "fix": "The policy resolves the definition from visible objects or the already-authorized known_library_top observation. It never reads hidden game state.",
+  "focused_test": "tmt_blink_smoke_policy_scores_visible_library_cast_without_reading_hidden_next",
+  "focused_passed": true,
+  "both_players": true,
+  "privacy": "Hidden next-card identity is changed in an owned sibling; acting-player JSON and policy result remain identical. Actual paid top-library cast and raw/index/restore checks succeed.",
+  "log": "<cache>/rustmage-tmt-library-policy-focus.log",
+  "log_sha256": "68d49c12dd1d7a81871545d79ee48610045233bb598d7169da7a1f2ae55d2ce4",
+  "resource_report": "<cache>/rustmage-build-reports/10c3a6ffa4064dd29bd94010ba4fbd86.json",
+  "resource_report_sha256": "8a0268fff6935dbc0c176d60faba1d14a72d111e9bc014fc68d2c5a0e03305ba"
+}

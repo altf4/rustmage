@@ -1,20 +1,43 @@
 #!/usr/bin/env python3
-"""Routine rules validation; optional existing native performance benchmark.
+"""Rules validation, with explicit regression and comprehensive acceptance tiers.
 
 Each run owns a unique Cargo target. Terminal cleanup retains all shared libraries,
 logs and the JSON report. Never run against a source tree being edited.
 """
-import argparse,hashlib,json,os,subprocess,sys,tempfile,time
+import argparse,hashlib,json,os,re,subprocess,sys,tempfile,time
 from pathlib import Path
-from resource_limits import bounded_group
+if __package__:
+    from .resource_limits import bounded_group
+else:
+    from resource_limits import bounded_group
 
 ROOT=Path(__file__).resolve().parents[1]
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+COMPREHENSIVE_TEST='tmt_entire_pool_and_theme_acceptance'
+def comprehensive_test_passed(output):
+    # Cargo succeeds for a filter matching zero tests. A comprehensive report
+    # must prove that the selected test executed, rather than trusting exit0.
+    return (f'test {COMPREHENSIVE_TEST} ...' in output
+            and re.search(r'^test result: ok\. 1 passed; 0 failed; 0 ignored;',output,re.MULTILINE) is not None)
+def native_test_commands(release, acceptance):
+    profile=['--profile','release-test'] if release else []
+    # Ordinary regressions still execute every native test-bearing target. The
+    # ignored TMT matrix is explicitly selected only in the comprehensive tier;
+    # the ignored production throughput measurement must not run in this profile.
+    commands=[['cargo','test',*profile,
+               *(['--lib','--bins','--tests','--benches'] if release else ['--all-targets'])]]
+    if acceptance == 'comprehensive':
+        commands.append(['cargo','test',*profile,'--test','tmt_acceptance',
+                         COMPREHENSIVE_TEST,'--','--exact','--ignored','--nocapture'])
+    return commands
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--release',action='store_true')
+    parser.add_argument('--release',action='store_true',
+                        help='Run optimized assertion-enabled tests and build/run the production release benchmark')
     parser.add_argument('--python', choices=['none', 'smoke', 'full'], default='none',
                         help='Run binding tests against the generated release library')
+    parser.add_argument('--acceptance', choices=['regression', 'comprehensive'], default='comprehensive',
+                        help='Comprehensive (default) also runs all 172 TMT pool/theme games; regression retains all rules and focused game suites')
     parser.add_argument('--games',type=int,default=100)
     args=parser.parse_args()
     if args.games<1:parser.error('--games must be positive')
@@ -35,21 +58,33 @@ def main():
         ['python3','scripts/link_catalogue.py','--check'],
         ['python3','-m','unittest','discover','-s','scripts','-p','test_*.py'],
         ['cargo','clippy','--all-targets','--','-D','warnings'],
-        ['cargo','test','--all-targets'],
+        # Examples contain no tests; Clippy checks them without optimizing
+        # empty test executables. Keep every native test-bearing target kind.
+        *native_test_commands(args.release,args.acceptance),
     ]
     if args.release or args.python != 'none':commands.extend([['cargo','build','--release','--lib','--bin','benchmark'],[str(target/'release/benchmark'),str(args.games)]])
     if args.python != 'none':
         env['RUSTMAGE_LIBRARY'] = str(target/'release/librustmage.so')
         commands.append(['python3', 'scripts/python_tests.py', '--suite', args.python,
                          '--report', str(report_dir/'python.json')])
-    report=dict(head=head,terminal=False,target=str(target),phases=[]);start=time.monotonic();ok=False
+    report=dict(head=head,terminal=False,target=str(target),acceptance_suite=args.acceptance,
+                acceptance_scope='TMT 172-game comprehensive matrix included' if args.acceptance=='comprehensive' else 'Rules and focused native game regressions; TMT 172-game comprehensive matrix excluded',
+                phases=[]);start=time.monotonic();ok=False
     try:
         for index,cmd in enumerate(commands):
             begin=time.monotonic();log=report_dir/f'{index}.log'
             with log.open('w')as out:result=subprocess.run(cmd,env=env,stdout=out,stderr=subprocess.STDOUT)
-            report['phases'].append(dict(command=cmd,exit=result.returncode,seconds=time.monotonic()-begin,log=str(log)))
-            print(f'{index+1}/{len(commands)} exit={result.returncode} {" ".join(cmd[:4])}',flush=True)
-            if result.returncode:break
+            code=result.returncode
+            checked=COMPREHENSIVE_TEST in cmd
+            executed=comprehensive_test_passed(log.read_text()) if checked else None
+            if code==0 and checked and not executed:
+                code=1
+                with log.open('a')as out:out.write('\nValidation failed: the required comprehensive test did not report exactly one executed passing test.\n')
+            phase=dict(command=cmd,exit=code,seconds=time.monotonic()-begin,log=str(log))
+            if checked:phase.update(process_exit=result.returncode,required_test_executed=executed)
+            report['phases'].append(phase)
+            print(f'{index+1}/{len(commands)} exit={code} {" ".join(cmd[:4])}',flush=True)
+            if code:break
         else:ok=True
     finally:
         report['changed']=[p for p,h in files.items()if not(ROOT/p).is_file()or sha(ROOT/p)!=h]

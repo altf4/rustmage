@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "195/195 integrated; combined release, complete-pool games, optimized throughput and final published-head reviews pending",
+  "source": "341595ef10535d9fe14d5e89f351ea5e0d376af8",
+  "cards": [
+    "Don & Raph, Hard Science",
+    "Krang, Master Mind",
+    "Rat King, Verminister",
+    "The Cloning of Shredder",
+    "The Last Ronin",
+    "Turtle Van",
+    "Turtles Forever"
+  ],
+  "focused_families": 28,
+  "affected_regressions": 277,
+  "checks": [
+    {
+      "log": "<cache>/rustmage-tmt-final-agent-focus5.log",
+      "sha256": "0cd161cd4fe7a75f47db3670ce6279f127f2d9f00b6302a65ac99fa0b05d3e44",
+      "guard_reports": [
+        {
+          "path": "<cache>/rustmage-build-reports/08da2bc3029042b2ab257b100d3fe9ae.json",
+          "sha256": "64cc5ef535c92ba8dd756cf3501b41c8ca2cd0a58422f5f6d0ae9ed62bd1b4d9"
+        }
+      ]
+    },
+    {
+      "log": "<cache>/rustmage-tmt-final-agent-regressions.log",
+      "sha256": "f7b5001cc1bc386f7db62752222a33c5e1e528c51aa2b98629079b9748edb5ec",
+      "guard_reports": [
+        {
+          "path": "<cache>/rustmage-build-reports/91ac391e52dd4ae79ef7c56a4c22e9fc.json",
+          "sha256": "4f281db24080d2df190192e64bbb2f04995e3579739418a336b04eaea7ef8544"
+        }
+      ]
+    },
+    {
+      "log": "<cache>/rustmage-tmt-final-agent-clippy.log",
+      "sha256": "e8fba4b3f0fe22efd01afde487e6c42a8d07b437fef83bce5122dd07b685052e",
+      "guard_reports": [
+        {
+          "path": "<cache>/rustmage-build-reports/34a8d6ba259944f5ba3b40877cdd8bae.json",
+          "sha256": "e17fca69ecd82054a86c12b054e94b143e2898f3f085ed0d977dca6b92914887"
+        }
+      ]
+    }
+  ]
+}

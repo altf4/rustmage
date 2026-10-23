@@ -18,7 +18,7 @@ impl Game {
                 .subtype
                 .is_none_or(|subtype| self.has_subtype(id, subtype))
             && (filter.max_mana == u32::MAX
-                || object.card.fixed_mana_value() <= u64::from(filter.max_mana))
+                || self.object_mana_value(id) <= u64::from(filter.max_mana))
     }
     fn battlefield_group(&self, item: &SpellView, filters: &[BattlefieldFilter]) -> Vec<CardId> {
         (0..self.state.objects.len())
@@ -30,6 +30,40 @@ impl Game {
                     .then_some(id)
             })
             .collect()
+    }
+    pub(super) fn grant_chosen_creature_type_keywords(
+        &mut self,
+        item: &SpellView,
+        other: bool,
+        keywords: Keywords,
+    ) {
+        let kind = self
+            .resolution_chosen_creature_type()
+            .expect("preceding creature type choice");
+        let recipients: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && (!other || self.object_ref(id) != item.object)
+                    && self.has_subtype(id, kind.name()))
+                .then_some(id)
+            })
+            .collect();
+        self.grant_keyword_effects(&recipients, item.object, keywords);
+    }
+    pub(super) fn grant_battlefield_keywords(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        keywords: Keywords,
+    ) {
+        let recipients = self.battlefield_group(item, filters);
+        self.grant_keyword_effects(&recipients, item.object, keywords);
     }
     pub(super) fn move_battlefield_group(
         &mut self,

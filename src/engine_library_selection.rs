@@ -17,6 +17,7 @@ pub(super) struct LibrarySelection {
     pub minimum: usize,
     pub maximum: usize,
     pub ordering: bool,
+    pub available_colors: Option<u8>,
 }
 impl LibrarySelection {
     pub fn bytes(&self) -> usize {
@@ -34,25 +35,34 @@ pub struct LibrarySelectionView {
     pub minimum: usize,
     pub maximum: usize,
     pub ordering: bool,
+    pub available_colors: Option<u8>,
     pub reveal: bool,
     pub public: bool,
     pub destination: &'static str,
     pub remainder: &'static str,
 }
 impl Game {
-    fn library_selection_matches(&self, filter: LibrarySelectionFilter, id: CardId) -> bool {
+    fn library_selection_matches(
+        &self,
+        filter: LibrarySelectionFilter,
+        id: CardId,
+        chosen_type: Option<crate::cards::CreatureType>,
+    ) -> bool {
         let c = self.state.objects[id as usize].card;
         match filter {
+            LibrarySelectionFilter::SourceChosenCreatureType => {
+                chosen_type.is_some_and(|kind| c.has_subtype(kind.name()))
+            }
             LibrarySelectionFilter::Any => true,
             LibrarySelectionFilter::Kinds(mask) => c.kind_mask() & mask != 0,
             LibrarySelectionFilter::ExcludingKinds(mask) => c.kind_mask() & mask == 0,
             LibrarySelectionFilter::Subtype(subtype) => c.has_subtype(subtype),
             LibrarySelectionFilter::AnyOf(filters) => filters
                 .iter()
-                .any(|filter| self.library_selection_matches(*filter, id)),
+                .any(|filter| self.library_selection_matches(*filter, id, chosen_type)),
             LibrarySelectionFilter::AllOf(filters) => filters
                 .iter()
-                .all(|filter| self.library_selection_matches(*filter, id)),
+                .all(|filter| self.library_selection_matches(*filter, id, chosen_type)),
             LibrarySelectionFilter::CreaturePowerAtMost(power) => {
                 c.is_creature() && self.stats(id).power <= i128::from(power)
             }
@@ -83,7 +93,48 @@ impl Game {
         let owner = item.controller;
         let limit = match effect.look {
             LibraryLook::Fixed(n) => usize::from(n),
+            LibraryLook::Amount(amount) => {
+                usize::try_from(self.item_amount(amount, item)).unwrap_or(usize::MAX)
+            }
             LibraryLook::ChosenX => usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX),
+            LibraryLook::UntilCount { kinds, amount } => {
+                let requested = self.item_amount(amount, item);
+                if requested == 0 {
+                    0
+                } else {
+                    let mut count = 0u128;
+                    self.state.players[owner.index()]
+                        .library
+                        .iter()
+                        .rev()
+                        .position(|&id| {
+                            if self.state.objects[id as usize].card.kind_mask() & kinds != 0 {
+                                count += 1;
+                            }
+                            count >= requested
+                        })
+                        .map_or(usize::MAX, |at| at + 1)
+                }
+            }
+            LibraryLook::UntilNonlandCount(amount) => {
+                let requested = self.item_amount(amount, item);
+                if requested == 0 {
+                    0
+                } else {
+                    let mut count = 0u128;
+                    self.state.players[owner.index()]
+                        .library
+                        .iter()
+                        .rev()
+                        .position(|&id| {
+                            if !self.state.objects[id as usize].card.is_land() {
+                                count += 1;
+                            }
+                            count >= requested
+                        })
+                        .map_or(usize::MAX, |at| at + 1)
+                }
+            }
             LibraryLook::UntilKinds(kinds) => self.state.players[owner.index()]
                 .library
                 .iter()
@@ -100,13 +151,19 @@ impl Game {
             .map(|&id| self.object_ref(id))
             .collect();
         if remaining.is_empty() {
+            if spec.remainder == LibraryRemainder::Shuffle {
+                self.forget_library_top(owner);
+                self.state
+                    .rng
+                    .shuffle(&mut self.state.players[owner.index()].library);
+            }
             return false;
         }
         let eligible: Vec<_> = remaining
             .iter()
             .copied()
             .filter(|r| {
-                self.library_selection_matches(spec.filter, r.card)
+                self.library_selection_matches(spec.filter, r.card, item.source_chosen_type)
                     && maximum_mana_value.is_none_or(|max| {
                         u128::from(self.state.objects[r.card as usize].card.fixed_mana_value())
                             <= max
@@ -119,7 +176,16 @@ impl Game {
                 .iter()
                 .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && !o.is_token())
         };
+        let available_colors = (spec.count == LibrarySelectionCount::ControlledColors)
+            .then(|| ability_world::CharacteristicWorld::controlled_colors(self, owner) & 31);
         let requested = match spec.count {
+            LibrarySelectionCount::ControlledColors => {
+                available_colors.unwrap().count_ones() as usize
+            }
+            LibrarySelectionCount::ManaValueBudget { maximum_cards, .. } => {
+                usize::from(maximum_cards)
+            }
+            LibrarySelectionCount::All => remaining.len(),
             LibrarySelectionCount::Fixed(n) => usize::from(n),
             LibrarySelectionCount::Lessons => {
                 if grave().filter(|o| o.card.has_subtype("Lesson")).count() >= 3 {
@@ -159,12 +225,22 @@ impl Game {
             minimum,
             maximum,
             ordering: false,
+            available_colors,
         }));
         // Even a forced random remainder must expose the looked information
         // before it disappears into the library (there may be no eligible pick).
-        if maximum == 0 && spec.remainder != LibraryRemainder::BottomRandom {
+        if maximum == 0
+            && !matches!(
+                spec.remainder,
+                LibraryRemainder::BottomRandom
+                    | LibraryRemainder::OptionalGraveyard
+                    | LibraryRemainder::Shuffle
+            )
+        {
             return self.finish_library_selection_internal(owner);
         }
+        // Optional graveyard remainders retain the same private hand-choice phase
+        // even for an ineligible card; phase count must not disclose its qualities.
         let frame = self
             .state
             .resolving
@@ -179,6 +255,51 @@ impl Game {
         }
         self.state.pending = Pending::EffectLibrarySelection { player: owner };
         true
+    }
+    /// A selected set must admit an injective card-to-color assignment. The
+    /// 32-state domain retains every matching, rather than making greedy choices.
+    pub(super) fn library_selection_allows(
+        &self,
+        f: &LibrarySelection,
+        candidate: ObjectRef,
+    ) -> bool {
+        if !f.eligible.contains(&candidate) {
+            return false;
+        }
+        if let LibrarySelectionCount::ManaValueBudget { maximum_total, .. } = f.spec.count {
+            let total: u128 = f
+                .selected
+                .iter()
+                .chain(std::iter::once(&candidate))
+                .map(|r| u128::from(self.state.objects[r.card as usize].card.fixed_mana_value()))
+                .sum();
+            if total > u128::from(maximum_total) {
+                return false;
+            }
+        }
+        let Some(colors) = f.available_colors else {
+            return true;
+        };
+        if f.selected.len() >= f.maximum {
+            return false;
+        }
+        let mut reachable = 1u32;
+        for reference in f.selected.iter().chain(std::iter::once(&candidate)) {
+            let colors = ability_world::CharacteristicWorld::colors(self, reference.card) & colors;
+            let mut next = 0u32;
+            for used in 0u8..32 {
+                if reachable & (1u32 << used) == 0 {
+                    continue;
+                }
+                for bit in [1u8, 2, 4, 8, 16] {
+                    if colors & bit != 0 && used & bit == 0 {
+                        next |= 1u32 << (used | bit);
+                    }
+                }
+            }
+            reachable = next;
+        }
+        reachable != 0
     }
     pub(super) fn choose_library_selection(&mut self, card: CardId) {
         let f = self
@@ -222,7 +343,12 @@ impl Game {
             .selection
             .as_mut()
             .unwrap();
-        if f.spec.remainder == LibraryRemainder::BottomAny && !f.remaining.is_empty() {
+        if matches!(
+            f.spec.remainder,
+            LibraryRemainder::BottomAny | LibraryRemainder::OptionalGraveyard
+        ) && !f.remaining.is_empty()
+            && !f.ordering
+        {
             f.ordering = true;
             self.state.pending = Pending::EffectLibrarySelection { player: owner };
             true
@@ -249,12 +375,19 @@ impl Game {
             );
         }
         let ids: Vec<_> = f.selected.iter().map(|r| r.card).collect();
-        let events = if f.destination == LibraryPickDestination::Hand {
-            self.move_objects_raw(&ids, Zone::Hand)
-        } else {
-            Vec::new()
+        let events = match f.destination {
+            LibraryPickDestination::Hand => self.move_objects_raw(&ids, Zone::Hand),
+            LibraryPickDestination::ExileCastThisTurn => self.move_objects_raw(&ids, Zone::Exile),
+            _ => Vec::new(),
         };
-        if f.spec.reveal {
+        if f.destination == LibraryPickDestination::ExileCastThisTurn {
+            for event in &events {
+                if event.moved && event.destination == Zone::Exile {
+                    self.grant_exile_cast_permission(owner, event.after);
+                }
+            }
+        }
+        if f.spec.reveal && f.destination == LibraryPickDestination::Hand {
             for e in &events {
                 self.state.known_hand.push(e.after);
             }
@@ -265,7 +398,13 @@ impl Game {
             library.retain(|id| !ids.contains(id));
             library.extend(ids.iter().rev());
         }
-        if f.destination == LibraryPickDestination::Battlefield && !ids.is_empty() {
+        if matches!(
+            f.destination,
+            LibraryPickDestination::Battlefield
+                | LibraryPickDestination::BattlefieldTappedAttacking
+        ) && !ids.is_empty()
+        {
+            let attacking = f.destination == LibraryPickDestination::BattlefieldTappedAttacking;
             f.entering = true;
             self.state.resolving.as_mut().unwrap().selection = Some(f);
             let moves = ids
@@ -273,6 +412,10 @@ impl Game {
                 .map(|id| {
                     let mut movement = self.entry_move(id, Zone::Battlefield, false);
                     movement.controller = owner;
+                    if attacking {
+                        movement.tapped = true;
+                        movement.choose_attacking_defender = true;
+                    }
                     movement
                 })
                 .collect();
@@ -282,13 +425,30 @@ impl Game {
         self.commit_library_remainder(owner, *f);
     }
     fn commit_library_remainder(&mut self, owner: Player, mut f: LibrarySelection) {
-        if f.destination == LibraryPickDestination::Battlefield {
+        if matches!(
+            f.destination,
+            LibraryPickDestination::Battlefield
+                | LibraryPickDestination::BattlefieldTappedAttacking
+        ) {
             f.remaining.extend(f.selected.iter().copied().filter(|r| {
                 self.object_ref(r.card) == *r
                     && self.state.objects[r.card as usize].zone == Zone::Library
             }));
         }
         match f.spec.remainder {
+            LibraryRemainder::Shuffle => {
+                // Entry choices may have exposed a new top card after the
+                // selection began; the final shuffle invalidates that fact too.
+                self.forget_library_top(owner);
+                self.state
+                    .rng
+                    .shuffle(&mut self.state.players[owner.index()].library);
+            }
+            LibraryRemainder::OptionalGraveyard => {
+                let ids: Vec<_> = f.bottom.iter().map(|r| r.card).collect();
+                let events = self.move_objects_raw(&ids, Zone::Graveyard);
+                self.finish_zone_events(&events, &[]);
+            }
             LibraryRemainder::Graveyard => {
                 let ids: Vec<_> = f.remaining.iter().map(|r| r.card).collect();
                 let events = self.move_objects_raw(&ids, Zone::Graveyard);
@@ -336,7 +496,7 @@ impl Game {
                 .remaining
                 .iter()
                 .copied()
-                .filter(|r| f.eligible.contains(r))
+                .filter(|r| self.library_selection_allows(f, *r))
                 .collect(),
             selected: f
                 .selected
@@ -347,14 +507,21 @@ impl Game {
             minimum: f.minimum,
             maximum: f.maximum,
             ordering: f.ordering,
+            available_colors: f.available_colors,
             reveal: f.spec.reveal,
             public: f.public,
             destination: match f.destination {
                 LibraryPickDestination::Hand => "hand",
                 LibraryPickDestination::Battlefield => "battlefield",
+                LibraryPickDestination::BattlefieldTappedAttacking => {
+                    "battlefield_tapped_attacking"
+                }
                 LibraryPickDestination::Top => "top",
+                LibraryPickDestination::ExileCastThisTurn => "exile_cast_this_turn",
             },
             remainder: match f.spec.remainder {
+                LibraryRemainder::OptionalGraveyard => "optional_graveyard",
+                LibraryRemainder::Shuffle => "shuffle",
                 LibraryRemainder::Graveyard => "graveyard",
                 LibraryRemainder::BottomAny => "bottom_any",
                 LibraryRemainder::BottomRandom => "bottom_random",

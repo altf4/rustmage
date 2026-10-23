@@ -1,16 +1,28 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle/XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec {
+            rule: TargetRule::Object {
+                zone: TargetZone::Graveyard,
+                kinds: 1,
+                relation: 0,
+                other: false,
+                nonland: false,
+                tapped: false,
+                min_mana: 0,
+                max_mana: 3,
+            },
+            min: 1,
+            max: 2,
+        }),
+        &[Instruction::ReturnToBattlefield],
+    ),
+    extras: &CardExtras {
+        sneak_costs: &[ManaCost {
+            colored: [1, 0, 0, 0, 0, 0],
+            generic: 1,
+        }],
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

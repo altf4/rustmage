@@ -23,7 +23,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             targets: TargetPlan::NONE,
             program: &[Instruction::EvolveSource {
-                required: "Scout",
+                required: Some("Scout"),
                 types: &["Human", "Faerie", "Detective"],
                 stats: None,
                 keywords: Keywords::NONE,
@@ -53,7 +53,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             targets: TargetPlan::NONE,
             program: &[Instruction::EvolveSource {
-                required: "Detective",
+                required: Some("Detective"),
                 types: &["Human", "Faerie", "Rogue"],
                 stats: Some(Stats {
                     power: 3,

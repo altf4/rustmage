@@ -1,5 +1,59 @@
 //! Direct typed persistent evolution and non-targeting growth-card costs.
 use super::*;
+
+/// Rare owned declaration shared by intrinsic graveyard and linked exile costs.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(super) struct CreatureCounterSelection {
+    pub selected: Vec<(ObjectRef, CounterKind)>,
+    pub amount: Option<u16>,
+    /// None until the supplemental printed-cost ordering is declared.
+    pub after_printed: Option<bool>,
+    pub paid: bool,
+    /// Cold feasibility branches use actual typed entry/replacement decisions.
+    pub projecting: bool,
+}
+impl CreatureCounterSelection {
+    pub(super) fn supplemental(amount: u16) -> Self {
+        Self {
+            amount: Some(amount),
+            ..Self::default()
+        }
+    }
+}
+impl std::ops::Deref for CreatureCounterSelection {
+    type Target = Vec<(ObjectRef, CounterKind)>;
+    fn deref(&self) -> &Self::Target {
+        &self.selected
+    }
+}
+impl std::ops::DerefMut for CreatureCounterSelection {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.selected
+    }
+}
+impl Announcement {
+    pub(super) fn creature_counter_cost_amount(&self) -> Option<u16> {
+        match self.item.cast.map(|c| c.method) {
+            Some(CastMethod::GraveyardCounterCost) => {
+                self.item.source_card.graveyard_counter_cost()
+            }
+            Some(CastMethod::LinkedExileCounterCost) => self
+                .creature_counter_cost
+                .as_ref()
+                .and_then(|cost| cost.amount),
+            _ => self
+                .additional_cost()
+                .and_then(|s| s.kind.creature_counter_requirement())
+                .map(|r| r.0),
+        }
+    }
+    pub(super) fn creature_counter_cost_kind(&self) -> Option<CounterKind> {
+        self.additional_cost()
+            .and_then(|s| s.kind.creature_counter_requirement())
+            .and_then(|r| r.1)
+    }
+}
+
 impl TriggerCondition {
     pub(super) fn is_growth_damage_event(self) -> bool {
         matches!(
@@ -18,7 +72,7 @@ impl Game {
     pub(super) fn evolve_source(
         &mut self,
         item: &SpellView,
-        required: &'static str,
+        required: Option<&'static str>,
         types: &'static [&'static str],
         stats: Option<Stats>,
         keywords: Keywords,
@@ -26,7 +80,7 @@ impl Game {
     ) {
         if !self.on_battlefield(item.card)
             || self.object_ref(item.card) != item.object
-            || !self.has_subtype(item.card, required)
+            || required.is_some_and(|required| !self.has_subtype(item.card, required))
         {
             return;
         }
@@ -125,10 +179,18 @@ impl Game {
             {
                 continue;
             }
+            let cost = self.reduced_activation_cost(
+                actor,
+                recipient.card,
+                ManaCost {
+                    colored: ability.cost.colored,
+                    generic: ability.cost.generic,
+                },
+            );
             if self.can_fund(FundingGoal {
                 actor,
-                required: ability.cost.colored,
-                generic: ability.cost.generic,
+                required: cost.colored,
+                generic: cost.generic,
                 reserve: Some((grantor, Self::attached_tap_spec())),
                 source: Some((recipient, index as u16, Counters::default(), giver.card)),
             }) && emit(Action::AnnounceAttachedAbility {
@@ -194,25 +256,59 @@ impl Game {
         &self,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
+        if self.visit_linked_pre_cost_mana(emit) {
+            return true;
+        }
         let a = self.state.announcing.as_ref().unwrap();
-        let amount = a.item.source_card.graveyard_counter_cost().unwrap();
+        if !self.linked_funding_active()
+            && matches!(a.item.kind, StackKind::ActivatedAbility { .. })
+            && a.item.source_card.activations()[match a.item.kind {
+                StackKind::ActivatedAbility { ability } => usize::from(ability),
+                _ => unreachable!(),
+            }]
+            .cost
+            .mana_component
+            && self.visit_linked_funding_mana(emit)
+        {
+            return true;
+        }
+
+        let amount = a.creature_counter_cost_amount().unwrap();
         let mut selected = a
             .creature_counter_cost
             .as_ref()
-            .map_or_else(Vec::new, |v| v.as_ref().clone());
+            .map_or_else(Vec::new, |v| v.selected.clone());
         for id in 0..self.state.objects.len() {
-            let r = self.object_ref(id as CardId);
+            let id = id as CardId;
+            if !self.on_battlefield(id)
+                || self.state.objects[id as usize].controller != a.item.controller
+                || !self.is_creature(id)
+            {
+                continue;
+            }
+            let r = self.object_ref(id);
             for kind in CounterKind::ALL {
-                if self.counter_count(r.card, kind) == 0 {
+                if a.creature_counter_cost_kind().is_some_and(|k| k != kind)
+                    || self.counter_count(r.card, kind) == 0
+                {
                     continue;
                 }
                 selected.push((r, kind));
-                let available = self.creature_counter_fundable(
-                    self.funding_goal(a),
-                    self.purpose_for_item(&a.item),
-                    amount,
-                    &selected,
-                );
+                let available = if a
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::LinkedExileCounterCost)
+                {
+                    self.supplemental_counter_choice_fundable(a, &selected)
+                } else {
+                    self.creature_counter_fundable_kind(
+                        self.funding_goal(a),
+                        self.purpose_for_item(&a.item),
+                        amount,
+                        &selected,
+                        a.creature_counter_cost_kind(),
+                    )
+                };
                 selected.pop();
                 if available
                     && emit(Action::ChooseCreatureCounterCost {
@@ -228,16 +324,30 @@ impl Game {
     }
     pub(super) fn choose_creature_counter_cost(&mut self, object: ObjectRef, kind: CounterKind) {
         let a = self.state.announcing.as_mut().unwrap();
-        let amount = a.item.source_card.graveyard_counter_cost().unwrap();
+        let amount = a.creature_counter_cost_amount().unwrap();
         let selected = a
             .creature_counter_cost
-            .get_or_insert_with(|| Box::new(Vec::new()));
+            .get_or_insert_with(|| Box::new(CreatureCounterSelection::default()));
         selected.push((object, kind));
         if selected.len() == usize::from(amount) {
-            a.additional = Some(object);
+            if a.item
+                .cast
+                .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
+                || a.additional_cost()
+                    .is_some_and(|s| s.kind.creature_counter_requirement().is_some())
+            {
+                a.additional = Some(object);
+            }
             self.state.pending = Pending::PayCosts {
                 player: a.item.controller,
             };
+            if a.item
+                .cast
+                .is_some_and(|c| c.method == CastMethod::LinkedExileCounterCost)
+                && a.additional_paid
+            {
+                self.finish_announcement();
+            }
         }
     }
     pub(super) fn controlled_combat_damage_triggers(&mut self, events: &[DamageEvent]) {

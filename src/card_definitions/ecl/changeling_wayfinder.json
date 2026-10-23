@@ -8,5 +8,40 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8039bca452da798fc328d09333ac91e847a7adfa1991718a8129663a5007a6e6"
   },
-  "physical_metadata_sha256": "28b848e2313086b64fe8ece35db8468c5b7815432ea92cf246145282295333d5"
+  "physical_metadata_sha256": "28b848e2313086b64fe8ece35db8468c5b7815432ea92cf246145282295333d5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChangelingWayfinder.java",
+  "java_sha256": "6a12c7e9bd72c03d56045b6d10d32b01a5032136bcdfbfefd4c7e313ae8a754e",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_changeling_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+      "sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/IsAllCreatureTypesSourceEffect.java",
+      "sha256": "6c340da9dc171835b171f118084f41d65fcbcdc629b20c0d0c14f5c2bd727cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "inherited_audit": "Complete Oracle and XMage bodies/relevant behavior helpers read. Typed behavior preserved; actual paid bodies and private Shore Lurker choices complement existing complete changeling, optional search/removal and vivid interaction suites."
 }

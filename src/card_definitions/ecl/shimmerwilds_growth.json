@@ -3,10 +3,66 @@
   "catalogue_id": 3832,
   "oracle_id": "c63402b2-1f8c-4004-82d8-48ea26bfe3fc",
   "facts_sha256": "d0827c207cb61a9d263e6d11be0ecd960e10ae3deb8b83d0bab5fa8687649707",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "331b6f15d96f9ecf2204077671baee6c86ceec22891555aa8dfaf369c12ba8d9"
   },
-  "physical_metadata_sha256": "df521cc72d44f27f5926e1dceaf3b9a34e4d88d9bfa23cb83ecd077aaaca0fda"
+  "physical_metadata_sha256": "df521cc72d44f27f5926e1dceaf3b9a34e4d88d9bfa23cb83ecd077aaaca0fda",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShimmerwildsGrowth.java",
+  "java_sha256": "6add370da6093a3e85bc05bc2875a17897fcc2012b5fae0f72a8eb8d8174cfb7",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseColorEffect.java",
+      "sha256": "bbc363d77d1883e5473b95e94ecb24c6d33f8c03a85dd2c6d570c56d112dcba6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/EnchantedTappedTriggeredManaAbility.java",
+      "sha256": "038772c7745af73c00117aba5b76393fbbb358e9218a5666db31244283fe22e8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/ManaEffect.java",
+      "sha256": "9332af88b954f2fdab1b7fc0bc71ac41d534eeb5ba12dceb4bd924b08f8f88e3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/choices/ChoiceColor.java",
+      "sha256": "1db540710d45621c881502405d5dbcf85ce255f78239ac71fe8c4669f31b6ccd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/TriggeredManaAbility.java",
+      "sha256": "f5924161ca1498f35a1e1ecf8d98980d4c81774238758d62b5e68370ab64f543"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetLandPermanent.java",
+      "sha256": "c0beb7517ef08eb7d86e58f64cc0fa9faee438dc46405c3a48c61b2bb580f43b"
+    }
+  ]
 }

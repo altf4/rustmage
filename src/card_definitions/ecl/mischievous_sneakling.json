@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "27696de1fead4f74d0f5ed431c52fbf07ff37ffad9b9930d2e02cc1f037fab5d"
   },
-  "physical_metadata_sha256": "bea9640e60bee2670b3191efe4377ce27805b39d26451535d48fc63167ca5f1c"
+  "physical_metadata_sha256": "bea9640e60bee2670b3191efe4377ce27805b39d26451535d48fc63167ca5f1c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MischievousSneakling.java",
+  "java_sha256": "4c98f38f46b0a01eb8d0da1011e69976059728cf5be56c3e7f8ca68b743b69cf",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_changeling_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+      "sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/IsAllCreatureTypesSourceEffect.java",
+      "sha256": "6c340da9dc171835b171f118084f41d65fcbcdc629b20c0d0c14f5c2bd727cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    }
+  ],
+  "inherited_audit": "Complete Oracle/XMage and full relevant ability helpers read. Existing all-zone changeling and dynamic keyword interaction rules complement paid body/hybrid/flash/combat scenarios in both seats. Typed behavior preserved."
 }

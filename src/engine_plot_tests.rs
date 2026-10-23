@@ -499,9 +499,14 @@ fn plot_permissions_and_ordinary_paid_exile_rights_are_independent_and_one_shot(
         let id = named(&mut g, p, "Spinewoods Paladin", Zone::Hand);
         plot(&mut g, p, id);
         g.state.exile_permissions.push(ExilePlayPermission {
+            cast_only: false,
+            without_mana: false,
             object: g.object_ref(id),
             player: p,
             expires_turn: g.state.turn,
+            next_end_step: None,
+            source: None,
+            any_mana: false,
         });
         assert!(
             g.legal_actions()

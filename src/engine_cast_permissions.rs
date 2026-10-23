@@ -127,6 +127,45 @@ impl Game {
         sorcery: bool,
         flash_surcharge: bool,
     ) -> bool {
+        self.permitted_cast_with_counter_cost(
+            actor,
+            card,
+            method,
+            face,
+            sorcery,
+            flash_surcharge,
+            None,
+        )
+    }
+    pub(super) fn permitted_linked_counter_cast_available(
+        &self,
+        actor: Player,
+        card: CardId,
+        amount: u16,
+        sorcery: bool,
+        flash_surcharge: bool,
+    ) -> bool {
+        self.permitted_cast_with_counter_cost(
+            actor,
+            card,
+            CastMethod::LinkedExileCounterCost,
+            CastFace::Normal,
+            sorcery,
+            flash_surcharge,
+            Some(amount),
+        )
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn permitted_cast_with_counter_cost(
+        &self,
+        actor: Player,
+        card: CardId,
+        method: CastMethod,
+        face: CastFace,
+        sorcery: bool,
+        flash_surcharge: bool,
+        supplemental_counter_cost: Option<u16>,
+    ) -> bool {
         let object = &self.state.objects[card as usize];
         let Some(definition) = (match face {
             CastFace::Normal => Some(object.card),
@@ -169,9 +208,6 @@ impl Game {
         {
             return false;
         }
-        if definition.x_symbols() > 0 && method != CastMethod::Free {
-            return !self.scalar_x_intervals(actor, card).is_empty();
-        }
         let a = Announcement {
             item,
             spec: TargetSpec::NONE,
@@ -184,14 +220,24 @@ impl Game {
             counter_payment: Counters::default(),
             pay_window: true,
             production: None,
+            mana_tap_bonus: None,
             additional: None,
             additional_group: None,
-            creature_counter_cost: None,
+            creature_counter_cost: supplemental_counter_cost.map(|amount| {
+                Box::new(growth_cost::CreatureCounterSelection::supplemental(amount))
+            }),
             forage: None,
             evidence: None,
             convoke: None,
             additional_paid: false,
         };
+        if definition.x_symbols() > 0 && method != CastMethod::Free {
+            return if supplemental_counter_cost.is_some() {
+                !self.scalar_x_intervals_for_announcement(&a).is_empty()
+            } else {
+                !self.scalar_x_intervals(actor, card).is_empty()
+            };
+        }
         if let Some(modes) = a.item.modes() {
             return modes.iter().enumerate().any(|(index, mode)| {
                 if !available(mode.targets) {

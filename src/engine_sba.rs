@@ -53,6 +53,8 @@ impl Game {
         };
         let mut legends: [std::collections::BTreeMap<&'static str, Vec<ObjectRef>>; 2] =
             std::array::from_fn(|_| std::collections::BTreeMap::new());
+        // Collect one simultaneous batch from one borrowed characteristic world.
+        let query = self.characteristic_query();
         for (index, object) in self.state.objects.iter().enumerate() {
             let id = index as CardId;
             if object.is_token() && !matches!(object.zone, Zone::Battlefield | Zone::Outside) {
@@ -68,36 +70,45 @@ impl Game {
                 batch.deaths.push(id);
             }
             if object.card.aura().is_some() {
-                if !self.printed_abilities_available(id)
+                if self.is_creature(id)
+                    || !self.printed_abilities_available(id)
                     || !object.attached_to.is_some_and(|target| {
-                        self.aura_can_enchant(object.card, object.controller, target)
+                        self.aura_can_enchant_colored(
+                            object.card,
+                            object.controller,
+                            target,
+                            ability_world::CharacteristicWorld::colors(self, id),
+                        )
                     })
                 {
                     batch.deaths.push(id);
                 }
             } else if let Some(target) = object.attached_to
-                && (self.is_creature(id)
+                && (object.card.equipment().is_none()
+                    || self.is_creature(id)
                     || target == self.object_ref(id)
                     || !self.on_battlefield(target.card)
                     || self.object_ref(target.card) != target
                     || !self.is_creature(target.card)
-                    || self
-                        .keywords(target.card)
-                        .contains(Keywords::PROTECTION_EVERYTHING))
+                    || self.protected_from_source(
+                        target.card,
+                        ability_world::CharacteristicWorld::colors(self, id),
+                        object.controller,
+                    ))
             {
                 batch.detached.push(self.object_ref(id));
             }
-            if object.card.is_legendary() {
+            if ability_world::CharacteristicWorld::legendary(self, id) {
                 legends[object.controller.index()]
                     .entry(crate::card_names::comparison_key(self.object_name(id)))
                     .or_default()
                     .push(self.object_ref(id));
             }
             if self.is_creature(id) {
-                let toughness = self.stats(id).toughness;
+                let toughness = query.stats(id).toughness;
                 if toughness <= 0
-                    || (!self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
-                        && (object.damage >= toughness || object.deathtouch_since_sba))
+                    || ((object.damage >= toughness || object.deathtouch_since_sba)
+                        && !query.keywords(id).contains(Keywords::INDESTRUCTIBLE))
                 {
                     batch.deaths.push(id);
                 }

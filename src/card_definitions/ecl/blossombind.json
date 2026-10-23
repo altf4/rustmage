@@ -3,10 +3,59 @@
   "catalogue_id": 470,
   "oracle_id": "0ecb35b3-5bd1-4467-a4a3-ce468023ced2",
   "facts_sha256": "45f3abd236bd84f818b7c17e69ef13a81bc4ba52c23d294d069c188a0e18d85f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aa1af528a415fdfa6254ee5acd51e99aa9fd6a8596b6747e6a14a4ab39e6305c"
   },
-  "physical_metadata_sha256": "cb63f5301dabd8dedea0d2bea083693de1234aebe32ff19f887eb18769ebcd5c"
+  "physical_metadata_sha256": "cb63f5301dabd8dedea0d2bea083693de1234aebe32ff19f887eb18769ebcd5c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/Blossombind.java",
+  "java_sha256": "e74f94eab1a73aa22fb1755f8ae3ba63b9782baa082aac4d5f092b080e0aec6e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+      "sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/BlightControllerEffect.java",
+      "sha256": "634de46026db0ce914a12db898368227b3981ee5a18bd380600b40fd04d9b986"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/BlightTargetEffect.java",
+      "sha256": "66f2556c924a8f7027378a34c06f3ecc2425e8efaf789bd7c4d4872a88aea5d4"
+    }
+  ],
+  "rules_notes": [
+    "Official ECL release notes and CR118.3,122.5-6,701.68: forbidden placement cannot pay a cost or optional blight; ordinary counter-targeting effects still resolve, with forbidden placement omitted. Wither damage remains dealt even when no counters can be put.",
+    "Applicable replacement effects remain available even when their counter placement will be prohibited; final actual placement commits zero counters, preserving unrelated replaced-event semantics."
+  ]
 }

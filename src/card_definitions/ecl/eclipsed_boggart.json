@@ -8,5 +8,32 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "750b8d4ab8ec136be3872080e9b0ddcc44a67a59916c2cf46621e157d5c7ffc2"
   },
-  "physical_metadata_sha256": "3ad3f0d3e6079824bc73b4598cdbb3a1bf758992992147f9a2e5e13f07d6ff42"
+  "physical_metadata_sha256": "3ad3f0d3e6079824bc73b4598cdbb3a1bf758992992147f9a2e5e13f07d6ff42",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EclipsedBoggart.java",
+  "java_sha256": "277f71b83d9e5ba18527315d24f1b495c75ce9569a1e58e9e382aad5776b41e7",
+  "rules_tests": "src/engine_filtered_library_selection_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/PutCards.java",
+      "sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+    }
+  ],
+  "inherited_audit": "Complete Oracle and XMage bodies and full relevant behavior helpers read. Existing rules scenarios exercise both seats, every hybrid route, exact looked-card type unions including Kindred changeling, private choices, optional decline, revealed-hand knowledge, random bottoms and owned replay/restore. Typed behavior preserved."
 }

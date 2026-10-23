@@ -48095,8 +48095,161 @@ pub(super) mod card_5343 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/token_phyrexian_goblin_1_1_red.rs");
 }
+pub(super) mod card_5344 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_shapeshifter_1_1_colorless_changeling.rs");
+}
+pub(super) mod card_5345 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_treefolk_3_4_green_reach.rs");
+}
+pub(super) mod card_5346 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_mutavault.rs");
+}
+pub(super) mod card_5347 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/brigid_doun_s_mind.rs");
+}
+pub(super) mod card_5348 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/ashling_rimebound.rs");
+}
+pub(super) mod card_5349 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/trystan_penitent_culler.rs");
+}
+pub(super) mod card_5350 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/isilu_carrier_of_twilight.rs");
+}
+pub(super) mod card_5351 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/sygg_wanderbrine_shield.rs");
+}
+pub(super) mod card_5352 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/grub_notorious_auntie.rs");
+}
+pub(super) mod card_5353 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/oko_shadowmoor_scion.rs");
+}
+pub(super) mod card_5354 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/oko_elk_token.rs");
+}
+pub(super) mod card_5355 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/oko_chosen_type_emblem.rs");
+}
+pub(super) mod card_5356 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/ecl/lluwen_worm_token.rs");
+}
+pub(super) mod card_5357 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/tmt/ninja_1_1_black.rs");
+}
+pub(super) mod card_5358 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/tmt/insect_warrior_1_1_black_flying.rs");
+}
+pub(super) mod card_5359 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/tmt/ninja_turtle_spirit_1_1_white.rs");
+}
+pub(super) mod card_5360 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/tmt/dinosaur_soldier_2_2_white.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5344] = [
+pub(super) static RULES: [&CardRules; 5361] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -53441,6 +53594,23 @@ pub(super) static RULES: [&CardRules; 5344] = [
     &card_5341::RULES,
     &card_5342::RULES,
     &card_5343::RULES,
+    &card_5344::RULES,
+    &card_5345::RULES,
+    &card_5346::RULES,
+    &card_5347::RULES,
+    &card_5348::RULES,
+    &card_5349::RULES,
+    &card_5350::RULES,
+    &card_5351::RULES,
+    &card_5352::RULES,
+    &card_5353::RULES,
+    &card_5354::RULES,
+    &card_5355::RULES,
+    &card_5356::RULES,
+    &card_5357::RULES,
+    &card_5358::RULES,
+    &card_5359::RULES,
+    &card_5360::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

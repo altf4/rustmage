@@ -35,7 +35,8 @@ impl Game {
     }
 
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
-        self.characteristic_query().keywords(id)
+        ability_evaluation::scalar_keywords_without_removal(self, id)
+            .unwrap_or_else(|| self.characteristic_query().keywords(id))
     }
 
     pub(super) fn attach_equipment(&mut self, source: ObjectRef, target: ObjectRef) -> bool {
@@ -50,9 +51,11 @@ impl Game {
             || !self.on_battlefield(target.card)
             || self.object_ref(target.card) != target
             || !self.is_creature(target.card)
-            || self
-                .keywords(target.card)
-                .contains(Keywords::PROTECTION_EVERYTHING)
+            || self.protected_from_source(
+                target.card,
+                ability_world::CharacteristicWorld::colors(self, source.card),
+                self.state.objects[source.card as usize].controller,
+            )
         {
             return false;
         }

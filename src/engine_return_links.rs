@@ -8,6 +8,27 @@ pub struct ReturnLinkView {
     pub zone: Zone,
     pub controller: Player,
     pub counter: Option<(CounterKind, u64)>,
+    pub tapped: bool,
+    pub additional: Vec<ReturnCardView>,
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct ReturnCardView {
+    pub object: ObjectRef,
+    pub zone: Zone,
+    pub controller: Player,
+    pub counter: Option<(CounterKind, u64)>,
+    pub tapped: bool,
+}
+impl ReturnLinkView {
+    pub(super) fn bytes(&self) -> usize {
+        std::mem::size_of::<Self>() + self.additional.len() * std::mem::size_of::<ReturnCardView>()
+    }
+}
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerDamageShieldView {
+    pub source: ObjectRef,
+    pub source_card: Card,
+    pub controller: Player,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct DelayedReturnView {
@@ -31,6 +52,16 @@ impl Game {
     ) -> bool {
         let before = &event.before;
         match filter {
+            ReturnDeathFilter::SourceWithoutCounter(kind) => {
+                before.is_creature()
+                    && source.reference == before.reference
+                    && before.counters.get(kind) == 0
+            }
+            ReturnDeathFilter::SourceCounter { kind, minimum } => {
+                before.is_creature()
+                    && source.reference == before.reference
+                    && before.counters.get(kind) >= minimum
+            }
             ReturnDeathFilter::SourceNonDemon => {
                 before.is_creature()
                     && source.reference == before.reference
@@ -49,6 +80,66 @@ impl Game {
             }
         }
     }
+    // CR603.10: both recipients and grantors use the same pre-departure world.
+    pub(super) fn granted_return_death_triggers(
+        &mut self,
+        event: &ZoneChange,
+        sources: &[ObjectView],
+    ) {
+        use crate::cards::StaticAbilityFragment;
+        let recipient = &event.before;
+        if !recipient.is_creature() {
+            return;
+        }
+        for provider in sources {
+            if provider.controller != recipient.controller
+                || !provider.printed_abilities_available()
+            {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                let StaticAbilityFragment::ControlledCreatureTrigger {
+                    ability,
+                    other,
+                    nontoken,
+                } = *fragment
+                else {
+                    continue;
+                };
+                if (other && provider.reference == recipient.reference)
+                    || (nontoken && recipient.is_token())
+                {
+                    continue;
+                }
+                let index = usize::from(ability);
+                let trigger = provider.card.triggers()[index];
+                let TriggerCondition::ReturnDeath(filter) = trigger.condition.event() else {
+                    continue;
+                };
+                if !trigger.condition.is_granted()
+                    || !recipient.grant_available(provider.reference, provider.card, ability, None)
+                    || !self.return_death_matches(filter, recipient, event)
+                {
+                    continue;
+                }
+                let grant = Box::new(AttachmentTriggerView {
+                    grantor: provider.reference,
+                    granting_card: provider.card,
+                    recipient: recipient.reference,
+                    defender: None,
+                    granted: true,
+                });
+                if self.queue_zone_trigger_from(recipient, index, event, Some(grant)) {
+                    self.capture_return_death(event);
+                }
+            }
+        }
+    }
     pub(super) fn capture_return_death(&mut self, event: &ZoneChange) {
         self.state.pending_triggers.last_mut().unwrap().return_link =
             Some(Box::new(ReturnLinkView {
@@ -59,6 +150,8 @@ impl Game {
                     CounterKind::Revival,
                     event.before.counters.get(CounterKind::Revival),
                 )),
+                tapped: false,
+                additional: Vec::new(),
             }));
     }
     fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
@@ -76,6 +169,39 @@ impl Game {
                 view,
                 item: item.clone(),
             });
+    }
+    pub(super) fn blink_immediate(&mut self, item: &SpellView) {
+        let Some(id) = item
+            .targets
+            .iter()
+            .copied()
+            .filter(|bound| self.same_target_object(*bound))
+            .find_map(|bound| match bound.target {
+                Target::Card(id) if self.on_battlefield(id) => Some(id),
+                _ => None,
+            })
+        else {
+            return;
+        };
+        let owner = self.state.objects[id as usize].owner;
+        let movement = self.move_object(id, Zone::Exile);
+        // "That card" follows the first public destination, even if a replacement
+        // redirects exile. Tokens cannot return (CR111.8). Later incarnations do not bind.
+        if movement.moved
+            && matches!(
+                movement.destination,
+                Zone::Exile | Zone::Graveyard | Zone::Command
+            )
+        {
+            self.after_departure(programs::ProgramContinuation::Return(ReturnLinkView {
+                object: movement.after,
+                zone: movement.destination,
+                controller: owner,
+                counter: None,
+                tapped: false,
+                additional: Vec::new(),
+            }));
+        }
     }
     pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
         for bound in &item.targets {
@@ -99,6 +225,8 @@ impl Game {
                         zone: Zone::Exile,
                         controller: if under_owner { owner } else { item.controller },
                         counter: None,
+                        tapped: false,
+                        additional: Vec::new(),
                     },
                 );
             }
@@ -110,6 +238,18 @@ impl Game {
         };
         let mut link = (**link).clone();
         match kind {
+            ReturnKind::FlyingRobot => {
+                link.counter = None;
+                self.stage_linked_return(&link, Some((kind, item.object)));
+            }
+            ReturnKind::Persist => {
+                link.counter = Some((CounterKind::MinusOne, 1));
+                self.stage_linked_return(&link, None);
+            }
+            ReturnKind::WithoutAbilities => {
+                link.counter = None;
+                self.stage_linked_return(&link, Some((kind, item.object)));
+            }
             ReturnKind::Revival => {
                 let amount = link.counter.expect("captured revival counters").1;
                 assert!(amount > 0);
@@ -126,26 +266,93 @@ impl Game {
             }
         }
     }
-    fn stage_linked_return(
+    pub(super) fn stage_linked_return(
         &mut self,
         link: &ReturnLinkView,
         modification: Option<(ReturnKind, ObjectRef)>,
     ) {
-        if !self
-            .state
-            .objects
-            .get(link.object.card as usize)
-            .is_some_and(|o| {
-                o.generation == link.object.generation && o.zone == link.zone && !o.is_token()
+        let primary = ReturnCardView {
+            object: link.object,
+            zone: link.zone,
+            controller: link.controller,
+            counter: link.counter,
+            tapped: link.tapped,
+        };
+        let entries = std::iter::once(&primary)
+            .chain(&link.additional)
+            .filter_map(|card| {
+                self.state
+                    .objects
+                    .get(card.object.card as usize)
+                    .filter(|object| {
+                        object.generation == card.object.generation
+                            && object.zone == card.zone
+                            && !object.is_token()
+                    })?;
+                let mut movement =
+                    self.entry_move(card.object.card, Zone::Battlefield, card.tapped);
+                movement.controller = card.controller;
+                movement.effect_counter = card.counter;
+                movement.return_modification = modification;
+                Some(movement)
             })
-        {
-            return;
+            .collect::<Vec<_>>();
+        if !entries.is_empty() {
+            self.stage_entries(entries, None);
         }
-        let mut movement = self.entry_move(link.object.card, Zone::Battlefield, false);
-        movement.controller = link.controller;
-        movement.effect_counter = link.counter;
-        movement.return_modification = modification;
-        self.stage_entries(vec![movement], None);
+    }
+    pub(super) fn blink_group_tapped_until_end_step(&mut self, item: &SpellView) {
+        let ids = item
+            .targets
+            .iter()
+            .filter(|bound| self.same_target_object(**bound))
+            .filter_map(|bound| match bound.target {
+                Target::Card(id) if self.on_battlefield(id) => Some(id),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let mut cards = events
+            .iter()
+            .filter(|event| {
+                event.moved
+                    && matches!(
+                        event.destination,
+                        Zone::Exile | Zone::Graveyard | Zone::Command
+                    )
+                    && !event.before.is_token()
+            })
+            .map(|event| ReturnCardView {
+                object: event.after,
+                zone: event.destination,
+                controller: event.before.owner,
+                counter: None,
+                tapped: true,
+            });
+        if let Some(first) = cards.next() {
+            self.register_delayed_return(
+                item,
+                ReturnLinkView {
+                    object: first.object,
+                    zone: first.zone,
+                    controller: first.controller,
+                    counter: None,
+                    tapped: true,
+                    additional: cards.collect(),
+                },
+            );
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+    pub(super) fn prevent_player_damage_until_next_turn(&mut self, item: &SpellView) {
+        self.state
+            .player_damage_shields
+            .get_or_insert_with(Default::default)
+            .push(PlayerDamageShieldView {
+                source: item.object,
+                source_card: item.source_card,
+                controller: item.controller,
+            });
     }
     pub(super) fn queue_delayed_returns(&mut self) {
         let Some(rows) = self.state.delayed_returns.take() else {
@@ -173,9 +380,29 @@ impl Game {
         source: ObjectRef,
     ) {
         let (types, keywords): (&'static [&'static str], _) = match kind {
+            ReturnKind::WithoutAbilities => {
+                self.remove_abilities_exact(
+                    &[recipient],
+                    crate::cards::AnimationDuration::Permanent,
+                );
+                return;
+            }
+            ReturnKind::FlyingRobot => {
+                self.animate_exact(
+                    recipient,
+                    crate::cards::AnimationSpec {
+                        artifact: true,
+                        creature_types: crate::cards::AnimationCreatureTypes::Named(&["Robot"]),
+                        base: Some((3, 3)),
+                        keywords: Keywords::FLYING,
+                        duration: crate::cards::AnimationDuration::Permanent,
+                    },
+                );
+                return;
+            }
             ReturnKind::Demon => (&["Demon"], Keywords::NONE),
             ReturnKind::Angel => (&["Angel"], Keywords::FLYING),
-            ReturnKind::Revival => return,
+            ReturnKind::Revival | ReturnKind::Persist => return,
         };
         let timestamp = self.next_role_timestamp();
         let state = self.state.roles.as_mut().unwrap();
@@ -186,10 +413,14 @@ impl Game {
                 source,
                 types,
                 additional: true,
+                all_creature_types: false,
+                expires_turn: None,
                 timestamp,
             });
         if keywords != Keywords::NONE {
             state.keyword_effects.push(KeywordEffectView {
+                hexproof_colors: 0,
+                expires_before_turn: None,
                 recipient,
                 origin: KeywordEffectOrigin::Resolution { source },
                 keywords,
@@ -204,7 +435,12 @@ impl Game {
             std::mem::size_of_val(&**rows)
                 + rows
                     .iter()
-                    .map(|row| std::mem::size_of::<DelayedReturn>() + row.item.owned_bytes())
+                    .map(|row| {
+                        std::mem::size_of::<DelayedReturn>()
+                            + row.item.owned_bytes()
+                            + row.view.returning.additional.len()
+                                * std::mem::size_of::<ReturnCardView>()
+                    })
                     .sum::<usize>()
         })
     }

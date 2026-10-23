@@ -1,0 +1,263 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "incomplete checkpoint",
+  "source_revision": "f12b667abdda9abb0212130a5ec15547c1ff5baa",
+  "membership": "data/sets/tmt.json",
+  "membership_sha256": "4e2de82fd74d67baf63a0ecbfc32d1beb9b89e41e9a86d8e1372b1f51ba85dbe",
+  "scope": {
+    "total": 195,
+    "admitted": 84,
+    "gated": 111,
+    "unresolved": 0,
+    "inherited_admission": 71,
+    "inherited_source_rules_audits_completed": 0,
+    "newly_tested_candidates": 13,
+    "independently_reviewed": 0,
+    "upstream_merged_new_cards": 0
+  },
+  "newly_tested_cards": [
+    "Action News Crew",
+    "Armaggon, Future Shark",
+    "Featherbrained Filcher",
+    "Foot Mystic",
+    "High-Flying Ace",
+    "Insectoid Exterminator",
+    "Lord Dregg, Insect Invader",
+    "Michelangelo, Game Master",
+    "Mouser Foundry",
+    "Putrid Pals",
+    "Ragamuffin Raptor",
+    "Sewer-veillance Cam",
+    "Zoo Escapees"
+  ],
+  "validation": {
+    "command": "python3 scripts/validate.py --release --python smoke",
+    "success": true,
+    "seconds": 610.6828443440027,
+    "files_verified": 11849,
+    "changed_inputs": [],
+    "report": "<cache>/rustmage-validation-iywsk6p6/report/result.json",
+    "report_sha256": "3df3c7dbffaf3db8b6ca156d054203282962a49e8e4e0dce168c21fd583289d0",
+    "phases": [
+      {
+        "index": 1,
+        "exit": 0,
+        "seconds": 2.1516936520056333,
+        "log": "<cache>/rustmage-validation-iywsk6p6/report/0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "exit": 0,
+        "seconds": 0.9365360350057017,
+        "log": "<cache>/rustmage-validation-iywsk6p6/report/1.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "exit": 0,
+        "seconds": 0.45235953701194376,
+        "log": "<cache>/rustmage-validation-iywsk6p6/report/2.log",
+        "log_sha256": "cba73a82e2d7e31be1fe26a3421d667522c2777c6284b539cfc5c04de9f5af01"
+      },
+      {
+        "index": 4,
+        "exit": 0,
+        "seconds": 8.291973008017521,
+        "log": "<cache>/rustmage-validation-iywsk6p6/report/3.log",
+        "log_sha256": "58e3d9c3f245eb1c55b461a28c970b4c50fa5421122e85ab1860a597790614ff"
+      },
+      {
+        "index": 5,
+        "exit": 0,
+        "seconds": 46.7124904730008,
+        "log": "<cache>/rustmage-validation-iywsk6p6/report/4.log",
+        "log_sha256": "1b1c48276c9a76ac71adea5fb4c70844628760705d583e81bd1e02a7c29c57e2"
+      },
+      {
+        "index": 6,
+        "exit": 0,
+        "seconds": 462.03228561300784,
+        "log": "<cache>/rustmage-validation-iywsk6p6/report/5.log",
+        "log_sha256": "e43fb761ebc8af57af8189f2275b3c3c23404d4f12564473f855fdb50067b6ac"
+      },
+      {
+        "index": 7,
+        "exit": 0,
+        "seconds": 89.26909044801141,
+        "log": "<cache>/rustmage-validation-iywsk6p6/report/6.log",
+        "log_sha256": "9e9b962bcfdd8a22732a9b76b031dca5d414a4eb47e11b4996ef3e1f40c39df4"
+      },
+      {
+        "index": 8,
+        "exit": 0,
+        "seconds": 0.3223880899895448,
+        "log": "<cache>/rustmage-validation-iywsk6p6/report/7.log",
+        "log_sha256": "cac981f236033e94cc30d21d46080f378bccc025c76608629483df99f81fb212"
+      },
+      {
+        "index": 9,
+        "exit": 0,
+        "seconds": 0.41006084298714995,
+        "log": "<cache>/rustmage-validation-iywsk6p6/report/8.log",
+        "log_sha256": "71900d80f41a01d69943a4505008dada8c6576b2d3ac939e4eca1e1a4b081fc7"
+      }
+    ],
+    "native_results": [
+      {
+        "passed": 3271,
+        "failed": 0,
+        "ignored": 1,
+        "seconds": 26.87
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "seconds": 0.0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "seconds": 0.0
+      },
+      {
+        "passed": 0,
+        "failed": 0,
+        "ignored": 0,
+        "seconds": 0.0
+      },
+      {
+        "passed": 9,
+        "failed": 0,
+        "ignored": 0,
+        "seconds": 0.1
+      },
+      {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "seconds": 0.0
+      },
+      {
+        "passed": 22,
+        "failed": 0,
+        "ignored": 0,
+        "seconds": 47.06
+      },
+      {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 1,
+        "seconds": 23.48
+      },
+      {
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "seconds": 0.26
+      },
+      {
+        "passed": 2,
+        "failed": 0,
+        "ignored": 0,
+        "seconds": 0.0
+      }
+    ],
+    "tmt_scenarios_passed": 20,
+    "python_source_tests": 54,
+    "python_source_tests_skipped": 3,
+    "python_binding_smoke": {
+      "suite": "smoke",
+      "library": "<cache>/rustmage-validation-iywsk6p6/release/librustmage.so",
+      "tests": 7,
+      "success": true,
+      "seconds": 0.3476187699998263,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "resource_guard": {
+      "command": [
+        "/usr/bin/python3",
+        "<checkout>/scripts/validate.py",
+        "--release",
+        "--python",
+        "smoke"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 610.9579960439878,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 3709431808,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "shared_libraries_on_producing_host": {
+      "<cache>/rustmage-validation-iywsk6p6/release/librustmage.so": "a336eb80a17aa41be192e58a2f2397201102dd8aee91009774eb705335d14d18",
+      "<cache>/rustmage-validation-iywsk6p6/release/deps/librustmage.so": "a336eb80a17aa41be192e58a2f2397201102dd8aee91009774eb705335d14d18",
+      "<cache>/rustmage-validation-iywsk6p6/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-iywsk6p6/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-iywsk6p6/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-iywsk6p6/release-test/deps/librustmage.so": "c1b48273233049621a5a1c8d026fb9a98d7315e41479a2c7e7aa6430e88d281b"
+    },
+    "cleaned_allocated_bytes": 818245632
+  },
+  "focused_build_cleanup": {
+    "terminal": true,
+    "cleaned_allocated_bytes": 97030144,
+    "shared_libraries": {
+      "<cache>/rustmage-tmt-first-batch/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "note": "Only this completed focused TMT target was cleaned; exact shared-library paths and hashes preserved."
+  },
+  "implementation_throughput": {
+    "start": "2026-10-23T04:41:28+00:00",
+    "end": "2026-10-23T05:13:19.924082+00:00",
+    "seconds": 1911.924082,
+    "newly_verified_physical_cards": 13,
+    "cards_per_hour": 24.477959371192227,
+    "scope": "Local source intake, authoring and rules/release verification; excludes inherited coverage and does not imply set acceptance"
+  },
+  "freeform_smoke_regression": {
+    "clone_ns": 270.44801,
+    "decisions": 49832,
+    "decisions_per_second": 178855.91322120125,
+    "games": 100,
+    "games_per_second": 358.9177902175334,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21096,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 126.34064,
+    "seconds": 0.278615334,
+    "workload": "Existing Freeform smoke, not TMT acceptance",
+    "decks": {
+      "Mountain": 24,
+      "Lightning Bolt": 20,
+      "Goblin Piker": 12,
+      "Hill Giant": 4
+    },
+    "seed_range": [
+      0,
+      99
+    ],
+    "policy": "rustmage::policy::smoke_index",
+    "profile": "release, opt-level 3, thin LTO",
+    "hardware": "Intel Core Ultra 5 335",
+    "compiler": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "source": "f12b667abdda9abb0212130a5ec15547c1ff5baa",
+    "clone_restore_iterations": 100000
+  },
+  "tmt_simulation_throughput": null,
+  "tmt_full_game_acceptance": "pending",
+  "reviews": [],
+  "known_external_blockers": [],
+  "next_action": "Implement and test the shared Sneak alternative-cast cost, precise post-blocker timing, exact returned-attacker defender, and paid cast-to-entry history before its 26 TMT consumers; start Donatello's Technique, Foot Ninjas, Leonardo, Big Brother, and Oroku Saki, Shredder Rising.",
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-initial-library-paths.json",
+    "sha256": "b5a0ceb152ee45bbcd3edb95d89a9d7f6b788ac648b61ac7e7f53ef6e2be3c06"
+  }
+}

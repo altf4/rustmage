@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "incomplete checkpoint",
+  "source_revision": "c08f76c6acd0c9ab193d8f991f6a4f6b0e64369d",
+  "scope": {
+    "total": 195,
+    "admitted": 109,
+    "gated": 86,
+    "unresolved": 0,
+    "inherited_admission": 71,
+    "inherited_audits_completed": 0,
+    "newly_tested_candidates": 38,
+    "independently_reviewed": 0,
+    "upstream_merged_new_cards": 0
+  },
+  "newly_tested_cards": [
+    "Michelangelo, Improviser",
+    "Raphael's Technique"
+  ],
+  "validation": {
+    "command": "python3 scripts/validate.py --release --python smoke",
+    "terminal": true,
+    "success": true,
+    "seconds": 620.6640233770013,
+    "files_verified": 11857,
+    "changed_inputs": [],
+    "report": "<cache>/rustmage-validation-rt6ml9l5/report/result.json",
+    "report_sha256": "941175c829491e9055bc08b086fdb6474ac93eb0550ccef62329f00d691bc0ff",
+    "phases": [
+      {
+        "index": 1,
+        "exit": 0,
+        "seconds": 2.2028869960049633,
+        "log": "<cache>/rustmage-validation-rt6ml9l5/report/0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "exit": 0,
+        "seconds": 0.93481436901493,
+        "log": "<cache>/rustmage-validation-rt6ml9l5/report/1.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "exit": 0,
+        "seconds": 0.45468192000407726,
+        "log": "<cache>/rustmage-validation-rt6ml9l5/report/2.log",
+        "log_sha256": "34c42e4ebdd1c639fb5ca1059f8bb5e0a7bf82c5722da10e9fd226fb6ab841d2"
+      },
+      {
+        "index": 4,
+        "exit": 0,
+        "seconds": 8.10378249900532,
+        "log": "<cache>/rustmage-validation-rt6ml9l5/report/3.log",
+        "log_sha256": "a9df1acf2c2063c609c93daffc39e59da40619ac2b9e0ce1fef2c68c11a77f4c"
+      },
+      {
+        "index": 5,
+        "exit": 0,
+        "seconds": 47.20112569601042,
+        "log": "<cache>/rustmage-validation-rt6ml9l5/report/4.log",
+        "log_sha256": "1400a79bc1a30ebbf9a4aa1e041538eb1c93359bfe55b0c0d4fa72771e81bf16"
+      },
+      {
+        "index": 6,
+        "exit": 0,
+        "seconds": 471.2894261489855,
+        "log": "<cache>/rustmage-validation-rt6ml9l5/report/5.log",
+        "log_sha256": "104afcf3288dec4e3de99b752ab0053e974f5ce59545abb0b0dc26acf5021281"
+      },
+      {
+        "index": 7,
+        "exit": 0,
+        "seconds": 89.63923184701707,
+        "log": "<cache>/rustmage-validation-rt6ml9l5/report/6.log",
+        "log_sha256": "40b1fe79a71fbcb9a7ae5444000f281cc85973b893c65deff6d48bd93928f63b"
+      },
+      {
+        "index": 8,
+        "exit": 0,
+        "seconds": 0.3292443059908692,
+        "log": "<cache>/rustmage-validation-rt6ml9l5/report/7.log",
+        "log_sha256": "5287f6bb0c6081e92178cad0745fd6a41d39fff7853b7c65ac9495db25a258d3"
+      },
+      {
+        "index": 9,
+        "exit": 0,
+        "seconds": 0.4024475390033331,
+        "log": "<cache>/rustmage-validation-rt6ml9l5/report/8.log",
+        "log_sha256": "71900d80f41a01d69943a4505008dada8c6576b2d3ac939e4eca1e1a4b081fc7"
+      }
+    ],
+    "shared_libraries": {
+      "<cache>/rustmage-validation-rt6ml9l5/release/librustmage.so": "87838cb16da9423b5a36f97c2ff244e3b8185f78da304e0183026b3184acf0f8",
+      "<cache>/rustmage-validation-rt6ml9l5/release/deps/librustmage.so": "87838cb16da9423b5a36f97c2ff244e3b8185f78da304e0183026b3184acf0f8",
+      "<cache>/rustmage-validation-rt6ml9l5/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-rt6ml9l5/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-rt6ml9l5/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-rt6ml9l5/release-test/deps/librustmage.so": "55eef15920db3cdf2d2d16ad385ec947f1caefdb8530745a6172386f13d988f1"
+    },
+    "cleaned_allocated_bytes": 841936896
+  },
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-sneak-refresh-library-paths.json",
+    "sha256": "911d3d0a3060a3bb37e2663393ecffde403ba904076becddae1aabcd4d67bf3b"
+  },
+  "resource_guard": {
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 620.9473899320001,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 3874209792,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "report": "<cache>/rustmage-build-reports/06ae3377bdb948dda80a2ed7f3c33fe1.json",
+    "report_sha256": "d519f64562582a5e7e463f64f5e4f3ba049529742292c0967cbd2e9d9d740b23"
+  },
+  "rules_tests": {
+    "library_passed": 3316,
+    "ignored": 1,
+    "sneak_scenarios": 45,
+    "python_smoke": 7
+  },
+  "freeform_smoke_regression": {
+    "clone_ns": 262.38281,
+    "decisions": 49832,
+    "decisions_per_second": 174357.9308210417,
+    "games": 100,
+    "games_per_second": 349.8914970722461,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21144,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 129.35335,
+    "seconds": 0.285802887,
+    "workload": "Existing Freeform regression smoke, not TMT acceptance",
+    "seed_range": [
+      0,
+      99
+    ],
+    "policy": "rustmage::policy::smoke_index",
+    "decks": {
+      "Mountain": 24,
+      "Lightning Bolt": 20,
+      "Goblin Piker": 12,
+      "Hill Giant": 4
+    },
+    "hardware": "Intel Core Ultra 5 335",
+    "compiler": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "profile": "release, opt-level 3, thin LTO",
+    "clone_restore_iterations": 100000,
+    "source": "c08f76c6acd0c9ab193d8f991f6a4f6b0e64369d"
+  },
+  "implementation_throughput": {
+    "start": "2026-10-23T07:41:18.164245+00:00",
+    "end": "2026-10-23T09:12:16.355392+00:00",
+    "seconds": 5458.191147,
+    "newly_verified_physical_cards": 2,
+    "cards_per_hour": 1.3191183317127608,
+    "scope": "Elapsed continuation interval includes source intake, implementation, repairs, future-card preparation and validation; excludes inherited coverage"
+  },
+  "tmt_simulation_throughput": null,
+  "tmt_full_game_acceptance": "pending",
+  "reviews": [],
+  "known_external_blockers": [],
+  "next_action": "Implement Leonardo Sewer Samurai graveyard permission and finality counters, then remaining Classes and cards; audit inherited support and complete set-only acceptance."
+}

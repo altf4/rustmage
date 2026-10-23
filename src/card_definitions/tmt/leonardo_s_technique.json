@@ -3,10 +3,35 @@
   "catalogue_id": 2471,
   "oracle_id": "e98c2af9-1393-487d-b8e9-f49a67bb7296",
   "facts_sha256": "84bfc1d00f2fa3c351731d5d4840eca423cf110b9be19f8cfaa7eab879c8dac1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "38988573c0c30ec91841ef3bc32619840cf7e4465b5ce9ca373483200ae541dd"
   },
-  "physical_metadata_sha256": "957fec8b651feb76b6a3441693c781162e5bb30821d8eed5f09fbd84a04e6152"
+  "physical_metadata_sha256": "957fec8b651feb76b6a3441693c781162e5bb30821d8eed5f09fbd84a04e6152",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeonardosTechnique.java",
+  "java_sha256": "0ba5a54fcb4213a0fce2bf0e77eaef25e1f50a8593de72d377c177f7f03c8c72",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ]
 }

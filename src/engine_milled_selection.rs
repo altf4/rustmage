@@ -53,6 +53,7 @@ impl Game {
         let kinds = self.current_kinds(object.card);
         match filter {
             MilledFilter::Any => true,
+            MilledFilter::Permanent => kinds & (1 | 2 | 16 | 32 | 64 | 256) != 0,
             MilledFilter::Kinds(mask) => kinds & u16::from(mask) != 0,
             MilledFilter::KindsOrSubtype {
                 kinds: mask,
@@ -137,8 +138,15 @@ impl Game {
         })
     }
     pub(super) fn start_milled_selection(&mut self, spec: MilledSelectionSpec) -> bool {
+        let player = self.state.resolving.as_ref().unwrap().item.controller;
+        self.start_milled_selection_for(spec, player)
+    }
+    pub(super) fn start_milled_selection_for(
+        &mut self,
+        spec: MilledSelectionSpec,
+        player: Player,
+    ) -> bool {
         let resolution = self.state.resolving.as_ref().unwrap();
-        let player = resolution.item.controller;
         let eligible: Vec<_> = resolution
             .milled
             .iter()
@@ -218,6 +226,7 @@ impl Game {
             MilledDestination::PlayPermission { .. } => {
                 unreachable!("handled permission without movement")
             }
+            MilledDestination::LibraryTop => Zone::Library,
             MilledDestination::Hand => Zone::Hand,
             MilledDestination::Battlefield => Zone::Battlefield,
         };
@@ -243,6 +252,14 @@ impl Game {
             let events = self.move_objects_raw(&ids, destination);
             self.finish_zone_events(&events, &[]);
             for event in events {
+                if event.moved
+                    && event.destination == Zone::Library
+                    && self.object_ref(event.after.card) == event.after
+                    && self.state.objects[event.after.card as usize].zone == Zone::Library
+                {
+                    // Selection from a public mill group remains known to both players.
+                    self.remember_library_top(player, event.after);
+                }
                 if event.moved
                     && event.destination == Zone::Hand
                     && self.state.objects[event.after.card as usize].zone == Zone::Hand

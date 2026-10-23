@@ -3,10 +3,45 @@
   "catalogue_id": 884,
   "oracle_id": "f9b7bbea-ea20-400b-a5b7-4d6993d8777b",
   "facts_sha256": "3d59e3bd6decceca8a3e9707363a54a4bc2e3d40737c391f8e7b9abe2c6f136c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "09bc09a07157c961fbfd33c4e4a845a956b1758b7614969730f086206d3046df"
   },
-  "physical_metadata_sha256": "855f1e8e5cbd347ad18cf1d29bfcd3d08136d36406b1b3e41639c060d4c53d3c"
+  "physical_metadata_sha256": "855f1e8e5cbd347ad18cf1d29bfcd3d08136d36406b1b3e41639c060d4c53d3c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CreakwoodSafewright.java",
+  "java_sha256": "95717230c289d34628d06aa101bfabbeb0d266af65329aa7b0fc041bb561646d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/CompoundCondition.java",
+      "sha256": "1577f41ffe084565cd38c201fb8b0ac92bf6eae3b2ee2618966495ee10f3898f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CardsInControllerGraveyardCondition.java",
+      "sha256": "e166edec7baa8ef4ba55eb826264e0dbaee21891cd2928ffcd8add99d06c5bce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceHasCounterCondition.java",
+      "sha256": "1d9315e6b952df62a1bbe5cf57ce6d75c095866a5a3d8d661cf45a7b44e3b549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/RemoveCounterSourceEffect.java",
+      "sha256": "a2c61bdfe90b158533c99757444cecf8c13beaebd1d442be4ed27ebf7d4d807d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }

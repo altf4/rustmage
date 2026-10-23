@@ -3,10 +3,41 @@
   "catalogue_id": 2608,
   "oracle_id": "73413bd5-8c40-4d45-8f05-c20c39ee4017",
   "facts_sha256": "175a666c07b81b85469d08b83a9936a450b2ac7d7f31cdfdf27ff30ebac88cfe",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f24e015d1a79806787a033550b6e0c64f08b0d5a3b5d7983affd9c26148b183d"
   },
-  "physical_metadata_sha256": "7015aef4caf4d71e4537e4b018045351bb827e6d623a77ff0267eea1f9951b59"
+  "physical_metadata_sha256": "7015aef4caf4d71e4537e4b018045351bb827e6d623a77ff0267eea1f9951b59",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MadameNullPowerBroker.java",
+  "java_sha256": "2f553d87c02ceccaa33bb5e76e54eb6980c006a8db7135a64c324ab85d4d494d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "107.1b",
+      "118.3",
+      "118.5",
+      "400.7",
+      "601.2",
+      "603.3c",
+      "608.2h",
+      "701.23",
+      "118.3b"
+    ],
+    "note": "Paid legal scenarios in engine_tmt_alliance_batch_tests.rs cover optional qualified searches, actual hand movement, grouped activation targets, resolution-time ability choice, per-turn modes, exact entering power/life payments, actual cast mana, card-type history, and owned branching/restore. Oracle and CR118.3b permit paying zero life for nonpositive power; CR608.2h uses departed entering-creature power as last known information. These cases intentionally refine the pinned Java effect, which rejects power below one and absent recipients."
+  }
 }

@@ -1,16 +1,21 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete Oracle, XMage and successful-resolution rules.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(4, 4),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: CastFilter::FromHand(&CastFilter::InstantSorcery),
+                ordinal: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::MarkCastDreamExile],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SelfAttacks,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CastOwnedDreamCard],
+        },
+    ],
     ..CardRules::EMPTY
 };

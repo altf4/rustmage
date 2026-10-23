@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "418968414507ed2ebe222c2824d3e0a53dc21d62022d63bed06410a28776cac1"
   },
-  "physical_metadata_sha256": "e804d64e6c45cb8b0a883e76af35cd1c4eb33d76cac2d229c9b82ef8028f4d4a"
+  "physical_metadata_sha256": "e804d64e6c45cb8b0a883e76af35cd1c4eb33d76cac2d229c9b82ef8028f4d4a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TanufelRimespeaker.java",
+  "java_sha256": "998f91c8426b5713add2148ed06807e25b844f56dc168e097370e3269f36f363",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

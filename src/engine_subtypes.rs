@@ -23,7 +23,7 @@ const LAND_TYPES: [&str; 17] = [
     "Planet",
     "Urza's",
 ];
-const JOB_TYPES: [&str; 14] = [
+const JOB_TYPES: [&str; 17] = [
     "Artificer",
     "Bard",
     "Cleric",
@@ -38,8 +38,11 @@ const JOB_TYPES: [&str; 14] = [
     "Angel",
     "Demon",
     "Nightmare",
+    "Coward",
+    "Robot",
+    "Mutant",
 ];
-// Fourteen named grants and three projection flags use the view's existing padding.
+// Seventeen named grants and three projection flags use the view's existing padding.
 const CREATURE_OR_KINDRED: u16 = 1 | 128;
 const JOB_MASK: u32 = (1 << JOB_TYPES.len()) - 1;
 const SUPPRESS_PRINTED: u32 = 1 << JOB_TYPES.len();
@@ -141,6 +144,9 @@ pub struct CreatureTypesEffectView {
     pub source: ObjectRef,
     pub types: &'static [&'static str],
     pub additional: bool,
+    pub all_creature_types: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_turn: Option<u32>,
     pub timestamp: u64,
 }
 impl ObjectView {
@@ -170,11 +176,27 @@ impl Game {
             card: id,
             generation: target.generation,
         };
-        if self
-            .copy_recipe(reference)
-            .is_some_and(|r| r.exceptions.nightmare)
+        if (target.zone == Zone::Battlefield || target.is_token())
+            && self
+                .copy_recipe(reference)
+                .is_some_and(|r| r.exceptions.mutant)
+        {
+            mask.insert("Mutant");
+        }
+        if (target.zone == Zone::Battlefield || target.is_token())
+            && self
+                .copy_recipe(reference)
+                .is_some_and(|r| r.exceptions.nightmare)
         {
             mask.insert("Nightmare");
+        }
+        if (target.zone == Zone::Battlefield || target.is_token())
+            && self
+                .copy_recipe(reference)
+                .is_some_and(|r| r.exceptions.changeling)
+            && kinds(id, target) & CREATURE_OR_KINDRED != 0
+        {
+            mask.set_flag(ALL_CREATURE_TYPES, true);
         }
         // Copy exceptions already exist while an owned token awaits entry.
         // Later continuous type changes apply only on the battlefield.
@@ -190,7 +212,9 @@ impl Game {
                     .map(|row| {
                         (
                             row.timestamp,
-                            if row.additional {
+                            if row.all_creature_types {
+                                characteristic_layers::SubtypeChange::All
+                            } else if row.additional {
                                 characteristic_layers::SubtypeChange::Add(row.types)
                             } else {
                                 characteristic_layers::SubtypeChange::Named(row.types, false)
@@ -281,16 +305,32 @@ impl Game {
             let Some(o) = lookup(source) else {
                 continue;
             };
+            // Attachment indexing also includes stat-only Equipment and Auras.
+            // Those are not layer-four providers and need no ability timestamp.
+            let all_types = o.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes
+                    )
+                })
+            });
+            let subtype = o.card.attached_subtype();
             if o.zone == Zone::Battlefield
                 && kinds(source, o) & 1 == 0
                 && o.attached_to == Some(reference)
-                && let Some(subtype) = o.card.attached_subtype()
+                && (subtype.is_some() || all_types)
                 && newer(ObjectRef {
                     card: source,
                     generation: o.generation,
                 })
             {
-                mask.insert(subtype);
+                if let Some(subtype) = subtype {
+                    mask.insert(subtype);
+                }
+                if all_types {
+                    mask.set_flag(ALL_CREATURE_TYPES, true);
+                }
             }
         }
         mask
@@ -329,6 +369,38 @@ impl Game {
         subject: Subject,
         types: &'static [&'static str],
     ) {
+        self.set_creature_types_with_expiry(item, subject, types, None, false);
+    }
+    pub(super) fn set_creature_types_until_end_turn(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        types: &'static [&'static str],
+    ) {
+        self.set_creature_types_with_expiry(item, subject, types, Some(self.state.turn), false);
+    }
+    pub(super) fn gain_all_creature_types_permanently(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+    ) {
+        self.set_creature_types_with_expiry(item, subject, &[], None, true);
+    }
+    pub(super) fn gain_all_creature_types_until_end_turn(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+    ) {
+        self.set_creature_types_with_expiry(item, subject, &[], Some(self.state.turn), true);
+    }
+    fn set_creature_types_with_expiry(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        types: &'static [&'static str],
+        expires_turn: Option<u32>,
+        all_creature_types: bool,
+    ) {
         assert!(
             types
                 .iter()
@@ -347,17 +419,30 @@ impl Game {
         for id in recipients {
             let recipient = self.object_ref(id);
             let state = self.state.roles.get_or_insert_with(Default::default);
-            // A replacement supersedes older replacements for this recipient.
-            state
-                .creature_types
-                .retain(|row| row.recipient != recipient);
+            // A permanent replacement supersedes older ones. A temporary
+            // replacement retains them so expiration restores the earlier layer.
+            if expires_turn.is_none() {
+                state
+                    .creature_types
+                    .retain(|row| row.recipient != recipient);
+            }
             state.creature_types.push(CreatureTypesEffectView {
                 recipient,
                 source: item.object,
                 types,
                 additional: false,
+                all_creature_types,
+                expires_turn,
                 timestamp,
             });
+        }
+    }
+    pub(super) fn expire_creature_types(&mut self) {
+        if let Some(state) = &mut self.state.roles {
+            let turn = self.state.turn;
+            state
+                .creature_types
+                .retain(|row| row.expires_turn.is_none_or(|expiry| expiry > turn));
         }
     }
     pub(super) fn forget_creature_types(&mut self, recipient: ObjectRef) {
@@ -372,6 +457,16 @@ impl Game {
 impl Game {
     pub(super) fn entry_choice_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
         let mut result = GrantedSubtypes::default();
+        if m.before
+            .copy_recipe
+            .is_some_and(|r| r.exceptions.changeling)
+            && m.before.kinds & CREATURE_OR_KINDRED != 0
+        {
+            result.set_flag(ALL_CREATURE_TYPES, true);
+        }
+        if m.before.copy_recipe.is_some_and(|r| r.exceptions.mutant) {
+            result.insert("Mutant");
+        }
         if m.before.copy_recipe.is_some_and(|r| r.exceptions.nightmare) {
             result.insert("Nightmare");
         }

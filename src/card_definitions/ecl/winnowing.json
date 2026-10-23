@@ -3,10 +3,36 @@
   "catalogue_id": 5081,
   "oracle_id": "8b834f83-951b-4b5c-b9f1-3d860baa3c0e",
   "facts_sha256": "bafb5098ecdefad552847666327737e1df24ee01bf6f7d43e013c79a1353e14c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "89823a2f5d300921dbcdd716471cad7173626878ae62e58eda12a73fc6315ebd"
   },
-  "physical_metadata_sha256": "a73707d4788048c6dbc0c8189a5c2faf3f0587fb34b1544891fffe713f86f617"
+  "physical_metadata_sha256": "a73707d4788048c6dbc0c8189a5c2faf3f0587fb34b1544891fffe713f86f617",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/Winnowing.java",
+  "java_sha256": "86e08a7fdf7b82170ed84c7bbc13aeb90f6f81ed0c0b5d464e31d2a2e9abd9d5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+      "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/SharesCreatureTypePredicate.java",
+      "sha256": "4de2c9db930607a5a4e320551fb0c2dd582249b6f7c73c19a933e10818d6e05a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/ControllerIdPredicate.java",
+      "sha256": "3e6dddd03c3d0b8025f5988d804acf40a090f03c51e7836507a8a79f8a55589f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/PermanentIdPredicate.java",
+      "sha256": "6777c307e24428991b0869703189d56b35a1889c36ebb1e4735f8eb1b5793098"
+    }
+  ],
+  "rules_notes": "Oracle requires all choices before the simultaneous sacrifice. The pinned XMage class collects candidates first but sacrifices each individually; Rust freezes effective creature types and sacrifices all affected creatures in one batch, with the resolving spell controller choosing for every player."
 }

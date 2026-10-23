@@ -9,6 +9,7 @@ fn nightmare(g: &mut Game, p: Player) -> CardId {
     g.stage_copy_creation(
         p,
         CopyRecipe {
+            faces: copies::CopyFaces::Definition,
             definition: Card::from_name("Bear Cub").unwrap(),
             exceptions: CopyExceptions::NIGHTMARE,
         },

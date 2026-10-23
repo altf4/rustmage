@@ -3,10 +3,40 @@
   "catalogue_id": 4713,
   "oracle_id": "803971e6-67f3-4fda-aeb6-69ef8ea4b54e",
   "facts_sha256": "27195782c7846a8eebfeda3c965a1c341b9bbd90018cf8f2d46bcdfca6b68145",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b8c57fe90b303ffabb76848c5cb822e6ae25ce930845084959dcaa08de93aeeb"
   },
-  "physical_metadata_sha256": "0a7b0e4eae7b57f7e7ec8bc12e7b71db53fd6b2be18d938f6b7060f16a6a2746"
+  "physical_metadata_sha256": "0a7b0e4eae7b57f7e7ec8bc12e7b71db53fd6b2be18d938f6b7060f16a6a2746",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TurtlesInTime.java",
+  "java_sha256": "88dd8a7057664bdb741e5f83f41d740005a8126b87aadc3d9c158063cda4b608",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandFromBattlefieldAllEffect.java",
+      "sha256": "f8ea6d746634b1c78d29e989867a33b2f66c883130595784f62fb04f8e447d5f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSpellEffect.java",
+      "sha256": "a7e5f14c36dc0938ad32916c58ae5c50971810fbdb26b8a69f4bfcfdd243b78c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+      "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "101.4",
+      "608.2c",
+      "400.7"
+    ],
+    "note": "All APNAP shuffle decisions precede movement; all accepted hand/graveyard shuffles precede all accepted draws, following Oracle sentence order rather than XMage interleaving individual shuffle/draw pairs. Shuffling is not discard and no hidden hand identity is published as targeted library movement."
+  }
 }

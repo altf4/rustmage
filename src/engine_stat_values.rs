@@ -70,6 +70,12 @@ impl Game {
             self.state.players[owner.index()].life,
             self.state.attack_declared
                 && self.state.attackers.iter().any(|a| a.card == source.card),
+            &|id| {
+                self.state
+                    .attackers
+                    .iter()
+                    .any(|attacker| attacker.card == id)
+            },
         )
     }
     /// The same earlier-layer evaluator serves concrete state and a borrowed
@@ -88,6 +94,7 @@ impl Game {
         has_counters: &impl Fn(CardId) -> bool,
         life: i128,
         attacking: bool,
+        attacking_object: &impl Fn(CardId) -> bool,
     ) -> i128
     where
         F: Fn() -> I,
@@ -95,6 +102,13 @@ impl Game {
     {
         match value {
             StatValue::Fixed(n) => i128::from(n),
+            StatValue::ArtifactEnteredThisTurn => {
+                i128::from(self.state.players[owner.index()].artifact_entered_this_turn)
+            }
+            StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
+                i128::try_from(self.declared_subtype_attackers(owner, subtype))
+                    .capacity("declared subtype attacker count")
+            }
             StatValue::TappedCount(filter) => objects()
                 .filter(|&(id, o)| {
                     o.tapped
@@ -114,17 +128,33 @@ impl Game {
                     has_counters,
                     life,
                     attacking,
+                    attacking_object,
                 ) == 0,
             ),
             StatValue::ControllerHandSize => objects()
                 .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand)
                 .count() as i128,
+            StatValue::CreatureEntriesThisTurn { other } => {
+                self.creature_entries_this_turn(owner, source, other)
+            }
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
             }
             StatValue::CardsDrawnThisTurn => {
                 i128::from(self.state.players[owner.index()].cards_drawn_this_turn)
             }
+            StatValue::CreaturesAttackingYou => objects()
+                .filter(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller != owner
+                        && attacking_object(*id)
+                        && kinds(*id, object) & 1 != 0
+                        && self.state.attackers.iter().any(|attacker| {
+                            attacker.card == *id
+                                && attacker.defender == Some(CombatDefender::Player(owner))
+                        })
+                })
+                .count() as i128,
             StatValue::AttackingCreatures => objects()
                 .filter(|(id, o)| {
                     o.controller == owner
@@ -157,6 +187,15 @@ impl Game {
                         && self.state.attackers.iter().any(|a| a.card == *id)
                 })
                 .count() as i128,
+            StatValue::SourceClassLevelAtLeast(minimum) => {
+                i128::from(self.class_level(source) >= minimum)
+            }
+            StatValue::SourceUntapped => i128::from(objects().any(|(id, object)| {
+                id == source.card
+                    && object.generation == source.generation
+                    && object.zone == Zone::Battlefield
+                    && !object.tapped
+            })),
             StatValue::SourceAttacking => i128::from(
                 attacking
                     && objects().any(|(id, o)| {
@@ -196,6 +235,7 @@ impl Game {
                     has_counters,
                     life,
                     attacking,
+                    attacking_object,
                 ) >= i128::from(minimum),
             ),
             StatValue::SpellsCastThisTurn => {
@@ -242,7 +282,7 @@ impl Game {
                     .filter(|&(id, o)| {
                         Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     })
-                    .map(|(_, o)| o.card.fixed_mana_value())
+                    .map(|(id, o)| self.mana_value_with_object(id, o))
                     .collect();
                 values.sort_unstable();
                 values.dedup();
@@ -272,7 +312,7 @@ impl Game {
                     .filter(|&(id, o)| {
                         Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     })
-                    .map(|(_, o)| o.card.fixed_mana_value())
+                    .map(|(id, o)| self.mana_value_with_object(id, o))
                     .max()
                     .unwrap_or(0),
             ),
@@ -295,6 +335,7 @@ impl Game {
                         has_counters,
                         life,
                         attacking,
+                        attacking_object,
                     )
                 })
                 .try_fold(0i128, i128::checked_add)
@@ -312,16 +353,29 @@ impl Game {
             AmountValue::SourceCounterQuantity(kind) => {
                 u128::from(self.source_counter_quantity_live(source, kind).unwrap_or(0))
             }
-            AmountValue::MilledCreatures
+            AmountValue::SourceCounterTotal => self
+                .state
+                .objects
+                .get(source.card as usize)
+                .filter(|object| object.generation == source.generation)
+                .map_or(0, |_| self.counter_amounts(source.card).total()),
+            AmountValue::DeathEventToughness
+            | AmountValue::MovedCount
+            | AmountValue::MilledCreatures
             | AmountValue::ChosenX
             | AmountValue::ManaSpent
+            | AmountValue::CastCardTypeCount
             | AmountValue::CastSpellManaValue
             | AmountValue::SpellColors
             | AmountValue::ColorsSpent
             | AmountValue::SacrificedToughness
             | AmountValue::SourcePower
+            | AmountValue::GreatestCreaturePower(_)
             | AmountValue::LifeEventAmount
-            | AmountValue::DamageEventAmount => 0, // Off-stack expressions have no cast parameter.
+            | AmountValue::DamageEventAmount
+            | AmountValue::DepartureCounterCount(_)
+            | AmountValue::DeathEventCounterTotal
+            | AmountValue::DeathEventPower => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,
             AmountValue::CardsDiscardedThisTurn => {
                 u128::from(self.state.players[owner.index()].cards_discarded_this_turn)

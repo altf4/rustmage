@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "status": "focused rules and four natural matchup replays passed; combined release pending",
+  "failed_source": "89241781",
+  "failed_release": {
+    "path": "<cache>/rustmage-validation-csl7dmdz/report/result.json",
+    "sha256": "b33b1c2301a03896abfba21ec484977728f1a88afdb40152767ba71663440aad"
+  },
+  "failure": "Global battlefield cost-reduction loop queried an immutable fragment for Krang Master Mind intrinsic source-only affinity. The card was a static source for its separately bound power scaling.",
+  "repair": "Exclude source-only rules before querying battlefield cost-reduction fragments; retain intrinsic spell reduction and its original slot enumeration.",
+  "focused_test": "tmt_final_krang_intrinsic_affinity_does_not_reduce_later_spells",
+  "both_players": true,
+  "paid_actions": true,
+  "focused_log": {
+    "path": "<cache>/rustmage-tmt-krang-static-focus.log",
+    "sha256": "68b25ddb1b29c32b9efef637e44569df7a454f13af3e04e8057d47ce658d1ac7"
+  },
+  "failed_reproduction": {
+    "path": "<cache>/rustmage-tmt-layer-repro.log",
+    "sha256": "cb1dc373f04b0db9891227a41ac5dd8941fe2dd63cd59b230f4de54f8c9b616b"
+  },
+  "fixed_reproduction": {
+    "path": "<cache>/rustmage-tmt-layer-repro-fixed.log",
+    "sha256": "264a396d97d33a67d3ef36dad3a7062ab43b4dc977d4f5336d6d41cf9bcd40e4"
+  },
+  "short_workload": "Existing natural runner: theme decks4/5, seed7, both starters and both pair directions; four complete games with normal privacy, owned branch/restore and complete journal replay. Temporary selector removed after terminal success.",
+  "review": "Independent nonauthor preparatory static-fragment audit found no additional concrete mismatch; final published-head reviews remain pending."
+}

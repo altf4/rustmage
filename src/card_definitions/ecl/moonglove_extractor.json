@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "92a1e18c7fe0d5236fd1f93ab4f9bedddcc0aa5623aaf2479963bcdc98761520"
   },
-  "physical_metadata_sha256": "ab82b2a84ec9232dc98c00e257c855a2234c3e6bf07e39d7dcb992aeaf25a5a4"
+  "physical_metadata_sha256": "ab82b2a84ec9232dc98c00e257c855a2234c3e6bf07e39d7dcb992aeaf25a5a4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MoongloveExtractor.java",
+  "java_sha256": "0d71f77d52e45096ba25b55d56d03ce004e765d80e1064e9fdb45773949e4eec",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "rules_test_files": [
+    "src/engine_ecl_inherited_br_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    }
+  ],
+  "audit_notes": "Full pinned Oracle and Java card/helper reads; typed behavior preserved. Actual paid both-seat whole-card matrices supplement the listed adversarial rules suites."
 }

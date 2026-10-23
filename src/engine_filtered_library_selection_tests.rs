@@ -658,11 +658,10 @@ fn filtered_reveal_failure_restores_window_rng_knowledge_and_exact_references() 
 
 #[test]
 fn noncreature_changeling_metadata_matches_subtype_unions_but_not_frontier_creature_conjunction() {
-    // This immutable metadata fixture remains an unsupported body: it is never
-    // cast or admitted in a deck. Its printed kindred/changeling values expose
-    // a grouping error that no supported creature-only changeling could catch.
+    // This supported kindred instant exposes a grouping error that a
+    // creature-only changeling could not catch.
     let crib = Card::from_name("Crib Swap").unwrap();
-    assert!(!crib.is_supported());
+    assert!(crib.is_supported());
     assert!(crib.keywords().contains(Keywords::CHANGELING));
     assert!(!crib.is_creature());
     assert!(crib.has_subtype("Mount"));
@@ -684,7 +683,7 @@ fn noncreature_changeling_metadata_matches_subtype_unions_but_not_frontier_creat
                 .iter()
                 .all(|&n| g.object_view(n).zone == Zone::Library)
         );
-        // Do not put an unsupported fixture into hand or cast it; decline.
+        // This scenario tests filtering rather than the spell effect; decline.
         replay(&mut g, Action::FinishLibrarySelection);
         settle(&mut g);
     }

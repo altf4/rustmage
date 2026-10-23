@@ -3,10 +3,36 @@
   "catalogue_id": 2649,
   "oracle_id": "c596b847-4e05-4279-8675-b4e39cb3dc91",
   "facts_sha256": "0adffb8ea4038955f36081a07e11c64637159bd6c9a3b1e6e9bf3cb838bc7557",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7a979b029759b13809753bd801b2d5c9328cf9f7f237deafc058955cf04b090d"
   },
-  "physical_metadata_sha256": "efc33ad02b0ee10e2f4a22eb6d747c39cc3900d030915bf14014fd94d2236988"
+  "physical_metadata_sha256": "efc33ad02b0ee10e2f4a22eb6d747c39cc3900d030915bf14014fd94d2236988",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/ManholeMissile.java",
+  "java_sha256": "948cbc8fda4541eb09eba731821aca0ac9fba7f60fc1a8c4836223105a47aeb9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "111.8",
+      "201.5",
+      "400.7",
+      "601.2",
+      "608.2b",
+      "608.2h",
+      "701.8",
+      "701.21",
+      "701.22"
+    ],
+    "note": "Printed obligations are implemented directly and exercised by engine_tmt_spell_batch_tests.rs. Ice Cream Kitty requires another permanent even when the source is a token: the Java predicate admits the source when copied as a token, but printed another excludes it. Tainted Treats freezes mana value immediately before attempting destruction and creates Food even for indestructible targets. Manhole Missile uses a private non-targeting optional hand selection."
+  }
 }

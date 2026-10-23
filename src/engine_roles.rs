@@ -16,33 +16,85 @@ pub struct RoleGroupView {
 }
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct RoleState {
+    pub linked_funding: Option<Box<LinkedFundingWindow>>,
     clock: u64,
     /// Only true while an entry transaction assigns one simultaneous timestamp group.
     pub deferred_timestamps: bool,
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
+    pub attack_type_history: Vec<DeclaredAttackView>,
+    pub stat_modifiers: Vec<StatModifierEffectView>,
     pub live_static: Vec<LiveStaticSourceView>,
     pub stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_timestamps: Vec<AbilitySourceTimestampView>,
     pub creature_types: Vec<subtypes::CreatureTypesEffectView>,
     pub animations: Vec<AnimationView>,
+    pub color_effects: Vec<ColorEffectView>,
+    pub transforms: Vec<TransformHistoryView>,
     pub keyword_effects: Vec<KeywordEffectView>,
     pub ability_removal_sources: Vec<ObjectRef>,
+    pub ability_removal_effects: Vec<AbilityRemovalEffectView>,
     pub characteristic_sources: Vec<ObjectRef>,
+    pub delayed_deaths: Vec<delayed_deaths::DelayedDeath>,
+    pub delayed_steps: Vec<delayed_steps::DelayedStep>,
+    pub trigger_multiplicities: Vec<TriggerMultiplicityView>,
+    pub dream_exiles: Vec<DreamExileView>,
+    pub conspire: Option<Box<ConspireCastView>>,
 }
 impl RoleState {
+    pub(super) fn normalize_entry_analysis_clock(&mut self) -> u64 {
+        let clock = self.clock;
+        self.clock = 0;
+        clock
+    }
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self
+                .linked_funding
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<LinkedFundingWindow>())
+            + self.dream_exiles.len() * std::mem::size_of::<DreamExileView>()
+            + self.conspire.as_ref().map_or(0, |c| {
+                std::mem::size_of::<ConspireCastView>()
+                    + c.instances.len() * std::mem::size_of::<ConspireInstanceView>()
+            })
+            + self.trigger_multiplicities.len() * std::mem::size_of::<TriggerMultiplicityView>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
+            + self.attack_type_history.len() * std::mem::size_of::<DeclaredAttackView>()
+            + self.stat_modifiers.len() * std::mem::size_of::<StatModifierEffectView>()
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()
             + self.stat_subjects.len() * std::mem::size_of::<ResolvedStatSubjectView>()
+            + self
+                .stat_subjects
+                .iter()
+                .map(|row| {
+                    row.departure_damage
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<DamageSource>())
+                })
+                .sum::<usize>()
             + self.ability_timestamps.len() * std::mem::size_of::<AbilitySourceTimestampView>()
             + self.creature_types.len() * std::mem::size_of::<subtypes::CreatureTypesEffectView>()
             + self.animations.len() * std::mem::size_of::<AnimationView>()
+            + self.color_effects.len() * std::mem::size_of::<ColorEffectView>()
+            + self.transforms.len() * std::mem::size_of::<TransformHistoryView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self.ability_removal_effects.len() * std::mem::size_of::<AbilityRemovalEffectView>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self
+                .delayed_steps
+                .iter()
+                .map(|r| std::mem::size_of::<delayed_steps::DelayedStep>() + r.item.owned_bytes())
+                .sum::<usize>()
+            + self
+                .delayed_deaths
+                .iter()
+                .map(|row| {
+                    std::mem::size_of::<delayed_deaths::DelayedDeath>() + row.item.owned_bytes()
+                })
+                .sum::<usize>()
     }
 }
 impl Game {
@@ -142,6 +194,9 @@ impl Game {
     }
     pub(super) fn assign_static_source_timestamp(&mut self, source: ObjectRef) {
         let timestamp = self.next_role_timestamp();
+        self.set_static_source_timestamp(source, timestamp);
+    }
+    pub(super) fn set_static_source_timestamp(&mut self, source: ObjectRef, timestamp: u64) {
         if let Some(r) = &mut self.state.roles {
             for v in &mut r.ability_timestamps {
                 if v.source == source {
@@ -252,7 +307,12 @@ impl Game {
             }
             let aura = &self.state.objects[v.aura.card as usize];
             if aura.attached_to != Some(v.recipient)
-                || !self.aura_can_enchant(aura.card, aura.controller, v.recipient)
+                || !self.aura_can_enchant_colored(
+                    aura.card,
+                    aura.controller,
+                    v.recipient,
+                    ability_world::CharacteristicWorld::colors(self, v.aura.card),
+                )
             {
                 continue;
             }
@@ -302,5 +362,51 @@ impl Game {
             .unwrap()
             .keep = Some(object);
         self.advance_sba_choices();
+    }
+}
+
+#[cfg(test)]
+mod physical_copy_failure_tests {
+    use super::super::ability_timeline_tests::{cast, checked, named, settle, setup};
+    use super::*;
+    #[test]
+    fn ecl_copy_entry_copy_failure_rolls_back_provider_indexes_recipes_views_and_revision() {
+        let mut g = setup(Player::P0);
+        let body = named(&mut g, Player::P0, "Imperious Perfect", Zone::Battlefield);
+        let target = named(&mut g, Player::P1, "Serra Angel", Zone::Battlefield);
+        let spell = named(&mut g, Player::P0, "Mirrorform", Zone::Hand);
+        cast(&mut g, spell, None, &[Target::Card(target)]);
+        checked(&mut g, Action::Pass);
+        g.state.roles.get_or_insert_with(Default::default).clock = u64::MAX;
+        let saved = g.snapshot();
+        let revision = g.revision();
+        let views = [
+            serde_json::to_value(g.observe(Player::P0)).unwrap(),
+            serde_json::to_value(g.observe(Player::P1)).unwrap(),
+        ];
+        assert!(matches!(
+            g.apply(g.actor().unwrap(), Action::Pass),
+            Err(Error::CapacityExceeded(_))
+        ));
+        assert_eq!(g.snapshot(), saved);
+        assert_eq!(g.revision(), revision);
+        for (index, p) in [Player::P0, Player::P1].into_iter().enumerate() {
+            assert_eq!(serde_json::to_value(g.observe(p)).unwrap(), views[index]);
+        }
+        assert_eq!(
+            g.state.objects[body as usize].card.name(),
+            "Imperious Perfect"
+        );
+        let mut branch = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        branch.state.roles.as_mut().unwrap().clock = 1000;
+        checked(&mut branch, Action::Pass);
+        settle(&mut branch);
+        assert_eq!(
+            branch.state.objects[body as usize].card.name(),
+            "Serra Angel"
+        );
     }
 }

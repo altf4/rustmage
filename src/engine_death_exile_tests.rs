@@ -336,9 +336,14 @@ fn all_eleven_paid_whole_bodies_every_mode_both_seats_and_foreign_spell_ownershi
                 );
                 if foreign {
                     g.state.exile_permissions.push(ExilePlayPermission {
+                        cast_only: false,
+                        without_mana: false,
                         object: g.object_ref(spell),
                         player: p,
                         expires_turn: g.state.turn,
+                        next_end_step: None,
+                        source: None,
+                        any_mana: false,
                     });
                 }
                 let mut targets = Vec::new();

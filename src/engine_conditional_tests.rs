@@ -652,6 +652,10 @@ fn flat_if_else_offsets_and_scry_pc_keep_common_tail_outside_both_branches() {
         let source = funded(&mut g, "Shock");
         let item = g.cast_item(Player::P0, source, [0; 6]);
         g.state.resolving = Some(Resolution {
+            wheel: None,
+            continuation: None,
+            chosen_creature_type: None,
+            chosen_color: None,
             explore: None,
             evidence: None,
             item,
@@ -670,6 +674,7 @@ fn flat_if_else_offsets_and_scry_pc_keep_common_tail_outside_both_branches() {
             selection: None,
             target_library: None,
             search: None,
+            legendary_search: None,
             optional_searches: None,
             choice: None,
         });

@@ -3,10 +3,35 @@
   "catalogue_id": 1667,
   "oracle_id": "4e0ba9d5-4bd6-49a0-ae00-70818738d0ba",
   "facts_sha256": "d0e94fc46286bb784eb7cb3b0328601f8a0367d53ee60daf4c03ecdb66bc2a93",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9799edda274bae4959ca10cfe946621107922060091551b982c5f114ae456afb"
   },
-  "physical_metadata_sha256": "92f88055b51a96a028f44deee98798da76eef1da77d162d0f9ee625175451741"
+  "physical_metadata_sha256": "92f88055b51a96a028f44deee98798da76eef1da77d162d0f9ee625175451741",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GallantFowlknight.java",
+  "java_sha256": "552ec1c9df0b9f23360e3f0e88b302ce4be4cee0592a9008944b26309c61b91b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    }
+  ]
 }

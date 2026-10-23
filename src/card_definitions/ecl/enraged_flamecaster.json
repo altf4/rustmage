@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "af37f026e2c3162d789fa9050dfd401270046fd0b1ff4fd26a5304ba56954bd3"
   },
-  "physical_metadata_sha256": "3a08fca41278563a50584315bcac39c1fc45bde12e6349db57f91dd720bbac31"
+  "physical_metadata_sha256": "3a08fca41278563a50584315bcac39c1fc45bde12e6349db57f91dd720bbac31",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EnragedFlamecaster.java",
+  "java_sha256": "2a01a6348dfe9e7fbde81832589596fcf9b24c706be22349394e0079b1bc366c",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "additional_rules_tests": [
+    "src/engine_qualified_cast_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ],
+  "inherited_audit": "Full Oracle and XMage card/relevant behavior dependencies read; typed behavior preserved. Paid body matrix complements existing complete shared rule scenarios, reviewed for printed obligations and passed in combined232 release."
 }

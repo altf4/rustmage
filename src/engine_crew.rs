@@ -99,11 +99,12 @@ impl Game {
         if minimum == 0 {
             return true;
         }
+        let query = self.characteristic_query();
         let mut sum = PowerSum::default();
         for id in 0..self.state.objects.len() {
             let r = self.object_ref(id as CardId);
             if self.crew_eligible(source, actor, r) {
-                sum.add(self.stats(r.card).power.max(0));
+                sum.add(query.stats(r.card).power.max(0));
                 if sum.enough(minimum) {
                     return true;
                 }
@@ -130,7 +131,11 @@ impl Game {
                 .iter()
                 .all(|&r| self.crew_eligible(a.item.object, a.item.controller, r))
     }
-    fn crew_sum(&self, maximum: bool) -> PowerSum {
+    fn crew_sum(
+        &self,
+        query: &characteristic_query::CharacteristicQuery<'_>,
+        maximum: bool,
+    ) -> PowerSum {
         let a = self.state.announcing.as_ref().unwrap();
         let p = self.state.crew.as_ref().unwrap().payment.as_ref().unwrap();
         let mut sum = PowerSum::default();
@@ -138,7 +143,7 @@ impl Game {
             let r = self.object_ref(id as CardId);
             if self.crew_eligible(a.item.object, a.item.controller, r) {
                 let selected = p.selected.contains(&r);
-                let power = self.stats(r.card).power;
+                let power = query.stats(r.card).power;
                 if selected || maximum && power > 0 {
                     sum.add(power)
                 }
@@ -152,7 +157,8 @@ impl Game {
         }
         let a = self.state.announcing.as_ref()?;
         let p = self.state.crew.as_ref()?.payment.as_ref()?;
-        let sum = self.crew_sum(false);
+        let query = self.characteristic_query();
+        let sum = self.crew_sum(&query, false);
         Some(CrewChoiceView {
             source: a.item.object,
             minimum: p.minimum,
@@ -167,12 +173,13 @@ impl Game {
         }
         let a = self.state.announcing.as_ref().unwrap();
         let p = self.state.crew.as_ref().unwrap().payment.as_ref().unwrap();
-        let maximum = self.crew_sum(true);
+        let query = self.characteristic_query();
+        let maximum = self.crew_sum(&query, true);
         for id in 0..self.state.objects.len() {
             let r = self.object_ref(id as CardId);
             if self.crew_eligible(a.item.object, a.item.controller, r) && !p.selected.contains(&r) {
                 let mut possible = maximum;
-                let power = self.stats(r.card).power;
+                let power = query.stats(r.card).power;
                 if power < 0 {
                     possible.add(power)
                 }
@@ -181,7 +188,7 @@ impl Game {
                 }
             }
         }
-        self.crew_sum(false).enough(p.minimum) && emit(Action::FinishCrew)
+        self.crew_sum(&query, false).enough(p.minimum) && emit(Action::FinishCrew)
     }
     pub(super) fn start_crew_payment(&mut self) -> bool {
         let Some(a) = &self.state.announcing else {
@@ -215,7 +222,7 @@ impl Game {
     }
     pub(super) fn finish_crew_payment(&mut self) {
         assert!(self.crew_valid());
-        let sum = self.crew_sum(false);
+        let sum = self.crew_sum(&self.characteristic_query(), false);
         let p = self.state.crew.as_mut().unwrap().payment.take().unwrap();
         assert!(sum.enough(p.minimum));
         let mut a = self.state.announcing.take().unwrap();

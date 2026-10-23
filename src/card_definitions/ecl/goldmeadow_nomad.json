@@ -8,5 +8,32 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "350a6fcbc32ba21357471562beed19429db62b4d8ec52f4fb5a15ff7829487f8"
   },
-  "physical_metadata_sha256": "a55c9329d84481f94d7d8c9ff19bcb95844713e9a679666bcddf8d5e3dcfccc4"
+  "physical_metadata_sha256": "a55c9329d84481f94d7d8c9ff19bcb95844713e9a679666bcddf8d5e3dcfccc4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GoldmeadowNomad.java",
+  "java_sha256": "6aebbf084bda436d22496c842292cc58208d85b42799404a927bca087826600e",
+  "rules_tests": "src/engine_ecl_inherited_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/KithkinGreenWhiteToken.java",
+      "sha256": "6c62a8c176b9def6a5ad2c9d6359b35ccb2703273f5db2ab2c7c191fd147d28e"
+    }
+  ],
+  "inherited_audit": "Full pinned Oracle and XMage body/dependencies read; existing typed behavior retained. Actual paid entry, timing, hybrid/convoke, changeling, token and zone scenarios plus existing shared rule suites establish evidence."
 }

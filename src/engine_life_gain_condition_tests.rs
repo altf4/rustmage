@@ -349,6 +349,10 @@ fn gain_only_suspension_cannot_commit_unrepresentable_continuous_stats() {
                 // life total is unchanged; no printed-body admission is implied.
                 let item = g.state.stack.pop().unwrap();
                 g.state.resolving = Some(Resolution {
+                    wheel: None,
+                    continuation: None,
+                    chosen_creature_type: None,
+                    chosen_color: None,
                     explore: None,
                     evidence: None,
                     item,
@@ -372,6 +376,7 @@ fn gain_only_suspension_cannot_commit_unrepresentable_continuous_stats() {
                     selection: None,
                     target_library: None,
                     search: None,
+                    legendary_search: None,
                     optional_searches: None,
                     choice: None,
                 });

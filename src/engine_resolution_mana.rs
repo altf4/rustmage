@@ -18,18 +18,21 @@ pub struct ResolutionPaymentView {
     pub exile: bool,
 }
 impl Game {
+    pub(super) fn stack_item_is_counterable(&self, victim: &SpellView) -> bool {
+        victim.kind != StackKind::Spell
+            || (!victim.source_card.cannot_be_countered()
+                && !self.controlled_spells_uncounterable(victim.controller, victim.source_card))
+    }
     /// Explicit counters share one check. Abilities are independent of their source spell.
     pub(super) fn counter_stack_item(&mut self, id: u64, exile: bool) -> bool {
         let Some(index) = self.state.stack.iter().position(|s| s.id == id) else {
             return false;
         };
         let victim = &self.state.stack[index];
+        if !self.stack_item_is_counterable(victim) {
+            return false;
+        }
         if victim.kind == StackKind::Spell {
-            if victim.source_card.cannot_be_countered()
-                || self.controlled_spells_uncounterable(victim.controller, victim.source_card)
-            {
-                return false;
-            }
             self.move_object(
                 victim.card,
                 if exile { Zone::Exile } else { Zone::Graveyard },
@@ -96,6 +99,57 @@ impl Game {
                         let grant = Box::new(AttachmentTriggerView {
                             grantor: giver.reference,
                             granting_card: giver.card,
+                            recipient: reference,
+                            defender: None,
+                            granted: true,
+                        });
+                        if self.queue_trigger_from(&source, index, Some(grant)) {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .related_stack = Some(StackLink {
+                                id: item.id,
+                                controller: item.controller,
+                            });
+                        }
+                    }
+                }
+            }
+            // The ordinary fast path omits an AbilityAvailabilityView. Explicit
+            // provider qualification remains necessary there; the generic queue
+            // additionally consults evaluated grants when ability removal exists.
+            for position in 0..self.state.static_sources.len() {
+                let id = self.state.static_sources[position];
+                let giver = &self.state.objects[id as usize];
+                if giver.controller != source.controller || !source.is_creature() {
+                    continue;
+                }
+                let granting_card = giver.card;
+                let grantor = self.object_ref(id);
+                for fragment in granting_card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|group| group.fragments.iter())
+                {
+                    let crate::cards::StaticAbilityFragment::ControlledCreatureTrigger {
+                        ability: index,
+                        other,
+                        nontoken,
+                    } = *fragment
+                    else {
+                        continue;
+                    };
+                    if (other && grantor==reference) || (nontoken && self.state.objects[reference.card as usize].is_token()) || !self.active_rule_fragment(id,|candidate|
+                        matches!(candidate,crate::cards::StaticAbilityFragment::ControlledCreatureTrigger {ability,other:candidate_other,nontoken:candidate_nontoken} if *ability==index && *candidate_other==other && *candidate_nontoken==nontoken)) {continue;}
+                    let index = usize::from(index);
+                    let ability = granting_card.triggers()[index];
+                    if ability.condition.is_granted()
+                        && ability.condition.event() == TriggerCondition::Ward
+                    {
+                        let grant = Box::new(AttachmentTriggerView {
+                            grantor,
+                            granting_card,
                             recipient: reference,
                             defender: None,
                             granted: true,

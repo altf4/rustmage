@@ -117,7 +117,7 @@ impl Game {
             return f.selected.first().copied().map(|r| (r, food_cost()));
         }
         if a.additional_cost()
-            .is_some_and(|s| matches!(s.kind, EffectChoiceKind::RemoveCreatureCounters(_)))
+            .is_some_and(|s| s.kind.creature_counter_requirement().is_some())
         {
             return None;
         }
@@ -147,13 +147,37 @@ impl Game {
         route: Option<ForageRoute>,
         purpose: mana_lots::Purpose,
     ) -> bool {
-        if route.is_none_or(|r| r == ForageRoute::ExileThree)
+        // Declare the route before targets, but choose/pay its physical
+        // witnesses after the locked-cost mana window. Sacrificing a linked
+        // mana source can add a graveyard card or return a new Food.
+        let closed_resources = !self.linked_funding_can_probe(goal.actor);
+        if !closed_resources {
+            for deferred_route in [ForageRoute::ExileThree, ForageRoute::Food] {
+                if route.is_none_or(|r| r == deferred_route)
+                    && self
+                        .linked_deferred_funding(
+                            goal.clone(),
+                            purpose,
+                            linked_funding::DeferredFundingCost::Forage {
+                                spec,
+                                route: deferred_route,
+                            },
+                        )
+                        .unwrap_or(false)
+                {
+                    return true;
+                }
+            }
+        }
+        if closed_resources
+            && route.is_none_or(|r| r == ForageRoute::ExileThree)
             && self.forage_graveyard_count(goal.actor) >= 3
             && self.can_fund_for(goal.clone(), purpose)
         {
             return true;
         }
-        if route.is_none_or(|r| r == ForageRoute::Food)
+        if closed_resources
+            && route.is_none_or(|r| r == ForageRoute::Food)
             && self.state.objects.iter().enumerate().any(|(id, _)| {
                 let r = self.object_ref(id as CardId);
                 self.additional_candidate(

@@ -1,16 +1,35 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+// Direct typed behavior from complete pinned Oracle and XMage sources.
+const GROUPS: &[StaticAbilityGroup] = &[
+    StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::FLYING,
+    StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::WITHER)],
+    },
+];
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Creature(6, 6),
+    keywords: Keywords::FLYING.union(Keywords::WITHER),
+    static_groups: GROUPS,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SpellCast {
+            relation: CastRelation::You,
+            filter: CastFilter::TargetCount {
+                filter: &CastFilter::InstantSorcery,
+                count: 1,
+            },
+            ordinal: None,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::MayCopyCastSpellWithKeywords(Keywords::WITHER)],
+    }],
+    extras: &CardExtras {
+        static_ability_groups: GROUPS,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

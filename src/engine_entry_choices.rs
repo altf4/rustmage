@@ -23,6 +23,15 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
     })
 }
 impl Game {
+    pub(super) fn source_chosen_creature_type(
+        &self,
+        source: ObjectRef,
+    ) -> Option<crate::cards::CreatureType> {
+        match self.entry_value(source) {
+            Some(EntryChoiceValue::CreatureType(kind)) => Some(kind),
+            _ => None,
+        }
+    }
     pub(super) fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
         self.state
             .entry_values
@@ -67,6 +76,11 @@ impl Game {
             EntryChoiceKind::Color => ChoiceColor::ALL
                 .into_iter()
                 .any(|c| emit(EntryChoiceValue::Color(c))),
+            EntryChoiceKind::CreatureTypes(types) => types.iter().any(|name| {
+                emit(EntryChoiceValue::CreatureType(
+                    crate::cards::CreatureType::from_name(name).unwrap(),
+                ))
+            }),
             EntryChoiceKind::CreatureType => crate::CREATURE_TYPES.iter().any(|name| {
                 emit(EntryChoiceValue::CreatureType(
                     crate::cards::CreatureType::from_name(name).unwrap(),
@@ -151,7 +165,8 @@ pub(super) fn modifier_bonus<W: CharacteristicWorld + ?Sized>(
     let provider = world.object(source);
     let object = world.object(target);
     if !world.printed_abilities_available(source)
-        || provider.zone != Zone::Battlefield
+        || (provider.zone != Zone::Battlefield
+            && !(provider.zone == Zone::Command && provider.card.is_emblem()))
         || object.zone != Zone::Battlefield
         || provider.controller != object.controller
         || world.kinds(target) & 1 == 0

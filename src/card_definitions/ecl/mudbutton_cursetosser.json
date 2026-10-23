@@ -3,10 +3,50 @@
   "catalogue_id": 2871,
   "oracle_id": "b63e5518-61f3-4cde-a799-5f3ee6aba70b",
   "facts_sha256": "695911b9be802f90380dfe1def5bca99429621a3d910ef7002bc0704233541a6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3e00ec8ae73dabb428b7ff79e76fe112dcd99eb1bf47d357176331bfa1c59cf1"
   },
-  "physical_metadata_sha256": "6ecd6a9a2d082b07d85288ab2681ec74204ad5884919e3cd7c5109b49d3ccfc6"
+  "physical_metadata_sha256": "6ecd6a9a2d082b07d85288ab2681ec74204ad5884919e3cd7c5109b49d3ccfc6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MudbuttonCursetosser.java",
+  "java_sha256": "d15faa8f6ff8e19b0cb5b759e5db1de3eef7d5e61bb6473935a36b0c57d8ebb4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+      "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBlockAbility.java",
+      "sha256": "e78337c6f4e0c6d913ed6085d1a91b4663b27f6985deb409d78303a0f565dda1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockSourceEffect.java",
+      "sha256": "8e20a86a1c2b5442b9281b9eb4910a3f341c30e5007204a29f1a68be3bdced20"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ]
 }

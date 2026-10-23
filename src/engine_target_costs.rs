@@ -133,6 +133,26 @@ impl Game {
         extra: Option<Target>,
         finished: bool,
     ) -> bool {
+        let selected_plan = plan.unwrap_or(a.plan);
+        let mut group = 0;
+        while let Some(spec) = selected_plan.group(group) {
+            let mut selected: Vec<_> = a
+                .item
+                .targets
+                .iter()
+                .filter(|b| b.group == group)
+                .map(|b| b.target)
+                .collect();
+            if group == a.group {
+                selected.extend(extra);
+            }
+            let closed =
+                group < a.group || group == a.group && finished || selected.len() == spec.max;
+            if !self.item_shared_type_targets_available(&a.item, spec, &selected, closed) {
+                return false;
+            }
+            group += 1;
+        }
         if a.item.kind != StackKind::Spell || a.item.source_card.target_cost_reduction().is_none() {
             return true;
         }

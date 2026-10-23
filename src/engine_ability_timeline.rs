@@ -11,14 +11,25 @@ pub struct AbilitySourceTimestampView {
 pub enum KeywordEffectOrigin {
     Resolution { source: ObjectRef },
     Suspected,
+    Counter { kind: CounterKind },
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct KeywordEffectView {
     pub recipient: ObjectRef,
     pub origin: KeywordEffectOrigin,
     pub keywords: Keywords,
+    pub hexproof_colors: u8,
     /// Resolution-created blocking restrictions are not granted abilities.
     pub rules: Keywords,
+    pub timestamp: u64,
+    pub expires_turn: Option<u32>,
+    /// This resolution-created grant expires immediately before the named player’s next turn.
+    pub expires_before_turn: Option<Player>,
+}
+/// A resolution-created layer-six removal; its source need not remain present.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct AbilityRemovalEffectView {
+    pub recipient: ObjectRef,
     pub timestamp: u64,
     pub expires_turn: Option<u32>,
 }
@@ -32,19 +43,25 @@ impl Card {
                         StaticAbilityFragment::RemoveAttachedAbilities
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
+                            | StaticAbilityFragment::AttachedChosenColor
+                            | StaticAbilityFragment::AttachmentManaBonus(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterKeywords { .. }
                             | StaticAbilityFragment::ChosenCreatureType
                             | StaticAbilityFragment::AttachedSubtype(..)
+                            | StaticAbilityFragment::AttachedAllCreatureTypes
+                            | StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
+                            | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentActivation(..)
                             | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                             | StaticAbilityFragment::DeathBaronLord
+                            | StaticAbilityFragment::ChosenCreatureKeywords(..)
                             | StaticAbilityFragment::LiveKeywords(..)
                     )
                 })
@@ -52,6 +69,32 @@ impl Card {
     }
 }
 impl Game {
+    pub(super) fn remove_abilities_exact(
+        &mut self,
+        recipients: &[ObjectRef],
+        duration: crate::cards::AnimationDuration,
+    ) {
+        let mut shared_timestamp = None;
+        for &recipient in recipients {
+            if !self.on_battlefield(recipient.card) || self.object_ref(recipient.card) != recipient
+            {
+                continue;
+            }
+            let timestamp = *shared_timestamp.get_or_insert_with(|| self.next_role_timestamp());
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .ability_removal_effects
+                .push(AbilityRemovalEffectView {
+                    recipient,
+                    timestamp,
+                    expires_turn: match duration {
+                        crate::cards::AnimationDuration::Permanent => None,
+                        crate::cards::AnimationDuration::EndOfTurn => Some(self.state.turn),
+                    },
+                });
+        }
+    }
     pub(super) fn register_ability_source(&mut self, id: CardId) {
         if !self.state.objects[id as usize].card.has_layer6_provider() {
             return;
@@ -88,7 +131,11 @@ impl Game {
             .iter()
             .any(|group| {
                 group.fragments.iter().any(|fragment| {
-                    matches!(fragment, StaticAbilityFragment::AttachedCharacteristics(..))
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::AttachedCharacteristics(..)
+                            | StaticAbilityFragment::AttachedChosenColor
+                    )
                 })
             })
         {
@@ -118,10 +165,22 @@ impl Game {
             state
                 .keyword_effects
                 .retain(|row| row.recipient != reference);
+            state
+                .ability_removal_effects
+                .retain(|row| row.recipient != reference);
         }
     }
     /// A cast-spending effect follows only this spell's actual stack-to-battlefield move.
     pub(super) fn grant_stack_keywords(&mut self, spell: ObjectRef, keywords: Keywords) {
+        self.grant_stack_keywords_expiring(spell, spell, keywords, Some(self.state.turn));
+    }
+    pub(super) fn grant_stack_keywords_expiring(
+        &mut self,
+        spell: ObjectRef,
+        source: ObjectRef,
+        keywords: Keywords,
+        expires_turn: Option<u32>,
+    ) {
         assert_eq!(self.object_ref(spell.card), spell);
         assert_eq!(self.state.objects[spell.card as usize].zone, Zone::Stack);
         if keywords == Keywords::NONE {
@@ -130,16 +189,17 @@ impl Game {
         let timestamp = self.next_role_timestamp();
         self.state
             .roles
-            .as_mut()
-            .unwrap()
+            .get_or_insert_with(Default::default)
             .keyword_effects
             .push(KeywordEffectView {
+                hexproof_colors: 0,
+                expires_before_turn: None,
                 recipient: spell,
-                origin: KeywordEffectOrigin::Resolution { source: spell },
+                origin: KeywordEffectOrigin::Resolution { source },
                 keywords,
                 rules: Keywords::NONE,
                 timestamp,
-                expires_turn: Some(self.state.turn),
+                expires_turn,
             });
     }
     pub(super) fn continue_stack_keywords(
@@ -166,6 +226,15 @@ impl Game {
         source: ObjectRef,
         keywords: Keywords,
     ) {
+        self.grant_keyword_effects_expiring(ids, source, keywords, Some(self.state.turn));
+    }
+    pub(super) fn grant_keyword_effects_expiring(
+        &mut self,
+        ids: &[CardId],
+        source: ObjectRef,
+        keywords: Keywords,
+        expires_turn: Option<u32>,
+    ) {
         if ids.is_empty() || keywords == Keywords::NONE {
             return;
         }
@@ -181,12 +250,14 @@ impl Game {
                 .unwrap()
                 .keyword_effects
                 .push(KeywordEffectView {
+                    hexproof_colors: 0,
+                    expires_before_turn: None,
                     recipient,
                     origin: KeywordEffectOrigin::Resolution { source },
                     keywords: keywords.without(keywords.resolution_rules()),
                     rules: keywords.resolution_rules(),
                     timestamp,
-                    expires_turn: Some(self.state.turn),
+                    expires_turn,
                 });
         }
     }
@@ -218,6 +289,8 @@ impl Game {
             .unwrap()
             .keyword_effects
             .push(KeywordEffectView {
+                hexproof_colors: 0,
+                expires_before_turn: None,
                 recipient,
                 origin: KeywordEffectOrigin::Suspected,
                 keywords: Keywords::MENACE.union(Keywords::CANT_BLOCK),
@@ -235,6 +308,9 @@ impl Game {
     }
     pub(super) fn expire_keyword_effects(&mut self) {
         if let Some(state) = &mut self.state.roles {
+            state
+                .ability_removal_effects
+                .retain(|row| row.expires_turn.is_none());
             state
                 .keyword_effects
                 .retain(|row| row.expires_turn.is_none());

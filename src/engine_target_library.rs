@@ -5,6 +5,7 @@ pub(super) struct TargetLibraryChoice {
     pub source: ObjectRef,
     pub controller: Player,
     pub targets: Vec<BoundTarget>,
+    pub top: LibraryDestination,
 }
 impl TargetLibraryChoice {
     pub fn bytes(&self) -> usize {
@@ -29,8 +30,24 @@ pub struct TargetLibraryMovement {
     pub destination: LibraryDestination,
 }
 impl Game {
+    fn library_target_object(&self, bound: BoundTarget) -> Option<ObjectRef> {
+        match bound.target {
+            Target::Card(_) | Target::Spell(_) => bound.object,
+            Target::Stack(id) => self
+                .state
+                .stack
+                .iter()
+                .find(|item| {
+                    item.id == id
+                        && item.kind == StackKind::Spell
+                        && bound.object.is_none_or(|object| object == item.object)
+                })
+                .map(|item| item.object),
+            Target::Player(_) => None,
+        }
+    }
     pub(super) fn valid_library_target(&self, item: &SpellView, bound: BoundTarget) -> bool {
-        matches!(bound.target, Target::Card(_))
+        self.library_target_object(bound).is_some()
             && self.same_target_object(bound)
             && self
                 .target_spec(item)
@@ -43,9 +60,26 @@ impl Game {
         object: ObjectRef,
         destination: LibraryDestination,
     ) {
+        self.move_object_to_library(source, object, destination, true);
+    }
+    /// A private hand selection must never publish its card in the historical
+    /// targeted-movement record. Keep the old public record and top knowledge.
+    pub(super) fn move_private_hand_to_bottom(&mut self, source: ObjectRef, object: ObjectRef) {
+        assert_eq!(self.state.objects[object.card as usize].zone, Zone::Hand);
+        self.move_object_to_library(source, object, LibraryDestination::Bottom, false);
+    }
+    fn move_object_to_library(
+        &mut self,
+        source: ObjectRef,
+        object: ObjectRef,
+        destination: LibraryDestination,
+        public: bool,
+    ) {
         assert!(matches!(
             destination,
-            LibraryDestination::Top | LibraryDestination::Bottom
+            LibraryDestination::Top
+                | LibraryDestination::Bottom
+                | LibraryDestination::SecondFromTop
         ));
         let owner = self.state.objects[object.card as usize].owner;
         let card = self.state.objects[object.card as usize].card;
@@ -54,11 +88,20 @@ impl Game {
         let event = self.move_object(object.card, Zone::Library);
         if event.moved && event.destination == Zone::Library {
             let library = &mut self.state.players[owner.index()].library;
-            if !token && destination == LibraryDestination::Bottom {
+            if !token && destination != LibraryDestination::Top {
                 assert_eq!(library.pop(), Some(object.card));
-                library.insert(0, object.card);
+                let position = if destination == LibraryDestination::Bottom {
+                    0
+                } else {
+                    library.len().saturating_sub(1)
+                };
+                library.insert(position, object.card);
             }
-            if destination == LibraryDestination::Top && !token {
+            if !token
+                && (destination == LibraryDestination::Top
+                    || (destination == LibraryDestination::SecondFromTop
+                        && library.last() == Some(&object.card)))
+            {
                 self.remember_library_top(owner, event.after);
             } else if let Some(prior) = prior_top
                 && self.state.players[owner.index()].library.last() == Some(&prior.card)
@@ -68,22 +111,37 @@ impl Game {
             }
             // Publish only this targeted public movement. This is a historical
             // record; later private looks, rearrangements and draws leave it alone.
-            self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
-                source,
-                card,
-                target_before: object,
-                target_after: event.after,
-                owner,
-                destination,
-            }));
+            if public {
+                self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {
+                    source,
+                    card,
+                    target_before: object,
+                    target_after: event.after,
+                    owner,
+                    destination,
+                }));
+            }
         }
     }
     pub(super) fn start_target_library(&mut self, item: &SpellView) -> bool {
+        self.start_target_library_at(item, LibraryDestination::Top)
+    }
+    pub(super) fn start_target_library_at(
+        &mut self,
+        item: &SpellView,
+        top: LibraryDestination,
+    ) -> bool {
         let targets = item
             .targets
             .iter()
             .copied()
-            .filter(|&bound| self.valid_library_target(item, bound))
+            .filter_map(|mut bound| {
+                if !self.valid_library_target(item, bound) {
+                    return None;
+                }
+                bound.object = self.library_target_object(bound);
+                Some(bound)
+            })
             .collect::<Vec<_>>();
         if targets.is_empty() {
             return false;
@@ -93,6 +151,7 @@ impl Game {
                 source: item.target_source(),
                 controller: item.controller,
                 targets,
+                top,
             }));
         self.advance_target_library()
     }

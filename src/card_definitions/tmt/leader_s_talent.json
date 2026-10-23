@@ -3,10 +3,82 @@
   "catalogue_id": 2462,
   "oracle_id": "134430b7-d566-485a-bd5c-7db8a285f4ca",
   "facts_sha256": "b4db3ef417946447099acfb0c536579f3f1f2f36b2881cf3a04df31fb4dedf11",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "595f4cfda12dea87e1210caa3464851b40e734bd0807b5ddea555388b8f52f73"
   },
-  "physical_metadata_sha256": "b73f0ec5868ddb2536f108e81b6ffa9e292cc8f569d757d2d5adabfd822ffe7e"
+  "physical_metadata_sha256": "b73f0ec5868ddb2536f108e81b6ffa9e292cc8f569d757d2d5adabfd822ffe7e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeadersTalent.java",
+  "java_sha256": "5a37c30f76377889a1453abac7bf812f7202441df554db7f44ede9c6fedf53a0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ClassLevelAbility.java",
+      "sha256": "fb46d20a239b9dc3f6afb4f16ebebe9502ee5d8bd5c34fd8f1bd43c039748d28"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainClassAbilitySourceEffect.java",
+      "sha256": "bc5041794cf52d768818df17da1cd5ba5813a11a4135e92a01349b4f1d8347ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldAllTriggeredAbility.java",
+      "sha256": "5fc6f3172c938ccf522144ccae89825dd5f693b50cdb974e9a73046848369c58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CounterAnyPredicate.java",
+      "sha256": "d9b89c5d487a1c6aede3f90e5edf474311703b231441a01a3a30b10107eb9434"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+      "sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ClassReminderAbility.java",
+      "sha256": "8dc32040fc68007c96ef75000bf14278cdaa04bb0998d663f2f80b86f2411ea4"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "716.2",
+      "716.3",
+      "601.2",
+      "603.6c"
+    ],
+    "rulings_url": "https://magic.wizards.com/en/news/feature/teenage-mutant-ninja-turtles-release-notes",
+    "note": "Class levels are exact-permanent designations, not counters or copiable values. Gained triggers are qualified at the event."
+  }
 }

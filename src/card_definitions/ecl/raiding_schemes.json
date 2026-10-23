@@ -3,10 +3,64 @@
   "catalogue_id": 3346,
   "oracle_id": "854cac11-9a22-4dea-8c1b-c49a4858a754",
   "facts_sha256": "fb6b34fa2321914e48a27ccca2e15d8c5fca8833594d307b98c54c9dfdaa5a98",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "948ec05ddd697c96bcbbf092aea227211f3ae0dff9257750a9b6a3950b709836"
   },
-  "physical_metadata_sha256": "85fc3d97145829ca2beb81ce9026ca1b887408ed81685f38667093b49be605df"
+  "physical_metadata_sha256": "85fc3d97145829ca2beb81ce9026ca1b887408ed81685f38667093b49be605df",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RaidingSchemes.java",
+  "java_sha256": "9f650941806165665c0582b3adbb1e672cd3dfe953d60cccc999579892c6e758",
+  "rules_tests": "src/engine_ecl_raiding_tests.rs",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConspireAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "821788a45aa9f4496ab0aca6a406110be9be5416452d81d9fc20e070667aa0fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/SharesColorWithSourcePredicate.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fa234c5209d24b0ae62743ce5a401dba3bf7f5a52931070c8f13d757730c1e6c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CastSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "47edf1f8fa0fea60841309f6698825a1b6da0427d3580c91c750763fbe9ae22d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopySourceSpellEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5bd130232d8dd64f8aa8049cf78c1f87a4d877c2ff4b02668e5b3c6b85e4bc95"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    }
+  ],
+  "rules_notes": {
+    "source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "rules": [
+      "601.2b",
+      "601.2g",
+      "601.2h",
+      "702.78a",
+      "702.78b",
+      "707.10",
+      "111.13"
+    ],
+    "interpretation": "Each instance is a separate optional additional cost and cast trigger. Mana abilities precede cost payment; printed costs and simultaneous two-creature tap payments may be ordered in either legal nonmana order. Exact owned completion filters declarations and payment prefixes. Permanent spell copies become tokens on resolution without token-creation events."
+  }
 }

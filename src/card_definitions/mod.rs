@@ -41,6 +41,11 @@ impl CardRules {
             !matches!(self.effect, Effect::Unsupported),
             "complete authored card lacks behavior"
         );
+        assert!(
+            self.extras.additional_cost.is_none()
+                || self.extras.flashback_additional_cost.is_none(),
+            "separate printed and flashback nonmana costs require an explicit combined recipe"
+        );
         // A printed mana component opens the mana-ability payment window.
         // Reject zero-mana template flags copied into newly authored paid abilities.
         let mut index = 0;
@@ -88,6 +93,25 @@ impl CardRules {
                 _ => panic!("modal costs require modal behavior"),
             }
         }
+        if !self.extras.mode_optional_additional_paid.is_empty() {
+            assert!(
+                matches!(
+                    self.extras.additional_cost,
+                    Some(AdditionalCost {
+                        kind: EffectChoiceKind::OptionalBlightCost(_),
+                        ..
+                    })
+                ),
+                "conditional modes require an optional additional cost"
+            );
+            match self.effect {
+                Effect::Modal(modes) => assert!(
+                    modes.len() == self.extras.mode_optional_additional_paid.len(),
+                    "conditional modal intent table mismatch"
+                ),
+                _ => panic!("conditional modes require modal behavior"),
+            }
+        }
         self.effect
     }
 }
@@ -113,6 +137,11 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub as_enters_copy_creature: bool,
+    pub transform: Option<TransformSpec>,
+    /// Exact optional-additional-cost intent for each predeclared modal combination.
+    pub mode_optional_additional_paid: &'static [bool],
+    pub flash_if_control_subtype: Option<&'static str>,
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
@@ -123,6 +152,7 @@ pub(super) struct CardExtras {
     pub static_modifiers: &'static [StaticModifier],
     pub equipment: Option<EquipmentSpec>,
     pub aura: Option<AuraSpec>,
+    pub enchant_basic: bool,
     pub static_ability_groups: &'static [StaticAbilityGroup],
     pub live_static_effects: &'static [LiveStaticEffect],
     pub tiered_costs: Option<&'static [ManaCost]>,
@@ -136,6 +166,8 @@ pub(super) struct CardExtras {
     pub omen_spell: Option<Card>,
     pub omen_parent: Option<Card>,
     pub warp_cost: Option<ManaCost>,
+    pub sneak_costs: &'static [ManaCost],
+    pub class_level_activations: &'static [(u16, u8)],
     pub vehicle_stats: Option<Stats>,
     pub replacement_effects: &'static [ReplacementSpec],
     pub attached_subtype: Option<&'static str>,
@@ -153,15 +185,18 @@ pub(super) struct CardExtras {
     pub x_symbols: u8,
     pub x_entry_counters: bool,
     pub kicker_cost: Option<ManaCost>,
+    pub kicker_additional_cost: Option<AdditionalCost>,
     pub gift: Option<GiftSpec>,
     pub kicked_entry_counters: u16,
     pub counter_keyword_grants: &'static [(CounterKind, Keywords)],
     pub offspring_cost: Option<ManaCost>,
     pub offspring_copy: Option<Card>,
     pub flashback_cost: Option<ManaCost>,
+    pub flashback_additional_cost: Option<AdditionalCost>,
     pub target_cost_reduction: Option<&'static TargetSpellReduction>,
     pub cast_timing_grants: &'static [CastFilter],
     pub cost_reductions: &'static [SpellReduction],
+    pub evoke_costs: &'static [ManaCost],
     pub cost_alternatives: &'static [ManaCost],
     pub cost_alternative_guard: Option<StepGuard>,
     pub mana_alternative_replaces_additional: bool,
@@ -179,6 +214,9 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        transform: None,
+        mode_optional_additional_paid: &[],
+        flash_if_control_subtype: None,
         zone_replacement: None,
         opening_hand_battlefield: false,
         activation_put_counters: &[],
@@ -186,11 +224,13 @@ impl CardExtras {
         cast_entry_counters: &[],
         hand_cast_entry_counters: &[],
         named_activation_lock: false,
+        as_enters_copy_creature: false,
         entry_choice: None,
         chosen_entry_counters: None,
         static_modifiers: &[],
         equipment: None,
         aura: None,
+        enchant_basic: false,
         static_ability_groups: &[],
         live_static_effects: &[],
         tiered_costs: None,
@@ -204,6 +244,8 @@ impl CardExtras {
         omen_spell: None,
         omen_parent: None,
         warp_cost: None,
+        sneak_costs: &[],
+        class_level_activations: &[],
         vehicle_stats: None,
         replacement_effects: &[],
         attached_subtype: None,
@@ -221,15 +263,18 @@ impl CardExtras {
         x_symbols: 0,
         x_entry_counters: false,
         kicker_cost: None,
+        kicker_additional_cost: None,
         gift: None,
         kicked_entry_counters: 0,
         counter_keyword_grants: &[],
         offspring_cost: None,
         offspring_copy: None,
         flashback_cost: None,
+        flashback_additional_cost: None,
         target_cost_reduction: None,
         cast_timing_grants: &[],
         cost_reductions: &[],
+        evoke_costs: &[],
         cost_alternatives: &[],
         cost_alternative_guard: None,
         mana_alternative_replaces_additional: false,

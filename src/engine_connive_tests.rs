@@ -78,6 +78,10 @@ fn program(g: &mut Game, source: CardId, code: &'static [Instruction], targets: 
         .map(|&id| g.bind_target(Target::Card(id)))
         .collect();
     g.state.resolving = Some(Resolution {
+        wheel: None,
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,
@@ -94,6 +98,7 @@ fn program(g: &mut Game, source: CardId, code: &'static [Instruction], targets: 
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
         mana_payment: None,

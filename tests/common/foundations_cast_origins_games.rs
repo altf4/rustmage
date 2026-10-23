@@ -158,7 +158,7 @@ fn foundations_four_cast_origins_natural_games_and_owned_permissions() {
                     && o.card.name() == "Vizier of the Menagerie"));
                 library_seats.insert(item.controller.index());
             }
-            if cast.stash_origin {
+            if cast.stash_origin() {
                 assert_eq!(cast.origin, Zone::Exile);
                 stash_seats.insert(item.controller.index());
             }

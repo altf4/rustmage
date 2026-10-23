@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "status": "incomplete checkpoint",
+  "source_revision": "8154b4bbfd35bb5f625212fcbfacd05a1b562df4",
+  "scope": {
+    "total": 195,
+    "admitted": 136,
+    "gated": 59,
+    "unresolved": 0,
+    "inherited_admission": 71,
+    "inherited_audits_completed": 40,
+    "newly_tested_candidates": 65,
+    "independently_reviewed": 0,
+    "upstream_merged_new_cards": 0
+  },
+  "newly_tested_cards": [
+    "Baxter Stockman",
+    "Go Ninja Go",
+    "Groundchuck & Dirtbag",
+    "Ice Cream Kitty",
+    "Manhole Missile",
+    "Metalhead",
+    "Mona Lisa, Science Geek",
+    "Nobody",
+    "Purple Dragon Punks",
+    "Spicy Oatmeal Pizza",
+    "Tainted Treats",
+    "Turtle Lair",
+    "Weather Maker"
+  ],
+  "validation": {
+    "command": "python3 scripts/validate.py --release --python smoke",
+    "terminal": true,
+    "success": true,
+    "seconds": 652.546254218003,
+    "files_verified": 11876,
+    "changed_inputs": [],
+    "report": "<cache>/rustmage-validation-g8iy1doc/report/result.json",
+    "report_sha256": "e90c4ee5b8b0da40e69c69925567badb3193ea45da4f97eea4508348a634da70",
+    "phases": [
+      {
+        "index": 1,
+        "exit": 0,
+        "seconds": 2.2947670299909078,
+        "log": "<cache>/rustmage-validation-g8iy1doc/report/0.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 2,
+        "exit": 0,
+        "seconds": 0.9528744340059347,
+        "log": "<cache>/rustmage-validation-g8iy1doc/report/1.log",
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "index": 3,
+        "exit": 0,
+        "seconds": 0.4538113680027891,
+        "log": "<cache>/rustmage-validation-g8iy1doc/report/2.log",
+        "log_sha256": "b8b3669d9dec4448d87fda18cbe87dfdd208083c8d5a98d1e05197fa5780e099"
+      },
+      {
+        "index": 4,
+        "exit": 0,
+        "seconds": 8.483179949020268,
+        "log": "<cache>/rustmage-validation-g8iy1doc/report/3.log",
+        "log_sha256": "5ea4a7f2a2349f35cfa9382e7b44b998187c5394c1c379ce61e3af41afd51aeb"
+      },
+      {
+        "index": 5,
+        "exit": 0,
+        "seconds": 47.806034091016045,
+        "log": "<cache>/rustmage-validation-g8iy1doc/report/4.log",
+        "log_sha256": "e2dded15f6dfbefa2d8ec5bc7e99b6d5a8713506adc7447f07b63340d2f43c82"
+      },
+      {
+        "index": 6,
+        "exit": 0,
+        "seconds": 493.8244699499919,
+        "log": "<cache>/rustmage-validation-g8iy1doc/report/5.log",
+        "log_sha256": "10b775bed6b1fadff080ddd6bab0bdaa4ab490ee10a50ffd2ae1175b0dc45380"
+      },
+      {
+        "index": 7,
+        "exit": 0,
+        "seconds": 97.89767959099845,
+        "log": "<cache>/rustmage-validation-g8iy1doc/report/6.log",
+        "log_sha256": "2082268c7fa24bb70e71a58a20a0614d4714f0ef89797a4d45080c3c3e7e7d70"
+      },
+      {
+        "index": 8,
+        "exit": 0,
+        "seconds": 0.3259288739936892,
+        "log": "<cache>/rustmage-validation-g8iy1doc/report/7.log",
+        "log_sha256": "86d46c3437d72e7879a0fd541df7b02fa9cfbd921a87e1ba1fb5af12fb26dc15"
+      },
+      {
+        "index": 9,
+        "exit": 0,
+        "seconds": 0.40797853798721917,
+        "log": "<cache>/rustmage-validation-g8iy1doc/report/8.log",
+        "log_sha256": "072dd2435e283362390420c56bc4ce77cc278a9c2ed1022c0bb127de6bad01b5"
+      }
+    ],
+    "shared_libraries": {
+      "<cache>/rustmage-validation-g8iy1doc/release/librustmage.so": "fb9c26ec14cc2e2beb39ceedc2b918aa4dea9e53b8b984bfb83f0bcf86cc84f8",
+      "<cache>/rustmage-validation-g8iy1doc/release/deps/librustmage.so": "fb9c26ec14cc2e2beb39ceedc2b918aa4dea9e53b8b984bfb83f0bcf86cc84f8",
+      "<cache>/rustmage-validation-g8iy1doc/release/deps/libserde_derive-deeeff55f06a54fe.so": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2",
+      "<cache>/rustmage-validation-g8iy1doc/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-g8iy1doc/release-test/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-g8iy1doc/release-test/deps/librustmage.so": "d612d4f2b8e1696a71a00e38a3dc5bccfe4d55a0ef932b73ad10992ba9972bb6"
+    },
+    "cleaned_allocated_bytes": 862584832
+  },
+  "producing_host_library_manifest": {
+    "path": "<cache>/rustmage-tmt-parallel-library-paths.json",
+    "sha256": "1a43b46e14cab6c7898b7802e0224ffff686c8ff869ecd463ae2a295451af587"
+  },
+  "resource_guard": {
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 652.8456301360275,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 3914305536,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "report": "<cache>/rustmage-build-reports/4cf0280048e34ac086edcd63b9791e0f.json",
+    "report_sha256": "375e8e7f5c4c5652f143c3c5d6e822be061c54ec698b83a74876bb2b8ac11410"
+  },
+  "rules_tests": {
+    "library_passed": 3477,
+    "ignored": 1,
+    "sneak_scenarios": 53,
+    "python_smoke": 7,
+    "tmt_scenarios": 226,
+    "class_scenarios": 21,
+    "ninja_scenarios": 23,
+    "class_family_scenarios": 44,
+    "departure_scenarios": 21,
+    "mutagen_scenarios": 16,
+    "land_audit_scenarios": 5,
+    "inherited_basic_land_shared_scenarios": 1
+  },
+  "freeform_smoke_regression": {
+    "clone_ns": 288.72264,
+    "decisions": 49832,
+    "decisions_per_second": 178453.66262928265,
+    "games": 100,
+    "games_per_second": 358.1105767966019,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21160,
+    "max_decisions_per_game": 1129,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 134.68482,
+    "seconds": 0.279243358,
+    "workload": "Existing Freeform regression smoke, not TMT acceptance",
+    "seed_range": [
+      0,
+      99
+    ],
+    "policy": "rustmage::policy::smoke_index",
+    "decks": {
+      "Mountain": 24,
+      "Lightning Bolt": 20,
+      "Goblin Piker": 12,
+      "Hill Giant": 4
+    },
+    "hardware": "Intel Core Ultra 5 335",
+    "compiler": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "profile": "release, opt-level 3, thin LTO",
+    "clone_restore_iterations": 100000,
+    "source": "8154b4bbfd35bb5f625212fcbfacd05a1b562df4"
+  },
+  "implementation_throughput": {
+    "start": "2026-10-23T14:03:46.605594+00:00",
+    "end": "2026-10-23T14:34:04.724377+00:00",
+    "seconds": 1818.118783,
+    "newly_verified_physical_cards": 13,
+    "cards_per_hour": 25.740892420008624,
+    "scope": "Elapsed continuation interval includes source intake, implementation, repairs, future-card preparation and validation; excludes inherited coverage",
+    "inherited_cards_audited": 30
+  },
+  "tmt_simulation_throughput": null,
+  "tmt_full_game_acceptance": "pending",
+  "reviews": [],
+  "known_external_blockers": [],
+  "next_action": "Implement Mutagen Man and Ray Fillet activation-cost mechanics; integrate isolated mana/spell authors and inherited audits after their focused tests; continue remaining cards and set-level acceptance.",
+  "inherited_audited_cards": [
+    "Agent Bishop, Man in Black",
+    "Anchovy & Banana Pizza",
+    "April O'Neil, Kunoichi Trainee",
+    "April, Reporter of the Weird",
+    "Bespoke Bō",
+    "Bot Bashing Time",
+    "Buzz Bots",
+    "Casey Jones, Jury-Rig Justiciar",
+    "Cowabunga!",
+    "Crustacean Commando",
+    "Death in the Family",
+    "Donatello, Turtle Techie",
+    "Donatello, Way with Machines",
+    "Dream Beavers",
+    "EPF Point Squad",
+    "East Wind Avatar",
+    "Foot Elite",
+    "Frog Butler",
+    "Genghis Frog",
+    "Grounded for Life",
+    "Guac & Marshmallow Pizza",
+    "Hamato Guardian Stance",
+    "Hard-Won Jitte",
+    "Henchbots",
+    "Jennika, Bad Apple Big Sister",
+    "Krang, Utrom Warlord",
+    "Lessons from Life",
+    "Make Your Move",
+    "Mechanized Ninja Cavalry",
+    "Michelangelo, Weirdness to 11"
+  ]
+}

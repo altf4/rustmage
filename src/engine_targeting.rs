@@ -14,17 +14,14 @@ pub(super) struct Announcement {
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
+    pub mana_tap_bonus: Option<Box<mana_tap_bonus::ManaTapBonus>>,
     pub additional: Option<ObjectRef>,
     #[allow(
         clippy::box_collection,
         reason = "Rare growable tap selections use one pointer in ordinary announcements"
     )]
     pub additional_group: Option<Box<Vec<ObjectRef>>>,
-    #[allow(
-        clippy::box_collection,
-        reason = "Rare growable counter selections use one pointer in ordinary announcements"
-    )]
-    pub creature_counter_cost: Option<Box<Vec<(ObjectRef, CounterKind)>>>,
+    pub creature_counter_cost: Option<Box<growth_cost::CreatureCounterSelection>>,
     pub forage: Option<Box<forage::ForageSelection>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
@@ -38,11 +35,34 @@ impl Announcement {
                 if self
                     .item
                     .cast
+                    .is_some_and(|c| c.method == CastMethod::Sneak) =>
+            {
+                Some(sneak::RETURN_COST)
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
                     .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost) =>
             {
                 Some(Game::creature_counter_spec(
                     self.item.source_card.graveyard_counter_cost().unwrap(),
                 ))
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|cast| cast.method == CastMethod::Flashback)
+                    && self.item.source_card.flashback_additional_cost().is_some() =>
+            {
+                self.item.source_card.flashback_additional_cost()
+            }
+            StackKind::Spell
+                if self.item.cast.is_some_and(|c| c.kicker == Some(true))
+                    && self.item.source_card.kicker_additional_cost().is_some() =>
+            {
+                self.item.source_card.kicker_additional_cost()
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.evidence == Some(true)) => Some(
                 evidence::cost(self.item.source_card.collect_evidence_cost().unwrap()),
@@ -52,18 +72,48 @@ impl Announcement {
             }
             StackKind::Spell
                 if self
-                    .item
-                    .cast
-                    .is_some_and(|c| c.method == CastMethod::Normal)
-                    && self.cost.is_some_and(|cost| {
-                        self.item
-                            .source_card
-                            .mana_alternative_replaces_additional(cost)
-                    }) =>
+                    .cost
+                    .is_some_and(|cost| self.mana_route_replaces_additional(cost)) =>
             {
                 None
             }
-            StackKind::Spell => self.item.source_card.additional_cost(),
+            StackKind::Spell => self.item.source_card.additional_cost().and_then(|spec| {
+                if spec.kind == EffectChoiceKind::BlightXCost {
+                    return Some(AdditionalCost {
+                        kind: EffectChoiceKind::BlightCost(self.item.x.unwrap_or(0)),
+                        ..spec
+                    });
+                }
+                if let EffectChoiceKind::OptionalBeholdType(amount) = spec.kind {
+                    return self
+                        .item
+                        .cast
+                        .filter(|cast| cast.optional_additional == Some(true))
+                        .map(|_| AdditionalCost {
+                            kind: EffectChoiceKind::BeholdMany(amount),
+                            filter: SacrificeFilter {
+                                subtype: Some(
+                                    self.item
+                                        .source_chosen_type
+                                        .expect("declared behold type")
+                                        .name(),
+                                ),
+                                ..spec.filter
+                            },
+                        });
+                }
+                if let EffectChoiceKind::OptionalBlightCost(amount) = spec.kind {
+                    self.item
+                        .cast
+                        .filter(|cast| cast.optional_additional == Some(true))
+                        .map(|_| AdditionalCost {
+                            kind: EffectChoiceKind::BlightCost(amount),
+                            ..spec
+                        })
+                } else {
+                    Some(spec)
+                }
+            }),
             StackKind::ActivatedAbility { ability } => {
                 self.item.source_card.activations()[ability as usize]
                     .cost
@@ -73,75 +123,158 @@ impl Announcement {
             | StackKind::CopyEndStepSacrifice
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::Conspire
             | StackKind::DelayedWarpExile => None,
         }
     }
 
-    pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
-        let options = match self.item.kind {
-            StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
-                std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
-                    .chain([].iter().copied())
-            }
-            StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|cast| cast.method == CastMethod::Flashback) =>
-            {
-                std::iter::once(self.item.source_card.flashback_cost().unwrap())
-                    .chain([].iter().copied())
-            }
-            StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| matches!(c.method, CastMethod::Plot | CastMethod::Free)) =>
-            {
-                std::iter::once(ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
+    fn method_base_cost(&self) -> ManaCost {
+        let card = self.item.source_card;
+        match self.item.cast.map(|cast| cast.method) {
+            Some(CastMethod::Sneak) => self.sneak_base_costs().next().expect("captured Sneak cost"),
+            Some(CastMethod::Warp) => card.warp_cost().expect("fixed Warp cost"),
+            Some(CastMethod::Flashback) => card.flashback_cost().unwrap(),
+            Some(CastMethod::Plot | CastMethod::Free) => ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            },
+            _ => ManaCost {
+                colored: card.cost().0,
+                generic: card.cost().1,
+            },
+        }
+    }
+    pub(super) fn sneak_base_costs(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        let printed = self.item.source_card.sneak_costs();
+        printed.iter().copied().chain(
+            self.item
+                .sneak
+                .as_ref()
+                .and_then(|s| s.granted_cost)
+                .filter(|c| !printed.contains(c)),
+        )
+    }
+    fn additional_mana_route(&self, alternative: ManaCost) -> Option<ManaCost> {
+        self.additional_mana_route_for_base(alternative, self.method_base_cost())
+    }
+    fn additional_mana_route_for_base(
+        &self,
+        alternative: ManaCost,
+        mut total: ManaCost,
+    ) -> Option<ManaCost> {
+        let printed = self.item.source_card.cost();
+        for (i, component) in total.colored.iter_mut().enumerate() {
+            *component =
+                component.checked_add(alternative.colored[i].checked_sub(printed.0[i])?)?;
+        }
+        total.generic = total
+            .generic
+            .checked_add(alternative.generic.checked_sub(printed.1)?)?;
+        Some(total)
+    }
+    fn modified_cost(&self, cost: ManaCost) -> Option<ManaCost> {
+        Game::with_tiered_mana(
+            Game::with_flash_surcharge(
+                cost,
+                self.item.source_card,
+                self.item.cast.is_some_and(|cast| cast.flash_surcharge),
+            ),
+            &self.item,
+        )
+    }
+    pub(super) fn mana_route_replaces_additional(&self, cost: ManaCost) -> bool {
+        self.item.kind == StackKind::Spell
+            && self
+                .item
+                .source_card
+                .additional_mana_alternatives()
+                .iter()
+                .any(|alternative| {
+                    if self
+                        .item
+                        .cast
+                        .is_some_and(|c| c.method == CastMethod::Sneak)
+                    {
+                        self.sneak_base_costs().any(|base| {
+                            self.additional_mana_route_for_base(*alternative, base)
+                                .and_then(|route| self.modified_cost(route))
+                                == Some(cost)
+                        })
+                    } else {
+                        self.additional_mana_route(*alternative)
+                            .and_then(|route| self.modified_cost(route))
+                            == Some(cost)
+                    }
                 })
-                .chain([].iter().copied())
-            }
-            StackKind::Spell => self.item.source_card.cost_options(),
-            StackKind::ActivatedAbility { ability } => self.item.source_card.activations()
-                [ability as usize]
-                .cost
-                .mana_options(),
-            StackKind::TriggeredAbility { .. }
-            | StackKind::CopyEndStepSacrifice
-            | StackKind::DelayedSacrifice
-            | StackKind::DelayedReturn
-            | StackKind::DelayedWarpExile => {
-                unreachable!("triggered ability has no activation cost")
-            }
-        };
-        options
-            .filter(|cost| {
-                self.item
+    }
+    pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        let card = self.item.source_card;
+        let fixed_method = self.item.cast.is_some_and(|cast| {
+            matches!(
+                cast.method,
+                CastMethod::Warp | CastMethod::Flashback | CastMethod::Plot | CastMethod::Free
+            )
+        });
+        let options = match self.item.kind {
+            StackKind::Spell
+                if self
+                    .item
                     .cast
-                    .is_none_or(|cast| cast.method != CastMethod::GrantedFlashback)
-                    || (self.item.source_card.cost_alternative_guard().is_none()
-                        && !self
-                            .item
-                            .source_card
-                            .mana_alternative_replaces_additional(*cost))
-                    || *cost
-                        == ManaCost {
-                            colored: self.item.source_card.cost().0,
-                            generic: self.item.source_card.cost().1,
-                        }
+                    .is_some_and(|c| c.method == CastMethod::Sneak) =>
+            {
+                std::iter::once(self.method_base_cost())
+                    .chain(card.sneak_costs().get(1..).unwrap_or(&[]).iter().copied())
+            }
+            StackKind::Spell if fixed_method => std::iter::once(self.method_base_cost())
+                .chain(card.additional_mana_alternatives().iter().copied()),
+            StackKind::Spell => card.cost_options(),
+            StackKind::ActivatedAbility { ability } => {
+                card.activations()[ability as usize].cost.mana_options()
+            }
+            _ => unreachable!("triggered ability has no activation cost"),
+        };
+        let sneak = self
+            .item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::Sneak);
+        let granted = self
+            .item
+            .sneak
+            .as_ref()
+            .and_then(|s| s.granted_cost)
+            .filter(|c| !card.sneak_costs().is_empty() && !card.sneak_costs().contains(c));
+        options
+            .chain(granted)
+            .enumerate()
+            .flat_map(move |(index, cost)| {
+                let extras = if sneak {
+                    card.additional_mana_alternatives()
+                } else {
+                    &[]
+                };
+                std::iter::once(Some(cost))
+                    .chain(extras.iter().map(move |&alternative| {
+                        self.additional_mana_route_for_base(alternative, cost)
+                    }))
+                    .filter_map(move |cost| cost.map(|cost| (index, cost)))
             })
-            .filter_map(|cost| {
-                Game::with_tiered_mana(
-                    Game::with_flash_surcharge(
-                        cost,
-                        self.item.source_card,
-                        self.item.cast.is_some_and(|c| c.flash_surcharge),
-                    ),
-                    &self.item,
-                )
+            .filter_map(move |(index, cost)| {
+                if self.item.kind == StackKind::Spell
+                    && self
+                        .item
+                        .cast
+                        .is_some_and(|cast| cast.method == CastMethod::GrantedFlashback)
+                    && card.cost_alternative_guard().is_some()
+                    && cost != self.method_base_cost()
+                {
+                    return None;
+                }
+                let cost = if fixed_method && index > 0 {
+                    self.additional_mana_route(cost)?
+                } else {
+                    cost
+                };
+                self.modified_cost(cost)
             })
     }
     pub(super) fn needs_evidence(&self) -> bool {
@@ -149,6 +282,19 @@ impl Announcement {
             && self.item.kind == StackKind::Spell
             && self.item.source_card.collect_evidence_cost().is_some()
             && self.item.cast.is_some_and(|c| c.evidence.is_none())
+    }
+    pub(super) fn needs_optional_additional(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self
+                .item
+                .source_card
+                .additional_cost()
+                .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::OptionalBlightCost(_)))
+            && self
+                .item
+                .cast
+                .is_some_and(|cast| cast.optional_additional.is_none())
     }
     pub(super) fn needs_bargain(&self) -> bool {
         self.pay_window
@@ -179,6 +325,13 @@ impl Announcement {
             && self.cost.is_none()
             && match self.item.kind {
                 StackKind::Spell => {
+                    if self
+                        .item
+                        .cast
+                        .is_some_and(|c| c.method == CastMethod::Sneak)
+                    {
+                        return self.cost_options().take(2).count() > 1;
+                    }
                     self.item.cast.is_none_or(|cast| {
                         !matches!(
                             cast.method,
@@ -188,6 +341,11 @@ impl Announcement {
                                 | CastMethod::Free
                         )
                     }) && self.item.source_card.has_hybrid_cost()
+                        || !self
+                            .item
+                            .source_card
+                            .additional_mana_alternatives()
+                            .is_empty()
                 }
                 StackKind::ActivatedAbility { ability } => !self.item.source_card.activations()
                     [ability as usize]
@@ -198,6 +356,7 @@ impl Announcement {
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
+                | StackKind::Conspire
                 | StackKind::DelayedWarpExile => false,
             }
     }
@@ -205,6 +364,7 @@ impl Announcement {
 
 #[derive(Clone, Copy)]
 struct TargetSourceCharacteristics<'a> {
+    chosen_type: Option<crate::cards::CreatureType>,
     reference: ObjectRef,
     snapshot: Option<&'a DamageFacts>,
     spell: Option<Card>,
@@ -212,6 +372,7 @@ struct TargetSourceCharacteristics<'a> {
 impl<'a> TargetSourceCharacteristics<'a> {
     fn from_item(item: &'a SpellView) -> Self {
         Self {
+            chosen_type: item.source_chosen_type,
             reference: item.object,
             snapshot: Some(&item.source_facts),
             spell: (item.kind == StackKind::Spell).then_some(item.source_card),
@@ -225,6 +386,15 @@ impl Game {
             .program()
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
+        // Freeze variable limits into the owned announcement plan before targets are chosen.
+        let plan = if let TargetPlan::ScaledSingle { mut spec, maximum } = plan {
+            spec.max = spec
+                .max
+                .min(usize::try_from(self.item_amount(maximum, item)).unwrap_or(usize::MAX));
+            TargetPlan::Single(spec)
+        } else {
+            plan
+        };
         if let TargetPlan::Single(mut spec) = plan
             && matches!(spec.rule, TargetRule::GraveCreatureSourcePower { .. })
         {
@@ -266,6 +436,7 @@ impl Game {
         definition: Card,
     ) -> bool {
         let qualification = Some(TargetSourceCharacteristics {
+            chosen_type: None,
             reference: source,
             snapshot: None,
             spell: Some(definition),
@@ -275,6 +446,14 @@ impl Game {
         let available = |spec: TargetSpec| {
             if spec.min == 0 {
                 return true;
+            }
+            if !self.shared_type_targets_available(
+                spec,
+                (actor, source, departing, qualification),
+                &[],
+                false,
+            ) {
+                return false;
             }
             let mut count = [0usize; 2];
             self.visit_targets_without_hand(
@@ -317,7 +496,7 @@ impl Game {
             )
         };
         match plan {
-            TargetPlan::Single(spec) => available(spec),
+            TargetPlan::Single(spec) | TargetPlan::ScaledSingle { spec, .. } => available(spec),
             TargetPlan::Groups(groups) => groups.iter().copied().all(available),
         }
     }
@@ -348,6 +527,14 @@ impl Game {
         let available = |spec: TargetSpec| {
             if spec.min == 0 {
                 return true;
+            }
+            if !self.shared_type_targets_available(
+                spec,
+                (actor, source, None, qualification),
+                &[],
+                false,
+            ) {
+                return false;
             }
             let mut count = [0usize; 2];
             self.visit_targets_without_hand(
@@ -387,9 +574,83 @@ impl Game {
             )
         };
         match plan {
-            TargetPlan::Single(spec) => available(spec),
+            TargetPlan::Single(spec) | TargetPlan::ScaledSingle { spec, .. } => available(spec),
             TargetPlan::Groups(groups) => groups.iter().copied().all(available),
         }
+    }
+
+    pub(super) fn item_shared_type_targets_available(
+        &self,
+        item: &SpellView,
+        spec: TargetSpec,
+        selected: &[Target],
+        closed: bool,
+    ) -> bool {
+        self.shared_type_targets_available(
+            spec,
+            (
+                item.controller,
+                item.target_source(),
+                None,
+                Some(TargetSourceCharacteristics::from_item(item)),
+            ),
+            selected,
+            closed,
+        )
+    }
+    /// A relational target prefix must extend to the whole mandatory group.
+    /// Counting unrelated cards admits modes that can never finish (e.g. Unbury).
+    fn shared_type_targets_available(
+        &self,
+        spec: TargetSpec,
+        context: (
+            Player,
+            ObjectRef,
+            Option<CardId>,
+            Option<TargetSourceCharacteristics<'_>>,
+        ),
+        selected: &[Target],
+        closed: bool,
+    ) -> bool {
+        if !matches!(
+            spec.rule,
+            TargetRule::Grouped {
+                constraint: TargetGroupConstraint::SharedCreatureType,
+                ..
+            }
+        ) {
+            return true;
+        }
+        if selected.is_empty() && spec.min == 0 {
+            return true;
+        }
+        if closed && selected.len() < usize::from(spec.min) {
+            return false;
+        }
+        let (actor, source, departing, qualification) = context;
+        let mut available = Vec::new();
+        self.visit_targets_without_hand(
+            spec.rule,
+            actor,
+            source,
+            departing,
+            qualification,
+            |target| {
+                if target != Target::Card(source.card) && !selected.contains(&target) {
+                    available.push(target);
+                }
+                false
+            },
+        );
+        crate::cards::CREATURE_TYPES.iter().any(|kind| {
+            let matches =
+                |target: &Target| matches!(*target, Target::Card(id) if self.has_subtype(id, kind));
+            selected.iter().all(matches)
+                && (selected.len() >= usize::from(spec.min)
+                    || !closed
+                        && selected.len() + available.iter().filter(|t| matches(t)).count()
+                            >= usize::from(spec.min))
+        })
     }
 
     /// Graveyard identity is its owner's player, never the battlefield controller.
@@ -421,6 +682,9 @@ impl Game {
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
                 }),
+            TargetGroupConstraint::SharedCreatureType => chosen.iter().filter(|b| b.group == group).all(|b| {
+                matches!(b.target, Target::Card(other) if crate::cards::CREATURE_TYPES.iter().any(|ty| self.has_subtype(id, ty) && self.has_subtype(other, ty)))
+            }),
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
@@ -498,11 +762,24 @@ impl Game {
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
         let cost = a.cost_options().nth(index as usize).unwrap();
+        if let Some(cast) = a.item.cast.as_mut() {
+            cast.evoked = matches!(
+                cast.method,
+                CastMethod::Normal | CastMethod::LinkedExileCounterCost
+            ) && a.item.source_card.evoke_costs().contains(&cost);
+        }
         a.cost = Some(cost);
         self.continue_announcement_choices(false);
     }
 
     pub(super) fn choose_mode(&mut self, mode: u16) {
+        if let Pending::EffectKeywordChoice { choices, .. } = self.state.pending {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let ids = self.keyword_subjects(&item, Subject::Source);
+            self.grant_keyword_effects(&ids, item.object, choices[usize::from(mode)].1);
+            self.run_program();
+            return;
+        }
         let plan = self
             .state
             .announcing
@@ -532,7 +809,7 @@ impl Game {
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
         // declarations precede targets, mana abilities and payment.
-        if needs_mode {
+        if needs_mode && !a.needs_optional_additional() && !a.needs_behold_type() {
             self.state.pending = Pending::Modes { player };
         } else if a.pay_window && a.has_x_cost() && a.item.x.is_none() {
             self.state.pending = Pending::X { player };
@@ -546,6 +823,12 @@ impl Game {
             self.state.pending = Pending::Kicker { player };
         } else if a.needs_gift() {
             self.state.pending = Pending::Gift { player };
+        } else if a.needs_optional_additional() {
+            self.state.pending = Pending::OptionalAdditionalCost { player };
+        } else if a.needs_behold_type() {
+            self.state.pending = Pending::BeholdType { player };
+        } else if self.conspire_needs_intent() {
+            self.state.pending = Pending::ConspireIntent { player };
         } else if a.needs_mana_cost() {
             self.state.pending = if a.item.kind == StackKind::Spell {
                 Pending::SpellCost { player }
@@ -596,6 +879,45 @@ impl Game {
     }
 
     /// Only qualified recipients inspect source facts; ordinary targets keep their fast path.
+    fn targeting_source_facts(
+        &self,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> Option<(u8, u16)> {
+        let packets = || {
+            self.state
+                .stack
+                .iter()
+                .chain(&self.state.pending_triggers)
+                .chain(&self.state.ordering_triggers)
+                .chain(self.state.announcing.iter().map(|a| &a.item))
+                .chain(self.state.resolving.iter().map(|r| &r.item))
+        };
+        let qualification = qualification.or_else(|| {
+            packets()
+                .find(|item| item.object == source)
+                .map(TargetSourceCharacteristics::from_item)
+        });
+        let source = qualification.map_or(source, |q| q.reference);
+        let current = self
+            .state
+            .objects
+            .get(source.card as usize)
+            .filter(|o| o.generation == source.generation);
+        if let Some(definition) = qualification.and_then(|q| q.spell) {
+            // A spell uses its chosen face even in preflight, before it reaches the stack.
+            Some((definition.colors(), definition.kind_mask()))
+        } else if let Some(current) = current {
+            Some((
+                ability_world::CharacteristicWorld::colors(self, source.card),
+                self.object_kinds(source.card, current),
+            ))
+        } else {
+            qualification
+                .and_then(|q| q.snapshot)
+                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
+        }
+    }
     fn qualified_hexproof_blocks(
         &self,
         id: CardId,
@@ -621,46 +943,23 @@ impl Game {
                     }
                 })
         };
-        if filters().next().is_none() {
+        let temporary = self.state.roles.as_ref().is_some_and(|state| {
+            state
+                .keyword_effects
+                .iter()
+                .any(|row| row.recipient == self.object_ref(id) && row.hexproof_colors != 0)
+        });
+        if filters().next().is_none() && !temporary {
             return false;
         }
-        let packets = || {
-            self.state
-                .stack
-                .iter()
-                .chain(&self.state.pending_triggers)
-                .chain(&self.state.ordering_triggers)
-                .chain(self.state.announcing.iter().map(|a| &a.item))
-                .chain(self.state.resolving.iter().map(|r| &r.item))
-        };
-        let qualification = qualification.or_else(|| {
-            packets()
-                .find(|item| item.object == source)
-                .map(TargetSourceCharacteristics::from_item)
-        });
-        let source = qualification.map_or(source, |q| q.reference);
-        let current = self
-            .state
-            .objects
-            .get(source.card as usize)
-            .filter(|o| o.generation == source.generation);
-        let facts = if let Some(definition) = qualification.and_then(|q| q.spell) {
-            // A spell uses its chosen face even in preflight, before it reaches the stack.
-            Some((definition.colors(), definition.kind_mask()))
-        } else if let Some(current) = current {
-            Some((
-                ability_world::CharacteristicWorld::colors(self, source.card),
-                self.object_kinds(source.card, current),
-            ))
-        } else {
-            qualification
-                .and_then(|q| q.snapshot)
-                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
-        };
+        let facts = self.targeting_source_facts(source, qualification);
         let Some((colors, kinds)) = facts else {
             return false;
         };
         let query = self.characteristic_query();
+        if temporary && query.hexproof_colors(id) & colors != 0 {
+            return true;
+        }
         filters().any(|filter| {
             let matches = match filter {
                 crate::cards::SourceCharacteristicFilter::Color(color) => {
@@ -765,7 +1064,8 @@ impl Game {
                     TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
-                    TargetGroupConstraint::OtherThanGroup(_) => None,
+                    TargetGroupConstraint::OtherThanGroup(_)
+                    | TargetGroupConstraint::SharedCreatureType => None,
                 };
                 return zone.is_none_or(|zone| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone)))
                     && self.target_matches_without_hand(
@@ -837,14 +1137,30 @@ impl Game {
                     TargetPredicate::WithoutKeyword(keyword) => {
                         !self.keywords(id).contains(keyword)
                     }
+                    TargetPredicate::Kinds(kinds) => self.current_kinds(id) & kinds != 0,
                     TargetPredicate::WithoutKinds(kinds) => self.current_kinds(id) & kinds == 0,
                     TargetPredicate::WithoutSubtype(subtype) => !self.has_subtype(id, subtype),
                     TargetPredicate::Token => object.is_token(),
                     TargetPredicate::Subtype(subtype) => self.has_subtype(id, subtype),
+                    TargetPredicate::SourceChosenCreatureType => qualification
+                        .map(|facts| facts.chosen_type)
+                        .unwrap_or_else(|| self.source_chosen_creature_type(source))
+                        .is_some_and(|kind| self.has_subtype(id, kind.name())),
                     TargetPredicate::Permanent => {
                         self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
-                    TargetPredicate::Legendary => object.card.info().legendary,
+                    TargetPredicate::Legendary => {
+                        ability_world::CharacteristicWorld::legendary(self, id)
+                    }
+                    TargetPredicate::CrewedSourceThisTurn => {
+                        self.state.crew.as_ref().is_some_and(|data| {
+                            data.history.iter().any(|row| {
+                                row.vehicle == source
+                                    && row.contributors.contains(&self.object_ref(id))
+                            })
+                        })
+                    }
+                    TargetPredicate::Basic => object.card.is_basic_land(),
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
@@ -866,11 +1182,9 @@ impl Game {
                         _ => false,
                     }
             }
-            Target::Stack(id) => self
-                .state
-                .stack
-                .iter()
-                .any(|item| item.id == id && self.stack_target_rule_matches(rule, item)),
+            Target::Stack(id) => self.state.stack.iter().any(|item| {
+                item.id == id && self.stack_target_rule_matches(rule, controller, item)
+            }),
             Target::Spell(id) => self.state.stack.iter().any(|item| {
                 item.kind == StackKind::Spell
                     && item.card == id
@@ -878,6 +1192,9 @@ impl Game {
                     && match rule {
                         TargetRule::SingleTargetStackObject => item.targets.len() == 1,
                         TargetRule::Spell => true,
+                        TargetRule::SpellTargetsControlledArtifactOrCreature => {
+                            self.spell_targets_controlled_artifact_or_creature(item, controller)
+                        }
                         TargetRule::SpellKinds { kinds, excluded } => {
                             (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
                                 && item.source_card.kind_mask() & u16::from(excluded) == 0
@@ -898,13 +1215,26 @@ impl Game {
                     return false;
                 };
                 if obj.zone == Zone::Battlefield
-                    && self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                    && (self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
+                        || obj.controller != controller
+                            && self.keywords(id).contains(Keywords::PROTECTION_OPPONENTS)
+                        || self.keywords(id).contains(Keywords::PROTECTION_COLORS)
+                            && self
+                                .targeting_source_facts(source, qualification)
+                                .is_some_and(|facts| facts.0 != 0))
                 {
                     return false;
                 }
                 if obj.zone == Zone::Battlefield
                     && obj.controller != controller
                     && (self.keywords(id).contains(Keywords::HEXPROOF)
+                        || self.keywords(id).contains(Keywords::HEXPROOF_OWN_COLORS)
+                            && self
+                                .targeting_source_facts(source, qualification)
+                                .is_some_and(|facts| {
+                                    facts.0 & ability_world::CharacteristicWorld::colors(self, id)
+                                        != 0
+                                })
                         || self.qualified_hexproof_blocks(id, controller, source, qualification))
                 {
                     return false;
@@ -948,7 +1278,7 @@ impl Game {
                             && (!nonland || self.current_kinds(id) & 2 == 0)
                             && (!tapped || obj.tapped)
                             && ((min_mana == 0 && max_mana == u32::MAX) || {
-                                let value = obj.card.fixed_mana_value();
+                                let value = self.object_mana_value(id);
                                 value >= u64::from(min_mana) && value <= u64::from(max_mana)
                             })
                     }
@@ -1079,8 +1409,11 @@ impl Game {
             self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card)),
         );
         self.state.passes = 0;
+        let library_counter = self.library_top_creature_counter(actor, card);
         let stash_origin = self.foreign_stash(actor, card);
+        let exile_any_mana = self.exile_cast_spends_any_mana(actor, card);
         let origin = self.state.objects[card as usize].zone;
+        let linked_play = self.prepare_linked_exile_play(actor, card);
         let before = self.object_view(card);
         let event = self.transition_object_under_control(
             before,
@@ -1095,9 +1428,14 @@ impl Game {
             self.grant_stack_keywords(object, Keywords::HASTE);
         }
         let id = self.next_stack_id();
+        self.remember_linked_play_approval(id, linked_play);
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
         item.mana_copy_sources = outcome.copies;
-        item.cast.as_mut().unwrap().stash_origin = stash_origin;
+        item.cast.as_mut().unwrap().origin_permissions = if library_counter {
+            CastOriginPermissions::LibraryCreatureCounter
+        } else {
+            CastOriginPermissions::new(stash_origin, exile_any_mana)
+        };
         item
     }
     pub(super) fn cast_preview(
@@ -1110,8 +1448,13 @@ impl Game {
         payment: Mana,
     ) -> SpellView {
         SpellView {
+            sneak: None,
             gift: None,
             source_move: None,
+            death_event: None,
+            creature_action_event: None,
+            transform_stamp: None,
+            source_chosen_type: None,
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
@@ -1132,13 +1475,22 @@ impl Game {
                 face: CastFace::Normal,
                 payment,
                 origin,
-                stash_origin: self.foreign_stash(actor, card),
+                origin_permissions: if self.library_top_creature_counter(actor, card) {
+                    CastOriginPermissions::LibraryCreatureCounter
+                } else {
+                    CastOriginPermissions::new(
+                        self.foreign_stash(actor, card),
+                        self.exile_cast_spends_any_mana(actor, card),
+                    )
+                },
                 method: CastMethod::Normal,
                 flash_surcharge: false,
                 offspring: None,
                 kicker: None,
                 bargain: None,
                 evidence: None,
+                optional_additional: None,
+                evoked: false,
             }),
             id,
             kind: StackKind::Spell,
@@ -1147,6 +1499,7 @@ impl Game {
             source_tapped: self.state.objects[card as usize].tapped,
             source_facts: self.damage_facts(card),
             related_stack: None,
+            entry_batch_event: None,
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
@@ -1166,7 +1519,8 @@ impl Game {
     }
 
     /// Returns true only when a decision suspends the enclosing ordering/cast work.
-    pub(super) fn start_announcement(&mut self, item: SpellView, trigger: bool) -> bool {
+    pub(super) fn start_announcement(&mut self, mut item: SpellView, trigger: bool) -> bool {
+        self.capture_transform_stamp(&mut item);
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         if needs_mode
             && !item
@@ -1193,7 +1547,7 @@ impl Game {
         }
         let has_choice = needs_mode
             || match plan {
-                TargetPlan::Single(spec) => {
+                TargetPlan::Single(spec) | TargetPlan::ScaledSingle { spec, .. } => {
                     spec.max > 0 && self.visit_item_targets(&item, spec.rule, |_| true)
                 }
                 TargetPlan::Groups(groups) => groups.iter().any(|spec| {
@@ -1226,6 +1580,7 @@ impl Game {
             additional_paid: false,
             pay_window: false,
             production: None,
+            mana_tap_bonus: None,
         });
         self.continue_announcement_choices(needs_mode);
         true
@@ -1237,9 +1592,25 @@ impl Game {
         counters: Counters,
         production: Option<Mana>,
     ) {
+        self.capture_conspire(&item);
         if production.is_some() {
             self.capture_announced_mana_quality(&item);
         }
+        let mana_tap_bonus = if let Some(production) = production {
+            match item.kind {
+                StackKind::ActivatedAbility { ability } => {
+                    let bonus = self.capture_activation_mana_tap_bonus(
+                        item.object.card,
+                        ability,
+                        production,
+                    );
+                    bonus.has_any().then(|| Box::new(bonus))
+                }
+                _ => None,
+            }
+        } else {
+            None
+        };
         let plan = self.target_spec(&item);
         assert!(
             self.item_targets_available(&item, plan)
@@ -1252,6 +1623,7 @@ impl Game {
                     .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
+        let additional = item.sneak.as_ref().map(|s| s.attacker);
         self.state.announcing = Some(Announcement {
             item,
             spec: TargetSpec::NONE,
@@ -1262,7 +1634,7 @@ impl Game {
             cost: None,
             total_cost: None,
             counter_payment: counters,
-            additional: None,
+            additional,
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
@@ -1271,11 +1643,20 @@ impl Game {
             additional_paid: false,
             pay_window: true,
             production,
+            mana_tap_bonus,
         });
         self.continue_announcement_choices(needs_mode);
     }
 
     pub(super) fn finish_announcement(&mut self) {
+        if self.state.announcing.as_ref().is_some_and(|a| {
+            a.additional_paid
+                && a.creature_counter_cost
+                    .as_ref()
+                    .is_some_and(|cost| cost.projecting)
+        }) {
+            return;
+        }
         if self.start_target_amounts() {
             return;
         }
@@ -1309,6 +1690,16 @@ impl Game {
                 };
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
             }
+            let announcement = self.state.announcing.as_ref().unwrap();
+            if announcement.total_cost.is_none()
+                && matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
+            {
+                let base = announcement
+                    .cost
+                    .unwrap_or_else(|| announcement.cost_options().next().unwrap());
+                let total = self.activation_total_cost(announcement, base);
+                self.state.announcing.as_mut().unwrap().total_cost = Some(total);
+            }
             if self
                 .state
                 .announcing
@@ -1323,6 +1714,14 @@ impl Game {
             }
             let announcement = self.state.announcing.as_ref().unwrap();
             self.state.pending = if announcement
+                .additional_cost()
+                .is_some_and(|s| s.kind.creature_counter_requirement().is_some())
+                && announcement.additional.is_none()
+            {
+                Pending::CreatureCounterCost {
+                    player: announcement.item.controller,
+                }
+            } else if announcement
                 .additional_cost()
                 .is_some_and(forage::is_forage_cost)
                 && announcement.forage.as_ref().is_some_and(|f| !f.complete())
@@ -1368,7 +1767,13 @@ impl Game {
             if announcement.additional_cost().is_some_and(|spec| {
                 matches!(
                     spec.kind,
-                    EffectChoiceKind::Sacrifice | EffectChoiceKind::ReturnToHand
+                    EffectChoiceKind::BlightCost(_)
+                        | EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificePermanents(_)
+                        | EffectChoiceKind::SacrificeCreatureOrToken
+                        | EffectChoiceKind::ReturnToHand
+                        | EffectChoiceKind::RemoveCreatureCounters(_)
+                        | EffectChoiceKind::RemoveCreatureCounter(_)
                 ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()
@@ -1402,6 +1807,13 @@ impl Game {
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }
+        announcement.payment = None;
+        self.pay_sneak_extra(&mut announcement, false);
+        if self.defer_sneak_extra_before_return(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        self.pay_supplemental_counters(&mut announcement, false);
         // Costs may synchronously return exiled Auras/lands. Finish their entry
         // choices before the spell becomes cast and cast observers are collected.
         announcement.payment = None;
@@ -1409,13 +1821,35 @@ impl Game {
             self.state.announcing = Some(announcement);
             return;
         }
+        if self.defer_conspire_payment(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
         if announcement.item.kind == StackKind::Spell && !announcement.additional_paid {
             self.pay_additional_cost(&mut announcement);
-            if self.state.entry_batch.is_some() {
+            announcement.additional_paid = true;
+            if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
                 self.state.announcing = Some(announcement);
                 return;
             }
         }
+        if self.defer_sneak_extra_after_return(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        self.pay_sneak_extra(&mut announcement, true);
+        if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        if let Some(s) = announcement.item.sneak.as_mut() {
+            s.extra = None;
+        }
+        if self.defer_supplemental_counters_after(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        self.pay_supplemental_counters(&mut announcement, true);
         self.state.priority = if announcement.trigger {
             self.state.priority
         } else {
@@ -1423,6 +1857,9 @@ impl Game {
         };
         if let Some(production) = announcement.production {
             self.add_announced_mana(&announcement.item, production);
+            if let Some(bonus) = announcement.mana_tap_bonus {
+                self.finish_mana_tap_bonus(announcement.item.controller, *bonus);
+            }
         } else {
             self.push_stack_item(announcement.item);
         }

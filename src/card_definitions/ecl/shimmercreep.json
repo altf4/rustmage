@@ -8,5 +8,27 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7c2956c9e40b71a341e8bcecc0332d2c7dda9dfbee6fba80d92a532810ce7625"
   },
-  "physical_metadata_sha256": "1f489413ed895351a002b7a35356ead7a12d297788b0cc41b91d310d15768440"
+  "physical_metadata_sha256": "1f489413ed895351a002b7a35356ead7a12d297788b0cc41b91d310d15768440",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/Shimmercreep.java",
+  "java_sha256": "dceba7dbc5684203d319c8d43daac8c2fba709e811c818409276bd104f1b8b44",
+  "rules_tests": "src/engine_ecl_inherited_br_tests.rs",
+  "rules_test_files": [
+    "src/engine_distinct_amount_tests.rs",
+    "src/engine_ecl_inherited_br_tests.rs",
+    "src/engine_ecl_twinflame_tests.rs"
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsAmongControlledPermanentsCount.java",
+      "sha256": "94d0639d201ef40c27aa8b05d8dc072166ac4f2c82494425ebe1449d385eb8a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    }
+  ],
+  "audit_notes": "Full pinned Oracle and Java card/helper reads; typed behavior preserved. Actual paid both-seat whole-card matrices supplement the listed adversarial rules suites."
 }

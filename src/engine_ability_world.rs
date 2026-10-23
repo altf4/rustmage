@@ -6,7 +6,28 @@ use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 
 pub(super) trait CharacteristicWorld {
     fn game(&self) -> &Game;
+    fn spell_has_convoke(&self, actor: Player, definition: Card) -> bool {
+        definition.has_convoke()
+            || definition.is_creature()
+                && self.game().state.static_sources.iter().any(|&id| {
+                    let object = self.object(id);
+                    object.zone == Zone::Battlefield
+                        && object.controller == actor
+                        && object.card.static_ability_groups().iter().any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
+                                )
+                            })
+                        })
+                        && self.printed_abilities_available(id)
+                })
+    }
     fn object(&self, id: CardId) -> &Object;
+    fn source_power(&self, id: CardId) -> i128 {
+        self.game().stats(id).power
+    }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
             &self.game().state.named_counters,
@@ -25,6 +46,15 @@ pub(super) trait CharacteristicWorld {
     /// Name-changing effects belong here, before later characteristic layers.
     fn name(&self, id: CardId) -> &'static str {
         characteristic_layers::name(self, id)
+    }
+    fn controlled_colors(&self, controller: Player) -> u8 {
+        (0..self.game().state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                self.object(id).zone == Zone::Battlefield
+                    && self.object(id).controller == controller
+            })
+            .fold(0u8, |colors, id| colors | self.colors(id))
     }
     fn colors(&self, id: CardId) -> u8 {
         characteristic_layers::colors(self, id)
@@ -62,6 +92,58 @@ pub(super) trait CharacteristicWorld {
         result
     }
 
+    fn can_receive_counters(&self, id: CardId) -> bool {
+        !self.game().state.attachment_sources.iter().any(|&source| {
+            let provider = self.object(source);
+            provider.zone == Zone::Battlefield
+                && provider.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::AttachedCounterProhibition
+                        )
+                    })
+                })
+                && self.attached(self.reference(source), id)
+                && self.printed_abilities_available(source)
+        })
+    }
+    fn activation_counter_cost_allowed(
+        &self,
+        source: CardId,
+        definition: Card,
+        index: u16,
+        ability: &ActivatedAbility,
+    ) -> bool {
+        !(ability.cost.loyalty.is_some_and(|amount| amount > 0)
+            || definition
+                .activation_put_counter(index)
+                .is_some_and(|(_, amount)| amount > 0))
+            || (self.object(source).zone == ability.source_zone()
+                && self.can_receive_counters(source))
+    }
+
+    fn graveyard_has_subtype(&self, actor: Player, subtype: &'static str) -> bool {
+        (0..self.game().state.objects.len()).any(|index| {
+            let id = index as CardId;
+            let object = self.object(id);
+            object.zone == Zone::Graveyard
+                && object.owner == actor
+                && !object.is_token()
+                && self.subtypes(id).has(object.card, subtype)
+        })
+    }
+    fn chosen_creature_type_applies(&self, source: ObjectRef, id: CardId) -> bool {
+        let provider = self.object(source.card);
+        let target = self.object(id);
+        (provider.zone == Zone::Battlefield
+            || (provider.zone == Zone::Command && provider.card.is_emblem()))
+            && self.reference(source.card) == source
+            && target.zone == Zone::Battlefield
+            && self.kinds(id) & 1 != 0
+            && provider.controller == target.controller
+            && matches!(self.game().entry_value(source), Some(EntryChoiceValue::CreatureType(kind)) if self.subtypes(id).has(target.card, kind.name()))
+    }
     fn death_baron_applies(&self, source: ObjectRef, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield
@@ -75,11 +157,17 @@ pub(super) trait CharacteristicWorld {
             state.ability_removal_sources.iter().any(|&source| {
                 self.object(source.card).zone == Zone::Battlefield
                     && self.reference(source.card) == source
+            }) || state.ability_removal_effects.iter().any(|row| {
+                self.object(row.recipient.card).zone == Zone::Battlefield
+                    && self.reference(row.recipient.card) == row.recipient
+                    && row
+                        .expires_turn
+                        .is_none_or(|turn| turn == self.game().state.turn)
             })
         })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
-        // Only an exact attached removal provider can remove printed abilities.
+        // Exact attached or resolution-created removal can remove printed abilities.
         // Unrelated sources need no whole-world layer-six evaluation. Keep the
         // full evaluator for candidates: competing effects may blank a provider.
         let recipient = self.reference(id);
@@ -88,6 +176,13 @@ pub(super) trait CharacteristicWorld {
                 .ability_removal_sources
                 .iter()
                 .any(|&source| self.attachment_link(source, recipient))
+                || state.ability_removal_effects.iter().any(|row| {
+                    row.recipient == recipient
+                        && self.object(id).zone == Zone::Battlefield
+                        && row
+                            .expires_turn
+                            .is_none_or(|turn| turn == self.game().state.turn)
+                })
         }) || ability_evaluation::evaluate_abilities(self).result.objects[id as usize].printed
     }
 
@@ -96,6 +191,13 @@ pub(super) trait CharacteristicWorld {
             card: id,
             generation: self.object(id).generation,
         }
+    }
+    fn legendary(&self, id: CardId) -> bool {
+        self.object(id).card.is_legendary()
+            && !self
+                .game()
+                .copy_recipe(self.reference(id))
+                .is_some_and(|recipe| recipe.exceptions.nonlegendary)
     }
     fn kinds(&self, id: CardId) -> u16 {
         characteristic_layers::kinds(self, id, self.object(id))
@@ -130,7 +232,159 @@ pub(super) trait CharacteristicWorld {
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
+            &|id| self.attacking(id),
         )
+    }
+    /// Total intrinsic triggered occurrences in this actual/speculative world.
+    /// Callers capture the number before costs; mana triggers resolve immediately.
+    fn trigger_occurrences(&self, source: CardId, upper: bool) -> u64 {
+        let object = self.object(source);
+        if object.zone != Zone::Battlefield {
+            return 1;
+        }
+        let subtypes = (!upper).then(|| self.subtypes(source));
+        let mut amount = 1u64;
+        for &id in &self.game().state.static_sources {
+            let provider = self.object(id);
+            if provider.zone != Zone::Battlefield
+                || (!upper
+                    && (provider.controller != object.controller
+                        || !self.printed_abilities_available(id)))
+            {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                if let Some((subtype, other, creature_only)) =
+                    fragment.additional_subtype_triggers()
+                    && (!other || self.reference(id) != self.reference(source))
+                    && subtypes.is_none_or(|types| types.has(object.card, subtype))
+                    && (!creature_only || upper || self.kinds(source) & 1 != 0)
+                {
+                    amount = amount
+                        .checked_add(1)
+                        .capacity("trigger multiplicity exhausted");
+                }
+            }
+        }
+        amount
+    }
+    /// Capture before the tap costs remove the land or its attached providers.
+    /// The upper bound intentionally ignores ability removal and current types:
+    /// sacrificing another provider can restore either during a funding branch.
+    fn mana_tap_bonus(&self, id: CardId, upper: bool) -> Mana {
+        let mut result = [0u32; 6];
+        if self.object(id).zone != Zone::Battlefield || (!upper && self.kinds(id) & 2 == 0) {
+            return result;
+        }
+        for &source in &self.game().state.static_sources {
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield
+                || (!upper
+                    && (provider.controller != self.object(id).controller
+                        || !self.printed_abilities_available(source)))
+            {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                if let crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(mana) =
+                    *fragment
+                {
+                    let occurrences = self.trigger_occurrences(source, upper);
+                    for index in 0..6 {
+                        let amount = u64::from(mana[index])
+                            .checked_mul(occurrences)
+                            .and_then(|n| u32::try_from(n).ok())
+                            .capacity("mana representation exhausted");
+                        result[index] = result[index]
+                            .checked_add(amount)
+                            .capacity("mana representation exhausted");
+                    }
+                }
+            }
+        }
+        for &source in &self.game().state.attachment_sources {
+            let reference = self.reference(source);
+            if !self.attachment_link(reference, self.reference(id))
+                || (!upper && !self.printed_abilities_available(source))
+            {
+                continue;
+            }
+            for group in self.object(source).card.static_ability_groups() {
+                for fragment in group.fragments {
+                    if let crate::cards::StaticAbilityFragment::AttachmentManaBonus(production) =
+                        *fragment
+                    {
+                        let mut bonus = [0; 6];
+                        production.in_world(self, source).visit(|mana| {
+                            for index in 0..6 {
+                                bonus[index] = bonus[index].max(mana[index]);
+                            }
+                            false
+                        });
+                        let occurrences = self.trigger_occurrences(source, upper);
+                        for index in 0..6 {
+                            let multiplied = u64::from(bonus[index])
+                                .checked_mul(occurrences)
+                                .and_then(|n| u32::try_from(n).ok())
+                                .capacity("mana representation exhausted");
+                            result[index] = result[index]
+                                .checked_add(multiplied)
+                                .capacity("mana representation exhausted");
+                        }
+                    }
+                }
+            }
+        }
+        result
+    }
+    /// The ability belongs to its provider, even when the tapped land belongs
+    /// to an opponent. Capture multiplicity before any activation costs depart.
+    fn basic_land_tap_mana_bonus(&self, id: CardId, upper: bool) -> u32 {
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield
+            || !object.card.is_basic_land()
+            || (!upper && self.kinds(id) & 2 == 0)
+        {
+            return 0;
+        }
+        let mut result = 0u32;
+        for &source in &self.game().state.static_sources {
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield
+                || (!upper && !self.printed_abilities_available(source))
+            {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                if let crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(amount) =
+                    *fragment
+                {
+                    let amount = u64::from(amount)
+                        .checked_mul(self.trigger_occurrences(source, upper))
+                        .and_then(|n| u32::try_from(n).ok())
+                        .capacity("mana representation exhausted");
+                    result = result
+                        .checked_add(amount)
+                        .capacity("mana representation exhausted");
+                }
+            }
+        }
+        result
     }
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
         // Animation grants only keywords. It cannot remove a provider's printed
@@ -248,6 +502,7 @@ impl ManaProduction {
     ) -> Self {
         match self {
             Self::Tagged { production, .. } => production.in_world(world, source),
+            Self::AnyColorChangingSource(amount) => Self::any_color(amount),
             Self::ChosenColor => {
                 let mut mana = [0; 6];
                 if let Some(EntryChoiceValue::Color(color)) =
@@ -257,6 +512,29 @@ impl ManaProduction {
                 }
                 Self::Fixed(mana)
             }
+            Self::ColorsAmongControlledPermanents => {
+                let controller = world.object(source).controller;
+                let colors = (0..world.game().state.objects.len())
+                    .map(|id| id as CardId)
+                    .filter(|&id| {
+                        let object = world.object(id);
+                        object.zone == Zone::Battlefield && object.controller == controller
+                    })
+                    .fold(0u8, |colors, id| colors | world.colors(id));
+                Self::Fixed(std::array::from_fn(|index| {
+                    u32::from(index < 5 && colors & (1 << index) != 0)
+                }))
+            }
+            Self::SourcePowerChoice { colors } => Self::Choice {
+                mask: colors,
+                amount: u32::try_from(world.source_power(source).max(0))
+                    .capacity("mana representation exhausted"),
+            },
+            Self::ChoiceStat { colors, amount } => Self::Choice {
+                mask: colors,
+                amount: u32::try_from(world.value(*amount, source).max(0))
+                    .capacity("mana representation exhausted"),
+            },
             Self::CountSubtype { color, subtype } => {
                 let controller = world.object(source).controller;
                 let count = world

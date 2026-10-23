@@ -3,10 +3,31 @@
   "catalogue_id": 4074,
   "oracle_id": "bdeb440d-a714-40e8-9038-f651e6ae45fb",
   "facts_sha256": "db9a444437466fc4b2e17466d0ddc9dd9905bcd009157cc3c3b6421597164633",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9756325271ca0772136b4eb22972c9f729b16be7bddd7ecc6ad963433bbdca30"
   },
-  "physical_metadata_sha256": "7e8e48b0a98406f526b63e756162ed5bb7f38c5f4354f12c3db168710ac3de64"
+  "physical_metadata_sha256": "7e8e48b0a98406f526b63e756162ed5bb7f38c5f4354f12c3db168710ac3de64",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpringleafDrum.java",
+  "java_sha256": "4c30bde7755c90554b78df02ed2ef7938c1d8ada3fb9ede86e3a5dd98c388bc7",
+  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    }
+  ]
 }

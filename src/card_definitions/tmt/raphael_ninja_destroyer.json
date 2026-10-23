@@ -3,10 +3,32 @@
   "catalogue_id": 3379,
   "oracle_id": "fdb8e862-c642-4b7b-b061-400de6061ffe",
   "facts_sha256": "4492d9300e7740f8b875a54ac2793b852c3adab165a59f82a767cb181934d47f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "229fe0802301b9714bb68ad1c81355cee8f1532b5db87d64fe35f1441a77e27d"
   },
-  "physical_metadata_sha256": "ca02135e538285b52f90bb0d2eeea712c41fe80f22963b79c8476eabadc154cc"
+  "physical_metadata_sha256": "ca02135e538285b52f90bb0d2eeea712c41fe80f22963b79c8476eabadc154cc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RaphaelNinjaDestroyer.java",
+  "java_sha256": "27b5f2e299938ec91d8d7f41bdb595157b20f61043603871658e7d0b94d64e8f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/MustBeBlockedByAtLeastOneSourceEffect.java",
+      "sha256": "42ab952dae5eebdb7102f4b9fcaecab4c07c03e855267c0e83d8d35a5f478cd5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealtDamageToSourceTriggeredAbility.java",
+      "sha256": "97485da3564c3e9e3b6355947a03b4480cd40bd32fc00a0f3b4e6c8d5e166b79"
+    }
+  ],
+  "source_audit": {
+    "scope": "Complete Oracle body, complete pinned XMage card class and listed complete reusable implementations read; directly authored typed behavior with actual paid-action rules scenarios.",
+    "tests": [
+      "src/engine_tmt_combat_batch_tests.rs"
+    ],
+    "status": "Complete focused paid-action scenarios passed, including public announcements, legality/privacy, transactional failures and owned raw/index branch/restore; integrated release and full-set acceptance remain integrator obligations."
+  }
 }

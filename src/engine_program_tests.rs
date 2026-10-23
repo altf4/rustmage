@@ -318,6 +318,10 @@ fn all_program_instructions_finish_before_loss_sba_even_across_discard() {
     named(&mut game, Player::P0, "Forest", Zone::Hand);
     game.state.players[0].life = 1;
     game.state.resolving = Some(programs::Resolution {
+        wheel: None,
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,
@@ -336,6 +340,7 @@ fn all_program_instructions_finish_before_loss_sba_even_across_discard() {
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });
@@ -482,6 +487,10 @@ fn simultaneous_discards_keep_all_selections_private_until_committed() {
         }
     }
     game.state.resolving = Some(programs::Resolution {
+        wheel: None,
+        continuation: None,
+        chosen_creature_type: None,
+        chosen_color: None,
         explore: None,
         evidence: None,
         connive: None,
@@ -500,6 +509,7 @@ fn simultaneous_discards_keep_all_selections_private_until_committed() {
         selection: None,
         target_library: None,
         search: None,
+        legendary_search: None,
         optional_searches: None,
         choice: None,
     });

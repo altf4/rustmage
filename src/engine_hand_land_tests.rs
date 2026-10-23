@@ -515,9 +515,14 @@ fn hand_land_actual_foreign_exile_permissions_keep_caster_private_hand_and_land_
             let foreign = named(&mut g, p.other(), "Island", Zone::Hand);
             let source = named(&mut g, p.other(), name, Zone::Exile);
             g.state.exile_permissions.push(ExilePlayPermission {
+                cast_only: false,
+                without_mana: false,
                 object: g.object_ref(source),
                 player: p,
                 expires_turn: g.state.turn,
+                next_end_step: None,
+                source: None,
+                any_mana: false,
             });
             checked(&mut g, Action::AnnounceExile { card: source });
             reach_land_choice(&mut g);
