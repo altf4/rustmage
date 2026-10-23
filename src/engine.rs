@@ -2880,9 +2880,11 @@ impl Game {
                                     != (old.life_gained_this_turn > 0)
                         }))
             {
+                // Every check observes the same immutable post-action world.
+                let query = self.characteristic_query();
                 for (id, object) in self.state.objects.iter().enumerate() {
                     if object.zone == Zone::Battlefield {
-                        let _ = self.stats(id as CardId);
+                        let _ = query.stats(id as CardId);
                     }
                 }
             }
