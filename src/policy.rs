@@ -1,12 +1,23 @@
 //! Smoke policies for tests and benchmarks; not a training implementation.
 use crate::cards::{CounterKind, Effect, Instruction, PlayerSet};
-use crate::{Action, Game, StackKind, Target, Zone};
+use crate::{Action, Game, Observation, StackKind, Target, Zone};
 
 /// Deterministic simple policy: keep, play lands, cast, attack, block, tap, pass.
 /// Uses only the acting player's observation and the offered action list.
 pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     let actor = game.actor().expect("nonterminal game");
     let observation = game.observe(actor);
+    smoke_index_from_observation(&observation, actions)
+}
+
+/// Reuse an existing acting-player observation without rebuilding its action space.
+/// The caller supplies the offered actions from the same game revision.
+pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action]) -> usize {
+    let actor = observation.actor.expect("nonterminal observation");
+    assert_eq!(
+        observation.viewer, actor,
+        "acting-player observation required"
+    );
     // Fundable declarations are offered before any speculative mana activation.
     // Preserve spare sources for later steps once those declarations are exhausted.
     let tap_for_payment = observation.announcing.is_some()
@@ -467,13 +478,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 target_score(program, *target)
             }
             Action::FinishTargets => 0,
-            Action::ChooseMana { production } => mana_score(&observation, *production),
+            Action::ChooseMana { production } => mana_score(observation, *production),
             Action::TapGrantedMana { production, .. } => {
                 if observation.resolution_payment.is_some() {
                     return resolution_mana_score([0; 6], *production);
                 }
                 if tap_for_payment {
-                    20 + mana_score(&observation, *production)
+                    20 + mana_score(observation, *production)
                 } else {
                     -5
                 }
@@ -492,7 +503,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     return resolution_mana_score(*payment, *production);
                 }
                 if tap_for_payment {
-                    20 + mana_score(&observation, *production)
+                    20 + mana_score(observation, *production)
                 } else {
                     -5
                 }

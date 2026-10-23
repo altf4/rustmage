@@ -764,6 +764,10 @@ fn tmt_blink_smoke_policy_scores_visible_library_cast_without_reading_hidden_nex
         let choices = vec![Action::Pass, cast.clone()];
         let before = g.snapshot();
         assert_eq!(crate::policy::smoke_index(&g, &choices), 1);
+        assert_eq!(
+            crate::policy::smoke_index_from_observation(&view, &choices),
+            1
+        );
         assert_eq!(g.snapshot(), before);
         assert_eq!(
             serde_json::to_value(g.observe(p)).unwrap(),

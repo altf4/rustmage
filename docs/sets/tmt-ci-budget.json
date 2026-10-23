@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "CI timeout diagnosed; unchanged gameplay, extended hosted-runner time budget and enabled progress output; rerun pending",
+  "status": "Timeout increase rejected by user; original40-minute validation budget restored; actual runtime optimization and fresh combined validation pending",
   "failed_published_head": "3f0926ab59694220ce2abd28f25a6fb6226b301c",
   "run": "https://github.com/altf4/rustmage/actions/runs/40005272456",
   "failure": "Validation step reached40-minute time limit during TMT acceptance. No rules test failure recorded. Stop step terminated the managed unit before diagnostics collection.",
@@ -18,16 +18,6 @@
   "managed_unit_runtime_seconds": 2412.422,
   "journal_peak_memory": "4.4GiB",
   "terminal_metrics": "incomplete because CI cancelled validation; not a validation pass or a game-completion claim",
-  "repair": {
-    "smoke_validation_minutes": 60,
-    "smoke_job_minutes": 65,
-    "full_validation_minutes": 70,
-    "full_job_minutes": 75,
-    "progress": "Set RUST_TEST_NOCAPTURE=1 with env inside the resource guard; same validation command, decks, seeds, policy, assertions and test inventory.",
-    "memory_bytes": 6442450944,
-    "cargo_jobs": 1,
-    "test_threads": 1
-  },
   "retained_artifacts": [
     {
       "path": "<cache>/rustmage-tmt-pr465-ci-first/validation.log",
@@ -49,5 +39,26 @@
   "validated_gameplay_source": "8cfcaef45cb49661c24c56aa858d2d904ab75334",
   "local_full_release_pass": "docs/sets/tmt-195-validation.json",
   "review_record": "https://github.com/altf4/rustmage/issues/464",
-  "reviews": "Exact-head review refresh required after publication."
+  "reviews": "Exact-head review refresh required after publication.",
+  "superseded_budget_increase": {
+    "smoke_validation_minutes": 60,
+    "smoke_job_minutes": 65,
+    "full_validation_minutes": 70,
+    "full_job_minutes": 75,
+    "progress": "Set RUST_TEST_NOCAPTURE=1 with env inside the resource guard; same validation command, decks, seeds, policy, assertions and test inventory.",
+    "memory_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "repair": {
+    "smoke_validation_minutes": 40,
+    "smoke_job_minutes": 45,
+    "full_validation_minutes": 50,
+    "full_job_minutes": 60,
+    "memory_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "progress": "Keep explicit in-guard RUST_TEST_NOCAPTURE for real per-game diagnostics.",
+    "work": "Reduce duplicate observations/serialization and engine funding/layer evaluation work; retain full workload and assertions."
+  }
 }

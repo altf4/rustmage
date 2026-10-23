@@ -7,7 +7,7 @@ Standard tabletop/MTGO snapshot**. This work preserves that target.
 Integration branch: `codex/tmt-complete-set`, base `1a795dcf`.
 Branch created 2026-10-23 04:41:28 UTC (2026-10-22 local).
 Tracking issue: https://github.com/altf4/rustmage/issues/464.
-**All 195 cards pass the local implementation and acceptance gates.** Final
+**All 195 cards are implemented; runtime acceptance is being refreshed.** Final
 published-head reviews are recorded in the [tracking issue](https://github.com/altf4/rustmage/issues/464).
 
 Pinned XMage revision: `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
@@ -25,7 +25,7 @@ Initial admission: **71/195**, **124 gated**. Current admission: **195/195**,
 audits and combined release evidence. **All 124 newly authored physical cards have rules scenarios and combined release
 validation**, alongside all 71 inherited audits. No upstream merge is claimed.
 
-## Complete-set local acceptance
+## Complete-set local acceptance before runtime optimization
 
 [Final evidence](tmt-195-validation.json) records all nine release-validation
 phases on `8cfcaef45cb49661c24c56aa858d2d904ab75334`, 3,748 passing library tests,
@@ -60,10 +60,14 @@ separate user authorization.
 The first hosted CI run hit its 40-minute validation budget during the TMT
 workload after all 3,748 library tests and existing game suites passed. No test
 failure was recorded. [CI diagnostics and budget](tmt-ci-budget.json) preserve
-that terminal timeout separately from the successful local release. The runner
-now allows 60 minutes for routine validation and emits test/game progress;
-its one-job/thread and 6 GiB limits remain fixed. The same full workload reruns,
-and published-head reviews must be refreshed after this CI-only change.
+that terminal timeout separately from the successful local release. A timeout-only increase was rejected by the user. The original 40-minute
+validation/45-minute job budgets are restored, with test/game progress exposed.
+One job/thread and 6 GiB remain fixed. Runtime optimization now targets duplicate
+observations and funding/layer evaluation. The same full workload and every
+assertion remain required; combined validation and published-head reviews refresh
+after integration. [Driver evidence](tmt-driver-performance.json) measures a
+24-game diagnostic improving from 32.024 to 21.415 seconds with identical actions,
+outcomes, private decisions, branches/replay and actual mechanic evidence.
 
 ## Historical checkpoints
 

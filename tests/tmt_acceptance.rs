@@ -140,6 +140,11 @@ impl Evidence {
         *self.executed.entry(name).or_default() += amount;
     }
     fn transition(&mut self, before: &Observation, after: &Observation, action: &Action) {
+        let before_objects = before
+            .objects
+            .iter()
+            .map(|o| (o.id, o))
+            .collect::<BTreeMap<_, _>>();
         if matches!(action, Action::ChooseKicker { pay: true }) {
             self.add("kicker choices", 1);
         }
@@ -263,25 +268,23 @@ impl Evidence {
             }
         }
         for object in &after.objects {
-            let old = before
-                .objects
-                .iter()
-                .find(|o| o.reference == object.reference);
+            let old = before_objects
+                .get(&object.id)
+                .copied()
+                .filter(|o| o.reference == object.reference);
             if object.zone == Zone::Battlefield && old.is_none_or(|o| o.zone != Zone::Battlefield) {
                 if object.is_token() {
                     self.add("tokens entered", 1);
                 }
-                if before
-                    .objects
-                    .iter()
-                    .any(|o| o.id == object.id && o.zone == Zone::Graveyard)
+                if before_objects
+                    .get(&object.id)
+                    .is_some_and(|o| o.zone == Zone::Graveyard)
                 {
                     self.add("graveyard returns", 1);
                 }
-                if before
-                    .objects
-                    .iter()
-                    .any(|o| o.id == object.id && o.zone == Zone::Outside)
+                if before_objects
+                    .get(&object.id)
+                    .is_some_and(|o| o.zone == Zone::Outside)
                 {
                     self.add("outside cards entered", 1);
                 }
@@ -308,10 +311,10 @@ impl Evidence {
         }
     }
 }
-fn semantic_observation(game: &Game, viewer: Player) -> serde_json::Value {
-    let mut value = serde_json::to_value(game.observe(viewer)).unwrap();
-    value.as_object_mut().unwrap().remove("revision");
-    value
+fn semantic_observation(game: &Game, viewer: Player) -> Vec<u8> {
+    let mut view = game.observe(viewer);
+    view.revision = 0;
+    serde_json::to_vec(&view).unwrap()
 }
 fn private_choice(observation: &Observation) -> bool {
     observation
@@ -392,8 +395,14 @@ fn run_workloads(workloads: Vec<Workload>, verify: bool) -> Evidence {
                         trace("legal_actions");
                         let actions = game.legal_actions();
                         assert!(!actions.is_empty());
+                        trace("observe_before");
+                        let before_view = game.observe(actor);
+                        if verify {
+                            assert_eq!(before_view.actions, actions);
+                        }
                         trace("policy");
-                        let index = rustmage::policy::smoke_index(&game, &actions);
+                        let index =
+                            rustmage::policy::smoke_index_from_observation(&before_view, &actions);
                         let action = actions[index].clone();
                         assert!(
                             !matches!(action, Action::Concede),
@@ -406,11 +415,10 @@ fn run_workloads(workloads: Vec<Workload>, verify: bool) -> Evidence {
                             );
                         }
                         if verify {
-                            trace("observe_before");
-                            let before_view = game.observe(actor);
                             let private = private_choice(&before_view);
-                            for viewer in [Player::P0, Player::P1] {
-                                let view = game.observe(viewer);
+                            let other_view = game.observe(actor.other());
+                            for view in [&before_view, &other_view] {
+                                let viewer = view.viewer;
                                 assert!(view.objects.iter().all(|o| o.zone != Zone::Hand
                                     || o.owner == viewer
                                     || view.known_hand.contains(&o.reference)));
@@ -461,8 +469,8 @@ fn run_workloads(workloads: Vec<Workload>, verify: bool) -> Evidence {
                                 assert_eq!(child.snapshot(), game.snapshot());
                                 for viewer in [Player::P0, Player::P1] {
                                     assert_eq!(
-                                        serde_json::to_value(child.observe(viewer)).unwrap(),
-                                        serde_json::to_value(game.observe(viewer)).unwrap()
+                                        serde_json::to_vec(&child.observe(viewer)).unwrap(),
+                                        serde_json::to_vec(&game.observe(viewer)).unwrap()
                                     );
                                 }
                                 let after = game.snapshot();
