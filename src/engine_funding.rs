@@ -37,6 +37,29 @@ struct FundingState<'g> {
     reserve_group: Option<Box<Vec<(ObjectRef, AdditionalCost)>>>,
     convoke: bool,
 }
+/// One borrowed immutable world; neither the evaluation nor a computed absence
+/// survives this query, enters owned state, or needs mutation invalidation.
+struct FundingKeywordQuery<'a, 'g> {
+    world: &'a FundingState<'g>,
+    evaluation: std::cell::OnceCell<Option<ability_evaluation::AbilityEvaluation>>,
+}
+impl<'a, 'g> FundingKeywordQuery<'a, 'g> {
+    fn new(world: &'a FundingState<'g>) -> Self {
+        Self {
+            world,
+            evaluation: std::cell::OnceCell::new(),
+        }
+    }
+    fn keywords(&self, resource: &Resource) -> Keywords {
+        self.world.keywords_with_evaluation(
+            resource,
+            self.evaluation
+                .get_or_init(|| ability_evaluation::evaluate_if_needed(self.world))
+                .as_ref(),
+        )
+    }
+}
+
 impl ability_world::CharacteristicWorld for FundingState<'_> {
     fn game(&self) -> &Game {
         self.game
@@ -649,7 +672,15 @@ impl<'g> FundingState<'g> {
         ability_world::CharacteristicWorld::kinds(self, r.id)
     }
     fn keywords(&self, target: &Resource) -> Keywords {
-        if let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) {
+        let evaluation = ability_evaluation::evaluate_if_needed(self);
+        self.keywords_with_evaluation(target, evaluation.as_ref())
+    }
+    fn keywords_with_evaluation(
+        &self,
+        target: &Resource,
+        evaluation: Option<&ability_evaluation::AbilityEvaluation>,
+    ) -> Keywords {
+        if let Some(evaluation) = evaluation {
             return evaluation.result.objects[target.id as usize].keywords;
         }
         let mut keywords = target
@@ -873,6 +904,14 @@ impl<'g> FundingState<'g> {
         result
     }
     fn moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
+        let query = FundingKeywordQuery::new(self);
+        self.moves_with_keywords(goal, |resource| query.keywords(resource))
+    }
+    fn moves_with_keywords(
+        &self,
+        goal: &FundingGoal,
+        keywords: impl Fn(&Resource) -> Keywords,
+    ) -> Vec<FundingMove> {
         let mut moves = Vec::new();
         for (resource, entry) in self.resources.iter().enumerate() {
             let object = &entry.object;
@@ -882,7 +921,7 @@ impl<'g> FundingState<'g> {
             if !object.tapped
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
-                    || self.keywords(entry).contains(Keywords::HASTE))
+                    || keywords(entry).contains(Keywords::HASTE))
             {
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, entry.id) {
                     grant.production.visit(|production| {
@@ -911,7 +950,7 @@ impl<'g> FundingState<'g> {
             if !object.tapped
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
-                    || self.keywords(entry).contains(Keywords::HASTE))
+                    || keywords(entry).contains(Keywords::HASTE))
                 && let Some(color) = object.card.mana_color()
             {
                 let mut production = [0; 6];
@@ -963,7 +1002,7 @@ impl<'g> FundingState<'g> {
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
                         self.kinds(entry),
-                        || self.keywords(entry),
+                        || keywords(entry),
                         self.life,
                         ability,
                         index,
@@ -1802,6 +1841,7 @@ impl<'g> FundingState<'g> {
                 })
                 .count()
         });
+        let keyword_query = FundingKeywordQuery::new(self);
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != goal.actor {
@@ -1810,7 +1850,7 @@ impl<'g> FundingState<'g> {
             let tap_ready = !object.tapped
                 && (self.kinds(resource) & 1 == 0
                     || !object.summoning_sick
-                    || self.keywords(resource).contains(Keywords::HASTE));
+                    || keyword_query.keywords(resource).contains(Keywords::HASTE));
             if tap_ready {
                 let amount = ability_world::CharacteristicWorld::basic_land_tap_mana_bonus(
                     self,
@@ -1884,7 +1924,7 @@ impl<'g> FundingState<'g> {
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.kinds(resource),
-                        || self.keywords(resource),
+                        || keyword_query.keywords(resource),
                         self.life,
                         ability,
                         index,
@@ -5112,3 +5152,7 @@ mod funding_symmetry_tests;
 #[cfg(test)]
 #[path = "engine_funding_joint_color_tests.rs"]
 mod joint_color_tests;
+
+#[cfg(test)]
+#[path = "engine_funding_keyword_query_tests.rs"]
+mod keyword_query_tests;
