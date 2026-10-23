@@ -530,7 +530,7 @@
       "oracle_id": "8683341a-e836-41e5-9034-4da09eb0ab42",
       "name": "Dimension X",
       "definition": "src/card_definitions/tmt/dimension_x.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Dimension X",
@@ -548,7 +548,8 @@
       ],
       "evidence": [
         "src/engine_tmt_land_audit_tests.rs",
-        "src/card_definitions/tmt/dimension_x.json"
+        "src/card_definitions/tmt/dimension_x.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -923,7 +924,7 @@
       "oracle_id": "063dd25b-d4b4-4e09-acae-8c52dcb40803",
       "name": "Foot Headquarters",
       "definition": "src/card_definitions/tmt/foot_headquarters.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Foot Headquarters",
@@ -941,7 +942,8 @@
       ],
       "evidence": [
         "src/engine_tmt_land_audit_tests.rs",
-        "src/card_definitions/tmt/foot_headquarters.json"
+        "src/card_definitions/tmt/foot_headquarters.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -1004,7 +1006,7 @@
       "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
       "name": "Forest",
       "definition": "src/card_definitions/fra/forest.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Forest",
@@ -1020,7 +1022,8 @@
       ],
       "evidence": [
         "src/engine_ecl_inherited_tests.rs",
-        "src/card_definitions/fra/forest.json"
+        "src/card_definitions/fra/forest.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -1309,7 +1312,7 @@
       "oracle_id": "01ee70d4-6527-45ae-9600-bd3d16b3037d",
       "name": "Illegitimate Business",
       "definition": "src/card_definitions/tmt/illegitimate_business.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Illegitimate Business",
@@ -1327,7 +1330,8 @@
       ],
       "evidence": [
         "src/engine_tmt_land_audit_tests.rs",
-        "src/card_definitions/tmt/illegitimate_business.json"
+        "src/card_definitions/tmt/illegitimate_business.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -1385,7 +1389,7 @@
       "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
       "name": "Island",
       "definition": "src/card_definitions/fra/island.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Island",
@@ -1401,7 +1405,8 @@
       ],
       "evidence": [
         "src/engine_ecl_inherited_tests.rs",
-        "src/card_definitions/fra/island.json"
+        "src/card_definitions/fra/island.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -2089,7 +2094,7 @@
       "oracle_id": "fe1eb8b3-c605-4711-a057-ed3565bfe75c",
       "name": "Michelangelo, Mutant BFF",
       "definition": "src/card_definitions/tmt/michelangelo_mutant_bff.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Michelangelo, Mutant BFF",
@@ -2106,7 +2111,8 @@
       ],
       "evidence": [
         "src/engine_tmt_mutagen_tests.rs",
-        "src/card_definitions/tmt/michelangelo_mutant_bff.json"
+        "src/card_definitions/tmt/michelangelo_mutant_bff.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -2179,7 +2185,7 @@
       "oracle_id": "a86117c1-b83d-4350-9a10-a23b7e67e1bd",
       "name": "Mikey & Leo, Chaos & Order",
       "definition": "src/card_definitions/tmt/mikey_leo_chaos_order.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Mikey & Leo, Chaos & Order",
@@ -2195,7 +2201,8 @@
       ],
       "evidence": [
         "src/engine_tmt_mutagen_tests.rs",
-        "src/card_definitions/tmt/mikey_leo_chaos_order.json"
+        "src/card_definitions/tmt/mikey_leo_chaos_order.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -2273,7 +2280,7 @@
       "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
       "name": "Mountain",
       "definition": "src/card_definitions/fra/mountain.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Mountain",
@@ -2289,7 +2296,8 @@
       ],
       "evidence": [
         "src/engine_ecl_inherited_tests.rs",
-        "src/card_definitions/fra/mountain.json"
+        "src/card_definitions/fra/mountain.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -2389,7 +2397,7 @@
       "oracle_id": "ea9fc868-374b-4acc-be0d-4283907b4524",
       "name": "Mutant Chain Reaction",
       "definition": "src/card_definitions/tmt/mutant_chain_reaction.rs",
-      "state": "focused tested candidate; integrated release validation pending",
+      "state": "tested candidate; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Mutant Chain Reaction",
@@ -2405,7 +2413,8 @@
       ],
       "evidence": [
         "src/engine_tmt_mutagen_tests.rs",
-        "src/card_definitions/tmt/mutant_chain_reaction.json"
+        "src/card_definitions/tmt/mutant_chain_reaction.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -2414,7 +2423,7 @@
       "oracle_id": "f6059731-2e10-4f72-a214-b257f1677e9e",
       "name": "Mutant Town",
       "definition": "src/card_definitions/tmt/mutant_town.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Mutant Town",
@@ -2432,7 +2441,8 @@
       ],
       "evidence": [
         "src/engine_tmt_land_audit_tests.rs",
-        "src/card_definitions/tmt/mutant_town.json"
+        "src/card_definitions/tmt/mutant_town.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -2836,7 +2846,7 @@
       "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
       "name": "Plains",
       "definition": "src/card_definitions/fra/plains.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Plains",
@@ -2852,7 +2862,8 @@
       ],
       "evidence": [
         "src/engine_ecl_inherited_tests.rs",
-        "src/card_definitions/fra/plains.json"
+        "src/card_definitions/fra/plains.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -3836,7 +3847,7 @@
       "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
       "name": "Swamp",
       "definition": "src/card_definitions/fra/swamp.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "Swamp",
@@ -3852,7 +3863,8 @@
       ],
       "evidence": [
         "src/engine_ecl_inherited_tests.rs",
-        "src/card_definitions/fra/swamp.json"
+        "src/card_definitions/fra/swamp.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18
@@ -3861,7 +3873,7 @@
       "oracle_id": "4139f40a-873b-4842-96a2-b7875de1c20a",
       "name": "TCRI Building",
       "definition": "src/card_definitions/tmt/tcri_building.rs",
-      "state": "inherited rules audit candidate; integrated release validation pending",
+      "state": "inherited rules audit verified; full-set acceptance and independent reviews pending",
       "printed_obligations": [
         {
           "face": "TCRI Building",
@@ -3879,7 +3891,8 @@
       ],
       "evidence": [
         "src/engine_tmt_land_audit_tests.rs",
-        "src/card_definitions/tmt/tcri_building.json"
+        "src/card_definitions/tmt/tcri_building.json",
+        "docs/sets/tmt-mutagen-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18

@@ -544,3 +544,29 @@ Parallel isolated authors now own five mana consumers, eight spell/entry consume
 and fifteen inherited nonland audits. The integrator owns Mutagen Man/Ray Fillet
 activation-cost mechanics and all combined catalogue regeneration and validation.
 The full goal and one complete-set PR boundary remain open.
+
+## Validated 123-card checkpoint and parallel continuation
+
+All nine release phases pass on `07cceabc` in 658.91 seconds:
+3,410 library rules tests (one ignored), all 159 TMT scenarios, existing native
+games and seven Python binding checks. The three newly admitted cards use public
+paid casts, including all three hybrid equivalents. Admission is 123/195,
+72 gated, zero unresolved; 52 newly authored physical candidates are release
+verified. Ten inherited land audits now have integrated release evidence,
+including the existing canonical five-basic-land paid-spell scenario; 61
+inherited admission flags remain unaudited.
+
+[Portable evidence](tmt-mutagen-validation.json) preserves report/library hashes,
+resource limits and measured implementation throughput. The accidental LTO test
+build was stopped and its incomplete guard report retained; the final validator
+passes under unchanged limits. Completed disposable validator outputs were
+cleaned, preserving exact shared-library paths/hashes in the producing cache.
+The Freeform regression benchmark remains distinct from pending TMT simulation
+throughput and full-game acceptance.
+
+At the user's request, three isolated authors are working on five mana cards,
+eight spell/entry cards and fifteen inherited-card audits. The integrator owns
+Mutagen Man and Ray Fillet's cost kernel in a fourth isolated checkout while
+this integration branch remains available for combining completed batches.
+No author batch is counted as integrated or independently reviewed yet. The full
+195-card goal and one complete-set implementation PR boundary remain open.
