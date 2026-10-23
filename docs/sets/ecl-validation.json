@@ -1,5 +1,5 @@
 {
-  "scope": "All273 ECL physical identities implemented and focused-tested; final whole-pool acceptance, performance, release validation and published reviews pending",
+  "scope": "273 frozen ECL identities; Twilight Diviner temporarily gated after independent LKI finding; final acceptance pending.",
   "frozen_members": 273,
   "inherited_admission_flags": 107,
   "newly_tested_physical_cards": 166,
@@ -171,8 +171,8 @@
     "Winnowing",
     "Wistfulness"
   ],
-  "current_admission_flags": 273,
-  "remaining_gated": 0,
+  "current_admission_flags": 272,
+  "remaining_gated": 1,
   "inherited_evidence_audit": {
     "audited": 107,
     "total": 107,
@@ -1958,5 +1958,40 @@
       "Mage.Sets/src/mage/cards/c/CandyTrail.java": "eed1559b35539babf2375a6dd7c4106bfde17a038cac43de8fb8b3d9ba1408e2",
       "Mage.Sets/src/mage/cards/c/Confiscate.java": "7a30aa75cb6e8eddf008993c6ae3d76df09899f1740347e490228ec5ce3b203b"
     }
+  },
+  "interrupted_final_release_273": {
+    "head": "b9996a22dd9043b3f26415e5d9f5d5bdbfd59a53",
+    "status": "interrupted after confirmed independent Twilight LKI finding; not final acceptance",
+    "terminal": true,
+    "success": false,
+    "exit": 1,
+    "resource_report": "9480b9f45a784c25aaa9ea6549756e41",
+    "completed_phases": 5,
+    "native_passed": 3245,
+    "native_ignored": 1,
+    "native_seconds": 131.86,
+    "catalogue_passed": 9,
+    "foundations_completed_before_stop": 21,
+    "foundations_required": 22,
+    "peak_memory_gib": 3.6,
+    "service_seconds": 619.818,
+    "shared_libraries": {
+      "/home/altf4/.cache/rustmage-validation-8utn2glt/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "/home/altf4/.cache/rustmage-validation-8utn2glt/debug/deps/librustmage.so": "9153d0aa0636b48da7e50297c2d536c206effe31fb8729d5bff2f009652fa45f"
+    },
+    "cleaned_allocated_bytes": 879046656
+  },
+  "twilight_lki_review_finding": {
+    "reviewer": "/root/ecl_final_review_b",
+    "reviewed_head": "b9996a22dd9043b3f26415e5d9f5d5bdbfd59a53",
+    "status": "accepted; definition temporarily incomplete until repair verified",
+    "severity": "P2",
+    "problem": "Non-target copy choice incorrectly excludes original entering incarnations after departure. Reentry must not rebind the old reference; original last-known copiable values remain usable.",
+    "rules": [
+      "608.2h",
+      "400.7"
+    ],
+    "source_discrepancy": "Pinned XMage getPermanent filter shares the restrictive behavior; Oracle/CR take precedence. Official ECL release notes provide generic copy rulings and no exception.",
+    "stale_test": "twilight_departed_and_reentered_objects_are_not_rebound_or_copied_from_lki incorrectly expected no token; replace with old-incarnation LKI assertions."
   }
 }

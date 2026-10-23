@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6451f49e0e00f35006ce52c32c6ac265b9b67f8deb5695a0765b2c5d3b279801",
+  "catalogue_version": "d6652f0326376e67b00752a598de1cbbebd45a264e3c260b378335d1b0cf99bc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2356,
-  "implemented_total": 2362,
+  "implemented_standard_cards": 2355,
+  "implemented_total": 2361,
   "token_definitions": 110,
   "emblem_definitions": 4,
   "adventure_definitions": 40,
@@ -48,7 +48,8 @@
     },
     "ecl": {
       "total": 267,
-      "complete": 267
+      "complete": 266,
+      "gated": 1
     },
     "eoc": {
       "total": 8,
@@ -37926,8 +37927,8 @@
     {
       "name": "Twilight Diviner",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/ecl/twilight_diviner.rs",
       "set": "ecl"
     },
