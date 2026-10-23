@@ -1,6 +1,6 @@
 {
   "membership": "data/sets/tmt.json",
-  "note": "Printed obligations awaiting implementation/rules audit; admission is not certification.",
+  "note": "All 195 physical identities have typed behavior, rules evidence and complete-set local acceptance. Current published-head nonauthor reviews and CI results are tracked in issue464.",
   "cards": [
     {
       "oracle_id": "a9d68cf5-3055-4ec9-9893-244bfd7046be",
@@ -25,7 +25,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/action_news_crew.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 2,
@@ -53,7 +54,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/agent_bishop_man_in_black.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -82,7 +84,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/anchovy_banana_pizza.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -110,7 +113,8 @@
         "src/card_definitions/tmt/april_o_neil_hacktivist.json",
         "src/engine_tmt_alliance_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells",
@@ -139,7 +143,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/april_o_neil_kunoichi_trainee.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -167,7 +172,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/april_reporter_of_the_weird.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -196,7 +202,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/armaggon_future_shark.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 2,
@@ -225,7 +232,8 @@
         "src/engine_tmt_spell_batch_tests.rs",
         "src/card_definitions/tmt/baxter_stockman.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22,
@@ -253,7 +261,8 @@
         "src/card_definitions/tmt/bebop_rocksteady.json",
         "src/engine_tmt_reflexive_batch_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 27,
       "owner": "tmt_spells",
@@ -283,7 +292,8 @@
         "src/card_definitions/tmt/bebop_warthog_warrior.json",
         "src/engine_tmt_combat_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit",
@@ -313,7 +323,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/bespoke_bo.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -341,7 +352,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/bot_bashing_time.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -371,7 +383,8 @@
         "src/engine_tmt_final_spells_tests.rs",
         "src/card_definitions/tmt/brilliance_unleashed.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 35,
@@ -400,7 +413,8 @@
         "src/card_definitions/tmt/broadcast_takeover.json",
         "src/engine_tmt_blink_permissions_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 26,
       "owner": "tmt_mana",
@@ -429,7 +443,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/buzz_bots.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -458,7 +473,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/casey_jones_jury_rig_justiciar.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -485,7 +501,8 @@
       "evidence": [
         "src/engine_tmt_delayed_steps_tests.rs",
         "src/card_definitions/tmt/casey_jones_vigilante.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 32,
@@ -515,7 +532,8 @@
         "src/card_definitions/tmt/chrome_dome.json",
         "src/engine_tmt_blink_permissions_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 26,
       "owner": "tmt_mana",
@@ -548,7 +566,8 @@
         "src/card_definitions/tmt/cool_but_rude.json",
         "src/engine_tmt_class_tests.rs",
         "docs/sets/tmt-class-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 13,
       "coverage_origin": "newly authored"
@@ -575,7 +594,8 @@
         "src/card_definitions/tmt/courier_of_comestibles.json",
         "src/engine_tmt_alliance_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells",
@@ -603,7 +623,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/cowabunga.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -631,7 +652,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/crustacean_commando.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -661,7 +683,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/dark_leo_shredder.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 6,
@@ -689,7 +712,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/death_in_the_family.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -719,7 +743,8 @@
         "src/engine_tmt_land_audit_tests.rs",
         "src/card_definitions/tmt/dimension_x.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -748,7 +773,8 @@
         "src/card_definitions/tmt/dimensional_exile.json",
         "src/engine_tmt_exile_returns_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana",
@@ -781,7 +807,8 @@
         "src/card_definitions/tmt/does_machines.json",
         "src/engine_tmt_class_tests.rs",
         "docs/sets/tmt-class-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 14,
       "coverage_origin": "newly authored"
@@ -809,7 +836,8 @@
         "src/card_definitions/tmt/don_leo_problem_solvers.json",
         "src/engine_tmt_blink_permissions_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 26,
       "owner": "tmt_mana",
@@ -838,7 +866,8 @@
         "src/engine_tmt_final_batch_tests.rs",
         "src/card_definitions/tmt/don_raph_hard_science.json",
         "docs/sets/tmt-195-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 36,
@@ -868,7 +897,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/donatello_s_technique.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -897,7 +927,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/donatello_gadget_master.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 5,
@@ -926,7 +957,8 @@
         "src/engine_tmt_departure_tests.rs",
         "src/card_definitions/tmt/donatello_mutant_mechanic.json",
         "docs/sets/tmt-departure-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 17,
@@ -954,7 +986,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/donatello_turtle_techie.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -983,7 +1016,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/donatello_way_with_machines.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -1012,7 +1046,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/dream_beavers.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -1040,7 +1075,8 @@
         "src/engine_tmt_inherited_batch_tests.rs",
         "src/card_definitions/tmt/epf_point_squad.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 19,
@@ -1069,7 +1105,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/east_wind_avatar.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1098,7 +1135,8 @@
         "src/card_definitions/tmt/escape_tunnel.json",
         "src/engine_tmt_exile_returns_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana",
@@ -1127,7 +1165,8 @@
         "src/card_definitions/tmt/everything_pizza.json",
         "src/engine_tmt_alliance_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells",
@@ -1156,7 +1195,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/featherbrained_filcher.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1,
@@ -1184,7 +1224,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/foot_elite.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1214,7 +1255,8 @@
         "src/engine_tmt_land_audit_tests.rs",
         "src/card_definitions/tmt/foot_headquarters.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -1243,7 +1285,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/foot_mystic.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1,
@@ -1272,7 +1315,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/foot_ninjas.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -1300,7 +1344,8 @@
         "src/engine_ecl_inherited_tests.rs",
         "src/card_definitions/fra/forest.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -1330,7 +1375,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/frog_butler.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1359,7 +1405,8 @@
         "src/card_definitions/tmt/fugitive_droid.json",
         "src/engine_tmt_blink_permissions_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 26,
       "owner": "tmt_mana",
@@ -1388,7 +1435,8 @@
         "src/card_definitions/tmt/general_traag_heart_of_stone.json",
         "src/engine_tmt_reflexive_batch_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 27,
       "owner": "tmt_spells",
@@ -1417,7 +1465,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/genghis_frog.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1447,7 +1496,8 @@
         "src/engine_tmt_spell_batch_tests.rs",
         "src/card_definitions/tmt/go_ninja_go.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22,
@@ -1476,7 +1526,8 @@
         "src/engine_tmt_mana_batch_tests.rs",
         "src/card_definitions/tmt/groundchuck_dirtbag.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20,
@@ -1505,7 +1556,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/grounded_for_life.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1535,7 +1587,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/guac_marshmallow_pizza.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1563,7 +1616,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/hamato_guardian_stance.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1592,7 +1646,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/hard_won_jitte.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1620,7 +1675,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/henchbots.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1649,7 +1705,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/high_flying_ace.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 2,
@@ -1678,7 +1735,8 @@
         "src/engine_tmt_spell_batch_tests.rs",
         "src/card_definitions/tmt/ice_cream_kitty.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22,
@@ -1708,7 +1766,8 @@
         "src/engine_tmt_land_audit_tests.rs",
         "src/card_definitions/tmt/illegitimate_business.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -1738,7 +1797,8 @@
         "src/card_definitions/tmt/improvised_arsenal.json",
         "src/engine_tmt_equipment_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 30,
       "owner": "integrator",
@@ -1767,7 +1827,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/insectoid_exterminator.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1,
@@ -1795,7 +1856,8 @@
         "src/engine_ecl_inherited_tests.rs",
         "src/card_definitions/fra/island.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -1824,7 +1886,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/jennika_s_technique.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -1853,7 +1916,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/jennika_bad_apple_big_sister.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -1884,7 +1948,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/karai_s_technique.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -1913,7 +1978,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/karai_future_of_the_foot.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 5,
@@ -1942,7 +2008,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/kitsune_s_technique.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 6,
@@ -1971,7 +2038,8 @@
         "src/engine_tmt_last_origins_tests.rs",
         "src/card_definitions/tmt/kitsune_dragon_s_daughter.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 33,
@@ -2001,7 +2069,8 @@
         "src/engine_tmt_last_origins_tests.rs",
         "src/card_definitions/tmt/koya_death_from_above.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 33,
@@ -2031,7 +2100,8 @@
         "src/engine_tmt_last_origins_tests.rs",
         "src/card_definitions/tmt/krang_shredder.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 33,
@@ -2062,7 +2132,8 @@
         "src/engine_tmt_final_batch_tests.rs",
         "src/card_definitions/tmt/krang_master_mind.json",
         "docs/sets/tmt-195-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 36,
@@ -2092,7 +2163,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/krang_utrom_warlord.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -2125,7 +2197,8 @@
         "src/card_definitions/tmt/leader_s_talent.json",
         "src/engine_tmt_class_tests.rs",
         "docs/sets/tmt-class-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 12,
       "coverage_origin": "newly authored"
@@ -2154,7 +2227,8 @@
         "src/engine_tmt_damage_legends_tests.rs",
         "src/card_definitions/tmt/leatherhead_swamp_stalker.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 34,
@@ -2184,7 +2258,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/leonardo_s_technique.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -2213,7 +2288,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/leonardo_big_brother.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -2243,7 +2319,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/leonardo_cutting_edge.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -2273,7 +2350,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/leonardo_leader_in_blue.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 5,
@@ -2303,7 +2381,8 @@
         "src/card_definitions/tmt/leonardo_sewer_samurai.json",
         "src/engine_tmt_sneak_tests.rs",
         "docs/sets/tmt-sneak-finality-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 11,
       "coverage_origin": "newly authored"
@@ -2330,7 +2409,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/lessons_from_life.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -2361,7 +2441,8 @@
         "src/card_definitions/tmt/lita_little_orphan_amphibian.json",
         "src/engine_tmt_alliance_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells",
@@ -2391,7 +2472,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/lord_dregg_insect_invader.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1,
@@ -2420,7 +2502,8 @@
         "src/card_definitions/tmt/madame_null_power_broker.json",
         "src/engine_tmt_alliance_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells",
@@ -2448,7 +2531,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/msc/make_your_move.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -2476,7 +2560,8 @@
         "src/engine_tmt_spell_batch_tests.rs",
         "src/card_definitions/tmt/manhole_missile.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22,
@@ -2504,7 +2589,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/mechanized_ninja_cavalry.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -2533,7 +2619,8 @@
         "src/engine_tmt_spell_batch_tests.rs",
         "src/card_definitions/tmt/metalhead.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22,
@@ -2562,7 +2649,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/michelangelo_s_technique.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 8,
@@ -2590,7 +2678,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/michelangelo_game_master.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1,
@@ -2619,7 +2708,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/michelangelo_improviser.json",
         "docs/sets/tmt-sneak-refresh-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 9,
@@ -2648,7 +2738,8 @@
         "src/engine_tmt_mutagen_tests.rs",
         "src/card_definitions/tmt/michelangelo_mutant_bff.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -2677,7 +2768,8 @@
         "src/engine_tmt_inherited_batch_two_tests.rs",
         "src/card_definitions/tmt/michelangelo_weirdness_to_11.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 21,
@@ -2706,7 +2798,8 @@
         "src/card_definitions/tmt/mighty_mutanimals.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -2736,7 +2829,8 @@
         "src/card_definitions/tmt/mikey_don_party_planners.json",
         "src/engine_tmt_blink_permissions_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 26,
       "owner": "tmt_mana",
@@ -2764,7 +2858,8 @@
         "src/engine_tmt_mutagen_tests.rs",
         "src/card_definitions/tmt/mikey_leo_chaos_order.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -2793,7 +2888,8 @@
         "src/engine_tmt_departure_tests.rs",
         "src/card_definitions/tmt/mind_transfer_protocol.json",
         "docs/sets/tmt-departure-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 17,
@@ -2822,7 +2918,8 @@
         "src/engine_tmt_mana_batch_tests.rs",
         "src/card_definitions/tmt/mona_lisa_science_geek.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20,
@@ -2851,7 +2948,8 @@
         "src/engine_tmt_damage_legends_tests.rs",
         "src/card_definitions/tmt/mondo_gecko.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 34,
@@ -2880,7 +2978,8 @@
         "src/engine_ecl_inherited_tests.rs",
         "src/card_definitions/fra/mountain.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -2910,7 +3009,8 @@
         "src/card_definitions/tmt/mouser_attack.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -2939,7 +3039,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/mouser_foundry.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 3,
@@ -2967,7 +3068,8 @@
         "src/card_definitions/tmt/mouser_mark_iii.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -2997,7 +3099,8 @@
         "src/card_definitions/tmt/mutagen_man_living_ooze.json",
         "src/engine_tmt_activation_cost_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 25,
       "owner": "integrator",
@@ -3025,7 +3128,8 @@
         "src/engine_tmt_mutagen_tests.rs",
         "src/card_definitions/tmt/mutant_chain_reaction.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -3055,7 +3159,8 @@
         "src/engine_tmt_land_audit_tests.rs",
         "src/card_definitions/tmt/mutant_town.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -3084,7 +3189,8 @@
         "src/card_definitions/tmt/mutant_town_musicians.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -3112,7 +3218,8 @@
         "src/card_definitions/tmt/negate.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -3141,7 +3248,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/new_generation_s_technique.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -3175,7 +3283,8 @@
         "src/engine_tmt_ninja_tests.rs",
         "src/card_definitions/tmt/ninja_teen.json",
         "docs/sets/tmt-ninja-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 16,
@@ -3203,7 +3312,8 @@
         "src/engine_tmt_spell_batch_tests.rs",
         "src/card_definitions/tmt/nobody.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22,
@@ -3232,7 +3342,8 @@
         "src/engine_tmt_last_origins_tests.rs",
         "src/card_definitions/tmt/north_wind_avatar.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 33,
@@ -3263,7 +3374,8 @@
         "src/card_definitions/tmt/northampton_farm.json",
         "src/engine_tmt_exile_returns_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana",
@@ -3293,7 +3405,8 @@
         "src/card_definitions/tmt/novel_nunchaku.json",
         "src/engine_tmt_equipment_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 30,
       "owner": "integrator",
@@ -3322,7 +3435,8 @@
         "src/card_definitions/tmt/null_group_biological_assets.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -3351,7 +3465,8 @@
         "src/engine_tmt_damage_legends_tests.rs",
         "src/card_definitions/tmt/old_hob_alleycat_blues.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 34,
@@ -3382,7 +3497,8 @@
         "src/card_definitions/tmt/omni_cheese_pizza.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -3410,7 +3526,8 @@
         "src/card_definitions/tmt/ooze_spill.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -3439,7 +3556,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/oroku_saki_shredder_rising.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -3467,7 +3585,8 @@
         "src/card_definitions/tmt/pain_101.json",
         "src/engine_tmt_reflexive_batch_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 27,
       "owner": "tmt_spells",
@@ -3496,7 +3615,8 @@
         "src/card_definitions/tmt/paramecia_coloniex.json",
         "src/engine_tmt_reflexive_batch_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 27,
       "owner": "tmt_spells",
@@ -3529,7 +3649,8 @@
         "src/card_definitions/tmt/party_dude.json",
         "src/engine_tmt_class_tests.rs",
         "docs/sets/tmt-party-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 15,
       "coverage_origin": "newly authored"
@@ -3558,7 +3679,8 @@
         "src/engine_tmt_departure_tests.rs",
         "src/card_definitions/tmt/pizza_face_gastromancer.json",
         "docs/sets/tmt-departure-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 17,
@@ -3586,7 +3708,8 @@
         "src/engine_ecl_inherited_tests.rs",
         "src/card_definitions/fra/plains.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -3615,7 +3738,8 @@
         "src/card_definitions/tmt/prehistoric_pet.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -3644,7 +3768,8 @@
         "src/card_definitions/tmt/primordial_pachyderm.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -3672,7 +3797,8 @@
         "src/card_definitions/tmt/punk_frogs.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -3700,7 +3826,8 @@
         "src/engine_tmt_mana_batch_tests.rs",
         "src/card_definitions/tmt/purple_dragon_punks.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20,
@@ -3729,7 +3856,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/putrid_pals.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1,
@@ -3759,7 +3887,8 @@
         "src/card_definitions/tmt/quintessential_katana.json",
         "src/engine_tmt_equipment_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 30,
       "owner": "integrator",
@@ -3787,7 +3916,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/ragamuffin_raptor.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 3,
@@ -3815,7 +3945,8 @@
         "src/card_definitions/tmt/raph_leo_sibling_rivals.json",
         "src/engine_tmt_combat_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit",
@@ -3844,7 +3975,8 @@
         "src/engine_tmt_damage_legends_tests.rs",
         "src/card_definitions/tmt/raph_mikey_troublemakers.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 34,
@@ -3875,7 +4007,8 @@
         "src/card_definitions/tmt/raphael_s_technique.json",
         "src/engine_wheel.rs",
         "docs/sets/tmt-sneak-refresh-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 10,
@@ -3905,7 +4038,8 @@
         "src/card_definitions/tmt/raphael_most_attitude.json",
         "src/engine_tmt_combat_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit",
@@ -3934,7 +4068,8 @@
         "src/card_definitions/tmt/raphael_ninja_destroyer.json",
         "src/engine_tmt_combat_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit",
@@ -3962,7 +4097,8 @@
         "src/card_definitions/tmt/raphael_tough_turtle.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -3991,7 +4127,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/raphael_the_nightwatcher.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -4020,7 +4157,8 @@
         "src/engine_tmt_final_batch_tests.rs",
         "src/card_definitions/tmt/rat_king_verminister.json",
         "docs/sets/tmt-195-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 36,
@@ -4050,7 +4188,8 @@
         "src/card_definitions/tmt/ravenous_robots.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -4080,7 +4219,8 @@
         "src/card_definitions/tmt/ray_fillet_man_ray.json",
         "src/engine_tmt_activation_cost_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 25,
       "owner": "integrator",
@@ -4109,7 +4249,8 @@
         "src/card_definitions/tmt/renet_temporal_apprentice.json",
         "src/engine_tmt_exile_returns_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana",
@@ -4139,7 +4280,8 @@
         "src/engine_tmt_final_spells_tests.rs",
         "src/card_definitions/tmt/retro_mutation.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 35,
@@ -4168,7 +4310,8 @@
         "src/card_definitions/tmt/return_to_the_sewers.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -4196,7 +4339,8 @@
         "src/card_definitions/tmt/rock_soldiers.json",
         "src/engine_tmt_inherited_batch_three_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 23,
       "owner": "tmt_audit",
@@ -4226,7 +4370,8 @@
         "src/card_definitions/tmt/rocksteady_crash_courser.json",
         "src/engine_tmt_combat_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 28,
       "owner": "tmt_audit",
@@ -4255,7 +4400,8 @@
         "src/card_definitions/tmt/sally_pride_lioness_leader.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -4284,7 +4430,8 @@
         "src/card_definitions/tmt/savanti_romero_time_s_exile.json",
         "src/engine_tmt_reflexive_batch_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 27,
       "owner": "tmt_spells",
@@ -4313,7 +4460,8 @@
         "src/card_definitions/tmt/saved_by_the_shell.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -4343,7 +4491,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/sewer_veillance_cam.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 3,
@@ -4373,7 +4522,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/shark_shredder_killer_clone.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 8,
@@ -4403,7 +4553,8 @@
         "src/card_definitions/tmt/shredder_s_armor.json",
         "src/engine_tmt_equipment_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 30,
       "owner": "integrator",
@@ -4433,7 +4584,8 @@
         "src/card_definitions/tmt/shredder_s_revenge.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -4462,7 +4614,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/shredder_s_technique.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 8,
@@ -4492,7 +4645,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/shredder_unrelenting.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -4522,7 +4676,8 @@
         "src/card_definitions/tmt/skateboard.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -4551,7 +4706,8 @@
         "src/card_definitions/tmt/slash_reptile_rampager.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -4579,7 +4735,8 @@
         "src/card_definitions/tmt/slithering_cryptid.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -4609,7 +4766,8 @@
         "src/card_definitions/tmt/south_wind_avatar.json",
         "src/engine_tmt_reflexive_batch_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 27,
       "owner": "tmt_spells",
@@ -4638,7 +4796,8 @@
         "src/engine_tmt_spell_batch_tests.rs",
         "src/card_definitions/tmt/spicy_oatmeal_pizza.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22,
@@ -4667,7 +4826,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/splinter_s_technique.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -4697,7 +4857,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/splinter_hamato_yoshi.json",
         "docs/sets/tmt-sneak-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 4,
@@ -4726,7 +4887,8 @@
         "src/card_definitions/tmt/splinter_radical_rat.json",
         "src/engine_tmt_reflexive_batch_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 27,
       "owner": "tmt_spells",
@@ -4754,7 +4916,8 @@
         "src/card_definitions/tmt/squirrelanoids.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -4784,7 +4947,8 @@
         "src/card_definitions/tmt/stockman_mad_fly_entist.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -4813,7 +4977,8 @@
         "src/engine_tmt_final_spells_tests.rs",
         "src/card_definitions/tmt/stomped_by_the_foot.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 35,
@@ -4843,7 +5008,8 @@
         "src/engine_tmt_departure_tests.rs",
         "src/card_definitions/tmt/super_shredder.json",
         "docs/sets/tmt-departure-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 17,
@@ -4871,7 +5037,8 @@
         "src/engine_ecl_inherited_tests.rs",
         "src/card_definitions/fra/swamp.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -4901,7 +5068,8 @@
         "src/engine_tmt_land_audit_tests.rs",
         "src/card_definitions/tmt/tcri_building.json",
         "docs/sets/tmt-mutagen-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 18,
@@ -4929,7 +5097,8 @@
         "src/engine_tmt_spell_batch_tests.rs",
         "src/card_definitions/tmt/tainted_treats.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 22,
@@ -4959,7 +5128,8 @@
         "src/card_definitions/tmt/technodrome.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -4987,7 +5157,8 @@
         "src/card_definitions/tmt/tenderize.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -5017,7 +5188,8 @@
         "src/engine_tmt_final_batch_tests.rs",
         "src/card_definitions/tmt/the_cloning_of_shredder.json",
         "docs/sets/tmt-195-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 36,
@@ -5049,7 +5221,8 @@
         "src/engine_tmt_final_batch_tests.rs",
         "src/card_definitions/tmt/the_last_ronin.json",
         "docs/sets/tmt-195-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 36,
@@ -5080,7 +5253,8 @@
         "src/card_definitions/tmt/the_last_ronin_s_technique.json",
         "src/card_definitions/tmt/ninja_turtle_spirit_1_1_white.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 7,
@@ -5110,7 +5284,8 @@
         "src/engine_tmt_last_origins_tests.rs",
         "src/card_definitions/tmt/the_neutrinos.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 33,
@@ -5140,7 +5315,8 @@
         "src/engine_tmt_departure_tests.rs",
         "src/card_definitions/tmt/the_ooze.json",
         "docs/sets/tmt-departure-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 17,
@@ -5170,7 +5346,8 @@
         "src/card_definitions/tmt/tokka_rahzar_terrible_twos.json",
         "src/engine_tmt_alliance_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells",
@@ -5199,7 +5376,8 @@
         "src/card_definitions/tmt/transdimensional_bovine.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -5229,7 +5407,8 @@
         "src/card_definitions/tmt/triceraton_commander.json",
         "src/engine_tmt_alliance_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells",
@@ -5257,7 +5436,8 @@
         "src/card_definitions/tmt/tunnel_rats.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -5286,7 +5466,8 @@
         "src/engine_tmt_sneak_tests.rs",
         "src/card_definitions/tmt/turncoat_kunoichi.json",
         "docs/sets/tmt-sneak-consumers-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 5,
@@ -5316,7 +5497,8 @@
         "src/card_definitions/tmt/turtle_blimp.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -5346,7 +5528,8 @@
         "src/engine_tmt_mana_batch_tests.rs",
         "src/card_definitions/tmt/turtle_lair.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20,
@@ -5375,7 +5558,8 @@
         "src/card_definitions/tmt/turtle_power.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -5404,7 +5588,8 @@
         "src/engine_tmt_final_batch_tests.rs",
         "src/card_definitions/tmt/turtle_van.json",
         "docs/sets/tmt-195-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 36,
@@ -5433,7 +5618,8 @@
         "src/engine_tmt_final_batch_tests.rs",
         "src/card_definitions/tmt/turtles_forever.json",
         "docs/sets/tmt-195-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_spells",
       "local_batch": 36,
@@ -5463,7 +5649,8 @@
         "src/card_definitions/tmt/turtles_in_time.json",
         "src/engine_tmt_exile_returns_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 29,
       "owner": "tmt_mana",
@@ -5493,7 +5680,8 @@
         "src/engine_tmt_final_spells_tests.rs",
         "src/card_definitions/tmt/uneasy_alliance.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 35,
@@ -5522,7 +5710,8 @@
         "src/card_definitions/tmt/utrom_scientists.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -5551,7 +5740,8 @@
         "src/engine_tmt_damage_legends_tests.rs",
         "src/card_definitions/tmt/venus_torn_between_worlds.json",
         "docs/sets/tmt-final-candidates.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_audit",
       "local_batch": 34,
@@ -5583,7 +5773,8 @@
         "src/engine_tmt_mana_batch_tests.rs",
         "src/card_definitions/tmt/weather_maker.json",
         "docs/sets/tmt-parallel-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "tmt_mana",
       "local_batch": 20,
@@ -5613,7 +5804,8 @@
         "src/card_definitions/tmt/west_wind_avatar.json",
         "src/engine_tmt_reflexive_batch_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 27,
       "owner": "tmt_spells",
@@ -5642,7 +5834,8 @@
         "src/card_definitions/tmt/wingnut_bat_on_the_belfry.json",
         "src/engine_tmt_alliance_batch_tests.rs",
         "docs/sets/tmt-173-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 31,
       "owner": "tmt_spells",
@@ -5672,7 +5865,8 @@
         "src/card_definitions/tmt/zog_triceraton_castaway.json",
         "src/engine_tmt_inherited_batch_four_tests.rs",
         "docs/sets/tmt-151-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "local_batch": 24,
       "owner": "tmt_audit",
@@ -5700,7 +5894,8 @@
         "src/engine_tmt_disappear_tests.rs",
         "src/card_definitions/tmt/zoo_escapees.json",
         "docs/sets/tmt-validation.json",
-        "docs/sets/tmt-195-validation.json"
+        "docs/sets/tmt-195-validation.json",
+        "docs/sets/tmt-performance-validation.json"
       ],
       "owner": "integrator",
       "local_batch": 1,

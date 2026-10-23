@@ -60,6 +60,12 @@ acceptance requires a comprehensive pass on the final engine revision and the
 separate production throughput measurement. A regression pass alone does not
 establish full-set acceptance.
 
+To reproduce the ordinary PR lane locally:
+
+```sh
+python3 scripts/validate.py --release --acceptance regression --python smoke
+```
+
 [Compiler-removal proof](compiler-removal-results.json) records exact equality of
 the compiled before/after definitions, all helper values and immutable globals.
 The all-Standard goal remains open; finish one complete set with full-game tests

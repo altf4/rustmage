@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Timeout increase rejected by user; original40-minute validation budget restored; actual runtime optimization and fresh combined validation pending",
+  "status": "Original time and resource budgets preserved. Final local comprehensive validation passed; PR regression and exact published-head review results are tracked in issue464.",
   "failed_published_head": "3f0926ab59694220ce2abd28f25a6fb6226b301c",
   "run": "https://github.com/altf4/rustmage/actions/runs/40005272456",
   "failure": "Validation step reached40-minute time limit during TMT acceptance. No rules test failure recorded. Stop step terminated the managed unit before diagnostics collection.",
@@ -59,6 +59,18 @@
     "cargo_jobs": 1,
     "test_threads": 1,
     "progress": "Keep explicit in-guard RUST_TEST_NOCAPTURE for real per-game diagnostics.",
-    "work": "Reduce duplicate observations/serialization and engine funding/layer evaluation work; retain full workload and assertions."
-  }
+    "work": "Optimized driver/engine queries; explicit PR regression and default comprehensive tiers. The complete 172-game matrix is preserved, with every rules test and strengthened 20-game TMT suite in PR regression."
+  },
+  "test_value_audit": {
+    "two_slowest_games_runtime_fraction": 0.85785,
+    "two_slowest_games_action_fraction": 0.08314,
+    "interpretation": "Useful dense stress cases, not proven semantically redundant. Preserve them in comprehensive acceptance instead of running them on every PR.",
+    "pr_regression": "All library rules, Foundations/ECL games, strengthened 20-game TMT suite and binding smoke tests.",
+    "comprehensive": "Default validator and manual CI tier retain the unchanged 172-game TMT matrix; required before complete-set acceptance.",
+    "zero_test_filter": "Fail closed unless the exact comprehensive test reports one passing executed test.",
+    "evidence": "docs/sets/tmt-performance-validation.json"
+  },
+  "optimized_local_comprehensive_seconds": 1007.6620354810148,
+  "optimized_local_regression_phases_seconds": 672.6915594689781,
+  "hosted_result": "See PR465 and issue464 for the actual final published-head regression CI result; local timing is not a hosted prediction."
 }

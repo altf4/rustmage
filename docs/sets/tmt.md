@@ -7,8 +7,9 @@ Standard tabletop/MTGO snapshot**. This work preserves that target.
 Integration branch: `codex/tmt-complete-set`, base `1a795dcf`.
 Branch created 2026-10-23 04:41:28 UTC (2026-10-22 local).
 Tracking issue: https://github.com/altf4/rustmage/issues/464.
-**All 195 cards are implemented; runtime acceptance is being refreshed.** Final
-published-head reviews are recorded in the [tracking issue](https://github.com/altf4/rustmage/issues/464).
+**All 195 cards are implemented and the final engine is locally verified.**
+Current published-head nonauthor reviews and CI results are recorded in the
+[tracking issue](https://github.com/altf4/rustmage/issues/464).
 
 Pinned XMage revision: `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 [Frozen membership](../../data/sets/tmt.json): **195 physical identities**,
@@ -24,6 +25,60 @@ Initial admission: **71/195**, **124 gated**. Current admission: **195/195**,
 **0 gated**, zero unresolved. All 71 inherited admissions have source/rules
 audits and combined release evidence. **All 124 newly authored physical cards have rules scenarios and combined release
 validation**, alongside all 71 inherited audits. No upstream merge is claimed.
+
+## Current verified acceptance and test tiers
+
+[Optimized evidence](tmt-performance-validation.json) records final engine and
+driver source `11d5fe4350ee5baeea785a00c4d0914e9d434f7a`. All ten comprehensive release-validation
+phases pass in **1007.662 seconds**, with **3,766 library tests**,
+source/provenance checks, Clippy, all native suites and seven Python binding smoke
+tests. All **11,930 tracked inputs** stayed fixed. The explicitly
+selected comprehensive test reports exactly one executed pass; a successful
+zero-match Cargo filter is rejected.
+
+The full **172-game** matrix retains its decks, seeds, both starters, **140,163
+actions fully replayed**, **2,739 owned branch/restore checks** and **475 private
+decisions**. In the assertion-enabled test profile it completes in
+**334.808 seconds**, compared with 842.51 seconds
+before optimization. The separate production proof completes strict verification
+in **327.111 seconds** and simulation in **182.325 seconds**
+(**768.75 accepted actions/s**, **0.943 games/s**).
+Every non-timing metric matches the original production proof exactly. Compilation
+is excluded from these game timings. Production remains level 3 with thin LTO;
+assertion-enabled tests use level 2 with overflow checks and assertions retained.
+
+Routine PR CI explicitly selects **regression**. It keeps every library rule test,
+Foundations/ECL game suite, binding smoke test and the original 20 TMT regression
+games. The latter now require all **45 selected nonland identities actually
+committed**, source-correlated Disappear counters and Alliance damage, committed
+Sneak casts, Class-level increases, both-player privacy, owned raw/indexed children,
+rejection atomicity, restore/stale-index checks and full journal replay. They pass
+in **0.672632 seconds**, with **11,823 replayed actions**,
+**205 branch cases** and **13 private decisions**.
+Negative controls reject unrelated effect deltas and incorrect consumed sources.
+All 195 frozen members are still checked as known and supported; the 45 actual
+casts are reported separately from whole-set membership.
+
+Two dense games accounted for 85.8% of the earlier 172-game runtime but only
+8.3% of its actions. They remain comprehensive stress fixtures. The default
+`python3 scripts/validate.py --release` still includes them, and manual CI exposes
+the same comprehensive tier. A routine regression pass alone does not establish
+complete-set acceptance. The actual regression phases in this cold comprehensive
+run total **672.692 seconds**; hosted CI is measured
+separately in the PR. Original CI timeouts and the shared 6 GiB/one-job/one-test-thread
+limits remain unchanged.
+
+The engine/driver changes narrow grant-only layer work, conservatively bound
+impossible funding, reuse immutable characteristic evaluations and avoid
+duplicate legal-action enumeration. No derived cache enters owned game state.
+The frozen source membership and all printed obligations remain unchanged.
+Performance work adds **zero newly authored cards**: the original first-verification
+interval covered **124 new cards in 50,302.554461 seconds (8.874 cards/hour)**,
+excluding the 71 inherited admissions that were separately audited.
+
+The sections below preserve earlier checkpoints and failures. Statements that
+work or reviews were pending describe those historical revisions; the current
+published-head review and CI record is the tracking issue. The PR remains unmerged.
 
 ## Complete-set local acceptance before runtime optimization
 
