@@ -7,7 +7,8 @@ Standard tabletop/MTGO snapshot**. This work preserves that target.
 Integration branch: `codex/tmt-complete-set`, base `1a795dcf`.
 Branch created 2026-10-23 04:41:28 UTC (2026-10-22 local).
 Tracking issue: https://github.com/altf4/rustmage/issues/464.
-**The set is incomplete. No implementation PR has been opened.**
+**All 195 cards pass the local implementation and acceptance gates.** Final
+published-head reviews are recorded in the [tracking issue](https://github.com/altf4/rustmage/issues/464).
 
 Pinned XMage revision: `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 [Frozen membership](../../data/sets/tmt.json): **195 physical identities**,
@@ -21,8 +22,45 @@ canonical definition, including reprints; it is not a second membership source.
 
 Initial admission: **71/195**, **124 gated**. Current admission: **195/195**,
 **0 gated**, zero unresolved. All 71 inherited admissions have source/rules
-audits and combined release evidence. **124 newly authored physical cards have rules scenarios; 102 have integrated release validation**;
-zero have independent final published-head reviews or upstream merges.
+audits and combined release evidence. **All 124 newly authored physical cards have rules scenarios and combined release
+validation**, alongside all 71 inherited audits. No upstream merge is claimed.
+
+## Complete-set local acceptance
+
+[Final evidence](tmt-195-validation.json) records all nine release-validation
+phases on `8cfcaef45cb49661c24c56aa858d2d904ab75334`, 3,748 passing library tests,
+pinned source/link checks, Clippy, complete native games and Python binding
+smoke tests. The frozen membership remains 195 supported, zero gated and zero
+unresolved.
+
+The production workload completes **172 games**, **140,163 accepted actions**,
+**2,739 owned branch/restore checks**, **475 private decisions**
+and a complete action-journal replay. All 195 members appear in legal decks;
+176 distinct nonland identities are actually cast. Card-specific
+rules scenarios cover printed obligations beyond natural-game execution.
+Disappear counter placement, Alliance damage, Sneak, Classes, affinity, kicker,
+copy effects, tokens, counters, modal choices and outside-card movement have
+separate actual execution evidence. General consumed ability packets are
+reported explicitly and may include fizzles.
+
+The separate production simulation completes the same games, action count and
+terminal outcomes in **357.291 seconds**: **392.29 accepted actions/s**
+and **0.481 games/s**. Its timing includes initialization,
+legal actions, the existing smoke policy, application and terminal checks;
+it excludes verification, replay and compilation. Hardware/build/seed details,
+implementation throughput, fixed-input hashes and retained shared-library
+manifests are in the linked evidence. The Freeform benchmark remains separate.
+
+All gates used the shared 6 GiB guard, one build job and one test thread.
+The eventual single complete-set PR targets `codex/portable-set-skill`.
+Two independent nonauthor reviews of its exact published head are still required;
+the canonical issue/PR review record determines final acceptance. Merge requires
+separate user authorization.
+
+## Historical checkpoints
+
+The following entries preserve chronological implementation, failed attempts and
+prior partial validation. The current complete-set result is the section above.
 
 ## Active Sneak integration
 
