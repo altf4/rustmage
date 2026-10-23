@@ -1976,8 +1976,8 @@
     "peak_memory_gib": 3.6,
     "service_seconds": 619.818,
     "shared_libraries": {
-      "/home/altf4/.cache/rustmage-validation-8utn2glt/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
-      "/home/altf4/.cache/rustmage-validation-8utn2glt/debug/deps/librustmage.so": "9153d0aa0636b48da7e50297c2d536c206effe31fb8729d5bff2f009652fa45f"
+      "<cache>/rustmage-validation-8utn2glt/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-validation-8utn2glt/debug/deps/librustmage.so": "9153d0aa0636b48da7e50297c2d536c206effe31fb8729d5bff2f009652fa45f"
     },
     "cleaned_allocated_bytes": 879046656
   },
@@ -2047,5 +2047,13 @@
       "resource_report": "16a4a9a022864d80b2ce61b56a8b5589"
     },
     "dynamic_production_audit": "Current typed producers: Bloom Tender colors, Brigid creature count and Elvish Archdruid Elf count; no admitted devotion mana producer. Exact DFS validates actual activation costs and production."
+  },
+  "final_preflight_attempt": {
+    "head": "1d5c4350",
+    "status": "failed portable-source-path unit check before compilation; two retained-library evidence keys corrected to <cache>, actual files untouched",
+    "report": "<cache>/rustmage-validation-u79dqs50/report/result.json",
+    "seconds": 11.954303336009616,
+    "resource_report": "7062a89da322495a898558bda7a1594b",
+    "native_jobs_started": false
   }
 }
