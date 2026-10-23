@@ -21,11 +21,11 @@ The engine is available through a native Rust API and in-process Python bindings
 Your application supplies the bot, learning algorithm, and reward function;
 Rustmage supplies the game rules and state transitions.
 
-Current support includes all **517 unique cards in the Foundations inventory**,
-including its Beginner Box and Starter Collection, with rules tests and complete
-games using Foundations-only decks. The long-term goal is complete Standard
-coverage; implementation of the wider card pool is still in progress. Standard
-games reject cards whose rules have not been implemented.
+Three full sets are implemented: **Foundations**, **Lorwyn Eclipsed**, and
+**Teenage Mutant Ninja Turtles**, with rules tests and complete-game acceptance.
+The long-term goal is complete Standard coverage; implementation of the wider
+card pool is still in progress. Standard games reject cards whose rules have not
+been implemented.
 
 Card behavior is authored directly in Rust, organized by set, and built on shared
 abilities, effects, targets, and costs. XMage's implementations and authoritative
@@ -37,6 +37,50 @@ To explore the project:
 - [Python bindings](python/rustmage.py) expose the engine to Python applications.
 - [Card implementation guide](docs/direct-card-authoring.md) explains how to add card behavior.
 - [Foundations validation](docs/foundations-acceptance.md) describes the coverage and testing process.
+
+## Standard set tracker
+
+**3 / 20 sets complete · 15%**
+
+`███░░░░░░░░░░░░░░░░░`
+
+Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
+([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
+“Complete” means whole-set implementation with rules and full-game acceptance;
+partial admission or catalogue entries do not establish set completion. Upstream
+review and merge status are tracked separately in the linked records.
+
+<!-- Maintain this tracker when a set reaches full-set acceptance. Keep the
+     summary and rows in sync; count physical identities from data/sets/<code>.json,
+     including reprints, rather than files in src/card_definitions/<set>/. -->
+
+| Set | Code | Implementation status | Acceptance / tracking |
+| --- | --- | --- | --- |
+| Foundations | FDN | ✅ Complete — 517/517 cards | [Acceptance](docs/foundations-acceptance.md) |
+| Lorwyn Eclipsed | ECL | ✅ Complete — 273/273 cards | [Set record](docs/sets/ecl.md) |
+| Teenage Mutant Ninja Turtles | TMT | ✅ Complete — 195/195 cards | [Set record](docs/sets/tmt.md) |
+| Aetherdrift | DFT | ⏳ Partial — full-set acceptance pending | — |
+| Avatar: The Last Airbender | TLA | ⏳ Partial — full-set acceptance pending | — |
+| Bloomburrow | BLB | ⏳ Partial — full-set acceptance pending | — |
+| Duskmourn: House of Horror | DSK | ⏳ Partial — full-set acceptance pending | — |
+| Edge of Eternities | EOE | ⏳ Partial — full-set acceptance pending | — |
+| Final Fantasy | FIN | ⏳ Partial — full-set acceptance pending | — |
+| Marvel Super Heroes | MSH | ⏳ Partial — full-set acceptance pending | — |
+| Marvel's Spider-Man | SPM | ⏳ Partial — full-set acceptance pending | — |
+| Murders at Karlov Manor | MKM | ⏳ Partial — full-set acceptance pending | — |
+| Outlaws of Thunder Junction | OTJ | ⏳ Partial — full-set acceptance pending | — |
+| Reality Fracture | FRA | ⏳ Partial — full-set acceptance pending | — |
+| Secrets of Strixhaven | SOS | ⏳ Partial — full-set acceptance pending | — |
+| Tarkir: Dragonstorm | TDM | ⏳ Partial — full-set acceptance pending | — |
+| The Big Score | BIG | ⏳ Partial — full-set acceptance pending | — |
+| The Hobbit | HOB | ⏳ Partial — full-set acceptance pending | — |
+| The Lost Caverns of Ixalan | LCI | ⏳ Partial — full-set acceptance pending | — |
+| Wilds of Eldraine | WOE | ⏳ Partial — full-set acceptance pending | — |
+
+Update the status, card count, evidence link and summary when a set passes full
+acceptance. When refreshing the Standard snapshot, reconcile this list against
+`set_tables` in the pinned inventory. Reprints may belong to multiple sets, so
+set card counts must not be added to estimate unique Standard coverage.
 
 ## Implement a set with Codex
 
