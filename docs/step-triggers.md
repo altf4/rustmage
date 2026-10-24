@@ -52,5 +52,22 @@ phases beyond the existing first-draw rule, conditional costs, step-trigger mode
 wider history and unsupported residual text remain gated. This does not establish
 full Standard or RL/search acceptance.
 
+`StepGuard::AttachedControllerTurn` qualifies an attachment using its exact
+battlefield incarnation and the exact attached permanent's current controller.
+The live and speculative funding worlds use the same predicate. For a beginning
+trigger whose wording names the enchanted permanent's controller, wrap the step
+in `TriggerCondition::When` and keep the inner `AtStep` guard `Always`; attachment
+or control changes after the event must not become a resolution recheck.
+
+Super Intelligence uses this guard with upkeep/any-player and draws through the
+existing `PlayerSet::Active`. The upkeep player stays active while that queued
+packet remains pending, stacked or resolving. Legal turn advancement waits for
+an empty stack, while ending the turn removes the packet. Consequently a later
+attachment change, control transfer, source departure or recipient departure
+cannot redirect the already queued draw. This narrow prerequisite adds no wire
+state and admits only the complete Super Intelligence representative. Its
+both-seat paid, privacy, owned replay and funding evidence is recorded in
+[msh-super-intelligence-evidence.json](msh-super-intelligence-evidence.json).
+
 Rules: [Comprehensive Rules, September 25, 2026](https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf),
 CR603, 608.2a/h, 504 and 513.

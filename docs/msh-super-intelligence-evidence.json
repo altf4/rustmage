@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "One narrow attached-controller beginning-of-step guard plus complete Super Intelligence; no further Aura admission",
+  "source_base": "e769b86e8f7cfe2f68558381c122d0dca7090527",
+  "observation_schema_unchanged": 141,
+  "complete_cards": [
+    "Super Intelligence"
+  ],
+  "new_ids": [],
+  "metadata_unchanged": true,
+  "printed_obligations": [
+    "U Aura with required enchant-creature targeting of either player's creature",
+    "At the beginning of the enchanted creature controller's upkeep, that upkeep player draws one mandatory card without targeting"
+  ],
+  "typed_api": "StepGuard::AttachedControllerTurn under trigger-time TriggerCondition::When wrapping the existing AtStep Upkeep/Any/Always event. One exact-object predicate is shared by live and speculative funding worlds.",
+  "resolution_recipient": "Existing PlayerSet::Active selects the upkeep player. The active player is stable while the original packet or its same-turn copies remain pending, stacked or resolving; legal step/turn advancement waits for an empty stack, and ending a turn removes the packet. Later changes to the Aura, attachment, controllers or incarnations do not redirect or cancel its already queued draw. No new event payload or wire state is needed.",
+  "focused_tests": {
+    "passed": 9,
+    "log": "<cache>/msh-super-focused-1.log",
+    "resource_report": "<cache>/rustmage-build-reports/b177e487355843f58f002df6972e117f.json",
+    "coverage": "Both seats with actual U payments and creature targets, wrong actor and transactional invalid-action checks, private hand/payment, owned raw/index branching, parent disposal and restore. Actual turn progression distinguishes recipient and Aura controller. Queued draw survives paid Aura/recipient removal and paid Confiscate departure; valid changed attachment/Aura-control fixture preserves the old recipient. Multiple Aura owners draw for the same active player. An all-invalid cast never installs its observer. Exact stale source/recipient incarnations fail qualification. Private funding test compares actual and virtual Confiscate departure/control projection using the shared guard."
+  },
+  "source_link_format": {
+    "source_verified_definitions": 5393,
+    "source_verified_java_blobs": 1115,
+    "log": "<cache>/msh-super-source-final.log",
+    "linker": "Regenerated metadata-only catalogue and coverage; no identity manifest change",
+    "format": "Direct rustfmt check of changed source files, skip_children true"
+  },
+  "trace_proof": {
+    "base": "e769b86e8f7cfe2f68558381c122d0dca7090527",
+    "wire_schema_unchanged": 141,
+    "baseline_rows": 2462,
+    "candidate_rows": 2463,
+    "inherited_exact_matches": 2462,
+    "inherited_changes": [],
+    "inherited_journal_changes": [],
+    "new_traces": {
+      "Super Intelligence": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 5,
+        "zone": "Battlefield",
+        "journal": "a473b4d0d5d9886c",
+        "observations": "5a1de98d35ced869"
+      }
+    },
+    "baseline_sha256": "391c1a5a00173430256997abc00091aaa6368e0e940ef654db25191dc5b6f525",
+    "candidate_sha256": "2cd1ec02b469340f5330986f75b3f5d636b598ba7d19bc83ce8ceeddbc1e4384",
+    "recording_only_expected_count_failure": true,
+    "proof": "<cache>/msh-super-trace-proof.json",
+    "candidate": "<cache>/msh-super-traces.json",
+    "recording_log": "<cache>/msh-super-trace-record.log",
+    "strict_passed": true,
+    "strict_log": "<cache>/msh-super-trace-strict.log",
+    "strict_resource_report": "<cache>/rustmage-build-reports/d298e026083a4bf0a93cf8d3f2120740.json"
+  },
+  "clippy": {
+    "passed": true,
+    "arguments": [
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "log": "<cache>/msh-super-clippy.log",
+    "resource_report": "<cache>/rustmage-build-reports/da2f6964d8af49d6ba3894da47f9e652.json"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "full_source_reads": "Complete frozen Oracle, complete SuperIntelligence.java and six direct helper classes pinned in the paired provenance record",
+  "implementation_throughput": {
+    "start": "2026-10-24T22:41:51+00:00",
+    "end": "2026-10-24T22:55:15.316411+00:00",
+    "elapsed_seconds": 804.316411,
+    "complete_candidate_physical_cards": 1,
+    "cards_per_hour": 4.475850487153618,
+    "scope": "Branch creation, full Oracle/Java/helper reads, implementation, focused tests, source/link/format, recording audit, final strict trace and Clippy, including shared build queue waits; excludes publication/reviews/integration and full release"
+  },
+  "remaining_scope": "Two fresh independent nonauthor reviews of the final published combined scope and combined full release validation remain pending. No redundant full native/release run was queued here. Dependent Aura consumers remain gated. The full 281-card set and all-pool gameplay/performance goal remain open; no simulation throughput claim."
+}

@@ -2363,6 +2363,8 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    /// Trigger-time attachment relation; wrap the step event in When.
+    AttachedControllerTurn,
     CardExiledThisTurn,
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
