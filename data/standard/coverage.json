@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "492f2dd3b1f23089fd421bf578d0bcfec56d77d5db00c9434f8d2d8ec0e51423",
+  "catalogue_version": "647b524d7a69c9845e0c3514dec495cbd5538736b9cfd384a4e2dd320cff78aa",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2368,
-  "implemented_total": 2374,
+  "implemented_standard_cards": 2369,
+  "implemented_total": 2375,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 251,
-      "gated": 13
+      "complete": 252,
+      "gated": 12
     },
     "spm": {
       "total": 134,
@@ -19014,8 +19014,8 @@
     {
       "name": "Killian's Confidence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/killian_s_confidence.rs",
       "set": "sos"
     },
