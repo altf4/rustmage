@@ -17,6 +17,14 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
     })
 }
 impl Card {
+    pub(super) fn has_own_turn_free_hand_cast(self) -> bool {
+        self.static_ability_groups().iter().any(|group| {
+            group
+                .fragments
+                .iter()
+                .any(|f| matches!(f, StaticAbilityFragment::OwnTurnFreeHandInstantSorcery))
+        })
+    }
     pub(super) fn has_free_hand_cast(self) -> bool {
         self.static_ability_groups().iter().any(|group| {
             group
@@ -27,6 +35,37 @@ impl Card {
     }
 }
 impl Game {
+    pub(super) fn limited_free_hand_permissions(&self, player: Player) -> Vec<ObjectRef> {
+        if player != self.state.active {
+            return Vec::new();
+        }
+        self.state
+            .static_sources
+            .iter()
+            .filter_map(|&id| {
+                let object = &self.state.objects[id as usize];
+                let reference = self.object_ref(id);
+                (object.controller == player
+                    && object.zone == Zone::Battlefield
+                    && object.card.has_own_turn_free_hand_cast()
+                    && self.printed_abilities_available(id)
+                    && self
+                        .state
+                        .used_free_hand_permissions
+                        .as_ref()
+                        .is_none_or(|rows| !rows.contains(&reference)))
+                .then_some(reference)
+            })
+            .collect()
+    }
+    pub(super) fn use_free_hand_permission(&mut self, permission: ObjectRef) {
+        let used = self
+            .state
+            .used_free_hand_permissions
+            .get_or_insert_default();
+        assert!(!used.contains(&permission));
+        used.push(permission);
+    }
     pub(super) fn free_hand_cast_available(&self, player: Player) -> bool {
         self.state.static_sources.iter().any(|&id| {
             let object = &self.state.objects[id as usize];
@@ -212,6 +251,7 @@ impl Game {
         }
         let a = Announcement {
             activation_discount: 0,
+            free_hand_permission: None,
             item,
             spec: TargetSpec::NONE,
             plan: TargetPlan::Single(TargetSpec::NONE),

@@ -241,11 +241,16 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseZoneReplacement { .. } => 50,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
-            Action::AnnounceFree {
+            Action::AnnounceFreeFromPermission {
+                flash_surcharge: false,
+                ..
+            }
+            | Action::AnnounceFree {
                 flash_surcharge: false,
                 ..
             } => 81,
-            Action::AnnounceFree { .. }
+            Action::AnnounceFreeFromPermission { .. }
+            | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceCast { .. }

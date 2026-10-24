@@ -472,6 +472,7 @@ define_actions! {
     },
     PlayGraveyardPermanent { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceFree { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceFreeFromPermission { card: CardId, face: CastFace, flash_surcharge: bool, permission: ObjectRef },
     AnnounceGrantedFlashback { card: CardId, flash_surcharge: bool },
     PayResolutionLife,
     DeclineResolutionLife,
@@ -1585,6 +1586,7 @@ struct State {
         reason = "Cold rule state keeps one pointer in games without this mechanic"
     )]
     borrowed_uses: Option<Box<Vec<borrowed_activations::Use>>>,
+    used_free_hand_permissions: Option<SharedVec<ObjectRef>>,
     graveyard_cast_permissions: cast_permissions::Rows,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
@@ -2001,6 +2003,8 @@ pub struct Observation {
     pub group_move_count: Option<u64>,
     pub optional_search_sequence: Option<OptionalSearchSequence>,
     pub announcing: Option<SpellView>,
+    pub announcing_free_hand_permission: Option<ObjectRef>,
+    pub used_free_hand_permissions: Vec<ObjectRef>,
     pub suspended_mana_announcements: Vec<ManaAnnouncementView>,
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
@@ -2205,6 +2209,7 @@ impl Game {
                 hand_play_bans: None,
                 borrowed_links: None,
                 borrowed_uses: None,
+                used_free_hand_permissions: None,
                 graveyard_cast_permissions: None,
                 graveyard_type_uses: None,
                 resolution_free_casts: None,
@@ -2990,6 +2995,7 @@ impl Game {
                 let casting_prohibited =
                     s.casting_prohibited || self.static_casting_prohibited(actor);
                 let free_hand_cast = self.free_hand_cast_available(actor);
+                let limited_hand_casts = self.limited_free_hand_permissions(actor);
                 if self.visit_graveyard_permanent_plays(
                     actor,
                     sorcery,
@@ -3135,6 +3141,41 @@ impl Game {
                                         flash_surcharge,
                                     }) {
                                         return true;
+                                    }
+                                }
+                            }
+                        }
+                        if obj.zone == Zone::Hand && !limited_hand_casts.is_empty() {
+                            for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen] {
+                                let definition = match face {
+                                    CastFace::Normal => Some(obj.card),
+                                    CastFace::Adventure => obj.card.adventure_spell(),
+                                    CastFace::Omen => obj.card.omen_spell(),
+                                };
+                                if !definition.is_some_and(|d| {
+                                    crate::cards::CastFilter::InstantSorcery.matches(d)
+                                }) {
+                                    continue;
+                                }
+                                for flash_surcharge in [false, true] {
+                                    if self.permitted_cast_available(
+                                        actor,
+                                        card,
+                                        CastMethod::Free,
+                                        face,
+                                        sorcery,
+                                        flash_surcharge,
+                                    ) {
+                                        for &permission in &limited_hand_casts {
+                                            if emit(Action::AnnounceFreeFromPermission {
+                                                card,
+                                                face,
+                                                flash_surcharge,
+                                                permission,
+                                            }) {
+                                                return true;
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -4096,6 +4137,26 @@ impl Game {
                     item.x = Some(0);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceFreeFromPermission {
+                card,
+                face,
+                flash_surcharge,
+                permission,
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                item.cast.as_mut().unwrap().method = CastMethod::Free;
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+                if item.source_card.x_symbols() > 0 {
+                    item.x = Some(0);
+                }
+                self.open_payment_announcement(item, Counters::default(), None);
+                self.state
+                    .announcing
+                    .as_mut()
+                    .expect("payment window")
+                    .free_hand_permission = Some(Box::new(permission));
             }
             Action::AnnounceGrantedFlashback {
                 card,
@@ -5461,6 +5522,7 @@ impl Game {
         self.expire_spell_copies();
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
+        self.state.used_free_hand_permissions = None;
         self.state.creature_damage_history = None;
         self.state.counter_placement_history = None;
         self.state.cast_entry_counters = None;
@@ -6340,6 +6402,14 @@ impl Game {
                 .as_ref()
                 .and_then(|resolution| resolution.moved_count),
             suspended_mana_announcements: self.mana_announcement_views(viewer),
+            announcing_free_hand_permission: s
+                .announcing
+                .as_ref()
+                .and_then(|a| a.free_hand_permission.as_deref().copied()),
+            used_free_hand_permissions: s
+                .used_free_hand_permissions
+                .as_deref()
+                .map_or_else(Vec::new, |rows| rows.clone()),
             announcing: s.announcing.as_ref().map(|announcement| {
                 let mut item = announcement.item.clone();
                 if !owns_choice {
@@ -6597,6 +6667,10 @@ impl Game {
         std::mem::size_of::<State>()
             + self.mana_lot_bytes()
             + self.mana_announcement_bytes()
+            + s.used_free_hand_permissions.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<ObjectRef>>()
+                    + rows.len() * std::mem::size_of::<ObjectRef>()
+            })
             + s.turn_skips
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<[u64; 2]>())
@@ -6656,9 +6730,12 @@ impl Game {
                 std::mem::size_of::<Vec<GraveyardTypeUse>>()
                     + rows.len() * std::mem::size_of::<GraveyardTypeUse>()
             })
-            + s.announcing
-                .as_ref()
-                .map_or(0, |a| a.counter_payment.owned_bytes())
+            + s.announcing.as_ref().map_or(0, |a| {
+                a.counter_payment.owned_bytes()
+                    + a.free_hand_permission
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<ObjectRef>())
+            })
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
             + s.borrowed_uses.as_ref().map_or(0, |rows| {

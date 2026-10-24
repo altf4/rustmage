@@ -38,6 +38,7 @@ pub(crate) struct StaticAbilityGroup {
 )]
 pub(crate) enum StaticAbilityFragment {
     FreeHandCast,
+    OwnTurnFreeHandInstantSorcery,
     CascadeFromHand {
         ability: u16,
     },

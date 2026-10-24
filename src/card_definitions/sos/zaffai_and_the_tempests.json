@@ -3,10 +3,23 @@
   "catalogue_id": 5151,
   "oracle_id": "3f8a8650-0e38-4926-8f48-526351e6a863",
   "facts_sha256": "ae6f91038c81ad0fbbfeefa2ba562df79d2de3a702814ce969f7326c72d9bfbe",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4bb419245be1c3a5b51902ba58b51b6471ee503f964effcffd9892489da4ad01"
   },
-  "physical_metadata_sha256": "8e9d9079f9bc306f9189ce64af16a1c6865b1ffd4939daa808db952b6e1ce910"
+  "physical_metadata_sha256": "8e9d9079f9bc306f9189ce64af16a1c6865b1ffd4939daa808db952b6e1ce910",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZaffaiAndTheTempests.java",
+  "java_sha256": "4de747ae9fe2750b2e3f5e7eaffe8a1738211b75f726ae56d4ec7b35d6187668",
+  "rules_notes": [
+    "The exact selected granting permanent incarnation is captured in the announcement and marked used only after the spell is actually cast. Alternate costs preserve ordinary timing and mandatory additional costs; usage resets at each actual turn, including extra turns. Leaving and returning creates a distinct unused permission."
+  ],
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+      "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+    }
+  ]
 }

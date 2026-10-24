@@ -157,6 +157,8 @@ mod sos_nita;
 mod sos_review_regressions;
 mod sos_white_blue_final;
 
+mod sos_applied;
 mod sos_killian;
 mod sos_white_blue_dragons;
-mod sos_applied;
+
+mod sos_zaffai;

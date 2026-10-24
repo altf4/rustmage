@@ -13,6 +13,7 @@ pub(super) struct Announcement {
     pub total_cost: Option<ManaCost>,
     /// Locked before mana abilities or any nonmana payment changes the source.
     pub activation_discount: u32,
+    pub free_hand_permission: Option<Box<ObjectRef>>,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
@@ -1308,6 +1309,7 @@ impl Game {
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
             activation_discount: self.item_activation_discount(&item),
+            free_hand_permission: None,
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -1355,6 +1357,7 @@ impl Game {
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         self.state.announcing = Some(Announcement {
             activation_discount: self.item_activation_discount(&item),
+            free_hand_permission: None,
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -1532,6 +1535,9 @@ impl Game {
                 return;
             }
         } else {
+            if let Some(permission) = announcement.free_hand_permission.take() {
+                self.use_free_hand_permission(*permission);
+            }
             self.push_stack_item(announcement.item);
         }
         if announcement.trigger {
