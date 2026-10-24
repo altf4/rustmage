@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "One complete physical King T'Challa card and its nonphysical back, using the integrated face/draw/prevention core; full 281-card acceptance remains pending",
+  "source_base": "cb3d5838289562f596e4b01d4682b7e4520e1a5b",
+  "observation_schema_unchanged": 141,
+  "complete_cards": [
+    "King T'Challa // Black Panther, Hope Enduring"
+  ],
+  "nonphysical_back_definition": {
+    "5392": "Black Panther, Hope Enduring"
+  },
+  "metadata_stability": "Every old ID, alias, intrinsic color, token/emblem recipe and creature-type row is unchanged. Canonical 2361 gains explicit Oracle-verified front metadata and back pointer; 5392 is appended. Two new face-name aliases and one typed constant are added. No other face or token is allocated.",
+  "printed_obligations": [
+    "Front 1WU legendary 3/2 Human Noble Hero with flash",
+    "Any player's second successful draw each turn causes the captured controller to draw; nested own second draws work",
+    "4WU sorcery-only exact-source transformation without tap; preserve incarnation, counters, damage, control, Equipment and entry history",
+    "Back 4WU legendary 3/3 Human Warrior Hero with flash and double strike",
+    "Prevent all preventable damage to the exact back-face source while its printed ability is available",
+    "Each combat damage occurrence to a player causes its captured controller to draw"
+  ],
+  "focused_tests": {
+    "passed": 9,
+    "log": "<cache>/msh-king-focused-3.log",
+    "resource_report": "<cache>/rustmage-build-reports/1bff0c695aac4108b476c93e4aaba968.json",
+    "coverage": "Both seats, actual paid front/back flash casting and transform, exact costs/mana values/names/subtypes, private hand/payment and invalid payment atomicity, wrong actor and owned raw/index branch/parent disposal/restore; nested second-draw chains, bursts, turn reset, no retroactive entry, queued controller/source departure; repeated prevention, ability removal and prevention prohibition; actual blocked/unblocked double-strike combat with separate draws and no trample; Fractal copies of both faces and foreign-controlled copies; public bounce front restoration and fresh-hand privacy."
+  },
+  "source_link_format": {
+    "source_verified_definitions": 5393,
+    "source_verified_java_blobs": 1114,
+    "log": "<cache>/msh-king-source-final.log",
+    "linker": "Regenerated metadata-only catalogue/module artifacts",
+    "format": "Direct rustfmt check of changed Rust files and engine module hook, skip_children true"
+  },
+  "trace_proof": {
+    "base": "cb3d5838289562f596e4b01d4682b7e4520e1a5b",
+    "wire_schema_unchanged": 141,
+    "baseline_rows": 2461,
+    "candidate_rows": 2462,
+    "inherited_exact_matches": 2461,
+    "inherited_changes": [],
+    "inherited_journal_changes": [],
+    "new_traces": {
+      "King T'Challa // Black Panther, Hope Enduring": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "e625fc58634bfdee",
+        "observations": "cc58aa2854450237"
+      }
+    },
+    "baseline_sha256": "4bca89bf9e430e607a3ba7600fb039574567382f5ab87bc7d3596eeb361fc1bc",
+    "candidate_sha256": "391c1a5a00173430256997abc00091aaa6368e0e940ef654db25191dc5b6f525",
+    "recording_only_expected_count_failure": true,
+    "proof": "<cache>/msh-king-trace-proof.json",
+    "candidate": "<cache>/msh-king-traces.json",
+    "recording_log": "<cache>/msh-king-trace-record.log",
+    "strict_passed": true,
+    "strict_log": "<cache>/msh-king-trace-strict.log",
+    "strict_resource_report": "<cache>/rustmage-build-reports/73ead2c2fcf2466a943d5f1d75b7c258.json"
+  },
+  "clippy": {
+    "passed": true,
+    "arguments": [
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "log": "<cache>/msh-king-clippy.log",
+    "resource_report": "<cache>/rustmage-build-reports/ee1b3264042f4d60aa43687d1ee0be38.json"
+  },
+  "full_source_design": "<cache>/msh-dfc-next-triage-f27f436a.md",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "implementation_throughput": {
+    "start": "2026-10-24T22:18:12+00:00",
+    "end": "2026-10-24T22:40:56.711935+00:00",
+    "elapsed_seconds": 1364.711935,
+    "complete_candidate_physical_cards": 1,
+    "cards_per_hour": 2.6379193349693977,
+    "scope": "Branch creation, implementation, focused corrections, source/link/format, recording audit, final strict trace and Clippy, including shared build queue waits; excludes prior read-only design, later publication/reviews/integration and full release"
+  },
+  "remaining_scope": "Two fresh independent nonauthor reviews and combined release integration remain pending. No full native/release job was redundantly queued here. Other three MSH DFCs and Nick Fury remain gated. No full-set gameplay or all-pool simulation/performance claim."
+}

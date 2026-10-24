@@ -3,10 +3,81 @@
   "catalogue_id": 2361,
   "oracle_id": "fe00278d-4385-4e3f-919c-12a794fd86f5",
   "facts_sha256": "f00e76a17732715a33ed5b76de462577b8b3ff5b4873b8bb4268fd60b13e9d65",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "2492188effd8d0578e53587b1795c01744fa182213ddc80d56b936f14d159066"
-  },
-  "physical_metadata_sha256": "855188555b5288caf84b260e4602f2142de0aeec6a303ca58fba92c4f8529d60"
+  "complete": true,
+  "physical_metadata_sha256": "64dc7dbd20580600436f2b94eb418b9181d2e3e46227dc19c466c247b1f9bf1a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KingTChalla.java",
+  "java_sha256": "f287558ca074a3487161e0d8a1d55d64fc25f417d7e9751d3964ff3168127381",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/ModalDoubleFacedCard.java",
+      "sha256": "e5f3411b714da1f2b68d5003bc2bb7ef39a1fafbd3fef94fb69fdef21a8d0edb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/ModalDoubleFacedCardHalf.java",
+      "sha256": "37d2bee15a7f11769410f0a6caee99e41a9eeaad0daa965aa3d12600bf11f59f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/DoubleFacedCard.java",
+      "sha256": "84cf08e3f8ac922aadb4856757341b6cbdf9db66e8b2401b43b9be9ee0316db0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/DoubleFacedCardHalf.java",
+      "sha256": "238869dbb53fc008cf0cf72225f9c983040317b4e7979acfd01db5114772f5e2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java",
+      "sha256": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+      "sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PreventAllDamageToSourceEffect.java",
+      "sha256": "150ae5a72cab1663aaec88c96b0cce408a8aea801cd3538b6e9c2c22469a9ac2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/PreventionEffectImpl.java",
+      "sha256": "35c73be2ddcb40be12bc5a1ca2d11a654436c7b6b0c4ae1e37cb18383a97daf5"
+    }
+  ],
+  "oracle_face": {
+    "oracle_id": "fe00278d-4385-4e3f-919c-12a794fd86f5",
+    "index": 0,
+    "sha256": "2f130af6c9ee3ac1245b6ee0cdb57e4dfb34d53fbe8adf15a1a034190365f075"
+  }
 }

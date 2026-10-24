@@ -221,6 +221,9 @@ mod modal_history;
 #[cfg(test)]
 #[path = "engine_msh_faces_tests.rs"]
 mod msh_faces_tests;
+#[cfg(test)]
+#[path = "engine_msh_king_tests.rs"]
+mod msh_king_tests;
 pub use faces::FaceView;
 pub use modal_history::ModalHistoryView;
 #[path = "engine_ability_evaluation.rs"]
