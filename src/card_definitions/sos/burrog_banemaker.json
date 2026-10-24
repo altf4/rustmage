@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "99085bdfaecd8f384316b4e42f277203f6f15aa0f00cd36e4f74ca6abb553c09"
   },
-  "physical_metadata_sha256": "b62d4e1c05445cc30fc4e43fad26fa3474bb7ffa1919c88347fb748e6c7ba579"
+  "physical_metadata_sha256": "b62d4e1c05445cc30fc4e43fad26fa3474bb7ffa1919c88347fb748e6c7ba579",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BurrogBanemaker.java",
+  "java_sha256": "bf23763b7ab4256ad84787a64d0135ff83231b4c2309cc25e985d4145a65d183",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    }
+  ]
 }

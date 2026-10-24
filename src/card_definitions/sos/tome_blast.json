@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7fdb6d795a4960e1cf08f4cb79d188b8adced2813c1e1f3c39d4ba88d2dd3d29"
   },
-  "physical_metadata_sha256": "98b78ec3c379cd61851e03a9a216e22722f88306bb69e47fb12bf633648fb026"
+  "physical_metadata_sha256": "98b78ec3c379cd61851e03a9a216e22722f88306bb69e47fb12bf633648fb026",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TomeBlast.java",
+  "java_sha256": "742b9046d099fff7e5128e21362e16ccfa6dbb367092335f9aae2509fc2bcfd9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    }
+  ]
 }

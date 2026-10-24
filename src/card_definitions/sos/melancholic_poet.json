@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8f7f5e992ed20ceaf22b66dc55c578eee1cf36ee39562e7ef157cf4ebcbc10a4"
   },
-  "physical_metadata_sha256": "fec77951145542ea4c8f9f662b29c52e83861cd047c1e2f7783523e90e737e6b"
+  "physical_metadata_sha256": "fec77951145542ea4c8f9f662b29c52e83861cd047c1e2f7783523e90e737e6b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MelancholicPoet.java",
+  "java_sha256": "4a68cff8e480de8a96281c5907be5025d26ae5526c35305f3204b7a6b6a7893a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/ReparteeAbility.java",
+      "sha256": "da66e3be816abbc0e9f6ffa1d5d5475ea18346311290872735e8f03027b0c574"
+    }
+  ]
 }

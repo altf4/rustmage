@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6fbc5475710348856438237b8bab55ce217d53f9eeb8a30bffdcd6cbe2825a2d"
   },
-  "physical_metadata_sha256": "b6f44a6844cb13c9917e22f2df89f521915ec48151ecef358f13d78e78d04357"
+  "physical_metadata_sha256": "b6f44a6844cb13c9917e22f2df89f521915ec48151ecef358f13d78e78d04357",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TackleArtist.java",
+  "java_sha256": "d993955d9bceca862e738fd049c6ef3cce7decbc7bda0953a232386102f1c77a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/OpusAbility.java",
+      "sha256": "2fdef128f01b7c2f3ad1ffc3f9817cf19d505266fe4ee3006ccf7138ceb2a1c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }

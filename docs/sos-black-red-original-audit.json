@@ -1,0 +1,878 @@
+{
+  "schema": 1,
+  "set": "SOS",
+  "scope": "The 25 mono-black/mono-red physical SOS members already admitted at d5cd65c1, including canonical FRA Last Gasp.",
+  "admission_base": "d5cd65c1e905ff00377f0e158742a58a3d5c5415",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "test_module": "src/assurance/sos_br_audit.rs",
+  "verification": "Both seats, paid legal actions, illegal action atomicity, owned raw/index branching, parent disposal and restore via big_helpers::checked. This is author evidence, not independent review or full-set gameplay acceptance.",
+  "helpers": {
+    "AddContinuousEffectToGame": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+      "sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+    },
+    "AddCountersSourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    "AddCountersTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    "BoostAllEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    "BoostSourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    "BoostTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    "CantBeBlockedByOneEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+      "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e"
+    },
+    "CastFromGraveyardAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CastFromGraveyardAbility.java",
+      "sha256": "d960ebf54f87db2baf2a23785c181bdfea863a60d493eb66707ba64becc77be9"
+    },
+    "ColorsOfManaSpentToCastCount": {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsOfManaSpentToCastCount.java",
+      "sha256": "92b55d92985654d437785d464387ae3c981b4a2542a0f9780c8710b3b7819f8b"
+    },
+    "ConditionalContinuousEffect": {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    "ConditionalOneShotEffect": {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    "ControllerGainedLifeCount": {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerGainedLifeCount.java",
+      "sha256": "06b6225a857a623e5651806f49b75b4b55e99570818c8bccd12791342a322e58"
+    },
+    "CreateTokenEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    "DamagePlayersEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    "DamageTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    "DeathtouchAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    "DestroyAllEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    "DiesSourceTriggeredAbility": {
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    "DiscardCardCost": {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    "DiscardTargetCost": {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+      "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+    },
+    "DiscardTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardTargetEffect.java",
+      "sha256": "1011f870b5768153b7d9d7d194431db724bfc61844195b66efc06e759dae57a3"
+    },
+    "DoubleStrikeAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    "DrawCardSourceControllerEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    "DrawCardTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    },
+    "EntersBattlefieldTriggeredAbility": {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    "ExileSourceFromGraveCost": {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    "ExileTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    "FlashbackAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    "FlyingAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    "GainAbilitySourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    "GainAbilityTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    "GainLifeEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    "HasteAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    "IndestructibleAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    "Inkling11Token": {
+      "path": "Mage/src/main/java/mage/game/permanent/token/Inkling11Token.java",
+      "sha256": "1bb1e98c95fca11b87c834af87d214aaf9e6a4aae864e45844b348dbffeab3b6"
+    },
+    "LoseLifeOpponentsEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    "LoseLifeTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    "MenaceAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    "OpusAbility": {
+      "path": "Mage/src/main/java/mage/abilities/abilityword/OpusAbility.java",
+      "sha256": "2fdef128f01b7c2f3ad1ffc3f9817cf19d505266fe4ee3006ccf7138ceb2a1c4"
+    },
+    "PlayerGainedLifeWatcher": {
+      "path": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+      "sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+    },
+    "ReachAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    "ReparteeAbility": {
+      "path": "Mage/src/main/java/mage/abilities/abilityword/ReparteeAbility.java",
+      "sha256": "da66e3be816abbc0e9f6ffa1d5d5475ea18346311290872735e8f03027b0c574"
+    },
+    "ReturnFromGraveyardToBattlefieldTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    "ReturnFromGraveyardToHandTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    "SimpleActivatedAbility": {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    "SimpleStaticAbility": {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    "SpellCastControllerTriggeredAbility": {
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    "SurveilEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    "TapSourceCost": {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    "TargetsPermanentPredicate": {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/TargetsPermanentPredicate.java",
+      "sha256": "6a52724f6a33c15df7f3951dc83aeb026acc8c20a5ccc6a031b11e18b08ea096"
+    },
+    "TrampleAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    "TreasureAbility": {
+      "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+      "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+    },
+    "TreasureToken": {
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    },
+    "WardAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    "YouGainedLifeCondition": {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+      "sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+    }
+  },
+  "cards": [
+    {
+      "oracle_id": "863cbd12-da20-456e-8698-06fba4d9bd5c",
+      "name": "Arcane Omens",
+      "facts_sha256": "8acd681a5817f81c3d3f34df4e1d45add3d8c6b203bdae2654c3fac4ebeb1c8f",
+      "definition": "src/card_definitions/sos/arcane_omens.rs",
+      "definition_sha256": "227d425d9ee7bfd30237b5d3ccdda31bbea915ea0e44ea5aef5e743ab337e57c",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/ArcaneOmens.java",
+          "sha256": "5faf994a7d477ca8a9f26950275a26354e6fcbfaa3621bcd6448fdd2e7f99b38"
+        }
+      ],
+      "helpers": [
+        "ColorsOfManaSpentToCastCount",
+        "DiscardTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_converge_uses_actual_colors_zero_one_five_and_available_hand"
+      ],
+      "obligations": [
+        "Converge — Target player discards X cards, where X is the number of colors of mana spent to cast this spell."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "c531801c-acf0-45ae-a112-054cc5ccb6ed",
+      "name": "Burrog Banemaker",
+      "facts_sha256": "4ee8cc628052cee03d70878198f66b01a775e271f2a9c2dbc21427cc642bb499",
+      "definition": "src/card_definitions/sos/burrog_banemaker.rs",
+      "definition_sha256": "8b3fc6153cc9fa8460da837fbbf39e22e1597d5683e71321a4a1d34e3d585143",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/b/BurrogBanemaker.java",
+          "sha256": "bf23763b7ab4256ad84787a64d0135ff83231b4c2309cc25e985d4145a65d183"
+        }
+      ],
+      "helpers": [
+        "BoostSourceEffect",
+        "DeathtouchAbility",
+        "SimpleActivatedAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_burrog_paid_repeat_pump_deathtouch_and_cleanup"
+      ],
+      "obligations": [
+        "Deathtouch",
+        "{1}{B}: This creature gets +1/+1 until end of turn."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "b0b9a7c1-f515-4627-a050-b595d6641611",
+      "name": "Charging Strifeknight",
+      "facts_sha256": "b4231c8e6798fdcbca6a0ac77d535c3db2645f3c1a811dab8442295f83f98d77",
+      "definition": "src/card_definitions/sos/charging_strifeknight.rs",
+      "definition_sha256": "cdcdea784e1fe618c758842841d68a7d7f3d129497194d572c0ad59892628795",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/c/ChargingStrifeknight.java",
+          "sha256": "b2721f6a679342e23f56b98f29aced8283bc8036f9add35bcb6a69c2b1242d34"
+        }
+      ],
+      "helpers": [
+        "DiscardCardCost",
+        "DrawCardSourceControllerEffect",
+        "HasteAbility",
+        "SimpleActivatedAbility",
+        "TapSourceCost"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_charging_haste_tap_private_discard_draw_and_no_second_activation"
+      ],
+      "obligations": [
+        "Haste",
+        "{T}, Discard a card: Draw a card."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "b45afde2-eaaf-4174-8082-d344efa54c44",
+      "name": "Cost of Brilliance",
+      "facts_sha256": "09c21ce3ea76e6a255f99923d54facfbdeb8cdd2f7da679b571ce443cc71613b",
+      "definition": "src/card_definitions/sos/cost_of_brilliance.rs",
+      "definition_sha256": "99163c9b8278a378ce9880d389a988c31aaa34846a2e3fad0f6e2b2ab60db09b",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/c/CostOfBrilliance.java",
+          "sha256": "0daf01f0d6da85e7ee0b506ab3b25ecf91a19eb64784d6f5d5e606e2d8441b6f"
+        }
+      ],
+      "helpers": [
+        "AddCountersTargetEffect",
+        "DrawCardTargetEffect",
+        "LoseLifeTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_draw_life_optional_counter_groups_and_partial_failure"
+      ],
+      "obligations": [
+        "Target player draws two cards and loses 2 life. Put a +1/+1 counter on up to one target creature."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "140cb5cf-8aa2-457c-9d65-5acefea00195",
+      "name": "Eternal Student",
+      "facts_sha256": "de1baeed4a0838c5d51a8ee2d149cf923de8ffc4621ea76c8aca3141eb3dcc54",
+      "definition": "src/card_definitions/sos/eternal_student.rs",
+      "definition_sha256": "a26e8a7ab20feeaf52f15f4a1662f5435b13c6ee558e587e7a3a8b1418f64137",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/e/EternalStudent.java",
+          "sha256": "1400eac726e7128f24aeae3726bb6603b28ca75ac863697f09e1d92821ca26fe"
+        }
+      ],
+      "helpers": [
+        "CreateTokenEffect",
+        "ExileSourceFromGraveCost",
+        "Inkling11Token",
+        "SimpleActivatedAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_eternal_student_grave_exile_cost_frozen_tokens_and_zone_restriction"
+      ],
+      "obligations": [
+        "{1}{B}, Exile this card from your graveyard: Create two 1/1 white and black Inkling creature tokens with flying."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "f1812d69-c016-4bc3-b899-ed47f5e893e5",
+      "name": "Expressive Firedancer",
+      "facts_sha256": "2e26ced26e5656f67e5b034ce854c071388d90fc37ddf8f3e56d45baa9dd93a6",
+      "definition": "src/card_definitions/sos/expressive_firedancer.rs",
+      "definition_sha256": "f9b9c77372694bc1d18d190d22d21b91d077841bd01ae4a029291edfa75ee5aa",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/e/ExpressiveFiredancer.java",
+          "sha256": "f8bc46bdb55281924fe7777d89ef90ae27852ca91ed04cab2160c66d9644bee6"
+        }
+      ],
+      "helpers": [
+        "BoostSourceEffect",
+        "DoubleStrikeAbility",
+        "GainAbilitySourceEffect",
+        "OpusAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_opus_all_three_consumers_use_paid_five_threshold_and_exclude_creatures"
+      ],
+      "obligations": [
+        "Opus — Whenever you cast an instant or sorcery spell, this creature gets +1/+1 until end of turn. If five or more mana was spent to cast that spell, this creature also gains double strike until end of turn."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "50c97054-77c9-4446-9a41-e4f8877b887d",
+      "name": "Forum Necroscribe",
+      "facts_sha256": "157ee57381d080861747acd60c8f66dd4f3d8c4550c9c9c196897172245c14bb",
+      "definition": "src/card_definitions/sos/forum_necroscribe.rs",
+      "definition_sha256": "d0c01dfc933f5c8322c085bbc254bc1ad497ce103db0e683511f3a47ebff6ea3",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/f/ForumNecroscribe.java",
+          "sha256": "42356e461db8644f438d3e0314788aab86e328e9e1281640dcdd83bd825d623c"
+        }
+      ],
+      "helpers": [
+        "DiscardCardCost",
+        "ReparteeAbility",
+        "ReturnFromGraveyardToBattlefieldTargetEffect",
+        "WardAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_repartee_mandatory_targets_frozen_source_and_one_event_per_cast",
+        "sos_audit_br_forum_ward_discard_pay_decline_unaffordable"
+      ],
+      "obligations": [
+        "Ward—Discard a card.",
+        "Repartee — Whenever you cast an instant or sorcery spell that targets a creature, return target creature card from your graveyard to the battlefield."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "a82c3860-4dd6-4ffd-aa8f-ab8df687db6c",
+      "name": "Last Gasp",
+      "facts_sha256": "31e455e379680c01e93e306cf4ce9e516d20ef20703dd9d2c5cdbfb755bd0893",
+      "definition": "src/card_definitions/fra/last_gasp.rs",
+      "definition_sha256": "e62c761f5d1abd68d74f32603ee702547d1d94f26869d6ab3c1dfb22c94b283b",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/l/LastGasp.java",
+          "sha256": "7a0e3deb50164bb269009ab249705cc7f87eb3237ea4091496207ec6d25162c2"
+        }
+      ],
+      "helpers": [
+        "BoostTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_masterful_and_last_gasp_control_restriction_indestructible_and_toughness"
+      ],
+      "obligations": [
+        "Target creature gets -3/-3 until end of turn."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "29c23fd7-0ac4-46af-8ecd-92b726575252",
+      "name": "Lecturing Scornmage",
+      "facts_sha256": "dff977f5bfe084a95ef0556b63d82eb05a60b927f40843aee6ceeee4558f385e",
+      "definition": "src/card_definitions/sos/lecturing_scornmage.rs",
+      "definition_sha256": "0000e3214fb7e304727606aa418273cdac120c2ed24409daecbf25a4b66292c0",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/l/LecturingScornmage.java",
+          "sha256": "7b23093da239f0eb6ace0de63e4136d3ccb6a8fe6dcef13ddf670b640dc780ea"
+        }
+      ],
+      "helpers": [
+        "AddCountersSourceEffect",
+        "ReparteeAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_repartee_mandatory_targets_frozen_source_and_one_event_per_cast"
+      ],
+      "obligations": [
+        "Repartee — Whenever you cast an instant or sorcery spell that targets a creature, put a +1/+1 counter on this creature."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "1cb419cc-d8e4-4676-987f-089cebccc374",
+      "name": "Masterful Flourish",
+      "facts_sha256": "9242ae21084a6f17d2cc09d56f676d6b547e3b2c2983291816089a6fe6e319f6",
+      "definition": "src/card_definitions/sos/masterful_flourish.rs",
+      "definition_sha256": "c4131ff3e38292cf0f02b39cc984a7cafdaeaafac54dd9e9f125a4821730c5d2",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MasterfulFlourish.java",
+          "sha256": "44a6dad83d7dd5913182be9176b298243f69738686b147b411756737f86409ee"
+        }
+      ],
+      "helpers": [
+        "BoostTargetEffect",
+        "GainAbilityTargetEffect",
+        "IndestructibleAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_masterful_and_last_gasp_control_restriction_indestructible_and_toughness"
+      ],
+      "obligations": [
+        "Target creature you control gets +1/+0 and gains indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)"
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "37731c49-1238-4e0e-8993-204e36c1f4ee",
+      "name": "Melancholic Poet",
+      "facts_sha256": "5cb9d0f2c498d08f4b8a76ade32d077300321ce966e4c3546828f52a378f5c18",
+      "definition": "src/card_definitions/sos/melancholic_poet.rs",
+      "definition_sha256": "04660538597d1be2b395bc5e03bcf5ebd3d13dcc53a6c6d41931379bf3adf5a8",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MelancholicPoet.java",
+          "sha256": "4a68cff8e480de8a96281c5907be5025d26ae5526c35305f3204b7a6b6a7893a"
+        }
+      ],
+      "helpers": [
+        "GainLifeEffect",
+        "LoseLifeOpponentsEffect",
+        "ReparteeAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_repartee_mandatory_targets_frozen_source_and_one_event_per_cast"
+      ],
+      "obligations": [
+        "Repartee — Whenever you cast an instant or sorcery spell that targets a creature, each opponent loses 1 life and you gain 1 life."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "4b0e5626-0282-42e5-abef-a079b26a8e5f",
+      "name": "Poisoner's Apprentice",
+      "facts_sha256": "404cc683e07b63e3247c4e14fa511d02d53bac4fef0147c47cf1ac412ba52ff8",
+      "definition": "src/card_definitions/sos/poisoner_s_apprentice.rs",
+      "definition_sha256": "e3f27948b74db162e5345da0ae01b49f5616aa9767ed04efd34446339be9ef95",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/p/PoisonersApprentice.java",
+          "sha256": "411168f9a34bc50c7c5cb8fa48406caf0f07e2f3b0c536922137b568f7238fbc"
+        }
+      ],
+      "helpers": [
+        "AddContinuousEffectToGame",
+        "BoostTargetEffect",
+        "ConditionalOneShotEffect",
+        "ControllerGainedLifeCount",
+        "EntersBattlefieldTriggeredAbility",
+        "PlayerGainedLifeWatcher",
+        "YouGainedLifeCondition"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_infusion_entry_checks_resolution_and_live_scaling_resets_next_turn"
+      ],
+      "obligations": [
+        "Infusion — When this creature enters, target creature an opponent controls gets -4/-4 until end of turn if you gained life this turn."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "c5373026-8b43-42a7-aa69-a1b0f1619795",
+      "name": "Pull from the Grave",
+      "facts_sha256": "4cf07f995076397a50438310441f34c8d612d53d8edb3d824431cde0401939af",
+      "definition": "src/card_definitions/sos/pull_from_the_grave.rs",
+      "definition_sha256": "892ee582e816dbebfa9964b9fd45165e50dedaed5774b10ef99d0d6ba44aceea",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/p/PullFromTheGrave.java",
+          "sha256": "d173c0049a69bc8f3d972021f5bd5db996dbd90dbb9c581ea5d6e606fc324ba2"
+        }
+      ],
+      "helpers": [
+        "GainLifeEffect",
+        "ReturnFromGraveyardToHandTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_pull_zero_two_partial_targets_and_exact_fizzle_life"
+      ],
+      "obligations": [
+        "Return up to two target creature cards from your graveyard to your hand. You gain 2 life."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "4db02b34-efec-437c-ab28-aa318b8879ad",
+      "name": "Rabid Attack",
+      "facts_sha256": "5b6de5fac55dda3ee28675c8720ac7185c8e4089d8b0b1b7a3562d6fd197f0a3",
+      "definition": "src/card_definitions/sos/rabid_attack.rs",
+      "definition_sha256": "b58a8726c2e25c47c662294a168bda096fc29adf57819cdfb2f0a885d723b2c1",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/r/RabidAttack.java",
+          "sha256": "9acbb7d74d926a3fade7c3ca7330df36f04a1982b3f8a864f100fedc84f2688d"
+        }
+      ],
+      "helpers": [
+        "BoostTargetEffect",
+        "DiesSourceTriggeredAbility",
+        "DrawCardSourceControllerEffect",
+        "GainAbilityTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_rabid_zero_multiple_and_independent_death_draws_with_controller"
+      ],
+      "obligations": [
+        "Until end of turn, any number of target creatures you control each get +1/+0 and gain \"When this creature dies, draw a card.\""
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "95f20067-4471-4bfa-952d-dbbfbb2c2178",
+      "name": "Rearing Embermare",
+      "facts_sha256": "7addc463b61bd68c7608d76aa3195bc049c4cabc258d20a1e219ea5cd68539e8",
+      "definition": "src/card_definitions/sos/rearing_embermare.rs",
+      "definition_sha256": "7918742132bdf415c67cd0971e061def18b42294d72b65d95130c1241d7e5bb5",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/r/RearingEmbermare.java",
+          "sha256": "a899358c4969a8ea408f34807c69235b0913de82b7d012a09c265343ba13c47a"
+        }
+      ],
+      "helpers": [
+        "HasteAbility",
+        "ReachAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_paid_etb_flying_drain_haste_reach_and_instant_sorcery_recursion"
+      ],
+      "obligations": [
+        "Reach, haste"
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "58f83528-9110-4895-b5ea-51b90af30a8d",
+      "name": "Seize the Spoils",
+      "facts_sha256": "7db99485ff70f4996b9094bc11089495ede73a09de83de183be9b4b338673cf2",
+      "definition": "src/card_definitions/sos/seize_the_spoils.rs",
+      "definition_sha256": "666a3abad571ed2a13158d7de3a5806d3bd9125e86bb9e01dbce27903fa6fefd",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SeizeTheSpoils.java",
+          "sha256": "164d9d97a5b3e4e4df91cd117e09cb432b938c6588323eddcf038c2174258810"
+        }
+      ],
+      "helpers": [
+        "CreateTokenEffect",
+        "DiscardCardCost",
+        "DrawCardSourceControllerEffect",
+        "TreasureToken"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_seize_mandatory_private_discard_draw_and_treasure_mana"
+      ],
+      "obligations": [
+        "As an additional cost to cast this spell, discard a card.",
+        "Draw two cards and create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")"
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "21a094d6-de3d-48d4-a35d-b99617da55db",
+      "name": "Sneering Shadewriter",
+      "facts_sha256": "74131c19c417ba83ec1f9a6791ed399e7c71d2d92538ed9ff9ebd2bcfc816ac1",
+      "definition": "src/card_definitions/sos/sneering_shadewriter.rs",
+      "definition_sha256": "c98a234366200d40b595e0e6479d90f996539d2f627f78a4073fa55d8c34e069",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SneeringShadewriter.java",
+          "sha256": "2d85983a148f44ffce3297dd6de0a4a62fde697ff24b45db9fb6ac8c02e4b190"
+        }
+      ],
+      "helpers": [
+        "EntersBattlefieldTriggeredAbility",
+        "FlyingAbility",
+        "GainLifeEffect",
+        "LoseLifeOpponentsEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_paid_etb_flying_drain_haste_reach_and_instant_sorcery_recursion"
+      ],
+      "obligations": [
+        "Flying",
+        "When this creature enters, each opponent loses 2 life and you gain 2 life."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "2e80d632-cf84-4562-8c93-5850cceb5bec",
+      "name": "Tackle Artist",
+      "facts_sha256": "dcae85cdb4247528e23800992ae03c71d5dff29f44b580899cb67152d4664301",
+      "definition": "src/card_definitions/sos/tackle_artist.rs",
+      "definition_sha256": "ff65758bf4cb4de1129f5b340191dce970e3fac4f2727b9028a2e35686ad9fec",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TackleArtist.java",
+          "sha256": "d993955d9bceca862e738fd049c6ef3cce7decbc7bda0953a232386102f1c77a"
+        }
+      ],
+      "helpers": [
+        "AddCountersSourceEffect",
+        "OpusAbility",
+        "TrampleAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_opus_all_three_consumers_use_paid_five_threshold_and_exclude_creatures"
+      ],
+      "obligations": [
+        "Trample",
+        "Opus — Whenever you cast an instant or sorcery spell, put a +1/+1 counter on this creature. If five or more mana was spent to cast that spell, put two +1/+1 counters on this creature instead."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "43b5794a-4ed6-471d-bc45-22fac486895d",
+      "name": "Thunderdrum Soloist",
+      "facts_sha256": "b9afa89233f8f2384821a89ec51aff859d98cbb3e896f2c07225159e018ac408",
+      "definition": "src/card_definitions/sos/thunderdrum_soloist.rs",
+      "definition_sha256": "84ee82f48b634a99236221b4a54ad1dc4d6e69e10023162c951196ee02985598",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/ThunderdrumSoloist.java",
+          "sha256": "99111e08598b8c441d5ff5fb2e5aabfb202c05a9f53e10461b065eb3978b716c"
+        }
+      ],
+      "helpers": [
+        "DamagePlayersEffect",
+        "OpusAbility",
+        "ReachAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_opus_all_three_consumers_use_paid_five_threshold_and_exclude_creatures"
+      ],
+      "obligations": [
+        "Reach",
+        "Opus — Whenever you cast an instant or sorcery spell, this creature deals 1 damage to each opponent. If five or more mana was spent to cast that spell, this creature deals 3 damage to each opponent instead."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "f0163420-2f91-493c-bad4-2cd33e9856bf",
+      "name": "Tome Blast",
+      "facts_sha256": "ce55da214ca993ffadcbfba1a0a8b89d9fcfb6b67ebcbafb4ac27a11a2f594cc",
+      "definition": "src/card_definitions/sos/tome_blast.rs",
+      "definition_sha256": "962f091a351251a04e58e8ead3d6c521d0102f7e8e3dcb9072a431b0afdabfdb",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TomeBlast.java",
+          "sha256": "742b9046d099fff7e5128e21362e16ccfa6dbb367092335f9aae2509fc2bcfd9"
+        }
+      ],
+      "helpers": [
+        "DamageTargetEffect",
+        "FlashbackAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_tome_flashback_fixed_five_and_exile_on_counter_or_resolution"
+      ],
+      "obligations": [
+        "Tome Blast deals 2 damage to any target.",
+        "Flashback {4}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "9da7f9ec-872a-471d-8d60-5f4213f0204f",
+      "name": "Ulna Alley Shopkeep",
+      "facts_sha256": "0861c68913a214fd2ec9e3d6a1b45b757464bac0f5c5c8693f1b09405c89b445",
+      "definition": "src/card_definitions/sos/ulna_alley_shopkeep.rs",
+      "definition_sha256": "3d800295f57dec19a2919ae5b51446dac761ad98dd6a47b10b6ca1379c4ee5b9",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/u/UlnaAlleyShopkeep.java",
+          "sha256": "80b3c71f6bf53478d00a88c4704d3c1231c1ae9c6233cab6c74fab3f8fd65b99"
+        }
+      ],
+      "helpers": [
+        "BoostSourceEffect",
+        "ConditionalContinuousEffect",
+        "ControllerGainedLifeCount",
+        "MenaceAbility",
+        "PlayerGainedLifeWatcher",
+        "SimpleStaticAbility",
+        "YouGainedLifeCondition"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_infusion_entry_checks_resolution_and_live_scaling_resets_next_turn"
+      ],
+      "obligations": [
+        "Menace (This creature can't be blocked except by two or more creatures.)",
+        "Infusion — This creature gets +2/+0 as long as you gained life this turn."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "9d059345-1a2f-4ecb-b419-3873ebadf318",
+      "name": "Unsubtle Mockery",
+      "facts_sha256": "6beeb3ca53305011e3425408672c8e2179198b368a94cc26f7f42e57b5fcfed0",
+      "definition": "src/card_definitions/sos/unsubtle_mockery.rs",
+      "definition_sha256": "184d60dba18b5a7f534fc9ee51f1b69d645be4e5d15a719b5e899bed318afee0",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/u/UnsubtleMockery.java",
+          "sha256": "4dc97c09787941286c96808abaf31309f7405d3999c5ba5d9d890db2a69655b1"
+        }
+      ],
+      "helpers": [
+        "DamageTargetEffect",
+        "SurveilEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_mockery_damage_then_private_surveil_and_all_invalid_fizzle"
+      ],
+      "obligations": [
+        "Unsubtle Mockery deals 4 damage to target creature. Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "b14d3226-adc2-4bdd-9e69-fefdc946ac04",
+      "name": "Wander Off",
+      "facts_sha256": "008ae29210efda80a16137e9da3a47cfa5d40bc7a8419df7171f2c78b4163256",
+      "definition": "src/card_definitions/sos/wander_off.rs",
+      "definition_sha256": "a987abb9f3e0a1a5f6859bbfe6090176e36bab8220064a93586f27618852a0af",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/w/WanderOff.java",
+          "sha256": "40ce922191d77e50545bf987d93d33d38b6cfa04e279e50eff5eaccc22ab3689"
+        }
+      ],
+      "helpers": [
+        "ExileTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_forum_ward_discard_pay_decline_unaffordable"
+      ],
+      "obligations": [
+        "Exile target creature."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "fddd1c39-bdf8-4aee-897c-666498cc4dd3",
+      "name": "Withering Curse",
+      "facts_sha256": "e773f075f674e0cdeae96e7d929d2c295de116f509bb276faac7d04653d2a486",
+      "definition": "src/card_definitions/sos/withering_curse.rs",
+      "definition_sha256": "d42dbf125b75a4049801a8d437c5fafb3fb0472b87b07ce1d299ed10b6cf2488",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/w/WitheringCurse.java",
+          "sha256": "c4032e2476b88407eab8dc26d04b18124941fe425fd83597f1758ebb4a44c3de"
+        }
+      ],
+      "helpers": [
+        "AddContinuousEffectToGame",
+        "BoostAllEffect",
+        "ConditionalOneShotEffect",
+        "ControllerGainedLifeCount",
+        "DestroyAllEffect",
+        "PlayerGainedLifeWatcher",
+        "YouGainedLifeCondition"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_wither_distinguishes_infusion_from_shrink_and_indestructibility"
+      ],
+      "obligations": [
+        "All creatures get -2/-2 until end of turn.",
+        "Infusion — If you gained life this turn, destroy all creatures instead."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "f82265fd-e772-4347-a27f-37b00ccd416b",
+      "name": "Zealous Lorecaster",
+      "facts_sha256": "56b7bf9474703dd31a78d7a0bda9a3f37c345674d67582a0296ad34495c1749e",
+      "definition": "src/card_definitions/sos/zealous_lorecaster.rs",
+      "definition_sha256": "a0a4204baea53c48f301aa8e85d7c3904abfcc28c3cf035adbe6d85cbdedbcb0",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/z/ZealousLorecaster.java",
+          "sha256": "2a94f17cd7ad5e0cd3c115f6390f272ffed11d1d1e9473a60e67adda04ae8b55"
+        }
+      ],
+      "helpers": [
+        "EntersBattlefieldTriggeredAbility",
+        "ReturnFromGraveyardToHandTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_br_paid_etb_flying_drain_haste_reach_and_instant_sorcery_recursion"
+      ],
+      "obligations": [
+        "When this creature enters, return target instant or sorcery card from your graveyard to your hand."
+      ],
+      "blockers": []
+    }
+  ]
+}
