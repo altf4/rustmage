@@ -35,7 +35,7 @@ pub(super) struct FundingState<'g> {
     purpose: mana_lots::Purpose,
     payment_source: Option<ObjectRef>,
     // Sparse last-known facts for exact enclosing sources that leave a speculative world.
-    payment_departures: Option<Box<Vec<(ObjectRef, mana_lots::Source)>>>,
+    payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
     life: i128,
     other_life: i128,
     resources: Vec<Resource>,
@@ -187,7 +187,7 @@ struct EntryFundingKey {
 }
 #[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
-    payment_departures: Option<Box<Vec<(ObjectRef, mana_lots::Source)>>>,
+    payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
     entries: Option<EntryFundingKey>,
     histories: Option<(u64, [bool; 2], i128)>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
@@ -549,7 +549,7 @@ impl<'g> FundingState<'g> {
             lots: game.mana_lots(goal.actor).to_vec(),
             purpose: game.funding_purpose(goal),
             payment_source: goal.source.as_ref().map(|(source, ..)| *source),
-            payment_departures: None,
+            payment_departures: Vec::new(),
             life: game.state.players[goal.actor.index()].life,
             other_life: game.state.players[goal.actor.other().index()].life,
             resources,
@@ -1119,17 +1119,15 @@ impl<'g> FundingState<'g> {
         }
         if self
             .payment_departures
-            .as_deref()
-            .is_some_and(|rows| rows.iter().any(|(object, _)| *object == reference))
+            .iter()
+            .any(|(object, _)| *object == reference)
         {
             return;
         }
         let facts = mana_lots::Source::in_world(self, id);
-        let rows = self
-            .payment_departures
-            .get_or_insert_with(|| Box::new(Vec::new()));
-        rows.push((reference, facts));
-        rows.sort_by_key(|(object, _)| (object.card, object.generation));
+        self.payment_departures.push((reference, facts));
+        self.payment_departures
+            .sort_by_key(|(object, _)| (object.card, object.generation));
     }
     fn apply(&mut self, step: &FundingMove) {
         for (lot, allocation) in self.lots.iter_mut().zip(&step.allocation) {
@@ -1732,8 +1730,8 @@ impl<'g> FundingState<'g> {
         if let Some((object, ability, _, definition, _)) = goal.source.as_ref() {
             if let Some((_, facts)) = self
                 .payment_departures
-                .as_deref()
-                .and_then(|rows| rows.iter().find(|(source, _)| source == object))
+                .iter()
+                .find(|(source, _)| source == object)
             {
                 return mana_lots::Purpose::Activation(*facts);
             }
