@@ -1084,6 +1084,9 @@ impl Game {
                                 matches!(
                                     instruction,
                                     Instruction::GainLifeScaled(_, AmountValue::SpellColors)
+                                        | Instruction::DamageScaled(
+                                            AmountValue::CastSpellManaValue
+                                        )
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
