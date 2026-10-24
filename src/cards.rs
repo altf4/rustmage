@@ -630,6 +630,7 @@ pub enum EffectChoiceKind {
     Sacrifice,
     ReturnToHand,
     Discard,
+    DiscardNamed(&'static str),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -3363,6 +3364,14 @@ impl Card {
     }
     pub(crate) fn chosen_entry_counters(self) -> Option<CounterKind> {
         authored::RULES[self.index()].extras.chosen_entry_counters
+    }
+    pub(crate) fn activation_counter_discount(self, ability: u16) -> Option<CounterKind> {
+        authored::RULES[self.index()]
+            .extras
+            .activation_counter_discounts
+            .iter()
+            .find(|(index, _)| *index == ability)
+            .map(|(_, kind)| *kind)
     }
     pub(crate) fn activation_put_counter(self, ability: u16) -> Option<(CounterKind, u64)> {
         authored::RULES[self.index()]

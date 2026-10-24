@@ -3,10 +3,26 @@
   "catalogue_id": 3088,
   "oracle_id": "3bbad38b-7d88-4ff2-9fd3-5081536e7c56",
   "facts_sha256": "387a742cde36ce9feb1ca06badb3e294418d0e8a837d97dc0778d036cc86593a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1dce9d94b425c0e8dc38b0281c4c8b74bde1a0fb2c342dc8bc1e5a5c213779e2"
   },
-  "physical_metadata_sha256": "00e70459a496e322b6affb90a4fdb9b1d93eafe016cb2506d79d194efed309a5"
+  "physical_metadata_sha256": "00e70459a496e322b6affb90a4fdb9b1d93eafe016cb2506d79d194efed309a5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PageLooseLeaf.java",
+  "java_sha256": "92e8eead0fcce27aaea3d28e06787e6860db838809267d3c6545513702ea147f",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/abilityword/GrandeurAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "29ceefa8d06296d5c8d93d029ed2b64f03a4dfb79d0772f6fb0a95180adc16ad"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RevealCardsFromLibraryUntilEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a9fe0b1c05462c01f6d6cbb28ec59832b9353151a7a25c8b86eb6fa51a40c2e6"
+    }
+  ]
 }

@@ -140,7 +140,10 @@ impl Game {
         let definition = a.item.source_card.activation(ability);
         let base = a.cost.unwrap_or(ManaCost {
             colored: definition.cost.colored,
-            generic: definition.cost.generic,
+            generic: definition
+                .cost
+                .generic
+                .saturating_sub(a.activation_discount),
         });
         let fundable = |value: u32| {
             base.generic.checked_add(value).is_some_and(|generic| {

@@ -211,6 +211,7 @@ impl Game {
             return !self.scalar_x_intervals(actor, card).is_empty();
         }
         let a = Announcement {
+            activation_discount: 0,
             item,
             spec: TargetSpec::NONE,
             plan: TargetPlan::Single(TargetSpec::NONE),

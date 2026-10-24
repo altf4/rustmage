@@ -2133,3 +2133,349 @@ fn sos_source_power_mana_of_animated_noncreature_reads_current_base_setter() {
         );
     }
 }
+
+#[test]
+fn sos_diary_paid_casts_collect_pages_only_for_own_instants_and_sorceries() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let diary = paid(&mut g, p, "Diary of Dreams", None, &[]);
+        settle(&mut g);
+        let bear = paid(&mut g, p, "Bear Cub", None, &[]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(diary, CounterKind::Page), 0);
+        paid(&mut g, p, "Giant Growth", None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(diary, CounterKind::Page), 1);
+        let dead = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        paid(&mut g, p, "Zombify", None, &[Target::Card(dead)]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(diary, CounterKind::Page), 2);
+        g.state.priority = p.other();
+        paid(
+            &mut g,
+            p.other(),
+            "Giant Growth",
+            None,
+            &[Target::Card(bear)],
+        );
+        settle(&mut g);
+        assert_eq!(g.counter_count(diary, CounterKind::Page), 2);
+        g.gain_life(p, 1);
+        paid(&mut g, p, "Lumaret's Favor", None, &[Target::Card(bear)]);
+        for _ in 0..30 {
+            g.prepare_triggers();
+            if matches!(g.state.pending, Pending::Retarget { .. }) {
+                break;
+            }
+            let action = if g.state.pending == Pending::Priority {
+                Action::Pass
+            } else {
+                g.legal_actions()
+                    .into_iter()
+                    .find(|a| !matches!(a, Action::Concede))
+                    .unwrap()
+            };
+            checked(&mut g, action);
+        }
+        checked(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(
+            g.counter_count(diary, CounterKind::Page),
+            3,
+            "an uncast copy does not trigger Diary"
+        );
+    }
+}
+
+#[test]
+fn sos_diary_discount_zero_to_saturated_and_draw_survives_departure() {
+    for p in [Player::P0, Player::P1] {
+        for pages in [0, 1, 4, 5, 7, u64::MAX] {
+            let mut g = setup(p);
+            let diary = named(&mut g, p, "Diary of Dreams", Zone::Battlefield);
+            g.add_counter(diary, CounterKind::Page, pages);
+            let required = 5u32.saturating_sub(u32::try_from(pages).unwrap_or(u32::MAX));
+            let activate = Action::AnnounceActivate {
+                card: diary,
+                ability: 0,
+                counter_payment: Counters::default(),
+            };
+            if required > 0 {
+                g.state.players[p.index()].mana = [0, 0, 0, 0, 0, required - 1];
+                reject(&mut g, activate.clone());
+            }
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, required];
+            let hand = g.hand_count(p);
+            checked(&mut g, activate.clone());
+            assert_eq!(
+                g.funding_goal(g.state.announcing.as_ref().unwrap()).generic,
+                required
+            );
+            checked(
+                &mut g,
+                Action::PayCosts {
+                    payment: [0, 0, 0, 0, 0, required],
+                },
+            );
+            assert!(g.object_view(diary).tapped);
+            assert_eq!(g.counter_count(diary, CounterKind::Page), pages);
+            if pages == 4 {
+                g.move_object(diary, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert_eq!(g.hand_count(p), hand + 1);
+            reject(&mut g, activate);
+        }
+    }
+}
+
+#[test]
+fn sos_diary_discount_is_locked_before_payments_and_borrowing_uses_recipient_pages() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let diary = named(&mut g, p, "Diary of Dreams", Zone::Battlefield);
+        g.add_counter(diary, CounterKind::Page, 2);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: diary,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        g.add_counter(diary, CounterKind::Page, 5);
+        assert_eq!(
+            g.funding_goal(g.state.announcing.as_ref().unwrap()).generic,
+            3
+        );
+        reject(&mut g, Action::PayCosts { payment: [0; 6] });
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 3],
+            },
+        );
+        settle(&mut g);
+        let mut g = setup(p);
+        let diary = named(&mut g, p.other(), "Diary of Dreams", Zone::Battlefield);
+        g.add_counter(diary, CounterKind::Page, 9);
+        let forge = paid(&mut g, p, "Territory Forge", None, &[]);
+        target_settle(&mut g, diary);
+        assert_eq!(g.object_view(diary).zone, Zone::Exile);
+        assert_eq!(g.counter_count(diary, CounterKind::Page), 0);
+        g.add_counter(forge, CounterKind::Page, 3);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        let descriptor = g
+            .borrowed_ability_views()
+            .into_iter()
+            .find(|a| a.source.card == forge && a.ability == 0)
+            .unwrap();
+        let hand = g.hand_count(p);
+        checked(
+            &mut g,
+            Action::AnnounceBorrowedAbility {
+                card: forge,
+                exiled: descriptor.exiled,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        assert_eq!(
+            g.funding_goal(g.state.announcing.as_ref().unwrap()).generic,
+            2
+        );
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 2],
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), hand + 1);
+        assert_eq!(g.counter_count(forge, CounterKind::Page), 3);
+    }
+}
+
+#[test]
+fn sos_diary_legacy_prefunded_activation_pays_reduced_cost_without_spending_pages() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let diary = named(&mut g, p, "Diary of Dreams", Zone::Battlefield);
+        g.add_counter(diary, CounterKind::Page, 2);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        let hand = g.hand_count(p);
+        checked(
+            &mut g,
+            Action::Activate {
+                card: diary,
+                ability: 0,
+                target: None,
+                payment: [0, 0, 0, 0, 0, 3],
+                counter_payment: Counters::default(),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), hand + 1);
+        assert_eq!(g.counter_count(diary, CounterKind::Page), 2);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+fn page_grandeur(g: &mut Game, source: CardId, fuel: CardId) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    assert!(
+        g.observe(g.actor().unwrap().other())
+            .additional_cost
+            .is_none()
+    );
+    checked(
+        g,
+        Action::ChooseAdditionalCost {
+            object: g.object_ref(fuel),
+        },
+    );
+    checked(g, Action::PayCosts { payment: [0; 6] });
+    assert_eq!(g.object_view(fuel).zone, Zone::Graveyard);
+}
+fn page_reveal(g: &mut Game) {
+    for _ in 0..12 {
+        if matches!(g.state.pending, Pending::EffectLibrarySelection { .. }) {
+            return;
+        }
+        checked(g, Action::Pass);
+    }
+    panic!("Page reveal did not suspend");
+}
+
+#[test]
+fn sos_page_paid_body_sickness_colorless_mana_and_exact_private_named_discard() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let page = paid(&mut g, p, "Page, Loose Leaf", None, &[]);
+        settle(&mut g);
+        assert_eq!((g.stats(page).power, g.stats(page).toughness), (0, 2));
+        let tap = Action::ActivateMana {
+            card: page,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 0, 1],
+        };
+        reject(&mut g, tap.clone());
+        let activate = Action::AnnounceActivate {
+            card: page,
+            ability: 1,
+            counter_payment: Counters::default(),
+        };
+        let wrong = named(&mut g, p, "Bear Cub", Zone::Hand);
+        let foreign = named(&mut g, p.other(), "Page, Loose Leaf", Zone::Hand);
+        reject(&mut g, activate.clone());
+        let fuel = named(&mut g, p, "Page, Loose Leaf", Zone::Hand);
+        checked(&mut g, activate);
+        assert!(g.observe(p.other()).additional_cost.is_none());
+        let view = g.observe(p).additional_cost.unwrap();
+        assert_eq!(view.candidates, vec![g.object_ref(fuel)]);
+        for id in [page, wrong, foreign] {
+            let object = g.object_ref(id);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        let object = g.object_ref(fuel);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        page_reveal(&mut g);
+        assert_eq!(g.object_view(fuel).zone, Zone::Graveyard);
+        checked(&mut g, Action::FinishLibrarySelection);
+        settle(&mut g);
+        g.state.objects[page as usize].summoning_sick = false;
+        let before = g.state.players[p.index()].mana[5];
+        checked(&mut g, tap);
+        assert_eq!(g.state.players[p.index()].mana[5], before + 1);
+        assert!(g.object_view(page).tapped);
+    }
+}
+
+#[test]
+fn sos_page_grandeur_reveals_until_first_spell_publicly_and_random_bottoms_rest() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Shock", "Zombify"] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Page, Loose Leaf", Zone::Battlefield);
+            let fuel = named(&mut g, p, "Page, Loose Leaf", Zone::Hand);
+            let deeper = named(&mut g, p, "Giant Growth", Zone::Library);
+            let spell = named(&mut g, p, name, Zone::Library);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Library);
+            let forest = named(&mut g, p, "Forest", Zone::Library);
+            page_grandeur(&mut g, source, fuel);
+            g.move_object(source, Zone::Graveyard);
+            page_reveal(&mut g);
+            for viewer in [p, p.other()] {
+                let view = g.observe(viewer).library_selection.unwrap();
+                assert!(view.public);
+                assert_eq!(
+                    view.remaining.iter().map(|o| o.id).collect::<Vec<_>>(),
+                    vec![forest, bear, spell]
+                );
+                assert_eq!(view.candidates, vec![g.object_ref(spell)]);
+                assert_eq!((view.minimum, view.maximum), (1, 1));
+            }
+            reject(&mut g, Action::FinishLibrarySelection);
+            reject(&mut g, Action::SelectLibrary { card: bear });
+            checked(&mut g, Action::SelectLibrary { card: spell });
+            checked(&mut g, Action::FinishLibrarySelection);
+            settle(&mut g);
+            assert_eq!(g.object_view(spell).zone, Zone::Hand);
+            assert!(
+                g.observe(p.other())
+                    .known_hand
+                    .contains(&g.object_ref(spell))
+            );
+            let library = &g.state.players[p.index()].library;
+            assert_eq!(library.last(), Some(&deeper));
+            let mut bottom = library[..2].to_vec();
+            bottom.sort_unstable();
+            let mut expected = vec![forest, bear];
+            expected.sort_unstable();
+            assert_eq!(bottom, expected);
+        }
+    }
+}
+
+#[test]
+fn sos_page_no_spell_reveals_whole_library_and_empty_library_does_not_draw() {
+    for p in [Player::P0, Player::P1] {
+        for empty in [false, true] {
+            let mut g = setup(p);
+            if empty {
+                let cards = g.state.players[p.index()].library.to_vec();
+                for id in cards {
+                    g.move_object(id, Zone::Exile);
+                }
+            }
+            let source = named(&mut g, p, "Page, Loose Leaf", Zone::Battlefield);
+            let fuel = named(&mut g, p, "Page, Loose Leaf", Zone::Hand);
+            let hand = g.hand_count(p);
+            let count = g.state.players[p.index()].library.len();
+            page_grandeur(&mut g, source, fuel);
+            if !empty {
+                page_reveal(&mut g);
+                let view = g.observe(p.other()).library_selection.unwrap();
+                assert_eq!(view.remaining.len(), count);
+                assert_eq!((view.minimum, view.maximum), (0, 0));
+                checked(&mut g, Action::FinishLibrarySelection);
+            }
+            settle(&mut g);
+            assert_eq!(g.hand_count(p), hand - 1);
+            assert_eq!(g.state.players[p.index()].library.len(), count);
+            assert!(!g.state.players[p.index()].attempted_empty_draw);
+            assert!(g.outcome().is_none());
+        }
+    }
+}

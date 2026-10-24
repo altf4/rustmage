@@ -122,6 +122,8 @@ pub(super) struct CardExtras {
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
+    /// Source-counter discounts for the specified nonmana activated slot.
+    pub activation_counter_discounts: &'static [(u16, CounterKind)],
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
     pub entry_choice: Option<EntryChoiceKind>,
@@ -195,6 +197,7 @@ impl CardExtras {
         borrows_exiled_activations: false,
         zone_replacement: None,
         opening_hand_battlefield: false,
+        activation_counter_discounts: &[],
         activation_put_counters: &[],
         fixed_entry_counters: &[],
         cast_entry_counters: &[],

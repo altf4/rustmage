@@ -23,6 +23,7 @@ impl Game {
         };
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Discard
+            | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_) => o.owner == actor,
             EffectChoiceKind::Sacrifice
@@ -33,7 +34,11 @@ impl Game {
         };
         if !controls_cost_object
             || self.object_ref(object.card) != object
-            || object == source && (spec.kind == EffectChoiceKind::Discard || spec.filter.other)
+            || object == source
+                && (matches!(
+                    spec.kind,
+                    EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_)
+                ) || spec.filter.other)
             || spec.filter.source_only && object != source
         {
             return false;
@@ -45,6 +50,7 @@ impl Game {
             self.current_kinds(object.card),
             self.keywords(object.card),
             self.granted_subtypes(object.card),
+            self.object_name(object.card),
         )
     }
     pub(super) fn additional_object_matches(
@@ -54,18 +60,24 @@ impl Game {
         kinds: u16,
         keywords: Keywords,
         subtypes: GrantedSubtypes,
+        name: &str,
     ) -> bool {
         let zone = match spec.kind {
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileGraveyardCards(_) => {
                 Zone::Graveyard
             }
-            EffectChoiceKind::Discard => Zone::Hand,
+            EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_) => Zone::Hand,
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
         };
+        if let EffectChoiceKind::DiscardNamed(required) = spec.kind
+            && !crate::card_names::same_name(name, required)
+        {
+            return false;
+        }
         let f = spec.filter;
         if matches!(
             spec.kind,
@@ -464,7 +476,9 @@ impl Game {
             EffectChoiceKind::ExileGraveyard => {
                 self.move_object(object.card, Zone::Exile);
             }
-            EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),
+            EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_) => {
+                self.discard_batch(&[object.card], None)
+            }
             EffectChoiceKind::ReturnToHand => {
                 self.move_object(object.card, Zone::Hand);
             }

@@ -12,6 +12,26 @@ impl ActivatedAbility {
 }
 
 impl Game {
+    pub(super) fn activation_generic_discount(
+        &self,
+        source: CardId,
+        definition: Card,
+        ability: u16,
+    ) -> u32 {
+        definition
+            .activation_counter_discount(ability)
+            .map_or(0, |kind| {
+                u32::try_from(self.counter_count(source, kind)).unwrap_or(u32::MAX)
+            })
+    }
+    pub(super) fn item_activation_discount(&self, item: &SpellView) -> u32 {
+        match item.kind {
+            StackKind::ActivatedAbility { ability } => {
+                self.activation_generic_discount(item.card, item.source_card, ability)
+            }
+            _ => 0,
+        }
+    }
     pub(super) fn spend_mana(&mut self, actor: Player, payment: Mana) {
         self.spend_mana_for(actor, payment, mana_lots::Purpose::Other);
     }
@@ -240,7 +260,13 @@ impl Game {
                                     reserve: None,
                                     actor,
                                     required: cost.colored,
-                                    generic: cost.generic,
+                                    generic: cost.generic.saturating_sub(
+                                        self.activation_generic_discount(
+                                            card,
+                                            object.card,
+                                            index as u16,
+                                        ),
+                                    ),
                                     source: Some((
                                         self.object_ref(card),
                                         index as u16,
@@ -301,7 +327,12 @@ impl Game {
                         payments(
                             self.state.players[actor.index()].mana,
                             cost.colored,
-                            cost.generic,
+                            cost.generic
+                                .saturating_sub(self.activation_generic_discount(
+                                    card,
+                                    object.card,
+                                    index as u16,
+                                )),
                             |payment| {
                                 if done
                                     || (!ability.cost.alternatives.is_empty()

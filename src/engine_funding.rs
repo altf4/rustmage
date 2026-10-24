@@ -189,11 +189,14 @@ fn reserve_obligations(
     kinds: u16,
     keywords: Keywords,
     subtypes: GrantedSubtypes,
+    name: &str,
 ) -> bool {
     goal.reserve.is_none_or(|(reference, spec)| {
         object.is_some_and(|o| {
             o.generation == reference.generation
-                && Game::additional_object_matches(spec, goal.actor, o, kinds, keywords, subtypes)
+                && Game::additional_object_matches(
+                    spec, goal.actor, o, kinds, keywords, subtypes, name,
+                )
         })
     })
 }
@@ -499,6 +502,7 @@ impl<'g> FundingState<'g> {
             reserve.map_or(0, |r| self.kinds(r)),
             reserve.map_or(Keywords::NONE, |r| self.keywords(r)),
             reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
+            reserve.map_or("", |r| ability_world::CharacteristicWorld::name(self, r.id)),
         ) && source_obligations(
             goal,
             source.map(|r| &r.object),
@@ -797,6 +801,7 @@ impl<'g> FundingState<'g> {
                                 self.kinds(r),
                                 self.keywords(r),
                                 ability_world::CharacteristicWorld::subtypes(self, r.id),
+                                ability_world::CharacteristicWorld::name(self, r.id),
                             ) && (!spec.filter.other || r.id != entry.id)
                         })
                         .map(|(index, _)| index)
@@ -1615,6 +1620,7 @@ impl Game {
             reserve.map_or(GrantedSubtypes::default(), |_| {
                 self.granted_subtypes(goal.reserve.unwrap().0.card)
             }),
+            reserve.map_or("", |_| self.object_name(goal.reserve.unwrap().0.card)),
         ) || !source_obligations(
             &goal,
             object,
@@ -1928,7 +1934,11 @@ impl Game {
                     required: announcement.cost.map_or(cost.colored, |c| c.colored),
                     generic: announcement
                         .cost
-                        .map_or(cost.generic, |c| c.generic)
+                        .map_or(
+                            cost.generic
+                                .saturating_sub(announcement.activation_discount),
+                            |c| c.generic,
+                        )
                         .checked_add(if announcement.has_x_cost() {
                             announcement.item.x.unwrap_or(0)
                         } else {

@@ -11,6 +11,8 @@ pub(super) struct Announcement {
     pub payment: Option<Mana>,
     pub cost: Option<ManaCost>,
     pub total_cost: Option<ManaCost>,
+    /// Locked before mana abilities or any nonmana payment changes the source.
+    pub activation_discount: u32,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
@@ -142,6 +144,10 @@ impl Announcement {
             .filter(|c| matches!(c.method, CastMethod::Free | CastMethod::Plot))
             .and_then(|_| self.item.source_card.mana_additional_alternative());
         options
+            .map(|mut cost| {
+                cost.generic = cost.generic.saturating_sub(self.activation_discount);
+                cost
+            })
             .filter(|cost| {
                 self.item
                     .cast
@@ -1301,6 +1307,7 @@ impl Game {
         }
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
+            activation_discount: self.item_activation_discount(&item),
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -1347,6 +1354,7 @@ impl Game {
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         self.state.announcing = Some(Announcement {
+            activation_discount: self.item_activation_discount(&item),
             item,
             spec: TargetSpec::NONE,
             plan,
