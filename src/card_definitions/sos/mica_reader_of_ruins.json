@@ -3,10 +3,13 @@
   "catalogue_id": 2737,
   "oracle_id": "fc90f74d-11f3-4bd4-b8a1-1cf2ffcd5b73",
   "facts_sha256": "1155cceccc0a0edf4733b74667bd46912c6ac4dd9fc1955bd81af7f53a5bde93",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "832facc8881186c95edd3b2976b97cdd38b5c9c7ceb0ba83d58a003d0837c0d0"
   },
-  "physical_metadata_sha256": "559737fc95d9859280aca878c4514aac4fa0ce47d7b0f1edc6b5ae57723a89b4"
+  "physical_metadata_sha256": "559737fc95d9859280aca878c4514aac4fa0ce47d7b0f1edc6b5ae57723a89b4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MicaReaderOfRuins.java",
+  "java_sha256": "1122cf8154ed7d715d6db438427a85cdc0bae2051f63982044d8b1cac543fe1c"
 }
