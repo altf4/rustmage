@@ -159,3 +159,4 @@ mod sos_white_blue_final;
 
 mod sos_killian;
 mod sos_white_blue_dragons;
+mod sos_applied;

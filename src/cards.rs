@@ -17,6 +17,8 @@ pub struct CopyExceptions {
     pub nightmare: bool,
     pub artifact: bool,
     pub golem: bool,
+    pub fractal: bool,
+    pub base: Option<(i16, i16)>,
 }
 impl CopyExceptions {
     pub const NONE: Self = Self {
@@ -24,18 +26,24 @@ impl CopyExceptions {
         nightmare: false,
         artifact: false,
         golem: false,
+        fractal: false,
+        base: None,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
         nightmare: false,
         artifact: false,
         golem: false,
+        fractal: false,
+        base: None,
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
         nightmare: true,
         artifact: false,
         golem: false,
+        fractal: false,
+        base: None,
     };
     pub const ARTIFACT: Self = Self {
         artifact: true,
@@ -44,6 +52,12 @@ impl CopyExceptions {
     pub const GOLEM: Self = Self {
         artifact: true,
         golem: true,
+        base: Some((3, 3)),
+        ..Self::NONE
+    };
+    pub const FRACTAL: Self = Self {
+        fractal: true,
+        base: Some((0, 0)),
         ..Self::NONE
     };
     pub fn union(self, other: Self) -> Self {
@@ -55,6 +69,8 @@ impl CopyExceptions {
             nightmare: self.nightmare || other.nightmare,
             artifact: self.artifact || other.artifact,
             golem: self.golem || other.golem,
+            fractal: self.fractal || other.fractal,
+            base: other.base.or(self.base),
         }
     }
 }
@@ -995,6 +1011,12 @@ pub(crate) enum Instruction {
         subject: Subject,
         amount: u16,
         exceptions: CopyExceptions,
+    },
+    CreateCounteredCopyToken {
+        subject: Subject,
+        exceptions: CopyExceptions,
+        kind: CounterKind,
+        amount: u64,
     },
     ExileWarpedPermanent,
     Crew {

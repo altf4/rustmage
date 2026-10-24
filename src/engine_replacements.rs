@@ -122,6 +122,11 @@ enum Event {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
+    CreatedCounters {
+        player: Player,
+        created: Vec<ObjectRef>,
+        counters: Box<Counters>,
+    },
     Damage(DamageBatch),
     Counters(CounterBatch),
     Tokens(TokenBatch),
@@ -186,6 +191,13 @@ impl ReplacementState {
                     }
                     Work::Counters(b) => counter_bytes(b),
                     Work::Tokens(b) => token_bytes(b),
+                    Work::CreatedCounters {
+                        created, counters, ..
+                    } => {
+                        created.len() * std::mem::size_of::<ObjectRef>()
+                            + std::mem::size_of::<Counters>()
+                            + counters.owned_bytes()
+                    }
                     Work::DestroyAndCreate { targets, .. } => {
                         targets.len() * std::mem::size_of::<BoundTarget>()
                     }
@@ -693,7 +705,7 @@ impl Game {
             TokenCompletion::TemporaryCopy(Box::new(item.clone())),
         );
     }
-    fn stage_copy_creation_inner(
+    pub(super) fn stage_copy_creation_inner(
         &mut self,
         player: Player,
         recipe: CopyRecipe,
@@ -715,7 +727,12 @@ impl Game {
             used: Vec::new(),
             completion,
         };
-        if self.state.replacements.is_none() && self.token_replacements(&batch).is_empty() {
+        if matches!(
+            batch.completion,
+            TokenCompletion::None | TokenCompletion::TemporaryCopy(_)
+        ) && self.state.replacements.is_none()
+            && self.token_replacements(&batch).is_empty()
+        {
             let temporary = match &batch.completion {
                 TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()),
                 _ => None,
@@ -867,6 +884,22 @@ impl Game {
             }
             if state.active.is_none() {
                 match state.work.pop_front() {
+                    Some(Work::CreatedCounters {
+                        player,
+                        created,
+                        counters,
+                    }) => {
+                        let placements =
+                            self.created_token_counter_placements(player, &created, &counters);
+                        if !placements.is_empty() {
+                            state.work.push_front(Work::Counters(CounterBatch {
+                                placements,
+                                next: 0,
+                                used: Vec::new(),
+                            }));
+                        }
+                        continue;
+                    }
                     Some(Work::Damage(batch)) => state.active = Some(Event::Damage(batch)),
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
                     Some(Work::Tokens(batch)) => state.active = Some(Event::Tokens(batch)),
@@ -1005,12 +1038,28 @@ impl Game {
                                     TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()),
                                     _ => None,
                                 };
-                                self.create_copy_groups_inner(
+                                let created = self.create_copy_groups_inner(
                                     batch.player,
                                     &batch.groups,
                                     &batch.recipes,
                                     temporary,
                                 );
+                                let counters = match &batch.completion {
+                                    TokenCompletion::Counters { kind, amount } => {
+                                        Some(Counters::of(*kind, *amount))
+                                    }
+                                    TokenCompletion::CounterSet(counters) => {
+                                        Some(counters.as_ref().clone())
+                                    }
+                                    _ => None,
+                                };
+                                if let Some(counters) = counters {
+                                    state.work.push_front(Work::CreatedCounters {
+                                        player: batch.player,
+                                        created,
+                                        counters: Box::new(counters),
+                                    });
+                                }
                                 if let Some(entry) = self.state.entry_batch.as_mut() {
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);

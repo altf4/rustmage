@@ -156,20 +156,20 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 _ => Stats::default(),
             }
         };
-        if self
+        if let Some((power, toughness)) = self
             .copy_recipe(self.object_ref(id))
-            .is_some_and(|r| r.exceptions.golem)
+            .and_then(|r| r.exceptions.base)
         {
             stats = Stats {
-                power: 3,
-                toughness: 3,
+                power: i128::from(power),
+                toughness: i128::from(toughness),
             };
         }
         // Layer 7a applies in every zone, before setters and additive modifiers.
         if let Some(base) = object.card.dynamic_stats()
             && !self
                 .copy_recipe(self.object_ref(id))
-                .is_some_and(|r| r.exceptions.golem)
+                .is_some_and(|r| r.exceptions.base.is_some())
             && self.continuous_fragment_available(id, |fragment| {
                 matches!(fragment, StaticAbilityFragment::DynamicStats(..))
             })

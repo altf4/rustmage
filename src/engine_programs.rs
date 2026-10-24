@@ -2562,6 +2562,22 @@ impl Game {
                         self.stage_copy_creation(item.controller, recipe, u128::from(amount));
                     }
                 }
+                Instruction::CreateCounteredCopyToken {
+                    subject,
+                    exceptions,
+                    kind,
+                    amount,
+                } => {
+                    if let Some(mut recipe) = self.recipe_for_subject(&item, subject) {
+                        recipe.exceptions = recipe.exceptions.union(exceptions);
+                        self.stage_copy_creation_inner(
+                            item.controller,
+                            recipe,
+                            1,
+                            replacements::TokenCompletion::Counters { kind, amount },
+                        );
+                    }
+                }
                 Instruction::SacrificeSource => self.sacrifice_exact_source(&item),
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
                 Instruction::ExileOtherNightmares => self.exile_other_nightmares(item.controller),

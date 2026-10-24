@@ -116,7 +116,7 @@ impl Game {
         groups: &[TokenGroupView],
         recipes: &[Option<CopyRecipe>],
         temporary: Option<&SpellView>,
-    ) {
+    ) -> Vec<ObjectRef> {
         assert_eq!(groups.len(), recipes.len());
         let total = groups
             .iter()
@@ -196,6 +196,18 @@ impl Game {
                 moves.push(self.entry_move(id, Zone::Battlefield, group.tapped));
             }
         }
+        let created = moves
+            .iter()
+            .map(|m| ObjectRef {
+                card: m.before.id,
+                generation: m
+                    .before
+                    .reference
+                    .generation
+                    .checked_add(1)
+                    .capacity("object generation exhausted"),
+            })
+            .collect();
         if !moves.is_empty() {
             self.track_nightmare_copy_entries(&moves);
             if let Some(item) = temporary {
@@ -204,5 +216,6 @@ impl Game {
                 self.stage_entries(moves, None);
             }
         }
+        created
     }
 }

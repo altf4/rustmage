@@ -54,7 +54,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 Instruction::GrantKeywords { .. } => Some(true),
                 Instruction::Connive { .. }
                 | Instruction::CreateCopyToken { .. }
-                | Instruction::CreateCopyTokenWithExceptions { .. } => Some(true),
+                | Instruction::CreateCopyTokenWithExceptions { .. }
+                | Instruction::CreateCounteredCopyToken { .. } => Some(true),
                 Instruction::Grow {
                     power, toughness, ..
                 }

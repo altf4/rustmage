@@ -88,6 +88,9 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         if recipe.exceptions.golem {
             result |= 17;
         }
+        if recipe.exceptions.fractal {
+            result |= 1;
+        }
     }
     if object.zone != Zone::Battlefield {
         return result;

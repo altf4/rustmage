@@ -23,7 +23,7 @@ const LAND_TYPES: [&str; 17] = [
     "Planet",
     "Urza's",
 ];
-const JOB_TYPES: [&str; 15] = [
+const JOB_TYPES: [&str; 16] = [
     "Artificer",
     "Bard",
     "Cleric",
@@ -39,8 +39,9 @@ const JOB_TYPES: [&str; 15] = [
     "Demon",
     "Nightmare",
     "Golem",
+    "Fractal",
 ];
-// Fifteen named grants and three projection flags use the view's existing padding.
+// Sixteen named grants and three projection flags use the view's existing padding.
 const CREATURE_OR_KINDRED: u16 = 1 | 128;
 const JOB_MASK: u32 = (1 << JOB_TYPES.len()) - 1;
 const SUPPRESS_PRINTED: u32 = 1 << JOB_TYPES.len();
@@ -182,6 +183,12 @@ impl Game {
             .is_some_and(|r| r.exceptions.golem)
         {
             mask.insert("Golem");
+        }
+        if self
+            .copy_recipe(reference)
+            .is_some_and(|r| r.exceptions.fractal)
+        {
+            mask.insert("Fractal");
         }
         // Copy exceptions already exist while an owned token awaits entry.
         // Later continuous type changes apply only on the battlefield.
@@ -384,6 +391,9 @@ impl Game {
         }
         if m.before.copy_recipe.is_some_and(|r| r.exceptions.golem) {
             result.insert("Golem");
+        }
+        if m.before.copy_recipe.is_some_and(|r| r.exceptions.fractal) {
+            result.insert("Fractal");
         }
         if m.before.card.static_ability_groups().iter().any(|g| {
             g.fragments
