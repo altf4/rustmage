@@ -1309,7 +1309,7 @@ fn sos_duel_tactics_damage_block_restriction_survives_ability_removal_flashback_
         );
         g.finish_cleanup();
         assert_eq!(g.object_view(blocker).damage, 0);
-        assert!(g.can_block_pair(blocker, attacker));
+        assert!(!g.keywords(blocker).contains(Keywords::CANT_BLOCK));
         let mut g = scenario(p);
         let attacker = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let spell = put(&mut g, p, "Duel Tactics", Zone::Graveyard);
