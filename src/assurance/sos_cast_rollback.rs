@@ -193,9 +193,7 @@ fn sos_cast_rollback_library_origin_reverses_while_a_cost_shuffle_is_retained() 
         for shuffled in [false, true] {
             let (mut g, _, _, _, _) = setup(p, true);
             let spell = put(&mut g, p, "Bear Cub", Zone::Library);
-            let library = &mut g.state.players[p.index()].library;
-            library.retain(|&id| id != spell);
-            library.insert(0, spell);
+            assert_eq!(g.state.players[p.index()].library.last(), Some(&spell));
             let original = g.object_ref(spell);
             let colossus = put(&mut g, p, "Darksteel Colossus", Zone::Battlefield);
             g.prepare_cast_rollback(p, &Action::AnnounceCast { card: spell });
@@ -205,7 +203,7 @@ fn sos_cast_rollback_library_origin_reverses_while_a_cost_shuffle_is_retained() 
             }
             let rng = g.state.rng;
             let mut retained = g.state.players[p.index()].library.to_vec();
-            retained.insert(0, spell);
+            retained.push(spell);
             g.finish_cast_rollback(false);
             assert_eq!(g.object_ref(spell), original);
             assert_eq!(g.object_view(spell).zone, Zone::Library);

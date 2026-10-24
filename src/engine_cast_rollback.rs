@@ -223,17 +223,17 @@ impl Game {
                     .library
                     .iter()
                     .position(|&id| id == spell)
-                    .map(|at| (p, at))
+                    .map(|at| (p, player.library.len() - 1 - at))
             });
         for (player, now) in self.state.players.iter_mut().zip(&current.players) {
             player.library = now.library.clone();
         }
         // Library-to-stack casting can reverse even when a later shuffle cannot.
         // Preserve the restored spell's original library position (currently top).
-        if let Some((p, at)) = restored_spell {
+        if let Some((p, distance_from_top)) = restored_spell {
             let library = &mut self.state.players[p].library;
             if !library.contains(&spell) {
-                library.insert(at.min(library.len()), spell);
+                library.insert(library.len().saturating_sub(distance_from_top), spell);
             }
         }
         self.state.rng = current.rng;
