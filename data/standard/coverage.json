@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "a186ae7dca39290f4030af605dd0792b2dd9df2704c10457abdce424c5b09d81",
+  "catalogue_version": "41b235e2ac5efe9eb92d3ec113437ca5269dbf7849f7a0f9c4275c0847e07476",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2230,
-  "implemented_total": 2236,
-  "token_definitions": 111,
+  "implemented_standard_cards": 2237,
+  "implemented_total": 2243,
+  "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 113,
-      "gated": 151
+      "complete": 120,
+      "gated": 144
     },
     "spm": {
       "total": 134,
@@ -6606,8 +6606,8 @@
     {
       "name": "Colorstorm Stallion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/colorstorm_stallion.rs",
       "set": "sos"
     },
@@ -10462,8 +10462,8 @@
     {
       "name": "Elemental Mascot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/elemental_mascot.rs",
       "set": "sos"
     },
@@ -15854,8 +15854,8 @@
     {
       "name": "Harsh Annotation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/harsh_annotation.rs",
       "set": "sos"
     },
@@ -16686,8 +16686,8 @@
     {
       "name": "Homesickness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/homesickness.rs",
       "set": "sos"
     },
@@ -27270,8 +27270,8 @@
     {
       "name": "Rapier Wit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/rapier_wit.rs",
       "set": "sos"
     },
@@ -40790,8 +40790,8 @@
     {
       "name": "Wilt in the Heat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/wilt_in_the_heat.rs",
       "set": "sos"
     },
@@ -40918,8 +40918,8 @@
     {
       "name": "Wisdom of Ages",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/wisdom_of_ages.rs",
       "set": "sos"
     },

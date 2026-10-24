@@ -142,3 +142,5 @@ fn stats(g: &Game, id: CardId) -> (i128, i128) {
 mod sos_multicolor;
 #[path = "../engine_sos_black_red_tests.rs"]
 mod sos_black_red;
+
+mod sos_white_blue;

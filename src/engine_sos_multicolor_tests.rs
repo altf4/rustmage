@@ -115,7 +115,9 @@ fn sos_stress_dream_optional_target_private_selection_and_fizzle() {
             let mut g=scenario(p);let foe=put(&mut g,p.other(),"Hill Giant",Zone::Battlefield);
             let top=put(&mut g,p,"Island",Zone::Library);let spell=put(&mut g,p,"Stress Dream",Zone::Hand);
             announce(&mut g,spell,&if targeted{vec![Target::Card(foe)]}else{vec![]});pause(&mut g);
-            act(&mut g,Action::SelectLibrary{card:top});act(&mut g,Action::FinishLibrarySelection);settle(&mut g);
+            act(&mut g,Action::SelectLibrary{card:top});act(&mut g,Action::FinishLibrarySelection);
+            if let Some(action)=g.legal_actions().into_iter().find(|a|matches!(a,Action::OrderLibraryBottom{..})) {act(&mut g,action);}
+            settle(&mut g);
             assert_eq!(g.object_view(top).zone,Zone::Hand);assert_eq!(g.object_view(foe).zone,if targeted{Zone::Graveyard}else{Zone::Battlefield});
         }
         let mut g=scenario(p);let foe=put(&mut g,p.other(),"Hill Giant",Zone::Battlefield);let spell=put(&mut g,p,"Stress Dream",Zone::Hand);
