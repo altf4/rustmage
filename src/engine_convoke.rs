@@ -233,12 +233,8 @@ impl Game {
             object,
             contribution,
         });
-        if let Some(c) = self.state.announcing.as_mut().unwrap().cast_costs.as_mut() {
-            c.active = None;
-            let player = self.state.announcing.as_ref().unwrap().item.controller;
-            self.tap_objects(&[object.card]);
-            self.state.pending = Pending::CastCosts { player };
-        }
+        // Selecting contributors reserves the whole mana-payment group. Commit
+        // all their taps together when that cost is paid, before any later cost.
     }
     pub(super) fn visit_convoke_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
@@ -272,7 +268,7 @@ impl Game {
                     }
                 }
             }
-            return self.visit_cast_cost_clauses(emit);
+            return false;
         }
         // Exact selected incarnations remain reserved until this atomic cost ends.
         if !f

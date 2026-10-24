@@ -2662,6 +2662,8 @@ pub(crate) enum TriggerCondition {
     EquippedAttacks,
     GrantedAttacks,
     SelfBecomesTapped,
+    /// One event after the complete simultaneous tap group, using post-event types.
+    ControlledCreaturesBecomeTapped,
     AttachedBecomesUntapped,
     AttackDeclared {
         minimum: u16,

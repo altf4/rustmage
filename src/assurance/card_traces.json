@@ -13559,6 +13559,14 @@
     "journal": "7d1cb528fd49a8cd",
     "observations": "800d422ae6d53d8d"
   },
+  "Rewrite History": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "5a37305467443acc",
+    "observations": "364ddc5b841f24cd"
+  },
   "Rick Jones, Destined Sidekick": {
     "root": "main",
     "status": "completed",

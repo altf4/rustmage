@@ -128,6 +128,7 @@ impl Game {
             &mut self.state.static_sources,
             &mut self.state.cast_sources,
             &mut self.state.attack_sources,
+            &mut self.state.tap_sources,
             &mut self.state.damage_sources,
             &mut self.state.discard_sources,
             &mut self.state.draw_sources,

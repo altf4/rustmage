@@ -105,6 +105,15 @@ impl Game {
             costs.active = None;
             if clause == CastCostClause::Mana {
                 costs.mana_paid = true;
+                if let Some(frame) = &a.convoke {
+                    self.tap_objects(
+                        &frame
+                            .selected
+                            .iter()
+                            .map(|s| s.object.card)
+                            .collect::<Vec<_>>(),
+                    );
+                }
             }
             if clause == CastCostClause::Additional {
                 a.additional_paid = true;

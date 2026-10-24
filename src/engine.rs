@@ -1661,6 +1661,7 @@ struct State {
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
     attack_sources: Vec<CardId>,
+    tap_sources: Vec<CardId>,
     damage_sources: Vec<CardId>,
     discard_sources: Vec<CardId>,
     draw_sources: Vec<CardId>,
@@ -2317,6 +2318,7 @@ impl Game {
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
                 attack_sources: Vec::new(),
+                tap_sources: Vec::new(),
                 damage_sources: Vec::new(),
                 discard_sources: Vec::new(),
                 draw_sources: Vec::new(),
@@ -5623,6 +5625,7 @@ impl Game {
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
             self.state.attack_sources.retain(|&source| source != id);
+            self.state.tap_sources.retain(|&source| source != id);
             self.state.damage_sources.retain(|&source| source != id);
             self.state.discard_sources.retain(|&source| source != id);
             self.state.draw_sources.retain(|&source| source != id);
@@ -7116,6 +7119,7 @@ impl Game {
                 + s.static_sources.len()
                 + s.cast_sources.len()
                 + s.attack_sources.len()
+                + s.tap_sources.len()
                 + s.damage_sources.len()
                 + s.discard_sources.len()
                 + s.draw_sources.len()
@@ -7494,3 +7498,7 @@ mod msh_mandatory_union_tests;
 #[cfg(test)]
 #[path = "engine_msh_punch_zola_tests.rs"]
 mod msh_punch_zola_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_tap_batch_tests.rs"]
+mod msh_tap_batch_tests;
