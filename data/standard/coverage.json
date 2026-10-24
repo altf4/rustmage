@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "05592746e6a2d4a71c5ba28b6581c0748243327227c6ab93ad9e3e77c61581cc",
+  "catalogue_version": "fa004680d365f1899c0b1f480c9d719992297ad015599abd7c278481fd841320",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2439,
-  "implemented_total": 2445,
+  "implemented_standard_cards": 2447,
+  "implemented_total": 2453,
   "token_definitions": 116,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 134,
-      "gated": 139
+      "complete": 142,
+      "gated": 131
     },
     "one": {
       "total": 1,
@@ -901,8 +901,8 @@
     {
       "name": "Agent 13, Sharon Carter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/agent_13_sharon_carter.rs",
       "set": "msh"
     },
@@ -965,8 +965,8 @@
     {
       "name": "Agents of S.H.I.E.L.D.",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/agents_of_s_h_i_e_l_d.rs",
       "set": "msh"
     },
@@ -2485,8 +2485,8 @@
     {
       "name": "Avengers Tower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/avengers_tower.rs",
       "set": "msh"
     },
@@ -3669,8 +3669,8 @@
     {
       "name": "Black Widow, Double Agent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/black_widow_double_agent.rs",
       "set": "msh"
     },
@@ -5381,8 +5381,8 @@
     {
       "name": "Captain Marvel, Earth's Protector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/captain_marvel_earth_s_protector.rs",
       "set": "msh"
     },
@@ -6277,8 +6277,8 @@
     {
       "name": "Claim the Kingdom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/claim_the_kingdom.rs",
       "set": "msh"
     },
@@ -15589,8 +15589,8 @@
     {
       "name": "HYDRA Infiltration",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hydra_infiltration.rs",
       "set": "msh"
     },
@@ -17093,8 +17093,8 @@
     {
       "name": "Hydraulic Helper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hydraulic_helper.rs",
       "set": "msh"
     },

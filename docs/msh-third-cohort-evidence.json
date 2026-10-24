@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Eight whole-card implementations, three shared rule prerequisites, and inherited printed-obligation assurance; full-set acceptance remains open",
+  "base": "bd8cdf35db047ea8a1787daee4006c963eb52196",
+  "recorded_runtime_head": "ac5dda93f257aaeeecff7b888268764101134723",
+  "full_membership": 281,
+  "main_before_admission_flags": 142,
+  "candidate_admission_flags": 150,
+  "remaining_gated": 131,
+  "new_admissions": 8,
+  "new_cards": [
+    "Agent 13, Sharon Carter",
+    "Agents of S.H.I.E.L.D.",
+    "Black Widow, Double Agent",
+    "HYDRA Infiltration",
+    "Hydraulic Helper",
+    "Avengers Tower",
+    "Captain Marvel, Earth's Protector",
+    "Claim the Kingdom"
+  ],
+  "shared_rules": [
+    "Exact controlled lone-declared-attacker events, independently of observer participation or later combat membership.",
+    "Restricted mana distinguishes spells, activated abilities and triggered costs; live actual/speculative source types and exact departure LKI, including nested funding.",
+    "Eleven ordinary keyword counters use sparse exact-object storage, layer-six timestamps, final removal, entry ordering, privacy and speculative memo keys."
+  ],
+  "wire_schema": 140,
+  "wire_change_reason": "Public restricted-mana enum variants and keyword-counter timeline origins; prior enum/counter ordinals preserved append-only.",
+  "catalogue": {
+    "definitions": 5391,
+    "verified_java_blobs": 1094,
+    "token_recipes": 116,
+    "new_token_recipes": 0,
+    "identity_or_alias_changes": 0
+  },
+  "combined_native_recording": {
+    "rules_passed": 669,
+    "only_failure": "Expected new golden trace rows: 2,453 actual versus 2,449 accepted parent-union rows.",
+    "test_seconds": 5.11,
+    "log": "<cache>/rustmage-msh-third-cohort-all-native-recording.log",
+    "guard_report": "<cache>/rustmage-build-reports/7e2e7d4acb2c48f89d0e42a7ac932ada.json",
+    "guard_seconds": 104.65963291598018,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2209738752,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n"
+  },
+  "full_trace_proof": {
+    "schema": 1,
+    "runtime_head": "ac5dda93f257aaeeecff7b888268764101134723",
+    "base": "bd8cdf35db047ea8a1787daee4006c963eb52196",
+    "observation_schema": 140,
+    "previous_schema": 139,
+    "base_rows": 2445,
+    "inherited_full_trace_matches_under139": 2445,
+    "changed_under139": [],
+    "parent_union_normal140_rows": 2449,
+    "parent_union_full_trace_matches_under140": 2449,
+    "changed_under140": [],
+    "candidate_rows": 2453,
+    "new_attacks_alone_rows": {
+      "Agent 13, Sharon Carter": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "3ad6d4893695dc9c",
+        "observations": "94947935e7296e7a"
+      },
+      "Agents of S.H.I.E.L.D.": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "3ad6d4893695dc9c",
+        "observations": "54bdf8109c2e78a6"
+      },
+      "Black Widow, Double Agent": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "308e6690fa72d89e",
+        "observations": "c013da50a9dcbd4a"
+      },
+      "HYDRA Infiltration": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 9,
+        "zone": "Battlefield",
+        "journal": "d8205b2e3d2047e5",
+        "observations": "0c720481f0d85951"
+      }
+    },
+    "base_sha256": "4fad88c85c5512cc2dc95dd337c9f7aa9bb1376b4ac26d2a26183f539875a5f5",
+    "candidate_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060",
+    "projection_sha256": "89de224c2c7c12ac9d1f09b244b7d855596707b55e21afae2f758a04bc179081",
+    "policy": "Compare complete Trace structs, including observations, roots, statuses, zones, decisions and journals; no filtering of Power-up or counter-history fields under139. No changed or removed inherited rows accepted."
+  },
+  "trace_artifacts": {
+    "normal": "<cache>/rustmage-msh-third-cohort-traces.json",
+    "previous139": "<cache>/rustmage-msh-third-cohort-traces.previous-schema.json",
+    "audit": "<cache>/rustmage-msh-third-cohort-trace-audit.json"
+  },
+  "baseline_acceptance": "Accept only four attacks-alone rows after exact equality of every 2,449 normal140 parent-union row and every 2,445 inherited row under139. No changed or removed inherited rows accepted; Power-up and counter-history fields retained.",
+  "inherited_assurance": {
+    "cards_mapped": 84,
+    "oracle_clauses": 175,
+    "new_family_scenarios": 62,
+    "fully_evidenced_within_reported_scope": 83,
+    "pending_card": "Agent Phil Coulson: printed other Heroes includes noncreature Kindred Heroes; current inherited instruction selects creatures. No reachable admitted producer was found; retain this semantic gap explicitly.",
+    "limits": "Per-card printed-obligation evidence does not establish full-set games or entire-pool behavior/performance."
+  },
+  "final_head_delta_after_recording": "Accepted trace baseline, evidence updates, formatting-only inherited macro layout and two explicit negative damage-event assertions. No runtime change.",
+  "final_validation": "Required immutable published-head release validator and two independent nonauthor reviews are recorded on PR #490 before integration.",
+  "remaining_acceptance": "All remaining 131 gated card identities, the inherited Coulson gap, full legal set-only games spanning colors/mechanics/choices/terminal outcomes, deterministic replay/owned search and measured performance remain required."
+}

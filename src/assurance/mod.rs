@@ -186,3 +186,6 @@ mod msh_conditional_lands;
 
 #[path = "../engine_msh_political_triumph_tests.rs"]
 mod msh_political_triumph;
+
+#[path = "../engine_msh_attack_alone_tests.rs"]
+mod msh_attack_alone;

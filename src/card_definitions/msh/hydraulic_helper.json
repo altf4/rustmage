@@ -3,10 +3,59 @@
   "catalogue_id": 2111,
   "oracle_id": "503928cd-1abd-44cd-92c3-6dc19bb07f78",
   "facts_sha256": "7e564c723a1df2838e82b67b586ec23907aa83686eb164e0e66ccf40ed9f7ff0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "168e22bf534e96ba9c5eae07a47558f4ec964168d046e24ac36127bbd3a4648b"
   },
-  "physical_metadata_sha256": "cd4e1f4a33d95d2dcdfd48c9033061a7880c075b9b3a072d067ef3e6df1f6853"
+  "physical_metadata_sha256": "cd4e1f4a33d95d2dcdfd48c9033061a7880c075b9b3a072d067ef3e6df1f6853",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HydraulicHelper.java",
+  "java_sha256": "3bd2555adc751d0fbd573681108141af3522b8b55e8f94e9849933025457b0f6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/ConditionalMana.java",
+      "sha256": "047e59c2853d61ed76b254b80e44971604ed2a3d022bdbb201255aaf1ed91276"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaEffect.java",
+      "sha256": "4690e27d03738e7052453428d8854b1ca8986ce292f25b579b33ab88cb953c23"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColoredManaAbility.java",
+      "sha256": "4ca1b322894c2f7924ad49114c8e57fdbbab4313acec60374aa74b144eb18493"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+      "sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/ManaCondition.java",
+      "sha256": "77289b6566dab4372ae2b7e7133b8ee8d32463672475820d61883ba829795369"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/PowerstoneToken.java",
+      "sha256": "63281933069a3bb743e116decc5bf49cb219b1c764d82f9e21190c317960bc22"
+    }
+  ],
+  "remaining_obligations": [],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+  ]
 }

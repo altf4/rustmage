@@ -404,6 +404,10 @@ pub(crate) struct ChosenModifier {
 /// Rules attached to produced mana, captured independently of its producer.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaRestriction {
+    /// Any cost except casting a spell without the artifact card type.
+    ExceptNonArtifactSpells,
+    /// Spells or activated abilities of any source with this subtype.
+    SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
     Unrestricted,
     SpellSubtype(&'static str),
@@ -1415,6 +1419,11 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    /// One simultaneous placement may contain multiple counter kinds.
+    PutCountersMixed {
+        subject: Subject,
+        amounts: &'static [(CounterKind, u32)],
+    },
     CreateTokensWithTemporaryKeywords {
         token: Card,
         amount: AmountValue,
@@ -1855,10 +1864,21 @@ pub enum CounterKind {
     Growth,
     Plan,
     Invasion,
+    Haste,
+    Flying,
+    FirstStrike,
+    DoubleStrike,
+    Deathtouch,
+    Indestructible,
+    Lifelink,
+    Menace,
+    Reach,
+    Trample,
+    Vigilance,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 18] = [
+    pub const ALL: [Self; 29] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1877,6 +1897,17 @@ impl CounterKind {
         Self::Growth,
         Self::Plan,
         Self::Invasion,
+        Self::Haste,
+        Self::Flying,
+        Self::FirstStrike,
+        Self::DoubleStrike,
+        Self::Deathtouch,
+        Self::Indestructible,
+        Self::Lifelink,
+        Self::Menace,
+        Self::Reach,
+        Self::Trample,
+        Self::Vigilance,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1894,6 +1925,17 @@ impl CounterKind {
                 | Self::Growth
                 | Self::Plan
                 | Self::Invasion
+                | Self::Haste
+                | Self::Flying
+                | Self::FirstStrike
+                | Self::DoubleStrike
+                | Self::Deathtouch
+                | Self::Indestructible
+                | Self::Lifelink
+                | Self::Menace
+                | Self::Reach
+                | Self::Trample
+                | Self::Vigilance
         )
     }
 }
@@ -2551,6 +2593,8 @@ pub(crate) enum TriggerCondition {
     },
     /// Declaration-time condition; not a resolution-time intervening if.
     SelfAttacksAlone,
+    /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
+    ControlledCreatureAttacksAlone,
     EquippedAttacks,
     GrantedAttacks,
     SelfBecomesTapped,

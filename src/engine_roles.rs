@@ -149,6 +149,14 @@ impl Game {
     pub(super) fn assign_static_source_timestamp(&mut self, source: ObjectRef) {
         let timestamp = self.next_role_timestamp();
         if let Some(r) = &mut self.state.roles {
+            for row in &mut r.keyword_effects {
+                if row.recipient == source
+                    && row.timestamp == 0
+                    && matches!(row.origin, KeywordEffectOrigin::Counter { .. })
+                {
+                    row.timestamp = timestamp;
+                }
+            }
             for v in &mut r.ability_timestamps {
                 if v.source == source {
                     v.timestamp = timestamp;

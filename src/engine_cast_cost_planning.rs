@@ -167,7 +167,13 @@ impl FundingState<'_> {
                 }
             })
             .collect::<Vec<_>>();
-        let mut worlds = vec![self.clone()];
+        let mut initial = self.clone();
+        // These costs move one simultaneous group. Freeze all source facts
+        // before any member or a layer provider leaves that world.
+        for object in objects {
+            initial.remember_payment_departure(object.card);
+        }
+        let mut worlds = vec![initial];
         for (r, choices) in objects.iter().zip(destinations) {
             let mut next = Vec::new();
             for w in worlds {

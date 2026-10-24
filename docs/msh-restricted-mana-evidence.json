@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Restricted-mana core and two complete representative consumers; dependent cards and full-set acceptance remain gated",
+  "source_base": "bd8cdf35db047ea8a1787daee4006c963eb52196",
+  "observation_schema": 140,
+  "complete_cards": [
+    "Hydraulic Helper",
+    "Avengers Tower"
+  ],
+  "shared_mechanics": [
+    "Any cost except casting nonartifact spells",
+    "Subtype-qualified spells or activated abilities of any source",
+    "Actual and speculative current source characteristics, exact incarnation and saved departed-source facts",
+    "Triggered costs distinguished from activated-ability costs"
+  ],
+  "trace_proofs": [
+    {
+      "base": "bd8cdf35db047ea8a1787daee4006c963eb52196",
+      "projected_observation_schema": 139,
+      "inherited_rows": 2445,
+      "exact_full_trace_matches": 2445,
+      "changed_rows": [],
+      "changed_journals": [],
+      "baseline_sha256": "4fad88c85c5512cc2dc95dd337c9f7aa9bb1376b4ac26d2a26183f539875a5f5",
+      "projection_sha256": "9b64aa0aa9fd90dba5e0ca92b51a6cd0563b314e663b8a3cfb0996e15da75530",
+      "projection_artifact": "<cache>/msh-restricted-mana-base139-traces.previous-schema.json"
+    },
+    {
+      "base": "cbfac89ebd67dada08f86096f15ba3e2bb1748a7",
+      "projected_observation_schema": 138,
+      "inherited_rows": 2421,
+      "exact_full_trace_matches": 2421,
+      "changed_rows": [],
+      "changed_journals": [],
+      "baseline_sha256": "b041d1127c50d52afca366943a56d8c17f39250ebf4785fd7e998435a59dfe2b",
+      "projection_sha256": "b082eccabf97e5573ca2408b4b500ab6e381ff54f1c7ca142022ef38bb21cfa4",
+      "projection_artifact": "<cache>/msh-restricted-mana-base138-traces.previous-schema.json"
+    }
+  ],
+  "candidate_rows": 2447,
+  "candidate_sha256": "85ea5e730b89bf973fd48b6f46a6a6d6771b0de7900b237424196112c1489e6d",
+  "new_traces": {
+    "Hydraulic Helper": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "b6cf3749b9ab6fcf",
+      "observations": "3b590d0c942919fe"
+    },
+    "Avengers Tower": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 1,
+      "zone": "Battlefield",
+      "journal": "1c41fdead70727d2",
+      "observations": "c8432c2bff6c1142"
+    }
+  },
+  "projection_policy": "Recording-only schema139 projection retains every Power-up and counter-history field. Prior138 retains Power-up and projects only the schema139 counter-history addition. Ordinary trace assertions remain strict.",
+  "focused_rules_tests": 12,
+  "existing_restricted_mana_regressions": 4,
+  "focused_and_clippy": "16/16 focused tests and cargo clippy --all-targets -- -D warnings passed under resource_guard",
+  "source_pin_check": {
+    "definitions": 5391,
+    "verified_blobs": 1084
+  },
+  "rules_evidence": "src/engine_restricted_mana_tests.rs: both seats; real spell/activation payments, all five Tower colors, ordinary colorless mode, forbidden nonartifact/non-Hero costs, ward distinction, selected artifact/adventure faces, generic lot allocation, nested externally paid mana, control/type changes, overlay funding, sacrifice LKI and reentry, private optional top-three selection and bottom order after source departure; owned raw/index replay, parent disposal, restore and illegal-action atomicity",
+  "parked_dependents": {
+    "Castle Doom": "Requires distinct artifact-spells-only restriction and exact 3/3 Robot Villain Doombot token; existing additional sacrifice, tap and sorcery-speed APIs suffice. Future token5391 reserved.",
+    "Villainous Hideout": "Existing generic subtype restriction plus own-Villain targeting and targeted connive APIs appear sufficient; expansion awaits prerequisite review/integration.",
+    "Shang-Chi and Ronin": "Activation-haste, equip-purpose and attached-sacrifice prerequisites remain gated."
+  },
+  "validation": "Final immutable-head full release validator and two independent nonauthor reviews pending; source/Oracle pins and linker verified. No full-set or all-pool performance claim.",
+  "independent_review_correction": {
+    "problem": "Speculative funding reread post-departure or new-incarnation source subtypes, while actual payment retained exact departure facts.",
+    "fix": "Sparse exact enclosing-source departure facts captured after cost counters/taps and before movement; simultaneous groups freeze all source facts before providers leave. Current and suspended real announcements supply existing departure LKI when a new funding world is constructed. Memo keys retain the saved facts; ordinary unrelated sacrifices do not allocate records.",
+    "tests": "Two new both-seat pure-{R} Shivan Dragon scenarios prove Hero/Citizen-at-departure feasibility and key differences, real source departure/blink funding/payment, exact source binding, owned branches and unchanged parent snapshots. Both passed the combined native run. Actual ward now uses a Hero source, distinguishing triggered costs from Hero-source activations."
+  }
+}

@@ -33,6 +33,9 @@ pub(super) struct FundingState<'g> {
     mana: [u128; 6],
     lots: Vec<mana_lots::Lot>,
     purpose: mana_lots::Purpose,
+    payment_source: Option<ObjectRef>,
+    // Sparse last-known facts for exact enclosing sources that leave a speculative world.
+    payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
     life: i128,
     other_life: i128,
     resources: Vec<Resource>,
@@ -184,6 +187,7 @@ struct EntryFundingKey {
 }
 #[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
+    payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
     entries: Option<EntryFundingKey>,
     histories: Option<(u64, [bool; 2], i128)>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
@@ -195,6 +199,7 @@ struct FundingKey {
     resources: Vec<ResourceKey>,
     named_counters: live_counters::Rows,
     counter_placement_history: counter_placement_history::Rows,
+    keyword_counter_timestamps: Vec<(ObjectRef, CounterKind, u64)>,
 }
 
 fn payable<N: Copy + Into<u128>>(pool: [N; 6], required: Mana, generic: u32) -> bool {
@@ -543,6 +548,8 @@ impl<'g> FundingState<'g> {
             mana: game.state.players[goal.actor.index()].mana.map(u128::from),
             lots: game.mana_lots(goal.actor).to_vec(),
             purpose: game.funding_purpose(goal),
+            payment_source: goal.source.as_ref().map(|(source, ..)| *source),
+            payment_departures: Vec::new(),
             life: game.state.players[goal.actor.index()].life,
             other_life: game.state.players[goal.actor.other().index()].life,
             resources,
@@ -1085,6 +1092,43 @@ impl<'g> FundingState<'g> {
             }
         }
     }
+    fn remember_payment_departure(&mut self, id: CardId) {
+        let reference = self.reference(id);
+        let is_announcement_source = |item: &SpellView| {
+            matches!(item.kind, StackKind::ActivatedAbility { .. }) && item.object == reference
+        };
+        if self.payment_source != Some(reference)
+            && !self
+                .game
+                .state
+                .announcing
+                .as_ref()
+                .is_some_and(|a| is_announcement_source(&a.item))
+            && !self
+                .game
+                .state
+                .mana_announcement_stack
+                .as_deref()
+                .is_some_and(|frames| {
+                    frames
+                        .iter()
+                        .any(|frame| is_announcement_source(&frame.announcement.item))
+                })
+        {
+            return;
+        }
+        if self
+            .payment_departures
+            .iter()
+            .any(|(object, _)| *object == reference)
+        {
+            return;
+        }
+        let facts = mana_lots::Source::in_world(self, id);
+        self.payment_departures.push((reference, facts));
+        self.payment_departures
+            .sort_by_key(|(object, _)| (object.card, object.generation));
+    }
     fn apply(&mut self, step: &FundingMove) {
         for (lot, allocation) in self.lots.iter_mut().zip(&step.allocation) {
             for (held, paid) in lot.amounts.iter_mut().zip(allocation) {
@@ -1105,6 +1149,7 @@ impl<'g> FundingState<'g> {
                 .any(|g| g.source == source && g.sacrifice)
         });
         let object = &mut self.resources[step.resource].object;
+        let mut departure = None;
         if let Some(index) = step.ability {
             let cost = step
                 .frozen
@@ -1145,30 +1190,30 @@ impl<'g> FundingState<'g> {
             object.counters = counters.hot();
             live_counters::set(&mut self.named_counters, reference, counters.named);
             if cost.sacrifice || cost.exile_self {
-                object.zone = if cost.exile_self {
+                departure = Some(if cost.exile_self {
                     Zone::Exile
                 } else {
                     Zone::Graveyard
-                };
-                object.counters = InitialCounters::default();
-                live_counters::set(&mut self.named_counters, reference, None);
+                });
             }
         } else {
             object.tapped = true;
             if sacrifice_grant {
-                object.zone = Zone::Graveyard;
-                object.counters = InitialCounters::default();
-                live_counters::set(
-                    &mut self.named_counters,
-                    ObjectRef {
-                        card: id,
-                        generation: object.generation,
-                    },
-                    None,
-                );
+                departure = Some(Zone::Graveyard);
             }
         }
+        if let Some(destination) = departure {
+            // Counter and tap payments precede the actual move, as in the real
+            // payment path. Capture characteristics before zone effects cease.
+            self.remember_payment_departure(id);
+            let reference = self.reference(id);
+            let object = &mut self.resources[step.resource].object;
+            object.zone = destination;
+            object.counters = InitialCounters::default();
+            live_counters::set(&mut self.named_counters, reference, None);
+        }
         if let Some(external) = step.external {
+            self.remember_payment_departure(self.resources[external].id);
             let object = &mut self.resources[external].object;
             assert_eq!(object.zone, Zone::Graveyard);
             object.zone = Zone::Exile;
@@ -1279,6 +1324,7 @@ impl<'g> FundingState<'g> {
             )
         });
         FundingKey {
+            payment_departures: self.payment_departures.clone(),
             histories: self.power_sensitive.then_some((
                 self.creatures_died,
                 self.graveyard_left,
@@ -1301,6 +1347,24 @@ impl<'g> FundingState<'g> {
             resources,
             named_counters: self.named_counters.clone(),
             counter_placement_history: self.counter_placement_history.clone(),
+            keyword_counter_timestamps: {
+                let mut rows = self.roles().map_or_else(Vec::new, |state| {
+                    state
+                        .keyword_effects
+                        .iter()
+                        .filter_map(|row| {
+                            let KeywordEffectOrigin::Counter { kind } = row.origin else {
+                                return None;
+                            };
+                            (self.reference(row.recipient.card) == row.recipient
+                                && self.counter_count(row.recipient.card, kind) > 0)
+                                .then_some((row.recipient, kind, row.timestamp))
+                        })
+                        .collect::<Vec<_>>()
+                });
+                rows.sort_by_key(|(object, kind, _)| (object.card, object.generation, *kind));
+                rows
+            },
         }
     }
     /// Pure funding moves never create new resources, untap them, restore
@@ -1657,6 +1721,31 @@ impl<'g> FundingState<'g> {
             .map(|o| u128::from(o.card.fixed_mana_value()))
             .sum()
     }
+    /// Final-purpose facts follow the speculative world, not its original game.
+    /// Ordinary pools keep the existing constant-time path.
+    fn payment_purpose(&self, goal: &FundingGoal) -> mana_lots::Purpose {
+        if self.lots.is_empty() || !matches!(self.purpose, mana_lots::Purpose::Activation(_)) {
+            return self.purpose;
+        }
+        if let Some((object, ability, _, definition, _)) = goal.source.as_ref() {
+            if let Some((_, facts)) = self
+                .payment_departures
+                .iter()
+                .find(|(source, _)| source == object)
+            {
+                return mana_lots::Purpose::Activation(*facts);
+            }
+            if self.reference(object.card) == *object
+                && self.object(object.card).zone == definition.activation(*ability).source_zone()
+            {
+                return mana_lots::Purpose::Activation(mana_lots::Source::in_world(
+                    self,
+                    object.card,
+                ));
+            }
+        }
+        self.purpose
+    }
     fn reachable(&self, goal: &FundingGoal, visited: &mut HashSet<FundingKey>) -> bool {
         self.reachable_with_evidence(goal, None, visited)
     }
@@ -1669,22 +1758,23 @@ impl<'g> FundingState<'g> {
         if !self.obligations(goal) {
             return false;
         }
-        let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
+        let purpose = self.payment_purpose(goal);
+        let adjusted = cast_origins::payment_goal(self, goal, purpose);
         if (if self.has_ordered_convoke() {
             true
         } else if self.convoke {
             convoke::payable_in(
                 self,
                 goal.actor,
-                self.purpose,
-                mana_lots::available(self.mana, &self.lots, self.purpose),
+                purpose,
+                mana_lots::available(self.mana, &self.lots, purpose),
                 goal.required,
                 goal.generic,
                 &self.convoke_masks(),
             )
         } else {
             payable(
-                mana_lots::available(self.mana, &self.lots, self.purpose),
+                mana_lots::available(self.mana, &self.lots, purpose),
                 adjusted.required,
                 adjusted.generic,
             )
@@ -2689,9 +2779,10 @@ impl FundingState<'_> {
         // Mana abilities are activated before paying this nonmana cost. The
         // chosen counters remain reserved, rather than being removed before
         // counter-dependent mana production has been evaluated.
-        let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
+        let purpose = self.payment_purpose(goal);
+        let adjusted = cast_origins::payment_goal(self, goal, purpose);
         if payable(
-            mana_lots::available(self.mana, &self.lots, self.purpose),
+            mana_lots::available(self.mana, &self.lots, purpose),
             adjusted.required,
             adjusted.generic,
         ) && self.creature_counter_payment_possible(amount, selected)
@@ -2793,6 +2884,10 @@ impl Game {
         world.fund_creature_counter_cost(&goal, amount, selected, &mut HashSet::new())
     }
 }
+
+#[cfg(test)]
+#[path = "engine_restricted_mana_tests.rs"]
+mod restricted_mana_tests;
 
 #[cfg(test)]
 #[path = "engine_msh_conditional_lands_funding_tests.rs"]

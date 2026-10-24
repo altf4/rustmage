@@ -3,10 +3,29 @@
   "catalogue_id": 95,
   "oracle_id": "203b72d2-a273-49cc-bd10-2fbc07ed2fc8",
   "facts_sha256": "3fb26e329eecf05b127dfe8f265baf74239ac2b9a87465243c2865dcfe5a2fad",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ed9a599471f4284e29acff4b2c582500250b824d8bbc7baff3099c7cd10e2c2e"
   },
-  "physical_metadata_sha256": "8f18400b87cfeaa61b60ae8bdd65abc4cf32dc64cece1c5591be385660fd093f"
+  "physical_metadata_sha256": "8f18400b87cfeaa61b60ae8bdd65abc4cf32dc64cece1c5591be385660fd093f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AgentsOfSHIELD.java",
+  "java_sha256": "29d93e1dfe43cf06510a556013326ef7346c3479cd9e6bae23fe46b817dfb689",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAloneControlledTriggeredAbility.java",
+      "sha256": "0e4f4629c0db74cd882e9f1774afb20468981ae2d2249669d00c5156753ac384"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/rules",
+    "rules": "CR506.5, 603.2, 603.3, 608.2; attacking alone counts declared attackers, not later combat membership. The attacker is a frozen non-targeted exact object. Investigation creates the complete standard Clue recipe."
+  }
 }

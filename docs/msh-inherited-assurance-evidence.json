@@ -1,0 +1,3150 @@
+{
+  "schema": 1,
+  "scope": "Meaningful assurance for 84 inherited MSH cards; no new admissions; full 281-card set acceptance remains open",
+  "base_revision": "bd8cdf35db047ea8a1787daee4006c963eb52196",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "name": "A.I.M. Labs",
+      "definition": "src/card_definitions/msh/a_i_m_labs.rs",
+      "definition_sha256": "f286baeb72cc81d66055cc9179be1b8b520a604020a28fecfdacd63c00b152e5",
+      "oracle_id": "8417f2d5-93c9-474a-a143-5c4e17097a88",
+      "facts_sha256": "6d413be4399ee179e20f10e5f45caa74200e5bf9fd717fdf0a020e97de9f15b2",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AIMLabs.java",
+          "sha256": "d9e52d9891588133e7e9acd5b74682bb0ef1294252811be77941e9e111e66f5e",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "A.I.M. Labs",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "A.I.M. Labs",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "A.I.M. Labs",
+          "paragraph": 3,
+          "oracle": "{T}: Add {U} or {B}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "A.I.M. Scientists",
+      "definition": "src/card_definitions/msh/a_i_m_scientists.rs",
+      "definition_sha256": "4dfc5bdee44968b337f46c627746246a55932504b38088d370211caad9412118",
+      "oracle_id": "fa732888-5b7d-4087-a6e5-1db1c98fbd4c",
+      "facts_sha256": "044b0458a3a2340577a89fd4b5083ea8616d867c89c00b35290d21185bbf302a",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AIMScientists.java",
+          "sha256": "b5dd19169ee63d9db4c6a8197b9482f7e409784c0514352195bcf9edd522260d",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "A.I.M. Scientists",
+          "paragraph": 1,
+          "oracle": "When this creature enters, it connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_connive_three_sources_land_nonland_and_departed_controller"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "A.I.M. Scientists",
+          "paragraph": 2,
+          "oracle": "Basic landcycling {2} ({2}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_landcycling_all_five_paid_private_search_decline_and_reveal"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "A.I.M. Synthoids",
+      "definition": "src/card_definitions/msh/a_i_m_synthoids.rs",
+      "definition_sha256": "3e9d22a73352348fe49ebf40b60fde859352cfb423977e456b156a6d83951b95",
+      "oracle_id": "10916f33-aaa6-43a1-9835-b60fd061161f",
+      "facts_sha256": "31ed7557b297aa7e02625ff14bf1b11d6d3e9d4f27409fcfae11badcc421fabe",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AIMSynthoids.java",
+          "sha256": "cd2fbdde4601e97540c1d6ddf23eac879ede3ab4f48177a3471c42dc9b7d456b",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "A.I.M. Synthoids",
+          "paragraph": 1,
+          "oracle": "When this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_private_scry_surveil_order_and_public_graveyard"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Agent Phil Coulson",
+      "definition": "src/card_definitions/msh/agent_phil_coulson.rs",
+      "definition_sha256": "dd83e34564389f58b1f4f705919ccd5a5f5f567808041c753e8472f6b98fc190",
+      "oracle_id": "dae20bcd-dc24-4f9d-9400-a6f013b49f14",
+      "facts_sha256": "b00a1f3fb8fe722a2bb275f784b76821fda5224731ac183edd8b46c9bc9a1776",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AgentPhilCoulson.java",
+          "sha256": "fe9f89e05f7d535ebed1ca2128b261ed737749fb3beb5cde92d75cd6efbe464a",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Agent Phil Coulson",
+          "paragraph": 1,
+          "oracle": "Vigilance",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_coulson_other_own_heroes_counter_replacement_and_vigilant_attack"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Agent Phil Coulson",
+          "paragraph": 2,
+          "oracle": "{T}: Put a +1/+1 counter on each other Hero you control.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_coulson_other_own_heroes_counter_replacement_and_vigilant_attack"
+          ],
+          "status": "passing creature Hero/controller/replacement scenarios; noncreature Kindred-Hero semantics remain latent and pending"
+        }
+      ],
+      "whole_card_acceptance": "pending latent noncreature Hero permanent semantics; creature-only reachable behavior has passing meaningful scenarios"
+    },
+    {
+      "name": "Agent of Atlas",
+      "definition": "src/card_definitions/msh/agent_of_atlas.rs",
+      "definition_sha256": "4b17c48cca7b63824f9193aa92eb2f6846de8efcb71034b8d890e31fb8ecf9e9",
+      "oracle_id": "cd403866-bef1-413a-85e2-c86e295b3589",
+      "facts_sha256": "9fecf1b6bdde841e63903d25fbf1dec327d196db4cbc7437189a4c04ccbc975b",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AgentOfAtlas.java",
+          "sha256": "5bba369cf320ff12ed07f08abff53d717330e0f31c175105bf01f597f8982ce8",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Agent of Atlas",
+          "paragraph": 1,
+          "oracle": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_prowess_noncreature_cast_only_twice_for_thor_and_cleanup"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Agents of HYDRA",
+      "definition": "src/card_definitions/msh/agents_of_hydra.rs",
+      "definition_sha256": "595551ae07e7fb1290d5fe303066e816e5729803311ba125f16e766ddcb535be",
+      "oracle_id": "31816924-1430-4581-86e8-325e2ca16217",
+      "facts_sha256": "03b42bf378498227822b2f8dfa23ac1a5a6a4b6c9498b7332b41735d153707e2",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AgentsOfHYDRA.java",
+          "sha256": "b97d4365cfcc369adf84cc636530759d45167dca3470182d7c1aa6f60434c14f",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Agents of HYDRA",
+          "paragraph": 1,
+          "oracle": "When this creature dies, create a 2/1 black Villain creature token with menace. (It can't be blocked except by two or more creatures.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_and_death_tokens_exact_recipe_replacements_and_capture",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_menace_double_strike_lifelink_trample_and_deathtouch_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Asgardian Citadel",
+      "definition": "src/card_definitions/msh/asgardian_citadel.rs",
+      "definition_sha256": "bf5702e450697ed8ee159fa4bbcfffac8211d14192cb052732f9639b7ee2283d",
+      "oracle_id": "e3614df6-ce84-4180-ade1-a1751e8e3c9a",
+      "facts_sha256": "fbe041874ba1dbda4b7388e481ee2c77d306c39b274f6cc67fbcaa8c14140ba8",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AsgardianCitadel.java",
+          "sha256": "2feb1fef36e6e46cef70c86334925a828a0d4c5f89d582fb4ebefde92c932e5d",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Asgardian Citadel",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Asgardian Citadel",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Asgardian Citadel",
+          "paragraph": 3,
+          "oracle": "{T}: Add {R} or {W}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Atlantean Cavalry",
+      "definition": "src/card_definitions/msh/atlantean_cavalry.rs",
+      "definition_sha256": "51401d7242f402b9afbd2a2efd97116e02e85dd3ac2a8c17021a4ba8e8210240",
+      "oracle_id": "e929b730-9aa2-49e1-9a65-50afc0fbe3e0",
+      "facts_sha256": "f62d9af93a54e986ad0caf6f3e4d6328938857970f9de2f503785f189fdebe3c",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AtlanteanCavalry.java",
+          "sha256": "50c9d3ef8be1bc88219874655bd4a138890d8735e6fe49467370d05e9b3c1de3",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Atlantean Cavalry",
+          "paragraph": 1,
+          "oracle": "Vigilance",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_vigilance_exact_cavalry_guard_and_hero_tokens_attack_untapped"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Atlantean Cavalry",
+          "paragraph": 2,
+          "oracle": "Whenever you draw your second card each turn, put a +1/+1 counter on this creature.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_second_draw_observers_once_per_turn_separate_from_life_gain"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Avengers Hangar",
+      "definition": "src/card_definitions/msh/avengers_hangar.rs",
+      "definition_sha256": "1e7453677b2efb9b4b3aefbed9f6ee04aefe66e6dd835f684c5308969a1d01e5",
+      "oracle_id": "10fc2009-4212-47c6-8a97-ab0f45c1f91b",
+      "facts_sha256": "7cf3e79f30b9403869ed7fd62ae5c63bbae0506b96fd62da76c7ecc5ce4eb008",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AvengersHangar.java",
+          "sha256": "9c5a418d0f303cbb477655900f9808a8a81d4e31cadc743d2959acbbef5fe95d",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Avengers Hangar",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Avengers Hangar",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Avengers Hangar",
+          "paragraph": 3,
+          "oracle": "{T}: Add {W} or {U}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Birnin Zana Plaza",
+      "definition": "src/card_definitions/msh/birnin_zana_plaza.rs",
+      "definition_sha256": "e6d5dcfa0caddf789968b780fdb2c07f26b930f7d60abefd2d5caaf2619ad218",
+      "oracle_id": "c3172c5d-c745-4422-b651-cd414c8da11b",
+      "facts_sha256": "86e2821662413ae45f9da186529b337c26b8cf12df76d8434ac9ffebcb8b1567",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/b/BirninZanaPlaza.java",
+          "sha256": "a428c421f9047d4b9ba42deb17c3c00f889e3eb5fa0c28818271b5a5f93dbddc",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Birnin Zana Plaza",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Birnin Zana Plaza",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Birnin Zana Plaza",
+          "paragraph": 3,
+          "oracle": "{T}: Add {G} or {W}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Black Panther, Vanguard",
+      "definition": "src/card_definitions/msh/black_panther_vanguard.rs",
+      "definition_sha256": "c6015d63db2d90f4a791327376bf649a2ebac134efeed7f02682ebe71bcf3364",
+      "oracle_id": "b0bf1964-c543-4c53-9f09-0dd7c608d5c5",
+      "facts_sha256": "300163840cadc10fdc4901acd9d005233d643116aed21aec25dff0554cc31217",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/b/BlackPantherVanguard.java",
+          "sha256": "674faa2b58d333edf2be0660d0d9f4b490c75605b3ce37d8aeba702221e16a4c",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Black Panther, Vanguard",
+          "paragraph": 1,
+          "oracle": "Whenever another nontoken Hero you control enters, choose one \u2014",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_black_panther_modes_exclude_self_tokens_enemy_and_snapshot_boost"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Black Panther, Vanguard",
+          "paragraph": 2,
+          "oracle": "\u2022 Create a 1/1 white Soldier creature token.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_black_panther_modes_exclude_self_tokens_enemy_and_snapshot_boost"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Black Panther, Vanguard",
+          "paragraph": 3,
+          "oracle": "\u2022 Creatures you control get +1/+1 until end of turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_black_panther_modes_exclude_self_tokens_enemy_and_snapshot_boost"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Blazing Crescendo",
+      "definition": "src/card_definitions/fra/blazing_crescendo.rs",
+      "definition_sha256": "7c4e5b0fdb87513b365b5c92439203da5218d1448a48235d4b9481709f40c5ff",
+      "oracle_id": "6344c96a-efa5-4125-8219-d333228391cf",
+      "facts_sha256": "f077669de13212b0e8a71496885e4a4ff86937b36c16f5f32b2f139bd5925f43",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/b/BlazingCrescendo.java",
+          "sha256": "19a2021a71538f0151aafdf03aaee4ed475fa12578b22fac8afd5c652f056d11",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Blazing Crescendo",
+          "paragraph": 1,
+          "oracle": "Target creature gets +3/+1 until end of turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_simple_growth_spells_exact_target_incarnation_and_cleanup"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Blazing Crescendo",
+          "paragraph": 2,
+          "oracle": "Exile the top card of your library. Until the end of your next turn, you may play that card.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_impulse_permission_next_turn_paid_land_spell_and_exact_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Borough Backup",
+      "definition": "src/card_definitions/msh/borough_backup.rs",
+      "definition_sha256": "23f1323e959c326440098055325e25ceec339c89627cefe25e1ed0510fc3b2b1",
+      "oracle_id": "6effbf59-3933-4a77-9a6a-fd3bedf45c26",
+      "facts_sha256": "eff4b683859c6cd5154d5a85e9249b90b531512d101ecedcd16ded7ea94bc9f8",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/b/BoroughBackup.java",
+          "sha256": "8fbe3e185d89230ff3895e363f92916c8f0b8fea940ef8252a988cfd5d9ebed7",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Borough Backup",
+          "paragraph": 1,
+          "oracle": "Create two 3/2 white Hero creature tokens with vigilance.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_and_death_tokens_exact_recipe_replacements_and_capture",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_vigilance_exact_cavalry_guard_and_hero_tokens_attack_untapped"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Borough Backup",
+          "paragraph": 2,
+          "oracle": "Basic landcycling {2} ({2}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_landcycling_all_five_paid_private_search_decline_and_reveal"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Captain America's Shield",
+      "definition": "src/card_definitions/msh/captain_america_s_shield.rs",
+      "definition_sha256": "1659e4fe0ac6581a282ac7bf8c35d486f6d80dc2051d84306d57555069d419d0",
+      "oracle_id": "8255a797-ddd3-4db0-a3f5-dd8f38c3b908",
+      "facts_sha256": "e51c24e10b822db7d6911fdaf6c8710015fff6f65ca0eaf10d2f9b8183fef51a",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/c/CaptainAmericasShield.java",
+          "sha256": "ec3a977d4f46bcd862fb80530fec0112b40578ef6f08da7cfe7bd35241e187cd",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Captain America's Shield",
+          "paragraph": 1,
+          "oracle": "Indestructible",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_indestructible_equipment_survives_paid_destroy"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Captain America's Shield",
+          "paragraph": 2,
+          "oracle": "Equipped creature gets +0/+8 and has vigilance.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_shield_attack_defending_target_vigilance_and_departed_packet"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Captain America's Shield",
+          "paragraph": 3,
+          "oracle": "Whenever equipped creature attacks, tap target creature defending player controls.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_shield_attack_defending_target_vigilance_and_departed_packet"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Captain America's Shield",
+          "paragraph": 4,
+          "oracle": "Equip {2}",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Colleen Wing, Street Samurai",
+      "definition": "src/card_definitions/msh/colleen_wing_street_samurai.rs",
+      "definition_sha256": "d7784cf4ad75031483de7d0042afb3a3dea1273eda7806f2d374b1cc79214834",
+      "oracle_id": "685181dd-0124-4c76-9270-f9dd17e6a221",
+      "facts_sha256": "965eae5fcac8af21f659c1d2dcf736780f46e891abeddc4e14c719a57ae2688b",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/c/ColleenWingStreetSamurai.java",
+          "sha256": "5ae0362a0a547017a47b64858388d29b0d0ef918087cda19fbde326ebb0f8b01",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Colleen Wing, Street Samurai",
+          "paragraph": 1,
+          "oracle": "Whenever you cast a spell that targets a creature you control, put a +1/+1 counter on Colleen Wing. Scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_colleen_mockingbird_target_cast_filter_one_trigger_and_scry_privacy"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Crimson Operative",
+      "definition": "src/card_definitions/msc/crimson_operative.rs",
+      "definition_sha256": "ba27b716cc8da693a10e6ce99b90f02e4dd70083ec49af9a6de5c15f8632af9d",
+      "oracle_id": "d8863742-6c1c-415a-ad27-7def6d119c6a",
+      "facts_sha256": "5b1fbae2b99cbcac41e7c08d41c94a07e20510260afcf1fe4d7b1bc65d8d3ccb",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/c/CrimsonOperative.java",
+          "sha256": "bd4a8f16157981895084ed3f16a21476f94a248fbddaa0582ac79d71a9bbe3a2",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Crimson Operative",
+          "paragraph": 1,
+          "oracle": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_prowess_noncreature_cast_only_twice_for_thor_and_cleanup"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Crimson Operative",
+          "paragraph": 2,
+          "oracle": "When this creature enters, exile the top card of your library. Until the end of your next turn, you may play that card.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_impulse_permission_next_turn_paid_land_spell_and_exact_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Dark Deed",
+      "definition": "src/card_definitions/msh/dark_deed.rs",
+      "definition_sha256": "019a05080a17006bced91d99d42eaf1ec70e2299741b972cf3e22bed76e6738f",
+      "oracle_id": "e98cd00c-b812-4c6a-81d4-e3f94b64fc58",
+      "facts_sha256": "b6d502b570249818983b2c4436c0a7275b313b47527092259a352c8d9b720685",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/d/DarkDeed.java",
+          "sha256": "e5cdd093e6bfefaed50c6aaa9550ccfd7f6a9d847178f609e7416182ff17f005",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Dark Deed",
+          "paragraph": 1,
+          "oracle": "Target creature gets -4/-4 until end of turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_simple_growth_spells_exact_target_incarnation_and_cleanup"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Decoy Ploy",
+      "definition": "src/card_definitions/msh/decoy_ploy.rs",
+      "definition_sha256": "260871908b95292df651d84f87503146ee9c900255e9986c52f814957eafa258",
+      "oracle_id": "035cddbc-39c9-42af-9e26-c88419b43b49",
+      "facts_sha256": "febe87adb0c44fa6bde6d2af158c02735d156acd694562d6c43473248b1098e2",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/d/DecoyPloy.java",
+          "sha256": "a39aa84673c174bd0ebfc308a264d9f6ec594be1e95d857ca201f0b36cf84e67",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Decoy Ploy",
+          "paragraph": 1,
+          "oracle": "Choose one or both \u2014",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_decoy_all_modes_partial_targets_and_dual_typed_same_card",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_decoy_one_dual_hero_villain_card_can_fill_both_groups"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Decoy Ploy",
+          "paragraph": 2,
+          "oracle": "\u2022 Return target Villain card from your graveyard to your hand.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_decoy_all_modes_partial_targets_and_dual_typed_same_card",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_decoy_one_dual_hero_villain_card_can_fill_both_groups"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Decoy Ploy",
+          "paragraph": 3,
+          "oracle": "\u2022 Return target Hero card from your graveyard to your hand.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_decoy_all_modes_partial_targets_and_dual_typed_same_card",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_decoy_one_dual_hero_villain_card_can_fill_both_groups"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Dependable Quinjet",
+      "definition": "src/card_definitions/msh/dependable_quinjet.rs",
+      "definition_sha256": "9026fe4af1f7687a1ef64434d9d8839c0c7be2b6ff95d08f619b6cacbe2dad89",
+      "oracle_id": "60105eb8-bdca-44b9-a970-68a7615526e8",
+      "facts_sha256": "0316bc45bb5ad5e0591e4ef670cd74e6cfe091805b23f33d03cc4fd1681d212a",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/d/DependableQuinjet.java",
+          "sha256": "3c13979fa11266a6c0a2dab9dcd14206dbbf861a2105de8d170abefdf14f30f4",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Dependable Quinjet",
+          "paragraph": 1,
+          "oracle": "Flying",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_vehicles_crew_exact_power_sick_crewers_mana_and_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Dependable Quinjet",
+          "paragraph": 2,
+          "oracle": "{T}: Add one mana of any color.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_vehicles_crew_exact_power_sick_crewers_mana_and_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Dependable Quinjet",
+          "paragraph": 3,
+          "oracle": "Crew 4 (Tap any number of creatures you control with total power 4 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_vehicles_crew_exact_power_sick_crewers_mana_and_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Depower",
+      "definition": "src/card_definitions/msh/depower.rs",
+      "definition_sha256": "01ae335324ff76f69be2fe0e400b9ab552023ca65301cd30a837138a4f4da08b",
+      "oracle_id": "33f89437-885b-4850-88b7-239f5dfcc8b1",
+      "facts_sha256": "9272323f86c9e6e9ef8325e9d74bb8b51b2dcff4cfd0a177e57d01ff5c14a578",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/d/Depower.java",
+          "sha256": "9410afdd653e1ab28083157a58a0b9746cdb647e823eafe0401d97673f2738a6",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Depower",
+          "paragraph": 1,
+          "oracle": "This spell costs {2} less to cast if it targets an attacking creature.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_depower_attack_discount_stale_target_no_draw_and_cleanup"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Depower",
+          "paragraph": 2,
+          "oracle": "Target creature gets -4/-0 until end of turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_depower_attack_discount_stale_target_no_draw_and_cleanup"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Depower",
+          "paragraph": 3,
+          "oracle": "Draw a card.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_depower_attack_discount_stale_target_no_draw_and_cleanup"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Epic Fight",
+      "definition": "src/card_definitions/msh/epic_fight.rs",
+      "definition_sha256": "d6e72a43aa081d379d418bd14a3f22bd898a42f71ddb1b0ff3533a3d7bd51489",
+      "oracle_id": "4bdfc580-de51-445b-b170-8c6832e44704",
+      "facts_sha256": "c8ba003afb90015ddd66d8067cdc461ad5d668dd564813e8e1bfe2b5a4fe6321",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/e/EpicFight.java",
+          "sha256": "ff40c0f2a62dd852a327238d0d7b41e5b681074ce1ffb4996a01402c16a0610e",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Epic Fight",
+          "paragraph": 1,
+          "oracle": "Choose one or both \u2014",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_epic_fight_each_mode_doubles_before_fighting_and_cleanup",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_epic_fight_partial_illegal_relationship_keeps_doubling_only"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Epic Fight",
+          "paragraph": 2,
+          "oracle": "\u2022 Double target creature's power and toughness until end of turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_epic_fight_each_mode_doubles_before_fighting_and_cleanup",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_epic_fight_partial_illegal_relationship_keeps_doubling_only"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Epic Fight",
+          "paragraph": 3,
+          "oracle": "\u2022 Target creature you control fights target creature an opponent controls.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_epic_fight_each_mode_doubles_before_fighting_and_cleanup",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_epic_fight_partial_illegal_relationship_keeps_doubling_only"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Falcon's Wing Harness",
+      "definition": "src/card_definitions/msh/falcon_s_wing_harness.rs",
+      "definition_sha256": "8cfca9bd85faf3bcf143aaa661b92c63a2c53197de57feb16bfa49161802a10d",
+      "oracle_id": "e69db5f0-beed-48e8-bc25-768b1e8be5ea",
+      "facts_sha256": "500ed79a614a0d8f6e70054ff3e40c84b1875e3e7c39b1a246b7ab9ac2e826bb",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/f/FalconsWingHarness.java",
+          "sha256": "404640665b29afc421f201ca783e909d90cd96c9c6af1da7136d6fa233198fc1",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Falcon's Wing Harness",
+          "paragraph": 1,
+          "oracle": "When this Equipment enters, attach it to target creature you control.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Falcon's Wing Harness",
+          "paragraph": 2,
+          "oracle": "Equipped creature gets +1/+1 and has flying and ward {1}. (Whenever equipped creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_attached_ward_paid_or_declined_by_opponent_after_grantor_departure"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Falcon's Wing Harness",
+          "paragraph": 3,
+          "oracle": "Equip {2}{U} ({2}{U}: Attach to target creature you control. Equip only as a sorcery.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Fisk Tower",
+      "definition": "src/card_definitions/msh/fisk_tower.rs",
+      "definition_sha256": "58efcf13e3b21818321bca2ecf68fe424fbea94fe5dd66cdfcd05312460b5853",
+      "oracle_id": "5554db95-9676-4c24-b82a-8173513d7927",
+      "facts_sha256": "28e57da13bd36ef7a42625a611b97e418633e9a7e961638b32dcc5248c1381cb",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/f/FiskTower.java",
+          "sha256": "a43ce1b273fcee94cf6f235429bdd8e33872bdd6f3921624679c923ecf633478",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Fisk Tower",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Fisk Tower",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Fisk Tower",
+          "paragraph": 3,
+          "oracle": "{T}: Add {W} or {B}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Forest",
+      "definition": "src/card_definitions/fra/forest.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+      "direct_java": [
+        {
+          "path": "Mage/src/main/java/mage/cards/basiclands/Forest.java",
+          "sha256": "77b52732425a0d2b9a8f53d2fff7014dab7897b56b23b69792872d8c95955716",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Forest",
+          "paragraph": 1,
+          "oracle": "({T}: Add {G}.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_basics_both_seats_play_tap_payment_retap_and_land_limit"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Frozen in Ice",
+      "definition": "src/card_definitions/msh/frozen_in_ice.rs",
+      "definition_sha256": "bebbc3f13506c28d2a1224beff1aa2a1010509c70f9e906e5d05366136b078b5",
+      "oracle_id": "82fa14d8-5019-4e1b-a86c-923d9292b87a",
+      "facts_sha256": "49e47f3903cca8b2c52ab0b11c62b3ca332d42539781fc12f2ef17c55fbad7c4",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/f/FrozenInIce.java",
+          "sha256": "fea8383c8dbaaa9192f10511e8cf2a5dcde43f29a66904099932de63f09d52d4",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Frozen in Ice",
+          "paragraph": 1,
+          "oracle": "Enchant creature",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_aura_speed_flash_haste_first_strike_expiry_and_frozen_all_untaps"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Frozen in Ice",
+          "paragraph": 2,
+          "oracle": "When this Aura enters, tap enchanted creature.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_aura_speed_flash_haste_first_strike_expiry_and_frozen_all_untaps"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Frozen in Ice",
+          "paragraph": 3,
+          "oracle": "Enchanted creature loses all abilities and can't become untapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_aura_speed_flash_haste_first_strike_expiry_and_frozen_all_untaps"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Futurist Forge",
+      "definition": "src/card_definitions/msh/futurist_forge.rs",
+      "definition_sha256": "6af8b9bada25e7508baa2e7f35ee19944503ddf54e7db0a41853723cce30f055",
+      "oracle_id": "0e5f97b5-bb8c-4688-a141-5db4d4eeccf0",
+      "facts_sha256": "1d1ea51b0eefec2313bc3d3f3fc9797998e7ec99c184e1fc836c661f0fe257e3",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/f/FuturistForge.java",
+          "sha256": "817e68385a9ea05ca49eeca65a25fb6553b6886b6277579859f557a8a07652d7",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Futurist Forge",
+          "paragraph": 1,
+          "oracle": "When this artifact enters, draw a card.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_futurist_entry_and_paid_sacrifice_draw_capture_and_privacy"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Futurist Forge",
+          "paragraph": 2,
+          "oracle": "{3}{U}, Sacrifice this artifact: Draw two cards.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_futurist_entry_and_paid_sacrifice_draw_capture_and_privacy"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Giant Growth",
+      "definition": "src/card_definitions/msh/giant_growth.rs",
+      "definition_sha256": "1fd2003c8625c8836bf0952df8155edae58a4f0101a7dc196067ba72ff2dbc63",
+      "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
+      "facts_sha256": "ff9795f0e6963efdfa3dcf8a07881daf762de6477d95ad61e951c28a575043ce",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/g/GiantGrowth.java",
+          "sha256": "494e3519451e0ebe1e6a20ff1fef0a4ac6fb7a70af9fad93a8d5c2638bc9f7a7",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Giant Growth",
+          "paragraph": 1,
+          "oracle": "Target creature gets +3/+3 until end of turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_simple_growth_spells_exact_target_incarnation_and_cleanup"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Giant-Sized Flying Ant",
+      "definition": "src/card_definitions/msh/giant_sized_flying_ant.rs",
+      "definition_sha256": "1b0703319b77dfc38119ffd3167a4a486d88dbb4735b9f8136e3ae87fd261c57",
+      "oracle_id": "233e3b4b-faaf-451d-8a2e-e9f5a6ced671",
+      "facts_sha256": "559815180565d4945a022d074ccbc550f3538b27a80044d44344dfe4bd97b1f4",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/g/GiantSizedFlyingAnt.java",
+          "sha256": "65e131ec0f5e421d3228feec06e3b9029380562ad35028766f13c8bf056bce2c",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Giant-Sized Flying Ant",
+          "paragraph": 1,
+          "oracle": "Flash",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_flying_ant_flash_modes_nonland_target_and_exact_incarnation"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Giant-Sized Flying Ant",
+          "paragraph": 2,
+          "oracle": "Flying",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_flying_ant_flash_modes_nonland_target_and_exact_incarnation",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_flying_vigilance_reach_actual_attack_and_block_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Giant-Sized Flying Ant",
+          "paragraph": 3,
+          "oracle": "When this creature enters, choose one \u2014",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_flying_ant_flash_modes_nonland_target_and_exact_incarnation"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Giant-Sized Flying Ant",
+          "paragraph": 4,
+          "oracle": "\u2022 Tap target nonland permanent.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_flying_ant_flash_modes_nonland_target_and_exact_incarnation"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Giant-Sized Flying Ant",
+          "paragraph": 5,
+          "oracle": "\u2022 Untap target nonland permanent.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_flying_ant_flash_modes_nonland_target_and_exact_incarnation"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Guerrilla Gorilla",
+      "definition": "src/card_definitions/msh/guerrilla_gorilla.rs",
+      "definition_sha256": "778d01a2b2c505e30bfb8c242fcbc37ee0fdbdd0672e4f4202fe4134741d3a77",
+      "oracle_id": "6cb65b68-91b2-45ba-867b-3b31d6dd5643",
+      "facts_sha256": "e8a7624b67e5ec65417a8d4c8f623b93c887e87cb5bef93853db31a439371150",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/g/GuerrillaGorilla.java",
+          "sha256": "35d7649a8064bf2d96cfb1b741bc10c7e8d7e00bbfb39d6ba6c08055f4b872cb",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Guerrilla Gorilla",
+          "paragraph": 1,
+          "oracle": "Reach",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_flying_vigilance_reach_actual_attack_and_block_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Guerrilla Gorilla",
+          "paragraph": 2,
+          "oracle": "Sacrifice this creature: Destroy target noncreature artifact or noncreature enchantment. Activate only as a sorcery.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_gorilla_sorcery_sacrifice_rejects_creature_artifacts_and_stale_target"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "H.E.R.B.I.E. Scout Unit",
+      "definition": "src/card_definitions/msh/h_e_r_b_i_e_scout_unit.rs",
+      "definition_sha256": "7d17ecf4dfd6f594f979284d7832ee8b4414959402c6eeddb0fb037ad7565bbe",
+      "oracle_id": "393ff8c5-4da0-4290-b498-222cc0244026",
+      "facts_sha256": "3eada033cd75c1c296a7bebc85c2715fc943671289410d519f3548fd9093f402",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/h/HERBIEScoutUnit.java",
+          "sha256": "e651ff8a2e27afa894f74f559533178a620512f11b0b6405a9d9172392017199",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "H.E.R.B.I.E. Scout Unit",
+          "paragraph": 1,
+          "oracle": "Flying",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_flying_vigilance_reach_actual_attack_and_block_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "H.E.R.B.I.E. Scout Unit",
+          "paragraph": 2,
+          "oracle": "When this creature enters, draw a card, then you may put a land card from your hand onto the battlefield tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_herbie_draw_then_private_optional_tapped_land_ignores_land_limit"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "HYDRA Assault Robot",
+      "definition": "src/card_definitions/msh/hydra_assault_robot.rs",
+      "definition_sha256": "3902ec1877b3028fcc34249b45080f7761f6bacf7cea5f00f21447e5261ddb31",
+      "oracle_id": "a2558476-5506-4a09-93fc-b8ab33c98985",
+      "facts_sha256": "ce537e25b56a28f071b7b707dfde99946f00c168b38b3dc4c938c55ae9c988cc",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/h/HYDRAAssaultRobot.java",
+          "sha256": "75102cba83828b5048c8b8a33b0b8a8d2b6ab563f117ec743acf2b95a5968654",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "HYDRA Assault Robot",
+          "paragraph": 1,
+          "oracle": "Whenever another Villain and/or artifact you control enters, this creature deals 1 damage to target opponent.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_artifact_entry_counts_once_per_object_or_once_per_turn",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_hydra_or_predicate_both_types_once_own_villain_only_and_enemy_excluded"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Hell's Kitchen",
+      "definition": "src/card_definitions/msh/hell_s_kitchen.rs",
+      "definition_sha256": "cf6de2f70d5aaacb3124fb9118b919588103bfb84c80acba78accf14e5a40ab6",
+      "oracle_id": "1337d89e-a883-4568-a14f-9ca3305cc3df",
+      "facts_sha256": "91cf4aef31379cf4419f3e08941227f6dde2bf19c2a84d85872652b1c81aeda7",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/h/HellsKitchen.java",
+          "sha256": "e9ed3fedcd726c0714323a48de094e469b0b9d2e79b7025c00186514392d14c8",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Hell's Kitchen",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Hell's Kitchen",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Hell's Kitchen",
+          "paragraph": 3,
+          "oracle": "{T}: Add {B} or {R}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Hero in Training",
+      "definition": "src/card_definitions/msc/hero_in_training.rs",
+      "definition_sha256": "aaf13f3932e0e6f10046ad2c32ec3c214bf7c5109d86ff5f93502e239ca53b0b",
+      "oracle_id": "87f1a840-021c-4699-a2c4-f2926daf98eb",
+      "facts_sha256": "80dc577ea9ef1016200c54114d1f1a28f3e9580bee08c20d82e3fd4332ed0774",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/h/HeroInTraining.java",
+          "sha256": "a8210d8f6815c33cda79c3ef8dc1b35d2576e46a7a16f9a2033e3ddb249f1be1",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Hero in Training",
+          "paragraph": 1,
+          "oracle": "When this creature enters, draw a card. If you control another Hero, you gain 2 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_hero_in_training_checks_other_hero_at_resolution"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Hour of Defeat",
+      "definition": "src/card_definitions/msh/hour_of_defeat.rs",
+      "definition_sha256": "bdfd552b4f77e62877316d2aeba180ed05100da1fdaa2e23a54179cfbcca3353",
+      "oracle_id": "2774fcb7-8988-4a18-b5ec-7534dd8b2e05",
+      "facts_sha256": "34f5eb80c9d7197334f4df8a554a9291018d89b90e31486d784fac17099cd5a5",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/h/HourOfDefeat.java",
+          "sha256": "d93eae1005c9f969acda6b0c5efc33c34538494d918223bffdc0475a118daa43",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Hour of Defeat",
+          "paragraph": 1,
+          "oracle": "Destroy target creature. Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_private_scry_surveil_order_and_public_graveyard"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Island",
+      "definition": "src/card_definitions/fra/island.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "facts_sha256": "9663433a19f0b70520d2598600be1ddac39dd97fd02f80811dcce06dd0cbaf26",
+      "direct_java": [
+        {
+          "path": "Mage/src/main/java/mage/cards/basiclands/Island.java",
+          "sha256": "5a9765a9f49e22aa89884834780c0cd7c8e2cc8696daab1d841fd13f40c58c96",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Island",
+          "paragraph": 1,
+          "oracle": "({T}: Add {U}.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_basics_both_seats_play_tap_payment_retap_and_land_limit"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Kang, Temporal Tyrant",
+      "definition": "src/card_definitions/msh/kang_temporal_tyrant.rs",
+      "definition_sha256": "01cdf0b5a9f8aed88f8ad095fa760413f076fa750c60b1d8a5949534babb0aa5",
+      "oracle_id": "b43350a8-fc4d-41ed-becd-f0277512bb5f",
+      "facts_sha256": "6e839f2f152a5cf401bc8aa007a8acd1360c0aba8bd24962a3a16588dd0c1e4b",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/k/KangTemporalTyrant.java",
+          "sha256": "1d084c322787c98021e37675dfdd048ab8431cfb074582a4d0ba060bc4669747",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Kang, Temporal Tyrant",
+          "paragraph": 1,
+          "oracle": "Whenever Kang attacks, he connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_kang_attack_connive_second_draw_drain_both_seats"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Kang, Temporal Tyrant",
+          "paragraph": 2,
+          "oracle": "Whenever you draw your second card each turn, each opponent loses 1 life and you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_second_draw_observers_once_per_turn_separate_from_life_gain",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_kang_attack_connive_second_draw_drain_both_seats"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Kingpin's Enforcers",
+      "definition": "src/card_definitions/msh/kingpin_s_enforcers.rs",
+      "definition_sha256": "6e81a4a4367b54085c366e3d8ba5c9a1efc5ba421f6bc72d760fa49848a921c0",
+      "oracle_id": "342df67f-44d8-4b0a-b1d7-4241966d0598",
+      "facts_sha256": "eb564cd1a42e8bb22beeb5bbda89e814df307d78b1dc25ffe48d8cd353d2cbbe",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/k/KingpinsEnforcers.java",
+          "sha256": "2e9f5e7e3e0aa51d47787564e3721ae3ab58fa7be5c4c1ea25cca75ee29973bb",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Kingpin's Enforcers",
+          "paragraph": 1,
+          "oracle": "Lifelink",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_menace_double_strike_lifelink_trample_and_deathtouch_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Kingpin's Enforcers",
+          "paragraph": 2,
+          "oracle": "{2}{B}, Sacrifice an artifact or creature: Draw a card.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_kingpin_sacrifice_artifact_creature_or_self_cost_then_private_draw"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Kree Commandos",
+      "definition": "src/card_definitions/msh/kree_commandos.rs",
+      "definition_sha256": "8483d0d980b79c7a361d58c8c1cd2894e037bbe043cadc5c8bbf5138ee9b3227",
+      "oracle_id": "09eb988a-e2eb-42e1-a786-01be63d2263f",
+      "facts_sha256": "306a96dcb4fa8325f808cd16b01b21bf5bd710ee59933e300ad10bac708a5c4a",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/k/KreeCommandos.java",
+          "sha256": "84c6b4c3fb4f50ae583bfd18caf6d75be6cc729961a8772608758bdb8f313a79",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Kree Commandos",
+          "paragraph": 1,
+          "oracle": "Flying, vigilance",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_flying_vigilance_reach_actual_attack_and_block_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Kree Commandos",
+          "paragraph": 2,
+          "oracle": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_prowess_noncreature_cast_only_twice_for_thor_and_cleanup"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Kree Sentinel",
+      "definition": "src/card_definitions/msh/kree_sentinel.rs",
+      "definition_sha256": "28b5353f235041bc8e3a07455263fcaa803b6c880db6f297815d0b44c607a512",
+      "oracle_id": "3c2b9bb2-8201-47e8-84d5-f3518cac03cb",
+      "facts_sha256": "71752f0fe7fe0a00f2c045ad7aa03cde0ee9b4e1099da060c7ca6f1309638851",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/k/KreeSentinel.java",
+          "sha256": "5b2eaa4daa93f2f124918cfc92149dade560b1947a4d624c953deb532d8dfbb1",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Kree Sentinel",
+          "paragraph": 1,
+          "oracle": "Reach",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_flying_vigilance_reach_actual_attack_and_block_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Kree Sentinel",
+          "paragraph": 2,
+          "oracle": "Basic landcycling {2} ({2}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_landcycling_all_five_paid_private_search_decline_and_reveal"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Lightning Strike",
+      "definition": "src/card_definitions/msh/lightning_strike.rs",
+      "definition_sha256": "315f59c45206a622e9250e4dc6b18025ed50c25cf48d1a8ae33959b4965e4b0f",
+      "oracle_id": "f34b9bc4-7bfe-47fd-ba23-4eeeb46026eb",
+      "facts_sha256": "0f71624f371316e9bf2b90c154f73cc9eb1c9ae61cd5b90b49c77bc97b7285a3",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/l/LightningStrike.java",
+          "sha256": "a7f63ee848cb2838b01010b9b2abac717c49bce25a747dd38438fcf2fb43f427",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Lightning Strike",
+          "paragraph": 1,
+          "oracle": "Lightning Strike deals 3 damage to any target.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_lightning_any_creature_or_player_and_stale_target",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_lightning_can_target_opposing_planeswalker_and_not_land"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Los Diablos Missile Base",
+      "definition": "src/card_definitions/msh/los_diablos_missile_base.rs",
+      "definition_sha256": "c92d628f3fa807714995015f3bad7ece6c9f5cadd33374232609a801fe068bce",
+      "oracle_id": "4b17048f-8c7f-4e29-8f56-16db4c2106e6",
+      "facts_sha256": "0d12f3b19696e721d3b7490b14d8052b3c542d8b2661679fdd0aed94e7639f5c",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/l/LosDiablosMissileBase.java",
+          "sha256": "2a2ef37b8e225a5d5993ee869dd1efdb81461aa7df81b9425eec0f60f1b2eb0b",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Los Diablos Missile Base",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Los Diablos Missile Base",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Los Diablos Missile Base",
+          "paragraph": 3,
+          "oracle": "{T}: Add {R} or {G}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Machinesmith Automaton",
+      "definition": "src/card_definitions/msh/machinesmith_automaton.rs",
+      "definition_sha256": "066ac6f8587399d0fdc6328cfaa22bf99385db117c5ea5dc9e50a1cdb60b7884",
+      "oracle_id": "945e8443-9647-4eab-b091-ee8e7bc347f5",
+      "facts_sha256": "502ca04db40dd6593ce095e00fe4bc1f8b1927d31f995c4c5dce1e50c8e4caa7",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MachinesmithAutomaton.java",
+          "sha256": "803a6a6c9a7a9d58ad042ce9a61fd65e740f40eca3abd04fe095f2743ce46ec6",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Machinesmith Automaton",
+          "paragraph": 1,
+          "oracle": "Trample",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_machinesmith_and_thing_intrinsic_trample_with_blocker_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Machinesmith Automaton",
+          "paragraph": 2,
+          "oracle": "Whenever another artifact you control enters, put a +1/+1 counter on this creature.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_artifact_entry_counts_once_per_object_or_once_per_turn"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Madame Hydra",
+      "definition": "src/card_definitions/msh/madame_hydra.rs",
+      "definition_sha256": "0f4261d2467e0284745443b63adc6797b068bf64798d9b6232ab830b24ffdd47",
+      "oracle_id": "d812c8e3-a475-4ad2-a93f-7208ad873676",
+      "facts_sha256": "2259c00b78b2cd0814c12a79ac487abb87c73bcfbb011cc84073475b45fbcc9c",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MadameHydra.java",
+          "sha256": "a2c30cd8cf1550653b0a387ad6090aa1b4c5adc29d68d1635bb71e05bd900627",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Madame Hydra",
+          "paragraph": 1,
+          "oracle": "Whenever you cast a Villain spell, create a 2/1 black Villain creature token with menace. (It can't be blocked except by two or more creatures.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_madame_hydra_cast_villain_yellowjacket_entry_distinct_and_expire",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_and_death_tokens_exact_recipe_replacements_and_capture",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_menace_double_strike_lifelink_trample_and_deathtouch_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Madame Masque",
+      "definition": "src/card_definitions/msh/madame_masque.rs",
+      "definition_sha256": "770bda7c518720c1aa15a961a41fc499b464ca34ec3a31fbcfe110bd5b275420",
+      "oracle_id": "b5b0e85f-6651-4667-829c-2253ff8b130d",
+      "facts_sha256": "9c725f20079d191e8cb40ac7d02a8d71ceb959b5f1320bcc77044e7bd0325dd3",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MadameMasque.java",
+          "sha256": "6b41349a79f3209078e606b09aaa396685d91e57e688df48f8955405c52e7497",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Madame Masque",
+          "paragraph": 1,
+          "oracle": "When Madame Masque enters, she connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_connive_three_sources_land_nonland_and_departed_controller"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Madame Masque",
+          "paragraph": 2,
+          "oracle": "Whenever you draw your second card each turn, create a 2/1 black Villain creature token with menace. (It can't be blocked except by two or more creatures.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_second_draw_observers_once_per_turn_separate_from_life_gain",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_and_death_tokens_exact_recipe_replacements_and_capture",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_menace_double_strike_lifelink_trample_and_deathtouch_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Misty Knight, Hero for Hire",
+      "definition": "src/card_definitions/msh/misty_knight_hero_for_hire.rs",
+      "definition_sha256": "07c7198d6208f887b2efea54cba7cdd6165dcb50798bb222cdcd532a17d74f71",
+      "oracle_id": "5b090ba3-0ecb-4585-b5b7-9d6028c32487",
+      "facts_sha256": "04cf64c8d5f7dc572e21876baf1651484cdb83e4d48254af2eaf3d1e5db27697",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MistyKnightHeroForHire.java",
+          "sha256": "503a2f5ac39156d2bd6582c523287a18b2ec174860438471eabe9fca142e21ca",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Misty Knight, Hero for Hire",
+          "paragraph": 1,
+          "oracle": "{2}, {T}, Discard a card: Draw a card for each card you've discarded this turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_misty_discard_cost_counts_itself_and_prior_discards_and_hidden_draw"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Mockingbird, Ace Agent",
+      "definition": "src/card_definitions/msh/mockingbird_ace_agent.rs",
+      "definition_sha256": "5a6832632c62015575e0ccca9366c93cbb99a95f1e13b4a9282b4084ab6bd0f1",
+      "oracle_id": "1fd00656-83ba-4feb-b089-224007936b99",
+      "facts_sha256": "87a5aa1c2b72cb0743e2fd4f42f1f0ed17a17118365958d8a09ee86c33f1d92a",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MockingbirdAceAgent.java",
+          "sha256": "dfafa931ac01d6533fa453a3979421ba96619528f4c510daed9839c10aa7a882",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Mockingbird, Ace Agent",
+          "paragraph": 1,
+          "oracle": "Double strike",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_menace_double_strike_lifelink_trample_and_deathtouch_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Mockingbird, Ace Agent",
+          "paragraph": 2,
+          "oracle": "Whenever you cast a spell that targets a creature you control, put a +1/+1 counter on Mockingbird.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_colleen_mockingbird_target_cast_filter_one_trigger_and_scry_privacy"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Moon Girl and Devil Dinosaur",
+      "definition": "src/card_definitions/msh/moon_girl_and_devil_dinosaur.rs",
+      "definition_sha256": "ad1e6d60e217a890b599200e06b334d60caaa2d4dab2e5f4edf153ef80abbac2",
+      "oracle_id": "bfe0818b-ae13-4174-85c8-24b895d28df0",
+      "facts_sha256": "cbf66e06a7f0df1f7fc08ee5480c32d41ae48bb2aa131116d3721333f544f96c",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MoonGirlAndDevilDinosaur.java",
+          "sha256": "c82bedcba3e270daea0dece835028b1ddebbb68e8507df5cb1e40b8513e6a687",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Moon Girl and Devil Dinosaur",
+          "paragraph": 1,
+          "oracle": "Whenever you draw your second card each turn, until end of turn, Moon Girl and Devil Dinosaur's base power and toughness become 6/6 and they gain trample.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_second_draw_observers_once_per_turn_separate_from_life_gain"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Moon Girl and Devil Dinosaur",
+          "paragraph": 2,
+          "oracle": "Whenever an artifact you control enters, draw a card. This ability triggers only once each turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_artifact_entry_counts_once_per_object_or_once_per_turn"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Mountain",
+      "definition": "src/card_definitions/fra/mountain.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+      "direct_java": [
+        {
+          "path": "Mage/src/main/java/mage/cards/basiclands/Mountain.java",
+          "sha256": "be959d0f5a3db621a31d32104ae445a033cd10907a237a4f8630b3457df13a73",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Mountain",
+          "paragraph": 1,
+          "oracle": "({T}: Add {R}.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_basics_both_seats_play_tap_payment_retap_and_land_limit"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Okoye, Dora Milaje Leader",
+      "definition": "src/card_definitions/msh/okoye_dora_milaje_leader.rs",
+      "definition_sha256": "1fa1e6f0265590c84ac0e2aa95225ec21a374551c9a0819462e2adaf33e397ef",
+      "oracle_id": "6d397d26-7e52-47b2-9880-2c10e90cfba4",
+      "facts_sha256": "7161dd0b85f8bc3cd2c8d39a1726137a549eb74615f3bd8377de33dc100629f2",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/o/OkoyeDoraMilajeLeader.java",
+          "sha256": "f02c2e43fb2e193cc195b23be2b757623a9c62898d5c484d8b728c7c13e4430c",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Okoye, Dora Milaje Leader",
+          "paragraph": 1,
+          "oracle": "When Okoye enters, create two 1/1 white Soldier creature tokens.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_and_death_tokens_exact_recipe_replacements_and_capture"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Okoye, Dora Milaje Leader",
+          "paragraph": 2,
+          "oracle": "Attacking creature tokens you control have first strike.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_okoye_attacking_tokens_first_strike_combat_and_source_departure"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Patriot, Shield Wielder",
+      "definition": "src/card_definitions/msh/patriot_shield_wielder.rs",
+      "definition_sha256": "b6a490e182127109b3c566e0cd723f7eda282863d1b89fd3e92e9bb2fc039913",
+      "oracle_id": "1df7a09f-fbc8-4c2a-a903-bab9e680eda7",
+      "facts_sha256": "5ebfa6ac56ccf8b40a801eabeb9c3fda4351a40e5ff2e2f5adac30e697fe5379",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/p/PatriotShieldWielder.java",
+          "sha256": "8c6273231d8e8e6deaa9c13296d2f130e5256499afdca64842281b8c764d0e08",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Patriot, Shield Wielder",
+          "paragraph": 1,
+          "oracle": "{2}, {T}: Another target creature you control gets +2/+0 and gains hexproof until end of turn. (It can't be the target of spells or abilities your opponents control.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_patriot_paid_other_own_target_hexproof_controller_capture_and_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Plains",
+      "definition": "src/card_definitions/fra/plains.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+      "direct_java": [
+        {
+          "path": "Mage/src/main/java/mage/cards/basiclands/Plains.java",
+          "sha256": "da74b1b93697ec78ec2fc7665715f40c60e393e43845b88c8f5c491bc38c8eaf",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Plains",
+          "paragraph": 1,
+          "oracle": "({T}: Add {W}.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_basics_both_seats_play_tap_payment_retap_and_land_limit"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Project Deathlok Soldier",
+      "definition": "src/card_definitions/msh/project_deathlok_soldier.rs",
+      "definition_sha256": "2537599f88327fc8a47d5efcda0ef630fb8591dc5c0c96225c384b0333b79a7a",
+      "oracle_id": "d89aa87a-d59a-41e2-b92f-15c9bc6d3d13",
+      "facts_sha256": "8022544bbcbc01c133b5bdd45f83d3c4fc8ce7702a1af92a8046bf768121bf1a",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/p/ProjectDeathlokSoldier.java",
+          "sha256": "cb4cd9a083de7c1273d5ebcc39ff623b130fdf2b4235687997048d74e60a7433",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Project Deathlok Soldier",
+          "paragraph": 1,
+          "oracle": "{2}{B}: Return this card from your graveyard to your hand.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_deathlok_graveyard_payment_ownership_and_stale_source"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Pym Particles",
+      "definition": "src/card_definitions/msh/pym_particles.rs",
+      "definition_sha256": "32dc212dae23168a348aa6f041dbdb8e27f4d7b147bafdc3b1c9722559927d75",
+      "oracle_id": "636b44dc-f7e4-42d2-abf6-ae49432b6052",
+      "facts_sha256": "b3a98d8b3e559385f5dd6b80bb9050ae263bae07026f2c300b0de3600a7a5861",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/p/PymParticles.java",
+          "sha256": "c2243be4f0aba389f6040a1022cec216fb1561c150d1c4a8247af65adc0e125f",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Pym Particles",
+          "paragraph": 1,
+          "oracle": "Target creature gains vigilance until end of turn and can't be blocked this turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_pym_particles_vigilant_unblockable_draw_privacy_and_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Pym Particles",
+          "paragraph": 2,
+          "oracle": "Draw a card.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_pym_particles_vigilant_unblockable_draw_privacy_and_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Pym Technologies",
+      "definition": "src/card_definitions/msh/pym_technologies.rs",
+      "definition_sha256": "1141058dc41e32cab6a650d78be2afcb51ca5c23cb135ea60b5cf6b0433d6f0d",
+      "oracle_id": "5a8977fc-0732-4807-b876-01819aedd70b",
+      "facts_sha256": "0b19ea87c3f3555e65da709bc061de14cb378f0bf369238d4f4e7571905b71b1",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/p/PymTechnologies.java",
+          "sha256": "b5c34eb18c99fb70824a44f9105bcf6691f0fd1511c48b0ca211b07fdf7fba58",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Pym Technologies",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Pym Technologies",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Pym Technologies",
+          "paragraph": 3,
+          "oracle": "{T}: Add {G} or {U}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Rapid Rescue",
+      "definition": "src/card_definitions/msh/rapid_rescue.rs",
+      "definition_sha256": "465d00b4990dab4469cba6caa43feed9101f80ff173843cbb17aff7878a53c93",
+      "oracle_id": "de1ad369-5aa3-4c54-8fb1-30b7f1d4d542",
+      "facts_sha256": "c83a97df4104d42922aec6f1985e064d04c5859ab6e8ba3a6e7f17b9dec859c6",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/r/RapidRescue.java",
+          "sha256": "5488d0370d081be0d3db7d97fd53613fad1b6a8e8fd1bf591fb17cb8418e24f3",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Rapid Rescue",
+          "paragraph": 1,
+          "oracle": "Mill two cards. You may put a permanent card from among the milled cards into your hand. You gain 2 life. (To mill two cards, put the top two cards of your library into your graveyard.)",
+          "scenario_evidence": [
+            "src/engine_milled_recovery_tests.rs::milled_recovery_paid_rapid_rescue_graveyard_or_rip_exile_and_optional_decline",
+            "src/engine_milled_recovery_tests.rs::milled_recovery_mixed_first_public_destinations_under_dryad_militant",
+            "src/engine_milled_recovery_tests.rs::milled_recovery_short_empty_and_no_permanent_libraries_still_gain_life",
+            "src/engine_milled_recovery_tests.rs::milled_recovery_rejects_foreign_not_milled_and_out_of_range_objects_atomically",
+            "src/engine_milled_recovery_tests.rs::milled_recovery_rejects_moved_hidden_and_reentered_incarnations_without_observation_leaks"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Red Guardian, Super-Soldier",
+      "definition": "src/card_definitions/msh/red_guardian_super_soldier.rs",
+      "definition_sha256": "bbf4420989d4e4ddc37dc7bacfd74402277392099d190003c5b8faf711a76198",
+      "oracle_id": "e85567e8-1102-4d44-a15b-d5f1fdef8465",
+      "facts_sha256": "c456bff973ae33d05743d3399658d66494048089398a96b53c01da62ad8188fc",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/r/RedGuardianSuperSoldier.java",
+          "sha256": "4319ed1fc1d3bef4abe98f3f56df8f32615b59fe40a4bfbca7f1c080c3b0c034",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Red Guardian, Super-Soldier",
+          "paragraph": 1,
+          "oracle": "Flash",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_red_guardian_flash_only_opposing_damage_source_current_turn"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Red Guardian, Super-Soldier",
+          "paragraph": 2,
+          "oracle": "When Red Guardian enters, destroy target creature an opponent controls that dealt damage this turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_red_guardian_flash_only_opposing_damage_source_current_turn"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Red Room Recruit",
+      "definition": "src/card_definitions/msh/red_room_recruit.rs",
+      "definition_sha256": "00d05ac922c01b2bc843dcf5c2da1029796ebbf270d1dc34f9926b492791641d",
+      "oracle_id": "4e60c38c-cbf5-4ff7-8fff-634f7e3086cc",
+      "facts_sha256": "ce552868ddd766d122b10c5ff47d724df7b542b5c5621bb9433309ac3b0bbb49",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/r/RedRoomRecruit.java",
+          "sha256": "c86366def76a2fe2f37a587a43ed7ef5fbbbb69098668516cb20b8950ca7f6f2",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Red Room Recruit",
+          "paragraph": 1,
+          "oracle": "When this creature enters, it connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_connive_three_sources_land_nonland_and_departed_controller"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Roxxon Brutes",
+      "definition": "src/card_definitions/msh/roxxon_brutes.rs",
+      "definition_sha256": "5e721832a0c8c86a2a3be6a5b212b2bbd5b345d33680e09bbc7e1f615a1dbf2f",
+      "oracle_id": "b92c2da9-eaa4-404b-8114-5527eec6390e",
+      "facts_sha256": "46b91d80b2356fb9610798800f21361ddfe2f8e21a97f509788e779448acbc2a",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/r/RoxxonBrutes.java",
+          "sha256": "8749b89be376c34f2027b3d5fe2f34e309bf58c2a466646364db7885edbb9173",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Roxxon Brutes",
+          "paragraph": 1,
+          "oracle": "Menace (This creature can't be blocked except by two or more creatures.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_menace_double_strike_lifelink_trample_and_deathtouch_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Roxxon Brutes",
+          "paragraph": 2,
+          "oracle": "Whenever you draw your second card each turn, put a +1/+1 counter on target creature.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_roxxon_second_draw_any_creature_counter_and_stale_target"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Roxxon Brutes",
+          "paragraph": 3,
+          "oracle": "Basic landcycling {2} ({2}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_landcycling_all_five_paid_private_search_decline_and_reveal"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "S.H.I.E.L.D. Deployment Drone",
+      "definition": "src/card_definitions/msh/s_h_i_e_l_d_deployment_drone.rs",
+      "definition_sha256": "f8dc13b43efc46db0f760df54163555ba3ce0ef9c19f47c5743747556b3c8d5d",
+      "oracle_id": "c1669020-8f81-471a-9083-7e9ce3e8f387",
+      "facts_sha256": "94856d8415a2b630ee52add0e6a231e284fee42bd3144db21fe1d66984a1884b",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SHIELDDeploymentDrone.java",
+          "sha256": "3fba662c72b5938efddb01dcda4e0808dbb10ce61577c573567524947c081a10",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "S.H.I.E.L.D. Deployment Drone",
+          "paragraph": 1,
+          "oracle": "Flying",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_flying_vigilance_reach_actual_attack_and_block_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "S.H.I.E.L.D. Deployment Drone",
+          "paragraph": 2,
+          "oracle": "When this creature enters, create a 1/1 white Soldier creature token.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_and_death_tokens_exact_recipe_replacements_and_capture"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "S.H.I.E.L.D. Helicarrier",
+      "definition": "src/card_definitions/msh/s_h_i_e_l_d_helicarrier.rs",
+      "definition_sha256": "5ba5781a2eda99bd3d7c04a40e3699ab7de4fd7a381f482726dfb0bdd3381bdb",
+      "oracle_id": "0f2335bf-6a13-4483-997a-fd19d30c4d48",
+      "facts_sha256": "e83522c3bcbe50dcff107d3048c9df6febbdee4deacf9786a0976b240c752f72",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SHIELDHelicarrier.java",
+          "sha256": "039702383c34eb11aeb4f0f8ec5541a19053e590b3b1d38d6f35841d379060a0",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "S.H.I.E.L.D. Helicarrier",
+          "paragraph": 1,
+          "oracle": "Flying",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_vehicles_crew_exact_power_sick_crewers_mana_and_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "S.H.I.E.L.D. Helicarrier",
+          "paragraph": 2,
+          "oracle": "When this Vehicle enters, create two 1/1 white Soldier creature tokens.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_and_death_tokens_exact_recipe_replacements_and_capture"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "S.H.I.E.L.D. Helicarrier",
+          "paragraph": 3,
+          "oracle": "Crew 6 (Tap any number of creatures you control with total power 6 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_vehicles_crew_exact_power_sick_crewers_mana_and_expiry"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Savage Land Dinosaur",
+      "definition": "src/card_definitions/msh/savage_land_dinosaur.rs",
+      "definition_sha256": "71be2e87d53d3eac5c00c2b6b214bb00dbdfdf4a832d6c2195ab4382fd3f9b32",
+      "oracle_id": "6e21ebdf-b97c-494e-a1d5-19db1b7d3016",
+      "facts_sha256": "f85da9f4aa0ff456689ba4ed2cc86c3250851db6b5e446427ead09927654a860",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SavageLandDinosaur.java",
+          "sha256": "7a1bbf678ac042cbef798afbfc0fcc9334d4705fd47b2801101f830efe41bd00",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Savage Land Dinosaur",
+          "paragraph": 1,
+          "oracle": "Trample",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_menace_double_strike_lifelink_trample_and_deathtouch_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Savage Land Dinosaur",
+          "paragraph": 2,
+          "oracle": "Basic landcycling {2} ({2}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_landcycling_all_five_paid_private_search_decline_and_reveal"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Stark Industries",
+      "definition": "src/card_definitions/msh/stark_industries.rs",
+      "definition_sha256": "6c3457c4bdb2bb1c6189657a0b49ab0f456ebc0f0ffa57b41cac6192d38a034f",
+      "oracle_id": "52401cb4-1bce-4191-9220-0d93ea4108b8",
+      "facts_sha256": "95836c3aaf6f888948f388e0f7c8fe65b7e0065953c57d8e29a0fa4e2c56e3c6",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/StarkIndustries.java",
+          "sha256": "d80ccb7c08503a441ea4ad89de205fd186795939b69285d3e40c08279d66633d",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Stark Industries",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Stark Industries",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Stark Industries",
+          "paragraph": 3,
+          "oracle": "{T}: Add {U} or {R}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Stark Industries Executive",
+      "definition": "src/card_definitions/msh/stark_industries_executive.rs",
+      "definition_sha256": "918de1f481875eb84cd1e8532ca84291587734363b172b18ce118cf079ad1f5a",
+      "oracle_id": "7c07970d-063a-44a1-9761-b80aafa90dac",
+      "facts_sha256": "37f152f4c8ac3b2a3b975c58b25d80ed8f9ac3b687bd2b8bd53ecd312135fb0b",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/StarkIndustriesExecutive.java",
+          "sha256": "053dbc641bed7b7333ec82102e2c7dcb024bcb7be7e06af53e13b0eb0670ade4",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Stark Industries Executive",
+          "paragraph": 1,
+          "oracle": "{2}, {T}: Create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_executive_paid_tap_treasure_any_color_and_source_departure"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Stolen Stark Tech",
+      "definition": "src/card_definitions/msh/stolen_stark_tech.rs",
+      "definition_sha256": "3cb0551c83858e79ecccbb86d920e3971ce291a8cb1063b56c3d2fcf15784303",
+      "oracle_id": "51023277-5434-4913-b9dc-df2a3fde1652",
+      "facts_sha256": "b9edc08976b2e04bc5addcbc25e12efb252645b8d2f563715b6071a845aba292",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/StolenStarkTech.java",
+          "sha256": "ea6d18fda3fc30ec7e262f9ea0c0f2c2ba141d475f987638400da222b9dbcf8d",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Stolen Stark Tech",
+          "paragraph": 1,
+          "oracle": "Flash",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Stolen Stark Tech",
+          "paragraph": 2,
+          "oracle": "When this Equipment enters, attach it to target creature you control. That creature gains indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Stolen Stark Tech",
+          "paragraph": 3,
+          "oracle": "Equipped creature gets +1/+0.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Stolen Stark Tech",
+          "paragraph": 4,
+          "oracle": "Equip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Subterranean Cavern",
+      "definition": "src/card_definitions/msh/subterranean_cavern.rs",
+      "definition_sha256": "0f976e57569ccd792fc528dad4e149c86711b77e14f2d6e42fa7dcc502228349",
+      "oracle_id": "d49a7525-eca5-48e1-b94b-d618a706fd02",
+      "facts_sha256": "a1449878f3c13a1d3ea4f0d27b467721129d4f6646b824937ded4e0cce24e694",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SubterraneanCavern.java",
+          "sha256": "33d08320165681232017b50de8a4db980145dde3847dfcbaeeaa310dbedb90d1",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Subterranean Cavern",
+          "paragraph": 1,
+          "oracle": "This land enters tapped.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Subterranean Cavern",
+          "paragraph": 2,
+          "oracle": "When this land enters, you gain 1 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Subterranean Cavern",
+          "paragraph": 3,
+          "oracle": "{T}: Add {B} or {G}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_all_gainlands_entry_controller_departure_and_two_colors"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Super Speed",
+      "definition": "src/card_definitions/msh/super_speed.rs",
+      "definition_sha256": "695f5bfcc61b63c4a264e84aba0e922f45a7c63cdd027cc5461e0f38154f7968",
+      "oracle_id": "88923ca1-a793-42f0-b9f8-ed9ff9c1185d",
+      "facts_sha256": "4d9866dc4033156171ab5820c69f31e944b85d2e99f79d491717e295d2cf4269",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SuperSpeed.java",
+          "sha256": "9af25406fd914ece3c70a70a46d7176a655e88d92a057b367ae9b1d02ab862c6",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Super Speed",
+          "paragraph": 1,
+          "oracle": "Flash",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_aura_speed_flash_haste_first_strike_expiry_and_frozen_all_untaps"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Super Speed",
+          "paragraph": 2,
+          "oracle": "Enchant creature",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_aura_speed_flash_haste_first_strike_expiry_and_frozen_all_untaps"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Super Speed",
+          "paragraph": 3,
+          "oracle": "When this Aura enters, enchanted creature gains first strike until end of turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_aura_speed_flash_haste_first_strike_expiry_and_frozen_all_untaps"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Super Speed",
+          "paragraph": 4,
+          "oracle": "Enchanted creature gets +1/+0 and has haste.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_aura_speed_flash_haste_first_strike_expiry_and_frozen_all_untaps"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Super Strength",
+      "definition": "src/card_definitions/msh/super_strength.rs",
+      "definition_sha256": "f110f783d04f89bc0a23b5fa57bdcd457dc5486cdcd2497639ea7c68b3222ff4",
+      "oracle_id": "e1b577ad-1488-43b5-83d9-e40bd60c74be",
+      "facts_sha256": "39f511bf919a5c1a10ef8bb211bb6273eeccd455c5a05fec7a90d3fa8b80035c",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SuperStrength.java",
+          "sha256": "2a56e9591f34b2b31f6c683af79a0d90b42a1fc8715fc7e72866e4940376b245",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Super Strength",
+          "paragraph": 1,
+          "oracle": "Enchant creature",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_super_strength_stats_trample_and_aura_target_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Super Strength",
+          "paragraph": 2,
+          "oracle": "Enchanted creature gets +4/+4 and has trample and ward {1}. (Whenever enchanted creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {1}.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_super_strength_stats_trample_and_aura_target_legality",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_attached_ward_paid_or_declined_by_opponent_after_grantor_departure"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Super Villain Lockup",
+      "definition": "src/card_definitions/msh/super_villain_lockup.rs",
+      "definition_sha256": "7115bc9037ccd8da651c62ede853a34a7d9c5eca7e9146e731cd9f564fb9a5ce",
+      "oracle_id": "192e150a-96b0-42d6-9d39-03d0bed61f41",
+      "facts_sha256": "19075c28bf77e9d36fbef7a0b2301de0536800a2bde5cf164aab8c0e57a99bce",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SuperVillainLockup.java",
+          "sha256": "1ec10f6d64ab1f41c43e030b8b8400535a4250a6e482420d19da92cf7f9d45b1",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Super Villain Lockup",
+          "paragraph": 1,
+          "oracle": "Flash",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_exile_enchantments_restrictions_return_and_departed_before_resolution"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Super Villain Lockup",
+          "paragraph": 2,
+          "oracle": "When this enchantment enters, exile target tapped creature an opponent controls until this enchantment leaves the battlefield.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_exile_enchantments_restrictions_return_and_departed_before_resolution"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Surveillance Room",
+      "definition": "src/card_definitions/msh/surveillance_room.rs",
+      "definition_sha256": "89b00c6c2531c6709abd3312be8bef8429ea537ac76745129910cf05819d9aea",
+      "oracle_id": "a3648376-dc8b-409b-b2d1-c29e326a059c",
+      "facts_sha256": "a91be81461f88cd35a36442500a4e425a69b351cf30a56777aae51befdcc5c18",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SurveillanceRoom.java",
+          "sha256": "f66214d3accb402c5140a680e0b4e7739671c67ac6a5e30d62b35f386827451e",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Surveillance Room",
+          "paragraph": 1,
+          "oracle": "When this land enters, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_private_scry_surveil_order_and_public_graveyard"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Surveillance Room",
+          "paragraph": 2,
+          "oracle": "{T}: Add {C}.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_surveillance_room_filter_mana_all_colors_and_colorless"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Surveillance Room",
+          "paragraph": 3,
+          "oracle": "{1}, {T}: Add one mana of any color.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_surveillance_room_filter_mana_all_colors_and_colorless"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Swamp",
+      "definition": "src/card_definitions/fra/swamp.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+      "direct_java": [
+        {
+          "path": "Mage/src/main/java/mage/cards/basiclands/Swamp.java",
+          "sha256": "b292314acab07bf9e658419b7c2cebf25c9cf7fe0267792c1cdfb73d9ebd3855",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Swamp",
+          "paragraph": 1,
+          "oracle": "({T}: Add {B}.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_basics_both_seats_play_tap_payment_retap_and_land_limit"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Take Up the Shield",
+      "definition": "src/card_definitions/msh/take_up_the_shield.rs",
+      "definition_sha256": "ff1adb1aa0bda9b3e7135a839f5c42866cdba6459bbe65cd417b124a8e8e6eee",
+      "oracle_id": "e8d0eafe-540a-4b2e-a989-e98ff3c31105",
+      "facts_sha256": "9350bf349d015eeb759fc7e66775c481103c770ef8f5f2f34f565ec77fd79f20",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TakeUpTheShield.java",
+          "sha256": "4dd9495da857a84d9df5cc80d434e5855c6628dc3861b1fddea8889cee480435",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Take Up the Shield",
+          "paragraph": 1,
+          "oracle": "Put a +1/+1 counter on target creature. It gains lifelink and indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_take_up_shield_counter_replacement_indestructible_lifelink_then_expire"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "The Scarlet Witch",
+      "definition": "src/card_definitions/msh/the_scarlet_witch.rs",
+      "definition_sha256": "7031a39e2e8970e436fb2fe5732952ed79bb2ac55371b89335d78183437ddc75",
+      "oracle_id": "d8ae8c38-501e-44ea-9faf-cf9d11ba6616",
+      "facts_sha256": "25e09ddcf5650d79dc4c129e9c790c4c0f0dc62e0ac6c5991b884b37ecafb306",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TheScarletWitch.java",
+          "sha256": "89084ed3f7d678a617cbaf4ed6a0932f13f9b963323dcf4500db14f0f0c030c2",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "The Scarlet Witch",
+          "paragraph": 1,
+          "oracle": "Instant and sorcery spells you cast with mana value 4 or greater cost {X} less to cast, where X is The Scarlet Witch's power.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_scarlet_live_power_only_large_instants_sorceries_and_control"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "The Serpent Society",
+      "definition": "src/card_definitions/msh/the_serpent_society.rs",
+      "definition_sha256": "4ff2040cf3679701a2020cb5e363a1d80f6d99bb3f5eda8587652cb6e34493c9",
+      "oracle_id": "3688ad0d-653b-4d5d-a57e-444db679d83e",
+      "facts_sha256": "88c3f78f3a9bc969617b3d9b39f97f5bf7c3ce0355492b551a67e97d16453189",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TheSerpentSociety.java",
+          "sha256": "9347c36edcfc2ca7dc125f918cf2ba611bc4f30e53046f4eb80fdd0fee4fe70d",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "The Serpent Society",
+          "paragraph": 1,
+          "oracle": "Deathtouch",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_menace_double_strike_lifelink_trample_and_deathtouch_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "The Serpent Society",
+          "paragraph": 2,
+          "oracle": "Ward\u2014Get five poison counters. (A player with ten or more poison counters loses the game.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_serpent_ward_poison_choice_decline_and_ten_poison_loss"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "The Serpent Society",
+          "paragraph": 3,
+          "oracle": "Whenever another creature you control with deathtouch dies, each opponent sacrifices a nontoken creature of their choice.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_serpent_other_deathtouch_death_opponent_nontoken_sacrifice"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "The Thing, Ben Grimm",
+      "definition": "src/card_definitions/msh/the_thing_ben_grimm.rs",
+      "definition_sha256": "4cdc4f8791f8692fa0a3c87ef78f31ae68a5a1a03b400d7d8727a4519f13e268",
+      "oracle_id": "d566d5f1-5abd-405b-8553-d267ecbe72ab",
+      "facts_sha256": "c394539d0cb7a7542e5219e8c57d0c4a9c89740c192c5abda21b9d9435becc3f",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TheThingBenGrimm.java",
+          "sha256": "e99666bf1c376a6fa71ebf8af7561823a75b1654db889a014af87757bdaf8343",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "The Thing, Ben Grimm",
+          "paragraph": 1,
+          "oracle": "Trample",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_machinesmith_and_thing_intrinsic_trample_with_blocker_damage"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "The Thing, Ben Grimm",
+          "paragraph": 2,
+          "oracle": "Whenever one or more Heroes you control deal damage to a player, put two +1/+1 counters on The Thing.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_thing_simultaneous_heroes_damage_once_and_noncombat_hero_damage",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_thing_noncombat_batch_filters_controller_and_counts_each_player_once"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "The Unbeatable Squirrel Girl",
+      "definition": "src/card_definitions/msh/the_unbeatable_squirrel_girl.rs",
+      "definition_sha256": "2ed79b19821213c09ccb1454de9cabea5b2ad5af055bc6c8e63a7c676cf066a1",
+      "oracle_id": "80312910-5d53-44f1-9982-e46dc7532abb",
+      "facts_sha256": "da9e1793e67b9b384d182f8dd3e4f24a5b93708218894bd00ca23c3b7c4940f7",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TheUnbeatableSquirrelGirl.java",
+          "sha256": "0a0dd223ede6a6f8bfc5dc5d067085dc4cb3d189e258be647c8a2e16ab7dc581",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "The Unbeatable Squirrel Girl",
+          "paragraph": 1,
+          "oracle": "Do You Like Squirrels? \u2014 Whenever The Unbeatable Squirrel Girl enters or attacks, create a 1/1 green Squirrel creature token.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_entry_and_death_tokens_exact_recipe_replacements_and_capture",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_squirrel_scaled_ability_counts_live_controller_and_self_and_attack"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "The Unbeatable Squirrel Girl",
+          "paragraph": 2,
+          "oracle": "I LOVE Squirrels! \u2014 {1}{G}{G}{G}: Create X 1/1 green Squirrel creature tokens, where X is the number of Squirrels you control.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_squirrel_scaled_ability_counts_live_controller_and_self_and_attack"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Thor Odinson",
+      "definition": "src/card_definitions/msh/thor_odinson.rs",
+      "definition_sha256": "746425ae2c64cd82931a1787512c0518c32036b86d8b243823e28b0272d64b61",
+      "oracle_id": "ec9b74d0-e4fe-4764-b628-992a62f2a1cf",
+      "facts_sha256": "c32716fd70947019b13d2ab4ddbbc615793add0d31588486df4645f0ec50bf6d",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/ThorOdinson.java",
+          "sha256": "6917155b7f478ef544897e77b964f867f86a82e2e56618bd02b35ce577eaa212",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Thor Odinson",
+          "paragraph": 1,
+          "oracle": "Flying, vigilance, prowess, prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn twice.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_prowess_noncreature_cast_only_twice_for_thor_and_cleanup",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_flying_vigilance_reach_actual_attack_and_block_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Tigra, Feline Fury",
+      "definition": "src/card_definitions/msh/tigra_feline_fury.rs",
+      "definition_sha256": "69b646e222f35bc2c0e1e958ea4d12d630fd244f20742a2bb098f2830ae5af18",
+      "oracle_id": "39d993be-30ad-4756-a494-fd8808d474c9",
+      "facts_sha256": "fe67ce54105c494247a962e11114b2a80939827694a25aa030ee06e6f8e659be",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TigraFelineFury.java",
+          "sha256": "8db1b337133c2920aeb3d6a9ef0887fdf9ddc0c15085f4b709b5ee33f2860510",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Tigra, Feline Fury",
+          "paragraph": 1,
+          "oracle": "Flash",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_tigra_flash_repeated_life_events_and_trample_live_source"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Tigra, Feline Fury",
+          "paragraph": 2,
+          "oracle": "Trample",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_tigra_flash_repeated_life_events_and_trample_live_source"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Tigra, Feline Fury",
+          "paragraph": 3,
+          "oracle": "Whenever you gain life, put a +1/+1 counter on Tigra.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_tigra_flash_repeated_life_events_and_trample_live_source",
+            "src/engine_msh_inherited_tests.rs::msh_inherited_second_draw_observers_once_per_turn_separate_from_life_gain"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Vibranium Energy Daggers",
+      "definition": "src/card_definitions/msh/vibranium_energy_daggers.rs",
+      "definition_sha256": "3ac9a497e9fc13ba823717b3709704d0b998c05b954f66aeb4e507b02c561c07",
+      "oracle_id": "be0b86fc-8450-41d4-9836-6de11cecb857",
+      "facts_sha256": "4f053360f1af4add9353ce297b3794cebcbdc0ab0239079239fe1cc4b6d49f4b",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/v/VibraniumEnergyDaggers.java",
+          "sha256": "922a4499b3cfa415ffa134c5c778900bfa022a13e6ab4b142c84875d4f9f5a97",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Vibranium Energy Daggers",
+          "paragraph": 1,
+          "oracle": "Indestructible (Effects that say \"destroy\" don't destroy this Equipment.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_indestructible_equipment_survives_paid_destroy"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Vibranium Energy Daggers",
+          "paragraph": 2,
+          "oracle": "Equipped creature gets +2/+2.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Vibranium Energy Daggers",
+          "paragraph": 3,
+          "oracle": "Equip {3} ({3}: Attach to target creature you control. Equip only as a sorcery.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_equipment_paid_attach_retarget_bonus_own_target_and_sorcery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Visions of Villainy",
+      "definition": "src/card_definitions/msh/visions_of_villainy.rs",
+      "definition_sha256": "3a1b9f7ac38f786898f651c44a2aff7a42747f1f7da680fb32dd263b9ea37254",
+      "oracle_id": "3b46800b-711b-4cbb-b296-26115b4f6839",
+      "facts_sha256": "a28ce227c316160eee73fdfdbb6dbb69e73ec401214f1089730c85364636a4db",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/v/VisionsOfVillainy.java",
+          "sha256": "b077c9cc8e41f18baf81ed3617e471f11bde7e422c3423ef7f4f2f5a0307ac01",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Visions of Villainy",
+          "paragraph": 1,
+          "oracle": "This spell costs {1} less to cast if you control a Villain.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_visions_villain_discount_exact_mana_private_draw_and_life"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Visions of Villainy",
+          "paragraph": 2,
+          "oracle": "You draw two cards and lose 2 life.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_visions_villain_discount_exact_mana_private_draw_and_life"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Wakandan Drone Flock",
+      "definition": "src/card_definitions/msh/wakandan_drone_flock.rs",
+      "definition_sha256": "9a2b168b2ebe9d00347cc84cee472cebea402cab7246621c118acda39251c51e",
+      "oracle_id": "282d6e61-3240-4f1e-9c2d-8ddb59b03af4",
+      "facts_sha256": "3ceeb114e64009022db358ce2fd597236f6a433f306de8e0732b85f8e829275a",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/w/WakandanDroneFlock.java",
+          "sha256": "65b4016a7370b5e753728a6e8073382cda7c6b7cd0563b44d8a94a6d6173b0ec",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Wakandan Drone Flock",
+          "paragraph": 1,
+          "oracle": "Flying",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_flying_vigilance_reach_actual_attack_and_block_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Wakandan Drone Flock",
+          "paragraph": 2,
+          "oracle": "When this creature enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_private_scry_surveil_order_and_public_graveyard"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Wakandan Royal Guard",
+      "definition": "src/card_definitions/msh/wakandan_royal_guard.rs",
+      "definition_sha256": "70f401693e439c259ef02d77cecadbf9fe2e10f7ff7d16ec5de11726f1a8e479",
+      "oracle_id": "4ae15bd1-e0ea-4c1a-a311-dae421381ebc",
+      "facts_sha256": "82a1cec69f49e9f81ac92da62c004425dda5782b1c8db37a23bb1d8939984b49",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/w/WakandanRoyalGuard.java",
+          "sha256": "9848f81eea288122f74813b7e43f08705f4edc5ae2aae8218f8cf61fec66c9a0",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Wakandan Royal Guard",
+          "paragraph": 1,
+          "oracle": "Vigilance",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_vigilance_exact_cavalry_guard_and_hero_tokens_attack_untapped"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Wakandan Royal Guard",
+          "paragraph": 2,
+          "oracle": "When this creature enters, put a +1/+1 counter on target creature. If that creature is another Hero, put two +1/+1 counters on it instead.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_wakandan_guard_self_other_hero_any_controller_and_stale_target"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Web Up",
+      "definition": "src/card_definitions/msh/web_up.rs",
+      "definition_sha256": "75eb5b3596507e1f06d8d5407b4d5dda8c52079dab202f236432679f5c7bd4be",
+      "oracle_id": "9b9b086c-d201-4574-a1e9-0d6f8de53d7d",
+      "facts_sha256": "fad996bbf471964a8b7bb0ad69ebce94e19455de329ba2b70cb24cbac5e54557",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/w/WebUp.java",
+          "sha256": "14659f22f0fe399ee0adab4242a95a969816802d2db482b79b63b6c99fbff7c7",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Web Up",
+          "paragraph": 1,
+          "oracle": "When this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_exile_enchantments_restrictions_return_and_departed_before_resolution"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "White Widow, Free Agent",
+      "definition": "src/card_definitions/msh/white_widow_free_agent.rs",
+      "definition_sha256": "b7e9031993c7a3b97e46d42970eb53cf90f7ed8ce88c5d99b3fc12ee3f6f06d3",
+      "oracle_id": "4f0c055f-f614-44b0-9374-c53541f89185",
+      "facts_sha256": "ab79ea0688feacb827eb00ef08a29e13f28a441e9a8628d16a5f74a5fdcc5e78",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/w/WhiteWidowFreeAgent.java",
+          "sha256": "5f2597d0e91f2d77ecfcd1d3edf981dcdf174aed22e20e150d88c4068f515303",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "White Widow, Free Agent",
+          "paragraph": 1,
+          "oracle": "When White Widow enters, choose one \u2014",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_white_widow_both_modes_zero_two_targets_and_public_recovery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "White Widow, Free Agent",
+          "paragraph": 2,
+          "oracle": "\u2022 Put a +1/+1 counter on each of up to two target creatures.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_white_widow_both_modes_zero_two_targets_and_public_recovery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "White Widow, Free Agent",
+          "paragraph": 3,
+          "oracle": "\u2022 Return target artifact or enchantment card from your graveyard to your hand.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_white_widow_both_modes_zero_two_targets_and_public_recovery"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    },
+    {
+      "name": "Yellowjacket, Heartless Marauder",
+      "definition": "src/card_definitions/msh/yellowjacket_heartless_marauder.rs",
+      "definition_sha256": "d9329108d18ff661428567d729ebcb792abbbd4437676b45418dbfea77ce7cc8",
+      "oracle_id": "0a364879-31bd-4760-833d-165cde1e96c6",
+      "facts_sha256": "f190cd4bd6c2d093589cf4079e2f84dc7d7af3dc3bd85e64d419a5df27e727ed",
+      "direct_java": [
+        {
+          "path": "Mage.Sets/src/mage/cards/y/YellowjacketHeartlessMarauder.java",
+          "sha256": "46cb6887d4f5687627e32e7f75a929492033e2431ad32d9d0a2c95984c8002f1",
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+        }
+      ],
+      "obligations": [
+        {
+          "face": "Yellowjacket, Heartless Marauder",
+          "paragraph": 1,
+          "oracle": "Flying",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_keyword_flying_vigilance_reach_actual_attack_and_block_legality"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        },
+        {
+          "face": "Yellowjacket, Heartless Marauder",
+          "paragraph": 2,
+          "oracle": "Whenever another Villain you control enters, Yellowjacket gets +1/+0 and gains lifelink until end of turn.",
+          "scenario_evidence": [
+            "src/engine_msh_inherited_tests.rs::msh_inherited_madame_hydra_cast_villain_yellowjacket_entry_distinct_and_expire"
+          ],
+          "status": "passing meaningful rules scenario evidence"
+        }
+      ],
+      "whole_card_acceptance": "audited with per-obligation passing rules evidence; final cohort reviews/validation and full-set game/performance acceptance pending"
+    }
+  ],
+  "inherited_count": 84,
+  "printed_obligation_count": 175,
+  "new_scenario_functions": 62,
+  "wire_changes": false,
+  "shared_gameplay_edits": false,
+  "prior_independent_source_audits": [
+    {
+      "path": "<cache>/rustmage-msh-review-a-inherited42.json",
+      "sha256": "9b79cdee85a8637e939d7a78fa3674ad03157493627826f938146515b949f61f"
+    },
+    {
+      "path": "<cache>/rustmage-msh-inherited-audit-b.json",
+      "sha256": "0bfdf6de7aedce5929ef78a53941d20fa7cf8afcf599f71310ae7c79983c1d8e"
+    }
+  ],
+  "source_review_scope": "Previous independent reviewers read all84 Oracle/Rust/full pinned direct Java and relevant helpers. This author reread complete Oracle/direct Rust/full direct Java for newly exercised MSH cards and the relevant focused reusable helpers. Exact direct Java hashes and unchanged inherited definitions verified here. This does not claim recursive review of all interfaces or base classes.",
+  "rules_limits": [
+    "Scenario references discharge the stated outcomes in their parameter families, not every imaginable interaction. Shared keyword cases combine exact card/recipe/layer assertions with actual generic combat decisions; they do not require one separate bot per card.",
+    "Setup uses bounded owned scenarios and mana fixtures; spells, activations, targets, payments and choices use normal legal checked actions. Selected adversarial controller/zone changes and one typed noncombat damage batch are explicit event fixtures.",
+    "Every checked action verifies wrong-actor atomicity, owned raw/index branches after parent disposal, snapshot restore and stale revision. Invalid choices additionally preserve snapshot and revision.",
+    "Generic deterministic per-card cast traces remain regression shape evidence only, separate from these rules scenarios.",
+    "Full set-only legal-deck games covering all colors/mechanics, terminal outcomes, deterministic replay, owned search and simulation performance remain pending."
+  ],
+  "latent_gap": {
+    "card": "Agent Phil Coulson",
+    "obligation": "Counter each other Hero permanent",
+    "detail": "Current instruction filters creatures. A noncreature Kindred Hero would also need a counter. Prior audit found no reachable supported producer; this is a latent semantic restriction, not a confirmed current-pool gameplay failure. Creature Hero/controller/replacement/vigilance behavior has meaningful scenarios.",
+    "status": "pending supported reproducer and coordinated typed permanent-filter prerequisite"
+  },
+  "validation": {
+    "native": {
+      "command": "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage/msh-existing/inherited-card-traces.json python3 scripts/resource_guard.py -- cargo test --lib",
+      "passed": 632,
+      "failed": 0,
+      "test_seconds": 4.21,
+      "guard_seconds": 103.1488903890131,
+      "peak_bytes": 2185703424,
+      "max_bytes": 6442450944,
+      "oom_events": 0,
+      "exit_code": 0,
+      "log": "<cache>/rustmage/msh-existing/inherited-native-full.log",
+      "report": "<cache>/rustmage-build-reports/5b533c558759427fb0b968602ea55b3e.json"
+    },
+    "clippy": {
+      "command": "python3 scripts/resource_guard.py -- cargo clippy --all-targets -- -D warnings",
+      "exit_code": 0,
+      "guard_seconds": 138.08806247200118,
+      "peak_bytes": 1695625216,
+      "max_bytes": 6442450944,
+      "oom_events": 0,
+      "log": "<cache>/rustmage/msh-existing/inherited-clippy.log",
+      "report": "<cache>/rustmage-build-reports/5035c10087304d43badad469d373e7c5.json"
+    },
+    "source_pins": {
+      "definitions": 5391,
+      "verified_blobs": 1079,
+      "java_verified": true,
+      "catalogue_version": "05592746e6a2d4a71c5ba28b6581c0748243327227c6ab93ad9e3e77c61581cc",
+      "log": "<cache>/rustmage/msh-existing/inherited-source-pins.log"
+    },
+    "linker": "Regenerated with no changes to linked catalogue, metadata or coverage",
+    "format": "Direct rustfmt and git diff --check pass",
+    "full_release": "Parent integrator runs python3 scripts/validate.py --release on final combined cohort; no standalone full-release claim here"
+  },
+  "counts": {
+    "inherited_cards": 84,
+    "cards_with_meaningful_scenario_evidence": 84,
+    "audited_with_evidence_for_all_printed_obligations": 83,
+    "still_pending_full_printed_semantics": 1,
+    "printed_clauses": 175,
+    "clauses_with_complete_outcome_evidence": 174,
+    "clauses_with_partial_evidence_and_latent_semantic_gap": 1,
+    "new_scenario_functions": 62,
+    "new_admissions": 0,
+    "new_confirmed_gameplay_defects": 0
+  },
+  "trace_proof": {
+    "base_revision": "bd8cdf35db047ea8a1787daee4006c963eb52196",
+    "inherited_count": 2445,
+    "full_trace_struct_matches": 2445,
+    "changed": [],
+    "added": [],
+    "removed": [],
+    "ordinary_wire_projection": false,
+    "base_sha256": "4fad88c85c5512cc2dc95dd337c9f7aa9bb1376b4ac26d2a26183f539875a5f5",
+    "candidate_sha256": "4fad88c85c5512cc2dc95dd337c9f7aa9bb1376b4ac26d2a26183f539875a5f5",
+    "byte_identical": true,
+    "report": "<cache>/rustmage/msh-existing/inherited-trace-audit.json"
+  },
+  "measured_assurance_work": {
+    "start_utc": "2026-10-24T20:27:01Z",
+    "verified_utc": "2026-10-24T20:53:05Z",
+    "elapsed_seconds": 1564,
+    "new_admissions": 0,
+    "inherited_card_mappings": 84,
+    "new_family_scenario_functions": 62,
+    "family_scenarios_per_hour": 142.711,
+    "scope": "Includes inherited source rereads, 175-clause evidence mapping, authoring 62 family tests, correcting assurance fixtures, native/Clippy queue and strict full-trace comparison; prior independent source-review time excluded. Not an implementation admission rate or simulation benchmark."
+  },
+  "retained_shared_library": {
+    "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+    "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+  },
+  "author_compiled_test_source": {
+    "path": "src/engine_msh_inherited_tests.rs",
+    "sha256": "5d3b7bd7c61bca93557ef2b64d7bb3d85461d68b57a06ce57fdb0606a6eb7597"
+  },
+  "current_combined_test_source": {
+    "path": "src/engine_msh_inherited_tests.rs",
+    "sha256": "64c0adf8a2ba653f204a81ecf8ed116e54c54ca234546987e8bc361895a11fe9",
+    "changes_from_author_head": "Formatting-only macro layout plus independent-review strengthening: foreign-Hero-only and own-non-Hero-only damage batches must leave The Thing counters unchanged. Final combined release verification recorded in PR #490."
+  }
+}
