@@ -111,27 +111,78 @@ fn sos_cast_rollback_foreign_aura_can_strand_costs_and_returns_entire_proposal()
     }
 }
 #[test]
-fn sos_cast_rollback_reverses_entire_mana_chain_and_spell_payments() {
+fn sos_cast_rollback_legal_basic_mana_can_be_kept_or_reversed() {
     for p in [Player::P0, Player::P1] {
-        let (mut g, silver, enemy, aura, prison) = setup(p, true);
-        let forest = put(&mut g, p, "Forest", Zone::Battlefield);
-        let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
-        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
-        propose(&mut g, p, spell, prison, enemy);
-        checked(&mut g, Action::TapMana { card: forest });
-        pay(&mut g);
-        clause(&mut g, CastCostClause::Additional);
-        let object = g.object_ref(silver);
-        checked(&mut g, Action::ChooseAuraAttachment { object });
-        assert_eq!(g.actor(), Some(p));
-        checked(&mut g, Action::ChooseManaRollback { keep: false });
-        assert_eq!(g.object_view(prison).zone, Zone::Battlefield);
-        assert_eq!(g.object_view(aura).zone, Zone::Exile);
-        assert_eq!(g.object_view(spell).zone, Zone::Hand);
-        assert!(!g.object_view(forest).tapped);
-        assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 0, 0]);
-        assert!(g.state.announcing.is_none());
-        assert!(g.state.cast_rollback.is_none());
+        for keep in [false, true] {
+            let (mut g, silver, enemy, aura, prison) = setup(p, true);
+            let forest = put(&mut g, p, "Forest", Zone::Battlefield);
+            let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+            propose(&mut g, p, spell, prison, enemy);
+            checked(&mut g, Action::TapMana { card: forest });
+            pay(&mut g);
+            clause(&mut g, CastCostClause::Additional);
+            let object = g.object_ref(silver);
+            checked(&mut g, Action::ChooseAuraAttachment { object });
+            assert_eq!(g.actor(), Some(p));
+            assert!(g.observe(p).mana_rollback.is_some());
+            assert!(g.observe(p.other()).mana_rollback.is_none());
+            for choice in [false, true] {
+                assert!(
+                    g.legal_actions()
+                        .contains(&Action::ChooseManaRollback { keep: choice })
+                );
+            }
+            checked(&mut g, Action::ChooseManaRollback { keep });
+            assert_eq!(g.object_view(prison).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(aura).zone, Zone::Exile);
+            assert_eq!(g.object_view(spell).zone, Zone::Hand);
+            assert_eq!(g.object_view(forest).tapped, keep);
+            assert_eq!(
+                g.state.players[p.index()].mana,
+                [0, 0, 1, 0, u32::from(keep), 0]
+            );
+            assert!(g.state.announcing.is_none());
+            assert!(g.state.cast_rollback.is_none());
+        }
+    }
+}
+#[test]
+fn sos_cast_rollback_independent_mana_abilities_allow_every_partial_retention() {
+    for p in [Player::P0, Player::P1] {
+        for first in [false, true] {
+            for second in [false, true] {
+                let (mut g, silver, enemy, aura, prison) = setup(p, true);
+                let forests = [
+                    put(&mut g, p, "Forest", Zone::Battlefield),
+                    put(&mut g, p, "Forest", Zone::Battlefield),
+                ];
+                let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+                g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+                propose(&mut g, p, spell, prison, enemy);
+                for card in forests {
+                    checked(&mut g, Action::TapMana { card });
+                }
+                pay(&mut g);
+                clause(&mut g, CastCostClause::Additional);
+                let object = g.object_ref(silver);
+                checked(&mut g, Action::ChooseAuraAttachment { object });
+                for keep in [first, second] {
+                    assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
+                    checked(&mut g, Action::ChooseManaRollback { keep });
+                }
+                assert_eq!(g.object_view(forests[0]).tapped, first);
+                assert_eq!(g.object_view(forests[1]).tapped, second);
+                assert_eq!(
+                    g.state.players[p.index()].mana,
+                    [0, 0, 1, 0, u32::from(first) + u32::from(second), 0]
+                );
+                assert_eq!(g.object_view(prison).zone, Zone::Battlefield);
+                assert_eq!(g.object_view(aura).zone, Zone::Exile);
+                assert_eq!(g.object_view(spell).zone, Zone::Hand);
+                assert!(g.state.cast_rollback.is_none());
+            }
+        }
     }
 }
 #[test]

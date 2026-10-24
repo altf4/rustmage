@@ -960,6 +960,17 @@ impl FundingState<'_> {
 
 impl Game {
     pub(in crate::engine) fn cast_entry_action_fundable(&self, action: &Action) -> bool {
+        // A completed legal mana ability must finish its mandatory entry choices
+        // even when a foreign decision has already made its parent cast fail.
+        if self.foreign_cast_choice_pending()
+            && self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.capture.is_some())
+        {
+            return true;
+        }
         if !matches!(
             action,
             Action::ChooseEntryValue { .. }
