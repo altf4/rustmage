@@ -130,6 +130,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             return -10;
         }
         match action {
+            Action::ChooseManaRollback { keep } => i128::from(*keep),
             Action::AssignLibraryPile { pile, .. } => {
                 let piles = observation.library_piles.as_ref().unwrap();
                 // A balanced split is a generic deterministic baseline, using only
