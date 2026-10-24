@@ -11,9 +11,9 @@ pub(super) struct EffectChoice {
     discard_draw: Option<DiscardDrawChoice>,
     pub kind: EffectChoiceKind,
     pub filter: SacrificeFilter,
-    pub amount: u16,
+    pub amount: u32,
     pub source: ObjectRef,
-    pub required: [u16; 2],
+    pub required: [u32; 2],
     pub selected: [Vec<ObjectRef>; 2],
     pub skip_to: Option<usize>,
     pub greatest_value: [Option<i128>; 2],
@@ -116,6 +116,46 @@ impl Game {
                 .is_none_or(|subtype| self.has_subtype(object.card, subtype))
     }
 
+    pub(super) fn start_half_choice(&mut self, item: &SpellView, kind: EffectChoiceKind) -> bool {
+        assert!(matches!(
+            kind,
+            EffectChoiceKind::Discard | EffectChoiceKind::Sacrifice
+        ));
+        let mut choice = EffectChoice {
+            discard_draw: None,
+            kind,
+            filter: evidence::cost(0).filter,
+            amount: 0,
+            source: item.object,
+            required: [0; 2],
+            selected: std::array::from_fn(|_| Vec::new()),
+            skip_to: None,
+            greatest_value: [None; 2],
+            discard_mana_value_life: None,
+            hand_defender: None,
+            entry_life_bonus: None,
+        };
+        // Freeze both quotas before either player chooses. The following printed
+        // instruction computes new quotas after this entire event and its replacements.
+        for player in [self.state.active, self.state.active.other()] {
+            let available = self
+                .state
+                .objects
+                .iter()
+                .filter(|o| {
+                    if kind == EffectChoiceKind::Discard {
+                        o.zone == Zone::Hand && o.owner == player
+                    } else {
+                        o.zone == Zone::Battlefield && o.controller == player
+                    }
+                })
+                .count();
+            choice.required[player.index()] =
+                u32::try_from(available / 2).capacity("half choice count exhausted");
+        }
+        self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
+        self.advance_effect_choice()
+    }
     pub(super) fn start_discard_any_draw(
         &mut self,
         item: &SpellView,
@@ -348,7 +388,7 @@ impl Game {
             discard_draw: None,
             kind,
             filter,
-            amount,
+            amount: u32::from(amount),
             discard_mana_value_life,
             hand_defender: None,
             entry_life_bonus: None,
@@ -420,9 +460,9 @@ impl Game {
                     | EffectChoiceKind::HandCreature
                     | EffectChoiceKind::HandLand { .. }
             ) {
-                amount
+                u32::from(amount)
             } else {
-                amount.min(u16::try_from(available).unwrap_or(u16::MAX))
+                u32::from(amount).min(u32::try_from(available).capacity("choice count exhausted"))
             };
         }
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
@@ -467,8 +507,7 @@ impl Game {
             return true;
         }
         for player in [self.state.active, self.state.active.other()] {
-            if choice.selected[player.index()].len() < usize::from(choice.required[player.index()])
-            {
+            if choice.selected[player.index()].len() < choice.required[player.index()] as usize {
                 self.state.pending = Pending::EffectChoice { player };
                 return true;
             }

@@ -1924,3 +1924,126 @@ fn sos_steal_both_uses_newly_discarded_instants_and_zero_hand_choice() {
         assert_eq!(g.object_view(target).damage, 1);
     }
 }
+
+#[test]
+fn sos_pox_half_life_private_discards_then_fresh_simultaneous_permanent_quotas() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.players[p.index()].life = 21;
+        g.state.players[p.other().index()].life = 19;
+        let ownhand = put(&mut g, p, "Forest", Zone::Hand);
+        put(&mut g, p, "Mountain", Zone::Hand);
+        put(&mut g, p, "Shock", Zone::Hand);
+        let liege = put(&mut g, p.other(), "Wilt-Leaf Liege", Zone::Hand);
+        put(&mut g, p.other(), "Island", Zone::Hand);
+        put(&mut g, p.other(), "Shock", Zone::Hand);
+        let ownland = put(&mut g, p, "Forest", Zone::Battlefield);
+        put(&mut g, p, "Mountain", Zone::Battlefield);
+        put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let a = put(&mut g, p.other(), "Island", Zone::Battlefield);
+        let b = put(&mut g, p.other(), "Plains", Zone::Battlefield);
+        put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Pox Plague", Zone::Hand);
+        cast(&mut g, spell, None);
+        until_choice(&mut g);
+        assert_eq!(g.actor(), Some(p));
+        assert_eq!(g.state.players[p.index()].life, 11);
+        assert_eq!(g.state.players[p.other().index()].life, 10);
+        reject(&mut g, Action::Discard { card: liege });
+        big_helpers::checked(&mut g, Action::Discard { card: ownhand });
+        assert_eq!(g.actor(), Some(p.other()));
+        assert!(g.observe(p).effect_choice.is_none());
+        act(&mut g, Action::Discard { card: liege });
+        assert_eq!(g.object_view(liege).zone, Zone::Battlefield);
+        assert_eq!(g.actor(), Some(p));
+        let choice = g.observe(p).effect_choice.unwrap();
+        assert_eq!(choice.kind, EffectChoiceKind::Sacrifice);
+        assert_eq!(choice.required[p.index()], 1);
+        assert_eq!(
+            choice.required[p.other().index()],
+            2,
+            "replacement entry changes the next instruction's count"
+        );
+        let object = g.object_ref(ownland);
+        act(&mut g, Action::Sacrifice { object });
+        assert_eq!(
+            g.object_view(ownland).zone,
+            Zone::Battlefield,
+            "all players choose before the simultaneous sacrifice event"
+        );
+        let object = g.object_ref(a);
+        act(&mut g, Action::Sacrifice { object });
+        let object = g.object_ref(b);
+        act(&mut g, Action::Sacrifice { object });
+        settle(&mut g);
+        for id in [ownhand, ownland, a, b] {
+            assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+        }
+        assert_eq!(g.object_view(liege).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn sos_pox_nonpositive_life_and_zero_quotas_do_not_gain_life_or_request_choices() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Herald of Eternal Dawn", Zone::Battlefield);
+        g.state.players[p.index()].life = -3;
+        let spell = put(&mut g, p, "Pox Plague", Zone::Hand);
+        cast(&mut g, spell, None);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, -3);
+        assert_eq!(g.state.players[p.index()].life_gained_this_turn, 0);
+        assert_eq!(g.state.players[p.other().index()].life, 10);
+        assert!(g.outcome().is_none());
+    }
+}
+
+#[test]
+fn sos_tablet_milled_spell_play_and_both_mana_abilities_respect_restrictions() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let milled = put(&mut g, p, "Shock", Zone::Library);
+        let tablet = put(&mut g, p, "Tablet of Discovery", Zone::Hand);
+        cast(&mut g, tablet, None);
+        settle(&mut g);
+        assert_eq!(g.object_view(milled).zone, Zone::Graveyard);
+        assert!(g.has_graveyard_cast(p, milled, GraveyardCastKind::Play));
+        g.state.players[p.index()].mana = [0; 6];
+        act(
+            &mut g,
+            Action::ActivateMana {
+                card: tablet,
+                ability: 1,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 2, 0, 0],
+            },
+        );
+        let creature = put(&mut g, p, "Dragonlord's Servant", Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: creature });
+        cast(&mut g, milled, Some(Target::Player(p.other())));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.players[p.index()].mana[3], 1);
+        assert!(!g.has_graveyard_cast(p, milled, GraveyardCastKind::Play));
+        g.untap_objects(&[tablet], untap_rules::UntapCause::Effect);
+        act(
+            &mut g,
+            Action::ActivateMana {
+                card: tablet,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        // The restricted red cannot fund this creature; ordinary red plus
+        // colorless mana from the fixture can pay its full normal cost.
+        g.state.players[p.index()].mana[5] = 1;
+        let creature = put(&mut g, p, "Dragonlord's Servant", Zone::Hand);
+        cast(&mut g, creature, None);
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+    }
+}

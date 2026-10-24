@@ -1807,9 +1807,9 @@ pub struct RecoveryChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct EffectChoiceView {
     pub kind: EffectChoiceKind,
-    pub amount: u16,
+    pub amount: u32,
     pub optional: bool,
-    pub required: [u16; 2],
+    pub required: [u32; 2],
     pub selected: [Vec<ObjectRef>; 2],
     pub candidates: Vec<ObjectRef>,
     pub defender_choice: bool,

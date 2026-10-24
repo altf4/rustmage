@@ -2439,6 +2439,17 @@ impl Game {
                 Instruction::ExileExcessPlay { next_turn } => {
                     self.exile_excess_play(&item, next_turn)
                 }
+                Instruction::LoseHalfLife(players) => {
+                    for player in self.program_players(players, &item) {
+                        // CR107.1b: a negative calculated loss is zero.
+                        self.lose_life(player, self.state.players[player.index()].life.max(0) / 2);
+                    }
+                }
+                Instruction::ChooseHalf { kind } => {
+                    if self.start_half_choice(&item, kind) {
+                        return;
+                    }
+                }
                 Instruction::DiscardAnyDraw {
                     players,
                     bonus,

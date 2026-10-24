@@ -931,6 +931,10 @@ pub(crate) enum Instruction {
         next_turn: bool,
     },
     DamageCannotBePreventedThisTurn,
+    LoseHalfLife(PlayerSet),
+    ChooseHalf {
+        kind: EffectChoiceKind,
+    },
     DiscardAnyDraw {
         players: PlayerSet,
         bonus: u16,

@@ -3,10 +3,13 @@
   "catalogue_id": 3213,
   "oracle_id": "c505d304-9428-4532-87a2-167c69f16969",
   "facts_sha256": "1132dade3f9e6b30d2c7e278dcd2ec58fd13febcea497fff22dfb0260c0e0a3a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5e553de7a32ac2c2c506118af4d689d3d491b140218095f9d972160532c1545a"
   },
-  "physical_metadata_sha256": "47cd25df2a20bdfb7ef03c5d8e5cc74961b6fff911a59dfaaec41b3b0f532707"
+  "physical_metadata_sha256": "47cd25df2a20bdfb7ef03c5d8e5cc74961b6fff911a59dfaaec41b3b0f532707",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PoxPlague.java",
+  "java_sha256": "9de391e3c596b7285b3191299875c021623e553ba1adca036338b9de454858d5"
 }
