@@ -6530,7 +6530,15 @@ impl Game {
                 Pending::RecoverMilled { player, filter } => Some(RecoveryChoiceView {
                     player,
                     filter,
-                    milled: s.resolving.as_ref().unwrap().milled.clone(),
+                    milled: s
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .milled
+                        .iter()
+                        .copied()
+                        .filter(|&object| self.public_milled_object(object))
+                        .collect(),
                     candidates: s
                         .resolving
                         .as_ref()
@@ -7346,3 +7354,7 @@ mod msh_existing_tests;
 #[cfg(test)]
 #[path = "engine_msh_power_up_cards_tests.rs"]
 mod msh_power_up_cards_tests;
+
+#[cfg(test)]
+#[path = "engine_milled_recovery_tests.rs"]
+mod milled_recovery_tests;
