@@ -153,7 +153,19 @@ impl Game {
             source: None,
             reserve: None,
         };
-        if let Some(result)=self.preview_optional_cast_costs(base.clone(),purpose,self.object_ref(card),definition.additional_cost(),route,&[],false,&[],&[]) {return result;}
+        if let Some(result) = self.preview_optional_cast_costs(
+            base.clone(),
+            purpose,
+            self.object_ref(card),
+            definition.additional_cost(),
+            route,
+            &[],
+            false,
+            &[],
+            &[],
+        ) {
+            return result;
+        }
         if definition.has_convoke() {
             return self.can_fund_convoke_for(base, purpose);
         }

@@ -147,7 +147,22 @@ impl Game {
         route: Option<ForageRoute>,
         purpose: mana_lots::Purpose,
     ) -> bool {
-        if let Some(result)=self.preview_optional_cast_costs(goal.clone(),purpose,ObjectRef{card:CardId::MAX,generation:0},Some(spec),route,&[],false,&[],&[]) {return result;}
+        if let Some(result) = self.preview_optional_cast_costs(
+            goal.clone(),
+            purpose,
+            ObjectRef {
+                card: CardId::MAX,
+                generation: 0,
+            },
+            Some(spec),
+            route,
+            &[],
+            false,
+            &[],
+            &[],
+        ) {
+            return result;
+        }
         if route.is_none_or(|r| r == ForageRoute::ExileThree)
             && self.forage_graveyard_count(goal.actor) >= 3
             && self.can_fund_for(goal.clone(), purpose)
