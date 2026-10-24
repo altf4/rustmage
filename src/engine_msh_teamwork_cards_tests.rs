@@ -884,6 +884,8 @@ fn msh_teamwork_power_up_and_plan_crossing_share_paid_cast_and_resolution() {
             },
         );
         checked(&mut g, Action::FinishTargets);
+        reject(&mut g, Action::AllocateTargetAmount { amount: 6 });
+        checked(&mut g, Action::AllocateTargetAmount { amount: 7 });
         settle(&mut g);
         assert_eq!(g.object_view(enemy).zone, Zone::Exile);
         assert_eq!(g.state.players[p.index()].life, 23);
