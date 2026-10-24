@@ -3458,6 +3458,16 @@ fn sos_silverquill_casualty_can_return_a_creature_before_convoking_it() {
             },
         );
         super::big_helpers::checked(&mut g, Action::BeginConvoke);
+        let costs = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap();
+        assert!(costs.mana_closed);
+        assert!(!costs.mana_paid);
         pay_casualty(&mut g, chariot);
         assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
         assert!(!g.object_view(bear).tapped);
@@ -3647,5 +3657,58 @@ fn sos_silverquill_mana_counter_cost_cannot_remove_the_last_casualty_power() {
                 }
             );
         }
+    }
+}
+
+#[test]
+fn sos_silverquill_returned_aura_attachment_uses_projected_layers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        g.state.objects[silver as usize].growth.power = -4;
+        let victim = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[victim as usize].growth.power = -1;
+        let other = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let aura = put(&mut g, p, "Witness Protection", Zone::Hand);
+        cast(&mut g, aura, Some(Target::Card(other)));
+        settle(&mut g);
+        g.record_control(g.object_ref(aura), p.other(), None);
+        let prison = put(&mut g, p, "Banishing Light", Zone::Hand);
+        cast(&mut g, prison, None);
+        until_choice(&mut g);
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(aura),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(aura).zone, Zone::Exile);
+        let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        let sacrifice = Some(g.object_ref(prison));
+        act(&mut g, Action::ChooseBargain { sacrifice });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(other),
+            },
+        );
+        pay(&mut g);
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        assert!(matches!(g.state.pending, Pending::AuraEntry { .. }));
+        let object = g.object_ref(victim);
+        reject(&mut g, Action::ChooseAuraAttachment { object });
+        let object = g.object_ref(other);
+        super::big_helpers::checked(&mut g, Action::ChooseAuraAttachment { object });
+        assert_eq!(stats(&g, victim).0, 1);
+        assert_eq!(stats(&g, other), (1, 1));
+        pay_casualty(&mut g, victim);
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(other).zone, Zone::Graveyard);
     }
 }
