@@ -429,3 +429,18 @@ impl Game {
         self.revision = revision;
     }
 }
+
+/// A failed casting proposal cannot conceal a real irreversible library reveal.
+/// The choice/replay stack and stack-to-graveyard permissions remain checkpoint-owned.
+pub(super) fn preserve_irreversible_reveals(
+    target: &mut Option<Box<ZoneState>>,
+    source: Option<&ZoneState>,
+) {
+    if let Some(source) = source {
+        if !source.reveals.is_empty() || target.is_some() {
+            target.get_or_insert_default().reveals = source.reveals.clone();
+        }
+    } else if let Some(target) = target {
+        target.reveals.clear();
+    }
+}

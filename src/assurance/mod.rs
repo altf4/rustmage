@@ -167,3 +167,5 @@ mod sos_original_multicolor_audit;
 mod sos_storm;
 mod sos_wu_audit;
 mod sos_zaffai;
+
+mod sos_cast_rollback;

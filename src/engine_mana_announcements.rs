@@ -54,6 +54,7 @@ impl Game {
         }
         self.state.announcing = Some(frame.announcement);
         self.state.pending = frame.pending;
+        self.refresh_cast_rollback_after_mana();
         true
     }
     pub(super) fn committed_mana_reflexive(&mut self, item: &SpellView) {

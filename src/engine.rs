@@ -1547,6 +1547,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    cast_rollback: Option<Box<cast_rollback::CastRollback>>,
     paradigm: Option<Box<paradigm::ParadigmState>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
@@ -2210,6 +2211,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                cast_rollback: None,
                 paradigm: None,
                 ending_turn: false,
                 turn_skips: None,
@@ -2615,6 +2617,14 @@ impl Game {
             if !legal {
                 return Err(Error::IllegalAction);
             }
+            let direct_mana = matches!(
+                action,
+                Action::TapMana { .. }
+                    | Action::TapGrantedMana { .. }
+                    | Action::ActivateMana { .. }
+                    | Action::ActivateBorrowedMana { .. }
+            );
+            self.prepare_cast_rollback(actor, &action);
             self.clear_zone_reveals();
             self.prepare_mana_allocations(&action);
             self.apply_legal(actor, action);
@@ -2646,7 +2656,16 @@ impl Game {
                 }
                 break;
             }
+            if direct_mana && self.state.entry_batch.is_none() && self.state.replacements.is_none()
+            {
+                self.refresh_cast_rollback_after_mana();
+            }
         }
+        if self.foreign_cast_choice_pending() {
+            let fundable = self.current_cast_costs_fundable();
+            self.finish_cast_rollback(fundable);
+        }
+        self.clear_finished_cast_rollback();
         self.prune_modal_history();
         self.revision = self.revision.checked_add(1).capacity("revision exhausted");
         Ok(())
@@ -6796,6 +6815,7 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + s.cast_rollback.as_ref().map_or(0, |r| r.bytes())
             + self.mana_lot_bytes()
             + self.mana_announcement_bytes()
             + s.used_free_hand_permissions.as_ref().map_or(0, |rows| {
@@ -7195,3 +7215,6 @@ mod sos_graveyard;
 #[cfg(test)]
 #[path = "engine_sos_green_colorless_tests.rs"]
 mod sos_green_colorless_tests;
+
+#[path = "engine_cast_rollback.rs"]
+mod cast_rollback;
