@@ -3,7 +3,7 @@
   "catalogue_id": 5363,
   "oracle_id": "23c3de07-8aa2-48e9-848c-50b5a40bd133",
   "facts_sha256": "6bb85e89af095c5d16b3e649b165ac4f1bc9b57bc0e71acd27f9e44ed2c2d688",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "580b99bac5f92342e8a8ec3d040673e877c1a66325829f305079c4f0d4c1d13a",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GoblinGlasswright.java",

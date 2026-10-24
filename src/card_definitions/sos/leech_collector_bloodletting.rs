@@ -1,16 +1,18 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Whole-card typed Oracle behavior; complete XMage source pinned beside this file.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(2, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::LifeGained {
+            first_only: true,
+            own_turn: false,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::PrepareSource],
+    }],
+    extras: &CardExtras {
+        prepared_spell: Some(Card(5372)),
+        enters_prepared: false,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

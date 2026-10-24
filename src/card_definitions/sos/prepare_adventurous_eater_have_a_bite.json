@@ -3,7 +3,7 @@
   "catalogue_id": 5352,
   "oracle_id": "02125db4-4507-467a-ac0c-406de2c7d533",
   "facts_sha256": "11a71ccce40c272e46d49d89976431fc99674261bada93865a446f69e6137053",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "e2d84673887bc573b6e0e88371857b2a4f5abd4ed80277141eadf08b3aa2ee0c",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/a/AdventurousEater.java",

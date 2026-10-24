@@ -3,7 +3,7 @@
   "catalogue_id": 5355,
   "oracle_id": "fd01229f-1c4c-4ad1-bc6f-4023f24d8c71",
   "facts_sha256": "065cf8b0132200b9f3cc96bcbc8662640f59c7a3c846da46e5f034aefc1f82f1",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "145bbd06892c6c4d7cc97ab529ddef8db725166d05a60f4a910785b537d3c778",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/c/CheerfulOsteomancer.java",

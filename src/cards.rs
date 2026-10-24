@@ -713,6 +713,8 @@ pub(crate) enum Instruction {
         ability: u16,
     },
     CastParadigmCopy,
+    /// Lose the frozen mana value of the originally legal target card, after movement.
+    LoseLifeTargetCardManaValue(PlayerSet),
     ExileUntilManaValueCastFree(u16),
     CreateTokenChoice(&'static [Card]),
     PlayHideawayIfCoven,
@@ -1202,6 +1204,7 @@ pub(crate) enum Instruction {
         factor: u8,
     },
     ReturnToBattlefield,
+    ReturnToBattlefieldUnderControl,
     ReturnToBattlefieldTapped,
     Destroy,
     Tap,
@@ -1423,6 +1426,7 @@ pub(crate) enum StatValue {
     },
     SpellsCastThisTurn,
     LifeGainOccurredThisTurn,
+    CreaturesDiedThisTurn,
     LifeGainedThisTurn,
     ControllerLife,
     /// Boolean threshold relative to the rules configuration, not a printed 20.

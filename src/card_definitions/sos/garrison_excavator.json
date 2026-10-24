@@ -3,10 +3,13 @@
   "catalogue_id": 1685,
   "oracle_id": "5d808e64-a648-4f1b-a3a9-fd09568db281",
   "facts_sha256": "e619d0a1c453cc11e82bd92fcd60c56928e7439e50206a1f80b27fb0b986ebbc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ecaa13b74d174ca1a79e7fa5f5f7cd58dd3a78feafee2a89ffd5f66bd758b695"
   },
-  "physical_metadata_sha256": "fda81d860f40682d06d9de94e7a6f53494df9639c3243547ac1f6c134d65729c"
+  "physical_metadata_sha256": "fda81d860f40682d06d9de94e7a6f53494df9639c3243547ac1f6c134d65729c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GarrisonExcavator.java",
+  "java_sha256": "dddab9dcae86725ce0b537cd3ef97898f56b3abe966a58ed5fb2bd8bee1b0daf"
 }

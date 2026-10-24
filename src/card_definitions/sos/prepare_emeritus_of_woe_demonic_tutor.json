@@ -3,7 +3,7 @@
   "catalogue_id": 5361,
   "oracle_id": "93056597-b964-421f-be2f-e92abef1c2a4",
   "facts_sha256": "8a03def70f795a37d883a7a49ca88e6559100c7851dd4b74e40baab7fa8d3b41",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "74dc6fd7147015c9106fa689f26c5d44cde5be88edc9026cf23a8d3c4131f2e0",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfWoe.java",

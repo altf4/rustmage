@@ -3,10 +3,13 @@
   "catalogue_id": 1315,
   "oracle_id": "5963eef1-1022-42b1-8a0c-fc9850bfc2a3",
   "facts_sha256": "f8de71e785c3c58db6fe80fb91a549b9040782e03d9fd4a8ef8d4f3563f1dfd5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "816c75ce7f049e9d664d69af736df32069fc22236f02db507a630770e6e71e0f"
   },
-  "physical_metadata_sha256": "465b73c4c9c1b2b35f6db0d4f6b67c82f1a196ee4435460a534958814616f4ef"
+  "physical_metadata_sha256": "465b73c4c9c1b2b35f6db0d4f6b67c82f1a196ee4435460a534958814616f4ef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfConflict.java",
+  "java_sha256": "f751e0114c15b72b2b101480d7e9e1c55e4d5690c7fc46903fe95ec642cb4ff6"
 }

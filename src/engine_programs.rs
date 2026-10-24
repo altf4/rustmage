@@ -4,6 +4,8 @@ use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    #[allow(clippy::box_collection)]
+    pub target_card_mana_values: Option<Box<Vec<(u16, u64)>>>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
@@ -1394,7 +1396,25 @@ impl Game {
             self.record_ability_resolution(&item);
         }
         assert!(self.state.resolving.is_none());
+        let target_card_mana_values = program
+            .iter()
+            .any(|instruction| matches!(instruction, Instruction::LoseLifeTargetCardManaValue(_)))
+            .then(|| {
+                Box::new(
+                    item.targets
+                        .iter()
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(card) => Some((
+                                bound.group,
+                                self.state.objects[card as usize].card.fixed_mana_value(),
+                            )),
+                            _ => None,
+                        })
+                        .collect(),
+                )
+            });
         self.state.resolving = Some(Resolution {
+            target_card_mana_values,
             explore: None,
             evidence: None,
             connive: None,
@@ -2817,6 +2837,22 @@ impl Game {
                         self.gain_life(player, amount);
                     }
                 }
+                Instruction::LoseLifeTargetCardManaValue(set) => {
+                    let resolution = self.state.resolving.as_ref().unwrap();
+                    let amount = resolution
+                        .target_card_mana_values
+                        .as_ref()
+                        .map_or(0, |values| {
+                            values
+                                .iter()
+                                .filter(|(group, _)| *group == resolution.target_group)
+                                .map(|(_, value)| i128::from(*value))
+                                .sum()
+                        });
+                    for player in self.program_players(set, &item) {
+                        self.lose_life(player, amount);
+                    }
+                }
                 Instruction::LoseLifeScaled(set, value) => {
                     let amount = i128::try_from(self.item_amount(value, &item))
                         .capacity("life loss amount exhausted");
@@ -3366,6 +3402,23 @@ impl Game {
                                 let mut movement = self.entry_move(id, Zone::Battlefield, false);
                                 movement.controller = item.controller;
                                 movement.role_after = Some((token, item.controller));
+                                Some(movement)
+                            }
+                            _ => None,
+                        })
+                        .collect();
+                    self.stage_entries(moves, None);
+                }
+                Instruction::ReturnToBattlefieldUnderControl => {
+                    let moves = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|&bound| self.same_target_object(bound))
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(id) => {
+                                let mut movement = self.entry_move(id, Zone::Battlefield, false);
+                                movement.controller = item.controller;
                                 Some(movement)
                             }
                             _ => None,

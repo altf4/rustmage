@@ -488,3 +488,230 @@ fn sos_capstone_exiles_to_total_threshold_then_casts_only_exiled_spells_free() {
         assert_eq!(g.observe(p).paradigms.len(), 1);
     }
 }
+
+fn copied_prepared_spell(g: &mut Game, p: Player, front: &str, targets: &[Target]) -> CardId {
+    let definition = Card::from_name(front).unwrap().prepared_spell().unwrap();
+    let copy = g.allocate_card_copy(definition, p);
+    g.grant_exile_play_permission(p, copy, false);
+    act(g, Action::AnnounceExile { card: copy.card });
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    pay(g);
+    copy.card
+}
+
+#[test]
+fn sos_prepared_black_spell_faces_counters_return_drain_draw_and_private_tutor() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        copied_prepared_spell(&mut g, p, "Adventurous Eater", &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 1);
+        assert_eq!(g.state.players[p.index()].life, 21);
+        let grave = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        copied_prepared_spell(&mut g, p, "Cheerful Osteomancer", &[Target::Card(grave)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(grave).zone, Zone::Hand);
+        copied_prepared_spell(&mut g, p, "Leech Collector", &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        let hand = g.hand_count(p.other());
+        copied_prepared_spell(
+            &mut g,
+            p,
+            "Scheming Silvertongue",
+            &[Target::Player(p.other())],
+        );
+        settle(&mut g);
+        assert_eq!(g.hand_count(p.other()), hand + 2);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        let secret = put(&mut g, p, "Murder", Zone::Library);
+        copied_prepared_spell(&mut g, p, "Emeritus of Woe", &[]);
+        until_choice(&mut g);
+        reject(&mut g, Action::FinishSearch);
+        act(&mut g, Action::ChooseSearch { card: secret });
+        assert!(g.observe(p.other()).objects.iter().all(|o| o.id != secret));
+        act(&mut g, Action::FinishSearch);
+        settle(&mut g);
+        assert_eq!(g.object_view(secret).zone, Zone::Hand);
+        assert!(g.observe(p.other()).objects.iter().all(|o| o.id != secret));
+    }
+}
+
+#[test]
+fn sos_prepared_red_spell_faces_mana_damage_treasure_spirits_and_nonbasic_removal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let mana: u32 = g.state.players[p.index()].mana.iter().sum();
+        copied_prepared_spell(&mut g, p, "Blazing Firesinger", &[]);
+        settle(&mut g);
+        assert_eq!(
+            g.state.players[p.index()].mana.iter().sum::<u32>(),
+            mana + 2
+        );
+        copied_prepared_spell(
+            &mut g,
+            p,
+            "Emeritus of Conflict",
+            &[Target::Player(p.other())],
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 17);
+        copied_prepared_spell(&mut g, p, "Goblin Glasswright", &[]);
+        settle(&mut g);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.card.name() == "Treasure")
+                .count(),
+            1
+        );
+        copied_prepared_spell(&mut g, p, "Strife Scholar", &[]);
+        settle(&mut g);
+        let spirit = Card::from_name("@token/sos-spirit").unwrap();
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.controller == p && o.card == spirit)
+                .count(),
+            2
+        );
+        let land = put(&mut g, p.other(), "Gruul Guildgate", Zone::Battlefield);
+        let basic = put(&mut g, p.other(), "Mountain", Zone::Battlefield);
+        let definition = Card::from_name("Maelstrom Artisan")
+            .unwrap()
+            .prepared_spell()
+            .unwrap();
+        let copy = g.allocate_card_copy(definition, p);
+        g.grant_exile_play_permission(p, copy, false);
+        act(&mut g, Action::AnnounceExile { card: copy.card });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(basic),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(land),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(land).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(basic).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn sos_prepared_venomous_words_and_striking_palette_expire_and_copy_once() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        copied_prepared_spell(&mut g, p, "Scathing Shadelock", &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(stats(&g, bear), (4, 2));
+        assert!(g.keywords(bear).contains(Keywords::DEATHTOUCH));
+        g.finish_cleanup();
+        assert_eq!(stats(&g, bear), (2, 2));
+        assert!(!g.keywords(bear).contains(Keywords::DEATHTOUCH));
+        copied_prepared_spell(&mut g, p, "Pigment Wrangler", &[]);
+        settle(&mut g);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 14);
+    }
+}
+
+#[test]
+fn sos_reanimate_opponent_card_control_and_frozen_mana_value_across_entry_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let mare = put(&mut g, p.other(), "Diamond Mare", Zone::Graveyard);
+        copied_prepared_spell(&mut g, p, "Grave Researcher", &[Target::Card(mare)]);
+        until_choice(&mut g);
+        assert_eq!(
+            g.state.players[p.index()].life,
+            20,
+            "entry choice precedes Reanimate's life loss"
+        );
+        assert_eq!(g.actor(), Some(p));
+        let choice = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseEntryValue { .. }))
+            .unwrap();
+        act(&mut g, choice);
+        settle(&mut g);
+        assert_eq!(g.object_view(mare).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(mare).controller, p);
+        assert_eq!(g.object_view(mare).owner, p.other());
+        assert_eq!(g.state.players[p.index()].life, 18);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+
+#[test]
+fn sos_graveyard_leave_consumers_create_spirits_and_attack_boost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let excavator = put(&mut g, p, "Garrison Excavator", Zone::Battlefield);
+        assert!(g.keywords(excavator).contains(Keywords::MENACE));
+        let history = put(&mut g, p, "Living History", Zone::Hand);
+        cast(&mut g, history, None);
+        settle(&mut g);
+        let spirit = Card::from_name("@token/sos-spirit").unwrap();
+        let attacker = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(i, o)| {
+                (o.zone == Zone::Battlefield && o.card == spirit).then_some(i as CardId)
+            })
+            .unwrap();
+        let grave = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        copied_prepared_spell(&mut g, p, "Cheerful Osteomancer", &[Target::Card(grave)]);
+        settle(&mut g);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.card == spirit && o.controller == p)
+                .count(),
+            2
+        );
+        g.state.objects[attacker as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: attacker });
+        act(&mut g, Action::FinishAttackers);
+        assert!(g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(attacker)
+        }));
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(attacker),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(stats(&g, attacker), (4, 2));
+        g.finish_cleanup();
+        assert_eq!(stats(&g, attacker), (2, 2));
+    }
+}

@@ -3,10 +3,13 @@
   "catalogue_id": 1318,
   "oracle_id": "93056597-b964-421f-be2f-e92abef1c2a4",
   "facts_sha256": "8a03def70f795a37d883a7a49ca88e6559100c7851dd4b74e40baab7fa8d3b41",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db266cfc733c9e43bf1d36867aaa009a2d3f9ba346d2ff35b1c462a1faf01b38"
   },
-  "physical_metadata_sha256": "10c8aee4e23e9d1329c4b74ef412154d599343aa0999048276f739958792eda5"
+  "physical_metadata_sha256": "10c8aee4e23e9d1329c4b74ef412154d599343aa0999048276f739958792eda5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfWoe.java",
+  "java_sha256": "682235f5bf432cadd590ae71189b3ab5822d860bc58a0ba353d3be650020607e"
 }

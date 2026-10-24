@@ -6431,6 +6431,13 @@ impl Game {
                             .optional_searches
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<search::OptionalSearchSequence>())
+                        + resolution
+                            .target_card_mana_values
+                            .as_ref()
+                            .map_or(0, |values| {
+                                std::mem::size_of::<Vec<(u16, u64)>>()
+                                    + values.len() * std::mem::size_of::<(u16, u64)>()
+                            })
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())

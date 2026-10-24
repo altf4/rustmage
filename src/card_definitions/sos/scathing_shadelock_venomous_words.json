@@ -3,10 +3,13 @@
   "catalogue_id": 3716,
   "oracle_id": "2796c3d9-9e56-40f2-8398-7a131c4657ff",
   "facts_sha256": "f83ce263612082c7e3108b9e69749645c0b5d7a52b1cd71e61926a207c71d1df",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1990b942b0d06dceb469714ff2d325f0bafb596394085ca329c0af8075e4c10e"
   },
-  "physical_metadata_sha256": "2d2cc7e346b130b0e296e3d4db48e6a2715c99464840648f9d741099881658de"
+  "physical_metadata_sha256": "2d2cc7e346b130b0e296e3d4db48e6a2715c99464840648f9d741099881658de",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScathingShadelock.java",
+  "java_sha256": "3ce7fb68971b4411c86ecd52f6ab5f07b6715f8b00d391e349ef8974586c9db8"
 }
