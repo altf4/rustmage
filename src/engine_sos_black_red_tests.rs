@@ -567,7 +567,7 @@ fn sos_prepared_red_spell_faces_mana_damage_treasure_spirits_and_nonbasic_remova
                 .iter()
                 .filter(|o| o.zone == Zone::Battlefield
                     && o.controller == p
-                    && o.card.name() == "Treasure")
+                    && o.card.has_subtype("Treasure"))
                 .count(),
             1
         );
@@ -622,6 +622,7 @@ fn sos_prepared_venomous_words_and_striking_palette_expire_and_copy_once() {
         g.finish_cleanup();
         assert_eq!(stats(&g, bear), (2, 2));
         assert!(!g.keywords(bear).contains(Keywords::DEATHTOUCH));
+        let mut g = scenario(p);
         copied_prepared_spell(&mut g, p, "Pigment Wrangler", &[]);
         settle(&mut g);
         let shock = put(&mut g, p, "Shock", Zone::Hand);
@@ -935,6 +936,8 @@ fn sos_ancestral_anger_counts_only_own_named_grave_cards_on_resolution_and_fizzl
         g.finish_cleanup();
         assert_eq!(stats(&g, bear), (2, 2));
         assert!(!g.keywords(bear).contains(Keywords::TRAMPLE));
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let spell = put(&mut g, p, "Ancestral Anger", Zone::Hand);
         let bounce = put(&mut g, p.other(), "Unsummon", Zone::Hand);
         cast(&mut g, spell, Some(Target::Card(bear)));
@@ -950,10 +953,10 @@ fn sos_ancestral_anger_counts_only_own_named_grave_cards_on_resolution_and_fizzl
 fn sos_arnyn_frozen_power_or_toughness_death_and_self_departure() {
     for p in [Player::P0, Player::P1] {
         for (name, owner, qualifies) in [
-            ("Staunch Shieldmate", p, true),
+            ("Dragonlord's Servant", p, true),
             ("Goblin Piker", p, true),
             ("Bear Cub", p, false),
-            ("Staunch Shieldmate", p.other(), false),
+            ("Dragonlord's Servant", p.other(), false),
         ] {
             let mut g = scenario(p);
             let arnyn = put(&mut g, p, "Arnyn, Deathbloom Botanist", Zone::Battlefield);
@@ -1307,6 +1310,9 @@ fn sos_duel_tactics_damage_block_restriction_survives_ability_removal_flashback_
         g.finish_cleanup();
         assert_eq!(g.object_view(blocker).damage, 0);
         assert!(g.can_block_pair(blocker, attacker));
+        let mut g = scenario(p);
+        let attacker = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Duel Tactics", Zone::Graveyard);
         let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
         act(&mut g, Action::AnnounceFlashback { card: spell });
         act(

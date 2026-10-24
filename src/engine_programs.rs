@@ -1016,7 +1016,19 @@ impl Game {
                             || ability.program.iter().any(|instruction| {
                                 matches!(
                                     instruction,
-                                    Instruction::GainLifeScaled(_, AmountValue::SpellColors)
+                                    Instruction::IfAmountAtLeast {
+                                        value: AmountValue::ManaSpent
+                                            | AmountValue::ColorsSpent
+                                            | AmountValue::CastSpellManaValue
+                                            | AmountValue::SpellColors,
+                                        ..
+                                    } | Instruction::GrowCreaturesScaled {
+                                        amount: AmountValue::ManaSpent
+                                            | AmountValue::ColorsSpent
+                                            | AmountValue::CastSpellManaValue
+                                            | AmountValue::SpellColors,
+                                        ..
+                                    } | Instruction::GainLifeScaled(_, AmountValue::SpellColors)
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
