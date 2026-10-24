@@ -86,6 +86,9 @@ impl Report {
             "crew_animated",
             "landfall_trigger",
             "affinity_reduced_cast",
+            "surveil_completed",
+            "mill_resolved",
+            "treasure_created",
         ]
         .into_iter()
         .filter(|m| self.witnesses.get(*m).copied().unwrap_or(0) == 0)
@@ -149,11 +152,11 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
             [
                 "Deluge Virtuoso",
                 "Muse Seeker",
-                "Vibrant Outburst",
+                "Exhibition Tidecaller",
                 "Spectacular Skywhale",
                 "Prismari, the Inspiration",
                 "Rapturous Moment",
-                "Muse's Encouragement",
+                "Goblin Glasswright",
                 "Echocasting Symposium",
             ],
         ),
@@ -441,7 +444,36 @@ impl Tracker {
                 self.hit("graveyard_departure", format!("{}/{i}", after.turn));
             }
         }
+        if before
+            .library_choice
+            .as_ref()
+            .is_some_and(|choice| choice.surveil)
+            && after.library_choice.is_none()
+            && matches!(action, Action::ArrangeLibrary { .. })
+        {
+            self.hit(
+                "surveil_completed",
+                format!("{}/{:?}/{}", before.turn, before.viewer, before.decision),
+            );
+        }
+        let mill_packet = before.resolving.as_ref().or_else(|| before.stack.last());
+        if mill_packet.is_some_and(|packet| {
+            packet.source_card.name() == "Exhibition Tidecaller"
+                && matches!(packet.kind, StackKind::TriggeredAbility { .. })
+        }) && [Player::P0, Player::P1].into_iter().any(|player| {
+            after.players[player.index()].library_count
+                < before.players[player.index()].library_count
+        }) && after.graveyard_entries_this_turn.len() > before.graveyard_entries_this_turn.len()
+        {
+            self.hit("mill_resolved", mill_packet.unwrap().id.to_string());
+        }
         for object in &after.objects {
+            if object.name == "Treasure"
+                && object.token.is_some()
+                && object.zone == Zone::Battlefield
+            {
+                self.hit("treasure_created", format!("{:?}", object.reference));
+            }
             if object.name == "Strixhaven Skycoach"
                 && object.zone == Zone::Battlefield
                 && object.kinds & 1 != 0
