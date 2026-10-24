@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Exact-object/player +1/+1 placement history prerequisite with Beast, Erudite Aerialist and Knight of Wundagore; candidate pending independent final-head reviews and combined release validation",
+  "source_base": "afcc69f9c1290b1878a07dd5d8868b0d2f1e2b6b",
+  "observation_schema": 139,
+  "previous_schema": 138,
+  "source_pins": {
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "definitions": 5388,
+    "verified_blobs": 1041,
+    "check": "scripts/check_sources.py"
+  },
+  "shared_mechanics": [
+    "Existing per-object/player COW history row gains a skip-when-false plus_one flag; nonqualifying counters retain any-counter semantics, upgrades do not allocate an additional row, removals retain history until turn end",
+    "Actual and speculative characteristic worlds query exact source incarnation and current controller; counter replacement commits and entry counter placement use final counter kind and amount",
+    "Distinct OtherCreatureCounterPlacedByYou event uses the placing player and allows either player to control the recipient; existing OtherCreatureCountersAdded retains recipient-controller semantics",
+    "Funding overlays retain their own COW history, projected entries record their final counters, and memo keys distinguish history-qualified source identities",
+    "Recording-only schema138 projection clears only plus_one flags; prior Power-up ObjectView fields are stripped only for schemas below138; ordinary assertions remain strict"
+  ],
+  "complete_candidate_cards": [
+    {
+      "name": "Beast, Erudite Aerialist",
+      "obligations": [
+        "Both blue/green paid hybrid costs",
+        "Flying only after current controller put +1/+1 counters on this exact Beast this turn, even after counter removal",
+        "Combat damage to a player draws one card; noncombat damage does not"
+      ]
+    },
+    {
+      "name": "Knight of Wundagore",
+      "obligations": [
+        "Paid green creature cast",
+        "Trample with lethal blocker assignment and excess player damage",
+        "Your +1/+1 placement on another creature of either player triggers once per turn; other-player placement and self-placement do not qualify"
+      ]
+    }
+  ],
+  "rules_evidence": {
+    "actual": "src/engine_counter_history_tests.rs",
+    "speculative": "src/engine_counter_history_funding_tests.rs",
+    "new_scenarios": 13,
+    "focused_matching_tests": 14,
+    "both_seats": true,
+    "owned_raw_index_branch_restore": true,
+    "legality_privacy_transactional_failures": true,
+    "inherited_modok_scenario": "msh_connive_counter_placer_survives_control_change_replacements_and_deferred_discard"
+  },
+  "trace_audit": {
+    "inherited": 2421,
+    "candidate": 2423,
+    "inherited_full_trace_matches_under_schema138": 2421,
+    "inherited_changes": [],
+    "removed": [],
+    "new_rows": {
+      "Beast, Erudite Aerialist": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 5,
+        "zone": "Battlefield",
+        "journal": "1ac3501e048f59c2",
+        "observations": "71ed6cc1b7ce32d6"
+      },
+      "Knight of Wundagore": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "100cb581dd613f1f",
+        "observations": "52fbb8c3c84a9c8e"
+      }
+    },
+    "previous_baseline_sha256": "b041d1127c50d52afca366943a56d8c17f39250ebf4785fd7e998435a59dfe2b",
+    "candidate_sha256": "f2ecf71dda277a6db4c63989cf671c01b4d0ceff770f556cf7794a1c94b73c87",
+    "previous_schema_export_sha256": "8fc86f6a106f2818d9182e3e272810b6cfb828ecd03b2832dba320e6e73be738",
+    "exports": "<cache>/rustmage-counter-history-traces-20261024.json and .previous-schema.json",
+    "recording_expected_failure": "Only supported count2423 versus2421, before audited baseline acceptance"
+  },
+  "validation": {
+    "native_tests": 533,
+    "native_test_seconds": 4.29,
+    "native_guarded_seconds": 99.46836612501647,
+    "native_resource_report": "<cache>/rustmage-build-reports/e1fb0573aff943158d64a9f90613219c.json",
+    "focused_resource_report": "<cache>/rustmage-build-reports/cfcd61eeec7e42b7b46696136081cc9a.json",
+    "all_target_clippy_warnings_denied": true,
+    "clippy_resource_report": "<cache>/rustmage-build-reports/91f1a40a8601409d9cbc4a0f786f8cc1.json",
+    "fixed_inputs_until_actual_terminal": true,
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "combined_release_validation": "Integrator-owned; pending on combined batch",
+    "post_test_changes": "Evidence JSON only; runtime, test, metadata and accepted trace inputs remained fixed through terminal completion"
+  },
+  "cleanup": {
+    "report": "<cache>/rustmage-counter-history-cleanup-20261024.json",
+    "removed_bytes": 149510218,
+    "shared_libraries_preserved": 1,
+    "earlier_plan_required_libraries": "Preserved at their previously recorded exact paths; no Plan or audit branch changes"
+  },
+  "implementation_throughput": {
+    "scope": "Two candidate whole cards plus shared history prerequisite, including focused/strict native tests, trace audit and source verification; excludes independent review and combined release acceptance",
+    "started_utc": "2026-10-24T19:23:22+00:00",
+    "measured_through_utc": "2026-10-24T19:48:04.840368+00:00",
+    "elapsed_seconds": 1482.840368,
+    "candidate_cards": 2,
+    "candidate_cards_per_hour": 4.855546257963757
+  },
+  "simulation_throughput": "No new simulation benchmark run in this prerequisite branch; combined release validator will report its own bounded workload. Native unit-test runtime is not simulation throughput.",
+  "remaining_work": [
+    "Two independent nonauthor reviews of final published combined head",
+    "Combined release validator and derived artifact regeneration at integration",
+    "Other MSH cards including Ant-Man, Kid Loki and Invisible Woman remain separately gated until whole-card closure",
+    "Full281-card MSH rules audit, interaction/game coverage and acceptance remain open"
+  ],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+  ]
+}

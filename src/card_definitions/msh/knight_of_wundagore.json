@@ -3,10 +3,29 @@
   "catalogue_id": 2387,
   "oracle_id": "39145960-a212-46b4-addb-4b187f6bf6fd",
   "facts_sha256": "bb27576241568055e56eb1ade2ffa80b2d13729b7face7009da05b24b1b64d70",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b9aa345eaf97d7f5b139358f255010fefb85b600e723a0f6120a4056be3f9e15"
   },
-  "physical_metadata_sha256": "b7eabde109909ce33b83a856be58b5fa278f7d9c5eef00c2cf0fda672be81fe2"
+  "physical_metadata_sha256": "b7eabde109909ce33b83a856be58b5fa278f7d9c5eef00c2cf0fda672be81fe2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KnightOfWundagore.java",
+  "java_sha256": "2411abbe779052b53ec4682675e1ee03c34de1d655f9d44cdcf8f84ce1571e65",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "remaining_obligations": [],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+  ]
 }

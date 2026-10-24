@@ -180,3 +180,9 @@ mod teamwork_tests;
 
 #[path = "../engine_msh_teamwork_cards_tests.rs"]
 mod msh_teamwork_cards;
+
+#[path = "../engine_msh_conditional_lands_tests.rs"]
+mod msh_conditional_lands;
+
+#[path = "../engine_msh_political_triumph_tests.rs"]
+mod msh_political_triumph;

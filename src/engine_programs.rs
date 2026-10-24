@@ -203,7 +203,7 @@ impl Game {
         {
             return;
         }
-        self.record_counter_placement(object, placed_by);
+        self.record_counter_placement(object, placed_by, kind == CounterKind::PlusOne);
         if self.state.objects[object.card as usize].card.triggers().iter().any(|a| {
             matches!(a.condition.event(), TriggerCondition::CounterThresholdCrossed { kind: expected, .. } if expected == kind)
         }) {
@@ -236,15 +236,24 @@ impl Game {
                 .collect();
             for source in observers {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
-                    if let TriggerCondition::OtherCreatureCountersAdded {
-                        kind: expected,
-                        excluded_subtype,
-                    } = ability.condition.event()
-                        && expected == kind
-                        && recipient.controller == source.controller
-                        && recipient.is_creature()
-                        && !recipient.has_subtype(excluded_subtype)
-                    {
+                    let qualifies = match ability.condition.event() {
+                        TriggerCondition::OtherCreatureCountersAdded {
+                            kind: expected,
+                            excluded_subtype,
+                        } => {
+                            expected == kind
+                                && recipient.controller == source.controller
+                                && recipient.is_creature()
+                                && !recipient.has_subtype(excluded_subtype)
+                        }
+                        TriggerCondition::OtherCreatureCounterPlacedByYou { kind: expected } => {
+                            expected == kind
+                                && placed_by == source.controller
+                                && recipient.is_creature()
+                        }
+                        _ => false,
+                    };
+                    if qualifies {
                         self.queue_trigger(&source, index);
                     }
                 }
@@ -597,6 +606,7 @@ impl Game {
                     | TriggerCondition::SelfCountersAdded { .. }
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
+                    | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfFirstAttack

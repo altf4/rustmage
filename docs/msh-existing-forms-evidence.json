@@ -1,0 +1,116 @@
+{
+  "schema": 1,
+  "scope": "Three complete candidate cards using integrated mechanics; full 281-card MSH acceptance pending",
+  "main_source_base": "cbfac89ebd67dada08f86096f15ba3e2bb1748a7",
+  "dependency": {
+    "pr": 485,
+    "published_head": "72bf69bf6a519ac2cc3725129a7c940a9aaad65b",
+    "reason": "Append-only token prerequisites 5388/5389; thirteen dependent complete Power-up consumers have their own evidence and reviews."
+  },
+  "owned_cards": [
+    "Panther Pounce",
+    "Super Suit",
+    "Super-Skrull"
+  ],
+  "shared_engine_behavior_edits": [],
+  "new_token": {
+    "id": 5390,
+    "factory_identity": "@token/msh-wall",
+    "recipe": "0/4 colorless Wall creature with defender; nonlegendary; no activated abilities",
+    "old_identities_unchanged": 5390,
+    "old_colors_unchanged": 5390,
+    "old_token_recipes_unchanged": 115,
+    "old_aliases_unchanged": true,
+    "prior_wall_recipe_found": false
+  },
+  "source_pin_check": {
+    "definitions": 5391,
+    "verified_blobs": 1065,
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+  },
+  "source_scope": "Complete frozen Oracle and direct Rust/full pinned Java classes for all 13 candidates; selected cards reference full reviewed effect/ability/cost/token/target helpers. Relevant direct helper classes reviewed to identify the ten concrete gates.",
+  "inherited_trace_count": 2434,
+  "inherited_full_trace_matches": 2434,
+  "inherited_changes": [],
+  "new_traces": {
+    "Panther Pounce": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 6,
+      "zone": "Graveyard",
+      "journal": "40ee08632655d942",
+      "observations": "53479b97d4268492"
+    },
+    "Super Suit": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 7,
+      "zone": "Battlefield",
+      "journal": "01b10efe7c28f699",
+      "observations": "4126dc7a81792235"
+    },
+    "Super-Skrull": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "723f29e096ef2f1d",
+      "observations": "eb77511142735a3d"
+    }
+  },
+  "candidate_trace_sha256": "53c4d2591b66e95770d9fd297a8f5c85fc41e5a6c1a4161e9c1d82333b84cc53",
+  "focused_scenarios": 9,
+  "rules_scope": [
+    "Both seats; Panther ordered player/creature targets, all partial/full invalid combinations, targeted investigation ownership/replacements, paid Clue sacrifice/draw privacy and end-of-turn expiry.",
+    "Super Suit paid flash on opponent turn, own-target restrictions, source departure/target reincarnation/controller change, paid sorcery equip 2, equip does not untap, live attachment bonuses and Moon type-layer detachment.",
+    "Super-Skrull all four exact colored/generic payments; repeats; zero-mana atomic failures; source/controller departures and target incarnation; pump expiry; four-card draw to either player with hidden hands; exact Wall recipe/defender blocking.",
+    "Every paid/selected action uses existing checked helper for wrong-actor atomicity, owned raw/index branch after parent disposal, exact restore and stale revision."
+  ],
+  "remaining_blockers": {
+    "Ares, God of War": "Death trigger can detect a dying attacker but cannot bind and return that arbitrary departed event subject non-targetedly to its owner.",
+    "I Am Iron Man": "No typed target artifact-creature animation retaining colors and existing card/creature types; current target form fixes a color/types and lacks artifact type.",
+    "S.H.I.E.L.D. Spy Kit": "Equipped attack event exists, but no non-targeted untap instruction for the saved exact attached attacker; must preserve the packet after attachment/source departures.",
+    "Captain America, Wings of Freedom": "No resolving source toughness scalar with exact-object departure LKI for the snapshot boost to other Heroes.",
+    "Whiplash, Vengeful Engineer": "No equipped-source intervening-if guard or current/LKI attached Equipment count scalar.",
+    "Restorative Technique": "Search runs for controller or target card controller; no target-player library search continuation (separate optional creature target).",
+    "Origin of the Avengers": "No private Hero creature mana value <=3 hand-placement filter with draw-on-decline/failure outcome; chapters I/III alone do not complete the Saga.",
+    "Armor Wars": "No resolution-created until-end-of-turn artifact-spell cost reduction; existing reductions depend on live static sources.",
+    "Avengers: Under Siege": "Battlefield damage filters lack an excluded subtype, so chapter II cannot restrict damage to non-Villains.",
+    "The Ten Rings": "No timestamped SET maximum hand size 10 (only 7/no maximum), nor current hand-size difference draw for the intervening-if end-step trigger."
+  },
+  "validation": {
+    "native": {
+      "command": "python3 scripts/resource_guard.py -- cargo test --lib",
+      "exit_code": 0,
+      "passed": 546,
+      "failed": 0,
+      "test_seconds": 4.24,
+      "guard_seconds": 99.60256946698064,
+      "memory_peak_bytes": 2160910336,
+      "memory_max_bytes": 6442450944,
+      "memory_oom_events": 0,
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "log": "<cache>/rustmage/msh-existing/forms-native-final.log",
+      "report": "<cache>/rustmage-build-reports/dbb79b9bee91408889cab0173e77d016.json"
+    },
+    "provenance": {
+      "log": "<cache>/rustmage/msh-existing/forms-source-pins-final.log",
+      "java_verified": true
+    },
+    "full_release": "Parent runs python3 scripts/validate.py --release on final integrated cohort; no standalone full-release claim for this three-card branch."
+  },
+  "set_game_acceptance": "Pending; no full-set or all-Standard game/performance claim.",
+  "measured_implementation": {
+    "start_utc": "2026-10-24T19:37:40Z",
+    "verified_utc": "2026-10-24T19:55:25Z",
+    "elapsed_seconds": 1065,
+    "complete_new_cards": 3,
+    "cards_per_hour": 10.141,
+    "scope": "Includes thirteen-candidate Oracle/Java audit, dependency integration, authoring, tests, queued native builds, Panther target-group correction and full-trace audit; not a simulation benchmark."
+  },
+  "retained_shared_library": {
+    "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+    "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+  }
+}

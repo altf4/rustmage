@@ -1,0 +1,18 @@
+{
+  "name": "@token/msh-tiger-god",
+  "catalogue_id": 5389,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "476602e4c17eee80d5c1c6d98b72dda44704a454a84f71372d2c1c88e783efff",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/TigerGodToken.java",
+  "java_sha256": "0eca242d4b8b3fb0603aae63841be7876edcef50e9233ba43aed2025dd9b565c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByMoreThanOneSourceEffect.java",
+      "sha256": "e63f7e004321ab1b5c11466c457149be4825c47f5ba41a37f6a501b1ac031c4d"
+    }
+  ]
+}

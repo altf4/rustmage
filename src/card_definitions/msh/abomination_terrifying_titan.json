@@ -3,10 +3,36 @@
   "catalogue_id": 33,
   "oracle_id": "72101185-4336-480a-b4d7-f8ceb0007a51",
   "facts_sha256": "d817593065523c6c082d432b2df091fb6e9ef05f2555e184c35e3db629bef2ac",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6d40bec523067218ea53cccbd4c479d2a27c335928ee649df73517e6910ba7d0"
   },
-  "physical_metadata_sha256": "2f9cb62b0fbf0ff9c38445cbc547785f2ddb0c4eabb0160c74f54d1491061e73"
+  "physical_metadata_sha256": "2f9cb62b0fbf0ff9c38445cbc547785f2ddb0c4eabb0160c74f54d1491061e73",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AbominationTerrifyingTitan.java",
+  "java_sha256": "d24267205a5be95dcfcfc1fcd4cc7f406d3bec4817c6e9b646f2c08b8c308289",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightTargetSourceEffect.java",
+      "sha256": "b802e4848e87fcc9bfdf1cbcf6f1c333051aba5139e0a69f556a8015f215fd6f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "remaining_obligations": []
 }

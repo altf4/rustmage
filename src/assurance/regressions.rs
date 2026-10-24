@@ -196,10 +196,15 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
         view.catalogue = "";
         if let Some(schema) = schema_projection {
             view.schema = schema;
+            if schema < 139 {
+                for row in &mut view.counter_placement_history {
+                    row.plus_one = false;
+                }
+            }
         }
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
-    if schema_projection.is_some() {
+    if schema_projection.is_some_and(|schema| schema < 138) {
         // Recording-only projection of the two new ObjectView wire fields.
         // Preserve every inherited field and byte order so old hashes still
         // detect gameplay drift. Normal validation never takes this branch.

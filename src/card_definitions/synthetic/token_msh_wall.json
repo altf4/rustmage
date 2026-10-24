@@ -1,0 +1,18 @@
+{
+  "name": "@token/msh-wall",
+  "catalogue_id": 5390,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "d43f04c175df27c365d397b9c9cf8d8d40a4cc4b9bf93655336d93990ff703f3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/WallColorlessToken.java",
+  "java_sha256": "964dcff7f1a1da117175d71af88fbd7bfb689fa870ef9009eaca2f1af3596796",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    }
+  ]
+}

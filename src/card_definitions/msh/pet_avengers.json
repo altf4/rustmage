@@ -3,10 +3,41 @@
   "catalogue_id": 3141,
   "oracle_id": "bbee7921-19c9-4c70-8462-f16e7e9c25db",
   "facts_sha256": "6ec4a3d9ecd3895a89b9fa2083863d2d5fd950d4664d6f8bf249490171d99068",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "38857619ac807d020f35093b993ce4976fcd3df4c2b030addfe1094bd210d762"
   },
-  "physical_metadata_sha256": "78a797b843207be24eb0113d4d4266e137f9dda35320b88eec777ed19169bc2c"
+  "physical_metadata_sha256": "78a797b843207be24eb0113d4d4266e137f9dda35320b88eec777ed19169bc2c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PetAvengers.java",
+  "java_sha256": "a5f830512c4ea84bc1461231ff6f242dcf80a71dcd350ec0008367c47d81f824",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Hero32Token.java",
+      "sha256": "edfd7ea5c9f492aa2777db3e4125189488d7141195554e46adc89777d97fc163"
+    }
+  ],
+  "remaining_obligations": []
 }

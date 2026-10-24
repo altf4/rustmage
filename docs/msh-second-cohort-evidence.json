@@ -1,0 +1,75 @@
+{
+  "schema": 139,
+  "scope": "24 complete MSH candidates beyond main cbfac89e; full 281-card acceptance remains open",
+  "base": "cbfac89ebd67dada08f86096f15ba3e2bb1748a7",
+  "msh_members": 281,
+  "candidate_admission": 142,
+  "gated_members": 139,
+  "new_complete_cards": 24,
+  "components": {
+    "conditional_lands": 5,
+    "power_up_consumers": 13,
+    "counter_history_consumers": 2,
+    "existing_mechanic_consumers": 3,
+    "official_no_class_plan_consumer": 1
+  },
+  "source_reviews": "Two independent nonauthor source audits cover all components; final published-head reviews and successful release validation are integration gates recorded in PR486.",
+  "shared_mechanics": [
+    "Source-qualified conditional mana guard shared by actual, borrowed and speculative worlds; exact entry incarnations and virtual basic-land witnesses.",
+    "Funding keys distinguish entry history only for immutable guarded mana sources, preserving ordinary basic-land interchangeability.",
+    "Exact +1/+1 placement history alongside existing any-counter history; placer-qualified other-creature trigger without changing legacy recipient-controller events.",
+    "Layer-six and speculative history queries with owned COW overlays, exact projected entry histories and memo keys."
+  ],
+  "wire_change": "Only the new optional plus_one flag in public counter-placement rows; recording-only projection138 retains existing Power-up fields and removes only the new flag.",
+  "tokens": {
+    "5388": "2/2 colorless Robot Villain artifact creature",
+    "5389": "legendary4/4 green Cat God, maximum one blocker",
+    "5390": "0/4 colorless Wall creature with defender"
+  },
+  "native_recording": {
+    "head": "70f99dedb184ef9b488a72df108263093fd039b9",
+    "rules_passed": 569,
+    "expected_only_failure": "golden baseline not yet upgraded for wire139 plus new cards",
+    "log": "<cache>/rustmage-msh-next-cohort-native-recording.log",
+    "guard_report": "<cache>/rustmage-build-reports/6d73d1f468134637b14aa4477d466c07.json",
+    "test_seconds": 4.87
+  },
+  "trace_audit": {
+    "all_prior_schema138_full_traces_exact": 2442,
+    "normal_total": 2445,
+    "existing_history139_full_traces_exact": 2423,
+    "changes": [],
+    "new_beyond_prior_schema_union": [
+      "Beast, Erudite Aerialist",
+      "Knight of Wundagore",
+      "Political Triumph"
+    ],
+    "report": "<cache>/rustmage-msh-next-cohort-trace-audit.json"
+  },
+  "political_triumph": {
+    "authority": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "absence": "Validated exact pinned inventory absence plus seven reviewed shared Java helper pins; no fabricated card class.",
+    "payoff": "Ordinary threshold effects continue when exact source sacrifice is impossible, including departure, blink or control change.",
+    "test_strengthening_after_recording": "Added actual opponent-creature and own-noncreature negative entry cases; final routine validator verifies these with the strict2445 baseline."
+  },
+  "validation": "Run scripts/validate.py --release on fixed published final source; retain report and exact required shared libraries. Final result is linked from PR486.",
+  "source_check": {
+    "definitions": 5391,
+    "verified_java_blobs": 1079
+  },
+  "measured_candidate_authoring": {
+    "power_up13": {
+      "cards": 13,
+      "seconds": 742.615,
+      "cards_per_hour": 63.02,
+      "scope": "Source/direct authoring/focused tests/Clippy/trace proof, excluding integration and independent reviews."
+    },
+    "existing_mechanics3": {
+      "cards": 3,
+      "seconds": 1065,
+      "cards_per_hour": 10.141,
+      "scope": "Includes thirteen-candidate audit and guarded build queue; not simulation throughput."
+    }
+  },
+  "acceptance": "No full-set or all-Standard performance/gameplay acceptance is claimed. Remaining obligations and full set-only game coverage stay open under issue478."
+}

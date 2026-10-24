@@ -42,6 +42,7 @@ impl Game {
             matches!(
                 a.condition.event(),
                 TriggerCondition::OtherCreatureCountersAdded { .. }
+                    | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
