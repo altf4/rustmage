@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "60b565b1893977ff6b676fa44f2df99feaa245738f3bbf3c5e5a2ff95d6f6db8",
+  "catalogue_version": "74e78022fe2b170937c05119523ead8722032b10e84c57d7348895ef83cb26fd",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2415,
-  "implemented_total": 2421,
+  "implemented_standard_cards": 2417,
+  "implemented_total": 2423,
   "token_definitions": 113,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 110,
-      "gated": 163
+      "complete": 112,
+      "gated": 161
     },
     "one": {
       "total": 1,
@@ -2485,8 +2485,8 @@
     {
       "name": "Avengers Tower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/avengers_tower.rs",
       "set": "msh"
     },
@@ -17093,8 +17093,8 @@
     {
       "name": "Hydraulic Helper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hydraulic_helper.rs",
       "set": "msh"
     },

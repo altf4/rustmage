@@ -1244,7 +1244,7 @@ impl<'g> FundingState<'g> {
             return false;
         };
         let parent_goal = self.game.funding_goal(&parent.announcement);
-        let purpose = self.game.purpose_for_item(&a.item);
+        let purpose = self.payment_purpose(goal);
         let mut found = false;
         let pool = mana_lots::available(self.mana, &self.lots, purpose);
         funding_payments(pool, goal.required, goal.generic, |payment| {

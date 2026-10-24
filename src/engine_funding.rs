@@ -1629,6 +1629,20 @@ impl<'g> FundingState<'g> {
             .map(|o| u128::from(o.card.fixed_mana_value()))
             .sum()
     }
+    /// Final-purpose facts follow the speculative world, not its original game.
+    /// Ordinary pools keep the existing constant-time path.
+    fn payment_purpose(&self, goal: &FundingGoal) -> mana_lots::Purpose {
+        if self.lots.is_empty() || !matches!(self.purpose, mana_lots::Purpose::Activation(_)) {
+            return self.purpose;
+        }
+        if let Some((object, ..)) = goal.source.as_ref()
+            && self.reference(object.card) == *object
+            && self.object(object.card).zone != Zone::Outside
+        {
+            return mana_lots::Purpose::Activation(mana_lots::Source::in_world(self, object.card));
+        }
+        self.purpose
+    }
     fn reachable(&self, goal: &FundingGoal, visited: &mut HashSet<FundingKey>) -> bool {
         self.reachable_with_evidence(goal, None, visited)
     }
@@ -1641,22 +1655,23 @@ impl<'g> FundingState<'g> {
         if !self.obligations(goal) {
             return false;
         }
-        let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
+        let purpose = self.payment_purpose(goal);
+        let adjusted = cast_origins::payment_goal(self, goal, purpose);
         if (if self.has_ordered_convoke() {
             true
         } else if self.convoke {
             convoke::payable_in(
                 self,
                 goal.actor,
-                self.purpose,
-                mana_lots::available(self.mana, &self.lots, self.purpose),
+                purpose,
+                mana_lots::available(self.mana, &self.lots, purpose),
                 goal.required,
                 goal.generic,
                 &self.convoke_masks(),
             )
         } else {
             payable(
-                mana_lots::available(self.mana, &self.lots, self.purpose),
+                mana_lots::available(self.mana, &self.lots, purpose),
                 adjusted.required,
                 adjusted.generic,
             )
@@ -2661,9 +2676,10 @@ impl FundingState<'_> {
         // Mana abilities are activated before paying this nonmana cost. The
         // chosen counters remain reserved, rather than being removed before
         // counter-dependent mana production has been evaluated.
-        let adjusted = cast_origins::payment_goal(self, goal, self.purpose);
+        let purpose = self.payment_purpose(goal);
+        let adjusted = cast_origins::payment_goal(self, goal, purpose);
         if payable(
-            mana_lots::available(self.mana, &self.lots, self.purpose),
+            mana_lots::available(self.mana, &self.lots, purpose),
             adjusted.required,
             adjusted.generic,
         ) && self.creature_counter_payment_possible(amount, selected)
@@ -2765,3 +2781,7 @@ impl Game {
         world.fund_creature_counter_cost(&goal, amount, selected, &mut HashSet::new())
     }
 }
+
+#[cfg(test)]
+#[path = "engine_restricted_mana_tests.rs"]
+mod restricted_mana_tests;

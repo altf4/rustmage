@@ -7,6 +7,8 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
+    ExceptNonArtifactSpells,
+    SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
     Unrestricted,
     Unavailable,
@@ -93,6 +95,12 @@ impl Quality {
     ) -> Self {
         Self {
             restriction: match quality.restriction {
+                ManaRestriction::ExceptNonArtifactSpells => {
+                    ManaRestrictionView::ExceptNonArtifactSpells
+                }
+                ManaRestriction::SubtypeSpellOrActivation(subtype) => {
+                    ManaRestrictionView::SubtypeSpellOrActivation(subtype)
+                }
                 ManaRestriction::InstantSorcery => ManaRestrictionView::InstantSorcery,
                 ManaRestriction::Unrestricted => ManaRestrictionView::Unrestricted,
                 ManaRestriction::SpellSubtype(subtype) => {
@@ -134,6 +142,13 @@ impl Quality {
     }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
+            ManaRestrictionView::ExceptNonArtifactSpells => {
+                !matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 == 0)
+            }
+            ManaRestrictionView::SubtypeSpellOrActivation(subtype) => match purpose {
+                Purpose::Spell(facts) | Purpose::Activation(facts) => facts.has_subtype(subtype),
+                Purpose::Other => false,
+            },
             ManaRestrictionView::InstantSorcery => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & (4 | 8) != 0)
             }
@@ -171,6 +186,18 @@ pub(super) struct Source {
     pub spend_any_mana: bool,
 }
 impl Source {
+    pub(super) fn in_world<W: ability_world::CharacteristicWorld + ?Sized>(
+        world: &W,
+        id: CardId,
+    ) -> Self {
+        Self {
+            card: world.object(id).card,
+            kinds: world.kinds(id),
+            subtypes: world.subtypes(id),
+            foreign_stash: false,
+            spend_any_mana: false,
+        }
+    }
     fn has_subtype(self, subtype: &str) -> bool {
         self.subtypes.has(self.card, subtype)
     }
@@ -617,19 +644,22 @@ impl Game {
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
             Purpose::Spell(source)
-        } else {
-            let facts = if self
+        } else if matches!(item.kind, StackKind::ActivatedAbility { .. }) {
+            let source = if self
                 .state
                 .objects
                 .get(item.object.card as usize)
                 .is_some_and(|o| {
                     o.zone != Zone::Outside && self.object_ref(item.object.card) == item.object
                 }) {
-                self.damage_facts(item.object.card)
+                Source::in_world(self, item.object.card)
             } else {
-                item.source_facts
+                item.source_facts.into()
             };
-            Purpose::Activation(facts.into())
+            Purpose::Activation(source)
+        } else {
+            // Costs of triggered abilities (including ward) are not activations.
+            Purpose::Other
         }
     }
     pub(super) fn spell_mana_purpose_for_card(
@@ -762,10 +792,9 @@ impl Game {
             Action::Activate { card, payment, .. }
             | Action::BeginActivate { card, payment, .. }
             | Action::ActivateMana { card, payment, .. }
-            | Action::ActivateBorrowedMana { card, payment, .. } => (
-                *payment,
-                Purpose::Activation(self.damage_facts(*card).into()),
-            ),
+            | Action::ActivateBorrowedMana { card, payment, .. } => {
+                (*payment, Purpose::Activation(Source::in_world(self, *card)))
+            }
             Action::PayCosts { payment } => {
                 let Some(a) = &self.state.announcing else {
                     return false;
@@ -847,7 +876,7 @@ pub(super) fn visit_allocations(
 impl Game {
     pub(super) fn funding_purpose(&self, goal: &FundingGoal) -> Purpose {
         if let Some((source, _, _, _, _)) = &goal.source {
-            return Purpose::Activation(self.damage_facts(source.card).into());
+            return Purpose::Activation(Source::in_world(self, source.card));
         }
         self.state
             .announcing
