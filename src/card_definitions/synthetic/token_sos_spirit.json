@@ -1,0 +1,11 @@
+{
+  "name": "@token/sos-spirit",
+  "catalogue_id": 5350,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "45f4c52ea8151a6f929a04e0b482d7ad6caddcc747c1fd6f2b5767eed60e0c47",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Spirit22RedWhiteToken.java",
+  "java_sha256": "7b9f7f561d69a06e049d896a0e1f55644f27f676f0e565dd0db3785d999fef37"
+}
