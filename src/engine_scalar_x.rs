@@ -305,6 +305,12 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::DamageReceivedAmount => {
+                item.damage_received
+                    .as_ref()
+                    .expect("damage-received amount requires its frozen packet")
+                    .amount
+            }
             AmountValue::DamageEventAmount => item.damage_event.expect("saved damage event").amount,
             AmountValue::SourceCounterQuantity(kind) => self
                 .source_counter_quantity_live(item.object, kind)

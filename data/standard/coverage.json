@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9f67c067bf7a3caea5ee398101b9a6580880910ea447cc87ae541bc988841d5a",
+  "catalogue_version": "bcb68311c402aa35b42e0c68fbb08310d095d0aede681726b2750f42f05b9fd2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2463,
-  "implemented_total": 2469,
+  "implemented_standard_cards": 2464,
+  "implemented_total": 2470,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 158,
-      "gated": 115
+      "complete": 159,
+      "gated": 114
     },
     "one": {
       "total": 1,
@@ -18309,8 +18309,8 @@
     {
       "name": "Jennifer Walters // The Sensational She-Hulk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/jennifer_walters_the_sensational_she_hulk.rs",
       "set": "msh"
     },

@@ -5401,7 +5401,8 @@
     3,
     2,
     4,
-    8
+    8,
+    17
   ],
   "aliases": [
     [
@@ -15633,6 +15634,10 @@
       2262
     ],
     [
+      "Jennifer Walters",
+      2263
+    ],
+    [
       "Jennifer Walters // The Sensational She-Hulk",
       2263
     ],
@@ -24893,6 +24898,10 @@
       4494
     ],
     [
+      "The Sensational She-Hulk",
+      5396
+    ],
+    [
       "The Sentry, Golden Guardian",
       4495
     ],
@@ -28788,7 +28797,8 @@
     "MshRobotVillainToken": 5388,
     "MshTigerGodToken": 5389,
     "MshPhotonLivingLight": 5391,
-    "MshBlackPantherHopeEnduring": 5392
+    "MshBlackPantherHopeEnduring": 5392,
+    "MshSensationalSheHulk": 5396
   },
   "helper_interface": [
     [
@@ -93446,7 +93456,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Jennifer Walters",
+        "mana_cost": "{1}{W}",
+        "type_line": "Legendary Creature — Human Advisor Hero",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": []
+      },
+      "back_face": 5396
     },
     {
       "index": 2264,
@@ -182609,6 +182635,37 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5396,
+      "module": "card_5396",
+      "path": "msh/the_sensational_she_hulk.rs",
+      "set": "msh",
+      "category": "back_face",
+      "name": "The Sensational She-Hulk",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "{3}{G}{W}{W}",
+      "type_line": "Legendary Creature — Gamma Hero",
+      "oracle_keywords": [
+        "Reach",
+        "Trample"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        2,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 3,
+      "face_parent": 2263
     }
   ]
 }

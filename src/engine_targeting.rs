@@ -1320,6 +1320,7 @@ impl Game {
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
+            damage_received: None,
             creature_combat_event: None,
             discard_event: None,
             draw_event: None,
