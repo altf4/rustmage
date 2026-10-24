@@ -165,3 +165,63 @@ fn sos_wisdom_returns_only_own_spells_exiles_and_persists_hand_limit() {
         assert_ne!(g.state.pending, Pending::Discard);
     }
 }
+
+#[test]
+fn sos_card_copy_normal_paid_cast_counts_and_ceases_without_physical_recovery() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let victim = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let copy = g.allocate_card_copy(Card::from_name("Unsummon").unwrap(), p);
+        g.grant_exile_play_permission(p, copy, false);
+        assert_eq!(g.object_view(copy.card).zone, Zone::Exile);
+        assert!(!g.object_view(copy.card).is_token());
+        let casts = g.state.players[p.index()].spells_cast_this_turn;
+        big_helpers::checked(&mut g, Action::AnnounceExile { card: copy.card });
+        big_helpers::checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(victim),
+            },
+        );
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        big_helpers::checked(&mut g, payment);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, casts + 1);
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().origin,
+            Zone::Exile
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(victim).zone, Zone::Hand);
+        assert_eq!(g.object_view(copy.card).zone, Zone::Outside);
+        assert_ne!(g.object_ref(copy.card), copy);
+        assert_eq!(
+            g.state
+                .free_tokens
+                .iter()
+                .filter(|&&id| id == copy.card)
+                .count(),
+            1
+        );
+        g.move_object(copy.card, Zone::Hand);
+        assert_eq!(g.object_view(copy.card).zone, Zone::Outside);
+        let next = g.allocate_card_copy(Card::from_name("Divination").unwrap(), p);
+        assert_eq!(next.card, copy.card);
+        assert_ne!(next, copy);
+        g.cease_card_copy(copy);
+        assert_eq!(g.object_view(next.card).zone, Zone::Exile);
+        g.cease_card_copy(next);
+        g.cease_card_copy(next);
+        assert_eq!(
+            g.state
+                .free_tokens
+                .iter()
+                .filter(|&&id| id == next.card)
+                .count(),
+            1
+        );
+    }
+}

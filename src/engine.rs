@@ -15,6 +15,8 @@ pub use mana_lots::{
 mod copies;
 #[path = "engine_stack_copies.rs"]
 mod stack_copies;
+#[path = "engine_card_copies.rs"]
+mod card_copies;
 pub use copies::CopyRecipe;
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
@@ -641,6 +643,7 @@ enum CopyKind {
     None,
     Token,
     Spell,
+    Card,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -672,7 +675,7 @@ impl Object {
         self.copy_kind == CopyKind::Token
     }
     fn is_spell_copy(&self) -> bool {
-        self.copy_kind == CopyKind::Spell
+        matches!(self.copy_kind, CopyKind::Spell | CopyKind::Card)
     }
     fn is_token(&self) -> bool {
         self.is_copy_token() || self.card.is_token()
@@ -4890,7 +4893,9 @@ impl Game {
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
         let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
-        if (self.state.objects[id as usize].is_spell_copy() && before.zone != Zone::Stack)
+        if (self.state.objects[id as usize].copy_kind == CopyKind::Spell && before.zone != Zone::Stack)
+            || (self.state.objects[id as usize].copy_kind == CopyKind::Card
+                && before.zone == Zone::Outside)
             || before.card.is_emblem()
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
