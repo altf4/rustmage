@@ -391,3 +391,132 @@ fn finality_thunderbolts_token_villain_triggers_but_cannot_return() {
         assert_eq!(tokens(&g, p), 0);
     }
 }
+
+#[test]
+fn finality_thunderbolts_provider_return_assigns_deferred_type_timestamp_and_preserves_later_order()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let conspiracy = paid(&mut g, p, "Thunderbolts Conspiracy", None);
+        let provider = paid(&mut g, p, "Doc Ock, Sinister Scientist", None);
+        let old = g.object_ref(provider);
+        let earlier = g.next_role_timestamp();
+        paid(&mut g, p, "Hour of Defeat", Some(Target::Card(provider)));
+        let returned = g.object_ref(provider);
+        assert_ne!(returned, old);
+        assert_eq!(g.object_view(provider).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(provider, CounterKind::Finality), 1);
+        assert!(g.has_subtype(provider, "Hero"));
+        let type_time = |game: &Game| {
+            game.state
+                .roles
+                .as_ref()
+                .unwrap()
+                .creature_types
+                .iter()
+                .find(|row| row.recipient == returned && row.types == ["Hero"])
+                .unwrap()
+                .timestamp
+        };
+        let provider_time = |game: &Game| {
+            game.state
+                .roles
+                .as_ref()
+                .unwrap()
+                .base_stats
+                .iter()
+                .find(|row| row.source == returned)
+                .unwrap()
+                .timestamp
+        };
+        let returned_time = type_time(&g);
+        assert!(
+            returned_time > earlier,
+            "a deferred Hero effect cannot retain timestamp zero"
+        );
+        assert_eq!(
+            returned_time,
+            provider_time(&g),
+            "the returning provider and pending subtype share its assigned entry timestamp"
+        );
+        assert!(!g.state.roles.as_ref().unwrap().deferred_timestamps);
+        // Refreshing the provider later must not move a lasting return grant.
+        g.assign_static_source_timestamp(returned);
+        assert!(provider_time(&g) > returned_time);
+        assert_eq!(type_time(&g), returned_time);
+        let aura = paid(
+            &mut g,
+            p,
+            "Witness Protection",
+            Some(Target::Card(provider)),
+        );
+        assert!(!g.has_subtype(provider, "Hero"));
+        assert_eq!(type_time(&g), returned_time);
+        g.move_object(aura, Zone::Graveyard);
+        g.move_object(conspiracy, Zone::Graveyard);
+        assert!(g.has_subtype(provider, "Hero"));
+        assert_eq!(type_time(&g), returned_time);
+        g.move_object(provider, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(provider).zone, Zone::Exile);
+        assert!(
+            g.state
+                .roles
+                .as_ref()
+                .unwrap()
+                .creature_types
+                .iter()
+                .all(|row| row.recipient != returned)
+        );
+    }
+}
+
+#[test]
+fn finality_return_modifiers_share_chosen_entry_order_for_plain_and_provider_creatures() {
+    for p in [Player::P0, Player::P1] {
+        for reverse in [false, true] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Thunderbolts Conspiracy", Zone::Battlefield);
+            let ids = [
+                named(&mut g, p, "Doc Ock, Sinister Scientist", Zone::Graveyard),
+                named(&mut g, p, "Ultron Drone", Zone::Graveyard),
+            ];
+            let earlier = g.next_role_timestamp();
+            let moves = ids
+                .into_iter()
+                .map(|id| {
+                    let mut movement = g.entry_move(id, Zone::Battlefield, false);
+                    movement.effect_counter = Some((CounterKind::Finality, 1));
+                    movement.return_modification =
+                        Some((crate::cards::ReturnKind::HeroFinality, g.object_ref(source)));
+                    movement
+                })
+                .collect();
+            g.stage_entries(moves, None);
+            g.advance_entries();
+            assert!(matches!(g.state.pending, Pending::EntryTimestamp { .. }));
+            let ordered = if reverse { [ids[1], ids[0]] } else { ids };
+            let first = g.object_ref(ordered[0]);
+            checked(&mut g, Action::ChooseEntryTimestamp { object: first });
+            settle(&mut g);
+            let roles = g.state.roles.as_ref().unwrap();
+            let times = ordered.map(|id| {
+                let row = roles
+                    .creature_types
+                    .iter()
+                    .find(|row| row.recipient == g.object_ref(id) && row.types == ["Hero"])
+                    .unwrap();
+                assert!(g.has_subtype(id, "Hero"));
+                assert_eq!(g.counter_count(id, CounterKind::Finality), 1);
+                row.timestamp
+            });
+            assert!(times[0] > earlier && times[1] > times[0]);
+            let base = roles
+                .base_stats
+                .iter()
+                .find(|row| row.source == g.object_ref(ids[0]) && row.static_source)
+                .unwrap();
+            assert_eq!(base.timestamp, times[usize::from(reverse)]);
+        }
+    }
+}

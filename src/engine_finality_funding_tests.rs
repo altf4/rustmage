@@ -214,3 +214,55 @@ fn finality_funding_owner_return_entry_counter_replacement_and_hero_layer_persis
         assert_eq!(g.snapshot(), snapshot);
     }
 }
+
+#[test]
+fn finality_funding_provider_and_plain_returns_keep_positive_selected_type_order() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Thunderbolts Conspiracy", Zone::Battlefield);
+        let ids = [
+            named(&mut g, p, "Doc Ock, Sinister Scientist", Zone::Graveyard),
+            named(&mut g, p, "Ultron Drone", Zone::Graveyard),
+        ];
+        let earlier = g.next_role_timestamp();
+        let moves = ids
+            .into_iter()
+            .map(|id| {
+                let mut movement = g.entry_move(id, Zone::Battlefield, false);
+                movement.controller = p;
+                movement.effect_counter = Some((CounterKind::Finality, 1));
+                movement.return_modification =
+                    Some((crate::cards::ReturnKind::HeroFinality, g.object_ref(source)));
+                movement
+            })
+            .collect();
+        let before = g.snapshot();
+        let world = FundingState::from_game(&g, &goal(p));
+        let mut permutations = Vec::new();
+        world.visit_entry_moves(moves, true, None, &mut |after| {
+            let roles = after.roles().unwrap();
+            let times = ids.map(|id| {
+                let row = roles
+                    .creature_types
+                    .iter()
+                    .find(|row| row.recipient == after.reference(id) && row.types == ["Hero"])
+                    .unwrap();
+                assert!(row.timestamp > earlier);
+                assert!(after.subtypes(id).has(after.object(id).card, "Hero"));
+                assert_eq!(after.counter_count(id, CounterKind::Finality), 1);
+                row.timestamp
+            });
+            let base = roles
+                .base_stats
+                .iter()
+                .find(|row| row.source == after.reference(ids[0]) && row.static_source)
+                .unwrap();
+            assert!(base.timestamp > earlier && times[0] >= base.timestamp);
+            permutations.push(times[0] < times[1]);
+            false
+        });
+        permutations.sort();
+        assert_eq!(permutations, vec![false, true]);
+        assert_eq!(g.snapshot(), before);
+    }
+}
