@@ -894,6 +894,10 @@ impl Game {
     }
 
     /// CR115.9b: inspect the current expected zone/incarnation; never use target LKI.
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Cast filters need distinct spell owner, caster, value, source and exact target context"
+    )]
     pub(super) fn cast_filter_matches_value(
         &self,
         spell_owner: Option<Player>,
