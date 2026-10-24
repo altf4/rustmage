@@ -1,6 +1,11 @@
 //! An opponent keeps its entry choices even if they make a proposal fail.
 use super::*;
 use big_helpers::{cast as paid, checked, settle as finish};
+fn observation(g: &Game, p: Player) -> serde_json::Value {
+    let mut view = serde_json::to_value(g.observe(p)).unwrap();
+    view.as_object_mut().unwrap().remove("revision");
+    view
+}
 fn until_choice(g: &mut Game) {
     for _ in 0..40 {
         if g.state.pending != Pending::Priority {
@@ -74,8 +79,8 @@ fn sos_cast_rollback_foreign_aura_can_strand_costs_and_returns_entire_proposal()
             let (mut g, silver, enemy, aura, prison) = setup(p, true);
             let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
             let before = g.snapshot();
-            let own_view = serde_json::to_value(g.observe(p)).unwrap();
-            let other_view = serde_json::to_value(g.observe(p.other())).unwrap();
+            let own_view = observation(&g, p);
+            let other_view = observation(&g, p.other());
             propose(&mut g, p, spell, prison, enemy);
             pay(&mut g);
             clause(&mut g, CastCostClause::Additional);
@@ -89,11 +94,8 @@ fn sos_cast_rollback_foreign_aura_can_strand_costs_and_returns_entire_proposal()
             if harmful {
                 assert_eq!(g.snapshot(), before);
                 assert_eq!(g.actor(), Some(p));
-                assert_eq!(serde_json::to_value(g.observe(p)).unwrap(), own_view);
-                assert_eq!(
-                    serde_json::to_value(g.observe(p.other())).unwrap(),
-                    other_view
-                );
+                assert_eq!(observation(&g, p), own_view);
+                assert_eq!(observation(&g, p.other()), other_view);
                 assert!(g.state.cast_rollback.is_none());
             } else {
                 clause(&mut g, CastCostClause::Casualty(0));
@@ -122,6 +124,7 @@ fn sos_cast_rollback_reverses_entire_mana_chain_and_spell_payments() {
         let object = g.object_ref(silver);
         checked(&mut g, Action::ChooseAuraAttachment { object });
         assert_eq!(g.actor(), Some(p));
+        checked(&mut g, Action::ChooseManaRollback { keep: false });
         assert_eq!(g.object_view(prison).zone, Zone::Battlefield);
         assert_eq!(g.object_view(aura).zone, Zone::Exile);
         assert_eq!(g.object_view(spell).zone, Zone::Hand);

@@ -6,11 +6,14 @@ use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct CastRollback {
-    before: State,
+    pub(super) before: State,
     pub(super) player: Player,
-    spell: CardId,
+    pub(super) spell: CardId,
     foreign_choice: bool,
     bytes: usize,
+    pub(super) events: Vec<cast_rollback_mana::ManaEvent>,
+    pub(super) replay: Option<Box<cast_rollback_mana::ManaReplay>>,
+    pub(super) capture: Option<Box<cast_mana_recording::ManaCapture>>,
 }
 impl CastRollback {
     fn new(before: State, player: Player, spell: CardId) -> Self {
@@ -28,10 +31,16 @@ impl CastRollback {
             spell,
             foreign_choice: false,
             bytes,
+            events: Vec::new(),
+            replay: None,
+            capture: None,
         }
     }
     pub(super) fn bytes(&self) -> usize {
         self.bytes
+            + self.events.iter().map(|e| e.bytes()).sum::<usize>()
+            + self.replay.as_ref().map_or(0, |r| r.bytes())
+            + self.capture.as_ref().map_or(0, |r| r.bytes())
     }
 }
 impl Game {
@@ -105,22 +114,31 @@ impl Game {
             let Some(rollback) = self.state.cast_rollback.take() else {
                 return;
             };
-            let current = std::mem::replace(&mut self.state, rollback.before);
-            self.preserve_irreversible_cast_library_changes(&current, rollback.spell);
-            // The proposal and its target/cost triggers disappear. The priority
-            // holder or parent resolution's exact original choice is retained.
-            if self.state.resolving.is_none() && self.state.pending == Pending::Priority {
-                self.state_based_actions();
-                self.prepare_triggers();
+            if !rollback.events.is_empty() {
+                let current = self.state.clone();
+                assert!(self.start_mana_rollback(rollback, current));
+                return;
             }
+            let current = std::mem::replace(&mut self.state, rollback.before);
+            self.complete_cast_rollback_restore(&current, rollback.spell);
             return;
         }
         if let Some(r) = &mut self.state.cast_rollback {
             r.foreign_choice = false;
         }
     }
+    pub(super) fn complete_cast_rollback_restore(&mut self, current: &State, spell: CardId) {
+        self.preserve_irreversible_cast_library_changes(current, spell);
+        // Undone proposal triggers disappear; retain the original priority holder.
+        if self.state.resolving.is_none() && self.state.pending == Pending::Priority {
+            self.state_based_actions();
+            self.prepare_triggers();
+        }
+    }
     pub(super) fn clear_finished_cast_rollback(&mut self) {
-        if self.state.cast_rollback.is_none() {
+        if self.state.cast_rollback.is_none()
+            || matches!(self.state.pending, Pending::ManaRollback { .. })
+        {
             return;
         }
         let casting = self
@@ -179,6 +197,18 @@ impl Game {
                     .then_some((id as CardId, o.clone()))
                 })
                 .collect::<Vec<_>>();
+        let restored_spell = self
+            .state
+            .players
+            .iter()
+            .enumerate()
+            .find_map(|(p, player)| {
+                player
+                    .library
+                    .iter()
+                    .position(|&id| id == spell)
+                    .map(|at| (p, player.library.len() - 1 - at))
+            });
         for (id, object) in retained {
             let before = self.object_view(id);
             if before.zone != Zone::Library {
@@ -213,18 +243,6 @@ impl Game {
                 self.set_copy_recipe(reference, recipe);
             }
         }
-        let restored_spell = self
-            .state
-            .players
-            .iter()
-            .enumerate()
-            .find_map(|(p, player)| {
-                player
-                    .library
-                    .iter()
-                    .position(|&id| id == spell)
-                    .map(|at| (p, player.library.len() - 1 - at))
-            });
         for (player, now) in self.state.players.iter_mut().zip(&current.players) {
             player.library = now.library.clone();
         }

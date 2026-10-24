@@ -130,6 +130,11 @@ mod cast_costs;
 mod casualty;
 pub use cast_costs::{CastCostClause, CastCostRow, CastCostTransaction};
 pub use casualty::{CasualtyDeclaration, CasualtyGrant};
+#[path = "engine_cast_mana_recording.rs"]
+mod cast_mana_recording;
+#[path = "engine_cast_rollback_mana.rs"]
+mod cast_rollback_mana;
+pub use cast_rollback_mana::ManaRollbackView;
 #[path = "engine_evidence.rs"]
 mod evidence;
 pub use evidence::{EvidenceEventView, EvidenceView};
@@ -522,6 +527,7 @@ define_actions! {
     PayCosts {
         payment: Mana,
     },
+    ChooseManaRollback { keep: bool },
     Cast {
         card: CardId,
         target: Option<Target>,
@@ -1319,6 +1325,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    ManaRollback {
+        player: Player,
+    },
     LinkedChoice {
         player: Player,
     },
@@ -1964,6 +1973,7 @@ pub struct Observation {
     pub preparations: Vec<PreparationView>,
     pub casualty_declarations: Vec<CasualtyDeclaration>,
     pub cast_costs: Option<CastCostTransaction>,
+    pub mana_rollback: Option<ManaRollbackView>,
     pub library_piles: Option<LibraryPilesView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
@@ -2378,6 +2388,7 @@ impl Game {
             | Pending::ResolutionX { player }
             | Pending::X { player }
             | Pending::Casualty { player }
+            | Pending::ManaRollback { player }
             | Pending::CastCosts { player }
             | Pending::CasualtyPayment { player, .. }
             | Pending::Kicker { player }
@@ -2618,6 +2629,7 @@ impl Game {
                 return Err(Error::IllegalAction);
             }
             self.prepare_cast_rollback(actor, &action);
+            self.capture_cast_mana_action(actor, &action);
             self.clear_zone_reveals();
             self.prepare_mana_allocations(&action);
             self.apply_legal(actor, action);
@@ -2650,7 +2662,15 @@ impl Game {
                 break;
             }
         }
-        if self.foreign_cast_choice_pending() {
+        self.finish_cast_mana_action();
+        if self.foreign_cast_choice_pending()
+            && !(self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.capture.is_some())
+                && (self.state.entry_batch.is_some() || self.state.replacements.is_some()))
+        {
             let fundable = self.current_cast_costs_fundable();
             self.finish_cast_rollback(fundable);
         }
@@ -3743,6 +3763,9 @@ impl Game {
                     }
                 }
             }
+            Pending::ManaRollback { .. } => {
+                return self.visit_mana_rollback_actions(&mut emit);
+            }
             Pending::CastCosts { .. } => {
                 return self.visit_cast_cost_clauses(&mut emit);
             }
@@ -4414,6 +4437,7 @@ impl Game {
                 object,
                 contribution,
             } => self.choose_convoker(object, contribution),
+            Action::ChooseManaRollback { keep } => self.choose_mana_rollback(keep),
             Action::PayCosts { payment } => {
                 let a = self.state.announcing.as_mut().unwrap();
                 a.payment = Some(payment);
@@ -6168,6 +6192,7 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.to_vec()),
             library_piles: self.library_piles_view(viewer),
+            mana_rollback: self.mana_rollback_view(viewer),
             cast_costs: self
                 .state
                 .announcing
@@ -6340,6 +6365,7 @@ impl Game {
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
                 Pending::Casualty { .. } => "casualty",
+                Pending::ManaRollback { .. } => "mana_rollback",
                 Pending::CastCosts { .. } => "cast_costs",
                 Pending::CasualtyPayment { .. } => "casualty_payment",
                 Pending::Bargain { .. } => "bargain",
