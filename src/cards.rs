@@ -500,6 +500,7 @@ pub(crate) struct LibrarySelectionSpec {
 /// Explicit destinations for cards looked at without changing zones first.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryPickDestination {
+    LandsTappedRestHand,
     Hideaway,
     Hand,
     Battlefield,

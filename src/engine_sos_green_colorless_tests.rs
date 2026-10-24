@@ -1408,3 +1408,110 @@ fn sos_sundering_paid_graveyard_bottom_uses_owner_and_rejects_new_incarnation() 
         }
     }
 }
+
+#[test]
+fn sos_zimone_private_up_to_two_split_revealed_hand_and_tapped_lands() {
+    for p in [Player::P0, Player::P1] {
+        for count in [0, 1, 2] {
+            let mut g = setup(p);
+            let untouched = g.state.players[p.index()].library.clone();
+            let first = named(&mut g, p, "Forest", Zone::Library);
+            let second = named(&mut g, p, "Bear Cub", Zone::Library);
+            let illegal = named(&mut g, p, "Oracle's Restoration", Zone::Library);
+            let third = named(&mut g, p, "Island", Zone::Library);
+            let fourth = named(&mut g, p, "Bear Cub", Zone::Library);
+            paid(&mut g, p, "Zimone's Experiment", None, &[]);
+            for _ in 0..16 {
+                if matches!(g.state.pending, Pending::EffectLibrarySelection { .. }) {
+                    break;
+                }
+                checked(&mut g, Action::Pass);
+            }
+            assert_eq!(
+                g.observe(p)
+                    .library_selection
+                    .as_ref()
+                    .unwrap()
+                    .remaining
+                    .len(),
+                5
+            );
+            assert!(g.observe(p.other()).library_selection.is_none());
+            reject(&mut g, Action::SelectLibrary { card: illegal });
+            if count >= 1 {
+                checked(&mut g, Action::SelectLibrary { card: first });
+            }
+            if count >= 2 {
+                checked(&mut g, Action::SelectLibrary { card: second });
+            }
+            if count == 2 {
+                reject(&mut g, Action::SelectLibrary { card: third });
+            }
+            checked(&mut g, Action::FinishLibrarySelection);
+            settle(&mut g);
+            assert_eq!(g.on_battlefield(first), count >= 1);
+            if count >= 1 {
+                assert!(g.object_view(first).tapped);
+            }
+            assert_eq!(g.object_view(second).zone == Zone::Hand, count == 2);
+            assert_eq!(
+                g.observe(p.other()).objects.iter().any(|o| o.id == second),
+                count == 2
+            );
+            assert!(
+                g.observe(p.other())
+                    .objects
+                    .iter()
+                    .all(|o| o.id != illegal && o.id != third && o.id != fourth)
+            );
+            let library = &g.state.players[p.index()].library;
+            let remainder = 5 - count;
+            assert_eq!(&library[remainder..], untouched.as_slice());
+            let mut actual = library[..remainder].to_vec();
+            actual.sort_unstable();
+            let mut expected: Vec<_> = [first, second, illegal, third, fourth]
+                .into_iter()
+                .filter(|id| !(count >= 1 && *id == first || count == 2 && *id == second))
+                .collect();
+            expected.sort_unstable();
+            assert_eq!(actual, expected);
+        }
+    }
+}
+
+#[test]
+fn sos_zimone_reveals_selected_only_during_land_entry_choices_and_finishes_creature_hand() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Secluded Courtyard", Zone::Library);
+        let creature = named(&mut g, p, "Bear Cub", Zone::Library);
+        let private = named(&mut g, p, "Oracle's Restoration", Zone::Library);
+        paid(&mut g, p, "Zimone's Experiment", None, &[]);
+        for _ in 0..16 {
+            if matches!(g.state.pending, Pending::EffectLibrarySelection { .. }) {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        checked(&mut g, Action::SelectLibrary { card: land });
+        checked(&mut g, Action::SelectLibrary { card: creature });
+        checked(&mut g, Action::FinishLibrarySelection);
+        let public = g.observe(p.other()).library_selection.unwrap();
+        assert!(public.public);
+        assert!(public.remaining.is_empty());
+        assert!(public.bottom.is_empty());
+        assert_eq!(public.selected.len(), 2);
+        assert!(public.selected.iter().all(|o| o.id != private));
+        settle(&mut g);
+        assert!(g.on_battlefield(land));
+        assert!(g.object_view(land).tapped);
+        assert_eq!(g.object_view(creature).zone, Zone::Hand);
+        assert!(
+            g.observe(p.other())
+                .objects
+                .iter()
+                .any(|o| o.id == creature)
+        );
+        assert!(g.observe(p.other()).objects.iter().all(|o| o.id != private));
+    }
+}
