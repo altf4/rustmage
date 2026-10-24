@@ -468,13 +468,7 @@ fn msh_attack_alone_widow_first_strike_deathtouch_and_menace_real_combat() {
                 amount: 1,
             },
         );
-        checked(
-            &mut g,
-            Action::AssignDamage {
-                target: Target::Card(second),
-                amount: 2,
-            },
-        );
+        // With one recipient left the engine assigns the remaining two automatically.
         until(&mut g, |g| {
             g.object_view(first).zone == Zone::Graveyard
                 && g.object_view(second).zone == Zone::Graveyard
