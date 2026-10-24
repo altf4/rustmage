@@ -1,7 +1,7 @@
 //! Standard-only public acceptance for paid exile spells and ordinary land plays.
 use rustmage::{
-    Action, Card, CastMethod, Config, DeckRules, Error, Game, Keywords, ObjectRef, Observation,
-    Player, SpellView, StackKind, Target, Zone,
+    Action, Card, CastMethod, Config, DeckRules, Error, ExilePlayExpiry, Game, Keywords, ObjectRef,
+    Observation, Player, SpellView, StackKind, Target, Zone,
 };
 use std::collections::{BTreeMap, BTreeSet};
 const NAMES: [&str; 15] = [
@@ -268,7 +268,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let v = obj(&a, r.object).expect("exact public exile object");
                 assert_eq!(v.zone, Zone::Exile);
                 assert_eq!(v.owner, r.player);
-                assert!(r.expires_turn >= a.turn);
+                assert!(!matches!(r.expiry, ExilePlayExpiry::Turn(deadline) if deadline < a.turn));
             }
             let new: Vec<_> = a
                 .exile_permissions
@@ -293,15 +293,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 for r in new {
                     assert_eq!(r.player, s.controller);
                     assert_eq!(
-                        r.expires_turn,
-                        b.turn
-                            + if matches!(i, 4 | 6 | 7 | 14) {
-                                0
-                            } else if b.active == s.controller {
-                                2
-                            } else {
-                                1
-                            }
+                        r.expiry,
+                        if matches!(i, 4 | 6 | 7 | 14) {
+                            ExilePlayExpiry::Turn(b.turn)
+                        } else {
+                            ExilePlayExpiry::EndOfNextTurn
+                        }
                     );
                     source_for.insert(r.object, s.object);
                     if held.is_none() {
@@ -462,7 +459,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 assert!(matches!(v.zone, Zone::Battlefield | Zone::Graveyard));
             }
             for r in &b.exile_permissions {
-                if a.turn > r.expires_turn
+                if matches!(r.expiry, ExilePlayExpiry::Turn(deadline) if a.turn > deadline)
                     && obj(&a, r.object).is_some_and(|v| v.zone == Zone::Exile)
                 {
                     assert!(!a.exile_permissions.iter().any(|v| v.object == r.object));
