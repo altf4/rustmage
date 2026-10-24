@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f1cfd29a8200c6c9152d020fcb2b620a2e8d1fd23f9354f591cdadbf378cdea8",
+  "catalogue_version": "1a41a110ec651bbdb48b06bed1293d2c47b27ad40c683604095e64d300f120af",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2309,
-  "implemented_total": 2315,
+  "implemented_standard_cards": 2310,
+  "implemented_total": 2316,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 192,
-      "gated": 72
+      "complete": 193,
+      "gated": 71
     },
     "spm": {
       "total": 134,
@@ -4982,8 +4982,8 @@
     {
       "name": "Burrog Barrage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/burrog_barrage.rs",
       "set": "sos"
     },
