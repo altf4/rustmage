@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4f817b28610e91e97eb514a370c980cb88a5b34d0e8112446a9a0787b44592da",
+  "catalogue_version": "4f9eddbcf6f241c50f0c728093b2ff4958b40f57de39750e8ecfc99f04f176fe",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2460,
-  "implemented_total": 2466,
+  "implemented_standard_cards": 2461,
+  "implemented_total": 2467,
   "token_definitions": 117,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 155,
-      "gated": 118
+      "complete": 156,
+      "gated": 117
     },
     "one": {
       "total": 1,
@@ -34221,8 +34221,8 @@
     {
       "name": "Super Intelligence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_intelligence.rs",
       "set": "msh"
     },
