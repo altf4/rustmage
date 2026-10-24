@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "54c5268a8c9e5ee939d87e2f88da17224e1828fc3380ac61f21bccf07ae064fe",
+  "catalogue_version": "364ee9dc6461d3be84d6db8c2f8d7e24344ebb964f69be9b4a3f59ae8e83581d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2310,
-  "implemented_total": 2316,
+  "implemented_standard_cards": 2343,
+  "implemented_total": 2349,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 193,
-      "gated": 71
+      "complete": 226,
+      "gated": 38
     },
     "spm": {
       "total": 134,
@@ -518,8 +518,8 @@
     {
       "name": "Abstract Paintmage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/abstract_paintmage.rs",
       "set": "sos"
     },
@@ -1646,8 +1646,8 @@
     {
       "name": "Antiquities on the Loose",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/antiquities_on_the_loose.rs",
       "set": "sos"
     },
@@ -1862,8 +1862,8 @@
     {
       "name": "Archaic's Agony",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/archaic_s_agony.rs",
       "set": "sos"
     },
@@ -1974,8 +1974,8 @@
     {
       "name": "Ark of Hunger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/ark_of_hunger.rs",
       "set": "sos"
     },
@@ -3326,8 +3326,8 @@
     {
       "name": "Berta, Wise Extrapolator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/berta_wise_extrapolator.rs",
       "set": "sos"
     },
@@ -3766,8 +3766,8 @@
     {
       "name": "Blech, Loafing Pest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/blech_loafing_pest.rs",
       "set": "sos"
     },
@@ -6798,8 +6798,8 @@
     {
       "name": "Conciliator's Duelist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/conciliator_s_duelist.rs",
       "set": "sos"
     },
@@ -8110,8 +8110,8 @@
     {
       "name": "Daydream",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/daydream.rs",
       "set": "sos"
     },
@@ -10742,8 +10742,8 @@
     {
       "name": "Emeritus of Truce",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/emeritus_of_truce_swords_to_plowshares.rs",
       "set": "sos"
     },
@@ -10838,8 +10838,8 @@
     {
       "name": "End of the Hunt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/end_of_the_hunt.rs",
       "set": "sos"
     },
@@ -10942,8 +10942,8 @@
     {
       "name": "Ennis, Debate Moderator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/ennis_debate_moderator.rs",
       "set": "sos"
     },
@@ -11086,8 +11086,8 @@
     {
       "name": "Erode",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/erode.rs",
       "set": "sos"
     },
@@ -11206,8 +11206,8 @@
     {
       "name": "Essenceknit Scholar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/essenceknit_scholar.rs",
       "set": "sos"
     },
@@ -13910,8 +13910,8 @@
     {
       "name": "Geometer's Arthropod",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/geometer_s_arthropod.rs",
       "set": "sos"
     },
@@ -17414,8 +17414,8 @@
     {
       "name": "Impractical Joke",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/impractical_joke.rs",
       "set": "sos"
     },
@@ -18486,8 +18486,8 @@
     {
       "name": "Joined Researchers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/joined_researchers_secret_rendezvous.rs",
       "set": "sos"
     },
@@ -20678,8 +20678,8 @@
     {
       "name": "Lorehold Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/lorehold_charm.rs",
       "set": "sos"
     },
@@ -20806,8 +20806,8 @@
     {
       "name": "Lumaret's Favor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/lumaret_s_favor.rs",
       "set": "sos"
     },
@@ -21702,8 +21702,8 @@
     {
       "name": "Matterbending Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/matterbending_mage.rs",
       "set": "sos"
     },
@@ -22750,8 +22750,8 @@
     {
       "name": "Molten Note",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/molten_note.rs",
       "set": "sos"
     },
@@ -23062,8 +23062,8 @@
     {
       "name": "Moseo, Vein's New Dean",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/moseo_vein_s_new_dean.rs",
       "set": "sos"
     },
@@ -24998,8 +24998,8 @@
     {
       "name": "Paradox Surveyor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/paradox_surveyor.rs",
       "set": "sos"
     },
@@ -25910,8 +25910,8 @@
     {
       "name": "Pox Plague",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/pox_plague.rs",
       "set": "sos"
     },
@@ -31398,8 +31398,8 @@
     {
       "name": "Skycoach Conductor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/skycoach_conductor_all_aboard.rs",
       "set": "sos"
     },
@@ -31814,8 +31814,8 @@
     {
       "name": "Social Snub",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/social_snub.rs",
       "set": "sos"
     },
@@ -32662,8 +32662,8 @@
     {
       "name": "Spiritcall Enthusiast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/spiritcall_enthusiast_scrollboost.rs",
       "set": "sos"
     },
@@ -33190,8 +33190,8 @@
     {
       "name": "Steal the Show",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/steal_the_show.rs",
       "set": "sos"
     },
@@ -34110,8 +34110,8 @@
     {
       "name": "Sundering Archaic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/sundering_archaic.rs",
       "set": "sos"
     },
@@ -34718,8 +34718,8 @@
     {
       "name": "Tablet of Discovery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/tablet_of_discovery.rs",
       "set": "sos"
     },
@@ -37454,8 +37454,8 @@
     {
       "name": "Transcendent Archaic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/transcendent_archaic.rs",
       "set": "sos"
     },
@@ -39542,8 +39542,8 @@
     {
       "name": "Visionary's Dance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/visionary_s_dance.rs",
       "set": "sos"
     },
@@ -40734,8 +40734,8 @@
     {
       "name": "Wildgrowth Archaic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/wildgrowth_archaic.rs",
       "set": "sos"
     },
@@ -41510,8 +41510,8 @@
     {
       "name": "Zimone's Experiment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/zimone_s_experiment.rs",
       "set": "sos"
     },
