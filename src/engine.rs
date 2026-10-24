@@ -14,16 +14,16 @@ mod mana_lots;
 pub use mana_lots::{
     ManaCopySource, ManaLotSpendRange, ManaLotView, ManaRestrictionView, ManaSpellBonusView,
 };
-#[path = "engine_copies.rs"]
-mod copies;
-#[path = "engine_stack_copies.rs"]
-mod stack_copies;
 #[path = "engine_card_copies.rs"]
 mod card_copies;
+#[path = "engine_copies.rs"]
+mod copies;
 #[path = "engine_prepared.rs"]
 mod prepared;
-pub use prepared::PreparationView;
+#[path = "engine_stack_copies.rs"]
+mod stack_copies;
 pub use copies::CopyRecipe;
+pub use prepared::PreparationView;
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
 pub use crate::cards::CopyExceptions;
@@ -210,14 +210,14 @@ pub use live_static_stats::LiveStaticSourceView;
 #[path = "engine_search.rs"]
 mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
+#[path = "engine_sos_tokens.rs"]
+mod sos_tokens;
 #[path = "engine_stat_values.rs"]
 mod stat_values;
 #[path = "engine_stats.rs"]
 mod stats;
 #[path = "engine_steps.rs"]
 mod steps;
-#[path = "engine_sos_tokens.rs"]
-mod sos_tokens;
 
 #[path = "engine_tokens.rs"]
 mod tokens;
@@ -2784,7 +2784,9 @@ impl Game {
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::LandCards { .. }
                             | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
-                            EffectChoiceKind::Sacrifice | EffectChoiceKind::ExileGraveyard | EffectChoiceKind::TapPermanents(_) => Action::Sacrifice { object },
+                            EffectChoiceKind::Sacrifice
+                            | EffectChoiceKind::ExileGraveyard
+                            | EffectChoiceKind::TapPermanents(_) => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
                         };
@@ -4677,7 +4679,14 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
-        let graveyard_observers = if ids.iter().any(|&id| self.state.objects[id as usize].zone == Zone::Graveyard) { self.freeze_graveyard_observers() } else { None };
+        let graveyard_observers = if ids
+            .iter()
+            .any(|&id| self.state.objects[id as usize].zone == Zone::Graveyard)
+        {
+            self.freeze_graveyard_observers()
+        } else {
+            None
+        };
         if destination == Zone::Battlefield {
             let count = ids
                 .iter()
@@ -4872,7 +4881,11 @@ impl Game {
         counters: Counters,
         entry_controller: Option<Player>,
     ) -> ZoneChange {
-        let graveyard_observers = if before.zone == Zone::Graveyard { self.freeze_graveyard_observers() } else { None };
+        let graveyard_observers = if before.zone == Zone::Graveyard {
+            self.freeze_graveyard_observers()
+        } else {
+            None
+        };
         let id = before.id;
         self.capture_mana_copy_source_departure(&before);
         if before.zone == Zone::Stack {
@@ -4908,8 +4921,10 @@ impl Game {
             };
         }
         let destination = plan.destination;
-        if before.zone == Zone::Graveyard && destination != Zone::Graveyard
-            && !before.is_token() && !before.card.is_emblem()
+        if before.zone == Zone::Graveyard
+            && destination != Zone::Graveyard
+            && !before.is_token()
+            && !before.card.is_emblem()
             && !self.state.objects[id as usize].is_spell_copy()
         {
             self.state.players[before.owner.index()].card_left_graveyard_this_turn = true;
@@ -4917,7 +4932,8 @@ impl Game {
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
         let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
-        if (self.state.objects[id as usize].copy_kind == CopyKind::Spell && before.zone != Zone::Stack)
+        if (self.state.objects[id as usize].copy_kind == CopyKind::Spell
+            && before.zone != Zone::Stack)
             || (self.state.objects[id as usize].copy_kind == CopyKind::Card
                 && before.zone == Zone::Outside)
             || before.card.is_emblem()
@@ -5754,7 +5770,10 @@ impl Game {
         Observation {
             paradigms: self.paradigm_views(),
             resolved_spell_names: self.resolved_spell_name_views(),
-            preparations: s.preparations.as_ref().map_or_else(Vec::new, |rows| rows.to_vec()),
+            preparations: s
+                .preparations
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             library_piles: self.library_piles_view(viewer),
             keep_types: self.keep_types_view(),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
@@ -6457,13 +6476,10 @@ impl Game {
                             .optional_searches
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<search::OptionalSearchSequence>())
-                        + resolution
-                            .target_card_facts
-                            .as_ref()
-                            .map_or(0, |values| {
-                                std::mem::size_of::<Vec<programs::TargetCardFacts>>()
-                                    + values.len() * std::mem::size_of::<programs::TargetCardFacts>()
-                            })
+                        + resolution.target_card_facts.as_ref().map_or(0, |values| {
+                            std::mem::size_of::<Vec<programs::TargetCardFacts>>()
+                                + values.len() * std::mem::size_of::<programs::TargetCardFacts>()
+                        })
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())

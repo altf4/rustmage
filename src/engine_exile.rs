@@ -157,8 +157,12 @@ impl Game {
     ) {
         self.graveyard_departure_triggers(events, death_sources);
         for event in events {
-            if event.moved && event.destination == Zone::Battlefield
-                && self.copiable_recipe(event.after).definition.enters_prepared()
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && self
+                    .copiable_recipe(event.after)
+                    .definition
+                    .enters_prepared()
                 && self.printed_abilities_available(event.after.card)
             {
                 self.prepare_permanent(event.after);

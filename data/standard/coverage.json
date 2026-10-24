@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "27a4d9630d08579f08559ffb1df0af44f574df628d90120d4977f6c08749714e",
+  "catalogue_version": "f1cfd29a8200c6c9152d020fcb2b620a2e8d1fd23f9354f591cdadbf378cdea8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2303,
-  "implemented_total": 2309,
+  "implemented_standard_cards": 2309,
+  "implemented_total": 2315,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 186,
-      "gated": 78
+      "complete": 192,
+      "gated": 72
     },
     "spm": {
       "total": 134,
@@ -10510,8 +10510,8 @@
     {
       "name": "Elite Interceptor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/elite_interceptor_rejoinder.rs",
       "set": "sos"
     },
@@ -13102,8 +13102,8 @@
     {
       "name": "Fractal Tender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/fractal_tender.rs",
       "set": "sos"
     },
@@ -17102,8 +17102,8 @@
     {
       "name": "Hydro-Channeler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/hydro_channeler.rs",
       "set": "sos"
     },
@@ -25894,8 +25894,8 @@
     {
       "name": "Potioner's Trove",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/potioner_s_trove.rs",
       "set": "sos"
     },
@@ -25918,8 +25918,8 @@
     {
       "name": "Practiced Offense",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/practiced_offense.rs",
       "set": "sos"
     },
@@ -29998,8 +29998,8 @@
     {
       "name": "Scolding Administrator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/scolding_administrator.rs",
       "set": "sos"
     },

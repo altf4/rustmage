@@ -55,7 +55,9 @@ impl Game {
 
     pub(super) fn activation_guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
         match guard {
-            ActivationGuard::CastInstantSorceryThisTurn => self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0,
+            ActivationGuard::CastInstantSorceryThisTurn => {
+                self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
+            }
             ActivationGuard::Always => true,
             ActivationGuard::LifeAboveStarting(extra) => {
                 self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)

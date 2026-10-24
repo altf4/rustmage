@@ -63,7 +63,11 @@ impl Game {
             _ => return false,
         };
         let f = spec.filter;
-        if spec.kind == EffectChoiceKind::ExileGraveyard && (o.is_token() || o.copy_kind == CopyKind::Card) { return false; }
+        if spec.kind == EffectChoiceKind::ExileGraveyard
+            && (o.is_token() || o.copy_kind == CopyKind::Card)
+        {
+            return false;
+        }
         if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) && o.tapped {
             return false;
         }
@@ -368,7 +372,9 @@ impl Game {
             | EffectChoiceKind::CollectEvidence(_)
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack => unreachable!(),
-            EffectChoiceKind::ExileGraveyard => { self.move_object(object.card, Zone::Exile); }
+            EffectChoiceKind::ExileGraveyard => {
+                self.move_object(object.card, Zone::Exile);
+            }
             EffectChoiceKind::Discard => self.discard_batch(&[object.card], None),
             EffectChoiceKind::ReturnToHand => {
                 self.move_object(object.card, Zone::Hand);

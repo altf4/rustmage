@@ -500,7 +500,11 @@ impl Game {
                 (m, counters)
             })
             .collect();
-        let graveyard_observers = if moves.iter().any(|(m,_)| m.before.zone == Zone::Graveyard) { self.freeze_graveyard_observers() } else { None };
+        let graveyard_observers = if moves.iter().any(|(m, _)| m.before.zone == Zone::Graveyard) {
+            self.freeze_graveyard_observers()
+        } else {
+            None
+        };
         let mut events = Vec::new();
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();
