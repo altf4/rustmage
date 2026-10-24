@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d46bf84748ef7043fb7b7c3ec33f041b42e4a6d966bfc25a58bc3b692bc865ae",
+  "catalogue_version": "e201d09db2189bc706b74b658b036c25b737bf99b2b53accfd2a9f11d35c943b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2372,
-  "implemented_total": 2378,
+  "implemented_standard_cards": 2373,
+  "implemented_total": 2379,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 255,
-      "gated": 9
+      "complete": 256,
+      "gated": 8
     },
     "spm": {
       "total": 134,
@@ -41414,8 +41414,8 @@
     {
       "name": "Zaffai and the Tempests",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/zaffai_and_the_tempests.rs",
       "set": "sos"
     },
