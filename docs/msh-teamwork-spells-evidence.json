@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Nine complete teamwork spell candidates and Leviathan token recipe; whole-set acceptance pending",
+  "source_base": "19aec34c9523f8b834714ec0ba0725c652d44a3f",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    "Atlantis Attacks",
+    "Earth's Mightiest Heroes",
+    "Go Nuts!",
+    "HULK SMASH!",
+    "Helicarrier Strike",
+    "Murdock's Crusade",
+    "Repulsor Blast",
+    "Too Evil to Stay Dead",
+    "We Say Thee Nay!"
+  ],
+  "new_token": {
+    "identity": "@token/msh-leviathan",
+    "name": "Leviathan Token",
+    "index": 5387,
+    "stats": [
+      6,
+      5
+    ],
+    "colors": [
+      "blue"
+    ],
+    "types": [
+      "Leviathan"
+    ],
+    "keywords": [
+      "hexproof"
+    ],
+    "existing_card_ids_preserved": 5387,
+    "existing_token_recipes_preserved": 112,
+    "existing_aliases_preserved": true
+  },
+  "new_focused_scenarios": 14,
+  "total_teamwork_scenarios_passed": 24,
+  "focused_execution_seconds": 0.02,
+  "focused_compile_seconds": 90,
+  "guard": {
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "memory_max_bytes": 6442450944,
+    "oom_kills": 0
+  },
+  "rules_evidence": [
+    "All normal and paid modal combinations in printed order",
+    "Fight uses post-counter power; partial invalid operands produce no fight damage",
+    "Noncreature artifact and controller restrictions; power damage retains creature lifelink",
+    "Toughness and enchantment mana-value thresholds revalidated",
+    "Attacking/blocking restriction and replacement 2/4 damage",
+    "Lethal damage and frozen target controller; all-invalid fizzle",
+    "Own-graveyard restriction, paid mana-value expansion, entry and stale incarnation",
+    "Own/opposing spell controllers choose 2/4 tax, pay or decline; stale spell fizzles",
+    "Public top-eight reveal; optional zero/one/many choices; noncreatures and graveyard remainder",
+    "Targeted token creator, token characteristics and owner/control distinction; one/two bounce targets",
+    "Every checked action covers wrong actor, illegal-action atomicity, owned raw/index branches, parent disposal, restore and stale revisions"
+  ],
+  "trace_status": "Generic Helicarrier fixture extended with existing combat root; final combined trace proof pending",
+  "full_release_validation": "pending combined integration",
+  "full_membership": 281,
+  "set_acceptance": "pending all remaining cards, inherited-admission audit and full-set gameplay/replay/performance"
+}
