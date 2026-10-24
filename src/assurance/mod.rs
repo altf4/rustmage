@@ -153,3 +153,4 @@ mod sos_exile_search;
 mod sos_multicolor_more;
 mod sos_review_regressions;
 mod sos_hand_attack;
+mod sos_white_blue_final;

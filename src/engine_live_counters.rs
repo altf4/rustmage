@@ -96,6 +96,38 @@ impl Game {
         counters.add(kind, amount);
         self.set_counters(id, counters);
     }
+    /// Move only counters on the unchanged live source, never its departure LKI.
+    pub(super) fn move_counters_from_source(
+        &mut self,
+        item: &SpellView,
+        kind: CounterKind,
+        amount: AmountValue,
+    ) {
+        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+            return;
+        }
+        let Some(target) = self
+            .keyword_subjects(item, Subject::Targets)
+            .first()
+            .copied()
+        else {
+            return;
+        };
+        if target == item.card {
+            return;
+        }
+        let amount = self
+            .item_amount(amount, item)
+            .min(u128::from(self.counter_count(item.card, kind))) as u64;
+        if amount == 0 {
+            return;
+        }
+        self.pay_counters(item.card, &Counters::of(kind, amount));
+        self.effect_counters(
+            vec![(self.object_ref(target), Counters::of(kind, amount))],
+            replacements::ResumeMode::Program,
+        );
+    }
     pub(super) fn pay_counters(&mut self, id: CardId, payment: &Counters) {
         if payment.is_empty() {
             return;

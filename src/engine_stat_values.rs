@@ -321,6 +321,11 @@ impl Game {
         owner: Player,
     ) -> u128 {
         match value {
+            AmountValue::Sum(values) => values.iter().fold(0u128, |total, value| {
+                total
+                    .checked_add(self.amount_value(*value, source, owner))
+                    .capacity("effect sum exhausted")
+            }),
             AmountValue::Fixed(n) => u128::from(n),
             AmountValue::SourceCounterQuantity(kind) => {
                 u128::from(self.source_counter_quantity_live(source, kind).unwrap_or(0))

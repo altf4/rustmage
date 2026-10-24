@@ -1157,6 +1157,15 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     AnimateSource(AnimationSpec),
+    SetCreatureForm {
+        types: &'static [&'static str],
+        colors: u8,
+        base: AmountValue,
+    },
+    MoveCountersFromSource {
+        kind: CounterKind,
+        amount: AmountValue,
+    },
     Search(SearchSpec),
     SearchTargetController(SearchSpec),
     MayTargetController {
@@ -1460,6 +1469,7 @@ pub(crate) struct CountFilter {
 pub(crate) enum AmountValue {
     /// Current hand size of the spell's surviving targeted player.
     TargetPlayerHandSize,
+    Sum(&'static [AmountValue]),
     ManaSpent,
     ColorsSpent,
     SpellColors,

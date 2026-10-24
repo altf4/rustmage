@@ -274,6 +274,11 @@ impl Game {
             AmountValue::LifeEventAmount => {
                 item.life_event.expect("saved life event").amount.max(0) as u128
             }
+            AmountValue::Sum(values) => values.iter().fold(0u128, |total, value| {
+                total
+                    .checked_add(self.item_amount(*value, item))
+                    .capacity("effect sum exhausted")
+            }),
             AmountValue::ChosenX => u128::from(item.x.unwrap_or(0)),
             AmountValue::MilledCreatures => self
                 .state

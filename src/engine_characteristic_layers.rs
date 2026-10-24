@@ -11,6 +11,7 @@ pub struct AnimationView {
     pub object: ObjectRef,
     pub timestamp: u64,
     pub artifact: bool,
+    pub colors: Option<u8>,
     pub creature_types: Option<&'static [&'static str]>,
     pub all_creature_types: bool,
     pub base: Option<(i128, i128)>,
@@ -185,12 +186,9 @@ fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'sta
 pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     let object = world.object(id);
     if object.zone != Zone::Battlefield
-        || world
-            .game()
-            .state
-            .roles
-            .as_ref()
-            .is_none_or(|r| r.characteristic_sources.is_empty())
+        || world.game().state.roles.as_ref().is_none_or(|r| {
+            r.characteristic_sources.is_empty() && r.animations.iter().all(|a| a.colors.is_none())
+        })
     {
         return if object.zone == Zone::Stack {
             world.game().effective_spell_card(id).colors()
@@ -203,11 +201,20 @@ pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> 
 fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     aura_effects(world, id)
         .into_iter()
-        .max_by_key(|e| e.0)
-        .map_or_else(
-            || world.object(id).card.colors(),
-            |(_, s)| s.colors.iter().fold(0, |mask, c| mask | (1 << c.index())),
+        .map(|(timestamp, spec)| {
+            (
+                timestamp,
+                spec.colors
+                    .iter()
+                    .fold(0, |mask, c| mask | (1 << c.index())),
+            )
+        })
+        .chain(
+            animations(world, id)
+                .filter_map(|row| row.colors.map(|colors| (row.timestamp, colors))),
         )
+        .max_by_key(|row| row.0)
+        .map_or_else(|| world.object(id).card.colors(), |(_, colors)| colors)
 }
 #[inline]
 pub(super) fn base_changes<W: CharacteristicWorld + ?Sized>(
@@ -307,6 +314,7 @@ impl Game {
             object: item.object,
             timestamp,
             artifact: spec.artifact,
+            colors: None,
             creature_types: match spec.creature_types {
                 AnimationCreatureTypes::Named(t) => Some(t),
                 _ => None,
@@ -324,6 +332,34 @@ impl Game {
             .get_or_insert_with(Default::default)
             .animations
             .push(row);
+    }
+    pub(super) fn set_creature_form(
+        &mut self,
+        item: &SpellView,
+        types: &'static [&'static str],
+        colors: u8,
+        base: AmountValue,
+    ) {
+        let value =
+            i128::try_from(self.item_amount(base, item)).capacity("creature form base exhausted");
+        for id in self.keyword_subjects(item, Subject::Targets) {
+            let row = AnimationView {
+                object: self.object_ref(id),
+                timestamp: self.next_role_timestamp(),
+                artifact: false,
+                colors: Some(colors),
+                creature_types: Some(types),
+                all_creature_types: false,
+                base: Some((value, value)),
+                keywords: Keywords::NONE,
+                expires_turn: Some(self.state.turn),
+            };
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .animations
+                .push(row);
+        }
     }
     pub(super) fn forget_animations(&mut self, object: ObjectRef) {
         if let Some(state) = &mut self.state.roles {

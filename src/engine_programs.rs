@@ -2597,6 +2597,14 @@ impl Game {
                     }
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::SetCreatureForm {
+                    types,
+                    colors,
+                    base,
+                } => self.set_creature_form(&item, types, colors, base),
+                Instruction::MoveCountersFromSource { kind, amount } => {
+                    self.move_counters_from_source(&item, kind, amount)
+                }
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::Search(spec)
                 | Instruction::SearchTargetController(spec)
