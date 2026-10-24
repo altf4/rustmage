@@ -122,6 +122,12 @@ use crate::shared_vec::SharedVec;
 mod additional_costs;
 #[path = "engine_bargain.rs"]
 mod bargain;
+#[path = "engine_cast_costs.rs"]
+mod cast_costs;
+#[path = "engine_casualty.rs"]
+mod casualty;
+pub use cast_costs::{CastCostClause, CastCostRow, CastCostTransaction};
+pub use casualty::{CasualtyDeclaration, CasualtyGrant};
 #[path = "engine_evidence.rs"]
 mod evidence;
 pub use evidence::{EvidenceEventView, EvidenceView};
@@ -413,6 +419,9 @@ define_actions! {
         object: ObjectRef,
     },
     ChooseExplore { object: ObjectRef, graveyard: bool },
+    ChooseCasualty { pay: bool },
+    ChooseCastCost {clause:u16},
+    PayCasualty {object:ObjectRef},
     ChooseBargain {
         sacrifice: Option<ObjectRef>,
     },
@@ -1039,6 +1048,7 @@ impl SpellView {
             StackKind::DelayedSacrifice
             | StackKind::DelayedWarpExile
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CasualtyCopy
             | StackKind::DelayedReturn => None,
         }
     }
@@ -1141,6 +1151,12 @@ impl SpellView {
                     };
                     (plan, program)
                 }),
+            StackKind::CasualtyCopy => Some((
+                TargetPlan::NONE,
+                &[Instruction::CopyCastSpell {
+                    prior_spells: false,
+                }],
+            )),
             StackKind::CopyEndStepSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeSource]))
             }
@@ -1188,6 +1204,7 @@ pub enum StackKind {
     DelayedSacrifice,
     DelayedWarpExile,
     CopyEndStepSacrifice,
+    CasualtyCopy,
     DelayedReturn,
 }
 
@@ -1368,6 +1385,16 @@ enum Pending {
     },
     Forage {
         player: Player,
+    },
+    Casualty {
+        player: Player,
+    },
+    CastCosts {
+        player: Player,
+    },
+    CasualtyPayment {
+        player: Player,
+        instance: u16,
     },
     Bargain {
         player: Player,
@@ -1558,6 +1585,10 @@ struct State {
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
     #[allow(clippy::box_collection)]
     delayed_artifact_copies: Option<Box<Vec<SpellView>>>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare delayed main-phase packets use one pointer in ordinary states"
+    )]
     delayed_main_mana: Option<Box<Vec<SpellView>>>,
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
@@ -1925,6 +1956,8 @@ pub struct Observation {
     pub paradigms: Vec<ParadigmView>,
     pub resolved_spell_names: Vec<ResolvedSpellNameView>,
     pub preparations: Vec<PreparationView>,
+    pub casualty_declarations: Vec<CasualtyDeclaration>,
+    pub cast_costs: Option<CastCostTransaction>,
     pub library_piles: Option<LibraryPilesView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
@@ -2337,6 +2370,9 @@ impl Game {
             | Pending::Bargain { player }
             | Pending::ResolutionX { player }
             | Pending::X { player }
+            | Pending::Casualty { player }
+            | Pending::CastCosts { player }
+            | Pending::CasualtyPayment { player, .. }
             | Pending::Kicker { player }
             | Pending::Gift { player }
             | Pending::Offspring { player }
@@ -3453,6 +3489,7 @@ impl Game {
                         && obj.card.kicker_cost().is_none()
                         && obj.card.gift().is_none()
                         && obj.card.collect_evidence_cost().is_none()
+                        && !self.has_casualty(actor, obj.card)
                         && !obj.card.has_bargain()
                         && obj.card.additional_cost().is_none()
                     {
@@ -3510,6 +3547,7 @@ impl Game {
                         || obj.card.gift().is_some()
                         || obj.card.collect_evidence_cost().is_some()
                         || obj.card.has_convoke()
+                        || self.has_casualty(actor, obj.card)
                         || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
                         || obj.card.cost_alternative_guard().is_some()
@@ -3671,6 +3709,19 @@ impl Game {
                         return true;
                     }
                 }
+            }
+            Pending::Casualty { .. } => {
+                for pay in [false, true] {
+                    if self.casualty_intent_fundable(pay) && emit(Action::ChooseCasualty { pay }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::CastCosts { .. } => {
+                return self.visit_cast_cost_clauses(&mut emit);
+            }
+            Pending::CasualtyPayment { .. } => {
+                return self.visit_casualty_payments(&mut emit);
             }
             Pending::Bargain { .. } => {
                 let a = s.announcing.as_ref().unwrap();
@@ -4455,6 +4506,9 @@ impl Game {
             Action::FinishEvidence => self.finish_evidence(),
             Action::DeclineEvidence => self.decline_evidence(),
             Action::ChooseExplore { graveyard, .. } => self.finish_explore(graveyard),
+            Action::ChooseCasualty { pay } => self.choose_casualty(pay),
+            Action::ChooseCastCost { clause } => self.choose_cast_cost(clause),
+            Action::PayCasualty { object } => self.pay_casualty_clause(object),
             Action::ChooseBargain { sacrifice } => {
                 let a = self.state.announcing.as_mut().unwrap();
                 a.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
@@ -6068,6 +6122,20 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.to_vec()),
             library_piles: self.library_piles_view(viewer),
+            cast_costs: self
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| a.item.controller == viewer)
+                .and_then(|a| a.cast_costs.as_deref())
+                .cloned(),
+            casualty_declarations: self
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| a.item.controller == viewer)
+                .and_then(|a| a.casualty.as_deref())
+                .map_or_else(Vec::new, |v| v.clone()),
             keep_types: self.keep_types_view(),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
                 c.links
@@ -6225,6 +6293,9 @@ impl Game {
                 Pending::TargetAmount { .. } => "target_amount",
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
+                Pending::Casualty { .. } => "casualty",
+                Pending::CastCosts { .. } => "cast_costs",
+                Pending::CasualtyPayment { .. } => "casualty_payment",
                 Pending::Bargain { .. } => "bargain",
                 Pending::Kicker { .. } => "kicker",
                 Pending::Gift { .. } => "gift",
@@ -6898,6 +6969,9 @@ impl Game {
                             * std::mem::size_of::<CardId>()
                 })
                 .unwrap_or(0)
+            + s.announcing.as_ref().map_or(0, |a| {
+                casualty::bytes(&a.casualty) + a.cast_costs.as_ref().map_or(0, |c| c.bytes())
+            })
             + s.announcing
                 .as_ref()
                 .and_then(|a| a.convoke.as_ref())

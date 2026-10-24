@@ -2,6 +2,9 @@
 //! heuristics that discard legal plans, or mutation during action generation.
 use super::*;
 use std::collections::HashSet;
+#[path = "engine_cast_cost_planning.rs"]
+mod cast_cost_planning;
+use cast_cost_planning::CostContext;
 
 #[derive(Clone, Debug)]
 pub(super) struct FundingGoal {
@@ -33,6 +36,7 @@ struct FundingState<'g> {
     power_sensitive: bool,
     sacrifice_group: Vec<ObjectRef>,
     cost_group: Option<(AdditionalCost, Vec<ObjectRef>)>,
+    cast_costs: Option<Box<CostContext>>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
@@ -388,7 +392,8 @@ impl<'g> FundingState<'g> {
                 object: object.clone(),
             })
             .collect();
-        Self {
+        let mut result = Self {
+            cast_costs: None,
             cost_group: game
                 .state
                 .announcing
@@ -443,7 +448,9 @@ impl<'g> FundingState<'g> {
             life: game.state.players[goal.actor.index()].life,
             resources,
             named_counters: game.state.named_counters.clone(),
-        }
+        };
+        result.set_cost_context(game.state.announcing.as_ref());
+        result
     }
     fn obligations(&self, goal: &FundingGoal) -> bool {
         let source = goal
@@ -453,67 +460,77 @@ impl<'g> FundingState<'g> {
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.resources.iter().find(|s| s.id == r.card));
-        self.cost_group.as_ref().is_none_or(|(spec, group)| {
-            group.iter().all(|r| {
+        (self.cast_costs.is_some()
+            || self.cost_group.as_ref().is_none_or(|(spec, group)| {
+                group.iter().all(|r| {
+                    let o = ability_world::CharacteristicWorld::object(self, r.card);
+                    o.generation == r.generation
+                        && Game::additional_object_matches(
+                            *spec,
+                            goal.actor,
+                            o,
+                            ability_world::CharacteristicWorld::kinds(self, r.card),
+                            self.keywords(&Resource {
+                                id: r.card,
+                                attacking: self
+                                    .game
+                                    .state
+                                    .attackers
+                                    .iter()
+                                    .any(|a| a.card == r.card),
+                                object: o.clone(),
+                            }),
+                            ability_world::CharacteristicWorld::subtypes(self, r.card),
+                            ability_world::CharacteristicWorld::name(self, r.card),
+                        )
+                })
+            }))
+            && self.sacrifice_group.iter().all(|r| {
                 let o = ability_world::CharacteristicWorld::object(self, r.card);
-                o.generation == r.generation
-                    && Game::additional_object_matches(
-                        *spec,
-                        goal.actor,
-                        o,
-                        ability_world::CharacteristicWorld::kinds(self, r.card),
-                        self.keywords(&Resource {
-                            id: r.card,
-                            attacking: self.game.state.attackers.iter().any(|a| a.card == r.card),
-                            object: o.clone(),
-                        }),
-                        ability_world::CharacteristicWorld::subtypes(self, r.card),
-                        ability_world::CharacteristicWorld::name(self, r.card),
-                    )
+                o.zone == Zone::Battlefield
+                    && o.generation == r.generation
+                    && o.controller == goal.actor
+                    && o.is_token()
+                    && ability_world::CharacteristicWorld::kinds(self, r.card) & 16 != 0
             })
-        }) && self.sacrifice_group.iter().all(|r| {
-            let o = ability_world::CharacteristicWorld::object(self, r.card);
-            o.zone == Zone::Battlefield
-                && o.generation == r.generation
-                && o.controller == goal.actor
-                && o.is_token()
-                && ability_world::CharacteristicWorld::kinds(self, r.card) & 16 != 0
-        }) && self.game.state.announcing.as_ref().is_none_or(|a| {
-            a.additional_group
-                .as_ref()
-                .filter(|_| {
-                    a.additional_cost().is_some_and(|s| {
-                        matches!(s.kind, EffectChoiceKind::SacrificeDifferentNames(_))
+            && self.game.state.announcing.as_ref().is_none_or(|a| {
+                a.additional_group
+                    .as_ref()
+                    .filter(|_| {
+                        a.additional_cost().is_some_and(|s| {
+                            matches!(s.kind, EffectChoiceKind::SacrificeDifferentNames(_))
+                        })
                     })
-                })
-                .is_none_or(|group| {
-                    group.iter().all(|r| {
-                        let o = ability_world::CharacteristicWorld::object(self, r.card);
-                        o.zone == Zone::Battlefield
-                            && o.generation == r.generation
-                            && (a.additional_cost().is_some_and(|s| {
-                                matches!(s.kind, EffectChoiceKind::SacrificeDifferentNames(_))
-                            }) || !o.tapped)
-                            && o.controller == goal.actor
+                    .is_none_or(|group| {
+                        group.iter().all(|r| {
+                            let o = ability_world::CharacteristicWorld::object(self, r.card);
+                            o.zone == Zone::Battlefield
+                                && o.generation == r.generation
+                                && (a.additional_cost().is_some_and(|s| {
+                                    matches!(s.kind, EffectChoiceKind::SacrificeDifferentNames(_))
+                                }) || !o.tapped)
+                                && o.controller == goal.actor
+                        })
                     })
-                })
-        }) && reserve_obligations(
-            goal,
-            reserve.map(|r| &r.object),
-            reserve.map_or(0, |r| self.kinds(r)),
-            reserve.map_or(Keywords::NONE, |r| self.keywords(r)),
-            reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
-            reserve.map_or("", |r| ability_world::CharacteristicWorld::name(self, r.id)),
-        ) && source_obligations(
-            goal,
-            source.map(|r| &r.object),
-            source.map_or(CounterAmounts::default(), |r| {
-                ability_world::CharacteristicWorld::counter_amounts(self, r.id)
-            }),
-            source.map_or(0, |r| self.kinds(r)),
-            || source.map_or(Keywords::NONE, |r| self.keywords(r)),
-            self.life,
-        )
+            })
+            && reserve_obligations(
+                goal,
+                reserve.map(|r| &r.object),
+                reserve.map_or(0, |r| self.kinds(r)),
+                reserve.map_or(Keywords::NONE, |r| self.keywords(r)),
+                reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
+                reserve.map_or("", |r| ability_world::CharacteristicWorld::name(self, r.id)),
+            )
+            && source_obligations(
+                goal,
+                source.map(|r| &r.object),
+                source.map_or(CounterAmounts::default(), |r| {
+                    ability_world::CharacteristicWorld::counter_amounts(self, r.id)
+                }),
+                source.map_or(0, |r| self.kinds(r)),
+                || source.map_or(Keywords::NONE, |r| self.keywords(r)),
+                self.life,
+            )
     }
     fn granted_subtypes(&self, id: CardId) -> GrantedSubtypes {
         ability_world::CharacteristicWorld::subtypes(self, id)
@@ -1464,6 +1481,7 @@ impl<'g> FundingState<'g> {
                 adjusted.generic,
             )
         }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
+            && self.cost_completion()
         {
             return true;
         }
@@ -1557,6 +1575,22 @@ impl Game {
         spec: AdditionalCost,
         group: &[ObjectRef],
     ) -> bool {
+        if let Some(result) = self.preview_optional_cast_costs(
+            goal.clone(),
+            purpose,
+            ObjectRef {
+                card: CardId::MAX,
+                generation: 0,
+            },
+            Some(spec),
+            None,
+            group,
+            false,
+            &[],
+            &[],
+        ) {
+            return result;
+        }
         let mut state = FundingState::from_game(self, &goal);
         state.purpose = purpose;
         state.cost_group = Some((spec, group.to_vec()));
@@ -1577,6 +1611,32 @@ impl Game {
         self.can_fund_for(goal, purpose)
     }
     pub(super) fn can_fund_for(&self, goal: FundingGoal, purpose: mana_lots::Purpose) -> bool {
+        if self
+            .state
+            .announcing
+            .as_ref()
+            .is_some_and(|a| a.cast_costs.is_some())
+        {
+            let mut world = FundingState::from_game(self, &goal);
+            world.purpose = purpose;
+            return world.reachable(&goal, &mut HashSet::new());
+        }
+        if let Some(result) = self.preview_optional_cast_costs(
+            goal.clone(),
+            purpose,
+            ObjectRef {
+                card: CardId::MAX,
+                generation: 0,
+            },
+            goal.reserve.map(|(_, spec)| spec),
+            None,
+            &goal.reserve.map(|(r, _)| r).into_iter().collect::<Vec<_>>(),
+            goal.reserve.is_some(),
+            &[],
+            &[],
+        ) {
+            return result;
+        }
         if let Some(a) = &self.state.announcing
             && !a.additional_paid
             && a.item
@@ -1685,6 +1745,22 @@ impl Game {
     ) -> bool {
         if self.can_collect_evidence(goal.actor, threshold) {
             return self.can_fund_for(goal.clone(), purpose);
+        }
+        if let Some(result) = self.preview_optional_cast_costs(
+            goal.clone(),
+            purpose,
+            ObjectRef {
+                card: CardId::MAX,
+                generation: 0,
+            },
+            Some(evidence::cost(threshold)),
+            None,
+            &[],
+            false,
+            &[],
+            &[],
+        ) {
+            return result;
         }
         let mut state = FundingState::from_game(self, &goal);
         state.purpose = purpose;
@@ -1887,6 +1963,7 @@ impl Game {
             ),
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => false,
@@ -1956,6 +2033,7 @@ impl Game {
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => unreachable!(),
@@ -1970,6 +2048,9 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
+        if a.cast_costs.as_ref().is_some_and(|c| c.mana_paid) {
+            return None;
+        }
         let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
         let (required, generic) = if let Some(frame) = &a.convoke {
             if !frame
@@ -1989,7 +2070,10 @@ impl Game {
         } else {
             let goal = self.funding_goal(a);
             let state = FundingState::from_game(self, &goal);
-            if !state.obligations(&goal) || a.evidence.as_ref().is_some_and(|e| !e.complete) {
+            if !state.obligations(&goal)
+                || !state.cost_completion()
+                || a.cast_costs.is_none() && a.evidence.as_ref().is_some_and(|e| !e.complete)
+            {
                 return None;
             }
             cast_origins::payment_requirements(
@@ -2025,11 +2109,12 @@ impl Game {
             .as_ref()
             .expect("child mana announcement");
         let goal = self.funding_goal(&frame.announcement);
-        let state = FundingState::from_game_with_convoke(
+        let mut state = FundingState::from_game_with_convoke(
             self,
             &goal,
             frame.announcement.item.source_card.has_convoke(),
         );
+        state.set_cost_context(Some(&frame.announcement));
         state.moves(&goal).into_iter().any(|step| {
             if state.resources[step.resource].id != child.item.card
                 || step.ability
@@ -2061,13 +2146,22 @@ impl Game {
     }
     pub(super) fn visit_cost_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let announcement = self.state.announcing.as_ref().unwrap();
+        if announcement
+            .cast_costs
+            .as_ref()
+            .is_some_and(|c| c.mana_paid)
+        {
+            return false;
+        }
         let goal = self.funding_goal(announcement);
         let convoke = announcement.item.kind == StackKind::Spell
             && announcement.item.source_card.has_convoke();
         let state = FundingState::from_game_with_convoke(self, &goal, convoke);
         let mut done = false;
         if state.obligations(&goal)
-            && announcement.evidence.as_ref().is_none_or(|e| e.complete)
+            && state.cost_completion()
+            && (announcement.cast_costs.is_some()
+                || announcement.evidence.as_ref().is_none_or(|e| e.complete))
             && let Some(domain) = self.mana_payment_domain()
         {
             domain.representatives(|payment| {
@@ -2405,6 +2499,36 @@ impl Game {
         amount: u16,
         selected: &[(ObjectRef, CounterKind)],
     ) -> bool {
+        if self.cast_costs_mana_paid() {
+            return self.cast_cost_counters_fundable(selected);
+        }
+        if self
+            .state
+            .announcing
+            .as_ref()
+            .is_some_and(|a| a.cast_costs.is_some())
+        {
+            if let Some(result) = self.preview_optional_cast_costs(
+                goal.clone(),
+                purpose,
+                ObjectRef {
+                    card: CardId::MAX,
+                    generation: 0,
+                },
+                Some(Self::creature_counter_spec(amount)),
+                None,
+                &[],
+                false,
+                selected,
+                &[],
+            ) {
+                return result;
+            }
+            let mut world = FundingState::from_game(self, &goal);
+            world.purpose = purpose;
+            world.set_cost_counter_prefix(selected);
+            return world.reachable(&goal, &mut HashSet::new());
+        }
         let mut world = FundingState::from_game_with_convoke(self, &goal, true);
         world.convoke = false;
         world.purpose = purpose;

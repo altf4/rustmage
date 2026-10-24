@@ -275,6 +275,8 @@ impl Game {
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
+            casualty: None,
+            cast_costs: None,
             evidence: None,
             convoke: None,
             additional_paid: false,

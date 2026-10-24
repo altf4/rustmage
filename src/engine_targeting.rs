@@ -30,6 +30,12 @@ pub(super) struct Announcement {
     )]
     pub creature_counter_cost: Option<Box<Vec<(ObjectRef, CounterKind)>>>,
     pub forage: Option<Box<forage::ForageSelection>>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare casualty declarations use one pointer in ordinary announcements"
+    )]
+    pub casualty: Option<Box<Vec<CasualtyDeclaration>>>,
+    pub cast_costs: Option<Box<CastCostTransaction>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
     pub additional_paid: bool,
@@ -99,6 +105,7 @@ impl Announcement {
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => None,
@@ -149,6 +156,7 @@ impl Announcement {
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => {
@@ -260,6 +268,7 @@ impl Announcement {
                     .is_empty(),
                 StackKind::TriggeredAbility { .. }
                 | StackKind::CopyEndStepSacrifice
+                | StackKind::CasualtyCopy
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
                 | StackKind::DelayedWarpExile => false,
@@ -636,7 +645,18 @@ impl Game {
             };
         } else if a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none() {
             self.state.pending = Pending::ForageMethod { player };
+        } else if a
+            .casualty
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|row| !row.declared))
+        {
+            self.state.pending = Pending::Casualty { player };
         } else {
+            self.state
+                .announcing
+                .as_mut()
+                .unwrap()
+                .initialize_cast_costs();
             self.state.pending = Pending::Targets { player };
             self.advance_target_groups();
         }
@@ -1351,6 +1371,8 @@ impl Game {
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
+            casualty: None,
+            cast_costs: None,
             evidence: None,
             convoke: None,
             additional_paid: false,
@@ -1383,6 +1405,7 @@ impl Game {
                     .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
+        let casualty = self.casualty_declarations(&item);
         self.state.announcing = Some(Announcement {
             activation_discount: self.item_activation_discount(&item),
             free_hand_permission: None,
@@ -1400,6 +1423,8 @@ impl Game {
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
+            casualty,
+            cast_costs: None,
             evidence: None,
             convoke: None,
             additional_paid: false,
@@ -1443,20 +1468,25 @@ impl Game {
                 };
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
             }
-            if self
-                .state
-                .announcing
-                .as_ref()
-                .unwrap()
-                .additional_cost()
-                .and_then(evidence::threshold)
-                .is_some()
+            if self.state.announcing.as_ref().unwrap().cast_costs.is_none()
+                && self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .additional_cost()
+                    .and_then(evidence::threshold)
+                    .is_some()
             {
                 self.start_announcement_evidence();
                 return;
             }
             let announcement = self.state.announcing.as_ref().unwrap();
-            self.state.pending = if announcement
+            self.state.pending = if announcement.cast_costs.is_some() {
+                Pending::PayCosts {
+                    player: announcement.item.controller,
+                }
+            } else if announcement
                 .additional_cost()
                 .is_some_and(forage::is_forage_cost)
                 && announcement.forage.as_ref().is_some_and(|f| !f.complete())
@@ -1545,7 +1575,14 @@ impl Game {
             self.state.announcing = Some(announcement);
             return;
         }
-        if announcement.item.kind == StackKind::Spell && !announcement.additional_paid {
+        if self.continue_cast_cost_payment(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        if announcement.cast_costs.is_none()
+            && announcement.item.kind == StackKind::Spell
+            && !announcement.additional_paid
+        {
             self.pay_additional_cost(&mut announcement);
             if self.state.entry_batch.is_some() {
                 self.state.announcing = Some(announcement);
@@ -1567,6 +1604,7 @@ impl Game {
             if let Some(permission) = announcement.free_hand_permission.take() {
                 self.use_free_hand_permission(*permission);
             }
+            self.queue_casualty_copies(&announcement);
             self.push_stack_item(announcement.item);
         }
         if announcement.trigger {

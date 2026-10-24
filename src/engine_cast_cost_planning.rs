@@ -1,0 +1,759 @@
+//! Completion search for declared nonmana clauses in the borrowed funding world.
+use super::*;
+use ability_world::CharacteristicWorld;
+
+#[derive(Clone)]
+pub(super) struct CostContext {
+    actor: Player,
+    source: ObjectRef,
+    clauses: Vec<CastCostRow>,
+    active: Option<u16>,
+    casualty: Vec<CasualtyDeclaration>,
+    additional: Option<AdditionalCost>,
+    forage: Option<ForageRoute>,
+    selected: Vec<ObjectRef>,
+    exact: bool,
+    counters: Vec<(ObjectRef, CounterKind)>,
+}
+impl CostContext {
+    fn from_announcement(a: &Announcement) -> Option<Box<Self>> {
+        let c = a.cast_costs.as_ref()?;
+        let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
+        if selected.is_empty() {
+            selected.extend(a.additional);
+        }
+        let mut exact = a.additional.is_some();
+        if let Some(f) = &a.forage {
+            selected = f.selected.clone();
+            exact = f.complete();
+        }
+        if let Some(e) = &a.evidence {
+            selected = e.selected.clone();
+            exact = e.complete;
+        }
+        Some(Box::new(Self {
+            actor: a.item.controller,
+            source: a.item.object,
+            clauses: c.clauses.clone(),
+            active: c.active,
+            casualty: a.casualty.as_deref().cloned().unwrap_or_default(),
+            additional: a.additional_cost(),
+            forage: a.forage.as_ref().and_then(|v| v.route),
+            selected,
+            exact,
+            counters: a
+                .creature_counter_cost
+                .as_deref()
+                .cloned()
+                .unwrap_or_default(),
+        }))
+    }
+}
+impl FundingState<'_> {
+    pub(super) fn set_cost_context(&mut self, a: Option<&Announcement>) {
+        self.install_cost_context(a.and_then(CostContext::from_announcement));
+    }
+    fn install_cost_context(&mut self, context: Option<Box<CostContext>>) {
+        self.cast_costs = context;
+        if self.cast_costs.is_some() {
+            self.power_sensitive = true;
+            // All live candidates and witnesses must follow virtual departures.
+            // Hidden hands remain internal to the acting player's cost search.
+            for (id, o) in self.game.state.objects.iter().enumerate() {
+                if !self.resources.iter().any(|r| r.id == id as CardId) {
+                    self.resources.push(Resource {
+                        id: id as CardId,
+                        object: o.clone(),
+                        attacking: self
+                            .game
+                            .state
+                            .attackers
+                            .iter()
+                            .any(|r| r.card == id as CardId),
+                    });
+                }
+            }
+        }
+    }
+    fn cost_object(&self, spec: AdditionalCost, r: ObjectRef, source: ObjectRef) -> bool {
+        let o = self.object(r.card);
+        self.reference(r.card) == r
+            && (r != source
+                || !matches!(
+                    spec.kind,
+                    EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_)
+                ) && !spec.filter.other)
+            && (!spec.filter.source_only || r == source)
+            && Game::additional_object_matches(
+                spec,
+                self.actor,
+                o,
+                CharacteristicWorld::kinds(self, r.card),
+                self.keywords_for_cost(r.card),
+                self.subtypes(r.card),
+                self.name(r.card),
+            )
+    }
+    fn keywords_for_cost(&self, id: CardId) -> Keywords {
+        self.resources
+            .iter()
+            .find(|r| r.id == id)
+            .map_or(Keywords::NONE, |r| self.keywords(r))
+    }
+    fn cost_departures(&self, objects: &[ObjectRef], requested: Zone) -> Vec<Self> {
+        let destinations = objects
+            .iter()
+            .map(|r| {
+                let o = self.object(r.card);
+                if requested != Zone::Graveyard {
+                    return vec![requested];
+                }
+                let own = o.card.zone_replacement();
+                let shuffle = own == Some(crate::cards::ZoneReplacementRule::RevealShuffleSelf)
+                    && (o.zone != Zone::Battlefield || self.printed_abilities_available(r.card));
+                let exile = self.game.state.static_sources.iter().any(|&id| {
+                    let p = self.object(id);
+                    p.zone == Zone::Battlefield
+                        && self.printed_abilities_available(id)
+                        && match p.card.zone_replacement() {
+                            Some(crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens) => true,
+                            Some(crate::cards::ZoneReplacementRule::ExileInstantSorceryCards) => {
+                                CharacteristicWorld::kinds(self, r.card) & 12 != 0 && !o.is_token()
+                            }
+                            _ => false,
+                        }
+                }) || (o.zone == Zone::Battlefield
+                    && self
+                        .game
+                        .state
+                        .death_exile_replacements
+                        .as_ref()
+                        .is_some_and(|rules| {
+                            rules.iter().any(|rule| {
+                                rule.object == *r && rule.expires_turn == self.game.state.turn
+                            })
+                        }));
+                match (shuffle, exile) {
+                    (true, true) => vec![Zone::Library, Zone::Exile],
+                    (true, false) => vec![Zone::Library],
+                    (false, true) => vec![Zone::Exile],
+                    _ => vec![Zone::Graveyard],
+                }
+            })
+            .collect::<Vec<_>>();
+        let mut worlds = vec![self.clone()];
+        for (r, choices) in objects.iter().zip(destinations) {
+            let mut next = Vec::new();
+            for w in worlds {
+                for &zone in &choices {
+                    let mut n = w.clone();
+                    let i = n
+                        .resources
+                        .iter()
+                        .position(|v| v.id == r.card)
+                        .expect("cost resource retained");
+                    n.resources[i].object.zone = zone;
+                    n.resources[i].object.generation = n.resources[i]
+                        .object
+                        .generation
+                        .checked_add(1)
+                        .capacity("virtual generation exhausted");
+                    n.resources[i].object.counters = InitialCounters::default();
+                    n.resources[i].object.growth = Stats::default();
+                    n.resources[i].object.attached_to = None;
+                    next.push(n);
+                }
+            }
+            worlds = next;
+        }
+        worlds
+    }
+    pub(super) fn set_cost_counter_prefix(&mut self, selected: &[(ObjectRef, CounterKind)]) {
+        if let Some(c) = &mut self.cast_costs {
+            c.counters = selected.to_vec();
+        }
+    }
+    pub(super) fn cost_completion(&self) -> bool {
+        let Some(context) = &self.cast_costs else {
+            return true;
+        };
+        let unpaid = context
+            .clauses
+            .iter()
+            .enumerate()
+            .filter(|(_, r)| !r.paid)
+            .map(|(i, _)| i)
+            .collect::<Vec<_>>();
+        self.complete_cost_rows(context, &unpaid)
+    }
+    fn complete_cost_rows(&self, c: &CostContext, remaining: &[usize]) -> bool {
+        if remaining.is_empty() {
+            return true;
+        }
+        for (position, &index) in remaining.iter().enumerate() {
+            if c.active.is_some_and(|i| usize::from(i) != index) {
+                continue;
+            }
+            let mut rest = remaining.to_vec();
+            rest.remove(position);
+            let mut later = c.clone();
+            later.active = None;
+            if c.clauses[index].clause == CastCostClause::Additional {
+                later.selected.clear();
+                later.exact = false;
+                later.counters.clear();
+            }
+            match c.clauses[index].clause {
+                CastCostClause::Life(amount) => {
+                    if amount == 0 || self.life >= i128::from(amount) {
+                        let mut next = self.clone();
+                        next.life -= i128::from(amount);
+                        if next.complete_cost_rows(&later, &rest) {
+                            return true;
+                        }
+                    }
+                }
+                CastCostClause::Casualty(instance) => {
+                    let row = &c.casualty[usize::from(instance)];
+                    for resource in &self.resources {
+                        let r = self.reference(resource.id);
+                        let o = &resource.object;
+                        if row.sacrifice.is_some_and(|wanted| wanted != r)
+                            || o.zone != Zone::Battlefield
+                            || o.controller != c.actor
+                            || CharacteristicWorld::kinds(self, resource.id) & 1 == 0
+                            || self.power(resource.id) < i128::from(row.grant.minimum)
+                        {
+                            continue;
+                        }
+                        if self
+                            .cost_departures(&[r], Zone::Graveyard)
+                            .into_iter()
+                            .any(|w| w.complete_cost_rows(&later, &rest))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                CastCostClause::Additional => {
+                    if self.complete_additional(c, &later, &rest) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+    fn complete_additional(
+        &self,
+        c: &CostContext,
+        later: &CostContext,
+        remaining: &[usize],
+    ) -> bool {
+        let Some(mut spec) = c.additional else {
+            return true;
+        };
+        let mut amount = 1usize;
+        let mut destination = Zone::Graveyard;
+        let mut evidence_min = None;
+        let mut counters = None;
+        let mut any_graveyard = false;
+        match spec.kind {
+            EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => match c.forage {
+                Some(ForageRoute::Black) => return self.complete_cost_rows(later, remaining),
+                Some(ForageRoute::Food) => spec = forage::food_cost(),
+                Some(ForageRoute::ExileThree) => {
+                    amount = 3;
+                    destination = Zone::Exile;
+                    spec.kind = EffectChoiceKind::ExileGraveyard;
+                    any_graveyard = true;
+                }
+                None => return false,
+            },
+            EffectChoiceKind::CollectEvidence(n) => {
+                evidence_min = Some(u128::from(n));
+                destination = Zone::Exile;
+                spec.kind = EffectChoiceKind::ExileGraveyard;
+                any_graveyard = true;
+            }
+            EffectChoiceKind::RemoveCreatureCounters(n) => counters = Some(n),
+            EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
+                amount = usize::from(n)
+            }
+            EffectChoiceKind::ExileGraveyard => destination = Zone::Exile,
+            EffectChoiceKind::ExileGraveyardCards(n) => {
+                destination = Zone::Exile;
+                amount = usize::from(n);
+                spec.kind = EffectChoiceKind::ExileGraveyard;
+            }
+            EffectChoiceKind::ReturnToHand => destination = Zone::Hand,
+            EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::Discard
+            | EffectChoiceKind::DiscardNamed(_) => {}
+            _ => return false,
+        }
+        if let Some(n) = counters {
+            return self.complete_counter_cost(c, later, remaining, n);
+        }
+        if any_graveyard {
+            spec.filter = SacrificeFilter {
+                keywords: Keywords::NONE,
+                source_only: false,
+                kinds: 0,
+                nonland: false,
+                other: false,
+                tokens: None,
+                artifact_enchantment_or_token: false,
+                subtype: None,
+            };
+        }
+        let candidates = self
+            .resources
+            .iter()
+            .filter_map(|v| {
+                let r = self.reference(v.id);
+                self.cost_object(spec, r, c.source).then_some(r)
+            })
+            .collect::<Vec<_>>();
+        if evidence_min.is_some_and(|n| {
+            candidates
+                .iter()
+                .map(|r| u128::from(self.object(r.card).card.fixed_mana_value()))
+                .sum::<u128>()
+                < n
+        }) {
+            return false;
+        }
+        if !c.selected.iter().all(|r| candidates.contains(r)) {
+            return false;
+        }
+        let mut selected = c.selected.clone();
+        self.complete_object_choices(
+            c,
+            later,
+            remaining,
+            spec,
+            destination,
+            amount,
+            evidence_min,
+            &candidates,
+            0,
+            &mut selected,
+        )
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn complete_object_choices(
+        &self,
+        c: &CostContext,
+        later: &CostContext,
+        remaining: &[usize],
+        spec: AdditionalCost,
+        destination: Zone,
+        amount: usize,
+        evidence_min: Option<u128>,
+        candidates: &[ObjectRef],
+        at: usize,
+        selected: &mut Vec<ObjectRef>,
+    ) -> bool {
+        let enough = evidence_min.map_or(selected.len() == amount, |minimum| {
+            selected
+                .iter()
+                .map(|r| u128::from(self.object(r.card).card.fixed_mana_value()))
+                .sum::<u128>()
+                >= minimum
+        });
+        if enough {
+            if remaining.is_empty() {
+                return true;
+            }
+            let success = if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) {
+                let mut next = self.clone();
+                for r in selected.iter() {
+                    let i = next.resources.iter().position(|v| v.id == r.card).unwrap();
+                    next.resources[i].object.tapped = true;
+                }
+                next.complete_cost_rows(later, remaining)
+            } else {
+                self.cost_departures(selected, destination)
+                    .into_iter()
+                    .any(|w| w.complete_cost_rows(later, remaining))
+            };
+            if success {
+                return true;
+            }
+        }
+        if c.exact || evidence_min.is_none() && selected.len() >= amount {
+            return false;
+        }
+        for i in at..candidates.len() {
+            let r = candidates[i];
+            if selected.contains(&r) {
+                continue;
+            }
+            if matches!(spec.kind, EffectChoiceKind::SacrificeDifferentNames(_))
+                && selected
+                    .iter()
+                    .any(|s| crate::card_names::same_name(self.name(s.card), self.name(r.card)))
+            {
+                continue;
+            }
+            selected.push(r);
+            if self.complete_object_choices(
+                c,
+                later,
+                remaining,
+                spec,
+                destination,
+                amount,
+                evidence_min,
+                candidates,
+                i + 1,
+                selected,
+            ) {
+                return true;
+            }
+            selected.pop();
+        }
+        false
+    }
+    fn complete_counter_cost(
+        &self,
+        c: &CostContext,
+        later: &CostContext,
+        remaining: &[usize],
+        amount: u16,
+    ) -> bool {
+        let mut next = self.clone();
+        for &(r, kind) in &c.counters {
+            if !next.remove_creature_counter(r, kind) {
+                return false;
+            }
+        }
+        if c.counters.len() > usize::from(amount) {
+            return false;
+        }
+        fn fill(
+            w: &FundingState<'_>,
+            left: usize,
+            later: &CostContext,
+            remaining: &[usize],
+            first: usize,
+        ) -> bool {
+            if left == 0 {
+                return w.complete_cost_rows(later, remaining);
+            }
+            for (index, resource) in w.resources.iter().enumerate().skip(first) {
+                if resource.object.zone != Zone::Battlefield
+                    || resource.object.controller != w.actor
+                    || CharacteristicWorld::kinds(w, resource.id) & 1 == 0
+                {
+                    continue;
+                }
+                for kind in CounterKind::ALL {
+                    let mut next = w.clone();
+                    if !next.remove_creature_counter(w.reference(resource.id), kind) {
+                        continue;
+                    }
+                    if fill(&next, left - 1, later, remaining, index) {
+                        return true;
+                    }
+                }
+            }
+            false
+        }
+        fill(
+            &next,
+            usize::from(amount) - c.counters.len(),
+            later,
+            remaining,
+            0,
+        )
+    }
+}
+
+impl Game {
+    fn cast_cost_world(&self, a: &Announcement) -> FundingState<'_> {
+        let goal = FundingGoal {
+            actor: a.item.controller,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_cost_context(Some(a));
+        world
+    }
+    pub(in crate::engine) fn visit_cast_cost_clauses(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let world = self.cast_cost_world(a);
+        for (index, row) in a.cast_costs.as_ref().unwrap().clauses.iter().enumerate() {
+            if row.paid {
+                continue;
+            }
+            let mut choice = world.clone();
+            choice.cast_costs.as_mut().unwrap().active = Some(index as u16);
+            if choice.cost_completion()
+                && emit(Action::ChooseCastCost {
+                    clause: index as u16,
+                })
+            {
+                return true;
+            }
+        }
+        false
+    }
+    pub(in crate::engine) fn visit_casualty_payments(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let instance = match self.state.pending {
+            Pending::CasualtyPayment { instance, .. } => instance,
+            _ => return false,
+        };
+        let a = self.state.announcing.as_ref().unwrap();
+        let world = self.cast_cost_world(a);
+        for id in 0..self.state.objects.len() {
+            let object = self.object_ref(id as CardId);
+            let mut choice = world.clone();
+            choice.cast_costs.as_mut().unwrap().casualty[usize::from(instance)].sacrifice =
+                Some(object);
+            if choice.cost_completion() && emit(Action::PayCasualty { object }) {
+                return true;
+            }
+        }
+        false
+    }
+    pub(in crate::engine) fn cast_cost_object_fundable(&self, object: ObjectRef) -> bool {
+        let Some(a) = self
+            .state
+            .announcing
+            .as_ref()
+            .filter(|a| a.cast_costs.as_ref().is_some_and(|c| c.mana_paid))
+        else {
+            return true;
+        };
+        let mut world = self.cast_cost_world(a);
+        let c = world.cast_costs.as_mut().unwrap();
+        c.selected = vec![object];
+        c.exact = true;
+        world.cost_completion()
+    }
+    pub(in crate::engine) fn cast_cost_group_fundable(
+        &self,
+        selected: &[ObjectRef],
+        exact: bool,
+    ) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let mut world = self.cast_cost_world(a);
+        let c = world.cast_costs.as_mut().unwrap();
+        c.selected = selected.to_vec();
+        c.exact = exact;
+        world.cost_completion()
+    }
+    pub(in crate::engine) fn cast_cost_counters_fundable(
+        &self,
+        selected: &[(ObjectRef, CounterKind)],
+    ) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let mut world = self.cast_cost_world(a);
+        world.cast_costs.as_mut().unwrap().counters = selected.to_vec();
+        world.cost_completion()
+    }
+    pub(in crate::engine) fn casualty_intent_fundable(&self, pay: bool) -> bool {
+        let mut a = self.state.announcing.as_ref().unwrap().clone();
+        let row = a
+            .casualty
+            .as_mut()
+            .unwrap()
+            .iter_mut()
+            .find(|r| !r.declared)
+            .unwrap();
+        row.pay = pay;
+        row.declared = true;
+        a.initialize_cast_costs();
+        if a.cast_costs.is_none() {
+            a.cast_costs = Some(Box::default());
+            a.initialize_cast_costs();
+        }
+        a.cost_options().any(|cost| {
+            let mut choice = a.clone();
+            choice.cost = Some(cost);
+            let goal = self.funding_goal(&choice);
+            let mut world = FundingState::from_game_with_convoke(
+                self,
+                &goal,
+                choice.item.source_card.has_convoke(),
+            );
+            world.purpose = self.purpose_for_item(&choice.item);
+            world.set_cost_context(Some(&choice));
+            world.reachable(&goal, &mut HashSet::new())
+        })
+    }
+    /// One resource solver handles mana and ordered additional life costs, including previews before announcement.
+    #[allow(
+        dead_code,
+        reason = "Shared declaration API consumed by the life-X card author in the integrating batch"
+    )]
+    pub(in crate::engine) fn can_fund_life_cost(
+        &self,
+        goal: FundingGoal,
+        purpose: mana_lots::Purpose,
+        life: u32,
+    ) -> bool {
+        let mut world = FundingState::from_game(self, &goal);
+        world.purpose = purpose;
+        if world.cast_costs.is_none() {
+            world.install_cost_context(Some(Box::new(CostContext {
+                actor: goal.actor,
+                source: ObjectRef {
+                    card: 0,
+                    generation: 0,
+                },
+                clauses: Vec::new(),
+                active: None,
+                casualty: Vec::new(),
+                additional: None,
+                forage: None,
+                selected: Vec::new(),
+                exact: false,
+                counters: Vec::new(),
+            })));
+        }
+        let c = world.cast_costs.as_mut().unwrap();
+        if !c
+            .clauses
+            .iter()
+            .any(|r| matches!(r.clause, CastCostClause::Life(_)))
+        {
+            c.clauses.push(CastCostRow {
+                clause: CastCostClause::Life(life),
+                paid: false,
+            });
+        }
+        world.reachable(&goal, &mut HashSet::new())
+    }
+}
+
+impl Game {
+    /// Preview declarations that are still optional; fixed declarations stay fixed.
+    #[allow(clippy::too_many_arguments)]
+    pub(in crate::engine) fn preview_optional_cast_costs(
+        &self,
+        goal: FundingGoal,
+        purpose: mana_lots::Purpose,
+        source: ObjectRef,
+        additional: Option<AdditionalCost>,
+        route: Option<ForageRoute>,
+        selected: &[ObjectRef],
+        exact: bool,
+        counters: &[(ObjectRef, CounterKind)],
+        extra: &[CastCostClause],
+    ) -> Option<bool> {
+        let mana_lots::Purpose::Spell(spell) = purpose else {
+            return None;
+        };
+        let current = self.state.announcing.as_ref().filter(|a| {
+            a.item.kind == StackKind::Spell
+                && a.item.controller == goal.actor
+                && a.item.source_card == spell.card
+        });
+        if extra.is_empty()
+            && current.is_none_or(|a| a.casualty.is_none() && a.cast_costs.is_none())
+            && !self.has_casualty(goal.actor, spell.card)
+        {
+            return None;
+        }
+        let grants = current
+            .and_then(|a| a.casualty.as_deref())
+            .cloned()
+            .unwrap_or_else(|| self.casualty_grants(goal.actor, spell.card));
+        if grants.is_empty() && extra.is_empty() && current.is_none_or(|a| a.cast_costs.is_none()) {
+            return None;
+        }
+        fn declarations(
+            rows: &mut [CasualtyDeclaration],
+            index: usize,
+            visit: &mut impl FnMut(&[CasualtyDeclaration]) -> bool,
+        ) -> bool {
+            if index == rows.len() {
+                return visit(rows);
+            }
+            if rows[index].declared {
+                return declarations(rows, index + 1, visit);
+            }
+            rows[index].declared = true;
+            for pay in [false, true] {
+                rows[index].pay = pay;
+                if declarations(rows, index + 1, visit) {
+                    return true;
+                }
+            }
+            rows[index].declared = false;
+            false
+        }
+        let mut grants = grants;
+        let routes = if additional.is_some_and(forage::is_forage_cost) && route.is_none() {
+            let mut v = vec![Some(ForageRoute::ExileThree), Some(ForageRoute::Food)];
+            if additional.is_some_and(|s| s.kind == EffectChoiceKind::ForageOrBlack) {
+                v.push(Some(ForageRoute::Black));
+            }
+            v
+        } else {
+            vec![route]
+        };
+        Some(declarations(&mut grants, 0, &mut |casualty| {
+            routes.iter().any(|&chosen_route| {
+                let mut attempt = goal.clone();
+                if chosen_route == Some(ForageRoute::Black) && route.is_none() {
+                    attempt.required[2] = attempt.required[2]
+                        .checked_add(1)
+                        .capacity("forage mana exhausted");
+                }
+                let mut clauses = casualty
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, r)| r.pay && !r.paid)
+                    .map(|(i, _)| CastCostRow {
+                        clause: CastCostClause::Casualty(i as u16),
+                        paid: false,
+                    })
+                    .collect::<Vec<_>>();
+                if additional.is_some() {
+                    clauses.push(CastCostRow {
+                        clause: CastCostClause::Additional,
+                        paid: false,
+                    });
+                }
+                for &clause in extra {
+                    if !clauses.iter().any(|r| r.clause == clause) {
+                        clauses.push(CastCostRow {
+                            clause,
+                            paid: false,
+                        });
+                    }
+                }
+                let context = CostContext {
+                    actor: goal.actor,
+                    source,
+                    clauses,
+                    active: None,
+                    casualty: casualty.to_vec(),
+                    additional,
+                    forage: chosen_route,
+                    selected: selected.to_vec(),
+                    exact,
+                    counters: counters.to_vec(),
+                };
+                let mut world =
+                    FundingState::from_game_with_convoke(self, &attempt, spell.card.has_convoke());
+                world.purpose = purpose;
+                world.install_cost_context(Some(Box::new(context)));
+                world.reachable(&attempt, &mut HashSet::new())
+            })
+        }))
+    }
+}

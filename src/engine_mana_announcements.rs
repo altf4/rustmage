@@ -107,6 +107,8 @@ impl Game {
                                 + a.free_hand_permission
                                     .as_ref()
                                     .map_or(0, |_| std::mem::size_of::<ObjectRef>())
+                                + casualty::bytes(&a.casualty)
+                                + a.cast_costs.as_ref().map_or(0, |c| c.bytes())
                                 + a.convoke.as_ref().map_or(0, |v| v.bytes())
                                 + a.evidence.as_ref().map_or(0, |v| v.bytes())
                                 + a.forage.as_ref().map_or(0, |v| v.bytes())

@@ -153,6 +153,7 @@ impl Game {
             source: None,
             reserve: None,
         };
+        if let Some(result)=self.preview_optional_cast_costs(base.clone(),purpose,self.object_ref(card),definition.additional_cost(),route,&[],false,&[],&[]) {return result;}
         if definition.has_convoke() {
             return self.can_fund_convoke_for(base, purpose);
         }
@@ -290,6 +291,35 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return false;
         };
+        if self.cast_costs_mana_paid() {
+            if !self.additional_candidate(spec, a.item.controller, a.item.object, object) {
+                return false;
+            }
+            if matches!(
+                spec.kind,
+                EffectChoiceKind::TapPermanents(_)
+                    | EffectChoiceKind::ExileGraveyardCards(_)
+                    | EffectChoiceKind::SacrificeDifferentNames(_)
+            ) {
+                let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
+                if selected.contains(&object) {
+                    return false;
+                }
+                if matches!(spec.kind, EffectChoiceKind::SacrificeDifferentNames(_))
+                    && selected.iter().any(|r| {
+                        crate::card_names::same_name(
+                            self.object_name(r.card),
+                            self.object_name(object.card),
+                        )
+                    })
+                {
+                    return false;
+                }
+                selected.push(object);
+                return self.cast_cost_group_fundable(&selected, false);
+            }
+            return self.cast_cost_object_fundable(object);
+        }
         if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind {
             let mut selected = a
                 .additional_group
@@ -368,6 +398,7 @@ impl Game {
         self.state.pending = Pending::PayCosts {
             player: a.item.controller,
         };
+        self.resume_cast_cost_selection();
     }
     pub(super) fn pay_additional_cost(&mut self, a: &mut Announcement) {
         let Some(spec) = a.additional_cost() else {

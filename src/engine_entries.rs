@@ -772,12 +772,12 @@ impl Game {
             } else if self.state.resolving.is_some() {
                 self.run_program();
             }
-            if self
-                .state
-                .announcing
-                .as_ref()
-                .is_some_and(|a| a.additional_paid)
-            {
+            if self.state.announcing.as_ref().is_some_and(|a| {
+                a.additional_paid
+                    || a.cast_costs
+                        .as_ref()
+                        .is_some_and(|c| c.mana_paid && c.active.is_none())
+            }) {
                 self.finish_announcement();
             }
         }

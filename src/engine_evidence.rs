@@ -220,14 +220,23 @@ impl Game {
     }
     fn evidence_candidate(&self, r: ObjectRef) -> bool {
         let e = self.evidence_selection();
-        self.evidence_card(e.player, r) && !e.selected.contains(&r)
+        self.evidence_card(e.player, r)
+            && !e.selected.contains(&r)
+            && (!self.cast_costs_mana_paid() || {
+                let mut selected = e.selected.clone();
+                selected.push(r);
+                self.cast_cost_group_fundable(&selected, false)
+            })
     }
     pub(super) fn visit_evidence_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let e = self.evidence_selection();
         if e.optional && emit(Action::DeclineEvidence) {
             return true;
         }
-        if e.total >= u128::from(e.threshold) && emit(Action::FinishEvidence) {
+        if e.total >= u128::from(e.threshold)
+            && (!self.cast_costs_mana_paid() || self.cast_cost_group_fundable(&e.selected, true))
+            && emit(Action::FinishEvidence)
+        {
             return true;
         }
         for id in 0..self.state.objects.len() {
@@ -236,7 +245,7 @@ impl Game {
                 return true;
             }
         }
-        if self.state.announcing.is_some() {
+        if self.state.announcing.is_some() && !self.cast_costs_mana_paid() {
             return self.visit_cost_payment(emit);
         }
         false
@@ -273,6 +282,7 @@ impl Game {
             self.state.pending = Pending::PayCosts {
                 player: a.item.controller,
             };
+            self.resume_cast_cost_selection();
         } else {
             let r = self.state.resolving.as_mut().unwrap();
             let e = r.evidence.take().unwrap();

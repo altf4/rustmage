@@ -60,6 +60,10 @@ pub(crate) enum StaticAbilityFragment {
     CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
+    ControlledSpellsCasualty {
+        kinds: u16,
+        minimum: u16,
+    },
     LifeGainAdditional(u16),
     CantGainLife,
     NoMaximumHandSize,

@@ -2254,10 +2254,8 @@ fn sos_rubble_nested_payment_preserves_outer_graveyard_source_and_reserved_cost(
             let object = g.object_ref(reserved);
             act(&mut g, Action::ChooseAdditionalCost { object });
             announce_rubble_mana(&mut g, source);
-            for invalid in [reserved] {
-                let object = g.object_ref(invalid);
-                reject(&mut g, Action::ChooseAdditionalCost { object });
-            }
+            let object = g.object_ref(reserved);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
             let object = g.object_ref(if exile_source { professor } else { fuel });
             act(&mut g, Action::ChooseAdditionalCost { object });
             pay(&mut g);
@@ -2810,5 +2808,73 @@ fn sos_sparks_cannot_be_copied_by_targeted_or_captured_copy_effects() {
         settle(&mut g);
         assert_eq!(g.state.players[p.other().index()].life, 16);
         assert_eq!(g.object_view(artifact).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_cast_life_clause_preview_payment_and_owned_restore() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.players[p.index()].life = 5;
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        let goal = funding::FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 1, 0, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let purpose = g.spell_mana_purpose_for_card(p, spell, Card::Shock);
+        let before = g.snapshot();
+        assert!(g.can_fund_life_cost(goal.clone(), purpose, 0));
+        assert!(g.can_fund_life_cost(goal.clone(), purpose, 5));
+        assert!(!g.can_fund_life_cost(goal.clone(), purpose, 6));
+        assert_eq!(g.snapshot(), before, "previews cannot spend resources");
+        act(&mut g, Action::AnnounceCast { card: spell });
+        // A life-X author adds its chosen Life clause during declaration.
+        g.state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .add_cast_cost_clause(CastCostClause::Life(4));
+        assert!(
+            g.can_fund_life_cost(goal, purpose, 4),
+            "the existing clause must not be charged twice"
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 5);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 0);
+        assert!(g.observe(p.other()).cast_costs.is_none());
+        let clause = g
+            .observe(p)
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|r| r.clause == CastCostClause::Life(4))
+            .unwrap() as u16;
+        super::big_helpers::checked(&mut g, Action::ChooseCastCost { clause });
+        assert_eq!(g.state.players[p.index()].life, 1);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        g.state.players[p.index()].life = -1;
+        let zero = funding::FundingGoal {
+            actor: p,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        assert!(g.can_fund_life_cost(zero.clone(), mana_lots::Purpose::Other, 0));
+        assert!(!g.can_fund_life_cost(zero, mana_lots::Purpose::Other, 1));
     }
 }

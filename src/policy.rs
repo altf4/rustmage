@@ -194,7 +194,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
-            Action::ChooseOffspring { pay } | Action::ChooseKicker { pay } => {
+            Action::ChooseCasualty { pay }
+            | Action::ChooseOffspring { pay }
+            | Action::ChooseKicker { pay } => {
                 if *pay {
                     100
                 } else {
@@ -218,7 +220,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
-            Action::ChooseAdditionalCost { .. } | Action::ChooseCreatureCounterCost { .. } => 60,
+            Action::ChooseCastCost { .. }
+            | Action::PayCasualty { .. }
+            | Action::ChooseAdditionalCost { .. }
+            | Action::ChooseCreatureCounterCost { .. } => 60,
             Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,
             Action::ChooseConniver { .. } => 60,
