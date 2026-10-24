@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8d8d92164ee91e9c53248e0783ba6f2c7a1e74720e0832f2afdedc36e3b7c56e",
+  "catalogue_version": "4fd161f5792fde20e5828cf0592c90655124014950d7b615c6b4490086adfb93",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2377,
-  "implemented_total": 2383,
+  "implemented_standard_cards": 2380,
+  "implemented_total": 2386,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 260,
-      "gated": 4
+      "complete": 263,
+      "gated": 1
     },
     "spm": {
       "total": 134,
@@ -12518,8 +12518,8 @@
     {
       "name": "Fix What's Broken",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/fix_what_s_broken.rs",
       "set": "sos"
     },
@@ -26134,8 +26134,8 @@
     {
       "name": "Prismari, the Inspiration",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/prismari_the_inspiration.rs",
       "set": "sos"
     },
@@ -39302,8 +39302,8 @@
     {
       "name": "Vicious Rivalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/vicious_rivalry.rs",
       "set": "sos"
     },
