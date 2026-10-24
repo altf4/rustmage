@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fa42bae0b600fc258203bd588a7901a2c2186f52f0a36377d3a412bf8fe06781",
+  "catalogue_version": "d5ff8c0622ac1d311111fc6751bbb35bf1ed9a632bf04d6907795d73a7d82f7c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2352,
-  "implemented_total": 2358,
+  "implemented_standard_cards": 2353,
+  "implemented_total": 2359,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 235,
-      "gated": 29
+      "complete": 236,
+      "gated": 28
     },
     "spm": {
       "total": 134,
@@ -35670,8 +35670,8 @@
     {
       "name": "The Dawning Archaic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/the_dawning_archaic.rs",
       "set": "sos"
     },
