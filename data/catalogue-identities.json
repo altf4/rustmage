@@ -5398,7 +5398,8 @@
     16,
     0,
     9,
-    3
+    3,
+    2
   ],
   "aliases": [
     [
@@ -6184,6 +6185,10 @@
     [
       "@token/msh-leviathan",
       5387
+    ],
+    [
+      "@token/msh-redwing",
+      5393
     ],
     [
       "@token/msh-robot-villain",
@@ -28390,6 +28395,12 @@
       "name": "Wall Token",
       "subtypes": "Wall",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/msh-redwing",
+      "name": "Redwing",
+      "subtypes": "Bird Scout",
+      "colors": 2
     }
   ],
   "emblems": [
@@ -182487,6 +182498,36 @@
       ],
       "generic": 4,
       "face_parent": 2361
+    },
+    {
+      "index": 5393,
+      "module": "card_5393",
+      "path": "synthetic/token_msh_redwing.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-redwing",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Bird Scout",
+      "oracle_keywords": [
+        "Flying",
+        "Surveil"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

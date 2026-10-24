@@ -398,7 +398,7 @@ fn msh_falcon_departure_and_control_change_keep_etb_controller_with_doubled_lege
             paid(&mut g, p, "Doubling Season");
             let falcon = named(&mut g, p, "Falcon, Winged Wonder", Zone::Hand);
             cast(&mut g, falcon, None, &[]);
-            until(&mut g, |g| !g.state.pending_triggers.is_empty());
+            until(&mut g, |g| g.object_view(falcon).zone == Zone::Battlefield);
             if depart {
                 g.move_object(falcon, Zone::Exile);
             } else {

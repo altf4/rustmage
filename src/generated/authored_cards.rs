@@ -48536,8 +48536,17 @@ pub(super) mod card_5392 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/msh/black_panther_hope_enduring.rs");
 }
+pub(super) mod card_5393 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_msh_redwing.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5393] = [
+pub(super) static RULES: [&CardRules; 5394] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -53931,6 +53940,7 @@ pub(super) static RULES: [&CardRules; 5393] = [
     &card_5390::RULES,
     &card_5391::RULES,
     &card_5392::RULES,
+    &card_5393::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }
