@@ -47,6 +47,7 @@ impl Game {
                 TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
+                    | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {

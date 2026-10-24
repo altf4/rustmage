@@ -190,6 +190,76 @@ impl Game {
         }
     }
 
+    pub(super) fn has_counter_batch_observers(&self) -> bool {
+        self.state.counter_sources.iter().any(|&id| {
+            self.state.objects[id as usize]
+                .card
+                .triggers()
+                .iter()
+                .any(|a| {
+                    matches!(
+                        a.condition.event(),
+                        TriggerCondition::CounterBatchPlacedByYou { .. }
+                    )
+                })
+        })
+    }
+
+    /// Dispatch once per observing ability after every recipient of a simultaneous
+    /// placement has committed. The iterator borrows transient amounts; no event
+    /// identity or latch is retained in owned game state.
+    pub(super) fn counter_batch_added<'a>(
+        &mut self,
+        placements: impl Iterator<Item = (ObjectRef, &'a Counters, Player)> + Clone,
+    ) {
+        let sources: Vec<_> = self
+            .state
+            .counter_sources
+            .iter()
+            .copied()
+            .filter(|&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .triggers()
+                    .iter()
+                    .any(|a| {
+                        matches!(
+                            a.condition.event(),
+                            TriggerCondition::CounterBatchPlacedByYou { .. }
+                        )
+                    })
+            })
+            .map(|id| self.object_view(id))
+            .collect();
+        for source in sources {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                let TriggerCondition::CounterBatchPlacedByYou { kind, filter } =
+                    ability.condition.event()
+                else {
+                    continue;
+                };
+                let qualifies = placements.clone().any(|(object, amount, placed_by)| {
+                    amount.get(kind) > 0
+                        && placed_by == source.controller
+                        && self.on_battlefield(object.card)
+                        && self.object_ref(object.card) == object
+                        && Self::count_object_matches(
+                            filter,
+                            source.reference,
+                            source.controller,
+                            object.card,
+                            &self.state.objects[object.card as usize],
+                            &|id| self.granted_subtypes(id),
+                            &|id, o| self.object_kinds(id, o),
+                        )
+                });
+                if qualifies {
+                    self.queue_trigger(&source, index);
+                }
+            }
+        }
+    }
+
     pub(super) fn self_counters_added(
         &mut self,
         object: ObjectRef,
@@ -625,6 +695,7 @@ impl Game {
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
+                    | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfFirstAttack
