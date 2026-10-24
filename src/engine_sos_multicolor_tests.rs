@@ -241,3 +241,83 @@ fn sos_graveyard_departure_looks_back_before_suppressing_aura_leaves() {
         assert!(g.printed_abilities_available(source));assert_eq!(g.counter_count(source,CounterKind::PlusOne),0);
     }
 }
+fn multicopy(g: &mut Game, source: CardId, targets: &[Target]) -> CardId {
+    let row=g.state.preparations.as_ref().unwrap().iter().find(|r|r.permanent==g.object_ref(source)).copied().unwrap();
+    let copy=row.spell_copy.card;
+    checked(g,Action::AnnounceExile{card:copy});
+    let mut next=0;
+    for _ in 0..12 {
+        if g.state.announcing.is_none() {assert_eq!(next,targets.len());assert!(!g.is_prepared(row.permanent));return copy;}
+        let actions=g.legal_actions();
+        let choice=targets.get(next).map(|&target|Action::ChooseTarget{target});
+        let action=if choice.as_ref().is_some_and(|a|actions.contains(a)){next+=1;choice.unwrap()}else{
+            actions.into_iter().find(|a|matches!(a,Action::ChooseSpellCost{..}|Action::FinishTargets|Action::PayCosts{..})).unwrap()
+        };
+        checked(g,action);
+    }
+    panic!("prepared multicolor cast did not pay");
+}
+fn physical(g: &mut Game,p: Player,name: &str)->CardId{
+    let id=put(g,p,name,Zone::Hand);cast(g,id,None);super::big_helpers::settle(g);id
+}
+#[test]
+fn sos_abigale_creature_cast_prepares_and_both_hybrid_payments_work() {
+    for p in [Player::P0,Player::P1] {for black in [false,true] {
+        let mut g=scenario(p);let source=physical(&mut g,p,"Abigale, Poet Laureate");assert_eq!(stats(&g,source),(2,3));assert!(g.keywords(source).contains(Keywords::FLYING));assert!(!g.is_prepared(g.object_ref(source)));
+        physical(&mut g,p,"Bear Cub");assert!(g.is_prepared(g.object_ref(source)));
+        g.state.players[p.index()].mana=[0;6];let row=g.state.preparations.as_ref().unwrap()[0];reject(&mut g,Action::AnnounceExile{card:row.spell_copy.card});
+        g.state.players[p.index()].mana=if black{[0,0,1,0,0,1]}else{[1,0,0,0,0,1]};
+        let copy=multicopy(&mut g,source,&[Target::Card(source)]);settle(&mut g);assert_eq!(g.counter_count(source,CounterKind::PlusOne),1);assert_eq!(g.object_view(copy).zone,Zone::Outside);assert_eq!(g.state.players[p.index()].mana,[0;6]);
+    }}
+}
+#[test]
+fn sos_kirol_batches_graveyard_cards_then_pack_a_punch_mills_counters_trample() {
+    for p in [Player::P0,Player::P1] {
+        let mut g=scenario(p);let source=physical(&mut g,p,"Kirol, History Buff");assert!(!g.is_prepared(g.object_ref(source)));
+        let a=put(&mut g,p,"Island",Zone::Graveyard);let b=put(&mut g,p,"Forest",Zone::Graveyard);let events=g.move_objects_raw(&[a,b],Zone::Exile);g.finish_zone_events(&events,&[]);super::big_helpers::settle(&mut g);assert_eq!(g.state.preparations.as_ref().unwrap().len(),1);
+        let top=put(&mut g,p,"Mountain",Zone::Library);multicopy(&mut g,source,&[Target::Card(source)]);settle(&mut g);assert_eq!(g.object_view(top).zone,Zone::Graveyard);assert_eq!(g.counter_count(source,CounterKind::PlusOne),2);assert!(g.keywords(source).contains(Keywords::TRAMPLE));g.finish_cleanup();assert!(!g.keywords(source).contains(Keywords::TRAMPLE));
+    }
+}
+#[test]
+fn sos_lluwen_hybrid_pest_and_sorcery_exile_creature_cost() {
+    for p in [Player::P0,Player::P1] {
+        let mut g=scenario(p);let source=physical(&mut g,p,"Lluwen, Exchange Student");assert!(g.is_prepared(g.object_ref(source)));
+        g.state.players[p.index()].mana=[0,0,0,0,1,0];multicopy(&mut g,source,&[]);settle(&mut g);assert!(g.state.objects.iter().any(|o|o.zone==Zone::Battlefield&&o.card==Card::from_name("@token/sos-pest").unwrap()));assert_eq!(g.state.players[p.index()].mana,[0;6]);
+        let own=put(&mut g,p,"Bear Cub",Zone::Graveyard);let foreign=put(&mut g,p.other(),"Bear Cub",Zone::Graveyard);let wrong=put(&mut g,p,"Island",Zone::Graveyard);
+        checked(&mut g,Action::AnnounceActivate{card:source,ability:0,counter_payment:Counters::default()});
+        for id in [foreign,wrong] {let object=g.object_ref(id);reject(&mut g,Action::ChooseAdditionalCost{object});}
+        let object=g.object_ref(own);checked(&mut g,Action::ChooseAdditionalCost{object});pay(&mut g);assert_eq!(g.object_view(own).zone,Zone::Exile);assert!(!g.is_prepared(g.object_ref(source)));settle(&mut g);assert!(g.is_prepared(g.object_ref(source)));
+        g.state.step=Step::BeginCombat;reject(&mut g,Action::AnnounceActivate{card:source,ability:0,counter_payment:Counters::default()});
+    }
+}
+#[test]
+fn sos_tam_landfall_and_sanar_condition_treasure_search_reveal() {
+    for p in [Player::P0,Player::P1] {
+        let mut g=scenario(p);let tam=physical(&mut g,p,"Tam, Observant Sequencer");assert!(!g.is_prepared(g.object_ref(tam)));let land=put(&mut g,p,"Forest",Zone::Hand);checked(&mut g,Action::PlayLand{card:land});super::big_helpers::settle(&mut g);assert!(g.is_prepared(g.object_ref(tam)));let hand=g.hand_count(p);multicopy(&mut g,tam,&[]);settle(&mut g);assert_eq!(g.hand_count(p),hand+1);assert_eq!(g.state.players[p.index()].life,21);
+        let mut g=scenario(p);let sanar=physical(&mut g,p,"Sanar, Unfinished Genius");g.state.objects[sanar as usize].summoning_sick=false;reject(&mut g,Action::AnnounceActivate{card:sanar,ability:0,counter_payment:Counters::default()});let shock=put(&mut g,p,"Shock",Zone::Library);
+        multicopy(&mut g,sanar,&[]);pause(&mut g);assert!(g.observe(p.other()).search_choice.is_none());checked(&mut g,Action::ChooseSearch{card:shock});checked(&mut g,Action::FinishSearch);settle(&mut g);assert_eq!(g.object_view(shock).zone,Zone::Hand);assert!(g.observe(p.other()).objects.iter().any(|o|o.id==shock));
+        checked(&mut g,Action::AnnounceActivate{card:sanar,ability:0,counter_payment:Counters::default()});pay(&mut g);settle(&mut g);assert!(g.object_view(sanar).tapped);assert!(g.state.objects.iter().enumerate().any(|(id,o)|o.zone==Zone::Battlefield&&o.is_token()&&g.has_subtype(id as CardId,"Treasure")));
+    }
+}
+#[test]
+fn sos_aziza_taps_three_distinct_own_untapped_creatures_then_retargets_copy() {
+    for p in [Player::P0,Player::P1] {for accept in [false,true] {
+        let mut g=scenario(p);let source=put(&mut g,p,"Aziza, Mage Tower Captain",Zone::Battlefield);let a=put(&mut g,p,"Bear Cub",Zone::Battlefield);let b=put(&mut g,p,"Bear Cub",Zone::Battlefield);let enemy=put(&mut g,p.other(),"Bear Cub",Zone::Battlefield);let spell=put(&mut g,p,"Shock",Zone::Hand);cast(&mut g,spell,Some(Target::Player(p.other())));pause(&mut g);
+        let object=g.object_ref(enemy);reject(&mut g,Action::Sacrifice{object});
+        if accept{
+            let object=g.object_ref(source);checked(&mut g,Action::Sacrifice{object});reject(&mut g,Action::Sacrifice{object});for id in [a,b]{let object=g.object_ref(id);checked(&mut g,Action::Sacrifice{object});}
+            checked(&mut g,Action::SetStackTarget{index:0,target:Target::Player(p)});checked(&mut g,Action::FinishStackTargets);
+        }else{checked(&mut g,Action::DeclineEffectPayment);}
+        settle(&mut g);for id in [source,a,b]{assert_eq!(g.object_view(id).tapped,accept);}assert_eq!(g.state.players[p.other().index()].life,18);assert_eq!(g.state.players[p.index()].life,if accept{18}else{20});
+    }}
+}
+
+#[test]
+fn sos_colorstorm_ward_is_exactly_one_mana() {
+    for p in [Player::P0,Player::P1] { for paid in [false,true] {
+        let mut g=scenario(p);let source=put(&mut g,p,"Colorstorm Stallion",Zone::Battlefield);let shock=put(&mut g,p.other(),"Shock",Zone::Hand);
+        g.state.players[p.other().index()].mana=if paid{[0,0,0,1,0,1]}else{[0,0,0,1,0,0]};act(&mut g,Action::Pass);cast(&mut g,shock,Some(Target::Card(source)));pause(&mut g);
+        if paid {let pay=g.legal_actions().into_iter().find(|a|matches!(a,Action::PayResolutionMana{..})).unwrap();checked(&mut g,pay);}else{checked(&mut g,Action::DeclineResolutionMana);}
+        settle(&mut g);assert_eq!(g.object_view(source).damage,if paid{2}else{0});
+    }}
+}

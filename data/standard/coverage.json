@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ba19dffa9a7346172acbea5bbbfe9c137350dec66b5ce4f2b432735b71ce5950",
+  "catalogue_version": "b437af20ebe668b5096bff401fa71daddff8267f2d5b180647b373168184835b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2283,
-  "implemented_total": 2289,
+  "implemented_standard_cards": 2292,
+  "implemented_total": 2298,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 166,
-      "gated": 98
+      "complete": 175,
+      "gated": 89
     },
     "spm": {
       "total": 134,
@@ -3438,8 +3438,8 @@
     {
       "name": "Biblioplex Tomekeeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/biblioplex_tomekeeper.rs",
       "set": "sos"
     },
@@ -9806,8 +9806,8 @@
     {
       "name": "Duel Tactics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/duel_tactics.rs",
       "set": "sos"
     },
@@ -10718,8 +10718,8 @@
     {
       "name": "Emeritus of Abundance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/emeritus_of_abundance_regrowth.rs",
       "set": "sos"
     },
@@ -17518,8 +17518,8 @@
     {
       "name": "Infirmary Healer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/infirmary_healer_stream_of_life.rs",
       "set": "sos"
     },
@@ -25878,8 +25878,8 @@
     {
       "name": "Postmortem Professor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/postmortem_professor.rs",
       "set": "sos"
     },
@@ -31406,8 +31406,8 @@
     {
       "name": "Skycoach Waypoint",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/skycoach_waypoint.rs",
       "set": "sos"
     },
@@ -33774,8 +33774,8 @@
     {
       "name": "Studious First-Year",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/studious_first_year_rampant_growth.rs",
       "set": "sos"
     },
@@ -37398,8 +37398,8 @@
     {
       "name": "Tragedy Feaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/tragedy_feaster.rs",
       "set": "sos"
     },
@@ -39014,8 +39014,8 @@
     {
       "name": "Vastlands Scavenger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/vastlands_scavenger_bind_to_life.rs",
       "set": "sos"
     },
