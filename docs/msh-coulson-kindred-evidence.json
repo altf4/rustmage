@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "scope": "Repair one inherited Agent Phil Coulson printed restriction; zero new admissions",
+  "base_revision": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
+  "preserved_four_card_pr": {
+    "number": 494,
+    "head": "0484aac31e4940d7b640d5aeb87cd3ca3ff5bf36",
+    "unchanged": true
+  },
+  "card": {
+    "name": "Agent Phil Coulson",
+    "oracle_id": "dae20bcd-dc24-4f9d-9400-a6f013b49f14",
+    "facts_sha256": "b00a1f3fb8fe722a2bb275f784b76821fda5224731ac183edd8b46c9bc9a1776",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_source": "Mage.Sets/src/mage/cards/a/AgentPhilCoulson.java",
+    "java_sha256": "fe9f89e05f7d535ebed1ca2128b261ed737749fb3beb5cde92d75cd6efbe464a",
+    "definition": "src/card_definitions/msh/agent_phil_coulson.rs",
+    "provenance": "src/card_definitions/msh/agent_phil_coulson.json",
+    "printed_obligations": [
+      {
+        "oracle": "Vigilance",
+        "evidence": [
+          "src/engine_msh_inherited_tests.rs::msh_inherited_coulson_other_own_heroes_counter_replacement_and_vigilant_attack"
+        ]
+      },
+      {
+        "oracle": "{T}: Put a +1/+1 counter on each other Hero you control.",
+        "evidence": [
+          "src/engine_msh_coulson_tests.rs::msh_coulson_paid_tap_cost_kindred_creature_token_and_own_other_filter_privacy",
+          "src/engine_msh_coulson_tests.rs::msh_coulson_paid_summoning_sickness_tap_and_illegal_payment_are_atomic",
+          "src/engine_msh_coulson_tests.rs::msh_coulson_one_counter_batch_waits_for_every_replacement_before_any_commit",
+          "src/engine_msh_coulson_tests.rs::msh_coulson_current_subtypes_and_controllers_are_queried_at_resolution",
+          "src/engine_msh_coulson_tests.rs::msh_coulson_queued_ability_keeps_captured_controller_after_paid_control_transfer",
+          "src/engine_msh_coulson_tests.rs::msh_coulson_source_departure_or_paid_blink_does_not_rebind_other_exclusion"
+        ]
+      }
+    ]
+  },
+  "shared_rule": {
+    "instruction": "Instruction::PutFilteredCounters",
+    "behavior": "Select exact current battlefield recipients with the existing CountFilter predicate, captured resolving controller and original source ObjectRef; send the complete set to the central simultaneous effect_counters replacement/commit path.",
+    "coulson_filter": {
+      "zone": "Battlefield",
+      "relation": 0,
+      "kind": 0,
+      "exclude": 0,
+      "subtype": "Hero",
+      "basic": false,
+      "other": true,
+      "cards_only": false
+    },
+    "other_consumers_changed": [],
+    "existing_put_creature_counters": "unchanged",
+    "integration_overlap": "count_object_matches becomes pub(super), the same visibility line already changed by the integrator placement prerequisite.",
+    "new_identities": 0,
+    "new_tokens": 0,
+    "admission_delta": 0,
+    "wire_schema_change": false
+  },
+  "fixture": {
+    "metadata_card": "Boggart Mischief",
+    "provenance": "src/card_definitions/ecl/boggart_mischief.json",
+    "admitted": false,
+    "kind_mask": 160,
+    "types": "Kindred Enchantment",
+    "behavior_exercised": "None. It is not cast or activated. An ordinary object fixture is seeded from immutable metadata, with no admitted behavior asserted.",
+    "hero_producer": "An exact positive-timestamp production CreatureTypesEffectView with types=[Hero] and additional=false is seeded in existing owned role state. A similar row supplies Hero to an existing Goblin token. These are synthetic producers; no currently supported card producer is claimed.",
+    "runtime_hook": false,
+    "magic_timestamps": false,
+    "new_state_or_wire_fields": false,
+    "owned_semantics": "The normal subtype and kind queries read the same owned/snapshotted rows on raw actions, indexed children and restore."
+  },
+  "interaction_evidence": {
+    "other_hero_permanents": "Own noncreature Kindred Hero, creature Hero and creature-token Hero each receive counters; source, opponent Heroes, non-Hero Kindred permanents and Hero cards outside battlefield do not.",
+    "current_characteristics": "Positive-timestamp subtype replacement and current control determine recipients at resolution rather than activation.",
+    "captured_context": "Paid Harmless Offering after activation keeps the original placing/controller context; source exile leaves the ability effective; paid Daydream under High Fae Trickster permission makes the new source incarnation another Hero for the old packet.",
+    "batch_and_replacements": "Two Doubling Seasons require a choice for each of two recipients. Both recipients and history remain unchanged until all replacement choices finish; then both get four counters together, including the noncreature Hero.",
+    "legality_and_privacy": "Summoning sickness, tap payment, repeated activation and invalid target/payment actions are checked; unrelated hidden hand cards stay private.",
+    "owned_checks": "Existing big_helpers::checked verifies wrong-actor atomicity, raw/index branching after parent disposal, restore and stale revision rejection for every checked paid action and replacement decision. Explicit reject checks snapshot and revision atomicity."
+  },
+  "native": {
+    "report": "<cache>/rustmage/msh-coulson/focused-result-1.json",
+    "success": true,
+    "terminal": true,
+    "new_scenarios": 6,
+    "inherited_coulson_scenarios": 1,
+    "passing_focused_tests": 7,
+    "compile_seconds": 105.91038839402609,
+    "focused_seconds": 0.010285638039931655,
+    "trace_seconds": 0.753187688998878,
+    "guard_report": "<cache>/rustmage-build-reports/55e4a9cbe79741ce98c67ebadf4f9ac9.json",
+    "guard_seconds": 137.46381790400483,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2277064704,
+    "oom_kills": 0,
+    "post_native_changes": "Only a documentation clarification and removal of redundant .clone() from a Copy test value. Gameplay code is unchanged; final Clippy checks the final source, and combined release will execute it."
+  },
+  "clippy": {
+    "command": "cargo clippy --all-targets -- -D warnings via scripts/resource_guard.py",
+    "terminal": true,
+    "exit_code": 0,
+    "log": "<cache>/rustmage/msh-coulson/clippy-final.log",
+    "resource_report": "<cache>/rustmage-build-reports/d2a9678e1ea044af83ba83fef8bcae8f.json",
+    "guard_seconds": 13.452007048996165,
+    "memory_peak_bytes": 1633996800,
+    "memory_max_bytes": 6442450944,
+    "oom_kills": 0
+  },
+  "ordinary_full_trace_proof": {
+    "base_revision": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
+    "inherited_count": 2453,
+    "candidate_count": 2453,
+    "inherited_full_struct_changes": [],
+    "additions": [],
+    "removals": [],
+    "projection": null,
+    "baseline_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060",
+    "candidate_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060",
+    "exact_bytes_equal": true
+  },
+  "source_pins": {
+    "definitions": 5391,
+    "source_blobs": 1095,
+    "java_verified": true,
+    "catalogue_version": "453bd833a822f3a63c14119deaa09c079f7762345ee109f91abfe9e82c87c696"
+  },
+  "throughput": {
+    "start_utc": "2026-10-24T21:44:35+00:00",
+    "end_utc": "2026-10-24T21:56:26.582252+00:00",
+    "elapsed_seconds": 711.582252,
+    "inherited_restrictions_repaired": 1,
+    "new_admissions": 0,
+    "scope": "Isolated branch authoring and focused/trace/Clippy validation, including queue time; initial planning excluded.",
+    "simulation_benchmark": "not run"
+  },
+  "remaining_acceptance": [
+    "Required final published-head independent nonauthor reviews and combined full release validation are coordinated by the integrator.",
+    "The older inherited assurance manifest describes this restriction as pending; this focused repair evidence supersedes that entry after integration, without claiming a new supported Hero producer.",
+    "All 281-card full-set games, interactions and performance acceptance remain open."
+  ]
+}

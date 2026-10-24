@@ -1,4 +1,4 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed Oracle behavior: every other Hero permanent, including noncreature Kindred Heroes.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     triggers: &[],
@@ -22,15 +22,16 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             loyalty: None,
         },
         targets: TargetPlan::Single(TargetSpec::NONE),
-        program: &[Instruction::PutCreatureCounters {
-            filter: CreatureFilter {
+        program: &[Instruction::PutFilteredCounters {
+            filter: CountFilter {
+                zone: CountZone::Battlefield,
                 relation: 0,
-                other: true,
+                kind: 0,
+                exclude: 0,
                 subtype: Some("Hero"),
-                keyword: Keywords::NONE,
-                attacking: false,
-                tokens: None,
-                artifact: false,
+                basic: false,
+                other: true,
+                cards_only: false,
             },
             kind: CounterKind::PlusOne,
             amount: 1,
