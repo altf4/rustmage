@@ -753,6 +753,12 @@ pub(crate) enum Instruction {
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
+    BlinkImmediately {
+        counter: Option<(CounterKind, u64)>,
+    },
+    IfCastFromNonHand {
+        skip: usize,
+    },
     BlinkUntilEndStep {
         under_owner: bool,
     },
@@ -1990,6 +1996,7 @@ pub(crate) enum CastTarget {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
+    HasX,
     SourceChosenColor,
     PermanentAdventure,
     Any,
@@ -2030,6 +2037,7 @@ impl CastFilter {
     pub(crate) fn matches_mana_value(self, card: Card, mana_value: u64) -> bool {
         match self {
             Self::Any => true,
+            Self::HasX => card.x_symbols() > 0,
             Self::PermanentAdventure => {
                 card.adventure_spell().is_some()
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
@@ -2135,6 +2143,7 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    OpponentHasMoreCardsInHand,
     SourceReceivedCounterThisTurn,
     YourTurn,
     SourcePowerAtLeast(u16),

@@ -123,6 +123,18 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::OpponentHasMoreCardsInHand => {
+                let count = |owner| {
+                    self.hand_count(owner)
+                        - usize::from(departing.is_some_and(|id| {
+                            self.state
+                                .objects
+                                .get(id as usize)
+                                .is_some_and(|o| o.zone == Zone::Hand && o.owner == owner)
+                        }))
+                };
+                return count(player.other()) > count(player);
+            }
             StepGuard::SourceReceivedCounterThisTurn => {
                 return self.put_counter_on_source_this_turn(source, player);
             }

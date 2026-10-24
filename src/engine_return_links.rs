@@ -77,6 +77,43 @@ impl Game {
                 item: item.clone(),
             });
     }
+    /// Exile as one movement batch, then return only the resulting exact physical cards.
+    /// Entry counters join the existing replacement event before battlefield entry.
+    pub(super) fn blink_immediately(
+        &mut self,
+        item: &SpellView,
+        counter: Option<(CounterKind, u64)>,
+    ) {
+        let ids: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let Target::Card(id) = bound.target else {
+                    return None;
+                };
+                (self.same_target_object(*bound) && self.on_battlefield(id)).then_some(id)
+            })
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let moves = events
+            .into_iter()
+            .filter_map(|event| {
+                if !event.moved
+                    || event.destination != Zone::Exile
+                    || event.before.is_token()
+                    || self.object_ref(event.after.card) != event.after
+                    || self.state.objects[event.after.card as usize].zone != Zone::Exile
+                {
+                    return None;
+                }
+                let mut movement = self.entry_move(event.after.card, Zone::Battlefield, false);
+                movement.controller = event.before.owner;
+                movement.effect_counter = counter;
+                Some(movement)
+            })
+            .collect();
+        self.stage_entries(moves, None);
+    }
     pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
         for bound in &item.targets {
             if !self.same_target_object(*bound) {

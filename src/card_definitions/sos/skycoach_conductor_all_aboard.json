@@ -3,10 +3,35 @@
   "catalogue_id": 3899,
   "oracle_id": "788d3cfa-7706-4728-9c48-cf7bc963d002",
   "facts_sha256": "bf5e12253e973cedd8a17df278354920eb57b7d8152cdf9a3370d281b9f86b13",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2b8de4bfbf693d276cb8c2b84d846d615420ad318ebd4dfae43e720eb2b4e4c7"
   },
-  "physical_metadata_sha256": "c0ab9ca3aaec604436a4a0cfbae507132125ddfd61f59feaff58ca309666c605"
+  "physical_metadata_sha256": "c0ab9ca3aaec604436a4a0cfbae507132125ddfd61f59feaff58ca309666c605",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SkycoachConductor.java",
+  "java_sha256": "4e351a1244e9923f92d0cbea00cbbfa46c3039b1fffc449aca730e193fe3f51e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ]
 }

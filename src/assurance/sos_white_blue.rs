@@ -1083,3 +1083,231 @@ fn sos_practiced_offense_player_counters_resolution_keyword_and_flashback() {
         assert_eq!(g.object_view(spell).zone, Zone::Exile);
     }
 }
+
+#[test]
+fn sos_daydream_returns_owner_with_replaced_entry_counters_and_flashback() {
+    for p in [Player::P0, Player::P1] {
+        for stolen in [false, true] {
+            let mut g = scenario(p);
+            let owner = if stolen { p.other() } else { p };
+            put(&mut g, owner, "Doubling Season", Zone::Battlefield);
+            let target = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+            g.state.objects[target as usize].controller = p;
+            let spell = put(&mut g, p, "Daydream", Zone::Hand);
+            let before = g.object_ref(target);
+            big_helpers::cast(&mut g, spell, None, &[Target::Card(target)]);
+            big_helpers::settle(&mut g);
+            assert_ne!(g.object_ref(target), before);
+            assert_eq!(g.object_view(target).controller, owner);
+            assert_eq!(g.counter_count(target, CounterKind::PlusOne), 2);
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            if !stolen {
+                act(&mut g, Action::AnnounceFlashback { card: spell });
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+                pay(&mut g);
+                big_helpers::settle(&mut g);
+                assert_eq!(g.counter_count(target, CounterKind::PlusOne), 2);
+                assert_eq!(g.object_view(spell).zone, Zone::Exile);
+            }
+        }
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Harsh Annotation", Zone::Hand);
+        let victim = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        cast(&mut g, source, Some(Target::Card(victim)));
+        settle(&mut g);
+        let token = tokens(&g, p.other())[0];
+        g.state.objects[token as usize].controller = p;
+        let spell = put(&mut g, p, "Daydream", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(token)));
+        big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(token).zone, Zone::Outside);
+    }
+}
+
+#[test]
+fn sos_skycoach_flash_body_and_nonpilot_blink_are_whole() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.active = p.other();
+        let source = put(&mut g, p, "Skycoach Conductor", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (2, 3));
+        assert!(
+            g.keywords(source).contains(
+                Keywords::FLASH
+                    .union(Keywords::FLYING)
+                    .union(Keywords::VIGILANCE)
+            )
+        );
+        if g.actor() != Some(p) {
+            act(&mut g, Action::Pass);
+        }
+        let row = g.state.preparations.as_ref().unwrap()[0];
+        let victim = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.state.objects[victim as usize].controller = p;
+        act(
+            &mut g,
+            Action::AnnounceExile {
+                card: row.spell_copy.card,
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(victim),
+            },
+        );
+        pay(&mut g);
+        let before = g.object_ref(victim);
+        big_helpers::settle(&mut g);
+        assert_ne!(g.object_ref(victim), before);
+        assert_eq!(g.object_view(victim).controller, p.other());
+        assert_eq!(g.counter_count(victim, CounterKind::PlusOne), 0);
+        assert!(!g.object_view(source).prepared);
+    }
+}
+
+#[test]
+fn sos_joined_hand_condition_checks_trigger_and_resolution_on_either_turn() {
+    for p in [Player::P0, Player::P1] {
+        for active in [p, p.other()] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Joined Researchers", Zone::Battlefield);
+            assert_eq!(stats(&g, source), (2, 2));
+            assert!(g.keywords(source).contains(Keywords::FIRST_STRIKE));
+            g.state.active = active;
+            g.begin_step(Step::End);
+            assert!(g.state.pending_triggers.is_empty());
+            let card = put(&mut g, p.other(), "Forest", Zone::Hand);
+            g.begin_step(Step::End);
+            assert_eq!(g.state.pending_triggers.len(), 1);
+            g.move_object(card, Zone::Graveyard);
+            big_helpers::settle(&mut g);
+            assert!(!g.object_view(source).prepared);
+            g.move_object(card, Zone::Hand);
+            g.begin_step(Step::End);
+            big_helpers::settle(&mut g);
+            assert!(g.object_view(source).prepared);
+            g.state.active = p;
+            g.state.step = Step::Main1;
+            g.state.priority = p;
+            let own = g.hand_count(p);
+            let other = g.hand_count(p.other());
+            let copy = g.state.preparations.as_ref().unwrap()[0].spell_copy.card;
+            act(&mut g, Action::AnnounceExile { card: copy });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.hand_count(p), own + 3);
+            assert_eq!(g.hand_count(p.other()), other + 3);
+        }
+    }
+}
+
+#[test]
+fn sos_matterbending_optional_other_bounce_and_frozen_triggering_x() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let source = put(&mut g, p, "Matterbending Mage", Zone::Hand);
+        cast(&mut g, source, None);
+        until_pending_choice(&mut g);
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Hand);
+        for x in [0, 2] {
+            let spell = put(&mut g, p, "Mind Spring", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseX { value: x });
+            pay(&mut g);
+            let packet = g.state.stack.iter().find(|t| t.card == source).unwrap();
+            assert_eq!(packet.x, Some(x));
+            assert_eq!(g.item_amount(AmountValue::ChosenX, packet), u128::from(x));
+            let id = g.state.stack.iter().find(|t| t.card == spell).unwrap().id;
+            assert!(g.counter_stack_item(id, false));
+            big_helpers::settle(&mut g);
+            assert!(g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
+            g.finish_cleanup();
+            assert!(!g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
+            g.state.active = p;
+            g.state.priority = p;
+            g.state.step = Step::Main1;
+            g.state.pending = Pending::Priority;
+            g.state.players[p.index()].mana = [8; 6];
+        }
+        let regular = put(&mut g, p, "Divination", Zone::Hand);
+        cast(&mut g, regular, None);
+        assert!(!g.state.pending_triggers.iter().any(|t| t.card == source));
+        settle(&mut g);
+    }
+}
+
+#[test]
+fn sos_antiquities_hand_and_flashback_apply_counters_to_all_own_spirits() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let spell = put(&mut g, p, "Antiquities on the Loose", Zone::Hand);
+        big_helpers::cast(&mut g, spell, None, &[]);
+        big_helpers::settle(&mut g);
+        let first = tokens(&g, p);
+        assert_eq!(first.len(), 2);
+        for id in &first {
+            assert_eq!(stats(&g, *id), (2, 2));
+            assert_eq!(g.object_view(*id).colors, 1 | 8);
+        }
+        // A separate opponent Spirit verifies controller filtering without affecting the cast.
+        g.create_tokens(p.other(), Card::SosSpiritToken, 1, false);
+        let enemy = tokens(&g, p.other())[0];
+        act(&mut g, Action::AnnounceFlashback { card: spell });
+        pay(&mut g);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        let all = tokens(&g, p);
+        assert_eq!(all.len(), 4);
+        for id in all {
+            assert_eq!(g.counter_count(id, CounterKind::PlusOne), 1);
+        }
+        assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+    }
+}

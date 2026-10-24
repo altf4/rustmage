@@ -1021,7 +1021,12 @@ impl Game {
                         )
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                         && self.queue_trigger_from(&source, index, grant.map(Box::new))
-                        && (ability.condition.mana_spent_rule().is_some()
+                    {
+                        // A cast trigger owns the triggering spell's chosen X even after that
+                        // spell is countered or leaves the stack. ChosenX reads this packet.
+                        let chosen_x = stack.and_then(|i| self.state.stack[i].x);
+                        self.state.pending_triggers.last_mut().unwrap().x = chosen_x;
+                        if ability.condition.mana_spent_rule().is_some()
                             || ability.program.iter().any(|instruction| {
                                 matches!(
                                     instruction,
@@ -1033,10 +1038,11 @@ impl Game {
                                             ..
                                         }
                                 )
-                            }))
-                    {
-                        self.state.pending_triggers.last_mut().unwrap().cast_event =
-                            cast_event.map(Box::new);
+                            })
+                        {
+                            self.state.pending_triggers.last_mut().unwrap().cast_event =
+                                cast_event.map(Box::new);
+                        }
                     }
                 }
             }
@@ -2074,6 +2080,12 @@ impl Game {
                     } else {
                         self.state.pending = Pending::EffectOptional { player, skip_to };
                         return;
+                    }
+                }
+                Instruction::BlinkImmediately { counter } => self.blink_immediately(&item, counter),
+                Instruction::IfCastFromNonHand { skip } => {
+                    if !item.cast.is_some_and(|cast| cast.origin != Zone::Hand) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
                 Instruction::BlinkUntilEndStep { under_owner } => {
