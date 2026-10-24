@@ -4,5 +4,8 @@
   "oracle_id": "2f5f46ed-b8aa-4864-bd20-17281d4632bf",
   "facts_sha256": "d577d4c8670f8c1936351024f84619536ce3bb5d2b2c4bf2b7127b8f107f4d34",
   "complete": false,
-  "physical_metadata_sha256": "1e4493200589ff2dfa1469442bf3d6b0d4b9fbf559c45d1d823367eb5654c1ce"
+  "physical_metadata_sha256": "1e4493200589ff2dfa1469442bf3d6b0d4b9fbf559c45d1d823367eb5654c1ce",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AbigalePoetLaureate.java",
+  "java_sha256": "1dcc4a9320de96fcf84b5dd58b93f1b0db9a58104e611123fc1c58854ce8afde"
 }

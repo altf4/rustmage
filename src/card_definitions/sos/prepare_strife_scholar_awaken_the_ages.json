@@ -4,5 +4,8 @@
   "oracle_id": "e85c6bd2-db15-4052-88c0-3ae25414f0ca",
   "facts_sha256": "63af9fc20c864b8f4c85891f9210f40db8c405cef089d54526024cffce4be499",
   "complete": false,
-  "physical_metadata_sha256": "24e4ec366b5ee5fada8ba6f4dd98e5c85723cd11df8e6aabce57ab92d49399d7"
+  "physical_metadata_sha256": "24e4ec366b5ee5fada8ba6f4dd98e5c85723cd11df8e6aabce57ab92d49399d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StrifeScholar.java",
+  "java_sha256": "9265dcd17ca8d2b158bc4d3965dc51f468a2e9bbb7023a4932c02d5481dabae4"
 }

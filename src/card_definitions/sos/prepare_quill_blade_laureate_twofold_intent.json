@@ -4,5 +4,8 @@
   "oracle_id": "bd9d3a70-faed-4bc6-97d8-1601b36cdb21",
   "facts_sha256": "9c1df39ffb284ab9e11a31a1f6b9cb521e6e3185dc54a8dcbef23353686e4139",
   "complete": false,
-  "physical_metadata_sha256": "d5612cad1d8b345f2b2b604f8cbe650161235e3c602c8c71f324cc24f9205226"
+  "physical_metadata_sha256": "d5612cad1d8b345f2b2b604f8cbe650161235e3c602c8c71f324cc24f9205226",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuillBladeLaureate.java",
+  "java_sha256": "4f4f3a7650a1b3d080fbafa0ea8804f9efc019939721a1ae7577004f3ce7c265"
 }

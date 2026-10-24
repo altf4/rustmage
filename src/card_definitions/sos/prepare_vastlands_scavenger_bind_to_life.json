@@ -4,5 +4,8 @@
   "oracle_id": "3a97bc8d-bd81-468e-9277-eba4fac11ee0",
   "facts_sha256": "fa2b9394907f20a4c145a2e404f3c2de104c3be0e4e5a985c76c5a02faf5504a",
   "complete": false,
-  "physical_metadata_sha256": "ed7deda3a52581c64c92521cb825760e39bdd7b36038b1318c66c44f38757ec5"
+  "physical_metadata_sha256": "ed7deda3a52581c64c92521cb825760e39bdd7b36038b1318c66c44f38757ec5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VastlandsScavenger.java",
+  "java_sha256": "edc03bfeb293b4c21db109c522ca2c0381c91b83da06f5624f583b91234c30c9"
 }

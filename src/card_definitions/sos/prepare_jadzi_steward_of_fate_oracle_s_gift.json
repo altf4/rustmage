@@ -4,5 +4,8 @@
   "oracle_id": "c63b3511-d597-4c6e-9094-eabdeaa8a394",
   "facts_sha256": "f2ced6ba60cf3783c46f936a0bc8bceccd2d265938d0643ba7ffa45983301a1b",
   "complete": false,
-  "physical_metadata_sha256": "c184f3061609cc642aba284da6a54479d8083eda230b8eade9efb64167b7ee42"
+  "physical_metadata_sha256": "c184f3061609cc642aba284da6a54479d8083eda230b8eade9efb64167b7ee42",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JadziStewardOfFate.java",
+  "java_sha256": "70d2620f82ce66a42a295ef77b54fe47196106d1a32a07734c8e1b3aa29abe03"
 }

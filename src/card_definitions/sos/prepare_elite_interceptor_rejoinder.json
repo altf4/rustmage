@@ -4,5 +4,8 @@
   "oracle_id": "d97de156-5a6d-4dc6-953e-d4bad63cbad2",
   "facts_sha256": "6a85d2d453fb7275cdc016e59c1ee2e660dfc7eda7596abd3e573a5e66f88a7c",
   "complete": false,
-  "physical_metadata_sha256": "c949dc0bff2c524cfd8fad62d0f35be64d07c1699620a1889aa8f57d8afd0bdf"
+  "physical_metadata_sha256": "c949dc0bff2c524cfd8fad62d0f35be64d07c1699620a1889aa8f57d8afd0bdf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EliteInterceptor.java",
+  "java_sha256": "2b338bb9243f3039dc2a73729b558499e07eb1a63d1f8303325e5713b869bf97"
 }

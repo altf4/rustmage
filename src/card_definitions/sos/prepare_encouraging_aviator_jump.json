@@ -4,5 +4,8 @@
   "oracle_id": "d6accaed-ff35-4324-b31b-35e6837bc079",
   "facts_sha256": "81069928574e186ea2c42d2f9c29964914aabfc9e3fa470d0d029731762dd417",
   "complete": false,
-  "physical_metadata_sha256": "99dff0ba99f465f19ca354a77b29833fe5edd147a8102932aea99dcd320b649e"
+  "physical_metadata_sha256": "99dff0ba99f465f19ca354a77b29833fe5edd147a8102932aea99dcd320b649e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EncouragingAviator.java",
+  "java_sha256": "a64544bca04e80b932c58bde0980692b9349dbdfa29faa0a28c65fa89526e524"
 }

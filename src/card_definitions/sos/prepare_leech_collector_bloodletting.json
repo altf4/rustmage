@@ -4,5 +4,8 @@
   "oracle_id": "84bb960c-c34e-4979-8c0f-893c85cee27d",
   "facts_sha256": "17d6c7b71b11dddb1045e22c9e0d5917438163e38915a13f4cebee81534e05de",
   "complete": false,
-  "physical_metadata_sha256": "81bbbda78b7266b2aa62e62333916e6bf6890fd36858cdebc0c39085f64aec72"
+  "physical_metadata_sha256": "81bbbda78b7266b2aa62e62333916e6bf6890fd36858cdebc0c39085f64aec72",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeechCollector.java",
+  "java_sha256": "8f57430cc659a93f97bbdd3b01fca3290f9190248298973ea2c3c352e0704000"
 }

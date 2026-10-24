@@ -4,5 +4,8 @@
   "oracle_id": "58b0c737-0a84-4f9a-b3b7-300c5de43874",
   "facts_sha256": "253b51ff169d02b699f9cdcc33570238341047f53e0d65cdc992a18671d4c4c4",
   "complete": false,
-  "physical_metadata_sha256": "94863c99df1cc7765408f66a4cc4192ddfeb5a20c483120bc54afc96fcab9155"
+  "physical_metadata_sha256": "94863c99df1cc7765408f66a4cc4192ddfeb5a20c483120bc54afc96fcab9155",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StudiousFirstYear.java",
+  "java_sha256": "ff1a1d01f24c1f2f76952547fe792a82d5be20e47620b8b26457ee1e2c96b7e7"
 }

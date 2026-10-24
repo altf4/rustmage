@@ -4,5 +4,8 @@
   "oracle_id": "02125db4-4507-467a-ac0c-406de2c7d533",
   "facts_sha256": "11a71ccce40c272e46d49d89976431fc99674261bada93865a446f69e6137053",
   "complete": false,
-  "physical_metadata_sha256": "e2d84673887bc573b6e0e88371857b2a4f5abd4ed80277141eadf08b3aa2ee0c"
+  "physical_metadata_sha256": "e2d84673887bc573b6e0e88371857b2a4f5abd4ed80277141eadf08b3aa2ee0c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AdventurousEater.java",
+  "java_sha256": "8fe493a955d0a362daa4a5d95226a804ea35a522f9a654bcdc786ab784737f56"
 }

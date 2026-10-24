@@ -4,5 +4,8 @@
   "oracle_id": "9b3155c1-c662-4ff1-80e2-4064e6233dc5",
   "facts_sha256": "7065f71f12f7a2907c934bbc7ea2ef6468332f97f9e2431a8f310e57999e2b0f",
   "complete": false,
-  "physical_metadata_sha256": "114d420c469041528cc1ccdada7daafcb96b1198850e3b3de862b8c92151cc6c"
+  "physical_metadata_sha256": "114d420c469041528cc1ccdada7daafcb96b1198850e3b3de862b8c92151cc6c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CampusComposer.java",
+  "java_sha256": "f3990b0e187d3f6ecf43940d15e673ec01d0e073d69c557787cbec0b89581027"
 }

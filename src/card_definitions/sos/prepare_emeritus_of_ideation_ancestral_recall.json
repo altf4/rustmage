@@ -4,5 +4,8 @@
   "oracle_id": "24a29be4-5bc2-469b-b2ce-2fb305c3facb",
   "facts_sha256": "2aeaff2858a20d487bb7a73e796353f56eac30c80e931788c889d3b1dbcd58cc",
   "complete": false,
-  "physical_metadata_sha256": "d3aceb40ec58909d8dd2fb1f60ebc65c5cc609d904f130adc4f83466c92d44a7"
+  "physical_metadata_sha256": "d3aceb40ec58909d8dd2fb1f60ebc65c5cc609d904f130adc4f83466c92d44a7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfIdeation.java",
+  "java_sha256": "9c2ffb5bc0a0dcd36fcf9088e2f58e754561c12c949c0dada3d3fae8fbaefa4a"
 }

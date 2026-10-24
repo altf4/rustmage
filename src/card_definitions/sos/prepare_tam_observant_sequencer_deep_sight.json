@@ -4,5 +4,8 @@
   "oracle_id": "702e871d-90d8-4468-8f69-5ae42af2c9d3",
   "facts_sha256": "90b876b052ad4362f1460b2d6356ffe4773de386e566fe15d2b1d0c507e7cdef",
   "complete": false,
-  "physical_metadata_sha256": "1dec96ec79b34f6b323e8ea32379d143d6d3b2ebeef390bdaf3c94ff756dab11"
+  "physical_metadata_sha256": "1dec96ec79b34f6b323e8ea32379d143d6d3b2ebeef390bdaf3c94ff756dab11",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TamObservantSequencer.java",
+  "java_sha256": "0b700501d33f8caf50b24c63afd18025d4ea4b943b760ba29ded05e1df35bcdf"
 }

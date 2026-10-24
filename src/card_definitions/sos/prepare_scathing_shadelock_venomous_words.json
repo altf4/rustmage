@@ -4,5 +4,8 @@
   "oracle_id": "2796c3d9-9e56-40f2-8398-7a131c4657ff",
   "facts_sha256": "f83ce263612082c7e3108b9e69749645c0b5d7a52b1cd71e61926a207c71d1df",
   "complete": false,
-  "physical_metadata_sha256": "47d451b81109479d2ae5bb092b210b4d4d97e5a885f2cd1c4dc7726fd78ef26f"
+  "physical_metadata_sha256": "47d451b81109479d2ae5bb092b210b4d4d97e5a885f2cd1c4dc7726fd78ef26f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScathingShadelock.java",
+  "java_sha256": "3ce7fb68971b4411c86ecd52f6ab5f07b6715f8b00d391e349ef8974586c9db8"
 }
