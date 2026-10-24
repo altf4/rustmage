@@ -3,10 +3,56 @@
   "catalogue_id": 2097,
   "oracle_id": "5b6f2770-e774-4a77-801f-a3fda093c3dd",
   "facts_sha256": "9a1a8beb6d64b9a61b23c032db1cd070aa0c97188a746a095c8ce1c30483ddd1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "13dd7e2fd3f8d913e1dbdd4c1e62eeb53f8ee9d66a6d7b45f519da43f056a0c6"
   },
-  "physical_metadata_sha256": "edf41ac99382aa38a5d39d40e46ad55094f8b29f1acb68ba793706006f9ffbae"
+  "physical_metadata_sha256": "edf41ac99382aa38a5d39d40e46ad55094f8b29f1acb68ba793706006f9ffbae",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HumanTorchJohnnyStorm.java",
+  "java_sha256": "ba2fb39e2b154833a7de8ecd37b3c07e94b33b2720f9b4a04339306411d6dd90",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DrawCardControllerTriggeredAbility.java",
+      "sha256": "b15abae35df8359492ddbe19cb2ef11a428fa2071a2b5187348cf2dbcab8c90d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "remaining_obligations": []
 }

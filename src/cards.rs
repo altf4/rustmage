@@ -1378,6 +1378,8 @@ pub(crate) enum Instruction {
     ExileUntilSourceLeaves,
     ExileGraveyard(PlayerSet),
     ReturnToHand,
+    /// Move all legal target groups together, deduplicating exact incarnations.
+    ReturnAllTargetsToHand,
     /// Capture a legal graveyard target's subtype, return it, then draw for a match.
     ReturnToHandDrawForSubtype(&'static str),
     BottomLibrary,

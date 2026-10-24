@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f8de39baed48582908700b72a324b9bd7fb3f0a3cf97d4f68f92d1622e9cca9f",
+  "catalogue_version": "e2e48be103194ee6bbc62e677e8035863ada5511518b2f868e640dde36f49a7d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2450,
-  "implemented_total": 2456,
+  "implemented_standard_cards": 2454,
+  "implemented_total": 2460,
   "token_definitions": 116,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 145,
-      "gated": 128
+      "complete": 149,
+      "gated": 124
     },
     "one": {
       "total": 1,
@@ -5157,8 +5157,8 @@
     {
       "name": "Call Damage Control",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/call_damage_control.rs",
       "set": "msh"
     },
@@ -16981,8 +16981,8 @@
     {
       "name": "Human Torch, Johnny Storm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/human_torch_johnny_storm.rs",
       "set": "msh"
     },
@@ -19021,8 +19021,8 @@
     {
       "name": "Killmonger, Scourge of Wakanda",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/killmonger_scourge_of_wakanda.rs",
       "set": "msh"
     },
@@ -28341,8 +28341,8 @@
     {
       "name": "Rick Jones, Destined Sidekick",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/rick_jones_destined_sidekick.rs",
       "set": "msh"
     },

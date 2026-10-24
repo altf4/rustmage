@@ -7390,3 +7390,8 @@ mod msh_placement_tests;
 #[cfg(test)]
 #[path = "engine_finality_tests.rs"]
 mod finality_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_four_existing_tests.rs"]
+mod msh_four_existing_tests;
+

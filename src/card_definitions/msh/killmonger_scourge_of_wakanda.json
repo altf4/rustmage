@@ -3,10 +3,66 @@
   "catalogue_id": 2352,
   "oracle_id": "1c3ba54a-a8ef-4838-b3aa-cb6df827a619",
   "facts_sha256": "ff2823648a8a8f78e75e422b52bb55d8bc92712c1318d2b6043163045aa4a2ee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d03903b5a6c962ad111e154433e882279fc373c3304f0c048bb29de7fe1ca13d"
   },
-  "physical_metadata_sha256": "c06bbbf2a38eb22961055d42e638e111dda66acaaecada2eb8da5a7946051e49"
+  "physical_metadata_sha256": "c06bbbf2a38eb22961055d42e638e111dda66acaaecada2eb8da5a7946051e49",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KillmongerScourgeOfWakanda.java",
+  "java_sha256": "1189837cad05907e419f56296235670426dcb1831feaa427c83b4b7c23118981",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CardsInControllerGraveyardCondition.java",
+      "sha256": "e166edec7baa8ef4ba55eb826264e0dbaee21891cd2928ffcd8add99d06c5bce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "remaining_obligations": []
 }
