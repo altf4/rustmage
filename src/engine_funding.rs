@@ -468,6 +468,7 @@ impl<'g> FundingState<'g> {
                             object: o.clone(),
                         }),
                         ability_world::CharacteristicWorld::subtypes(self, r.card),
+                        ability_world::CharacteristicWorld::name(self, r.card),
                     )
             })
         }) && self.sacrifice_group.iter().all(|r| {
