@@ -1419,6 +1419,11 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    /// One simultaneous placement may contain multiple counter kinds.
+    PutCountersMixed {
+        subject: Subject,
+        amounts: &'static [(CounterKind, u32)],
+    },
     CreateTokensWithTemporaryKeywords {
         token: Card,
         amount: AmountValue,
@@ -1859,10 +1864,21 @@ pub enum CounterKind {
     Growth,
     Plan,
     Invasion,
+    Haste,
+    Flying,
+    FirstStrike,
+    DoubleStrike,
+    Deathtouch,
+    Indestructible,
+    Lifelink,
+    Menace,
+    Reach,
+    Trample,
+    Vigilance,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 18] = [
+    pub const ALL: [Self; 29] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1881,6 +1897,17 @@ impl CounterKind {
         Self::Growth,
         Self::Plan,
         Self::Invasion,
+        Self::Haste,
+        Self::Flying,
+        Self::FirstStrike,
+        Self::DoubleStrike,
+        Self::Deathtouch,
+        Self::Indestructible,
+        Self::Lifelink,
+        Self::Menace,
+        Self::Reach,
+        Self::Trample,
+        Self::Vigilance,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1898,6 +1925,17 @@ impl CounterKind {
                 | Self::Growth
                 | Self::Plan
                 | Self::Invasion
+                | Self::Haste
+                | Self::Flying
+                | Self::FirstStrike
+                | Self::DoubleStrike
+                | Self::Deathtouch
+                | Self::Indestructible
+                | Self::Lifelink
+                | Self::Menace
+                | Self::Reach
+                | Self::Trample
+                | Self::Vigilance
         )
     }
 }

@@ -1,0 +1,184 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Keyword-counter prerequisite plus two complete representative candidates; combined release validation and final independent reviews pending",
+  "source_base": "bd8cdf35db047ea8a1787daee4006c963eb52196",
+  "observation_schema": 140,
+  "previous_schema": 139,
+  "complete_candidate_cards": [
+    "Captain Marvel, Earth's Protector",
+    "Claim the Kingdom"
+  ],
+  "counter_kind_compatibility": {
+    "prior_ordinals_preserved": true,
+    "prior_mixed_payment_order_preserved": true,
+    "prior_variants": [
+      "Lore",
+      "PlusOne",
+      "MinusOne",
+      "Stun",
+      "Loyalty",
+      "Incubation",
+      "Bait",
+      "Page",
+      "Divinity",
+      "Revival",
+      "Soul",
+      "Fellowship",
+      "Wish",
+      "Stash",
+      "Charge",
+      "Growth",
+      "Plan",
+      "Invasion"
+    ],
+    "appended_variants": [
+      "Haste",
+      "Flying",
+      "FirstStrike",
+      "DoubleStrike",
+      "Deathtouch",
+      "Indestructible",
+      "Lifelink",
+      "Menace",
+      "Reach",
+      "Trample",
+      "Vigilance"
+    ]
+  },
+  "shared_rules": [
+    "Eleven ordinary keyword kinds reuse sparse named counters without any new hot Object/InitialCounters field",
+    "One exact-object/kind Counter origin in the existing layer-six timeline: positive placement refreshes the whole kind; partial removal retains time; final removal and zone changes clear only matching counter origins",
+    "Counter grants have no printed-ability provider dependency and obey timestamp order against ability loss and later grants, with no unconditional final keyword OR",
+    "Actual and speculative queries use exact incarnation and positive final counter counts; funding keys include counter timestamps and virtual removals do not mutate the parent",
+    "Final replaced entry amounts follow chosen APNAP object timestamps, including deferred actual and speculative chronology",
+    "Counter timeline observations honor visibility: known returned hand cards remain public; fresh opponent hand/library cards stay hidden",
+    "PutCountersMixed commits Captain Marvel counter kinds in one placement before counter observers inspect it"
+  ],
+  "whole_card_obligations": {
+    "Captain Marvel, Earth's Protector": [
+      "Paid flash cast during opponent turn; flying and actual lifelink combat",
+      "Entry-turn generic2 Power-up discount, later5WW full payment, once-use across control change and exact-source blink reset",
+      "One +1/+1 and indestructible placement; lethal damage/destroy preserve the permanent; sacrifice and nonpositive toughness do not"
+    ],
+    "Claim the Kingdom": [
+      "Landfall targets a creature you control, puts +1/+1 and a Plan counter on the exact source",
+      "All-illegal creature target prevents the whole landfall effect; departed source does not rebind while a valid creature still gets its counter",
+      "Historical crossing from below4 to4or more queues exact controlled sacrifice without live count recheck",
+      "Successful sacrifice, including exile replacement, creates a distinct reflexive target choice after departure",
+      "Reject opponent/noncreature targets; source blink/departure/control loss prevents sacrifice; changed-control reflexive target receives no counter"
+    ]
+  },
+  "rules_tests": {
+    "new_scenarios": 14,
+    "actual_scenarios": 12,
+    "speculative_scenarios": 2,
+    "both_seats": true,
+    "files": [
+      "src/engine_keyword_counter_tests.rs",
+      "src/engine_keyword_counter_funding_tests.rs"
+    ],
+    "coverage": [
+      "Independent explicit eleven-kind expected abilities; suppression, fresh placement and partial/final removal",
+      "Paid Haste-counter mana funding from sick Llanowar Elves; actual DoubleStrike/Vigilance/Lifelink-counter combat",
+      "Replaced entry counters and both timestamp permutations",
+      "Control changes, copy values, exact zone incarnations and hidden-zone privacy",
+      "Cold buffer sharing/state_bytes, snapshots, checked owned raw/index branch/restore",
+      "Mixed placement overflow rolls back hot/cold counters, chronology and revision"
+    ]
+  },
+  "provenance": {
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "definitions": 5391,
+    "verified_source_blobs": 1084,
+    "check": "scripts/check_sources.py"
+  },
+  "full_trace_audit": {
+    "inherited": 2445,
+    "candidate": 2447,
+    "inherited_full_trace_matches_under139": 2445,
+    "inherited_changes": [],
+    "removed": [],
+    "previous_baseline_sha256": "4fad88c85c5512cc2dc95dd337c9f7aa9bb1376b4ac26d2a26183f539875a5f5",
+    "candidate_sha256": "ec0b93583b4f5cdd779f5877abab6b28db1643edccf28943d9a3cc43f7724ce6",
+    "previous_schema_export_sha256": "439dd7623874c7c5d800c1060fa6e9f17c23b5767b732dda47ce088fbb3aab81",
+    "exports": "<cache>/rustmage-keyword-counter-traces-20261024.json and .previous-schema.json",
+    "new_rows": {
+      "Captain Marvel, Earth's Protector": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "157c935ef8d4f416",
+        "observations": "383986f46be57d39"
+      },
+      "Claim the Kingdom": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "100cb581dd613f1f",
+        "observations": "fa1d3892b75dc54f"
+      }
+    },
+    "recording_exit101": "Expected only count2447 versus2445; strict assertions unchanged. Baseline accepted after all2445 complete Trace objects including observation hashes and journals matched"
+  },
+  "validation": {
+    "focused_passed": 14,
+    "focused_test_seconds": 0.01,
+    "focused_resource_report": "<cache>/rustmage-build-reports/8678163c47e140d9b9299573cf18ea31.json",
+    "focused_guarded_seconds": 132.52902503998484,
+    "all_target_clippy_warnings_denied": true,
+    "clippy_resource_report": "<cache>/rustmage-build-reports/9060cbba04a64750b21b6aaabb57e576.json",
+    "clippy_guarded_seconds": 35.3539607640123,
+    "fixed_sources_until_actual_terminal": true,
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "ordinary_full_native_and_release": "Integrator-owned final combined cohort run; not duplicated on this parent head",
+    "post_test_changes": "Audited trace baseline and evidence JSON only; no runtime or scenario changes"
+  },
+  "future_consumers_audited_but_gated": [
+    {
+      "name": "Super-Adaptoid",
+      "full_oracle_and_java_read": true,
+      "remaining": [
+        "Legendary-creature CDA count in all zones; CountFilter has no legendary selector",
+        "Live another-target creature/source eleven-quality comparison and conditional entry/attack counter placement"
+      ]
+    },
+    {
+      "name": "Quicksilver, Brash Blur",
+      "full_oracle_and_java_read": true,
+      "existing_primitive": "CardExtras::opening_hand_battlefield, Pending::OpeningHand and BeginOnBattlefield/FinishOpeningHand already serve Leyline Axe",
+      "remaining": [
+        "Audit/test opening-hand eligibility, mulligan, privacy, starting-player order and entry-turn interactions",
+        "Complete Haste and once-only Power-up with +1/+1 plus double-strike counters after prerequisite integration"
+      ]
+    }
+  ],
+  "out_of_scope": "Shield and finality remain separate replacement/prevention rules; no kind or consumer additions for them",
+  "cleanup": {
+    "report": "<cache>/rustmage-keyword-counter-cleanup-20261024.json",
+    "removed_bytes": 150266285,
+    "shared_libraries_preserved": 1,
+    "prior_work": "History/Plan/audit branches and all earlier required exact library paths preserved"
+  },
+  "implementation_throughput": {
+    "scope": "Branch creation through two authored card candidates plus shared core,14focused tests, trace proof and Clippy; excludes earlier read-only source inspection, reviews and combined release acceptance",
+    "started_utc": "2026-10-24T20:26:08+00:00",
+    "through_utc": "2026-10-24T20:48:58.408480+00:00",
+    "elapsed_seconds": 1370.40848,
+    "candidate_cards": 2,
+    "candidate_cards_per_hour": 5.253907944294098
+  },
+  "simulation_throughput": "No duplicate benchmark in this branch; combined release will record its bounded workload. Focused unit-test runtime is not a simulation benchmark.",
+  "full_set_acceptance": "Pending for all281MSH members; admission flags do not certify complete set gameplay",
+  "rules_sources": [
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#122.1b",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#613.7c",
+    "https://magic.wizards.com/en/news/feature/ikoria-lair-behemoths-and-commander-2020-edition-release-notes",
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+  ]
+}

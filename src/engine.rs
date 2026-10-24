@@ -180,6 +180,8 @@ mod draw_events;
 mod endure;
 #[path = "engine_funding.rs"]
 mod funding;
+#[path = "engine_keyword_counters.rs"]
+mod keyword_counters;
 #[path = "engine_live_counters.rs"]
 mod live_counters;
 pub use convoke::{ConvokeChoiceView, ConvokeContribution, ConvokePaymentView};
@@ -5434,6 +5436,12 @@ impl Game {
         }
         self.forget_borrowed_source(before.reference);
         self.forget_power_up_object(before.reference);
+        if let Some(state) = &mut self.state.roles {
+            state.keyword_effects.retain(|row| {
+                row.recipient != before.reference
+                    || !matches!(row.origin, KeywordEffectOrigin::Counter { .. })
+            });
+        }
         self.forget_stack_graveyard_exile(before.reference);
         self.forget_cast_entry_counters(before.reference);
         self.capture_source_counter_departure(&before);
@@ -6630,10 +6638,7 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.ability_timestamps.clone()),
-            keyword_effects: s
-                .roles
-                .as_ref()
-                .map_or_else(Vec::new, |r| r.keyword_effects.clone()),
+            keyword_effects: self.keyword_effect_views(viewer),
             role_timestamps: s
                 .roles
                 .as_ref()
@@ -7369,3 +7374,7 @@ mod counter_history_tests;
 #[cfg(test)]
 #[path = "engine_msh_forms_tests.rs"]
 mod msh_forms_tests;
+
+#[cfg(test)]
+#[path = "engine_keyword_counter_tests.rs"]
+mod keyword_counter_tests;

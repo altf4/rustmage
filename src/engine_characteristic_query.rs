@@ -448,7 +448,12 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         (stats, keywords)
     }
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
-        if matches!(self.object(id).zone, Zone::Battlefield | Zone::Stack)
+        if (matches!(self.object(id).zone, Zone::Battlefield | Zone::Stack)
+            || self
+                .counter_amounts(id)
+                .keyword_amounts()
+                .iter()
+                .any(|n| *n > 0))
             && let Some(evaluation) = self.evaluation.as_ref()
         {
             return evaluation.result.objects[id as usize].keywords;

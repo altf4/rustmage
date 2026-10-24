@@ -199,6 +199,7 @@ struct FundingKey {
     resources: Vec<ResourceKey>,
     named_counters: live_counters::Rows,
     counter_placement_history: counter_placement_history::Rows,
+    keyword_counter_timestamps: Vec<(ObjectRef, CounterKind, u64)>,
 }
 
 fn payable<N: Copy + Into<u128>>(pool: [N; 6], required: Mana, generic: u32) -> bool {
@@ -1348,6 +1349,24 @@ impl<'g> FundingState<'g> {
             resources,
             named_counters: self.named_counters.clone(),
             counter_placement_history: self.counter_placement_history.clone(),
+            keyword_counter_timestamps: {
+                let mut rows = self.roles().map_or_else(Vec::new, |state| {
+                    state
+                        .keyword_effects
+                        .iter()
+                        .filter_map(|row| {
+                            let KeywordEffectOrigin::Counter { kind } = row.origin else {
+                                return None;
+                            };
+                            (self.reference(row.recipient.card) == row.recipient
+                                && self.counter_count(row.recipient.card, kind) > 0)
+                                .then_some((row.recipient, kind, row.timestamp))
+                        })
+                        .collect::<Vec<_>>()
+                });
+                rows.sort_by_key(|(object, kind, _)| (object.card, object.generation, *kind));
+                rows
+            },
         }
     }
     /// Pure funding moves never create new resources, untap them, restore

@@ -832,7 +832,7 @@ impl FundingState<'_> {
                 !prefix.contains(i)
                     && !m.skipped
                     && m.destination == Zone::Battlefield
-                    && Self::entry_has_timestamp(m.before.card)
+                    && Self::entry_has_timestamp(m)
             })
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
@@ -853,8 +853,13 @@ impl FundingState<'_> {
         }
         false
     }
-    fn entry_has_timestamp(card: Card) -> bool {
-        card.base_stat_setter().is_some()
+    fn entry_has_timestamp(m: &entries::EntryMove) -> bool {
+        let card = m.before.card;
+        CounterAmounts::from(&m.counters)
+            .keyword_amounts()
+            .iter()
+            .any(|n| *n > 0)
+            || card.base_stat_setter().is_some()
             || !card.live_static_effects().is_empty()
             || card.role().is_some()
             || card.has_layer6_provider()
@@ -941,6 +946,13 @@ impl FundingState<'_> {
             let source = next.reference(m.before.id);
             let p = next.entry_projection.as_mut().unwrap();
             let timestamp = p.register(source, m.before.card);
+            keyword_counters::sync_effects(
+                &mut p.roles,
+                source,
+                [0; 11],
+                CounterAmounts::from(&m.counters).keyword_amounts(),
+                Some(timestamp),
+            );
             if let Some(recipient) = m.attachment
                 && m.before.card.role().is_some()
             {
@@ -1317,3 +1329,7 @@ impl<'g> FundingState<'g> {
 #[cfg(test)]
 #[path = "engine_counter_history_funding_tests.rs"]
 mod counter_history_tests;
+
+#[cfg(test)]
+#[path = "engine_keyword_counter_funding_tests.rs"]
+mod keyword_counter_tests;
