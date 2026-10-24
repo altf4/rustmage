@@ -3695,6 +3695,14 @@
     "journal": "adcea180f71f0045",
     "observations": "cd19c716ef0b8637"
   },
+  "Death to Our Enemies": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "f332a8d42145333b"
+  },
   "Deathcap Glade": {
     "root": "main",
     "status": "completed",
