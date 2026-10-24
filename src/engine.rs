@@ -702,6 +702,7 @@ struct PlayerState {
     instant_sorcery_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
+    card_left_graveyard_this_turn: bool,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
     life_lost_this_turn: u128,
@@ -1693,6 +1694,7 @@ pub struct PlayerView {
     pub spells_cast_this_turn: u64,
     pub cards_drawn_this_turn: u64,
     pub cards_discarded_this_turn: u64,
+    pub card_left_graveyard_this_turn: bool,
     pub life_gain_events_this_turn: u64,
     pub life_gained_this_turn: u128,
     pub life_lost_this_turn: u128,
@@ -2040,6 +2042,7 @@ impl Game {
             instant_sorcery_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
+            card_left_graveyard_this_turn: false,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
@@ -4875,6 +4878,12 @@ impl Game {
             };
         }
         let destination = plan.destination;
+        if before.zone == Zone::Graveyard && destination != Zone::Graveyard
+            && !before.is_token() && !before.card.is_emblem()
+            && !self.state.objects[id as usize].is_spell_copy()
+        {
+            self.state.players[before.owner.index()].card_left_graveyard_this_turn = true;
+        }
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
         let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
@@ -5213,6 +5222,7 @@ impl Game {
             player.instant_sorcery_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
+            player.card_left_graveyard_this_turn = false;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
@@ -5903,6 +5913,7 @@ impl Game {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
+                card_left_graveyard_this_turn: s.players[i].card_left_graveyard_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
                 life_lost_this_turn: s.players[i].life_lost_this_turn,
@@ -6623,3 +6634,6 @@ mod territory_forge_tests;
 #[cfg(test)]
 #[path = "engine_big_inherited_tests.rs"]
 mod big_inherited_tests;
+
+#[path = "engine_sos_graveyard.rs"]
+mod sos_graveyard;

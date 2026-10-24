@@ -3,10 +3,13 @@
   "catalogue_id": 4150,
   "oracle_id": "3bcf54f8-fcd7-4ec0-b011-92b367411cdb",
   "facts_sha256": "dc0352c471633a630632d6f9a4cf7869976fff2f8f80352b2ef1d3026d2bcf5f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b3944a2081d8c5edd0dc3343302e879ef86dd45a3489bb6027c67c6a4fe5df67"
   },
-  "physical_metadata_sha256": "306d70ec145c2c1bc85286ecde9b530e7c1db54414762b86201c5a61702e1c62"
+  "physical_metadata_sha256": "306d70ec145c2c1bc85286ecde9b530e7c1db54414762b86201c5a61702e1c62",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StirringHonormancer.java",
+  "java_sha256": "6c5a891ca991edfe32c9aa44df6dbf5b2d6389fed9bfd895ef9513ae39ba48d6"
 }

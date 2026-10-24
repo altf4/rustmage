@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "b51ffc38ca41341f4d19c0a218552db7b6de39d94bffcfc1e10101f54cc5a1e3",
+  "catalogue_version": "a186ae7dca39290f4030af605dd0792b2dd9df2704c10457abdce424c5b09d81",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2215,
-  "implemented_total": 2221,
-  "token_definitions": 108,
+  "implemented_standard_cards": 2230,
+  "implemented_total": 2236,
+  "token_definitions": 111,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 98,
-      "gated": 166
+      "complete": 113,
+      "gated": 151
     },
     "spm": {
       "total": 134,
@@ -2086,8 +2086,8 @@
     {
       "name": "Artistic Process",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/artistic_process.rs",
       "set": "sos"
     },
@@ -8998,8 +8998,8 @@
     {
       "name": "Dissection Practice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/dissection_practice.rs",
       "set": "sos"
     },
@@ -12598,8 +12598,8 @@
     {
       "name": "Flashback",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/flashback.rs",
       "set": "sos"
     },
@@ -13094,8 +13094,8 @@
     {
       "name": "Fractal Mascot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/fractal_mascot.rs",
       "set": "sos"
     },
@@ -15334,8 +15334,8 @@
     {
       "name": "Growth Curve",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/growth_curve.rs",
       "set": "sos"
     },
@@ -15750,8 +15750,8 @@
     {
       "name": "Hardened Academic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/hardened_academic.rs",
       "set": "sos"
     },
@@ -22102,8 +22102,8 @@
     {
       "name": "Mica, Reader of Ruins",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/mica_reader_of_ruins.rs",
       "set": "sos"
     },
@@ -26126,8 +26126,8 @@
     {
       "name": "Prismari Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/prismari_charm.rs",
       "set": "sos"
     },
@@ -26494,8 +26494,8 @@
     {
       "name": "Pursue the Past",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/pursue_the_past.rs",
       "set": "sos"
     },
@@ -30494,8 +30494,8 @@
     {
       "name": "Send in the Pest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/send_in_the_pest.rs",
       "set": "sos"
     },
@@ -31198,8 +31198,8 @@
     {
       "name": "Silverquill Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/silverquill_charm.rs",
       "set": "sos"
     },
@@ -32646,8 +32646,8 @@
     {
       "name": "Spirit Mascot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/spirit_mascot.rs",
       "set": "sos"
     },
@@ -33406,8 +33406,8 @@
     {
       "name": "Stirring Honormancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/stirring_honormancer.rs",
       "set": "sos"
     },
@@ -33694,8 +33694,8 @@
     {
       "name": "Stress Dream",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/stress_dream.rs",
       "set": "sos"
     },
@@ -40990,8 +40990,8 @@
     {
       "name": "Witherbloom Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/witherbloom_charm.rs",
       "set": "sos"
     },

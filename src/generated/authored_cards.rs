@@ -48122,8 +48122,35 @@ pub(super) mod card_5346 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/token_blood.rs");
 }
+pub(super) mod card_5347 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_sos_fractal.rs");
+}
+pub(super) mod card_5348 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_sos_pest.rs");
+}
+pub(super) mod card_5349 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_sos_elemental.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5347] = [
+pub(super) static RULES: [&CardRules; 5350] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -53471,6 +53498,9 @@ pub(super) static RULES: [&CardRules; 5347] = [
     &card_5344::RULES,
     &card_5345::RULES,
     &card_5346::RULES,
+    &card_5347::RULES,
+    &card_5348::RULES,
+    &card_5349::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

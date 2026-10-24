@@ -171,7 +171,7 @@ fn sos_mica_optional_artifact_payment_copy_retarget_and_ward() {
         for sacrifice in [false, true] {
             let mut g = scenario(p);
             let mica = put(&mut g, p, "Mica, Reader of Ruins", Zone::Battlefield);
-            let artifact = put(&mut g, p, "Arcane Signet", Zone::Battlefield);
+            let artifact = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
             let shock = put(&mut g, p, "Shock", Zone::Hand);
             cast(&mut g, shock, Some(Target::Player(p.other())));
             until_choice(&mut g);
@@ -261,7 +261,7 @@ fn sos_artistic_process_modes_opponent_only_damage_and_temporary_haste() {
                     .iter()
                     .enumerate()
                     .find_map(|(i, o)| {
-                        (o.zone == Zone::Battlefield && o.card == Card(5349)).then_some(i as CardId)
+                        (o.zone == Zone::Battlefield && o.card == Card::from_name("@token/sos-elemental").unwrap()).then_some(i as CardId)
                     })
                     .unwrap();
                 assert_eq!(stats(&g, elemental), (3, 3));
@@ -295,7 +295,7 @@ fn sos_send_pest_opponent_discard_and_attack_life_not_death_life() {
             .iter()
             .enumerate()
             .find_map(|(i, o)| {
-                (o.zone == Zone::Battlefield && o.card == Card(5348)).then_some(i as CardId)
+                (o.zone == Zone::Battlefield && o.card == Card::from_name("@token/sos-pest").unwrap()).then_some(i as CardId)
             })
             .unwrap();
         assert_eq!(stats(&g, pest), (1, 1));

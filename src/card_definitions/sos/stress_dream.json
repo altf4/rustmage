@@ -3,10 +3,13 @@
   "catalogue_id": 4186,
   "oracle_id": "52124954-b0b6-492c-8d03-fe54c220facc",
   "facts_sha256": "98e835cd4f576dc6a1128676202d89bfd7bd929f6860348cad60129595059d27",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c58339c5709df26df5c2398ef23bb54299578a952e7a2c77a2dd39d4d923c992"
   },
-  "physical_metadata_sha256": "8daa33add6a723c3a25706fb52260845aa25556425e6ce29ca7e68292a73bfa5"
+  "physical_metadata_sha256": "8daa33add6a723c3a25706fb52260845aa25556425e6ce29ca7e68292a73bfa5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StressDream.java",
+  "java_sha256": "9a0e843996e8fad67be93f757d862ba7511d9ad96c1ed73f64e1566927891eb9"
 }

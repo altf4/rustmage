@@ -513,7 +513,8 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
-                    TriggerCondition::CreatureExploresYou
+                    TriggerCondition::CardsLeaveGraveyard
+                    | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::CreatureExploresCardYou { .. }
                     | TriggerCondition::Foraged
                     | TriggerCondition::FoodsSacrificed

@@ -137,3 +137,8 @@ fn stats(g: &Game, id: CardId) -> (i128, i128) {
     let s = g.stats(id);
     (s.power, s.toughness)
 }
+
+#[path = "../engine_sos_multicolor_tests.rs"]
+mod sos_multicolor;
+#[path = "../engine_sos_black_red_tests.rs"]
+mod sos_black_red;

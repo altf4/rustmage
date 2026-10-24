@@ -1,0 +1,2277 @@
+{
+  "schema": 1,
+  "set": "SOS",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "table": {
+    "source": "Mage.Sets/src/mage/sets/SecretsOfStrixhaven.java",
+    "sha256": "6ace24139a716aba6e7044a87d7be433e1c5f80a7e8a63e97aa98138caba278e",
+    "printing_count": 366
+  },
+  "scope": "All physical set card identities, including reprints and starter products; cosmetic printings counted once",
+  "card_count": 271,
+  "cards": [
+    {
+      "name": "Aberrant Manawurm",
+      "oracle_id": "a0657586-0404-4bb0-a92d-25f040d560c1",
+      "facts_sha256": "03c97f6d2e1449f9c7604a6236d9550cb9cf61b508b1d3da871dfa7c489f7d7b",
+      "printings": [
+        "138"
+      ]
+    },
+    {
+      "name": "Abigale, Poet Laureate // Heroic Stanza",
+      "oracle_id": "2f5f46ed-b8aa-4864-bd20-17281d4632bf",
+      "facts_sha256": "d577d4c8670f8c1936351024f84619536ce3bb5d2b2c4bf2b7127b8f107f4d34",
+      "printings": [
+        "170"
+      ]
+    },
+    {
+      "name": "Abstract Paintmage",
+      "oracle_id": "bc899d5c-0a91-4f19-a3e4-3078ae966110",
+      "facts_sha256": "3381578d141e892c3ca16ab31b28b5a980b8db571117ae07df576abe8471adfc",
+      "printings": [
+        "171"
+      ]
+    },
+    {
+      "name": "Additive Evolution",
+      "oracle_id": "ce1a6c1f-6b4e-4d19-b256-48d073b359b7",
+      "facts_sha256": "6cd57f635eb4b362a0496afb98f684828ede0b47516784e26a060aee6c9e6247",
+      "printings": [
+        "139"
+      ]
+    },
+    {
+      "name": "Adventurous Eater // Have a Bite",
+      "oracle_id": "02125db4-4507-467a-ac0c-406de2c7d533",
+      "facts_sha256": "11a71ccce40c272e46d49d89976431fc99674261bada93865a446f69e6137053",
+      "printings": [
+        "72"
+      ]
+    },
+    {
+      "name": "Ajani's Response",
+      "oracle_id": "bf7ec320-64bb-46ca-aac0-ca3d4224b69e",
+      "facts_sha256": "3dc43018bb56c9be5085ebfc544a4541e23e86efc6da59ffc50f65b47e0cf79d",
+      "printings": [
+        "6"
+      ]
+    },
+    {
+      "name": "Ambitious Augmenter",
+      "oracle_id": "d87f0e52-486e-49b4-9cf1-12e238857340",
+      "facts_sha256": "a9122f5e8721abf22fd274b460a530abd9e6105166d946d84c01a9d72da8814b",
+      "printings": [
+        "140",
+        "337"
+      ]
+    },
+    {
+      "name": "Ancestral Anger",
+      "oracle_id": "e0828e8d-f01f-4088-9123-6d923ddb3242",
+      "facts_sha256": "2d030fb64a8f8451ae3dac9c7ae6d62a172efd753a8f08d8980bb5f344450df5",
+      "printings": [
+        "106"
+      ]
+    },
+    {
+      "name": "Antiquities on the Loose",
+      "oracle_id": "9c45682f-48b5-4e58-9277-ff4211f389ae",
+      "facts_sha256": "ab695acb4ee22d63fe881785f3332cc14e3bc28dacd843e35f5b103ee11654a4",
+      "printings": [
+        "7",
+        "308"
+      ]
+    },
+    {
+      "name": "Applied Geometry",
+      "oracle_id": "88fc179c-055b-47c2-b830-1fd2b1377147",
+      "facts_sha256": "75474b8f21f918b11eae6f0e7d9f31f61fa32fa495fe0b0e0e4addd49d13569b",
+      "printings": [
+        "172",
+        "343"
+      ]
+    },
+    {
+      "name": "Arcane Omens",
+      "oracle_id": "863cbd12-da20-456e-8698-06fba4d9bd5c",
+      "facts_sha256": "8acd681a5817f81c3d3f34df4e1d45add3d8c6b203bdae2654c3fac4ebeb1c8f",
+      "printings": [
+        "73"
+      ]
+    },
+    {
+      "name": "Archaic's Agony",
+      "oracle_id": "55d1a788-fe9a-4e19-a524-6709f728ea28",
+      "facts_sha256": "e3fa9d361fa451537760b28db89854eb1841fc2c1d8d58c74d64fd203243d87d",
+      "printings": [
+        "107"
+      ]
+    },
+    {
+      "name": "Ark of Hunger",
+      "oracle_id": "2c654772-c786-4966-a46e-9556bbf31d7c",
+      "facts_sha256": "3aca4ae4fae5192ad0638910e2bdf60ef19a0a2dc20689f5191ccf7e926b6f82",
+      "printings": [
+        "173",
+        "344"
+      ]
+    },
+    {
+      "name": "Arnyn, Deathbloom Botanist",
+      "oracle_id": "3debd5c7-da3c-4130-8ed9-e156e10034b6",
+      "facts_sha256": "a58454b43c6b7e9d03e758cbcb80f814066d9515ff1cc89b20d86d5462c4bac5",
+      "printings": [
+        "74"
+      ]
+    },
+    {
+      "name": "Artistic Process",
+      "oracle_id": "0c061a1b-206a-4fcc-92e5-30c8ed9d65c1",
+      "facts_sha256": "1839f9b34052d200a588d1efbc4495cb40c00901644f8eb0405967dd047efcff",
+      "printings": [
+        "108"
+      ]
+    },
+    {
+      "name": "Ascendant Dustspeaker",
+      "oracle_id": "295f8b8d-102a-47af-93c2-f8182c5f11ca",
+      "facts_sha256": "6e5ee7a112d81f259f17a332e74ee80223791e84f4bbfbe44206d728ce30b6c7",
+      "printings": [
+        "8"
+      ]
+    },
+    {
+      "name": "Aziza, Mage Tower Captain",
+      "oracle_id": "70e10cb9-ae27-4dba-9a0d-34a78f924774",
+      "facts_sha256": "a66ef3f7bd11c3d085ade8e51c3f4ac63bb3a402828392e2fb8525e8a62ae3fb",
+      "printings": [
+        "174",
+        "345"
+      ]
+    },
+    {
+      "name": "Banishing Betrayal",
+      "oracle_id": "6b633e58-ea1b-4ed0-addb-6dfd93645ae4",
+      "facts_sha256": "1577f5370e421c758ccef8a62cbaecc5578a2897c881337676b21f95bd2fae01",
+      "printings": [
+        "38"
+      ]
+    },
+    {
+      "name": "Berta, Wise Extrapolator",
+      "oracle_id": "715f0832-696c-4111-b418-d9b6da403159",
+      "facts_sha256": "8df26f394bc87a28e713f0d60b0422b7490f0585abc1286865e4f30c157e9eb5",
+      "printings": [
+        "175",
+        "346"
+      ]
+    },
+    {
+      "name": "Biblioplex Tomekeeper",
+      "oracle_id": "08a0e845-9ef9-4de1-b9fe-4530357346ca",
+      "facts_sha256": "fae2ad34bd37dc38a11d5bd80eb20b6ea50103dd054476b9b2fe554fef638ec4",
+      "printings": [
+        "247"
+      ]
+    },
+    {
+      "name": "Blazing Firesinger // Seething Song",
+      "oracle_id": "1bf505a7-292e-4642-83b6-8ff41ebe5d51",
+      "facts_sha256": "d5785b263432ea8395bc4be38dc27f4cbb01c653a7c9ad8a5095add9c429f0dc",
+      "printings": [
+        "109"
+      ]
+    },
+    {
+      "name": "Blech, Loafing Pest",
+      "oracle_id": "c1bdd361-c7f2-4aa2-8d07-b582775551ff",
+      "facts_sha256": "5082f13e491fe679c599d685518600b387c08c0e6e5a4454d3909ca3c62aacad",
+      "printings": [
+        "176",
+        "298"
+      ]
+    },
+    {
+      "name": "Bogwater Lumaret",
+      "oracle_id": "0109432d-5a2a-456f-ad39-b75cb4c73420",
+      "facts_sha256": "1119b2fe0421f1ff37636545da90cc270239c5671f94282aee624d58088b1fb6",
+      "printings": [
+        "177"
+      ]
+    },
+    {
+      "name": "Borrowed Knowledge",
+      "oracle_id": "0d6507b0-c986-49d1-aea3-77b2cf2a7433",
+      "facts_sha256": "53425521909044bbce833e6953ca31a7a7d5d8dd56983b79acbae91ecd8a15e1",
+      "printings": [
+        "178"
+      ]
+    },
+    {
+      "name": "Brush Off",
+      "oracle_id": "873694c0-c100-4d24-a74f-1ab26442dd18",
+      "facts_sha256": "5e6f91f9f590dfdc4fe09317dd6a426449fbfc027ed06942f651c3201b5c25b5",
+      "printings": [
+        "39"
+      ]
+    },
+    {
+      "name": "Burrog Banemaker",
+      "oracle_id": "c531801c-acf0-45ae-a112-054cc5ccb6ed",
+      "facts_sha256": "4ee8cc628052cee03d70878198f66b01a775e271f2a9c2dbc21427cc642bb499",
+      "printings": [
+        "75"
+      ]
+    },
+    {
+      "name": "Burrog Barrage",
+      "oracle_id": "c47caa45-e7fc-414a-8a5d-59b58f1751f3",
+      "facts_sha256": "e54811f964e3e7140fdb3d84519f78adac99fa07f71505f5904035778068f9fb",
+      "printings": [
+        "141"
+      ]
+    },
+    {
+      "name": "Campus Composer // Aqueous Aria",
+      "oracle_id": "9b3155c1-c662-4ff1-80e2-4064e6233dc5",
+      "facts_sha256": "7065f71f12f7a2907c934bbc7ea2ef6468332f97f9e2431a8f310e57999e2b0f",
+      "printings": [
+        "40"
+      ]
+    },
+    {
+      "name": "Cauldron of Essence",
+      "oracle_id": "a2f8cde8-bf7b-4234-89f0-a95f9dc937e3",
+      "facts_sha256": "197e9c39916bfb59310a37b1cb79a8ae9c8a558ad7a2563a8cd9eccf85e44d70",
+      "printings": [
+        "179",
+        "347"
+      ]
+    },
+    {
+      "name": "Charging Strifeknight",
+      "oracle_id": "b0b9a7c1-f515-4627-a050-b595d6641611",
+      "facts_sha256": "b4231c8e6798fdcbca6a0ac77d535c3db2645f3c1a811dab8442295f83f98d77",
+      "printings": [
+        "110"
+      ]
+    },
+    {
+      "name": "Chase Inspiration",
+      "oracle_id": "9c055ef0-1164-4a9f-80de-23405423aed5",
+      "facts_sha256": "83153eedbc3d87c4577cba5ce10d0c7942210ab5f3612f17c9fc9db7fcd85728",
+      "printings": [
+        "41"
+      ]
+    },
+    {
+      "name": "Cheerful Osteomancer // Raise Dead",
+      "oracle_id": "fd01229f-1c4c-4ad1-bc6f-4023f24d8c71",
+      "facts_sha256": "065cf8b0132200b9f3cc96bcbc8662640f59c7a3c846da46e5f034aefc1f82f1",
+      "printings": [
+        "76"
+      ]
+    },
+    {
+      "name": "Chelonian Tackle",
+      "oracle_id": "8c1c519a-6edd-4204-b825-b0feca5afa42",
+      "facts_sha256": "7e7578b9cda7040dffe0323365831ae4c6ae56d63bff2bf596da4d8f334711e8",
+      "printings": [
+        "142"
+      ]
+    },
+    {
+      "name": "Choreographed Sparks",
+      "oracle_id": "61495793-b0c7-40a5-ad3e-9df8e2b8096b",
+      "facts_sha256": "76495d41fd2a2d55599df7a55b0fcb703f65b13f121769914102edac6bfe8bb4",
+      "printings": [
+        "111",
+        "331"
+      ]
+    },
+    {
+      "name": "Colorstorm Stallion",
+      "oracle_id": "47ee6837-2e2f-4344-ab9f-6b8887874f77",
+      "facts_sha256": "0f3f1ba84eb122db223005887e82a0a14c23f073361f2b5e2ea5066b48738033",
+      "printings": [
+        "180",
+        "299"
+      ]
+    },
+    {
+      "name": "Colossus of the Blood Age",
+      "oracle_id": "0788fdd2-6fab-460c-b054-a736df670f96",
+      "facts_sha256": "ba3678f9901c51486eb0045516d893d44da9e9ebfc2d46076aa14731b87793c7",
+      "printings": [
+        "181"
+      ]
+    },
+    {
+      "name": "Comforting Counsel",
+      "oracle_id": "5fd193c0-ed9f-4afb-b6cd-c1a20008fc0b",
+      "facts_sha256": "e2e53e89df9e8b08aef835e971c4362662b773adc81196f319a6c01be17a1210",
+      "printings": [
+        "143",
+        "338"
+      ]
+    },
+    {
+      "name": "Conciliator's Duelist",
+      "oracle_id": "d6ea0e58-7b14-425b-9135-57e149c0e47e",
+      "facts_sha256": "ad82b0c6f3f3790e7ab692df6411abbed2d21a084b17c9e1214fc07877d2f945",
+      "printings": [
+        "182",
+        "348"
+      ]
+    },
+    {
+      "name": "Cost of Brilliance",
+      "oracle_id": "b45afde2-eaaf-4174-8082-d344efa54c44",
+      "facts_sha256": "09c21ce3ea76e6a255f99923d54facfbdeb8cdd2f7da679b571ce443cc71613b",
+      "printings": [
+        "77"
+      ]
+    },
+    {
+      "name": "Cuboid Colony",
+      "oracle_id": "20f3388f-0931-4a09-bcda-96deb01e1787",
+      "facts_sha256": "6e9513bb4e9c90e49f90a9c97bfaf915e10794f51b34f488918cab86fcd2f043",
+      "printings": [
+        "183"
+      ]
+    },
+    {
+      "name": "Daydream",
+      "oracle_id": "094c4486-6cae-4268-850e-ff0082e5ad10",
+      "facts_sha256": "3e8322487c7d404bad45b844458a99592bbcabdcbf0c653263ced7ed7d773f5c",
+      "printings": [
+        "9"
+      ]
+    },
+    {
+      "name": "Deathcap Glade",
+      "oracle_id": "f6d24565-5b32-4eff-b2e0-6e2c25516ff0",
+      "facts_sha256": "153ea61197884ff18405b94bc4f4f8e6f2aa063e43eb19b9041736bd6ba7d84b",
+      "printings": [
+        "253",
+        "301"
+      ]
+    },
+    {
+      "name": "Decorum Dissertation",
+      "oracle_id": "f4c57454-d36f-4f38-b7ac-76477a516c3e",
+      "facts_sha256": "9216215e8eae4baa8d2e482523b3c416d62b2b923e03bf5365089644b883d390",
+      "printings": [
+        "292",
+        "78"
+      ]
+    },
+    {
+      "name": "Deluge Virtuoso",
+      "oracle_id": "416c70ab-f136-43e0-b5d5-9af8d4211c01",
+      "facts_sha256": "9b1c371721ca2b2b51158c5714809b65b6b96e6bf899b0999662b74de58b6d01",
+      "printings": [
+        "42"
+      ]
+    },
+    {
+      "name": "Diary of Dreams",
+      "oracle_id": "98b43c61-4563-4a29-8cf0-fb8b34f337ce",
+      "facts_sha256": "cee1f5713f916b4a27afbde1824b603a17cf8b19b90feb3d0e722c2c12d9742a",
+      "printings": [
+        "248"
+      ]
+    },
+    {
+      "name": "Dig Site Inventory",
+      "oracle_id": "96742ebc-10a6-49e6-812a-631e5a60847d",
+      "facts_sha256": "df84178ca0fccb241a909ba0c2b5c93bcde2ba56f0a43190054345d745332046",
+      "printings": [
+        "10"
+      ]
+    },
+    {
+      "name": "Dina's Guidance",
+      "oracle_id": "a9abed25-9256-4fc7-8afb-edb4286e18f4",
+      "facts_sha256": "664c1f30ee8b30cf4e3dda3d9509324f5f650b8bd61057b67f9ec5daceb66a42",
+      "printings": [
+        "184",
+        "349"
+      ]
+    },
+    {
+      "name": "Dissection Practice",
+      "oracle_id": "73905f94-9665-4d82-8927-725d2c4fc4bd",
+      "facts_sha256": "0dae34d7a57567eabc02cfe6eedd919e03ca4a8dc4bdd61af5b9c72ff2e8d598",
+      "printings": [
+        "79"
+      ]
+    },
+    {
+      "name": "Divergent Equation",
+      "oracle_id": "84681f12-2978-4f62-ab89-b579033c5192",
+      "facts_sha256": "c9c7ccc59f5213561ee2f5f67da06bcb657888c770a4e8ca6912ab8eba3c5d2f",
+      "printings": [
+        "43"
+      ]
+    },
+    {
+      "name": "Dreamroot Cascade",
+      "oracle_id": "dd8538e6-cd5f-4a88-aff5-eb5e76ce8ddb",
+      "facts_sha256": "261f09fcf41328cf71a0a4dd7399e81ab4bbeda52e669bd654a3478dc78f20bc",
+      "printings": [
+        "254",
+        "302"
+      ]
+    },
+    {
+      "name": "Duel Tactics",
+      "oracle_id": "262c5ac9-af41-42d1-a53a-8a671eedd5a6",
+      "facts_sha256": "aee10b5a88c946def1e278d5817e1d4169a3ab69e40a43781ee3540c32dc4f54",
+      "printings": [
+        "112"
+      ]
+    },
+    {
+      "name": "Eager Glyphmage",
+      "oracle_id": "070aa6c7-4741-47de-b68a-629aa4201ac0",
+      "facts_sha256": "6a8166ccb71b13b10e35222a8ba86349435b2f631554a840282507f3511cec45",
+      "printings": [
+        "11"
+      ]
+    },
+    {
+      "name": "Echocasting Symposium",
+      "oracle_id": "d88c3554-18db-4e5e-a979-2402990a0311",
+      "facts_sha256": "81a0c010ef464eab74c010d1deb1538a00f79c567be9c1a97c0f80171c7d3beb",
+      "printings": [
+        "291",
+        "44"
+      ]
+    },
+    {
+      "name": "Efflorescence",
+      "oracle_id": "181da74b-53fb-4e46-afc0-e7c990fda128",
+      "facts_sha256": "c158c34dbdc1b9436f9c6a593f1ecfa473f90fefb15f6360de35d119583ffe34",
+      "printings": [
+        "144"
+      ]
+    },
+    {
+      "name": "Elemental Mascot",
+      "oracle_id": "882f30e4-4ce1-4581-8d2d-d763aa13befe",
+      "facts_sha256": "129108893cd851c158b68db3dcb855b0783d9ac78fb8e4203bc69cc16b46f605",
+      "printings": [
+        "185"
+      ]
+    },
+    {
+      "name": "Elite Interceptor // Rejoinder",
+      "oracle_id": "d97de156-5a6d-4dc6-953e-d4bad63cbad2",
+      "facts_sha256": "6a85d2d453fb7275cdc016e59c1ee2e660dfc7eda7596abd3e573a5e66f88a7c",
+      "printings": [
+        "12"
+      ]
+    },
+    {
+      "name": "Embrace the Paradox",
+      "oracle_id": "b9110be0-3f0c-449b-8baf-689e92fdb8f0",
+      "facts_sha256": "e1515b4288078627ede3083ef15f22474daaae1d32c898efb73d368df5117c9f",
+      "printings": [
+        "186"
+      ]
+    },
+    {
+      "name": "Emeritus of Abundance // Regrowth",
+      "oracle_id": "e5152e8d-9f55-493d-a0fc-753cc72ee299",
+      "facts_sha256": "85e797bbfb9ca42a496ff910862faf5c0a5a16a116c7f3459cab72ff0caa8dd9",
+      "printings": [
+        "145",
+        "339"
+      ]
+    },
+    {
+      "name": "Emeritus of Conflict // Lightning Bolt",
+      "oracle_id": "5963eef1-1022-42b1-8a0c-fc9850bfc2a3",
+      "facts_sha256": "f8de71e785c3c58db6fe80fb91a549b9040782e03d9fd4a8ef8d4f3563f1dfd5",
+      "printings": [
+        "113",
+        "332"
+      ]
+    },
+    {
+      "name": "Emeritus of Ideation // Ancestral Recall",
+      "oracle_id": "24a29be4-5bc2-469b-b2ce-2fb305c3facb",
+      "facts_sha256": "2aeaff2858a20d487bb7a73e796353f56eac30c80e931788c889d3b1dbcd58cc",
+      "printings": [
+        "306",
+        "315",
+        "45"
+      ]
+    },
+    {
+      "name": "Emeritus of Truce // Swords to Plowshares",
+      "oracle_id": "e6c41473-2398-4888-9f0c-467dce7c39a4",
+      "facts_sha256": "68379458ffe99650a4ffdc1345df06df2b3728b09c2689c4955f212a4e65b482",
+      "printings": [
+        "13",
+        "309"
+      ]
+    },
+    {
+      "name": "Emeritus of Woe // Demonic Tutor",
+      "oracle_id": "93056597-b964-421f-be2f-e92abef1c2a4",
+      "facts_sha256": "8a03def70f795a37d883a7a49ca88e6559100c7851dd4b74e40baab7fa8d3b41",
+      "printings": [
+        "80",
+        "324"
+      ]
+    },
+    {
+      "name": "Emil, Vastlands Roamer",
+      "oracle_id": "9f800ebc-d6e4-4bfc-bebe-8baad51efa19",
+      "facts_sha256": "a819296a009e460034a4feb4f8f41854061da89169ef6aa5a7863fb637c22dc9",
+      "printings": [
+        "146"
+      ]
+    },
+    {
+      "name": "Encouraging Aviator // Jump",
+      "oracle_id": "d6accaed-ff35-4324-b31b-35e6837bc079",
+      "facts_sha256": "81069928574e186ea2c42d2f9c29964914aabfc9e3fa470d0d029731762dd417",
+      "printings": [
+        "46"
+      ]
+    },
+    {
+      "name": "End of the Hunt",
+      "oracle_id": "74b8182e-54be-444a-97b1-84fc5fd3c290",
+      "facts_sha256": "f58ded261663f297157d4194a9ec0894494de33a887a95cd09b8163f72838f01",
+      "printings": [
+        "81"
+      ]
+    },
+    {
+      "name": "Ennis, Debate Moderator",
+      "oracle_id": "97e1fcdf-04e8-40cf-b04a-8505d9b7cecc",
+      "facts_sha256": "182ccb8858285512570ca44263f9a07b4094834c6024c0795a2d1e9baa2800c0",
+      "printings": [
+        "14"
+      ]
+    },
+    {
+      "name": "Environmental Scientist",
+      "oracle_id": "f30aa897-7027-47e7-ae58-73cbc448c1f0",
+      "facts_sha256": "2e3221cf04d6e35e1bda9f9f035dc19ebbc9d8dad5ba7cc262beb99c7e5ba2b7",
+      "printings": [
+        "147"
+      ]
+    },
+    {
+      "name": "Erode",
+      "oracle_id": "2e467fab-e808-44d3-99bf-e3621baeb7cb",
+      "facts_sha256": "3ac7bbfad2ec327b16913a2193c7ec02e0685d65ed1ade3c100f240842a7b3ec",
+      "printings": [
+        "15",
+        "310"
+      ]
+    },
+    {
+      "name": "Essence Scatter",
+      "oracle_id": "46665089-aa3d-44c3-964d-6638dfbb5782",
+      "facts_sha256": "28bb2f54b198ab5dbb42863bc8b49a62bfa0b5d0be9ba33ef80f6328960af85e",
+      "printings": [
+        "47"
+      ]
+    },
+    {
+      "name": "Essenceknit Scholar",
+      "oracle_id": "dd757328-0593-4fc7-a099-e82f5c0677ff",
+      "facts_sha256": "5cd75d10c2c2eb93d6d6735b5194a3b130a6849742b6a4f6d81713f687719cb2",
+      "printings": [
+        "187"
+      ]
+    },
+    {
+      "name": "Eternal Student",
+      "oracle_id": "140cb5cf-8aa2-457c-9d65-5acefea00195",
+      "facts_sha256": "de1baeed4a0838c5d51a8ee2d149cf923de8ffc4621ea76c8aca3141eb3dcc54",
+      "printings": [
+        "82"
+      ]
+    },
+    {
+      "name": "Exhibition Tidecaller",
+      "oracle_id": "d32c9439-4c97-412b-83cc-6d9acb48be3c",
+      "facts_sha256": "f3a6312567ee63bd7ccef1c67ce0fd59d9e200bc72c0b0a1c75b451bf0dbdbcf",
+      "printings": [
+        "316",
+        "48"
+      ]
+    },
+    {
+      "name": "Expressive Firedancer",
+      "oracle_id": "f1812d69-c016-4bc3-b899-ed47f5e893e5",
+      "facts_sha256": "2e26ced26e5656f67e5b034ce854c071388d90fc37ddf8f3e56d45baa9dd93a6",
+      "printings": [
+        "114"
+      ]
+    },
+    {
+      "name": "Fields of Strife",
+      "oracle_id": "a32e08fa-bea4-4ba9-a126-9bf0a91f67e2",
+      "facts_sha256": "885d5f44471788c36795e089a4174fd91fdcf771ef44e76951cb9ac144a314e8",
+      "printings": [
+        "255"
+      ]
+    },
+    {
+      "name": "Fix What's Broken",
+      "oracle_id": "7f8f46c0-889a-4c9a-9bfa-2b43db608d55",
+      "facts_sha256": "05c6ea39f5db8337eafb83b63e42360c5730747ad7614178fb600f9f75c770c6",
+      "printings": [
+        "188",
+        "350"
+      ]
+    },
+    {
+      "name": "Flashback",
+      "oracle_id": "02070488-9203-4304-9392-a111d20218c5",
+      "facts_sha256": "54b0e25311c83f42bc069f3c13f6f7ab5b235581e40778465af5b944a0850a77",
+      "printings": [
+        "115",
+        "333"
+      ]
+    },
+    {
+      "name": "Flow State",
+      "oracle_id": "e7194bca-0cf4-4a86-8b84-d2f9219a08b3",
+      "facts_sha256": "15c1702ff55cb67899eaa8255d0830fec7a839be52d4f022f44111fd428e6bb6",
+      "printings": [
+        "49"
+      ]
+    },
+    {
+      "name": "Follow the Lumarets",
+      "oracle_id": "5bb38d08-582e-43aa-9507-7c20759978ec",
+      "facts_sha256": "d79545601fb445000fb526fe0bbb256a2aa74692e743f6e5dc6dcd6e8d1fc636",
+      "printings": [
+        "148"
+      ]
+    },
+    {
+      "name": "Foolish Fate",
+      "oracle_id": "9c51893f-9118-4d95-b88a-e264f4cbd7a8",
+      "facts_sha256": "6e8dc4dbea481894b52cb0bafb333feb80563c13048af50faa18cbad8d2ecff9",
+      "printings": [
+        "83"
+      ]
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+      "printings": [
+        "271",
+        "280",
+        "281"
+      ]
+    },
+    {
+      "name": "Forum Necroscribe",
+      "oracle_id": "50c97054-77c9-4446-9a41-e4f8877b887d",
+      "facts_sha256": "157ee57381d080861747acd60c8f66dd4f3d8c4550c9c9c196897172245c14bb",
+      "printings": [
+        "84"
+      ]
+    },
+    {
+      "name": "Forum of Amity",
+      "oracle_id": "349ea6c7-6b3e-417f-b082-b712e2b1635b",
+      "facts_sha256": "8e41ba78a91ba11902dd1299c371db382d4f9f87da9d9e82f09b695d950f629d",
+      "printings": [
+        "256"
+      ]
+    },
+    {
+      "name": "Fractal Anomaly",
+      "oracle_id": "644379e7-782e-48e1-9b47-c4dc62e62d85",
+      "facts_sha256": "cf5b96cd6a1027d448161cd9e7bfd2bf07f83d3f00d8d401f937c33e201628fc",
+      "printings": [
+        "50"
+      ]
+    },
+    {
+      "name": "Fractal Mascot",
+      "oracle_id": "cca3f3e8-15a7-4ad8-893a-d3570178a800",
+      "facts_sha256": "4eff0556c892f15b7ae4020c32465156313a11d2809880760d373b204a8d2704",
+      "printings": [
+        "189"
+      ]
+    },
+    {
+      "name": "Fractal Tender",
+      "oracle_id": "cb45860a-1937-4803-b6d8-331a35be39fd",
+      "facts_sha256": "b16a10da44559c453140fd996d29b869a61dca86e19e5b876786ce05207ae3d0",
+      "printings": [
+        "190"
+      ]
+    },
+    {
+      "name": "Fractalize",
+      "oracle_id": "9e7bd032-8946-4d72-9910-b224823bc940",
+      "facts_sha256": "16f2272353ad5a81320a4ecf392450ce03b3203a9676c1a0901f3ee8817760d7",
+      "printings": [
+        "51"
+      ]
+    },
+    {
+      "name": "Garrison Excavator",
+      "oracle_id": "5d808e64-a648-4f1b-a3a9-fd09568db281",
+      "facts_sha256": "e619d0a1c453cc11e82bd92fcd60c56928e7439e50206a1f80b27fb0b986ebbc",
+      "printings": [
+        "116"
+      ]
+    },
+    {
+      "name": "Geometer's Arthropod",
+      "oracle_id": "7f577b46-c69d-4c75-9db5-7e10206b6b59",
+      "facts_sha256": "3c19d9ee8accef781cc3a3345104baf9f7efe32c37b520a597066001c335fc01",
+      "printings": [
+        "191",
+        "300"
+      ]
+    },
+    {
+      "name": "Germination Practicum",
+      "oracle_id": "c8d22139-7b25-4bb1-b0d9-d4c622401edf",
+      "facts_sha256": "cdc94ff765e683b7f29a89639fa2cdbc81a77d34d88e2e0b7a9883b7aa23065e",
+      "printings": [
+        "149",
+        "296"
+      ]
+    },
+    {
+      "name": "Glorious Decay",
+      "oracle_id": "ac4277d7-d78a-4d6e-8d6d-11f9e56f8ae7",
+      "facts_sha256": "15af380e9234722413af3aab7c8856b07f977b91e15a565e83fb5990c17d8060",
+      "printings": [
+        "150"
+      ]
+    },
+    {
+      "name": "Goblin Glasswright // Craft with Pride",
+      "oracle_id": "23c3de07-8aa2-48e9-848c-50b5a40bd133",
+      "facts_sha256": "6bb85e89af095c5d16b3e649b165ac4f1bc9b57bc0e71acd27f9e44ed2c2d688",
+      "printings": [
+        "117"
+      ]
+    },
+    {
+      "name": "Graduation Day",
+      "oracle_id": "40e0665d-57b8-4c19-9fb8-b3155d7bbb94",
+      "facts_sha256": "fa2f7dec06295d26f1ef209e3ff8acde5a9bcbd2770bbd4958c7284d7f161dcb",
+      "printings": [
+        "16"
+      ]
+    },
+    {
+      "name": "Grapple with Death",
+      "oracle_id": "dced5cab-1438-4264-b44c-54dc37ec73d3",
+      "facts_sha256": "63c22758b3b9dda0b5a47207cb112b41d0261fded548c9e915d2cdf0b877e198",
+      "printings": [
+        "192"
+      ]
+    },
+    {
+      "name": "Grave Researcher // Reanimate",
+      "oracle_id": "6cb8b8c4-0674-4f14-9d89-010969fbb80e",
+      "facts_sha256": "ad64ca4d3ddc926dfea17bf81f9969688e5b9fa42aa25347420163a3f932e3af",
+      "printings": [
+        "325",
+        "85"
+      ]
+    },
+    {
+      "name": "Great Hall of the Biblioplex",
+      "oracle_id": "a8c70dab-1e27-4a9c-bd2d-910d5720d02d",
+      "facts_sha256": "0c5070e42b7d8b77d067ec2ef17b2516b3930e52984df2606a2ac3df658bfe8a",
+      "printings": [
+        "257",
+        "361"
+      ]
+    },
+    {
+      "name": "Group Project",
+      "oracle_id": "e1ce210e-2d1d-4ab4-bfb7-8e36884797fc",
+      "facts_sha256": "a8a771403a89518ec75e816a4b81fabcfefb8b4901bc1958cf212d249c45c9cb",
+      "printings": [
+        "17"
+      ]
+    },
+    {
+      "name": "Growth Curve",
+      "oracle_id": "1efd6082-15a8-4322-892d-02d01e381e2a",
+      "facts_sha256": "206bc7371aa1dc8922bbe17ea7b35c3251b7d72a5e512bc414b49cf6f5835033",
+      "printings": [
+        "193"
+      ]
+    },
+    {
+      "name": "Hardened Academic",
+      "oracle_id": "921252df-6679-4f70-ae26-d4956c90b7df",
+      "facts_sha256": "08e9af704944adfff0efd815ec68632e0b78b929ead757b14f0a0a26ed5c5482",
+      "printings": [
+        "194",
+        "351"
+      ]
+    },
+    {
+      "name": "Harmonized Trio // Brainstorm",
+      "oracle_id": "f6036065-7196-44d4-8a27-2199f0e1a03c",
+      "facts_sha256": "6b6048438e852a1034b6fe5b80b8b66535a54842d171b8bf043c7bb20a5689a1",
+      "printings": [
+        "317",
+        "52"
+      ]
+    },
+    {
+      "name": "Harsh Annotation",
+      "oracle_id": "1657be64-b38f-4074-a743-bf558dc57901",
+      "facts_sha256": "c83d704e3f169500e882181d71fbf5909312412e5a350e548d90f0e6e05eadc8",
+      "printings": [
+        "18"
+      ]
+    },
+    {
+      "name": "Heated Argument",
+      "oracle_id": "329f6434-8f1b-4a10-8feb-2a9dc5f2712b",
+      "facts_sha256": "8fb80517157d86b842ff023c340063e60ac50d1c0c033396d1922bffb779a79d",
+      "printings": [
+        "118"
+      ]
+    },
+    {
+      "name": "Homesickness",
+      "oracle_id": "ee57fba8-e68b-4c52-8de7-9b9873d84506",
+      "facts_sha256": "e948dc072c2e614a7c019a8b2c6b5f7c554af85c892c54492a5a9cf3dc2ba544",
+      "printings": [
+        "53"
+      ]
+    },
+    {
+      "name": "Honorbound Page // Forum's Favor",
+      "oracle_id": "66ee56b9-aca8-4efa-b9b5-50717e0784a7",
+      "facts_sha256": "e4f4dcd60051c5b382dd5b92c3e5940a7ccd285888fdf1fd430575e3f7ecc76c",
+      "printings": [
+        "19"
+      ]
+    },
+    {
+      "name": "Hungry Graffalon",
+      "oracle_id": "9494c499-6ead-491f-aeb0-6dbfac4d960c",
+      "facts_sha256": "72bdae9959778a7b41aab333a2e3e00a6511203c365ae0f39a98cac896eab193",
+      "printings": [
+        "151"
+      ]
+    },
+    {
+      "name": "Hydro-Channeler",
+      "oracle_id": "95630a83-3699-4340-b3e5-17e81db1b82f",
+      "facts_sha256": "f76a70e81464c4d2dcce5eddb0af0ce907d0366610480383bffc614cef3237ba",
+      "printings": [
+        "54"
+      ]
+    },
+    {
+      "name": "Imperious Inkmage",
+      "oracle_id": "fcd31653-4964-46a6-820c-f17e8cbaa1fa",
+      "facts_sha256": "05933bf4d44546c3fe2857a304325c0871f642ba57f10d040cebeb7dc0f2d6c2",
+      "printings": [
+        "195"
+      ]
+    },
+    {
+      "name": "Impractical Joke",
+      "oracle_id": "c8da73ed-2834-4094-8723-a4ad75660290",
+      "facts_sha256": "919597c9cc417dabe03a3d3369c4efa0517221819f0df71bdf8ce4dcc624b8fa",
+      "printings": [
+        "119"
+      ]
+    },
+    {
+      "name": "Improvisation Capstone",
+      "oracle_id": "fd4f0315-567a-4cc5-bc7e-88a9d2cee910",
+      "facts_sha256": "c3dc010faa865d16f95f21b39f7daee3f78e1cf0defde41f9910bf295dd0ef09",
+      "printings": [
+        "120",
+        "294"
+      ]
+    },
+    {
+      "name": "Infirmary Healer // Stream of Life",
+      "oracle_id": "4cbbdebc-b807-4d7b-92dd-312637d2a5de",
+      "facts_sha256": "97db546eb810cf7a6063ee121d0b043d890df37937837e79424a78e3e572cc96",
+      "printings": [
+        "152"
+      ]
+    },
+    {
+      "name": "Informed Inkwright",
+      "oracle_id": "d2a372d8-3eb2-4ba4-a75f-7951654de383",
+      "facts_sha256": "1f27161013ad2afcd74c14e19b6fe095a0b273e1a005699584b230aa099ca79d",
+      "printings": [
+        "20",
+        "311"
+      ]
+    },
+    {
+      "name": "Inkling Mascot",
+      "oracle_id": "0f0959ff-4464-4738-9d79-5b06f368f144",
+      "facts_sha256": "9c36c5587d7cd579e3e4e4f5a6d1105b8384490630f56d70d3f6b575f4a37e45",
+      "printings": [
+        "196"
+      ]
+    },
+    {
+      "name": "Inkshape Demonstrator",
+      "oracle_id": "4993651f-f161-4007-b485-a0c66a02f91b",
+      "facts_sha256": "d3bcea89231a8bce6f91e31f3b823af0edb440f9f835956ad195bc6eefeda2d8",
+      "printings": [
+        "21"
+      ]
+    },
+    {
+      "name": "Interjection",
+      "oracle_id": "47bbadcf-11c6-4a4d-9575-1eb8284a174c",
+      "facts_sha256": "687c00228ae1f9effb9ea5c40d28ca4ab252aa53d5a44398bde97447bee0d269",
+      "printings": [
+        "22"
+      ]
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "facts_sha256": "9663433a19f0b70520d2598600be1ddac39dd97fd02f80811dcce06dd0cbaf26",
+      "printings": [
+        "268",
+        "274",
+        "275"
+      ]
+    },
+    {
+      "name": "Jadzi, Steward of Fate // Oracle's Gift",
+      "oracle_id": "c63b3511-d597-4c6e-9094-eabdeaa8a394",
+      "facts_sha256": "f2ced6ba60cf3783c46f936a0bc8bceccd2d265938d0643ba7ffa45983301a1b",
+      "printings": [
+        "318",
+        "55"
+      ]
+    },
+    {
+      "name": "Joined Researchers // Secret Rendezvous",
+      "oracle_id": "ec744a2d-4a33-4807-bce0-d95cd5277b1f",
+      "facts_sha256": "4b17732eb929fa7878162757d10967486c10f5b6d595aa1e0050c42135d906cb",
+      "printings": [
+        "23",
+        "312"
+      ]
+    },
+    {
+      "name": "Killian's Confidence",
+      "oracle_id": "c17f0e65-e5a3-4113-b782-0b192ab52046",
+      "facts_sha256": "eb02e3732a1338f93e313cc0ffb9bb6cc5f2a98a2469239c26e02538e5ec64eb",
+      "printings": [
+        "197"
+      ]
+    },
+    {
+      "name": "Kirol, History Buff // Pack a Punch",
+      "oracle_id": "df1c0d06-2109-4297-9271-8a003fc892bc",
+      "facts_sha256": "a7ec270956ece201f4d0a74856dd039207fcc7c1ccf8848e8909ed11a96041b2",
+      "printings": [
+        "198"
+      ]
+    },
+    {
+      "name": "Landscape Painter // Vibrant Idea",
+      "oracle_id": "5ba7abbc-f6e8-40c2-800b-11efd10cca5b",
+      "facts_sha256": "a66399792302d6243a4f536dbc7792f82a81ae6be7482e8bff953f1ccc32af8c",
+      "printings": [
+        "56"
+      ]
+    },
+    {
+      "name": "Last Gasp",
+      "oracle_id": "a82c3860-4dd6-4ffd-aa8f-ab8df687db6c",
+      "facts_sha256": "31e455e379680c01e93e306cf4ce9e516d20ef20703dd9d2c5cdbfb755bd0893",
+      "printings": [
+        "86"
+      ]
+    },
+    {
+      "name": "Lecturing Scornmage",
+      "oracle_id": "29c23fd7-0ac4-46af-8ecd-92b726575252",
+      "facts_sha256": "dff977f5bfe084a95ef0556b63d82eb05a60b927f40843aee6ceeee4558f385e",
+      "printings": [
+        "87"
+      ]
+    },
+    {
+      "name": "Leech Collector // Bloodletting",
+      "oracle_id": "84bb960c-c34e-4979-8c0f-893c85cee27d",
+      "facts_sha256": "17d6c7b71b11dddb1045e22c9e0d5917438163e38915a13f4cebee81534e05de",
+      "printings": [
+        "88"
+      ]
+    },
+    {
+      "name": "Living History",
+      "oracle_id": "a76adc88-e7db-43e2-8fbf-bae95c0838ef",
+      "facts_sha256": "b42b03a56cc9b1f7d9817fd9ab06455101c83a49255bdde9d92722c77fcb73e2",
+      "printings": [
+        "121"
+      ]
+    },
+    {
+      "name": "Lluwen, Exchange Student // Pest Friend",
+      "oracle_id": "cb125cd4-c7c2-415d-b802-bdcfc2454403",
+      "facts_sha256": "d8da86800e5616e45f23bbafd85c6c2d0384ffa24226cae8ba866b92cc42a621",
+      "printings": [
+        "199"
+      ]
+    },
+    {
+      "name": "Lorehold Charm",
+      "oracle_id": "a5729f11-6cde-4830-b882-ab4c5251c1a9",
+      "facts_sha256": "e8e6df97dc88a2e42a7f296e44a07e0a0f21ee5a308a603cc2026d4e4733e4e9",
+      "printings": [
+        "200",
+        "363"
+      ]
+    },
+    {
+      "name": "Lorehold, the Historian",
+      "oracle_id": "61a41cf1-60cc-45ba-aa98-493c14e87d9d",
+      "facts_sha256": "d33350768b5ecb3cda236f58d66b6180c2a5a9c73fe4bc07069ae40ccc7f36b2",
+      "printings": []
+    },
+    {
+      "name": "Lumaret's Favor",
+      "oracle_id": "d514704b-4055-48ed-9da3-e4397fca7576",
+      "facts_sha256": "90a826a487289255868303361bbbdb783c02604d48c8556c72a42da7988f271e",
+      "printings": [
+        "153"
+      ]
+    },
+    {
+      "name": "Maelstrom Artisan // Rocket Volley",
+      "oracle_id": "03931270-504a-4b0b-af3f-918bf124ea07",
+      "facts_sha256": "5b47d88e84c07022239b58990a5855bbacd336375cc4fb5b980ab4c962322b73",
+      "printings": [
+        "122",
+        "334"
+      ]
+    },
+    {
+      "name": "Mage Tower Referee",
+      "oracle_id": "3f27988b-0863-4cc1-8eb9-83bd0cd8561c",
+      "facts_sha256": "9d772ae68058cab0891ec68c4f9827c909f58d0d82218a41d7d78eed1cac8149",
+      "printings": [
+        "249"
+      ]
+    },
+    {
+      "name": "Magmablood Archaic",
+      "oracle_id": "c6a5adc8-ee57-421e-8235-0b3160f44568",
+      "facts_sha256": "79eb8007e4019e1ce6bb0b963c52d7781a7ea80c8c7583586bf1b341029f7922",
+      "printings": [
+        "123",
+        "295"
+      ]
+    },
+    {
+      "name": "Mana Sculpt",
+      "oracle_id": "35e2f82e-7ca3-4a92-9134-b7999eef5337",
+      "facts_sha256": "0ffdb75ba2688ffb359a6ea18fc97f46605768b8f624c64707a0ffa76bad33ad",
+      "printings": [
+        "319",
+        "57"
+      ]
+    },
+    {
+      "name": "Masterful Flourish",
+      "oracle_id": "1cb419cc-d8e4-4676-987f-089cebccc374",
+      "facts_sha256": "9242ae21084a6f17d2cc09d56f676d6b547e3b2c2983291816089a6fe6e319f6",
+      "printings": [
+        "89"
+      ]
+    },
+    {
+      "name": "Mathemagics",
+      "oracle_id": "5f56a303-b3da-41df-a959-7823a87ee60c",
+      "facts_sha256": "3d0910078c4aead53ec676c71df6690dd99f106182aa1d1e47ed5f7e6d350433",
+      "printings": [
+        "320",
+        "58"
+      ]
+    },
+    {
+      "name": "Matterbending Mage",
+      "oracle_id": "94688e25-28cb-45aa-95ea-0d6f547cae57",
+      "facts_sha256": "a9961dcfd5b1eba2dc2da091c407d345e2ba133fe15348ec1539d8250ec05ed5",
+      "printings": [
+        "59"
+      ]
+    },
+    {
+      "name": "Melancholic Poet",
+      "oracle_id": "37731c49-1238-4e0e-8993-204e36c1f4ee",
+      "facts_sha256": "5cb9d0f2c498d08f4b8a76ade32d077300321ce966e4c3546828f52a378f5c18",
+      "printings": [
+        "90"
+      ]
+    },
+    {
+      "name": "Mica, Reader of Ruins",
+      "oracle_id": "fc90f74d-11f3-4bd4-b8a1-1cf2ffcd5b73",
+      "facts_sha256": "1155cceccc0a0edf4733b74667bd46912c6ac4dd9fc1955bd81af7f53a5bde93",
+      "printings": [
+        "124"
+      ]
+    },
+    {
+      "name": "Mind Roots",
+      "oracle_id": "5d32dbf3-c157-4543-8813-da88f463de0e",
+      "facts_sha256": "7d87df6a7d86b09013e801e7f5ca62097801387ba99f83dd56ada1ead130752d",
+      "printings": [
+        "203"
+      ]
+    },
+    {
+      "name": "Mind into Matter",
+      "oracle_id": "9f9e4be0-814a-4cab-948b-114769035a4a",
+      "facts_sha256": "1505fa7439cc9acf02faf92de45f9259f6c24ffa24f3ea11f698e3948fdbbe89",
+      "printings": [
+        "202",
+        "352"
+      ]
+    },
+    {
+      "name": "Mindful Biomancer",
+      "oracle_id": "03af9d24-2df6-4318-82f2-8abdd22206f1",
+      "facts_sha256": "e34a59749135bfb6e5f754a553ee0245d544e68e77031d542470c05c26ac691e",
+      "printings": [
+        "154"
+      ]
+    },
+    {
+      "name": "Molten Note",
+      "oracle_id": "8c179b8f-3a83-49d6-9e7f-9e17c293ccbb",
+      "facts_sha256": "bd215b2bcabfe3634d3489d2887e3dcd9cc858d0730024cc63c40c0c443dba6e",
+      "printings": [
+        "204"
+      ]
+    },
+    {
+      "name": "Molten-Core Maestro",
+      "oracle_id": "485233bf-dc4b-4f31-8dfb-5054aee70c08",
+      "facts_sha256": "1f11b633113eada6a910543d649cbd22e5f6d62fd39d4c24bba3f32fff564e77",
+      "printings": [
+        "125",
+        "335"
+      ]
+    },
+    {
+      "name": "Moment of Reckoning",
+      "oracle_id": "8e9576c1-b0c2-4be5-9005-35b51164f78e",
+      "facts_sha256": "dca4658241078144ec5717f4ffb4243a2a79816035ee7c5a8f92b7b403708e74",
+      "printings": [
+        "205",
+        "353"
+      ]
+    },
+    {
+      "name": "Moseo, Vein's New Dean",
+      "oracle_id": "c2e2f21a-0338-44d7-96a5-5a277f0ec419",
+      "facts_sha256": "c436276154b61a12533beede649ab8c937bfc1d03354d005c9def44a6c1b6859",
+      "printings": [
+        "326",
+        "91"
+      ]
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+      "printings": [
+        "270",
+        "278",
+        "279"
+      ]
+    },
+    {
+      "name": "Muse Seeker",
+      "oracle_id": "31f3d37f-e613-427f-b34c-cc87611ea078",
+      "facts_sha256": "6c9a9002d86b941cea15a4ab92d03816c7bfddd2e70ffa32f561d0d9d16f9d15",
+      "printings": [
+        "60"
+      ]
+    },
+    {
+      "name": "Muse's Encouragement",
+      "oracle_id": "62421084-96e6-40dd-8d34-7c8c1091d4a4",
+      "facts_sha256": "dab050e3a55164ed6efd031a82774a9de094fc242d54c94171d6f4f98138ceef",
+      "printings": [
+        "61"
+      ]
+    },
+    {
+      "name": "Nita, Forum Conciliator",
+      "oracle_id": "f589e5ee-399c-4613-b7a2-9ab2866cc830",
+      "facts_sha256": "03dedf56d9af47d93c53146becc9f2b4d490e478217bfb66cbb6f8377c558b6e",
+      "printings": [
+        "206",
+        "354"
+      ]
+    },
+    {
+      "name": "Noxious Newt",
+      "oracle_id": "1232c461-643c-40a3-901e-09b665f817da",
+      "facts_sha256": "e87386ad2cef22adc0e34b868fcf7b9e20ae906f733e5ca608bd63f4bc3d2f41",
+      "printings": [
+        "155"
+      ]
+    },
+    {
+      "name": "Old-Growth Educator",
+      "oracle_id": "2b7362a9-3518-4071-ab1b-40689a50e12a",
+      "facts_sha256": "d9d82f423512e5b051ab5ed6b4dd4e7fe03ec5cc9d48e349eace65aaeffc62b6",
+      "printings": [
+        "207"
+      ]
+    },
+    {
+      "name": "Oracle's Restoration",
+      "oracle_id": "00e75a6b-699e-4824-86e5-66d45245cd9b",
+      "facts_sha256": "e560c1aafd1c2e37eec7b590070e44f0bdc5483f6aeff45e6ac586e6f351cf91",
+      "printings": [
+        "156"
+      ]
+    },
+    {
+      "name": "Orysa, Tide Choreographer",
+      "oracle_id": "cf56a5b4-48fa-4d53-a4b9-14afe079c1d3",
+      "facts_sha256": "bee3ef5c11dccad1ac0f8009a81be1a4646cf21f305528055fb8370595619871",
+      "printings": [
+        "62"
+      ]
+    },
+    {
+      "name": "Owlin Historian",
+      "oracle_id": "e1ebb60e-fbf3-4f8f-a76f-d637ec59ffb0",
+      "facts_sha256": "fffa754e68fafaad6c4052151bc02761a154ff50a16999a9a9209555d172055d",
+      "printings": [
+        "24"
+      ]
+    },
+    {
+      "name": "Page, Loose Leaf",
+      "oracle_id": "3bbad38b-7d88-4ff2-9fd3-5081536e7c56",
+      "facts_sha256": "387a742cde36ce9feb1ca06badb3e294418d0e8a837d97dc0778d036cc86593a",
+      "printings": [
+        "250"
+      ]
+    },
+    {
+      "name": "Paradox Gardens",
+      "oracle_id": "638ff242-63d5-457d-a7a6-40ad51052e2e",
+      "facts_sha256": "49f5188fe40cc726064c1005598e94f4d662858178a21ec2be04853f8ded337b",
+      "printings": [
+        "258"
+      ]
+    },
+    {
+      "name": "Paradox Surveyor",
+      "oracle_id": "247cc471-fed5-41e3-8b6a-a10bbc129b36",
+      "facts_sha256": "0e41e02c4b70b217df7ca4503c3828ac11cd304b9466601a843c663b0e7553ad",
+      "printings": [
+        "208"
+      ]
+    },
+    {
+      "name": "Pensive Professor",
+      "oracle_id": "4b8736e2-fc41-4a25-bb6c-7351afc40981",
+      "facts_sha256": "c6111292ce9a7493fcb340344d6c9a2181915e6ff058176ed3aa78bbf93ccb60",
+      "printings": [
+        "321",
+        "63"
+      ]
+    },
+    {
+      "name": "Pest Mascot",
+      "oracle_id": "b8ecddf7-ba89-40dd-9f63-5bad27dd850d",
+      "facts_sha256": "dac68e0cd323abacff6b9f7c18624b67fed94f0880ac5e23780888747bdf9a9e",
+      "printings": [
+        "209"
+      ]
+    },
+    {
+      "name": "Pestbrood Sloth",
+      "oracle_id": "2970d09b-4bef-468e-8de5-f994c820ccc0",
+      "facts_sha256": "b9a0aeb897df56a702b5d34d3dde2540f748a4f8538efd90a6f30656d87791a0",
+      "printings": [
+        "157"
+      ]
+    },
+    {
+      "name": "Petrified Hamlet",
+      "oracle_id": "78a2972c-14f4-41f3-99f9-167948bdd73a",
+      "facts_sha256": "bea98924a7d058ba657ea90674b5516394ede45d556cab7f909200b5391f1f5d",
+      "printings": [
+        "259",
+        "362"
+      ]
+    },
+    {
+      "name": "Pigment Wrangler // Striking Palette",
+      "oracle_id": "c008d60a-ee06-4411-b8e7-c2df13616105",
+      "facts_sha256": "5a1094609e15b28bd4a5f4b0f82a1372d7b437cdf726ad1c03f350855ba5686c",
+      "printings": [
+        "126"
+      ]
+    },
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+      "printings": [
+        "267",
+        "272",
+        "273"
+      ]
+    },
+    {
+      "name": "Planar Engineering",
+      "oracle_id": "dc48079a-b1c4-4c43-a989-418c78a264ec",
+      "facts_sha256": "2c25025c427c7cc06e816dc88f0e951611bb2890342b412b01ae4aa817d2db7c",
+      "printings": [
+        "158",
+        "340"
+      ]
+    },
+    {
+      "name": "Poisoner's Apprentice",
+      "oracle_id": "4b0e5626-0282-42e5-abef-a079b26a8e5f",
+      "facts_sha256": "404cc683e07b63e3247c4e14fa511d02d53bac4fef0147c47cf1ac412ba52ff8",
+      "printings": [
+        "92"
+      ]
+    },
+    {
+      "name": "Postmortem Professor",
+      "oracle_id": "0859d16e-2a1f-4b48-8687-99af8a8bdb38",
+      "facts_sha256": "22872dec73d3ff39988e4ebc8fb317a1a9e02de2a018fffd2129943a36f8cda5",
+      "printings": [
+        "327",
+        "93"
+      ]
+    },
+    {
+      "name": "Potioner's Trove",
+      "oracle_id": "d604c75e-9d81-49de-80bc-08f4ef3ee975",
+      "facts_sha256": "b150efd73aa56bb84a597b37f23b7f514583dd70840a955791cff8620a9766d6",
+      "printings": [
+        "251"
+      ]
+    },
+    {
+      "name": "Pox Plague",
+      "oracle_id": "c505d304-9428-4532-87a2-167c69f16969",
+      "facts_sha256": "1132dade3f9e6b30d2c7e278dcd2ec58fd13febcea497fff22dfb0260c0e0a3a",
+      "printings": [
+        "328",
+        "94"
+      ]
+    },
+    {
+      "name": "Practiced Offense",
+      "oracle_id": "99678cc9-59c8-4358-b847-8c38ffb4a050",
+      "facts_sha256": "4c477c6ccc02282890beb5d807df6949980e115f36b5db71664fe45739d8880d",
+      "printings": [
+        "25",
+        "313"
+      ]
+    },
+    {
+      "name": "Practiced Scrollsmith",
+      "oracle_id": "a02f9f42-4c3a-4a97-8667-68ba4617f193",
+      "facts_sha256": "e05e30f3ec4cfdf71e757240b5cf1e447a6d5649972751108a0e2160bbf5b5de",
+      "printings": [
+        "210"
+      ]
+    },
+    {
+      "name": "Primary Research",
+      "oracle_id": "51af3da5-0970-436e-baa6-3171889a40e0",
+      "facts_sha256": "1109090924e28082b28274bc80f1d26519bf4acdb25e21fae275d4f32bf78c66",
+      "printings": [
+        "26"
+      ]
+    },
+    {
+      "name": "Prismari Charm",
+      "oracle_id": "c3c25a2c-f71c-4cb7-9117-0bcda9248bfd",
+      "facts_sha256": "6aedab9645447a21ec8783630112240f9c2bc13b7f5734103b6ccf7b059f4c4b",
+      "printings": [
+        "211",
+        "364"
+      ]
+    },
+    {
+      "name": "Prismari, the Inspiration",
+      "oracle_id": "258f5045-3aa7-4b95-a15f-3172577294a8",
+      "facts_sha256": "1d9353358a61a2f4c11152952ae4431876a3cbabff9317d8d05afe471862579e",
+      "printings": [
+        "212",
+        "285"
+      ]
+    },
+    {
+      "name": "Procrastinate",
+      "oracle_id": "6f8fa68e-e961-4ae1-b27d-22d87e90f26b",
+      "facts_sha256": "bc828feb9dc9c73938d60a1d1292a9ec19530bf583d76e53158ecc5ba230722a",
+      "printings": [
+        "64"
+      ]
+    },
+    {
+      "name": "Proctor's Gaze",
+      "oracle_id": "a7fe7621-9bb1-4d0d-8b50-c179c685d79d",
+      "facts_sha256": "2023fe1a39a272c01e89ab2ef87e5ee0b947b1b3e1ecb2173eced9eede319759",
+      "printings": [
+        "213"
+      ]
+    },
+    {
+      "name": "Professor Dellian Fel",
+      "oracle_id": "8c5fe985-69e1-4a03-99fc-a6fd2314a9a7",
+      "facts_sha256": "55ed8237f71af92dd20095ee1d0d8b6adf15a4154ed45ca128fad53da921afa3",
+      "printings": [
+        "214",
+        "283"
+      ]
+    },
+    {
+      "name": "Pterafractyl",
+      "oracle_id": "cca03b76-dd3c-4228-b97a-f7fa20819b2e",
+      "facts_sha256": "dd1145ca4c9c4f119ea18314589b7b07ef44a931bd6624ff7d259dd060778387",
+      "printings": [
+        "215"
+      ]
+    },
+    {
+      "name": "Pull from the Grave",
+      "oracle_id": "c5373026-8b43-42a7-aa69-a1b0f1619795",
+      "facts_sha256": "4cf07f995076397a50438310441f34c8d612d53d8edb3d824431cde0401939af",
+      "printings": [
+        "95"
+      ]
+    },
+    {
+      "name": "Pursue the Past",
+      "oracle_id": "4384996f-aeaa-41ac-aa0e-12d72c887731",
+      "facts_sha256": "567ed2cb695752065be32055783bf70d2824be23ff7f500881de71664e758f57",
+      "printings": [
+        "216"
+      ]
+    },
+    {
+      "name": "Quandrix Charm",
+      "oracle_id": "f43e36ea-6bf5-45bd-a4ad-cc507ae45641",
+      "facts_sha256": "9f11d1f1105145ce508c721576888da13c234a066dc3d13f111bd12bb147d5c0",
+      "printings": [
+        "217",
+        "365"
+      ]
+    },
+    {
+      "name": "Quandrix, the Proof",
+      "oracle_id": "2cbccc46-bdef-4dfb-90a4-0278c5c8488a",
+      "facts_sha256": "13290c6c3921f590c4d481eda72b8903b63bb85a1c4c5c01f334ce85e308939c",
+      "printings": [
+        "218",
+        "286"
+      ]
+    },
+    {
+      "name": "Quick Study",
+      "oracle_id": "7bff8d4a-1c7d-48b8-b3e3-737dd6f01823",
+      "facts_sha256": "9df8e914e98c95f4e0164c1903454ec49c336a596d723c1200af59637b7a0924",
+      "printings": [
+        "65"
+      ]
+    },
+    {
+      "name": "Quill-Blade Laureate // Twofold Intent",
+      "oracle_id": "bd9d3a70-faed-4bc6-97d8-1601b36cdb21",
+      "facts_sha256": "9c1df39ffb284ab9e11a31a1f6b9cb521e6e3185dc54a8dcbef23353686e4139",
+      "printings": [
+        "27"
+      ]
+    },
+    {
+      "name": "Rabid Attack",
+      "oracle_id": "4db02b34-efec-437c-ab28-aa318b8879ad",
+      "facts_sha256": "5b6de5fac55dda3ee28675c8720ac7185c8e4089d8b0b1b7a3562d6fd197f0a3",
+      "printings": [
+        "96"
+      ]
+    },
+    {
+      "name": "Ral Zarek, Guest Lecturer",
+      "oracle_id": "0dc76b7f-6405-44a1-8c55-31fa480ff70b",
+      "facts_sha256": "03ac04e8658304fd2e705af531fa92c638365b4c2bc6f0c8709ef02d99ac0f24",
+      "printings": [
+        "282",
+        "97"
+      ]
+    },
+    {
+      "name": "Rancorous Archaic",
+      "oracle_id": "6a68fcaf-b1e8-451d-8e1c-b47db55c83cc",
+      "facts_sha256": "68304582b6db6d7a8fce91e1e1800de70e587f72eb0d10a3c764e8fec56f8190",
+      "printings": [
+        "2"
+      ]
+    },
+    {
+      "name": "Rapier Wit",
+      "oracle_id": "cf43518b-bfec-443d-a6c0-f2d848dc5fa8",
+      "facts_sha256": "ad97644ac676219788966e5a189423d5a025f58860ce81540c8778b17cc89272",
+      "printings": [
+        "28"
+      ]
+    },
+    {
+      "name": "Rapturous Moment",
+      "oracle_id": "c997afb7-82cb-4579-885e-3628cb1b51e4",
+      "facts_sha256": "8b1aa60dec226d806cb13d47ecdeb7215cabc6e703ed956a26b5f860b4645929",
+      "printings": [
+        "219"
+      ]
+    },
+    {
+      "name": "Rearing Embermare",
+      "oracle_id": "95f20067-4471-4bfa-952d-dbbfbb2c2178",
+      "facts_sha256": "7addc463b61bd68c7608d76aa3195bc049c4cabc258d20a1e219ea5cd68539e8",
+      "printings": [
+        "127"
+      ]
+    },
+    {
+      "name": "Rehearsed Debater",
+      "oracle_id": "e30ccf07-0969-4e81-ba43-c50a2ff9c040",
+      "facts_sha256": "efad0da37b4c5fc59d2376f6224135d9c039413c02e0627f5c500d2c1db87d90",
+      "printings": [
+        "29"
+      ]
+    },
+    {
+      "name": "Render Speechless",
+      "oracle_id": "6fdddab4-fcc9-4622-9c17-c69f9d4bca08",
+      "facts_sha256": "caf0db88f23f754b1be0613fdf0b3ac1e6a0a42c2131dd572a5ffd98a20066ab",
+      "printings": [
+        "220"
+      ]
+    },
+    {
+      "name": "Resonating Lute",
+      "oracle_id": "9263287d-f782-4318-9ab8-e2e5f8107f5e",
+      "facts_sha256": "c8aba5f1a0dbf44373eebe7aecf4fd00076d7cdd3081107e245af12f4dd0baeb",
+      "printings": [
+        "221",
+        "355"
+      ]
+    },
+    {
+      "name": "Restoration Seminar",
+      "oracle_id": "fd0a27a9-7d7e-4a16-9dd0-0715e6c97b36",
+      "facts_sha256": "c30832e412af98a6ac11f420a2228d7e7b0d5254bfc9e01a212e8ad1bab72025",
+      "printings": [
+        "290",
+        "30"
+      ]
+    },
+    {
+      "name": "Root Manipulation",
+      "oracle_id": "d870948e-721a-46fd-86b6-ecd42e3aa9bd",
+      "facts_sha256": "d1fd6aa1130dc799da0be43bcf60b642f7d9f377a043d80272f142d723c37a78",
+      "printings": [
+        "222"
+      ]
+    },
+    {
+      "name": "Rubble Rouser",
+      "oracle_id": "f35aa497-bd0f-4642-8713-820b9f014da5",
+      "facts_sha256": "e7231e8954759349bf851a2cdf27d6792e665260ecd36b9fbfb7c4d84a6cd4a4",
+      "printings": [
+        "128"
+      ]
+    },
+    {
+      "name": "Run Behind",
+      "oracle_id": "7578a192-82e5-43ff-8dee-225f313c484a",
+      "facts_sha256": "457d71391a4d875bcc53d03f53a46aa3b0518ead0dbb9e7c5417dc7f900d7bed",
+      "printings": [
+        "66"
+      ]
+    },
+    {
+      "name": "Sanar, Unfinished Genius // Wild Idea",
+      "oracle_id": "a8c44bd9-6470-47d7-934f-77c76a44a984",
+      "facts_sha256": "0204f5fe1ab77f44ce6d6cc1894b3b3c647483ed8341ba2b8c2dbb0f87b6452d",
+      "printings": [
+        "223"
+      ]
+    },
+    {
+      "name": "Scathing Shadelock // Venomous Words",
+      "oracle_id": "2796c3d9-9e56-40f2-8398-7a131c4657ff",
+      "facts_sha256": "f83ce263612082c7e3108b9e69749645c0b5d7a52b1cd71e61926a207c71d1df",
+      "printings": [
+        "98"
+      ]
+    },
+    {
+      "name": "Scheming Silvertongue // Sign in Blood",
+      "oracle_id": "44443716-8356-40cd-a879-35264b29108c",
+      "facts_sha256": "f65f8d3a9d927807dcfe865eb21b36b8653b26a4199f9934bf98947f2e17d746",
+      "printings": [
+        "329",
+        "99"
+      ]
+    },
+    {
+      "name": "Scolding Administrator",
+      "oracle_id": "3b8240ad-71d3-4117-8531-6c8e79bffdb9",
+      "facts_sha256": "674cffd92fcaa350952b0ca2a8a122397ef1667709fa6b1f5ffce0946bcd6f91",
+      "printings": [
+        "224"
+      ]
+    },
+    {
+      "name": "Seize the Spoils",
+      "oracle_id": "58f83528-9110-4895-b5ea-51b90af30a8d",
+      "facts_sha256": "7db99485ff70f4996b9094bc11089495ede73a09de83de183be9b4b338673cf2",
+      "printings": [
+        "129"
+      ]
+    },
+    {
+      "name": "Send in the Pest",
+      "oracle_id": "955bfcb8-6477-4ed0-b6e7-8940874ae5e4",
+      "facts_sha256": "5ada274e7df083e16196e9226b5c2284cb6789b49836b085945e66c5e44c430d",
+      "printings": [
+        "100"
+      ]
+    },
+    {
+      "name": "Shattered Acolyte",
+      "oracle_id": "57f58d52-0014-4cac-94fc-668063cc147a",
+      "facts_sha256": "d5a078f2a0be9f6f4c8768f9278622f57bc25e1949355cefb76b7181abbb1330",
+      "printings": [
+        "31"
+      ]
+    },
+    {
+      "name": "Shattered Sanctum",
+      "oracle_id": "c854ecb0-cc60-4c48-a9aa-7f2348a7a8c6",
+      "facts_sha256": "242103e4cb8330358349ddaf88f38bfef7712e8ab91e479c79ef64c26f186e78",
+      "printings": [
+        "260",
+        "303"
+      ]
+    },
+    {
+      "name": "Shopkeeper's Bane",
+      "oracle_id": "e7572317-6bec-4fb0-81ac-76aec04f14ad",
+      "facts_sha256": "b12de4453895ac3172d6a1603eb8327c542ec3781b7a52ceee4bcb752f225412",
+      "printings": [
+        "159"
+      ]
+    },
+    {
+      "name": "Silverquill Charm",
+      "oracle_id": "d985b12e-2731-4ccf-9f51-90218b20b42a",
+      "facts_sha256": "ab0b040a4d91a784da31afa11e0a913da0271c56ccbab37256d20cad93da2f27",
+      "printings": [
+        "225",
+        "366"
+      ]
+    },
+    {
+      "name": "Silverquill, the Disputant",
+      "oracle_id": "66deb3f3-0314-427e-9cb8-6befa365ae94",
+      "facts_sha256": "fab7504ce8f047991a9f2d244ba7c8b58a39e34cc12fd6fcf8aa8baa049aad3b",
+      "printings": [
+        "226",
+        "287"
+      ]
+    },
+    {
+      "name": "Skycoach Conductor // All Aboard",
+      "oracle_id": "788d3cfa-7706-4728-9c48-cf7bc963d002",
+      "facts_sha256": "bf5e12253e973cedd8a17df278354920eb57b7d8152cdf9a3370d281b9f86b13",
+      "printings": [
+        "322",
+        "67"
+      ]
+    },
+    {
+      "name": "Skycoach Waypoint",
+      "oracle_id": "2ac2b815-2d72-48e6-b43a-18884a74bf95",
+      "facts_sha256": "48a5473cf7d3bbc639950212ebc86f11fb33480051ac347825d01578bb623eb6",
+      "printings": [
+        "261"
+      ]
+    },
+    {
+      "name": "Slumbering Trudge",
+      "oracle_id": "d04bce9a-822b-4a52-8826-b503ef5f5b2e",
+      "facts_sha256": "ad2758a11757d8087a6bf4dd165f1c8d28196bacea6cf8e219cd2334dbdd6b3e",
+      "printings": [
+        "160",
+        "341"
+      ]
+    },
+    {
+      "name": "Snarl Song",
+      "oracle_id": "3b6fb13b-f126-4697-90a1-64b14ffcecd6",
+      "facts_sha256": "fa6d49094579d7b71b1c2fe4185122fc39ad2548ca77eaf3bff2b8e37297da70",
+      "printings": [
+        "161"
+      ]
+    },
+    {
+      "name": "Sneering Shadewriter",
+      "oracle_id": "21a094d6-de3d-48d4-a35d-b99617da55db",
+      "facts_sha256": "74131c19c417ba83ec1f9a6791ed399e7c71d2d92538ed9ff9ebd2bcfc816ac1",
+      "printings": [
+        "101"
+      ]
+    },
+    {
+      "name": "Snooping Page",
+      "oracle_id": "f07c07d7-00f1-44a5-b51f-0a22cc51fd2b",
+      "facts_sha256": "857897d2a74638cadb16ff7efc05d4fdbe3c0066984e5a7d353b8252677bf3ec",
+      "printings": [
+        "227"
+      ]
+    },
+    {
+      "name": "Soaring Stoneglider",
+      "oracle_id": "62d18d2b-fa68-49cd-b62d-803728ddfa8b",
+      "facts_sha256": "d8485933d5743a8fbdde452583f06040a3ccf1bc3fd2c049c876e186ef8f0c7a",
+      "printings": [
+        "32"
+      ]
+    },
+    {
+      "name": "Social Snub",
+      "oracle_id": "b284913e-3530-4a7e-8c75-efb18788dad0",
+      "facts_sha256": "4b9b673da2cd75bfd7f228816ec09d2de660c1b5e4494dcf724354579e4f181d",
+      "printings": [
+        "228"
+      ]
+    },
+    {
+      "name": "Spectacle Summit",
+      "oracle_id": "33a4e73d-d93a-4b6f-88ff-cd53f20d178c",
+      "facts_sha256": "14d7e280e5c94fdd689ba6501857550a54a2dbd40364bbca350dc1e10d76abdf",
+      "printings": [
+        "262"
+      ]
+    },
+    {
+      "name": "Spectacular Skywhale",
+      "oracle_id": "6a6b19db-cdeb-4922-8642-5d872f90e7a1",
+      "facts_sha256": "cef44ada2bf4fc3817f0820c5044b1af953909d7f7c3a3cbd3b3c0c88af6cf3e",
+      "printings": [
+        "229"
+      ]
+    },
+    {
+      "name": "Spellbook Seeker // Careful Study",
+      "oracle_id": "df5e4100-8c83-42d6-af96-1a1ec84a9210",
+      "facts_sha256": "bc26fc88d761a730626197ba0a66f7c5bb76302ba25420723e6cde6ecabf8346",
+      "printings": [
+        "68"
+      ]
+    },
+    {
+      "name": "Spirit Mascot",
+      "oracle_id": "34c572b2-dccf-43d9-a9c4-846653ad22da",
+      "facts_sha256": "d85bf6de14f0177d23e3ff82ee45e8fa0b3ada24f0bdea8f568e1070898e9194",
+      "printings": [
+        "230"
+      ]
+    },
+    {
+      "name": "Spiritcall Enthusiast // Scrollboost",
+      "oracle_id": "c77ddcac-ce54-4348-bde2-5d9caf3d5b04",
+      "facts_sha256": "418d5b39536af52c997ff3e1bebe5a8e2258e3f594b5598ae6fba031df8d1768",
+      "printings": [
+        "33"
+      ]
+    },
+    {
+      "name": "Splatter Technique",
+      "oracle_id": "2620dcfe-8738-4f81-b23d-0c1c60cf9047",
+      "facts_sha256": "9aa9c219f7e5999d301635bb0abcee788774714b497c27c3716bf0480297ec5a",
+      "printings": [
+        "231",
+        "356"
+      ]
+    },
+    {
+      "name": "Stadium Tidalmage",
+      "oracle_id": "1c45e872-3af8-47a4-9dc7-a99c293338f8",
+      "facts_sha256": "d37151c10b2490cbeb8c4c8de176350f92a605f18ef1c46cd968512c44216b46",
+      "printings": [
+        "232"
+      ]
+    },
+    {
+      "name": "Stand Up for Yourself",
+      "oracle_id": "00e94b75-ad31-4e1f-b3be-eed7cd3e4d76",
+      "facts_sha256": "1428a67931c1557bab53326d09c7dbff1b3935f37bc9470583e4540bb38178e7",
+      "printings": [
+        "34"
+      ]
+    },
+    {
+      "name": "Startled Relic Sloth",
+      "oracle_id": "5d46e85f-4a04-48b1-afe9-3a47678041d4",
+      "facts_sha256": "b187fe814bb922057131cc2cfd646cf199812eaad2013e72a79616b42c7aa69d",
+      "printings": [
+        "233"
+      ]
+    },
+    {
+      "name": "Steal the Show",
+      "oracle_id": "de403543-e61a-44fc-85e1-1e621d90ca8b",
+      "facts_sha256": "2856b31393303f83624250017d7f1c5db910f5daf7b198bdb86bd5aac80f9f2a",
+      "printings": [
+        "130",
+        "336"
+      ]
+    },
+    {
+      "name": "Stirring Honormancer",
+      "oracle_id": "3bcf54f8-fcd7-4ec0-b011-92b367411cdb",
+      "facts_sha256": "dc0352c471633a630632d6f9a4cf7869976fff2f8f80352b2ef1d3026d2bcf5f",
+      "printings": [
+        "234"
+      ]
+    },
+    {
+      "name": "Stirring Hopesinger",
+      "oracle_id": "7244d04a-bb9c-4fbe-a346-4a3f45709da7",
+      "facts_sha256": "dedfaa25c42a13df0e083dbc022af35a32549a9e7217e07de8ae28f860e0b7bc",
+      "printings": [
+        "314",
+        "35"
+      ]
+    },
+    {
+      "name": "Stone Docent",
+      "oracle_id": "dbb1690a-f6f5-459c-9d7f-cb6541fb6688",
+      "facts_sha256": "fabb3bec6c19e971d95d5d2d040ed148b08b0c752a0efd76aa9895ea3ce12b9e",
+      "printings": [
+        "36"
+      ]
+    },
+    {
+      "name": "Stormcarved Coast",
+      "oracle_id": "4722105b-0085-4bb8-bca1-9de0d3eb5600",
+      "facts_sha256": "1c9cb655e171db698db42bb25ac8295797c13cb80fd36351e2671b0cc83190d0",
+      "printings": [
+        "263",
+        "304"
+      ]
+    },
+    {
+      "name": "Stress Dream",
+      "oracle_id": "52124954-b0b6-492c-8d03-fe54c220facc",
+      "facts_sha256": "98e835cd4f576dc6a1128676202d89bfd7bd929f6860348cad60129595059d27",
+      "printings": [
+        "235"
+      ]
+    },
+    {
+      "name": "Strife Scholar // Awaken the Ages",
+      "oracle_id": "e85c6bd2-db15-4052-88c0-3ae25414f0ca",
+      "facts_sha256": "63af9fc20c864b8f4c85891f9210f40db8c405cef089d54526024cffce4be499",
+      "printings": [
+        "131"
+      ]
+    },
+    {
+      "name": "Strixhaven Skycoach",
+      "oracle_id": "e286a191-39d4-4073-b844-11d2aba911b4",
+      "facts_sha256": "e97cb9d9b19930a0f49dbb152c10cfb737c5cd9412a917f5a9385a69088a0c67",
+      "printings": [
+        "252"
+      ]
+    },
+    {
+      "name": "Studious First-Year // Rampant Growth",
+      "oracle_id": "58b0c737-0a84-4f9a-b3b7-300c5de43874",
+      "facts_sha256": "253b51ff169d02b699f9cdcc33570238341047f53e0d65cdc992a18671d4c4c4",
+      "printings": [
+        "162"
+      ]
+    },
+    {
+      "name": "Summoned Dromedary",
+      "oracle_id": "697b14c6-fe6a-4880-9cf2-b6602a52ca0b",
+      "facts_sha256": "c4f9e662bbad88c75e65517a1b1f9c7546b70efd249bd7e1bd86795123777891",
+      "printings": [
+        "37"
+      ]
+    },
+    {
+      "name": "Sundering Archaic",
+      "oracle_id": "b095526e-94a4-416b-83de-d6271804ccf3",
+      "facts_sha256": "24dcf5b8f98b3ef3d87dccd97aa41d0346f0df1945d1f064aea4585fa75620ca",
+      "printings": [
+        "3"
+      ]
+    },
+    {
+      "name": "Sundown Pass",
+      "oracle_id": "5ad0b405-cca4-475e-985c-4d7e3599d87e",
+      "facts_sha256": "3487c8901cbbf90df1f05efb66d392184030452a8c525e210a38cdd31eae7e0d",
+      "printings": [
+        "264",
+        "305"
+      ]
+    },
+    {
+      "name": "Suspend Aggression",
+      "oracle_id": "883267f0-be7e-43c3-b7f8-82981f6d8c23",
+      "facts_sha256": "57d399c453893e764da5e420b52ec69d14dd6546ce9f403074470fae31eb7b55",
+      "printings": [
+        "236",
+        "357"
+      ]
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+      "printings": [
+        "269",
+        "276",
+        "277"
+      ]
+    },
+    {
+      "name": "Tablet of Discovery",
+      "oracle_id": "19cf5798-4600-4a66-b1c7-de77bde157d0",
+      "facts_sha256": "4023cee42481c351403e956a7ac0e447117144d5413f8f2e26519a3c9535154f",
+      "printings": [
+        "132"
+      ]
+    },
+    {
+      "name": "Tackle Artist",
+      "oracle_id": "2e80d632-cf84-4562-8c93-5850cceb5bec",
+      "facts_sha256": "dcae85cdb4247528e23800992ae03c71d5dff29f44b580899cb67152d4664301",
+      "printings": [
+        "133"
+      ]
+    },
+    {
+      "name": "Tam, Observant Sequencer // Deep Sight",
+      "oracle_id": "702e871d-90d8-4468-8f69-5ae42af2c9d3",
+      "facts_sha256": "90b876b052ad4362f1460b2d6356ffe4773de386e566fe15d2b1d0c507e7cdef",
+      "printings": [
+        "237"
+      ]
+    },
+    {
+      "name": "Teacher's Pest",
+      "oracle_id": "12397dbf-99a9-40c3-aa7c-76d09baad008",
+      "facts_sha256": "a8320e6fd648164f607074df339477292bcfbafc858de6d2ec5f5c15a835b2aa",
+      "printings": [
+        "238"
+      ]
+    },
+    {
+      "name": "Tenured Concocter",
+      "oracle_id": "0ecd4493-dfb4-4d56-a90e-08b74b474f39",
+      "facts_sha256": "bcd3bdfaea29fe33df2d8e100b4530facbca79f013eebed286cde7c76995c4b5",
+      "printings": [
+        "163"
+      ]
+    },
+    {
+      "name": "Terramorphic Expanse",
+      "oracle_id": "1bd3e453-aa21-4ee6-95c2-d6d920ee8e7a",
+      "facts_sha256": "2544a17b2d607ca2b5c5f6a4fced60f01ea8fc9e9c2672750334a01bec368e48",
+      "printings": [
+        "265"
+      ]
+    },
+    {
+      "name": "Tester of the Tangential",
+      "oracle_id": "a30a2b96-4a8c-4d18-b276-5005b8aff7ed",
+      "facts_sha256": "a1f195330c6ba6beba9ebca32fbdee750115ebe9217935f652599c7c4db640d0",
+      "printings": [
+        "69"
+      ]
+    },
+    {
+      "name": "Textbook Tabulator",
+      "oracle_id": "ebb40a50-cfbc-4ec1-9c54-26a1bc2e7a6e",
+      "facts_sha256": "8429f5e629e4032b83b84133c2bcfabe1c0411134cf10b62c307e38e3d9998f0",
+      "printings": [
+        "70"
+      ]
+    },
+    {
+      "name": "The Dawning Archaic",
+      "oracle_id": "a3e10b9b-9349-4b44-a46c-c825293dbd05",
+      "facts_sha256": "0125a581db846ac6ff8e5317ee01aaf981f2f381a4fda5c8b253d5f46e9a5d34",
+      "printings": [
+        "1",
+        "289"
+      ]
+    },
+    {
+      "name": "Thornfist Striker",
+      "oracle_id": "d0d13d5d-677d-4e1a-9e58-2f9840581f6d",
+      "facts_sha256": "2bac05e3c71c55cadf8d9103eb355a7ddb883b494e2efb673d4b08aec54bd25c",
+      "printings": [
+        "164"
+      ]
+    },
+    {
+      "name": "Thunderdrum Soloist",
+      "oracle_id": "43b5794a-4ed6-471d-bc45-22fac486895d",
+      "facts_sha256": "b9afa89233f8f2384821a89ec51aff859d98cbb3e896f2c07225159e018ac408",
+      "printings": [
+        "134"
+      ]
+    },
+    {
+      "name": "Titan's Grave",
+      "oracle_id": "595f0eb5-f521-4174-9c48-b89e85ea907c",
+      "facts_sha256": "d0c45b99c4ede4cf8f0000591a3187a25ce0dcc11af9a35cbc783399fb1ada8e",
+      "printings": [
+        "266"
+      ]
+    },
+    {
+      "name": "Together as One",
+      "oracle_id": "234f1c4b-dd0c-4c4e-b3c1-3b9ccfc42226",
+      "facts_sha256": "f879d49d0c7ce972d3bebcf0ed461ab32c0047a63fbbc9b568fd5c5b00f01e59",
+      "printings": [
+        "307",
+        "4"
+      ]
+    },
+    {
+      "name": "Tome Blast",
+      "oracle_id": "f0163420-2f91-493c-bad4-2cd33e9856bf",
+      "facts_sha256": "ce55da214ca993ffadcbfba1a0a8b89d9fcfb6b67ebcbafb4ac27a11a2f594cc",
+      "printings": [
+        "135"
+      ]
+    },
+    {
+      "name": "Topiary Lecturer",
+      "oracle_id": "5f5fe039-4be4-42ae-9fa4-4392328aa665",
+      "facts_sha256": "dda58017c88f3dbab67ba258bd41aec6a6d46be007f2fd35181ad45c8ba04670",
+      "printings": [
+        "165"
+      ]
+    },
+    {
+      "name": "Tragedy Feaster",
+      "oracle_id": "0c4277ec-aa12-41f5-8896-c83cfc754d6e",
+      "facts_sha256": "a72acea0f978c2cb6304f11d0db17e43d97194df37e63bcd1945c0462e216f80",
+      "printings": [
+        "102",
+        "293"
+      ]
+    },
+    {
+      "name": "Transcendent Archaic",
+      "oracle_id": "fdd4b3a9-83ce-41bf-82e2-7808657e2c09",
+      "facts_sha256": "368dc411bdd5c351fb094ab8243c3361501a9a09f59d830e0c14b48dc5f262c6",
+      "printings": [
+        "5"
+      ]
+    },
+    {
+      "name": "Traumatic Critique",
+      "oracle_id": "06c1f8a4-4948-435b-ae98-b1276b57e958",
+      "facts_sha256": "7c277f36f55c9f859160ea77c1807c18093d7d433859cf0c4c0ea005bd7d71ed",
+      "printings": [
+        "239",
+        "358"
+      ]
+    },
+    {
+      "name": "Ulna Alley Shopkeep",
+      "oracle_id": "9da7f9ec-872a-471d-8d60-5f4213f0204f",
+      "facts_sha256": "0861c68913a214fd2ec9e3d6a1b45b757464bac0f5c5c8693f1b09405c89b445",
+      "printings": [
+        "103"
+      ]
+    },
+    {
+      "name": "Unsubtle Mockery",
+      "oracle_id": "9d059345-1a2f-4ecb-b419-3873ebadf318",
+      "facts_sha256": "6beeb3ca53305011e3425408672c8e2179198b368a94cc26f7f42e57b5fcfed0",
+      "printings": [
+        "136"
+      ]
+    },
+    {
+      "name": "Vastlands Scavenger // Bind to Life",
+      "oracle_id": "3a97bc8d-bd81-468e-9277-eba4fac11ee0",
+      "facts_sha256": "fa2b9394907f20a4c145a2e404f3c2de104c3be0e4e5a985c76c5a02faf5504a",
+      "printings": [
+        "166",
+        "342"
+      ]
+    },
+    {
+      "name": "Vibrant Outburst",
+      "oracle_id": "a0cbb1ba-73b1-4418-bbe3-5d1a02007c08",
+      "facts_sha256": "0406aca750d56b6204320472c7d741e18f00ff3e0f8ff0191b8e95d43c189234",
+      "printings": [
+        "240"
+      ]
+    },
+    {
+      "name": "Vicious Rivalry",
+      "oracle_id": "90898c76-21f9-4597-88fe-dc9179911cde",
+      "facts_sha256": "3c201fbaca1f55dbc6c6073a307aa319b65da5cc87382ca6f634b2b9e2b96b62",
+      "printings": [
+        "241",
+        "359"
+      ]
+    },
+    {
+      "name": "Visionary's Dance",
+      "oracle_id": "c9f35490-462a-4c8f-9d8b-d8abca6596f7",
+      "facts_sha256": "03f3b82eeb269774144d8e1833eaf0f1fc575312078cb835ce2e64a321fef537",
+      "printings": [
+        "242"
+      ]
+    },
+    {
+      "name": "Wander Off",
+      "oracle_id": "b14d3226-adc2-4bdd-9e69-fefdc946ac04",
+      "facts_sha256": "008ae29210efda80a16137e9da3a47cfa5d40bc7a8419df7171f2c78b4163256",
+      "printings": [
+        "104"
+      ]
+    },
+    {
+      "name": "Wild Hypothesis",
+      "oracle_id": "2e56507d-af77-47c8-a29a-410cf14cfe20",
+      "facts_sha256": "2c94fe389655944178aee65ec6773dbe19b680b1d8dfd3b7f51182b9848fd41d",
+      "printings": [
+        "167"
+      ]
+    },
+    {
+      "name": "Wildgrowth Archaic",
+      "oracle_id": "4469ff35-54ec-4ff5-bc19-3808ae0f711b",
+      "facts_sha256": "06a97206a94e03790c2e55624b985eb0544cf9c901e17c43a5f749dea1895017",
+      "printings": [
+        "168",
+        "297"
+      ]
+    },
+    {
+      "name": "Wilt in the Heat",
+      "oracle_id": "3bed0b60-5944-44bb-9ddd-c82f323e6d20",
+      "facts_sha256": "a81a5ef260438fff7810996570192ee4198cee31bf8c0cb933437bbd5b8e8661",
+      "printings": [
+        "243"
+      ]
+    },
+    {
+      "name": "Wisdom of Ages",
+      "oracle_id": "d9722ec3-aa5e-4c69-8ff0-cef1b1839fa4",
+      "facts_sha256": "c957a73598d4778ef119d548fc97ace4a7148b0e9e16efc946dd9524b521610e",
+      "printings": [
+        "323",
+        "368",
+        "71"
+      ]
+    },
+    {
+      "name": "Witherbloom Charm",
+      "oracle_id": "ee1db746-f5c1-4dce-82eb-24b273cc9507",
+      "facts_sha256": "02c57411d9bb77db7aa11b5d280ea7f00afc14fdc1e88f7ea96d7f7679972e71",
+      "printings": [
+        "244",
+        "367"
+      ]
+    },
+    {
+      "name": "Witherbloom, the Balancer",
+      "oracle_id": "fbb04a21-e513-4317-aac8-fa6df91c3438",
+      "facts_sha256": "3232c12e78883a6d9df59cae49437d42634b5ee68f6d390177ab226c468ea74a",
+      "printings": [
+        "245",
+        "288"
+      ]
+    },
+    {
+      "name": "Withering Curse",
+      "oracle_id": "fddd1c39-bdf8-4aee-897c-666498cc4dd3",
+      "facts_sha256": "e773f075f674e0cdeae96e7d929d2c295de116f509bb276faac7d04653d2a486",
+      "printings": [
+        "105",
+        "330"
+      ]
+    },
+    {
+      "name": "Zaffai and the Tempests",
+      "oracle_id": "3f8a8650-0e38-4926-8f48-526351e6a863",
+      "facts_sha256": "ae6f91038c81ad0fbbfeefa2ba562df79d2de3a702814ce969f7326c72d9bfbe",
+      "printings": [
+        "246",
+        "360"
+      ]
+    },
+    {
+      "name": "Zealous Lorecaster",
+      "oracle_id": "f82265fd-e772-4347-a27f-37b00ccd416b",
+      "facts_sha256": "56b7bf9474703dd31a78d7a0bda9a3f37c345674d67582a0296ad34495c1749e",
+      "printings": [
+        "137"
+      ]
+    },
+    {
+      "name": "Zimone's Experiment",
+      "oracle_id": "5faa9e54-1cc4-48c0-bbfa-a495087c36d6",
+      "facts_sha256": "0678c5dde2f49f03a78b5b86c36a02e2d081d3f3eeae2641b835e687a28bc6ce",
+      "printings": [
+        "169"
+      ]
+    }
+  ],
+  "unresolved": []
+}
