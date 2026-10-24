@@ -2585,3 +2585,230 @@ fn sos_memory_vessel_waits_for_activator_actual_turn_across_skips_for_both_grant
         assert!(g.state.exile_permissions.is_empty());
     }
 }
+
+fn announce_sparks(g: &mut Game, spell: CardId, mode: u16, targets: &[CardId]) {
+    act(g, Action::AnnounceCast { card: spell });
+    act(g, Action::ChooseMode { mode });
+    for &card in targets {
+        act(
+            g,
+            Action::ChooseTarget {
+                target: Target::Spell(card),
+            },
+        );
+    }
+    pay(g);
+}
+
+#[test]
+fn sos_sparks_instant_copy_retargets_and_neither_copy_counts_as_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 0, &[shock]);
+        until_choice(&mut g);
+        act(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Player(p),
+            },
+        );
+        big_helpers::checked(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 18);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 2);
+    }
+}
+
+#[test]
+fn sos_sparks_both_modes_copy_spells_in_order_and_only_token_is_sacrificed() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, bear, None);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 2, &[shock, bear]);
+        until_choice(&mut g);
+        big_helpers::checked(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        let copied = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| {
+                o.zone == Zone::Battlefield
+                    && o.card == Card::from_name("Bear Cub").unwrap()
+                    && o.is_token()
+            })
+            .map(|(id, _)| id as CardId)
+            .collect::<Vec<_>>();
+        assert_eq!(copied.len(), 1);
+        assert!(g.keywords(copied[0]).contains(Keywords::HASTE));
+        assert!(!g.keywords(bear).contains(Keywords::HASTE));
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        begin_paradigm_main(&mut g, p, Step::End);
+        settle(&mut g);
+        assert_ne!(g.object_view(copied[0]).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn sos_sparks_creature_copy_keeps_x_and_entry_replacements_but_is_not_token_creation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let trudge = put(&mut g, p, "Slumbering Trudge", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: trudge });
+        act(&mut g, Action::ChooseX { value: 1 });
+        pay(&mut g);
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 1, &[trudge]);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        big_helpers::checked(&mut g, Action::Pass);
+        settle(&mut g);
+        let creatures = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| {
+                o.zone == Zone::Battlefield
+                    && o.card == Card::from_name("Slumbering Trudge").unwrap()
+            })
+            .map(|(id, _)| id as CardId)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            creatures.len(),
+            2,
+            "a resolving copied permanent spell is not token creation"
+        );
+        assert_eq!(
+            creatures
+                .iter()
+                .filter(|&&id| g.state.objects[id as usize].is_token())
+                .count(),
+            1
+        );
+        for id in creatures {
+            assert_eq!(stats(&g, id), (6, 6));
+            assert_eq!(g.counter_count(id, CounterKind::Stun), 4);
+            assert!(g.object_view(id).tapped);
+        }
+    }
+}
+
+#[test]
+fn sos_sparks_targets_only_controlled_spells_and_survives_one_invalid_target() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p.other());
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Hand);
+        cast(&mut g, foreign, None);
+        act(&mut g, Action::Pass);
+        let own = put(&mut g, p, "Spectral Sailor", Zone::Hand);
+        cast(&mut g, own, None);
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: sparks });
+        act(&mut g, Action::ChooseMode { mode: 1 });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(foreign),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(own),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.is_token())
+                .count(),
+            1
+        );
+
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, bear, None);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 2, &[shock, bear]);
+        act(&mut g, Action::Pass);
+        let negate = put(&mut g, p.other(), "Negate", Zone::Hand);
+        cast(&mut g, negate, Some(Target::Spell(shock)));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.is_token())
+                .count(),
+            1
+        );
+    }
+}
+
+#[test]
+fn sos_sparks_cannot_be_copied_by_targeted_or_captured_copy_effects() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        let first = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, first, 0, &[shock]);
+        let second = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, second, 0, &[first]);
+        until_choice(&mut g);
+        assert_eq!(
+            g.observe(p).retarget.as_ref().unwrap().item.source_card,
+            Card::Shock
+        );
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+
+        let mut g = scenario(p);
+        put(&mut g, p, "Mica, Reader of Ruins", Zone::Battlefield);
+        let artifact = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        until_choice(&mut g);
+        act(&mut g, Action::DeclineEffectPayment);
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 0, &[shock]);
+        until_choice(&mut g);
+        let object = g.object_ref(artifact);
+        big_helpers::checked(&mut g, Action::Sacrifice { object });
+        assert_eq!(
+            g.state.pending,
+            Pending::Priority,
+            "Mica paid but cannot copy Sparks"
+        );
+        until_choice(&mut g);
+        assert_eq!(
+            g.observe(p).retarget.as_ref().unwrap().item.source_card,
+            Card::Shock
+        );
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        assert_eq!(g.object_view(artifact).zone, Zone::Graveyard);
+    }
+}

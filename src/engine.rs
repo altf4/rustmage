@@ -5019,7 +5019,10 @@ impl Game {
         if before.zone == Zone::Stack {
             self.capture_stack_copy_departure(id);
         }
-        if before.zone == Zone::Stack && self.state.objects[id as usize].is_spell_copy() {
+        if before.zone == Zone::Stack
+            && plan.destination != Zone::Battlefield
+            && self.state.objects[id as usize].is_spell_copy()
+        {
             self.state.stack.retain(|item| {
                 !(item.kind == StackKind::Spell
                     && item.card == id
@@ -5285,6 +5288,11 @@ impl Game {
             // A surviving attacker remains blocked after its last blocker leaves.
         }
         let obj = &mut self.state.objects[id as usize];
+        // CR608.3f/707.10f: a resolving permanent-spell copy becomes a token.
+        // This is an entry, not token creation, so creation replacements do not apply.
+        if before.zone == Zone::Stack && destination == Zone::Battlefield && obj.is_spell_copy() {
+            obj.copy_kind = CopyKind::Token;
+        }
         obj.zone = destination;
         // Only stack and battlefield objects have independent control.
         obj.controller = if matches!(destination, Zone::Battlefield | Zone::Stack) {

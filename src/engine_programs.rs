@@ -1680,6 +1680,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::CopyTargetSpell { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
                     | Instruction::CreateCopyTokenForPlayer { .. }
@@ -2490,6 +2491,15 @@ impl Game {
                 Instruction::CreateExcessTokens(token) => self.create_excess_tokens(&item, token),
                 Instruction::ExileExcessPlay { next_turn } => {
                     self.exile_excess_play(&item, next_turn)
+                }
+                Instruction::CopyTargetSpell {
+                    group,
+                    retarget,
+                    exceptions,
+                } => {
+                    if self.copy_target_spell(&item, group, retarget, exceptions) {
+                        return;
+                    }
                 }
                 Instruction::FlipCoinsSkipTurns { coins } => {
                     self.flip_coins_skip_turns(&item, coins)

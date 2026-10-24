@@ -56,6 +56,15 @@ impl Game {
         let index = self.copy_recipe_index(object)?;
         Some(self.state.copy_recipes.as_ref().unwrap()[index].recipe)
     }
+    pub(super) fn set_copy_recipe(&mut self, object: ObjectRef, recipe: CopyRecipe) {
+        assert_eq!(self.object_ref(object.card), object);
+        self.clear_copy_recipe(object);
+        let rows = self.state.copy_recipes.get_or_insert_default();
+        rows.try_reserve(1)
+            .capacity("copy recipe allocation exhausted");
+        let index = rows.partition_point(|row| row.object.card < object.card);
+        rows.insert(index, CopyRow { object, recipe });
+    }
     pub(super) fn object_token_info(&self, id: CardId) -> Option<TokenInfo> {
         let object = &self.state.objects[id as usize];
         if object.is_copy_token() {

@@ -916,11 +916,9 @@ impl Game {
                         _ => false,
                     }
             }
-            Target::Stack(id) => self
-                .state
-                .stack
-                .iter()
-                .any(|item| item.id == id && self.stack_target_rule_matches(rule, item)),
+            Target::Stack(id) => self.state.stack.iter().any(|item| {
+                item.id == id && self.stack_target_rule_matches(rule, item, controller)
+            }),
             Target::Spell(id) => self.state.stack.iter().any(|item| {
                 item.kind == StackKind::Spell
                     && item.card == id
@@ -928,6 +926,10 @@ impl Game {
                     && match rule {
                         TargetRule::SingleTargetStackObject => item.targets.len() == 1,
                         TargetRule::Spell => true,
+                        TargetRule::YourSpellKinds { kinds } => {
+                            item.controller == controller
+                                && item.source_card.kind_mask() & u16::from(kinds) != 0
+                        }
                         TargetRule::SpellKinds { kinds, excluded } => {
                             (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
                                 && item.source_card.kind_mask() & u16::from(excluded) == 0

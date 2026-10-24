@@ -155,6 +155,9 @@ pub(crate) enum TargetRule {
     Any,
     Spell,
     SingleTargetStackObject,
+    YourSpellKinds {
+        kinds: u8,
+    },
     SpellKinds {
         kinds: u8,
         excluded: u8,
@@ -949,6 +952,11 @@ pub(crate) enum Instruction {
     },
     DamageCannotBePreventedThisTurn,
     LoseHalfLife(PlayerSet),
+    CopyTargetSpell {
+        group: u16,
+        retarget: bool,
+        exceptions: CopyExceptions,
+    },
     FlipCoinsSkipTurns {
         coins: u16,
     },
@@ -2943,6 +2951,9 @@ impl Card {
     /// Homogeneous optional target group whose maximum is the chosen X.
     pub(crate) fn targets_up_to_x(self) -> bool {
         authored::rules(self).is_some_and(|rules| rules.extras.targets_up_to_x)
+    }
+    pub(crate) fn spell_cannot_be_copied(self) -> bool {
+        authored::rules(self).is_some_and(|r| r.extras.spell_cannot_be_copied)
     }
     pub(crate) fn prepared_spell(self) -> Option<Card> {
         authored::rules(self).and_then(|rules| rules.extras.prepared_spell)

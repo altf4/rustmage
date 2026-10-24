@@ -234,7 +234,10 @@ impl Game {
         rules: FrozenRules,
     ) -> Plan {
         // A stack copy ceases without a physical card event or replacement choice.
-        if before.zone == Zone::Stack && self.state.objects[before.id as usize].is_spell_copy() {
+        if before.zone == Zone::Stack
+            && requested != Zone::Battlefield
+            && self.state.objects[before.id as usize].is_spell_copy()
+        {
             return Plan {
                 destination: Zone::Outside,
                 shuffle: false,
