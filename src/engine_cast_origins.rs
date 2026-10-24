@@ -24,7 +24,7 @@ fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     predicate: impl Fn(&StaticAbilityFragment) -> bool,
 ) -> bool {
-    world.game().state.static_sources.iter().any(|&id| {
+    world.static_sources().iter().any(|&id| {
         let object = world.object(id);
         object.zone == Zone::Battlefield
             && object.controller == player

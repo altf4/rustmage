@@ -56,6 +56,38 @@ pub(super) struct EntryBatch {
     pub tap_events: Vec<EntryTapEvent>,
     pub tap_next: usize,
 }
+impl EntryMove {
+    pub(super) fn from_view(before: ObjectView, destination: Zone, tapped: bool) -> Self {
+        EntryMove {
+            choice: None,
+            gift: None,
+            controller: before.controller,
+            before,
+            destination,
+            tapped,
+            attachment: None,
+            role_after: None,
+            suspect_after: false,
+            life_bonus: None,
+            effect_counter: None,
+            return_modification: None,
+            attacking: None,
+            skipped: false,
+            reveal_hand: false,
+            life_paid: None,
+            offspring_paid: false,
+            cast_payment: None,
+            cast_event: None,
+            cast_origin: None,
+            warp_controller: None,
+            kicked: false,
+            bargained: false,
+            x: 0,
+            evidence_collected: false,
+            counters: Counters::default(),
+        }
+    }
+}
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
@@ -184,34 +216,7 @@ impl Game {
             }
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
-        EntryMove {
-            choice: None,
-            gift: None,
-            before: self.object_view(id),
-            controller: self.state.objects[id as usize].controller,
-            destination,
-            tapped,
-            attachment: None,
-            role_after: None,
-            suspect_after: false,
-            life_bonus: None,
-            effect_counter: None,
-            return_modification: None,
-            attacking: None,
-            skipped: false,
-            reveal_hand: false,
-            life_paid: None,
-            offspring_paid: false,
-            cast_payment: None,
-            cast_event: None,
-            cast_origin: None,
-            warp_controller: None,
-            kicked: false,
-            bargained: false,
-            x: 0,
-            evidence_collected: false,
-            counters: Counters::default(),
-        }
+        EntryMove::from_view(self.object_view(id), destination, tapped)
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
         self.stage_entries_inner(moves, shuffle_after, None, None);
@@ -776,7 +781,7 @@ impl Game {
                 a.additional_paid
                     || a.cast_costs
                         .as_ref()
-                        .is_some_and(|c| c.mana_paid && c.active.is_none())
+                        .is_some_and(|c| c.mana_closed && c.active.is_none())
             }) {
                 self.finish_announcement();
             }

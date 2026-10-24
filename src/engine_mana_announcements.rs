@@ -6,7 +6,7 @@ use super::*;
 pub(super) struct ManaAnnouncement {
     pub announcement: Announcement,
     pub pending: Pending,
-    quality: Option<(ObjectRef, mana_lots::Quality)>,
+    pub(super) quality: Option<(ObjectRef, mana_lots::Quality)>,
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct ManaAnnouncementView {

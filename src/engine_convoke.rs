@@ -21,7 +21,7 @@ impl ConvokeContribution {
             Self::Green => Some(4),
         }
     }
-    fn apply(self, colors: u8, cost: &mut ManaCost) -> bool {
+    pub(super) fn apply(self, colors: u8, cost: &mut ManaCost) -> bool {
         if let Some(i) = self.color() {
             if colors & (1 << i) == 0 || cost.colored[i] == 0 {
                 return false;
@@ -35,6 +35,16 @@ impl ConvokeContribution {
         }
         true
     }
+}
+pub(super) fn contributions() -> [ConvokeContribution; 6] {
+    [
+        ConvokeContribution::Generic,
+        ConvokeContribution::White,
+        ConvokeContribution::Blue,
+        ConvokeContribution::Black,
+        ConvokeContribution::Red,
+        ConvokeContribution::Green,
+    ]
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ConvokePaymentView {
@@ -169,15 +179,16 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         let f = a.convoke.as_ref()?;
         let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
-        let can_pay = payable_in(
-            self,
-            a.item.controller,
-            self.purpose_for_item(&a.item),
-            pool.map(u128::from),
-            f.remaining.colored,
-            f.remaining.generic,
-            &[0; 32],
-        );
+        let can_pay = self.mana_payment_domain().is_some()
+            && payable_in(
+                self,
+                a.item.controller,
+                self.purpose_for_item(&a.item),
+                pool.map(u128::from),
+                f.remaining.colored,
+                f.remaining.generic,
+                &[0; 32],
+            );
         Some(ConvokeChoiceView {
             spell: a.item.object,
             selected: f.selected.clone(),
@@ -196,8 +207,15 @@ impl Game {
             remaining: a.total_cost.expect("locked total"),
             selected: Vec::new(),
         }));
-        self.state.pending = Pending::Convoke {
-            player: a.item.controller,
+        self.state.pending = if let Some(c) = &mut a.cast_costs {
+            c.mana_closed = true; // Closing the mana window precedes all payments.
+            Pending::CastCosts {
+                player: a.item.controller,
+            }
+        } else {
+            Pending::Convoke {
+                player: a.item.controller,
+            }
         };
     }
     pub(super) fn choose_convoker(&mut self, object: ObjectRef, contribution: ConvokeContribution) {
@@ -215,11 +233,47 @@ impl Game {
             object,
             contribution,
         });
+        if let Some(c) = self.state.announcing.as_mut().unwrap().cast_costs.as_mut() {
+            c.active = None;
+            let player = self.state.announcing.as_ref().unwrap().item.controller;
+            self.tap_objects(&[object.card]);
+            self.state.pending = Pending::CastCosts { player };
+        }
     }
     pub(super) fn visit_convoke_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
         let f = a.convoke.as_ref().unwrap();
         let p = a.item.controller;
+        if a.cast_costs.is_some() {
+            let mut done = false;
+            if let Some(domain) = self.mana_payment_domain() {
+                domain.representatives(|payment| {
+                    if !done {
+                        done = emit(Action::PayCosts { payment });
+                    }
+                });
+            }
+            if done {
+                return true;
+            }
+            let world = self.cast_cost_world(a);
+            for (id, _) in self.state.objects.iter().enumerate() {
+                let object = self.object_ref(id as CardId);
+                for contribution in contributions() {
+                    let mut choice = world.clone();
+                    if choice.project_convoker(object, contribution)
+                        && choice.cost_completion()
+                        && emit(Action::ChooseConvoker {
+                            object,
+                            contribution,
+                        })
+                    {
+                        return true;
+                    }
+                }
+            }
+            return self.visit_cast_cost_clauses(emit);
+        }
         // Exact selected incarnations remain reserved until this atomic cost ends.
         if !f
             .selected

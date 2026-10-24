@@ -2693,6 +2693,13 @@ impl Game {
     }
 
     fn visit_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
+        if self.state.entry_batch.is_some() {
+            return self.visit_unfiltered_actions(|action| {
+                self.mana_action_payable(&action)
+                    && self.cast_entry_action_fundable(&action)
+                    && emit(action)
+            });
+        }
         if self.state.mana_lots.is_none() {
             return self.visit_unfiltered_actions(emit);
         }
@@ -4419,7 +4426,16 @@ impl Game {
                 contribution,
             } => self.choose_convoker(object, contribution),
             Action::PayCosts { payment } => {
-                self.state.announcing.as_mut().unwrap().payment = Some(payment);
+                let a = self.state.announcing.as_mut().unwrap();
+                a.payment = Some(payment);
+                if let Some(c) = &mut a.cast_costs
+                    && let Some(index) = c
+                        .clauses
+                        .iter()
+                        .position(|r| r.clause == CastCostClause::Mana && !r.paid)
+                {
+                    c.active = Some(index as u16);
+                }
                 self.finish_announcement();
             }
             Action::Cast {

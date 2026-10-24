@@ -155,173 +155,165 @@ impl DamageFacts {
         self.granted_subtypes.has(self.card, subtype)
     }
 }
-impl Game {
-    /// The index is immutable for a query. A virtual sacrifice changes the
-    /// borrowed lookup's zone, so its grant disappears without mutating Game.
-    pub(super) fn granted_subtypes_with<'a>(
-        &self,
-        id: CardId,
-        target: &Object,
-        lookup: impl Fn(CardId) -> Option<&'a Object>,
-        counter_count: impl Fn(CardId, CounterKind) -> u64,
-        kinds: impl Fn(CardId, &Object) -> u16,
-        mut changes: Vec<(u64, characteristic_layers::SubtypeChange)>,
-    ) -> GrantedSubtypes {
-        let mut mask = GrantedSubtypes::default();
-        let reference = ObjectRef {
-            card: id,
-            generation: target.generation,
-        };
-        if self
-            .copy_recipe(reference)
-            .is_some_and(|r| r.exceptions.nightmare)
-        {
-            mask.insert("Nightmare");
+/// Earlier subtype layers over actual or projected source registries.
+pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> GrantedSubtypes {
+    let game = world.game();
+    let target = world.object(id);
+    let lookup = |source| Some(world.object(source));
+    let counter_count = |source, kind| world.counter_count(source, kind);
+    let kinds = |id, _: &Object| world.kinds(id);
+    let mut changes = characteristic_layers::subtype_changes(world, id);
+    let mut mask = GrantedSubtypes::default();
+    let reference = ObjectRef {
+        card: id,
+        generation: target.generation,
+    };
+    if game
+        .copy_recipe(reference)
+        .is_some_and(|r| r.exceptions.nightmare)
+    {
+        mask.insert("Nightmare");
+    }
+    if game
+        .copy_recipe(reference)
+        .is_some_and(|r| r.exceptions.golem)
+    {
+        mask.insert("Golem");
+    }
+    if game
+        .copy_recipe(reference)
+        .is_some_and(|r| r.exceptions.fractal)
+    {
+        mask.insert("Fractal");
+    }
+    // Copy exceptions already exist while an owned token awaits entry.
+    // Later continuous type changes apply only on the battlefield.
+    if target.zone != Zone::Battlefield {
+        return mask;
+    }
+    if let Some(state) = world.roles() {
+        changes.extend(
+            state
+                .creature_types
+                .iter()
+                .filter(|row| row.recipient == reference)
+                .map(|row| {
+                    (
+                        row.timestamp,
+                        if row.additional {
+                            characteristic_layers::SubtypeChange::Add(row.types)
+                        } else {
+                            characteristic_layers::SubtypeChange::Named(row.types, false)
+                        },
+                    )
+                }),
+        );
+    }
+    changes.sort_by_key(|row| row.0);
+    let replacement_time = changes
+        .iter()
+        .rev()
+        .find(|(_, change)| !matches!(change, characteristic_layers::SubtypeChange::Add(_)))
+        .map(|row| row.0);
+    for (_, change) in changes {
+        match change {
+            characteristic_layers::SubtypeChange::Add(types) => {
+                if kinds(id, target) & CREATURE_OR_KINDRED != 0 {
+                    for typ in types {
+                        mask.insert(typ);
+                    }
+                }
+            }
+            characteristic_layers::SubtypeChange::LandOnly => {
+                mask.replace_creature_types(&[]);
+                mask.set_flag(ALL_CREATURE_TYPES, false);
+                mask.set_flag(LAND_ONLY, true);
+            }
+            characteristic_layers::SubtypeChange::All => {
+                mask.replace_creature_types(&[]);
+                mask.set_flag(ALL_CREATURE_TYPES, true);
+            }
+            characteristic_layers::SubtypeChange::Named(types, all) => {
+                mask.replace_creature_types(types);
+                mask.set_flag(ALL_CREATURE_TYPES, false);
+                if all {
+                    mask.set_flag(SUPPRESS_PRINTED, true);
+                    mask.set_flag(LAND_ONLY, false);
+                }
+            }
         }
-        if self
-            .copy_recipe(reference)
-            .is_some_and(|r| r.exceptions.golem)
-        {
-            mask.insert("Golem");
-        }
-        if self
-            .copy_recipe(reference)
-            .is_some_and(|r| r.exceptions.fractal)
-        {
-            mask.insert("Fractal");
-        }
-        // Copy exceptions already exist while an owned token awaits entry.
-        // Later continuous type changes apply only on the battlefield.
-        if target.zone != Zone::Battlefield {
-            return mask;
-        }
-        if let Some(state) = &self.state.roles {
-            changes.extend(
+    }
+    if kinds(id, target) & 1 == 0 {
+        return mask;
+    }
+    let source_time = |source: ObjectRef| {
+        world
+            .roles()
+            .and_then(|state| {
                 state
-                    .creature_types
+                    .ability_timestamps
                     .iter()
-                    .filter(|row| row.recipient == reference)
-                    .map(|row| {
-                        (
-                            row.timestamp,
-                            if row.additional {
-                                characteristic_layers::SubtypeChange::Add(row.types)
-                            } else {
-                                characteristic_layers::SubtypeChange::Named(row.types, false)
-                            },
-                        )
-                    }),
-            );
-        }
-        changes.sort_by_key(|row| row.0);
-        let replacement_time = changes
-            .iter()
-            .rev()
-            .find(|(_, change)| !matches!(change, characteristic_layers::SubtypeChange::Add(_)))
-            .map(|row| row.0);
-        for (_, change) in changes {
-            match change {
-                characteristic_layers::SubtypeChange::Add(types) => {
-                    if kinds(id, target) & CREATURE_OR_KINDRED != 0 {
-                        for typ in types {
-                            mask.insert(typ);
-                        }
-                    }
-                }
-                characteristic_layers::SubtypeChange::LandOnly => {
-                    mask.replace_creature_types(&[]);
-                    mask.set_flag(ALL_CREATURE_TYPES, false);
-                    mask.set_flag(LAND_ONLY, true);
-                }
-                characteristic_layers::SubtypeChange::All => {
-                    mask.replace_creature_types(&[]);
-                    mask.set_flag(ALL_CREATURE_TYPES, true);
-                }
-                characteristic_layers::SubtypeChange::Named(types, all) => {
-                    mask.replace_creature_types(types);
-                    mask.set_flag(ALL_CREATURE_TYPES, false);
-                    if all {
-                        mask.set_flag(SUPPRESS_PRINTED, true);
-                        mask.set_flag(LAND_ONLY, false);
-                    }
-                }
-            }
-        }
-        if kinds(id, target) & 1 == 0 {
-            return mask;
-        }
-        let source_time = |source: ObjectRef| {
-            self.state
-                .roles
-                .as_ref()
-                .and_then(|state| {
-                    state
-                        .ability_timestamps
-                        .iter()
-                        .find(|row| row.source == source)
-                })
-                .map(|row| row.timestamp)
-                .expect("registered layer-four provider timestamp")
-        };
-        let newer = |source| replacement_time.is_none_or(|time| source_time(source) > time);
-        if self.state.entry_values.is_some()
-            && target.card.static_ability_groups().iter().any(|g| {
-                g.fragments
-                    .iter()
-                    .any(|f| matches!(f, crate::cards::StaticAbilityFragment::ChosenCreatureType))
+                    .find(|row| row.source == source)
             })
-            && newer(reference)
-            && let Some(EntryChoiceValue::CreatureType(typ)) = self.entry_value(reference)
-        {
-            mask.chosen = Some(typ);
-        }
-        for group in target.card.static_ability_groups() {
-            for fragment in group.fragments {
-                if let crate::cards::StaticAbilityFragment::SourceCounterSubtype {
-                    kind,
-                    minimum,
-                    subtype,
-                    ..
-                } = *fragment
-                    && counter_count(id, kind) >= minimum
-                    && newer(reference)
-                {
-                    // The effect starts in layer four, before ability removal.
-                    mask.insert(subtype);
-                }
-            }
-        }
-        for &source in &self.state.attachment_sources {
-            let Some(o) = lookup(source) else {
-                continue;
-            };
-            if o.zone == Zone::Battlefield
-                && kinds(source, o) & 1 == 0
-                && o.attached_to == Some(reference)
-                && let Some(subtype) = o.card.attached_subtype()
-                && newer(ObjectRef {
-                    card: source,
-                    generation: o.generation,
-                })
+            .map(|row| row.timestamp)
+            .expect("registered layer-four provider timestamp")
+    };
+    let newer = |source| replacement_time.is_none_or(|time| source_time(source) > time);
+    if !world.entry_values().is_empty()
+        && target.card.static_ability_groups().iter().any(|g| {
+            g.fragments
+                .iter()
+                .any(|f| matches!(f, crate::cards::StaticAbilityFragment::ChosenCreatureType))
+        })
+        && newer(reference)
+        && let Some(EntryChoiceValue::CreatureType(typ)) = world.entry_value(reference)
+    {
+        mask.chosen = Some(typ);
+    }
+    for group in target.card.static_ability_groups() {
+        for fragment in group.fragments {
+            if let crate::cards::StaticAbilityFragment::SourceCounterSubtype {
+                kind,
+                minimum,
+                subtype,
+                ..
+            } = *fragment
+                && counter_count(id, kind) >= minimum
+                && newer(reference)
             {
+                // The effect starts in layer four, before ability removal.
                 mask.insert(subtype);
             }
         }
-        mask
     }
+    for &source in world.attachment_sources() {
+        let Some(o) = lookup(source) else {
+            continue;
+        };
+        if o.zone == Zone::Battlefield
+            && kinds(source, o) & 1 == 0
+            && o.attached_to == Some(reference)
+            && let Some(subtype) = o.card.attached_subtype()
+            && newer(ObjectRef {
+                card: source,
+                generation: o.generation,
+            })
+        {
+            mask.insert(subtype);
+        }
+    }
+    mask
+}
+impl Game {
     pub(super) fn granted_subtypes(&self, id: CardId) -> GrantedSubtypes {
         self.state
             .objects
             .get(id as usize)
-            .map_or_else(GrantedSubtypes::default, |o| {
-                self.granted_subtypes_with(
-                    id,
-                    o,
-                    |source| self.state.objects.get(source as usize),
-                    |source, kind| self.counter_count(source, kind),
-                    |id, object| self.object_kinds(id, object),
-                    characteristic_layers::subtype_changes(self, id),
-                )
+            .map_or_else(GrantedSubtypes::default, |_| {
+                super::ability_world::CharacteristicWorld::subtypes(self, id)
             })
     }
     pub(super) fn has_subtype(&self, id: CardId, subtype: &str) -> bool {

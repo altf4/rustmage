@@ -184,10 +184,7 @@ pub(super) fn modifier_bonus<W: CharacteristicWorld + ?Sized>(
     {
         return Stats::default();
     }
-    let matches = match (
-        modifier.kind,
-        world.game().entry_value(world.reference(source)),
-    ) {
+    let matches = match (modifier.kind, world.entry_value(world.reference(source))) {
         (EntryChoiceKind::Color, Some(EntryChoiceValue::Color(c))) => {
             world.colors(target) & (1 << c.index()) != 0
         }
@@ -218,10 +215,7 @@ pub(super) fn modifier_bonus<W: CharacteristicWorld + ?Sized>(
 impl<W: CharacteristicWorld + ?Sized> super::characteristic_query::CharacteristicQuery<'_, W> {
     pub(super) fn chosen_bonus(&self, target: CardId) -> Stats {
         let mut result = Stats::default();
-        let Some(rows) = self.state.entry_values.as_ref() else {
-            return result;
-        };
-        for row in rows {
+        for row in self.entry_values() {
             let source = row.object.card;
             if self.object_ref(source) != row.object {
                 continue;

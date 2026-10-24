@@ -27,7 +27,7 @@ fn aura_effects<W: CharacteristicWorld + ?Sized>(
         return Vec::new();
     }
     let mut effects = Vec::new();
-    let Some(roles) = world.game().state.roles.as_ref() else {
+    let Some(roles) = world.roles() else {
         return effects;
     };
     for &reference in &roles.characteristic_sources {
@@ -42,10 +42,7 @@ fn aura_effects<W: CharacteristicWorld + ?Sized>(
             for fragment in group.fragments {
                 if let StaticAbilityFragment::AttachedCharacteristics(spec) = *fragment {
                     let timestamp = world
-                        .game()
-                        .state
-                        .roles
-                        .as_ref()
+                        .roles()
                         .and_then(|r| r.ability_timestamps.iter().find(|r| r.source == reference))
                         .expect("registered characteristic provider")
                         .timestamp;
@@ -62,10 +59,7 @@ fn animations<W: CharacteristicWorld + ?Sized>(
 ) -> impl Iterator<Item = &AnimationView> {
     let recipient = (world.object(id).zone == Zone::Battlefield).then(|| world.reference(id));
     world
-        .game()
-        .state
-        .roles
-        .as_ref()
+        .roles()
         .into_iter()
         .flat_map(|r| &r.animations)
         .filter(move |row| Some(row.object) == recipient)
@@ -96,17 +90,9 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         return result;
     }
     if world
-        .game()
-        .state
-        .roles
-        .as_ref()
+        .roles()
         .is_none_or(|r| r.characteristic_sources.is_empty())
-        && world
-            .game()
-            .state
-            .roles
-            .as_ref()
-            .is_none_or(|r| r.animations.is_empty())
+        && world.roles().is_none_or(|r| r.animations.is_empty())
     {
         if world
             .game()
@@ -164,10 +150,7 @@ pub(super) fn name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'
     let object = world.object(id);
     if object.zone != Zone::Battlefield
         || world
-            .game()
-            .state
-            .roles
-            .as_ref()
+            .roles()
             .is_none_or(|r| r.characteristic_sources.is_empty())
     {
         return if object.zone == Zone::Stack {
@@ -189,7 +172,7 @@ fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'sta
 pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     let object = world.object(id);
     if object.zone != Zone::Battlefield
-        || world.game().state.roles.as_ref().is_none_or(|r| {
+        || world.roles().is_none_or(|r| {
             r.characteristic_sources.is_empty() && r.animations.iter().all(|a| a.colors.is_none())
         })
     {
@@ -225,17 +208,9 @@ pub(super) fn base_changes<W: CharacteristicWorld + ?Sized>(
     id: CardId,
 ) -> Vec<(u64, (i128, i128))> {
     if world
-        .game()
-        .state
-        .roles
-        .as_ref()
+        .roles()
         .is_none_or(|r| r.characteristic_sources.is_empty())
-        && world
-            .game()
-            .state
-            .roles
-            .as_ref()
-            .is_none_or(|r| r.animations.is_empty())
+        && world.roles().is_none_or(|r| r.animations.is_empty())
     {
         return Vec::new();
     }
@@ -265,17 +240,9 @@ pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
     id: CardId,
 ) -> Vec<(u64, SubtypeChange)> {
     if world
-        .game()
-        .state
-        .roles
-        .as_ref()
+        .roles()
         .is_none_or(|r| r.characteristic_sources.is_empty())
-        && world
-            .game()
-            .state
-            .roles
-            .as_ref()
-            .is_none_or(|r| r.animations.is_empty())
+        && world.roles().is_none_or(|r| r.animations.is_empty())
     {
         return Vec::new();
     }

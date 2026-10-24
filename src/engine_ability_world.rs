@@ -11,6 +11,38 @@ pub(super) trait CharacteristicWorld {
             .power
     }
     fn game(&self) -> &Game;
+    fn static_sources(&self) -> &[CardId] {
+        &self.game().state.static_sources
+    }
+    fn attachment_sources(&self) -> &[CardId] {
+        &self.game().state.attachment_sources
+    }
+    fn controls(&self) -> Option<&continuous_control::ControlState> {
+        self.game().state.controls.as_deref()
+    }
+    fn creatures_died(&self) -> u64 {
+        self.game().state.creatures_died_this_turn
+    }
+    fn card_left_graveyard(&self, player: Player) -> bool {
+        self.game().state.players[player.index()].card_left_graveyard_this_turn
+    }
+    fn roles(&self) -> Option<&roles::RoleState> {
+        self.game().state.roles.as_deref()
+    }
+    fn entry_values(&self) -> &[entry_choices::ChoiceRow] {
+        self.game()
+            .state
+            .entry_values
+            .as_deref()
+            .map_or(&[], |rows| rows.as_slice())
+    }
+    fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
+        self.entry_values()
+            .iter()
+            .find(|r| r.object == object)
+            .map(|r| r.value)
+    }
+
     fn object(&self, id: CardId) -> &Object;
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
@@ -52,7 +84,7 @@ pub(super) trait CharacteristicWorld {
         let target = self.object(id);
         target.zone == Zone::Battlefield
             && self.kinds(id) & (1 | 16 | 32) != 0
-            && self.game().state.static_sources.iter().any(|&source| {
+            && self.static_sources().iter().any(|&source| {
                 let provider = self.object(source);
                 provider.zone == Zone::Battlefield
                     && provider.controller == self.game().state.active
@@ -102,19 +134,40 @@ pub(super) trait CharacteristicWorld {
                 || (self.reference(id) != source && (self.subtypes(id).has(target.card, "Zombie"))))
     }
     fn has_ability_removal(&self) -> bool {
-        self.game().state.roles.as_ref().is_some_and(|state| {
+        self.roles().is_some_and(|state| {
             state.ability_removal_sources.iter().any(|&source| {
                 self.object(source.card).zone == Zone::Battlefield
                     && self.reference(source.card) == source
             })
         })
     }
+    fn fragment_available(
+        &self,
+        id: CardId,
+        matches: impl Fn(&crate::cards::StaticAbilityFragment) -> bool,
+    ) -> bool {
+        if self.object(id).zone != Zone::Battlefield {
+            return true;
+        }
+        let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) else {
+            return true;
+        };
+        self.object(id)
+            .card
+            .static_ability_groups()
+            .iter()
+            .enumerate()
+            .any(|(index, group)| {
+                group.fragments.iter().any(&matches)
+                    && evaluation.group_available(self.reference(id), index)
+            })
+    }
     fn printed_abilities_available(&self, id: CardId) -> bool {
         // Only an exact attached removal provider can remove printed abilities.
         // Unrelated sources need no whole-world layer-six evaluation. Keep the
         // full evaluator for candidates: competing effects may blank a provider.
         let recipient = self.reference(id);
-        !self.game().state.roles.as_ref().is_some_and(|state| {
+        !self.roles().is_some_and(|state| {
             state
                 .ability_removal_sources
                 .iter()
@@ -132,18 +185,17 @@ pub(super) trait CharacteristicWorld {
         characteristic_layers::kinds(self, id, self.object(id))
     }
     fn subtypes(&self, id: CardId) -> GrantedSubtypes {
-        self.game().granted_subtypes_with(
-            id,
-            self.object(id),
-            |source| Some(self.object(source)),
-            |source, kind| self.counter_count(source, kind),
-            |id, _| self.kinds(id),
-            characteristic_layers::subtype_changes(self, id),
-        )
+        subtypes::in_world(self, id)
     }
     fn value(&self, value: StatValue, source: CardId) -> i128 {
         let game = self.game();
         let controller = self.object(source).controller;
+        if value == StatValue::CreaturesDiedThisTurn {
+            return i128::from(self.creatures_died());
+        }
+        if value == StatValue::CardLeftGraveyardThisTurn {
+            return i128::from(self.card_left_graveyard(controller));
+        }
         game.stat_value_with(
             value,
             self.reference(source),
@@ -192,7 +244,7 @@ pub(super) trait CharacteristicWorld {
             return evaluation.result.objects[id as usize].mana.clone();
         }
         let mut result = Vec::new();
-        for &source in &self.game().state.attachment_sources {
+        for &source in self.attachment_sources() {
             let reference = self.reference(source);
             if self.kinds(source) & 1 != 0 || !self.attachment_link(reference, self.reference(id)) {
                 continue;
@@ -277,7 +329,7 @@ pub(super) trait CharacteristicWorld {
                     _ => true,
                 }) && (!other || self.reference(id) != source)
                     && (!enchanted_by_controller
-                        || self.game().state.attachment_sources.iter().any(|&a| {
+                        || self.attachment_sources().iter().any(|&a| {
                             let aura = self.object(a);
                             aura.zone == Zone::Battlefield
                                 && aura.card.aura().is_some()
@@ -333,7 +385,7 @@ impl ManaProduction {
             Self::ChosenColor => {
                 let mut mana = [0; 6];
                 if let Some(EntryChoiceValue::Color(color)) =
-                    world.game().entry_value(world.reference(source))
+                    world.entry_value(world.reference(source))
                 {
                     mana[color.index()] = 1;
                 }

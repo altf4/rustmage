@@ -52,7 +52,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
     }
     fn is_enchanted(&self, id: CardId) -> bool {
         self.on_battlefield(id)
-            && self.state.attachment_sources.iter().any(|&aura| {
+            && self.attachment_sources().iter().any(|&aura| {
                 let object = self.object(aura);
                 object.zone == Zone::Battlefield
                     && object.card.aura().is_some()
@@ -64,10 +64,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             self.reference(id),
             self.object(id),
             self.counter_amounts(id).has_any(),
-            self.state
-                .attachment_sources
-                .iter()
-                .map(|&id| self.object(id)),
+            self.attachment_sources().iter().map(|&id| self.object(id)),
         )
     }
     fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
@@ -80,6 +77,12 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         owner: Player,
         departing: Option<CardId>,
     ) -> i128 {
+        if value == StatValue::CreaturesDiedThisTurn {
+            return i128::from(self.creatures_died());
+        }
+        if value == StatValue::CardLeftGraveyardThisTurn {
+            return i128::from(self.card_left_graveyard(owner));
+        }
         if value == StatValue::LifeGainOccurredThisTurn {
             return i128::from(self.gained_life(owner));
         }
@@ -268,7 +271,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         stats += self.attachment_bonus(id).0;
         // Only the small live-source index is traversed. Central zone transitions
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
-        for &source in &self.state.static_sources {
+        for &source in self.static_sources() {
             let object = self.object(source);
             if object.zone != Zone::Battlefield {
                 continue;
@@ -394,7 +397,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         let target = self.object_ref(id);
         let evaluation = self.evaluation.as_ref();
-        for &source in &self.state.attachment_sources {
+        for &source in self.attachment_sources() {
             let object = self.object(source);
             if object.zone != Zone::Battlefield {
                 continue;
@@ -470,7 +473,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         let reference = self.object_ref(id);
         let attacking = self.state.attackers.iter().any(|a| a.card == id);
-        for &source in &self.state.static_sources {
+        for &source in self.static_sources() {
             let object = self.object(source);
             if object.zone != Zone::Battlefield {
                 continue;
@@ -543,7 +546,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 toughness: 1,
             };
         }
-        if let Some(state) = &self.state.roles {
+        if let Some(state) = self.roles() {
             for effect in &state.base_stats {
                 if effect.recipient != object {
                     continue;
@@ -630,7 +633,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         power_time: &mut Option<u64>,
         toughness_time: &mut Option<u64>,
     ) -> Stats {
-        if let Some(r) = &self.state.roles {
+        if let Some(r) = self.roles() {
             for row in &r.live_static {
                 for (index, effect) in row.effects.iter().enumerate() {
                     if !self.live_static_applies(row, effect, index, id) {
@@ -655,7 +658,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
     }
     pub(super) fn live_static_bonus(&self, id: CardId) -> Stats {
         let mut stats = Stats::default();
-        if let Some(r) = &self.state.roles {
+        if let Some(r) = self.roles() {
             for row in &r.live_static {
                 for (index, effect) in row.effects.iter().enumerate() {
                     if self.live_static_applies(row, effect, index, id) {
@@ -671,7 +674,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
     }
     pub(super) fn live_static_keywords(&self, id: CardId) -> Keywords {
         let mut keywords = Keywords::NONE;
-        if let Some(r) = &self.state.roles {
+        if let Some(r) = self.roles() {
             for row in &r.live_static {
                 for (index, effect) in row.effects.iter().enumerate() {
                     if self.live_static_applies(row, effect, index, id) {
@@ -683,7 +686,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         keywords
     }
     pub(super) fn live_static_forbids_block(&self, blocker: CardId, attacker: CardId) -> bool {
-        self.state.roles.as_ref().is_some_and(|r| {
+        self.roles().is_some_and(|r| {
             r.live_static.iter().any(|row| {
                 row.effects.iter().enumerate().any(|(index, effect)| {
                     self.live_static_applies(row, effect, index, blocker)
@@ -696,7 +699,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         })
     }
     pub(super) fn cursed_role_timestamp(&self, recipient: ObjectRef) -> Option<u64> {
-        self.state.roles.as_ref().and_then(|r| {
+        self.roles().and_then(|r| {
             r.attached
                 .iter()
                 .filter(|v| {
@@ -835,6 +838,27 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn object(&self, id: CardId) -> &Object {
         self.world.object(id)
+    }
+    fn controls(&self) -> Option<&continuous_control::ControlState> {
+        self.world.controls()
+    }
+    fn creatures_died(&self) -> u64 {
+        self.world.creatures_died()
+    }
+    fn card_left_graveyard(&self, player: Player) -> bool {
+        self.world.card_left_graveyard(player)
+    }
+    fn static_sources(&self) -> &[CardId] {
+        self.world.static_sources()
+    }
+    fn attachment_sources(&self) -> &[CardId] {
+        self.world.attachment_sources()
+    }
+    fn roles(&self) -> Option<&roles::RoleState> {
+        self.world.roles()
+    }
+    fn entry_values(&self) -> &[entry_choices::ChoiceRow] {
+        self.world.entry_values()
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         self.world.counter_amounts(id)

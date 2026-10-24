@@ -14,6 +14,7 @@ pub(super) struct CostContext {
     selected: Vec<ObjectRef>,
     exact: bool,
     counters: Vec<(ObjectRef, CounterKind)>,
+    mana: Option<ManaCost>,
 }
 impl CostContext {
     fn from_announcement(a: &Announcement) -> Option<Box<Self>> {
@@ -33,6 +34,12 @@ impl CostContext {
         }
         Some(Box::new(Self {
             actor: a.item.controller,
+            mana: a
+                .convoke
+                .as_ref()
+                .map(|c| c.remaining)
+                .or(a.total_cost)
+                .or(a.cost),
             source: a.item.object,
             clauses: c.clauses.clone(),
             active: c.active,
@@ -52,6 +59,16 @@ impl CostContext {
 impl FundingState<'_> {
     pub(super) fn set_cost_context(&mut self, a: Option<&Announcement>) {
         self.install_cost_context(a.and_then(CostContext::from_announcement));
+    }
+    pub(super) fn set_payment_context(&mut self, a: &Announcement) {
+        if a.cast_costs.is_none() && a.additional_cost().is_some() {
+            let mut shadow = a.clone();
+            shadow.cast_costs = Some(Box::default());
+            shadow.initialize_cast_costs();
+            self.set_cost_context(Some(&shadow));
+        } else {
+            self.set_cost_context(Some(a));
+        }
     }
     fn install_cost_context(&mut self, context: Option<Box<CostContext>>) {
         self.cast_costs = context;
@@ -100,7 +117,12 @@ impl FundingState<'_> {
             .find(|r| r.id == id)
             .map_or(Keywords::NONE, |r| self.keywords(r))
     }
-    fn cost_departures(&self, objects: &[ObjectRef], requested: Zone) -> Vec<Self> {
+    pub(super) fn cost_departures(
+        &self,
+        objects: &[ObjectRef],
+        requested: Zone,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
         let destinations = objects
             .iter()
             .map(|r| {
@@ -111,7 +133,7 @@ impl FundingState<'_> {
                 let own = o.card.zone_replacement();
                 let shuffle = own == Some(crate::cards::ZoneReplacementRule::RevealShuffleSelf)
                     && (o.zone != Zone::Battlefield || self.printed_abilities_available(r.card));
-                let exile = self.game.state.static_sources.iter().any(|&id| {
+                let exile = self.static_sources().iter().any(|&id| {
                     let p = self.object(id);
                     p.zone == Zone::Battlefield
                         && self.printed_abilities_available(id)
@@ -152,6 +174,19 @@ impl FundingState<'_> {
                         .iter()
                         .position(|v| v.id == r.card)
                         .expect("cost resource retained");
+                    let before = &n.resources[i].object;
+                    if before.zone == Zone::Battlefield
+                        && zone == Zone::Graveyard
+                        && CharacteristicWorld::kinds(&n, r.card) & 1 != 0
+                    {
+                        n.creatures_died = n
+                            .creatures_died
+                            .checked_add(1)
+                            .capacity("virtual death history exhausted");
+                    }
+                    if before.zone == Zone::Graveyard {
+                        n.graveyard_left[before.owner.index()] = true;
+                    }
                     n.resources[i].object.zone = zone;
                     n.resources[i].object.generation = n.resources[i]
                         .object
@@ -161,19 +196,30 @@ impl FundingState<'_> {
                     n.resources[i].object.counters = InitialCounters::default();
                     n.resources[i].object.growth = Stats::default();
                     n.resources[i].object.attached_to = None;
+                    n.resources[i].object.controller = n.resources[i].object.owner;
+                    n.resources[i].object.summoning_sick = false;
+                    n.resources[i].object.tapped = false;
+                    n.resources[i].object.damage = 0;
+                    n.resources[i].object.damaged_this_turn = false;
+                    n.resources[i].object.dealt_damage_this_turn = false;
+                    n.resources[i].object.deathtouch_since_sba = false;
+                    n.resources[i].object.gained_keywords = Keywords::NONE;
+                    n.resources[i].object.used_abilities = 0;
+                    n.resources[i].object.flashback = false;
+                    n.resources[i].attacking = false;
                     next.push(n);
                 }
             }
             worlds = next;
         }
-        worlds
+        worlds.iter().any(|w| w.visit_linked_returns(emit))
     }
     pub(super) fn set_cost_counter_prefix(&mut self, selected: &[(ObjectRef, CounterKind)]) {
         if let Some(c) = &mut self.cast_costs {
             c.counters = selected.to_vec();
         }
     }
-    pub(super) fn cost_completion(&self) -> bool {
+    pub(in crate::engine) fn cost_completion(&self) -> bool {
         let Some(context) = &self.cast_costs else {
             return true;
         };
@@ -204,6 +250,11 @@ impl FundingState<'_> {
                 later.counters.clear();
             }
             match c.clauses[index].clause {
+                CastCostClause::Mana => {
+                    if self.complete_convoke_clause(c, &later, remaining, &rest) {
+                        return true;
+                    }
+                }
                 CastCostClause::Life(amount) => {
                     if amount == 0 || self.life >= i128::from(amount) {
                         let mut next = self.clone();
@@ -226,11 +277,9 @@ impl FundingState<'_> {
                         {
                             continue;
                         }
-                        if self
-                            .cost_departures(&[r], Zone::Graveyard)
-                            .into_iter()
-                            .any(|w| w.complete_cost_rows(&later, &rest))
-                        {
+                        if self.cost_departures(&[r], Zone::Graveyard, &mut |w| {
+                            w.complete_cost_rows(&later, &rest)
+                        }) {
                             return true;
                         }
                     }
@@ -243,6 +292,108 @@ impl FundingState<'_> {
             }
         }
         false
+    }
+    pub(super) fn has_ordered_convoke(&self) -> bool {
+        self.cast_costs.as_ref().is_some_and(|c| {
+            c.clauses
+                .iter()
+                .any(|r| !r.paid && r.clause == CastCostClause::Mana)
+        })
+    }
+    fn complete_convoke_clause(
+        &self,
+        c: &CostContext,
+        later: &CostContext,
+        all: &[usize],
+        rest: &[usize],
+    ) -> bool {
+        let Some(cost) = c.mana else {
+            return false;
+        };
+        let pool = mana_lots::available(self.mana, &self.lots, self.purpose);
+        let (required, generic) = cast_origins::payment_requirements(
+            self,
+            c.actor,
+            self.purpose,
+            cost.colored,
+            cost.generic,
+        );
+        if payable(pool, required, generic) && self.complete_cost_rows(later, rest) {
+            return true;
+        }
+        for resource in &self.resources {
+            if resource.object.zone != Zone::Battlefield
+                || resource.object.controller != c.actor
+                || resource.object.tapped
+                || CharacteristicWorld::kinds(self, resource.id) & 1 == 0
+            {
+                continue;
+            }
+            let colors = CharacteristicWorld::colors(self, resource.id);
+            for contribution in convoke::contributions() {
+                let mut remaining = cost;
+                if !contribution.apply(colors, &mut remaining) {
+                    continue;
+                }
+                let mut next = self.clone();
+                let i = next
+                    .resources
+                    .iter()
+                    .position(|r| r.id == resource.id)
+                    .unwrap();
+                next.resources[i].object.tapped = true;
+                let mut context = later.clone();
+                context.mana = Some(remaining);
+                if next.complete_cost_rows(&context, all) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+    pub(super) fn mark_mana_clause_paid(&mut self) {
+        if let Some(c) = &mut self.cast_costs {
+            for row in &mut c.clauses {
+                if row.clause == CastCostClause::Mana {
+                    row.paid = true;
+                }
+            }
+            c.active = None;
+        }
+    }
+    pub(in crate::engine) fn project_convoker(
+        &mut self,
+        object: ObjectRef,
+        contribution: ConvokeContribution,
+    ) -> bool {
+        let Some(index) = self
+            .resources
+            .iter()
+            .position(|r| r.id == object.card && r.object.generation == object.generation)
+        else {
+            return false;
+        };
+        let r = &self.resources[index];
+        if r.object.zone != Zone::Battlefield
+            || r.object.controller != self.actor
+            || r.object.tapped
+            || CharacteristicWorld::kinds(self, object.card) & 1 == 0
+        {
+            return false;
+        }
+        let colors = CharacteristicWorld::colors(self, object.card);
+        let Some(c) = &mut self.cast_costs else {
+            return false;
+        };
+        let Some(cost) = &mut c.mana else {
+            return false;
+        };
+        if !contribution.apply(colors, cost) {
+            return false;
+        }
+        c.active = None;
+        self.resources[index].object.tapped = true;
+        true
     }
     fn complete_additional(
         &self,
@@ -374,9 +525,9 @@ impl FundingState<'_> {
                 }
                 next.complete_cost_rows(later, remaining)
             } else {
-                self.cost_departures(selected, destination)
-                    .into_iter()
-                    .any(|w| w.complete_cost_rows(later, remaining))
+                self.cost_departures(selected, destination, &mut |w| {
+                    w.complete_cost_rows(later, remaining)
+                })
             };
             if success {
                 return true;
@@ -472,7 +623,7 @@ impl FundingState<'_> {
 }
 
 impl Game {
-    fn cast_cost_world(&self, a: &Announcement) -> FundingState<'_> {
+    pub(in crate::engine) fn cast_cost_world(&self, a: &Announcement) -> FundingState<'_> {
         let goal = FundingGoal {
             actor: a.item.controller,
             required: [0; 6],
@@ -532,7 +683,7 @@ impl Game {
             .state
             .announcing
             .as_ref()
-            .filter(|a| a.cast_costs.as_ref().is_some_and(|c| c.mana_paid))
+            .filter(|a| a.cast_costs.as_ref().is_some_and(|c| c.mana_closed))
         else {
             return true;
         };
@@ -605,6 +756,7 @@ impl Game {
         if world.cast_costs.is_none() {
             world.install_cost_context(Some(Box::new(CostContext {
                 actor: goal.actor,
+                mana: None,
                 source: ObjectRef {
                     card: 0,
                     generation: 0,
@@ -724,6 +876,12 @@ impl Game {
                         paid: false,
                     });
                 }
+                if spell.card.has_convoke() {
+                    clauses.push(CastCostRow {
+                        clause: CastCostClause::Mana,
+                        paid: false,
+                    });
+                }
                 for &clause in extra {
                     if !clauses.iter().any(|r| r.clause == clause) {
                         clauses.push(CastCostRow {
@@ -734,6 +892,10 @@ impl Game {
                 }
                 let context = CostContext {
                     actor: goal.actor,
+                    mana: spell.card.has_convoke().then_some(ManaCost {
+                        colored: attempt.required,
+                        generic: attempt.generic,
+                    }),
                     source,
                     clauses,
                     active: None,

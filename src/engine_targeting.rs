@@ -1510,7 +1510,9 @@ impl Game {
             return;
         }
         let mut announcement = self.state.announcing.take().unwrap();
-        if let Some(frame) = announcement.convoke.take() {
+        if announcement.cast_costs.is_none()
+            && let Some(frame) = announcement.convoke.take()
+        {
             self.tap_objects(
                 &frame
                     .selected
