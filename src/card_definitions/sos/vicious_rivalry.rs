@@ -1,16 +1,15 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Life X is an additional cost; the printed mana cost and mana value stay fixed.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::DestroyManaValue {
+            kinds: 17,
+            maximum: AmountValue::ChosenX,
+        }],
+    ),
+    extras: &CardExtras {
+        life_x_cost: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

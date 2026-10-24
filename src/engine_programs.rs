@@ -2319,6 +2319,26 @@ impl Game {
                 } => {
                     self.gain_control(&item, subject, controller);
                 }
+                Instruction::ReturnGraveyardManaValue { kinds, value } => {
+                    self.return_graveyard_mana_value(&item, kinds, value);
+                }
+                Instruction::DestroyManaValue { kinds, maximum } => {
+                    let maximum =
+                        u32::try_from(self.item_amount(maximum, &item)).unwrap_or(u32::MAX);
+                    self.move_battlefield_group(
+                        &item,
+                        &[BattlefieldFilter {
+                            kinds,
+                            relation: -1,
+                            nonland: false,
+                            tapped: None,
+                            without: Keywords::NONE,
+                            subtype: None,
+                            max_mana: maximum,
+                        }],
+                        false,
+                    );
+                }
                 Instruction::ReturnGraveyardCreatures {
                     players,
                     maximum_mana_value,

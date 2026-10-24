@@ -1108,6 +1108,14 @@ pub(crate) enum Instruction {
         subject: Subject,
         controller: PlayerSet,
     },
+    ReturnGraveyardManaValue {
+        kinds: u16,
+        value: AmountValue,
+    },
+    DestroyManaValue {
+        kinds: u16,
+        maximum: AmountValue,
+    },
     ReturnGraveyardCreatures {
         players: PlayerSet,
         maximum_mana_value: u64,
@@ -3015,6 +3023,9 @@ impl Card {
         generated::adventure_spell(self)
     }
     /// Homogeneous optional target group whose maximum is the chosen X.
+    pub(crate) fn life_x_cost(self) -> bool {
+        authored::rules(self).is_some_and(|r| r.extras.life_x_cost)
+    }
     pub(crate) fn targets_up_to_x(self) -> bool {
         authored::rules(self).is_some_and(|rules| rules.extras.targets_up_to_x)
     }

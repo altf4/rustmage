@@ -122,6 +122,29 @@ impl Game {
                 + v.len() * std::mem::size_of::<TemporaryControlView>()
         })
     }
+    pub(super) fn return_graveyard_mana_value(
+        &mut self,
+        item: &SpellView,
+        kinds: u16,
+        value: AmountValue,
+    ) {
+        let value = self.item_amount(value, item);
+        let moves = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                (o.zone == Zone::Graveyard
+                    && o.owner == item.controller
+                    && !o.is_token()
+                    && o.card.kind_mask() & kinds != 0
+                    && u128::from(o.card.fixed_mana_value()) == value)
+                    .then(|| self.entry_move(id as CardId, Zone::Battlefield, false))
+            })
+            .collect();
+        self.stage_entries(moves, None);
+    }
     pub(super) fn return_graveyard_creatures(
         &mut self,
         item: &SpellView,

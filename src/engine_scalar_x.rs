@@ -182,6 +182,27 @@ impl Game {
             maximum: low,
         }]
     }
+    fn life_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        let goal = self.funding_goal(a);
+        let purpose = self.purpose_for_item(&a.item);
+        let fundable = |x| self.can_fund_life_cost(goal.clone(), purpose, x);
+        if !fundable(0) {
+            return Vec::new();
+        }
+        let (mut low, mut high) = (0u64, u64::from(u32::MAX));
+        while low < high {
+            let mid = low + (high - low).div_ceil(2);
+            if fundable(mid as u32) {
+                low = mid;
+            } else {
+                high = mid - 1;
+            }
+        }
+        vec![XInterval {
+            minimum: 0,
+            maximum: low as u32,
+        }]
+    }
     pub fn x_choice(&self) -> Option<XChoiceView> {
         if let Pending::ResolutionX { player } = self.state.pending {
             let mut lo = 0u64;
@@ -214,7 +235,9 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         Some(XChoiceView {
             card: a.item.object,
-            intervals: if a.item.kind == StackKind::Spell {
+            intervals: if a.item.kind == StackKind::Spell && a.item.source_card.life_x_cost() {
+                self.life_x_intervals(a)
+            } else if a.item.kind == StackKind::Spell {
                 self.scalar_x_intervals(a.item.controller, a.item.card)
             } else {
                 self.activation_x_intervals(a)

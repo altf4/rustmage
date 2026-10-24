@@ -4563,6 +4563,10 @@ impl Game {
             }
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
+                let a = self.state.announcing.as_mut().unwrap();
+                if a.item.kind == StackKind::Spell && a.item.source_card.life_x_cost() {
+                    a.add_cast_cost_clause(CastCostClause::Life(value));
+                }
                 if self
                     .state
                     .announcing

@@ -186,7 +186,20 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::DeclineHandEntry => -1,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
-            Action::ChooseX { value } => 80 + i128::from((*value).min(20)),
+            Action::ChooseX { value } => {
+                let life_cost = observation
+                    .announcing
+                    .as_ref()
+                    .is_some_and(|s| s.source_card.life_x_cost());
+                if life_cost
+                    && i128::from(*value) >= observation.players[actor.index()].life
+                    && *value != 0
+                {
+                    -100
+                } else {
+                    80 + i128::from((*value).min(20))
+                }
+            }
             Action::ChooseGift { beneficiary } => {
                 if beneficiary.is_some() {
                     40

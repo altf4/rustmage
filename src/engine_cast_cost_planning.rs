@@ -594,10 +594,6 @@ impl Game {
         })
     }
     /// One resource solver handles mana and ordered additional life costs, including previews before announcement.
-    #[allow(
-        dead_code,
-        reason = "Shared declaration API consumed by the life-X card author in the integrating batch"
-    )]
     pub(in crate::engine) fn can_fund_life_cost(
         &self,
         goal: FundingGoal,

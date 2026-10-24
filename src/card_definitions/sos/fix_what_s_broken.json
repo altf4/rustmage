@@ -3,10 +3,43 @@
   "catalogue_id": 1539,
   "oracle_id": "7f8f46c0-889a-4c9a-9bfa-2b43db608d55",
   "facts_sha256": "05c6ea39f5db8337eafb83b63e42360c5730747ad7614178fb600f9f75c770c6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "61e7e80819c85484f6f77c046e4b3fac089975afb09d8bad9fd158d78a5014bc"
   },
-  "physical_metadata_sha256": "deedfa26f945ff035c1f9fe13581a2766ae642182dcb369d36c1983823947a2f"
+  "physical_metadata_sha256": "deedfa26f945ff035c1f9fe13581a2766ae642182dcb369d36c1983823947a2f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FixWhatsBroken.java",
+  "java_sha256": "08a52624b2f36cc604ea47cb08c8ecff9fe3924a166b8a871e3f6da5a442e953",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayVariableLifeCost.java",
+      "sha256": "9157d107040778f741337b1cf1b1fa2336d3a603a09e75f7b15308816304fd70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromYourGraveyardToBattlefieldAllEffect.java",
+      "sha256": "444e837f098cf2687f903aea028d28b77d561a40b23b66085fbf03284becdde7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/VariableCostImpl.java",
+      "sha256": "f8fe24d521c3af806859208892acaa863735ce99eda1d5ceaa3c489e5cfb882c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    }
+  ],
+  "rules_notes": [
+    "X is paid as an additional life cost, after mana and in the controller's chosen order with other costs. It adds no mana and does not change the printed mana value. X may be positive with a free or miracle alternate cost; 0 life remains payable at a negative life total."
+  ]
 }

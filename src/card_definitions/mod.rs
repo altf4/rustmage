@@ -114,6 +114,7 @@ const fn object(kinds: u8) -> TargetRule {
 }
 pub(super) struct CardExtras {
     pub targets_up_to_x: bool,
+    pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
     pub prepared_spell: Option<Card>,
     pub enters_prepared: bool,
@@ -190,6 +191,7 @@ pub(super) struct CardExtras {
 impl CardExtras {
     pub const EMPTY: Self = Self {
         targets_up_to_x: false,
+        life_x_cost: false,
         spell_cannot_be_copied: false,
         prepared_spell: None,
         enters_prepared: false,
