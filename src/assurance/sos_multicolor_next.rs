@@ -202,3 +202,206 @@ fn sos_next_blech_union_one_per_event_and_controller() {
         }
     }
 }
+
+#[test]
+fn sos_next_paintmage_first_main_restricted_mana_and_hybrid_costs() {
+    for p in [Player::P0, Player::P1] {
+        for blue in [false, true] {
+            let mut g = scenario(p);
+            g.state.players[p.index()].mana = if blue {
+                [0, 2, 0, 1, 0, 0]
+            } else {
+                [0, 1, 0, 2, 0, 0]
+            };
+            let mage = put(&mut g, p, "Abstract Paintmage", Zone::Hand);
+            cast(&mut g, mage, None);
+            finish(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            g.begin_step(Step::Main1);
+            finish(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 1, 0, 0]);
+            let turtle = put(&mut g, p, "Aegis Turtle", Zone::Hand);
+            reject(&mut g, Action::AnnounceCast { card: turtle });
+            g.move_object(mage, Zone::Graveyard);
+            let spell = put(&mut g, p, "Prismari Charm", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            checked(&mut g, Action::ChooseMode { mode: 0 });
+            pay(&mut g);
+            finish(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            g.begin_step(Step::Main2);
+            finish(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}
+#[test]
+fn sos_next_duelist_draw_life_and_optional_repartee_delayed_return() {
+    for p in [Player::P0, Player::P1] {
+        for accept in [false, true] {
+            let mut g = scenario(p);
+            let duelist = put(&mut g, p, "Conciliator's Duelist", Zone::Hand);
+            cast(&mut g, duelist, None);
+            finish(&mut g);
+            assert_eq!(g.state.players[p.index()].life, 19);
+            assert_eq!(g.state.players[p.other().index()].life, 19);
+            assert_eq!(g.hand_count(p), 1);
+            assert_eq!(stats(&g, duelist), (4, 3));
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let growth = put(&mut g, p, "Growth Curve", Zone::Hand);
+            cast(&mut g, growth, Some(Target::Card(own)));
+            for _ in 0..12 {
+                if g.state.pending != Pending::Priority {
+                    break;
+                }
+                checked(&mut g, Action::Pass);
+            }
+            if accept {
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(enemy),
+                    },
+                );
+            } else {
+                checked(&mut g, Action::FinishTargets);
+            }
+            finish(&mut g);
+            assert_eq!(
+                g.object_view(enemy).zone,
+                if accept {
+                    Zone::Exile
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            g.move_object(duelist, Zone::Graveyard);
+            g.begin_step(Step::End);
+            finish(&mut g);
+            assert_eq!(g.object_view(enemy).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(enemy).controller, p.other());
+        }
+    }
+}
+#[test]
+fn sos_next_molten_note_actual_payment_flashback_and_full_fizzle() {
+    for p in [Player::P0, Player::P1] {
+        for flashback in [false, true] {
+            for fizzle in [false, true] {
+                let mut g = scenario(p);
+                let target = put(&mut g, p.other(), "Aegis Turtle", Zone::Battlefield);
+                let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+                g.state.objects[own as usize].tapped = true;
+                let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+                g.state.objects[enemy as usize].tapped = true;
+                let spell = put(
+                    &mut g,
+                    p,
+                    "Molten Note",
+                    if flashback {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Hand
+                    },
+                );
+                let before: u32 = g.state.players[p.index()].mana.iter().sum();
+                checked(
+                    &mut g,
+                    if flashback {
+                        Action::AnnounceFlashback { card: spell }
+                    } else {
+                        Action::AnnounceCast { card: spell }
+                    },
+                );
+                let x = if flashback { 0 } else { 1 };
+                if g.legal_actions().contains(&Action::ChooseX { value: x }) {
+                    checked(&mut g, Action::ChooseX { value: x });
+                }
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+                pay(&mut g);
+                let paid = before - g.state.players[p.index()].mana.iter().sum::<u32>();
+                assert_eq!(paid, if flashback { 8 } else { 3 });
+                if fizzle {
+                    g.move_object(target, Zone::Hand);
+                }
+                finish(&mut g);
+                assert_eq!(g.object_view(own).tapped, fizzle);
+                assert!(g.object_view(enemy).tapped);
+                if !fizzle {
+                    assert_eq!(
+                        g.object_view(target).zone,
+                        if flashback {
+                            Zone::Graveyard
+                        } else {
+                            Zone::Battlefield
+                        }
+                    );
+                    if !flashback {
+                        assert_eq!(g.object_view(target).damage, 3);
+                    }
+                }
+                assert_eq!(
+                    g.object_view(spell).zone,
+                    if flashback {
+                        Zone::Exile
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+            }
+        }
+    }
+}
+#[test]
+fn sos_next_visionary_dance_tokens_and_private_hand_activation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let dance = put(&mut g, p, "Visionary's Dance", Zone::Hand);
+        cast(&mut g, dance, None);
+        finish(&mut g);
+        let tokens: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| o.zone == Zone::Battlefield && o.card == Card::SosElementalToken)
+            .map(|(i, _)| i as CardId)
+            .collect();
+        assert_eq!(tokens.len(), 2);
+        for token in tokens {
+            assert_eq!(stats(&g, token), (3, 3));
+            assert!(g.keywords(token).contains(Keywords::FLYING));
+        }
+        let top = put(&mut g, p, "Island", Zone::Library);
+        let other = put(&mut g, p, "Mountain", Zone::Library);
+        let dance = put(&mut g, p, "Visionary's Dance", Zone::Hand);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: dance,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.object_view(dance).zone, Zone::Graveyard);
+        for _ in 0..8 {
+            if g.state.pending != Pending::Priority {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        assert!(g.observe(p.other()).library_choice.is_none());
+        checked(&mut g, Action::SelectLibrary { card: top });
+        finish(&mut g);
+        assert_eq!(g.object_view(top).zone, Zone::Hand);
+        assert_eq!(g.object_view(other).zone, Zone::Graveyard);
+        assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == top));
+    }
+}

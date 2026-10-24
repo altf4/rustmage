@@ -187,7 +187,8 @@ impl Game {
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = method;
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
-        if method == CastMethod::Free && definition.x_symbols() > 0 {
+        if matches!(method, CastMethod::Free | CastMethod::Flashback) && definition.x_symbols() > 0
+        {
             item.x = Some(0);
         }
         let available = |plan| {
@@ -205,7 +206,8 @@ impl Game {
         {
             return false;
         }
-        if definition.x_symbols() > 0 && method != CastMethod::Free {
+        if definition.x_symbols() > 0 && !matches!(method, CastMethod::Free | CastMethod::Flashback)
+        {
             return !self.scalar_x_intervals(actor, card).is_empty();
         }
         let a = Announcement {

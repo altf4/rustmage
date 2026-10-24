@@ -109173,10 +109173,10 @@
       "basic": false,
       "mana_color": null,
       "colored": [
+        1,
         0,
         0,
-        0,
-        0,
+        1,
         0,
         0
       ],

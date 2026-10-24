@@ -3184,6 +3184,24 @@ impl Game {
                         _ => true,
                     };
                     if obj.card.x_symbols() > 0 {
+                        // The currently typed printed flashback costs are fixed mana costs.
+                        // Their alternative cost has no X, so the spell's declared X is zero.
+                        if flashback {
+                            if completable
+                                && self.permitted_cast_available(
+                                    actor,
+                                    card,
+                                    CastMethod::Flashback,
+                                    CastFace::Normal,
+                                    sorcery,
+                                    false,
+                                )
+                                && emit(Action::AnnounceFlashback { card })
+                            {
+                                return true;
+                            }
+                            continue;
+                        }
                         if completable
                             && !self.scalar_x_intervals(actor, card).is_empty()
                             && emit(if exile {
@@ -4062,6 +4080,9 @@ impl Game {
             Action::AnnounceFlashback { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Flashback;
+                if item.source_card.x_symbols() > 0 {
+                    item.x = Some(0);
+                }
                 self.state.objects[card as usize].flashback = true;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
