@@ -504,7 +504,8 @@ impl Game {
     }
     fn commit_counter_placements(&mut self, placements: Vec<CounterPlacement>) {
         let mut lore = Vec::new();
-        for p in placements {
+        // Commit the complete world before any placement observer sees it.
+        for p in &placements {
             if let Some(index) = p.entry_index {
                 self.state
                     .entry_batch
@@ -519,14 +520,24 @@ impl Game {
                 for kind in CounterKind::ALL {
                     self.add_counter(p.object.card, kind, p.amount.get(kind));
                 }
-                for kind in CounterKind::ALL {
-                    self.self_counters_added(p.object, kind, p.amount.get(kind), p.placed_by);
-                }
                 if p.amount.lore > 0 {
                     lore.push((p.object, before));
                 }
             }
         }
+        for p in &placements {
+            if p.entry_index.is_none() {
+                for kind in CounterKind::ALL {
+                    self.self_counters_added(p.object, kind, p.amount.get(kind), p.placed_by);
+                }
+            }
+        }
+        self.counter_batch_added(
+            placements
+                .iter()
+                .filter(|p| p.entry_index.is_none())
+                .map(|p| (p.object, &p.amount, p.placed_by)),
+        );
         for (object, before) in lore {
             self.lore_counters_added(object, before);
         }
@@ -674,7 +685,13 @@ impl Game {
         {
             let before = self.state.objects[id as usize].counters.lore;
             self.add_counter(id, kind, amount);
-            self.self_counters_added(self.object_ref(id), kind, amount, placed_by);
+            let object = self.object_ref(id);
+            self.self_counters_added(object, kind, amount, placed_by);
+            self.counter_batch_added(std::iter::once((
+                object,
+                &Counters::of(kind, amount),
+                placed_by,
+            )));
             if kind == CounterKind::Lore {
                 self.lore_counters_added(self.object_ref(id), before);
             }

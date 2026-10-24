@@ -3,10 +3,59 @@
   "catalogue_id": 2216,
   "oracle_id": "e9d20b6d-fa4f-473b-9866-230fd92a1319",
   "facts_sha256": "ab3c415f56dbd37ee684584147365c49b33155f91b83f25fca56176d076dcf36",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9464f3f2bf230271257b8cb4d23e077b9ad50491c8ef960fff9fdaad6d9b3fb4"
   },
-  "physical_metadata_sha256": "8829260c6d3f1a6cc148365a0cad240ebd0f3bb40bd3a19bf7023ccbfd320435"
+  "physical_metadata_sha256": "8829260c6d3f1a6cc148365a0cad240ebd0f3bb40bd3a19bf7023ccbfd320435",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InvisibleWomanSueStorm.java",
+  "java_sha256": "a757169ada9cb369ea43f006579cd51f6d9f788b23d47c345102a150663e9f9e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilities.java",
+      "sha256": "2ab88371eb3382d01344fbf28d80e651ed1479bfa801ce39057c09f14b431f71"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/CardImpl.java",
+      "sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/WallColorlessToken.java",
+      "sha256": "964dcff7f1a1da117175d71af88fbd7bfb689fa870ef9009eaca2f1af3596796"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/GameImpl.java",
+      "sha256": "592ad774bce5257b688c0f54e1e9e586c3d984d4ff2b2b2782f5b0154a78657c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/GameState.java",
+      "sha256": "0f77abce923089ce00bc650706c9863be5a63bfd72979fed1681958f61f4b044"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "rules": "Frozen Oracle requires one trigger for a simultaneous placement on one or more other controlled Hero permanents, including noncreature Heroes. The pinned XMage class observes recipient-specific COUNTERS_ADDED (CardImpl.addCounters emits it per recipient; TriggeredAbilities.checkTrigger queues each event independently), so Rust deliberately dispatches once for the whole simultaneous batch. The optional token belongs to the captured trigger controller, with no intervening-if recheck. CR 603.2c dispatches once per trigger event; 122.6 and 122.6a include counters placed as part of entering. CR 603.10 uses post-event characteristics except specified look-back events. GameImpl.addTriggeredAbility copies each occurrence with a fresh ID and GameState appends it, confirming that no batch deduplication repairs the Java per-recipient observer."
+  }
 }

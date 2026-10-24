@@ -2539,6 +2539,11 @@ pub(crate) enum TriggerCondition {
         kind: CounterKind,
         filter: CountFilter,
     },
+    /// One event for the whole simultaneous placement, across all recipients and kinds.
+    CounterBatchPlacedByYou {
+        kind: CounterKind,
+        filter: CountFilter,
+    },
     OtherCreatureCountersAdded {
         kind: CounterKind,
         excluded_subtype: &'static str,
