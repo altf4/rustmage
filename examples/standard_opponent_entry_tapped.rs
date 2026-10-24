@@ -288,7 +288,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     continue;
                 }
                 match s.kind {
-                    StackKind::CopyEndStepSacrifice
+                    StackKind::CasualtyCopy
+                    | StackKind::CopyEndStepSacrifice
                     | StackKind::DelayedReturn
                     | StackKind::DelayedSacrifice
                     | StackKind::DelayedWarpExile => {
