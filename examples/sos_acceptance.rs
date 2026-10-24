@@ -9,13 +9,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .nth(2)
         .unwrap_or_else(|| "4".into())
         .parse()?;
+    let repeats: usize = std::env::args()
+        .nth(3)
+        .unwrap_or_else(|| "1".into())
+        .parse()?;
+    if n == 0 || repeats == 0 {
+        return Err("seeds per pairing and corpus repetitions must be positive".into());
+    }
     let mode = match mode.as_str() {
         "verify" => workload::Mode::Verify,
         "benchmark" => workload::Mode::Benchmark,
         _ => return Err("use verify or benchmark, followed by seeds per pairing".into()),
     };
     let dir = std::env::var_os("RUSTMAGE_SOS_EVIDENCE_DIR").map(std::path::PathBuf::from);
-    let report = workload::run(&workload::cases(n), mode, dir.as_deref())?;
+    let cases = workload::cases(n).repeat(repeats);
+    let report = workload::run(&cases, mode, dir.as_deref())?;
     println!("{}", serde_json::to_string_pretty(&report)?);
     let missing = report.missing_mechanics();
     if !missing.is_empty() {

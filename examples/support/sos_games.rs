@@ -54,6 +54,7 @@ pub struct Report {
     pub mode: &'static str,
     pub scope: &'static str,
     pub pool_members: usize,
+    pub unique_cases: usize,
     pub decks: Vec<DeckReport>,
     pub games: Vec<GameReport>,
     pub witnesses: BTreeMap<String, u64>,
@@ -101,7 +102,17 @@ pub fn cases(seeds_per_pair: u64) -> Vec<(usize, u64, Player)> {
             (0..seeds_per_pair).map(move |seed| {
                 (
                     pair,
-                    676200 + pair as u64 * 100 + seed,
+                    // Retain naturally reached Infusion and paid Grandeur witnesses
+                    // found by the unchanged policy, while keeping seeds unique.
+                    676200
+                        + pair as u64 * 100
+                        + match (pair, seed) {
+                            (4, 3) => 15,
+                            (4, 15) => 3,
+                            (5, 3) => 11,
+                            (5, 11) => 3,
+                            _ => seed,
+                        },
                     if seed % 2 == 0 {
                         Player::P0
                     } else {
@@ -141,7 +152,7 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
                 "Inkling Mascot",
                 "Imperious Inkmage",
                 "Silverquill, the Disputant",
-                "Eaten Alive",
+                "Last Gasp",
                 "Dig Site Inventory",
                 "Interjection",
             ],
@@ -183,7 +194,7 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
                 "Old-Growth Educator",
                 "Efflorescence",
                 "Lumaret's Favor",
-                "Poisoner's Apprentice",
+                "Oracle's Restoration",
                 "Decorum Dissertation",
                 "Adventurous Eater",
             ],
@@ -325,7 +336,7 @@ impl Tracker {
                 continue;
             }
             if s.kind == StackKind::Spell {
-                if let Some(cast) = s.cast {
+                if let Some(cast) = s.cast.filter(|_| !s.is_copy) {
                     self.cards.insert(s.source_card.name().into());
                     self.colors |= s.source_card.colors();
                     self.hit("actual_cast", s.id.to_string());
@@ -363,8 +374,13 @@ impl Tracker {
                     if cast.origin == Zone::Exile && before.cascade.is_some() {
                         self.hit("cascade_cast", s.id.to_string());
                     }
-                    if s.is_copy
+                    if cast.method == CastMethod::Free
                         && cast.origin == Zone::Exile
+                        && before.resolving.as_ref().is_some_and(|packet| {
+                            matches!(packet.kind, StackKind::TriggeredAbility { .. })
+                                && packet.source_card == s.source_card
+                        })
+                        && before.cascade.is_none()
                         && [
                             "Germination Practicum",
                             "Echocasting Symposium",
@@ -473,9 +489,12 @@ impl Tracker {
             self.hit("mill_resolved", mill_packet.unwrap().id.to_string());
         }
         for object in &after.objects {
-            if object.name == "Treasure"
-                && object.token.is_some()
-                && object.zone == Zone::Battlefield
+            if object.token.as_ref().is_some_and(|token| {
+                token
+                    .subtypes
+                    .split_whitespace()
+                    .any(|subtype| subtype == "Treasure")
+            }) && object.zone == Zone::Battlefield
             {
                 self.hit("treasure_created", format!("{:?}", object.reference));
             }
@@ -643,7 +662,7 @@ pub fn run(
             if let Some(dir) = trace_dir {
                 std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
                 let path = dir.join(format!("pair-{pair}-seed-{seed}.json"));
-                let payload = serde_json::json!({"catalogue":CATALOGUE_VERSION,"decks":[decks[a].report.cards,decks[b].report.cards],"seed":seed,"starting_player":starting_player,"actions":trace});
+                let payload = serde_json::json!({"catalogue":CATALOGUE_VERSION,"decks":[decks[a].report.cards,decks[b].report.cards],"ordered_decks":[decks[a].cards,decks[b].cards],"seed":seed,"starting_player":starting_player,"actions":trace});
                 std::fs::write(&path, serde_json::to_vec(&payload).unwrap())
                     .map_err(|e| e.to_string())?;
                 Some(path.display().to_string())
@@ -685,8 +704,9 @@ pub fn run(
         } else {
             "benchmark"
         },
-        scope: "Six exactly60-card Standard decks; physical SOS members only, max4 nonbasic copies,28basiclands; natural terminals; existing observation-only smoke policy",
+        scope: "Six exactly 60-card Standard decks; physical SOS members only; max four nonbasic copies, 28 basic lands; natural terminals; existing observation-only smoke policy",
         pool_members,
+        unique_cases: cases.iter().copied().collect::<BTreeSet<_>>().len(),
         decks: decks.into_iter().map(|d| d.report).collect(),
         games_per_second: games.len() as f64 / seconds,
         decisions_per_second: total_decisions as f64 / seconds,
