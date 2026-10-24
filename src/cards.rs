@@ -1875,10 +1875,11 @@ pub enum CounterKind {
     Reach,
     Trample,
     Vigilance,
+    Finality,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 29] = [
+    pub const ALL: [Self; 30] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1908,6 +1909,7 @@ impl CounterKind {
         Self::Reach,
         Self::Trample,
         Self::Vigilance,
+        Self::Finality,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1936,6 +1938,7 @@ impl CounterKind {
                 | Self::Reach
                 | Self::Trample
                 | Self::Vigilance
+                | Self::Finality
         )
     }
 }
@@ -2425,12 +2428,14 @@ pub(crate) enum ReturnDeathFilter {
     SourceNonDemon,
     SourceRevival,
     ControlledNontokenNonAngel,
+    ControlledSubtype(&'static str),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReturnKind {
     Demon,
     Angel,
     Revival,
+    HeroFinality,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

@@ -1140,7 +1140,7 @@ impl<'g> FundingState<'g> {
         self.payment_departures
             .sort_by_key(|(object, _)| (object.card, object.generation));
     }
-    fn apply(&mut self, step: &FundingMove) {
+    fn apply(&mut self, step: &FundingMove, preserve_departure_counters: bool) {
         for (lot, allocation) in self.lots.iter_mut().zip(&step.allocation) {
             for (held, paid) in lot.amounts.iter_mut().zip(allocation) {
                 *held -= u128::from(*paid);
@@ -1220,8 +1220,10 @@ impl<'g> FundingState<'g> {
             let reference = self.reference(id);
             let object = &mut self.resources[step.resource].object;
             object.zone = destination;
-            object.counters = InitialCounters::default();
-            live_counters::set(&mut self.named_counters, reference, None);
+            if !preserve_departure_counters {
+                object.counters = InitialCounters::default();
+                live_counters::set(&mut self.named_counters, reference, None);
+            }
         }
         if let Some(external) = step.external {
             self.remember_payment_departure(self.resources[external].id);

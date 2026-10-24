@@ -915,7 +915,8 @@ impl Game {
                     .any(|n| *n > 0))
             && !m.before.card.is_emblem()
             && !m.skipped
-            && (m.before.card.base_stat_setter().is_some()
+            && (m.return_modification.is_some()
+                || m.before.card.base_stat_setter().is_some()
                 || !m.before.card.live_static_effects().is_empty()
                 || m.before.card.role().is_some()
                 || m.before.card.has_layer6_provider()

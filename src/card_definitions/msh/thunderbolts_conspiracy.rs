@@ -1,16 +1,11 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired complete Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Permanent,
     keywords: Keywords::FLASH,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ReturnDeath(ReturnDeathFilter::ControlledSubtype("Villain")),
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ReturnDeathCard(ReturnKind::HeroFinality)],
+    }],
     ..CardRules::EMPTY
 };

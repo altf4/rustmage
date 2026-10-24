@@ -7386,3 +7386,7 @@ mod msh_inherited_tests;
 #[cfg(test)]
 #[path = "engine_msh_placement_tests.rs"]
 mod msh_placement_tests;
+
+#[cfg(test)]
+#[path = "engine_finality_tests.rs"]
+mod finality_tests;

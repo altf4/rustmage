@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "977e6bbef75b100a4411b43b6b0168fa42764a23004ec32feddca5af2cf7617c",
+  "catalogue_version": "f8de39baed48582908700b72a324b9bd7fb3f0a3cf97d4f68f92d1622e9cca9f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2449,
-  "implemented_total": 2455,
+  "implemented_standard_cards": 2450,
+  "implemented_total": 2456,
   "token_definitions": 116,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 144,
-      "gated": 129
+      "complete": 145,
+      "gated": 128
     },
     "one": {
       "total": 1,
@@ -36861,8 +36861,8 @@
     {
       "name": "Thunderbolts Conspiracy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/thunderbolts_conspiracy.rs",
       "set": "msh"
     },
