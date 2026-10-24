@@ -7368,3 +7368,7 @@ mod counter_history_tests;
 #[cfg(test)]
 #[path = "engine_msh_forms_tests.rs"]
 mod msh_forms_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_inherited_tests.rs"]
+mod msh_inherited_tests;
