@@ -3003,7 +3003,9 @@ impl Game {
                     if casting_prohibited {
                         if obj.card.is_land()
                             && sorcery
-                            && (obj.zone == Zone::Hand || self.can_play_exiled(actor, card))
+                            && (obj.zone == Zone::Hand
+                                || self.can_play_exiled(actor, card)
+                                || self.has_graveyard_cast(actor, card, GraveyardCastKind::Play))
                             && (!s.land_played
                                 || self
                                     .continuous_land_plays(actor)
@@ -3090,7 +3092,8 @@ impl Game {
                         {
                             return true;
                         }
-                        if self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast)
+                        if !obj.card.is_land()
+                            && self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast)
                             && self.permitted_cast_available(
                                 actor,
                                 card,
@@ -3125,7 +3128,13 @@ impl Game {
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
                     let exile = obj.zone == Zone::Exile && self.can_play_exiled(actor, card);
                     let library = self.can_cast_library_top(actor, card);
-                    if (obj.zone != Zone::Hand && !flashback && !exile && !library)
+                    let graveyard_land = obj.card.is_land()
+                        && self.has_graveyard_cast(actor, card, GraveyardCastKind::Play);
+                    if (obj.zone != Zone::Hand
+                        && !flashback
+                        && !exile
+                        && !library
+                        && !graveyard_land)
                         || obj.is_token()
                     {
                         continue;

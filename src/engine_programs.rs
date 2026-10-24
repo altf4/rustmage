@@ -2153,6 +2153,7 @@ impl Game {
                     self.start_connive(&item, subject, amount)
                 }
                 Instruction::GrantGraveyardCast(kind) => self.grant_graveyard_cast(&item, kind),
+                Instruction::GrantMilledPlay => self.grant_milled_play(item.controller),
                 Instruction::ExileDiscardedWithStash => self.exile_discarded_with_stash(&item),
                 Instruction::ExileEachLibraryTopCastFree => {
                     self.exile_each_top_cast_free(item.controller);

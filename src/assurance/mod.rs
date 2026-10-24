@@ -144,3 +144,5 @@ mod sos_black_red;
 mod sos_multicolor;
 
 mod sos_white_blue;
+
+mod sos_milled_play;

@@ -54,7 +54,9 @@ impl Game {
                     rows.iter().any(|row| {
                         row.player == player
                             && row.object == self.object_ref(card)
-                            && row.kind == kind
+                            && (row.kind == kind
+                                || (kind == GraveyardCastKind::Cast
+                                    && row.kind == GraveyardCastKind::Play))
                             && row.expires_turn >= self.state.turn
                     })
                 })
@@ -70,20 +72,51 @@ impl Game {
             if self.state.objects[card as usize].zone != Zone::Graveyard {
                 continue;
             }
-            let row = GraveyardCastPermissionView {
-                object: self.object_ref(card),
-                player: item.controller,
-                kind,
-                expires_turn: self.state.turn,
-            };
-            let rows = self
-                .state
-                .graveyard_cast_permissions
-                .get_or_insert_with(Default::default);
-            if !rows.contains(&row) {
-                rows.try_reserve(1)
-                    .capacity("graveyard casting permission allocation exhausted");
-                rows.push(row);
+            self.grant_graveyard_permission(item.controller, self.object_ref(card), kind);
+        }
+    }
+    pub(super) fn grant_graveyard_permission(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        kind: GraveyardCastKind,
+    ) {
+        let card = &self.state.objects[object.card as usize];
+        if self.object_ref(object.card) != object
+            || card.zone != Zone::Graveyard
+            || card.is_token()
+            || card.card.is_emblem()
+        {
+            return;
+        }
+        let row = GraveyardCastPermissionView {
+            object,
+            player,
+            kind,
+            expires_turn: self.state.turn,
+        };
+        let rows = self
+            .state
+            .graveyard_cast_permissions
+            .get_or_insert_with(Default::default);
+        if !rows.contains(&row) {
+            rows.try_reserve(1)
+                .capacity("graveyard casting permission allocation exhausted");
+            rows.push(row);
+        }
+    }
+    pub(super) fn grant_milled_play(&mut self, player: Player) {
+        let milled = self.state.resolving.as_ref().unwrap().milled.clone();
+        for object in milled {
+            if self.object_ref(object.card) != object {
+                continue;
+            }
+            match self.state.objects[object.card as usize].zone {
+                Zone::Graveyard => {
+                    self.grant_graveyard_permission(player, object, GraveyardCastKind::Play)
+                }
+                Zone::Exile => self.grant_exile_play_permission(player, object, false),
+                _ => (),
             }
         }
     }

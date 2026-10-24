@@ -62,6 +62,8 @@ impl CopyExceptions {
 /// A temporary permission on one graveyard incarnation, independent of its grantor.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum GraveyardCastKind {
+    /// Play this exact card normally, including a land, through the deadline.
+    Play,
     Cast,
     Flashback,
 }
@@ -768,6 +770,8 @@ pub(crate) enum Instruction {
     },
     ChangeSingleStackTarget,
     GrantGraveyardCast(GraveyardCastKind),
+    /// Permission for the exact public card(s) just milled by this resolution.
+    GrantMilledPlay,
     ExileDiscardedWithStash,
     ExileEachLibraryTopCastFree,
     CounterRelatedUnlessPayLife(u32),
