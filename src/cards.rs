@@ -373,6 +373,7 @@ pub(crate) struct ChosenModifier {
 /// Rules attached to produced mana, captured independently of its producer.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaRestriction {
+    InstantSorcery,
     Unrestricted,
     SpellSubtype(&'static str),
     ChosenCreatureSpellOrActivation,

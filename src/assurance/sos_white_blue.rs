@@ -858,3 +858,228 @@ fn sos_jadzi_x_counts_all_own_fractals_and_two_x_symbols_are_paid() {
         }
     }
 }
+
+fn hydro_mana(g: &mut Game, source: CardId, ability: u16, production: Mana) {
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| {
+            matches!(a,
+        Action::ActivateMana { card, ability: i, production: p, .. } |
+        Action::AnnounceMana { card, ability: i, production: p, .. }
+            if *card == source && *i == ability && *p == production)
+        })
+        .unwrap();
+    let announce = matches!(action, Action::AnnounceMana { .. });
+    big_helpers::checked(g, action);
+    if announce {
+        pay(g);
+    }
+}
+
+#[test]
+fn sos_hydro_restrictions_cover_actual_speculative_abilities_and_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.players[p.index()].mana = [0; 6];
+        let _hydro = put(&mut g, p, "Hydro-Channeler", Zone::Battlefield);
+        put(&mut g, p, "Forest", Zone::Battlefield);
+        let creature = put(&mut g, p, "Bear Cub", Zone::Hand);
+        let spell = put(&mut g, p, "Unsummon", Zone::Hand);
+        assert!(!g.legal_actions().iter().any(|a| matches!(a, Action::AnnounceCast { card } | Action::Cast { card, .. } if *card == creature)));
+        assert!(
+            g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::AnnounceCast { card } if *card == spell))
+        );
+        let mut g = scenario(p);
+        g.state.players[p.index()].mana = [0; 6];
+        let hydro = put(&mut g, p, "Hydro-Channeler", Zone::Battlefield);
+        let turtle = put(&mut g, p, "Aegis Turtle", Zone::Hand);
+        let tome = put(&mut g, p, "Mazemind Tome", Zone::Battlefield);
+        assert_eq!(stats(&g, hydro), (1, 3));
+        hydro_mana(&mut g, hydro, 0, [0, 1, 0, 0, 0, 0]);
+        assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 0, 0]);
+        g.untap_objects(&[hydro], UntapCause::Effect);
+        reject(
+            &mut g,
+            Action::AnnounceMana {
+                card: hydro,
+                ability: 1,
+                counter_payment: Counters::default(),
+                production: [1, 0, 0, 0, 0, 0],
+            },
+        );
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: tome,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(&mut g, Action::AnnounceCast { card: turtle });
+        g.state.players[p.index()].mana[4] = 1;
+        hydro_mana(&mut g, hydro, 1, [1, 0, 0, 0, 0, 0]);
+        assert_eq!(g.state.players[p.index()].mana, [1, 1, 0, 0, 0, 0]);
+        assert!(
+            g.observe(p)
+                .mana_lots
+                .iter()
+                .all(|lot| lot.restriction == ManaRestrictionView::InstantSorcery)
+        );
+        g.move_object(hydro, Zone::Graveyard);
+        reject(&mut g, Action::AnnounceCast { card: turtle });
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Harsh Annotation", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(target)));
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn sos_hydro_restricted_mana_cannot_pay_ward_during_resolution() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.players[p.index()].mana = [0; 6];
+        for _ in 0..3 {
+            let hydro = put(&mut g, p, "Hydro-Channeler", Zone::Battlefield);
+            hydro_mana(&mut g, hydro, 0, [0, 1, 0, 0, 0, 0]);
+        }
+        let warded = put(&mut g, p.other(), "Campus Composer", Zone::Battlefield);
+        let spell = put(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(warded)));
+        until_pending_choice(&mut g);
+        assert!(matches!(g.state.pending, Pending::ResolutionMana { .. }));
+        assert_eq!(g.state.players[p.index()].mana, [0, 2, 0, 0, 0, 0]);
+        reject(
+            &mut g,
+            Action::PayResolutionMana {
+                payment: [0, 2, 0, 0, 0, 0],
+            },
+        );
+        act(&mut g, Action::DeclineResolutionMana);
+        settle(&mut g);
+        assert_eq!(g.object_view(warded).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_rejoinder_all_resolution_choices_draw_and_fizzle() {
+    for p in [Player::P0, Player::P1] {
+        for (choice, tapped) in [(0, false), (1, true), (2, false), (2, true)] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Elite Interceptor", Zone::Hand);
+            cast(&mut g, source, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (1, 2));
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[target as usize].tapped = tapped;
+            let hand = g.hand_count(p);
+            prepared_cast(&mut g, source, &[Target::Card(target)]);
+            until_pending_choice(&mut g);
+            act(
+                &mut g,
+                Action::ChooseOptional {
+                    accept: choice == 0,
+                },
+            );
+            if choice != 0 {
+                act(
+                    &mut g,
+                    Action::ChooseOptional {
+                        accept: choice == 1,
+                    },
+                );
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(target).tapped,
+                match choice {
+                    0 => true,
+                    1 => false,
+                    _ => tapped,
+                }
+            );
+            assert_eq!(g.hand_count(p), hand + 1);
+        }
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Elite Interceptor", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let hand = g.hand_count(p);
+        prepared_cast(&mut g, source, &[Target::Card(target)]);
+        g.move_object(target, Zone::Hand);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), hand);
+        assert!(!g.object_view(source).prepared);
+    }
+}
+
+fn offense(
+    g: &mut Game,
+    source: CardId,
+    player: Player,
+    target: CardId,
+    flashback: bool,
+    double_strike: bool,
+) {
+    act(
+        g,
+        if flashback {
+            Action::AnnounceFlashback { card: source }
+        } else {
+            Action::AnnounceCast { card: source }
+        },
+    );
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Player(player),
+        },
+    );
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    pay(g);
+    until_pending_choice(g);
+    act(
+        g,
+        Action::ChooseOptional {
+            accept: double_strike,
+        },
+    );
+    settle(g);
+}
+
+#[test]
+fn sos_practiced_offense_player_counters_resolution_keyword_and_flashback() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let ours = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let theirs = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Practiced Offense", Zone::Hand);
+        offense(&mut g, spell, p.other(), ours, false, true);
+        assert_eq!(g.counter_count(ours, CounterKind::PlusOne), 0);
+        assert_eq!(g.counter_count(theirs, CounterKind::PlusOne), 1);
+        assert!(g.keywords(ours).contains(Keywords::DOUBLE_STRIKE));
+        g.finish_cleanup();
+        g.state.active = p;
+        g.state.priority = p;
+        g.state.step = Step::Main1;
+        g.state.pending = Pending::Priority;
+        g.state.players[p.index()].mana = [8; 6];
+        assert!(!g.keywords(ours).contains(Keywords::DOUBLE_STRIKE));
+        offense(&mut g, spell, p, theirs, true, false);
+        assert_eq!(g.counter_count(ours, CounterKind::PlusOne), 1);
+        assert!(g.keywords(theirs).contains(Keywords::LIFELINK));
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+    }
+}
