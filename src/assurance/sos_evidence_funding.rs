@@ -129,7 +129,7 @@ fn sos_evidence_funding_returned_courtyard_uses_projected_chosen_type_quality() 
             return_zone: Zone::Battlefield,
         });
         let ring = put(&mut g, p, "Lotus Ring", Zone::Battlefield);
-        let mut animation = g.activation_item(ring, 0);
+        let mut animation = g.activation_item(p, ring, 0);
         animation.card = prison;
         animation.object = g.object_ref(prison);
         g.animate_source(
