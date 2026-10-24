@@ -1521,6 +1521,7 @@ struct State {
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
+    counter_placement_history: counter_placement_history::Rows,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
@@ -1879,6 +1880,7 @@ pub struct Observation {
     pub mana_lots: Vec<ManaLotView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
+    pub counter_placement_history: Vec<CounterPlacementHistoryView>,
     pub additional_combats: u64,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
@@ -2119,6 +2121,7 @@ impl Game {
                 named_counters: None,
                 combat_rules: None,
                 creature_damage_history: None,
+                counter_placement_history: None,
                 entry_values: None,
                 copy_recipes: None,
                 graveyard_entries: None,
@@ -5152,8 +5155,15 @@ impl Game {
         if before.zone == Zone::Stack {
             self.continue_stack_keywords(before.reference, self.object_ref(id), destination);
         }
+        let entered_with_counters = counters.has_any();
         self.set_counters(id, counters);
         if destination == Zone::Battlefield {
+            if entered_with_counters {
+                self.record_counter_placement(
+                    self.object_ref(id),
+                    self.state.objects[id as usize].controller,
+                );
+            }
             let (owner, card) = entry_identity;
             self.record_nonland_entry(owner, card);
             self.register_battlefield_sources(id);
@@ -5245,6 +5255,7 @@ impl Game {
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
+        self.state.counter_placement_history = None;
         self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
@@ -5832,6 +5843,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.animations.clone()),
+            counter_placement_history: s
+                .counter_placement_history
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             creature_damage_history: s
                 .creature_damage_history
                 .as_ref()
@@ -6343,6 +6358,7 @@ impl Game {
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.linked_choices.as_ref().map_or(0, |c| c.bytes())
+            + counter_placement_history::owned_bytes(&s.counter_placement_history)
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
             + s.pending.owned_bytes()
@@ -6642,6 +6658,9 @@ impl Game {
 #[path = "engine_card_quantities.rs"]
 mod card_quantities;
 pub use card_quantities::SourceCounterQuantityView;
+#[path = "engine_counter_placement_history.rs"]
+mod counter_placement_history;
+pub use counter_placement_history::CounterPlacementHistoryView;
 
 pub use search::OptionalSearchSequence;
 #[path = "engine_event_counter_core.rs"]

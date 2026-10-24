@@ -961,3 +961,226 @@ fn sos_slumbering_trudge_counter_replacement_and_reanimation_uses_x_zero() {
         assert!(g.object_view(source).tapped);
     }
 }
+
+#[test]
+fn sos_trove_all_colors_and_cast_guard_survives_fizzle_and_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = paid(&mut g, p, "Potioner's Trove", None, &[]);
+        settle(&mut g);
+        let activate = Action::AnnounceActivate {
+            card: source,
+            ability: 1,
+            counter_payment: Counters::default(),
+        };
+        reject(&mut g, activate.clone());
+        let choices: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter(
+                |a| matches!(a, Action::ActivateMana { card, ability: 0, .. } if *card == source),
+            )
+            .collect();
+        assert_eq!(choices.len(), 5);
+        for action in choices {
+            let Action::ActivateMana { production, .. } = action else {
+                unreachable!()
+            };
+            assert_eq!(production[5], 0);
+            assert_eq!(production.iter().sum::<u32>(), 1);
+            checked(&mut g, action);
+            g.state.objects[source as usize].tapped = false;
+        }
+        paid(&mut g, p, "Bear Cub", None, &[]);
+        settle(&mut g);
+        reject(&mut g, activate.clone());
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        paid(
+            &mut g,
+            p,
+            "Oracle's Restoration",
+            None,
+            &[Target::Card(bear)],
+        );
+        g.move_object(bear, Zone::Graveyard);
+        settle(&mut g);
+        let life = g.state.players[p.index()].life;
+        checked(&mut g, activate);
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 2);
+        g.move_object(source, Zone::Battlefield);
+        g.begin_turn();
+        g.state.pending = Pending::Priority;
+        g.state.priority = p;
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+    }
+}
+
+#[test]
+fn sos_tender_increment_ward_and_counter_removal_end_step_history() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = paid(&mut g, p, "Fractal Tender", None, &[]);
+        settle(&mut g);
+        g.begin_step(Step::End);
+        settle(&mut g);
+        assert!(tokens(&g, p, Card::SosFractalToken).is_empty());
+        g.begin_step(Step::Main1);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        paid(
+            &mut g,
+            p,
+            "Oracle's Restoration",
+            None,
+            &[Target::Card(source)],
+        );
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 0);
+        paid(&mut g, p, "Germination Practicum", None, &[]);
+        settle(&mut g);
+        assert!(g.counter_count(source, CounterKind::PlusOne) >= 2);
+        assert!(g.put_counter_on_source_this_turn(g.object_ref(source), p));
+        g.set_counters(source, Counters::default());
+        g.state.active = p.other();
+        g.begin_step(Step::End);
+        g.prepare_triggers();
+        g.move_object(source, Zone::Graveyard);
+        g.move_object(source, Zone::Battlefield);
+        assert!(!g.put_counter_on_source_this_turn(g.object_ref(source), p));
+        settle(&mut g);
+        let made = tokens(&g, p, Card::SosFractalToken);
+        assert_eq!(made.len(), 1);
+        assert_eq!(g.counter_count(made[0], CounterKind::PlusOne), 3);
+        assert!(g.on_battlefield(bear));
+        g.begin_turn();
+        assert!(g.state.counter_placement_history.is_none());
+    }
+}
+
+#[test]
+fn sos_counter_history_entry_placement_owner_and_exact_generation() {
+    let mut g = setup(Player::P0);
+    let source = named(&mut g, Player::P1, "Fractal Tender", Zone::Hand);
+    let before = g.object_view(source);
+    let mut counters = Counters::default();
+    counters.add(CounterKind::Stun, 1);
+    g.transition_object_under_control(before, Zone::Battlefield, false, counters, Some(Player::P0));
+    let old = g.object_ref(source);
+    assert!(g.put_counter_on_source_this_turn(old, Player::P0));
+    assert!(!g.put_counter_on_source_this_turn(old, Player::P1));
+    assert_eq!(
+        g.observe(Player::P0).counter_placement_history,
+        g.observe(Player::P1).counter_placement_history
+    );
+    g.set_counters(source, Counters::default());
+    assert!(g.put_counter_on_source_this_turn(old, Player::P0));
+    g.move_object(source, Zone::Graveyard);
+    g.move_object(source, Zone::Battlefield);
+    assert!(!g.put_counter_on_source_this_turn(g.object_ref(source), Player::P0));
+    g.self_counters_added(g.object_ref(source), CounterKind::Page, 0, Player::P0);
+    assert!(!g.put_counter_on_source_this_turn(g.object_ref(source), Player::P0));
+    g.begin_turn();
+    assert!(!g.put_counter_on_source_this_turn(old, Player::P0));
+}
+
+#[test]
+fn sos_scolding_repartee_optional_historical_all_counter_transfer_and_replacements() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = paid(&mut g, p, "Scolding Administrator", None, &[]);
+        settle(&mut g);
+        let target = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        paid(
+            &mut g,
+            p,
+            "Oracle's Restoration",
+            None,
+            &[Target::Card(target)],
+        );
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 1);
+        assert!(g.keywords(source).contains(Keywords::MENACE));
+        g.add_counter(source, CounterKind::Page, 2);
+        g.add_counter(source, CounterKind::Stun, 3);
+        g.move_object(source, Zone::Graveyard);
+        g.move_object(source, Zone::Battlefield);
+        g.add_counter(source, CounterKind::PlusOne, 9);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        target_settle(&mut g, target);
+        assert_eq!(g.counter_count(target, CounterKind::PlusOne), 2);
+        assert_eq!(g.counter_count(target, CounterKind::Page), 4);
+        assert_eq!(g.counter_count(target, CounterKind::Stun), 6);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 9);
+        let fresh = paid(&mut g, p, "Scolding Administrator", None, &[]);
+        settle(&mut g);
+        g.move_object(fresh, Zone::Graveyard);
+        assert!(g.state.pending_triggers.is_empty());
+    }
+}
+
+#[test]
+fn sos_tender_ward_decline_counters_opponents_targeted_spell() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Fractal Tender", Zone::Battlefield);
+        g.state.priority = p.other();
+        let spell = paid(&mut g, p.other(), "Unsummon", None, &[Target::Card(source)]);
+        for _ in 0..16 {
+            if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::ResolutionMana { .. }));
+        checked(&mut g, Action::DeclineResolutionMana);
+        settle(&mut g);
+        assert!(g.on_battlefield(source));
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_scolding_optional_zero_target_and_target_reentry_failure() {
+    for choose in [false, true] {
+        let p = Player::P0;
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Scolding Administrator", Zone::Battlefield);
+        let target = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.add_counter(source, CounterKind::Page, 2);
+        g.move_object(source, Zone::Graveyard);
+        g.prepare_triggers();
+        if choose {
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+        } else {
+            checked(&mut g, Action::FinishTargets);
+        }
+        if g.state.announcing.is_some() {
+            checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        }
+        if choose {
+            g.move_object(target, Zone::Graveyard);
+            g.move_object(target, Zone::Battlefield);
+        }
+        settle(&mut g);
+        assert_eq!(g.counter_count(target, CounterKind::Page), 0);
+    }
+}

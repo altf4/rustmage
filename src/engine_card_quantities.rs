@@ -21,7 +21,8 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
     }
     for instruction in program {
         match *instruction {
-            Instruction::CreateTokensWithSourceCounters { .. } => {
+            Instruction::CreateTokensWithSourceCounters { .. }
+            | Instruction::PutSourceCountersOnTargets => {
                 for kind in CounterKind::ALL {
                     if !kinds.contains(&kind) {
                         kinds.push(kind);

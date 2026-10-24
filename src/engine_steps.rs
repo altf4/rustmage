@@ -123,6 +123,9 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::SourceReceivedCounterThisTurn => {
+                return self.put_counter_on_source_this_turn(source, player);
+            }
             StepGuard::YourTurn => return self.state.active == player,
             StepGuard::SourcePowerAtLeast(minimum) => {
                 return self.on_battlefield(source.card)

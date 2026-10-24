@@ -1264,6 +1264,7 @@ pub(crate) enum Instruction {
         token: Card,
         amount: u16,
     },
+    PutSourceCountersOnTargets,
     CreateTokensWithCounters {
         token: Card,
         amount: u16,
@@ -2119,6 +2120,7 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    SourceReceivedCounterThisTurn,
     YourTurn,
     SourcePowerAtLeast(u16),
     SourceToughnessAtMost(u16),

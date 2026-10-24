@@ -199,6 +199,7 @@ impl Game {
         {
             return;
         }
+        self.record_counter_placement(object, placed_by);
         self.queue_state_counter_triggers();
         if !self.state.counter_sources.is_empty() {
             let recipient = self.object_view(object.card);
@@ -2394,6 +2395,22 @@ impl Game {
                 Instruction::ActivationX => (),
                 Instruction::DestroyCombatDamagedPlayersPermanents => {
                     self.destroy_combat_damaged_players_permanents(&item)
+                }
+                Instruction::PutSourceCountersOnTargets => {
+                    let mut counters = Counters::default();
+                    for kind in CounterKind::ALL {
+                        counters.add(
+                            kind,
+                            u64::try_from(self.item_amount(AmountValue::SourceCounterQuantity(kind), &item))
+                                .capacity("counter transfer quantity exhausted"),
+                        );
+                    }
+                    let changes = self
+                        .keyword_subjects(&item, Subject::Targets)
+                        .into_iter()
+                        .map(|id| (self.object_ref(id), counters.clone()))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::CreateTokensWithSourceCounters { token, amount } => {
                     self.create_tokens_with_source_counters(&item, token, amount);
