@@ -537,6 +537,14 @@ impl<'g> FundingState<'g> {
         };
         result.set_cost_context(game.state.announcing.as_ref());
         if let Some(a) = game.state.announcing.as_ref()
+            && !a.additional_paid
+            && a.additional_cost().and_then(evidence::threshold).is_some()
+        {
+            // Ordinary evidence declarations also need their selected exact
+            // incarnations protected while nested mana abilities consume fuel.
+            result.set_payment_context(a);
+        }
+        if let Some(a) = game.state.announcing.as_ref()
             && goal
                 .source
                 .as_ref()
@@ -1608,26 +1616,18 @@ impl<'g> FundingState<'g> {
         masks
     }
     fn evidence_value(&self) -> u128 {
-        let actual: u128 = self
-            .game
+        // A mana payment may exile an existing graveyard card or create new
+        // evidence by sacrificing a permanent. Read each exact virtual object
+        // once rather than retaining the actual world's departed graveyard cards.
+        self.game
             .state
             .objects
             .iter()
+            .enumerate()
+            .map(|(id, _)| self.object(id as CardId))
             .filter(|o| o.owner == self.actor && o.zone == Zone::Graveyard && !o.is_token())
             .map(|o| u128::from(o.card.fixed_mana_value()))
-            .sum();
-        actual
-            + self
-                .resources
-                .iter()
-                .filter(|r| {
-                    r.object.owner == self.actor
-                        && r.object.zone == Zone::Graveyard
-                        && self.game.state.objects[r.id as usize].zone != Zone::Graveyard
-                        && !r.object.is_token()
-                })
-                .map(|r| u128::from(r.object.card.fixed_mana_value()))
-                .sum::<u128>()
+            .sum()
     }
     fn reachable(&self, goal: &FundingGoal, visited: &mut HashSet<FundingKey>) -> bool {
         self.reachable_with_evidence(goal, None, visited)
@@ -1923,22 +1923,27 @@ impl Game {
         threshold: u16,
         purpose: mana_lots::Purpose,
     ) -> bool {
-        if self.can_collect_evidence(goal.actor, threshold) {
-            return self.can_fund_for(goal.clone(), purpose);
-        }
+        let current = self.state.announcing.as_ref().filter(|a| {
+            a.item.controller == goal.actor
+                && matches!(purpose, mana_lots::Purpose::Spell(spell) if a.item.source_card == spell.card)
+        });
+        let selection = current.and_then(|a| a.evidence.as_deref());
         if let Some(result) = self.preview_optional_cast_costs(
             goal.clone(),
             purpose,
-            ObjectRef {
-                card: CardId::MAX,
-                generation: 0,
-            },
+            current.map_or(
+                ObjectRef {
+                    card: CardId::MAX,
+                    generation: 0,
+                },
+                |a| a.item.object,
+            ),
             Some(evidence::cost(threshold)),
             None,
+            selection.map_or(&[], |e| e.selected.as_slice()),
+            selection.is_some_and(|e| e.complete),
             &[],
-            false,
-            &[],
-            &[],
+            &[CastCostClause::Additional],
         ) {
             return result;
         }
