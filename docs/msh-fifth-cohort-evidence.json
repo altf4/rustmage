@@ -1,0 +1,349 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Eight whole-card candidates; frozen source and parent evidence at publication, with final independent reviews and ordinary full release validation pending",
+  "base_main": "cb3d5838289562f596e4b01d4682b7e4520e1a5b",
+  "recording_runtime_head": "a06fd18e40038abcc367bde35f878923a837d957",
+  "membership": {
+    "frozen_oracle_identities": 281,
+    "frozen_printings": 448,
+    "merged_admission_flags_at_base": 158,
+    "new_whole_card_candidates": 8,
+    "combined_admission_flags": 166,
+    "remaining_gated": 115,
+    "acceptance": "Pending entire-pool obligations, interactions, complete legal MSH-only games and performance"
+  },
+  "complete_candidate_cards": [
+    "Alien Invasion",
+    "Falcon, Winged Wonder",
+    "Invisible Woman, Sue Storm",
+    "King T'Challa // Black Panther, Hope Enduring",
+    "Super Intelligence",
+    "The Sentry, Golden Guardian",
+    "Villainous Hideout",
+    "Vision of Love"
+  ],
+  "parents": [
+    {
+      "label": "king",
+      "head": "e769b86e8f7cfe2f68558381c122d0dca7090527",
+      "count": 2462,
+      "schema": 141,
+      "pull_request": "https://github.com/altf4/rustmage/pull/499",
+      "evidence": "docs/msh-king-evidence.json"
+    },
+    {
+      "label": "counter_batches",
+      "head": "8b752f22c71182f6eafd19a659375c238d3eae7b",
+      "count": 2462,
+      "schema": 141,
+      "pull_request": "https://github.com/altf4/rustmage/pull/501",
+      "evidence": "docs/msh-counter-event-batch-evidence.json"
+    },
+    {
+      "label": "optional_cost_union",
+      "head": "371f78fea19a3033da9f115050c757065c8b9ca3",
+      "count": 2462,
+      "schema": 142,
+      "pull_request": "https://github.com/altf4/rustmage/pull/500",
+      "evidence": "docs/msh-optional-cost-union-evidence.json"
+    },
+    {
+      "label": "hideout_falcon",
+      "head": "d8958c1a8fc77634bb7984d9ca9cd0b70410df6d",
+      "count": 2464,
+      "schema": 141,
+      "pull_request": "https://github.com/altf4/rustmage/pull/502",
+      "evidence": "docs/msh-hideout-falcon-evidence.json"
+    },
+    {
+      "label": "super_intelligence",
+      "head": "7a924414e72a54fc2b1b32271283ebe4b270a0d2",
+      "count": 2463,
+      "schema": 141,
+      "pull_request": "https://github.com/altf4/rustmage/pull/503",
+      "evidence": "docs/msh-super-intelligence-evidence.json"
+    },
+    {
+      "label": "sentry_alien",
+      "head": "cfbd98ba2971cf796472fc0ff0e84dc87bfc880e",
+      "count": 2466,
+      "schema": 141,
+      "pull_request": "https://github.com/altf4/rustmage/pull/504",
+      "evidence": "docs/msh-sentry-alien-evidence.json"
+    }
+  ],
+  "shared_rules": [
+    "A typed post-commit counter placement batch observer queues once per ability over all simultaneous recipients/kinds, including noncreature Heroes and exact placing players; existing recipient events and history remain",
+    "Every ordinary counter recipient commits before observers; actual simultaneous entries notify after commit, never during counter replacement preview; the single-recipient fast path emits the same event",
+    "A private optional resolution choice between a filtered artifact sacrifice and a hand discard reuses owned object choice and existing actions; no hidden affordability phase leak, exact payer/cause and replacement continuation",
+    "A shared live/funding exact attachment predicate qualifies the enchanted controller upkeep at trigger time; existing Active player draw remains bound to the original upkeep despite later attachment/control/departure changes"
+  ],
+  "whole_card_reuse": [
+    "King modal faces use merged face casting, exact transformation, second-player-draw observers, repeated prevention and combat-player draw",
+    "Falcon and Redwing use exact token creation, flying, legendary rule and attack surveil",
+    "Villainous Hideout uses subtype source mana restrictions for spells and abilities, including noncreature Kindred Villains and permanent connive",
+    "The Sentry creates the exact Void for its targeted opponent; target legality, recipient replacements and legendary token obligations apply",
+    "Alien Invasion freezes live/departure source counter quantity, completes token and counter replacements before exact-source increment, and creates mandatory-attacking haste Aliens"
+  ],
+  "integration_scenario": {
+    "source": "src/engine_msh_fifth_combined_tests.rs",
+    "sha256": "47f946218302bb9cd428e64cb9d8c1379db7fe4bc5534e26c001765dfa691a25",
+    "coverage": "Both seats and both paid cost routes: Photon simultaneous other-Hero counters cause one optional Wall before Vision payment; Vision draws cause King second-draw recursion and Kid Loki independent counter/second Wall, with private choice, history-qualified hexproof, raw/index branches, parent disposal and restore",
+    "passed": true,
+    "resource_report": "<cache>/rustmage-build-reports/9b5a83e8e17b4f2aad683e3705c6c5e0.json"
+  },
+  "rules_scenarios": {
+    "base_native": 741,
+    "new_total": 61,
+    "counter_batches": 10,
+    "king": 9,
+    "optional_cost_union": 11,
+    "hideout_falcon": 11,
+    "super_intelligence": 9,
+    "sentry_alien": 10,
+    "combined": 1,
+    "expected_full_native_total": 802,
+    "at_publication": "Every parent focused case and the combined scenario passes; full ordinary integrated run remains pending"
+  },
+  "wire_and_identity": {
+    "schema": 142,
+    "real_wire_change": "Public EffectChoiceKind vocabulary appends SacrificeOrDiscard { nonland }; existing action variants and choice ownership are reused",
+    "counter_batch_or_upkeep_new_saved_fields": 0,
+    "catalogue_definitions": 5396,
+    "verified_java_blobs": 1133,
+    "metadata_audit": {
+      "base": "cb3d5838289562f596e4b01d4682b7e4520e1a5b",
+      "old_ids": 5392,
+      "new_total": 5396,
+      "old_card_rows_identical_except_explicit_king_face_overlay": true,
+      "old_intrinsic_colors_aliases_token_recipes_emblems_creature_types_and_constants_preserved": true,
+      "appended": [
+        {
+          "id": 5392,
+          "name": "Black Panther, Hope Enduring",
+          "category": "back_face",
+          "path": "msh/black_panther_hope_enduring.rs"
+        },
+        {
+          "id": 5393,
+          "name": "@token/msh-redwing",
+          "category": "token",
+          "path": "synthetic/token_msh_redwing.rs"
+        },
+        {
+          "id": 5394,
+          "name": "@token/msh-void",
+          "category": "token",
+          "path": "synthetic/token_msh_void.rs"
+        },
+        {
+          "id": 5395,
+          "name": "@token/msh-alien",
+          "category": "token",
+          "path": "synthetic/token_msh_alien.rs"
+        }
+      ],
+      "added_aliases": [
+        [
+          "@token/msh-alien",
+          5395
+        ],
+        [
+          "@token/msh-redwing",
+          5393
+        ],
+        [
+          "@token/msh-void",
+          5394
+        ],
+        [
+          "Black Panther, Hope Enduring",
+          5392
+        ],
+        [
+          "King T'Challa",
+          2361
+        ]
+      ],
+      "added_constants": {
+        "MshBlackPantherHopeEnduring": 5392
+      },
+      "old_metadata_sha256": "c59046582df4864cdca9e5045afe1138c464886e4fb76845dc88bc9eb909be4c",
+      "new_metadata_sha256": "c1cd27d34f452e2b0f10335d69cff731ea0250b356a8c4f82705038a78fa77cd"
+    }
+  },
+  "trace_proof": {
+    "main_inherited": 2461,
+    "candidate": 2469,
+    "parent_full_trace_checks": [
+      {
+        "label": "main",
+        "head": "cb3d5838289562f596e4b01d4682b7e4520e1a5b",
+        "count": 2461,
+        "schema": 141,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "4bca89bf9e430e607a3ba7600fb039574567382f5ab87bc7d3596eeb361fc1bc"
+      },
+      {
+        "label": "king",
+        "head": "e769b86e8f7cfe2f68558381c122d0dca7090527",
+        "count": 2462,
+        "schema": 141,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "391c1a5a00173430256997abc00091aaa6368e0e940ef654db25191dc5b6f525"
+      },
+      {
+        "label": "counter_batches",
+        "head": "8b752f22c71182f6eafd19a659375c238d3eae7b",
+        "count": 2462,
+        "schema": 141,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "f44d60b02d9beb3a1dae009d5ea6d91c50f3b57e31d5a2ba09eebbe111ca3371"
+      },
+      {
+        "label": "optional_cost_union",
+        "head": "371f78fea19a3033da9f115050c757065c8b9ca3",
+        "count": 2462,
+        "schema": 142,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "d6c84d39eab74fc3cbef80393400d9589217b0bf4373b1c47cade81d16e57f5d"
+      },
+      {
+        "label": "hideout_falcon",
+        "head": "d8958c1a8fc77634bb7984d9ca9cd0b70410df6d",
+        "count": 2464,
+        "schema": 141,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "55aed040246b916ad9ef77e198e2dd1c74acc7118ac10f3db9d2a824f28d7776"
+      },
+      {
+        "label": "super_intelligence",
+        "head": "7a924414e72a54fc2b1b32271283ebe4b270a0d2",
+        "count": 2463,
+        "schema": 141,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "2cd1ec02b469340f5330986f75b3f5d636b598ba7d19bc83ce8ceeddbc1e4384"
+      },
+      {
+        "label": "sentry_alien",
+        "head": "cfbd98ba2971cf796472fc0ff0e84dc87bfc880e",
+        "count": 2466,
+        "schema": 141,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "39321eefb3c0291e670a1488670fb71d0f4bfda8fa8d74e379a62817b500cdb8"
+      }
+    ],
+    "added": [
+      "Alien Invasion",
+      "Falcon, Winged Wonder",
+      "Invisible Woman, Sue Storm",
+      "King T'Challa // Black Panther, Hope Enduring",
+      "Super Intelligence",
+      "The Sentry, Golden Guardian",
+      "Villainous Hideout",
+      "Vision of Love"
+    ],
+    "removed": [],
+    "normal142_sha256": "875c9bc250cc499e7fa8e256494d862137eafcad09366cfd259942762f0e25da",
+    "previous141_sha256": "9f570ea34ef600bb3be5f3993024b0c4f8aabad1829714b0a5eca5975983710a",
+    "new_rows": {
+      "Alien Invasion": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "93960e4584c5ba85",
+        "observations": "b03c9f2a5de75b11"
+      },
+      "Falcon, Winged Wonder": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 6,
+        "zone": "Battlefield",
+        "journal": "e76150aa06e3b272",
+        "observations": "70075a9fddd9a088"
+      },
+      "Invisible Woman, Sue Storm": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "db7b0f4bd7e53672",
+        "observations": "6481eb8903d9a0ba"
+      },
+      "King T'Challa // Black Panther, Hope Enduring": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "e625fc58634bfdee",
+        "observations": "25aba29dbb5d5ecf"
+      },
+      "Super Intelligence": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 5,
+        "zone": "Battlefield",
+        "journal": "a473b4d0d5d9886c",
+        "observations": "392b299fefc4feb7"
+      },
+      "The Sentry, Golden Guardian": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Battlefield",
+        "journal": "d3cfe4a97aad8424",
+        "observations": "a82086056909b13c"
+      },
+      "Villainous Hideout": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 1,
+        "zone": "Battlefield",
+        "journal": "1c41fdead70727d2",
+        "observations": "cafa7407396182cd"
+      },
+      "Vision of Love": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 5,
+        "zone": "Graveyard",
+        "journal": "d7212bf99c322558",
+        "observations": "cab92543befcc695"
+      }
+    }
+  },
+  "recording": {
+    "helper_changed": false,
+    "normal_schema": 142,
+    "previous_schema": 141,
+    "normal": "<cache>/rustmage-msh-fifth-cohort-traces.json",
+    "previous": "<cache>/rustmage-msh-fifth-cohort-traces.previous-schema.json",
+    "resource_report": "<cache>/rustmage-build-reports/b9ca9222e29144c1aec14f90c8e67f86.json",
+    "expected_exit_101": "Ordinary comparison catches the mixed-parent new rows still carrying schema 141 observation hashes; all full parent structs are separately proven exact at their own schema before accepting the normal 142 table",
+    "inherited_behavior_changes_accepted": false
+  },
+  "validation_at_publication": {
+    "source_provenance": "Pass: 5396 definitions and 1133 immutable Java blobs",
+    "linker": "Regenerated; no manual generated edits",
+    "combined": "Pass",
+    "full_release": "Pending on the fixed final published integration head",
+    "two_independent_nonauthor_reviews": "Pending refresh of the complete final published integration head; preliminary pinned-parent audits do not count as final approval"
+  },
+  "created_utc": "2026-10-24T23:07:01.410286+00:00"
+}

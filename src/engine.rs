@@ -221,6 +221,12 @@ mod modal_history;
 #[cfg(test)]
 #[path = "engine_msh_faces_tests.rs"]
 mod msh_faces_tests;
+#[cfg(test)]
+#[path = "engine_msh_king_tests.rs"]
+mod msh_king_tests;
+#[cfg(test)]
+#[path = "engine_super_intelligence_tests.rs"]
+mod super_intelligence_tests;
 pub use faces::FaceView;
 pub use modal_history::ModalHistoryView;
 #[path = "engine_ability_evaluation.rs"]
@@ -3025,6 +3031,13 @@ impl Game {
                             | EffectChoiceKind::TapPermanents(_)
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
+                            EffectChoiceKind::SacrificeOrDiscard { .. } => {
+                                if s.objects[index].zone == Zone::Hand {
+                                    Action::Discard { card: object.card }
+                                } else {
+                                    Action::Sacrifice { object }
+                                }
+                            }
                             _ => unreachable!("forage has its own choice"),
                         };
                         if emit(action) {
@@ -7453,3 +7466,23 @@ mod msh_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_coulson_tests.rs"]
 mod msh_coulson_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_counter_batch_tests.rs"]
+mod msh_counter_batch_tests;
+
+#[cfg(test)]
+#[path = "engine_resolution_alternative_cost_tests.rs"]
+mod resolution_alternative_cost_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_fifth_combined_tests.rs"]
+mod msh_fifth_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_hideout_falcon_tests.rs"]
+mod msh_hideout_falcon_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_sentry_alien_tests.rs"]
+mod msh_sentry_alien_tests;

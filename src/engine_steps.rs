@@ -1,5 +1,23 @@
 //! Shared live predicates, beginning-of-step events and intervening-if checks.
 use super::*;
+/// The relation belongs to the beginning-of-step event, not its later resolution.
+pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    active: Player,
+) -> bool {
+    let attachment = world.object(source.card);
+    if attachment.zone != Zone::Battlefield || world.reference(source.card) != source {
+        return false;
+    }
+    let Some(recipient) = attachment.attached_to else {
+        return false;
+    };
+    let object = world.object(recipient.card);
+    object.zone == Zone::Battlefield
+        && world.reference(recipient.card) == recipient
+        && object.controller == active
+}
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
@@ -134,6 +152,9 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::AttachedControllerTurn => {
+                return attached_controller_turn(self, source, self.state.active);
+            }
             StepGuard::CardExiledThisTurn => return self.state.cards_exiled_this_turn,
             StepGuard::OpponentControlsMoreCreatures => {
                 let count = |controller| {

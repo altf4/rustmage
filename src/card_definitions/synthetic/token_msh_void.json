@@ -1,0 +1,33 @@
+{
+  "name": "@token/msh-void",
+  "catalogue_id": 5394,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "physical_metadata_sha256": "b0e30fef357461e803f08e712841ea2eb47fe9dedc18fedfaffe5a7d57b8d12c",
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/TheVoidToken.java",
+  "java_sha256": "41a1fe7f60cab30c5803afd1f1ec1a464cd4dad12a5a2de89aa93307d52c9ad2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksEachCombatStaticAbility.java",
+      "sha256": "85243fdf02d35648e569259e01a901a2b356807971b1db74bb8d27153c6ae40d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/AttacksIfAbleSourceEffect.java",
+      "sha256": "d6230d30e62ef789a51c2584ff4b0d213f744792672d6fc99263ea6d9ba5194a"
+    }
+  ]
+}

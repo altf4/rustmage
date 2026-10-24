@@ -5397,7 +5397,11 @@
     0,
     16,
     0,
-    9
+    9,
+    3,
+    2,
+    4,
+    8
   ],
   "aliases": [
     [
@@ -6181,8 +6185,16 @@
       5335
     ],
     [
+      "@token/msh-alien",
+      5395
+    ],
+    [
       "@token/msh-leviathan",
       5387
+    ],
+    [
+      "@token/msh-redwing",
+      5393
     ],
     [
       "@token/msh-robot-villain",
@@ -6191,6 +6203,10 @@
     [
       "@token/msh-tiger-god",
       5389
+    ],
+    [
+      "@token/msh-void",
+      5394
     ],
     [
       "@token/msh-wall",
@@ -7979,6 +7995,10 @@
     [
       "Black Mage's Rod",
       430
+    ],
+    [
+      "Black Panther, Hope Enduring",
+      5392
     ],
     [
       "Black Panther, Vanguard",
@@ -16011,6 +16031,10 @@
     [
       "Kindred Judgment",
       2360
+    ],
+    [
+      "King T'Challa",
+      2361
     ],
     [
       "King T'Challa // Black Panther, Hope Enduring",
@@ -28381,6 +28405,24 @@
       "name": "Wall Token",
       "subtypes": "Wall",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/msh-redwing",
+      "name": "Redwing",
+      "subtypes": "Bird Scout",
+      "colors": 2
+    },
+    {
+      "factory_identity": "@token/msh-void",
+      "name": "The Void",
+      "subtypes": "Horror Villain",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/msh-alien",
+      "name": "Alien Token",
+      "subtypes": "Alien",
+      "colors": 8
     }
   ],
   "emblems": [
@@ -28745,7 +28787,8 @@
     "MshLeviathanToken": 5387,
     "MshRobotVillainToken": 5388,
     "MshTigerGodToken": 5389,
-    "MshPhotonLivingLight": 5391
+    "MshPhotonLivingLight": 5391,
+    "MshBlackPantherHopeEnduring": 5392
   },
   "helper_interface": [
     [
@@ -96192,7 +96235,25 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "King T'Challa",
+        "mana_cost": "{1}{W}{U}",
+        "type_line": "Legendary Creature — Human Noble Hero",
+        "colored": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Flash"
+        ]
+      },
+      "back_face": 5392
     },
     {
       "index": 2362,
@@ -182428,6 +182489,126 @@
       ],
       "generic": 2,
       "face_parent": 2832
+    },
+    {
+      "index": 5392,
+      "module": "card_5392",
+      "path": "msh/black_panther_hope_enduring.rs",
+      "set": "msh",
+      "category": "back_face",
+      "name": "Black Panther, Hope Enduring",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "{4}{W}{U}",
+      "type_line": "Legendary Creature — Human Warrior Hero",
+      "oracle_keywords": [
+        "Flash",
+        "Double strike"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4,
+      "face_parent": 2361
+    },
+    {
+      "index": 5393,
+      "module": "card_5393",
+      "path": "synthetic/token_msh_redwing.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-redwing",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Bird Scout",
+      "oracle_keywords": [
+        "Flying",
+        "Surveil"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5394,
+      "module": "card_5394",
+      "path": "synthetic/token_msh_void.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-void",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Horror Villain",
+      "oracle_keywords": [
+        "Flying",
+        "Indestructible"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5395,
+      "module": "card_5395",
+      "path": "synthetic/token_msh_alien.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-alien",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Alien",
+      "oracle_keywords": [
+        "Haste"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

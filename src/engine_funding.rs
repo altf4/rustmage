@@ -2918,3 +2918,7 @@ mod msh_placement_tests;
 #[cfg(test)]
 #[path = "engine_msh_faces_funding_tests.rs"]
 mod msh_faces_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_hideout_funding_tests.rs"]
+mod msh_hideout_funding_tests;

@@ -319,6 +319,26 @@ impl Game {
                 self.lore_counters_added(event.after, 0);
             }
         }
+        if self.has_counter_batch_observers() {
+            let placements: Vec<_> = events
+                .iter()
+                .filter(|event| event.moved && event.destination == Zone::Battlefield)
+                .map(|event| {
+                    (
+                        event.after,
+                        self.counter_amounts(event.after.card).to_owned(),
+                        event
+                            .entry_counter_player
+                            .expect("battlefield entry controller"),
+                    )
+                })
+                .collect();
+            self.counter_batch_added(
+                placements
+                    .iter()
+                    .map(|(object, amount, player)| (*object, amount, *player)),
+            );
+        }
         self.prune_linked_exiles();
         self.bind_first_public_source_moves(events);
         if self.state.exile_links.is_empty()

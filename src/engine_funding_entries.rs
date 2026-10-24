@@ -176,6 +176,9 @@ impl FundingState<'_> {
         };
         match guard {
             StepGuard::Always => true,
+            StepGuard::AttachedControllerTurn => {
+                steps::attached_controller_turn(self, source, self.active)
+            }
             StepGuard::YourTurn => self.active == player,
             StepGuard::GainedLife => self.gained_life(player),
             StepGuard::Attacked => state.attacked_this_turn,
@@ -1377,3 +1380,7 @@ mod finality_tests;
 #[cfg(test)]
 #[path = "engine_msh_combined_funding_tests.rs"]
 mod msh_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_super_intelligence_funding_tests.rs"]
+mod super_intelligence_tests;

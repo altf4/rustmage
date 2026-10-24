@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "base": "d8958c1a8fc77634bb7984d9ca9cd0b70410df6d",
+  "dependency": {
+    "pr": 502,
+    "reason": "Append ordering only; exact Redwing 5393 precedes reserved Void 5394 and Alien 5395. Published parent checkout is preserved unchanged."
+  },
+  "authored_complete_candidates": [
+    "The Sentry, Golden Guardian",
+    "Alien Invasion"
+  ],
+  "new_physical_admissions": 2,
+  "shared_rules_changes": [],
+  "wire_schema_change": false,
+  "new_recipes": [
+    {
+      "id": 5394,
+      "factory": "@token/msh-void",
+      "rules_name": "The Void",
+      "recipe": "Legendary 5/5 black Horror Villain creature; flying, indestructible, attacks each combat if able."
+    },
+    {
+      "id": 5395,
+      "factory": "@token/msh-alien",
+      "rules_name": "Alien Token",
+      "recipe": "1/1 red Alien creature; haste, attacks each combat if able."
+    }
+  ],
+  "obligation_evidence": {
+    "The Sentry, Golden Guardian": {
+      "paid_cost_stats_keywords": "Actual 3W payment leaves zero mana, 5/5 stats and flying/vigilance/indestructible. Actual flying combat with The Void leaves both alive with lethal marked damage, and Sentry stays untapped.",
+      "target_opponent_entry": "Checked opponent selection rejects self/card; player hexproof before or after binding prevents creation. Source control change or departure preserves captured trigger controller and targeted recipient.",
+      "exact_void": "Exact name, legendary status, 5/5, black, Horror/Villain, flying and indestructible asserted. Only recipient Doubling Season doubles, with a public owner legend choice. Broken Wings cannot destroy it.",
+      "mandatory_attack": "Fresh Void summoning sickness permits an empty declaration, ready Void must attack, tapped Void cannot be required, actual commit taps it. Paid Witness Protection removes indestructible and mandatory attack ability."
+    },
+    "Alien Invasion": {
+      "paid_cost_and_event": "Actual 1RRG payment; no entry token/counter and no opposing-turn combat trigger. Two own beginning-of-combat events create 1/1 then 2/2 Aliens and increment source invasion counters each time.",
+      "exact_alien": "Exact name, 1/1, red, Alien, haste and mandatory attack asserted; fresh tokens can attack immediately and every able Alien must join declaration.",
+      "quantity_and_event_sequence": "Existing CreateTokensWithCounters selects SourceCounterQuantity(Invasion), puts PlusOne on resulting exact tokens after token creation/replacements, then PutCounters(Source,Invasion,1). Live source counter value changed after queue is used. Two Doubling Seasons expose one token replacement choice, four separate recipient counter choices and one source invasion counter choice; four Aliens receive 12 counters each, then source increases from 3 to 7.",
+      "source_lki_and_identity": "Departure/blink after queue creates the token using old invasion count 2; reentered source with count 9 receives no old increment. Paid Disenchant response preserves old count. Control change still creates tokens for original trigger controller, places counters by that player and increments surviving exact source."
+    }
+  },
+  "tests": [
+    "msh_sentry_alien_sentry_paid_stats_keywords_opponent_target_and_exact_void_recipe",
+    "msh_sentry_alien_sentry_queued_trigger_preserves_controller_and_target_after_source_changes",
+    "msh_sentry_alien_sentry_target_player_hexproof_before_and_after_binding_prevents_void",
+    "msh_sentry_alien_void_creation_uses_opponent_replacements_and_owner_legend_choice",
+    "msh_sentry_alien_sentry_vigilance_and_flying_combat_keep_both_indestructible_creatures",
+    "msh_sentry_alien_void_required_attacks_sickness_tap_and_ability_removal",
+    "msh_sentry_alien_invasion_paid_beginning_combat_sequence_and_exact_alien_haste_requirement",
+    "msh_sentry_alien_invasion_live_counter_quantity_after_queue_and_distinct_replacement_events",
+    "msh_sentry_alien_invasion_departure_and_blink_use_old_counter_lki_and_never_modify_new_source",
+    "msh_sentry_alien_invasion_paid_destruction_response_and_control_change_keep_trigger_controller"
+  ],
+  "fixtures": "Existing admitted supporting cards are used for all paid casts. Starting/changed invasion counters use the ordinary production set_counters helper; combat event fixtures use existing begin_step. No cfg(test) runtime hooks, synthetic source kind/query changes or gated card behavior.",
+  "owned_and_privacy": "Every legal action uses existing big_helpers::checked: wrong-actor rejection, owned raw/index equality after dropping a parent, snapshot restore/stale revision and repeated-action equality. Explicit illegal target/block/attack/finish decisions preserve snapshot and revision. New effects have public recipient/legend/replacement choices and do not expose hands or libraries.",
+  "validation": {
+    "focused": {
+      "passed": 10,
+      "both_seats": true,
+      "log": "<cache>/rustmage/msh-sentry-alien/focused-1.log",
+      "seconds": 0.011010618996806443
+    },
+    "clippy": "cargo clippy --all-targets -- -D warnings: terminal exit 0; <cache>/rustmage/msh-sentry-alien/clippy-1.log",
+    "trace_audit": {
+      "success": true,
+      "terminal": true,
+      "comparison": "Every inherited full JSON Trace object exactly equal, including every recorded field and journal; no schema projection.",
+      "base_checks": {
+        "parent": {
+          "ref": "d8958c1a8fc77634bb7984d9ca9cd0b70410df6d",
+          "inherited_full_trace_rows": 2464,
+          "unchanged_full_trace_rows": 2464,
+          "changed": [],
+          "added": [
+            "Alien Invasion",
+            "The Sentry, Golden Guardian"
+          ],
+          "old_sha256": "55aed040246b916ad9ef77e198e2dd1c74acc7118ac10f3db9d2a824f28d7776"
+        },
+        "main": {
+          "ref": "cb3d5838289562f596e4b01d4682b7e4520e1a5b",
+          "inherited_full_trace_rows": 2461,
+          "unchanged_full_trace_rows": 2461,
+          "changed": [],
+          "added": [
+            "Alien Invasion",
+            "Falcon, Winged Wonder",
+            "King T'Challa // Black Panther, Hope Enduring",
+            "The Sentry, Golden Guardian",
+            "Villainous Hideout"
+          ],
+          "old_sha256": "4bca89bf9e430e607a3ba7600fb039574567382f5ab87bc7d3596eeb361fc1bc"
+        }
+      },
+      "new_rows": 2466,
+      "candidate_sha256": "39321eefb3c0291e670a1488670fb71d0f4bfda8fa8d74e379a62817b500cdb8",
+      "metadata_append_only": true,
+      "token_ids": [
+        5394,
+        5395
+      ]
+    },
+    "strict_trace": {
+      "passed": 1,
+      "rows": 2466,
+      "log": "<cache>/rustmage/msh-sentry-alien/strict-trace.log",
+      "guard_report": "<cache>/rustmage/msh-sentry-alien/resource-strict-trace.json",
+      "seconds": 104.80057756998576,
+      "peak_memory_bytes": 2271064064,
+      "oom_kills": 0
+    },
+    "source_link_format": "All 1,122 unique Java blobs verified; final linker --check and changed Rust format checks required before publication. Full Oracle/direct Java/token/relevant helper pins are in paired records.",
+    "full_release": "Parent integration owns required combined exact-head python3 scripts/validate.py --release; no redundant standalone full-native/release job."
+  },
+  "resource_guard": {
+    "command": [
+      "python3",
+      "<cache>/rustmage/msh-sentry-alien/focused-1.py"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 147.13093504996505,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2311172096,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "remaining_scope": "Baron Strucker remains gated pending reviewed entering-conniver controller/LKI support. Castle Doom and other unassigned missing-rule consumers are unchanged. Whole 281-card MSH game and performance acceptance stays open.",
+  "throughput": {
+    "interval_start_utc": "2026-10-24T22:51:14Z",
+    "interval_end_utc": "2026-10-24T23:00:31.703868+00:00",
+    "scope": "Two authored whole physical candidates, exact token recipes and rules evidence; excludes earlier read-only triage and includes source work/builds/guard waits.",
+    "simulation_benchmark": "Not run; focused native scenario timings are not a full-set simulation benchmark.",
+    "elapsed_seconds": 557.703868,
+    "authored_cards_per_hour": 12.910077216821453
+  },
+  "preserved_native_binary": {
+    "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/rustmage-b764cd26223fba2c",
+    "sha256": "21404e2cb23c521749cc3156e6290b11e1d962bb78542aa046a9146171ff0205"
+  },
+  "preserved_shared_libraries": [
+    {
+      "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+      "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    }
+  ]
+}

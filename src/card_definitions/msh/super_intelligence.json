@@ -3,10 +3,41 @@
   "catalogue_id": 4252,
   "oracle_id": "d82929f2-57ad-45be-a834-984437046026",
   "facts_sha256": "0a38d82d0698b9e67480118b4ccccec447227793966aa676a217ddd08bf02dcb",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "896d256758da9db0861573ab852b1f66d48ad361b68203105d2c0c077dee2997"
-  },
-  "physical_metadata_sha256": "f2686ba7093f16bca4df5cb99cd40eda714102cbf528b4e77157e68ddb4b7c61"
+  "complete": true,
+  "physical_metadata_sha256": "f2686ba7093f16bca4df5cb99cd40eda714102cbf528b4e77157e68ddb4b7c61",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SuperIntelligence.java",
+  "java_sha256": "0d7b3ce4ffebffd0609ab93cb41ba03eac16a536abff602709593d7b32ff272e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

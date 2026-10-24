@@ -1,0 +1,28 @@
+{
+  "name": "@token/msh-alien",
+  "catalogue_id": 5395,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "physical_metadata_sha256": "9046882e4dd345b59fdb6a8b086266dbdc6a591f831954efee9d63fe95fd7194",
+  "complete": true,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/AlienHasteToken.java",
+  "java_sha256": "528ced7d893eba16b08c143a75d8e8e1619291344e97cf36ca5daf633c2e4318",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksEachCombatStaticAbility.java",
+      "sha256": "85243fdf02d35648e569259e01a901a2b356807971b1db74bb8d27153c6ae40d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/AttacksIfAbleSourceEffect.java",
+      "sha256": "d6230d30e62ef789a51c2584ff4b0d213f744792672d6fc99263ea6d9ba5194a"
+    }
+  ]
+}

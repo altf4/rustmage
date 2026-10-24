@@ -1,0 +1,184 @@
+{
+  "status": "One complete candidate; independent final published-head reviews and integrator combined release remain required. Entire MSH set acceptance remains open.",
+  "base": "cb3d5838289562f596e4b01d4682b7e4520e1a5b",
+  "branch": "codex/msh-optional-cost-union",
+  "observation_schema": 142,
+  "whole_candidates": [
+    "Vision of Love"
+  ],
+  "msh_membership": 281,
+  "base_admission_flags": 158,
+  "candidate_admission_flags": 159,
+  "source_pins": {
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "paired_record": "src/card_definitions/msh/vision_of_love.json",
+    "full_direct_and_reusable_bodies": 14,
+    "additional_constant_sections": [
+      "StaticFilters artifact constants"
+    ],
+    "source_check_definitions": 5392,
+    "source_check_unique_blobs": 1117,
+    "read_only_design": "<cache>/rustmage-optional-cost-union-design-20261024.json",
+    "read_only_design_sha256": "928f053ec6e87717aa7514f6a178e02f09dcfa22a4ba03b2a10161421d7eb859"
+  },
+  "printed_obligations": [
+    "Cast an instant for one generic and one red mana without any mandatory sacrifice/discard requirement.",
+    "Present the optional private resolution payment even if neither route is affordable.",
+    "Pay exactly one controlled artifact sacrifice or one owned hand-card discard, including lands, or decline.",
+    "Draw two cards exactly once after committed payment and its replacements; decline skips the draw."
+  ],
+  "shared_core": [
+    "Append the typed SacrificeOrDiscard choice, with a discard-only nonland flag; preserve prior variant order.",
+    "Reuse ChooseObjects, the existing exact-reference owned choice, and current sacrifice/discard/decline action vocabulary.",
+    "Capture the payer/cause from the resolving packet; the active player and permanent owner do not substitute for that controller.",
+    "Keep the entire union view private; maintain the same phase/quota when hidden nonland eligibility differs.",
+    "Commit one selected route through existing zone/discard events. Exile or self-shuffle replacements still pay the cost.",
+    "No hot object field, new pending framework, parser, token ID, mana funding union, activation union or ward union."
+  ],
+  "rules_cases": [
+    "Both seats, own/opponent turns, actual one-red plus one-generic payment, sacrifice/discard-land/decline/no resources.",
+    "Wrong actor, wrong route, wrong controller/zone, stale sacrifice incarnation and invalid alternatives leave snapshots/state_bytes unchanged.",
+    "Stolen and tapped artifacts, the same Lotus used for casting mana, indestructible artifact creatures, and artifact land tokens qualify.",
+    "Actual optional nonland choice creation with zero eligible cards has identical complete nonactor observation to an eligible hidden hand.",
+    "Actual mandatory typed choice creation exposes no decline; pay exactly one route.",
+    "Rest in Peace discard/sacrifice exile, Progenitus/Colossus self-shuffle, Finality competing replacement ordering and zero premature draws.",
+    "Self-discard Wilt-Leaf Liege on opponent turn verifies the captured cause; paid cost triggers draw after replacement exactly once.",
+    "Every checked action covers owned raw/index branching after parent disposal, wrong-actor atomicity, snapshot restore and stale revision."
+  ],
+  "checks": [
+    {
+      "check": "11 focused rules tests",
+      "report": "<cache>/rustmage-build-reports/eeb0ff1f0f734577a7ca361015c1929e.json",
+      "log": "<cache>/rustmage-optional-cost-focused-final.log",
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "alternative_cost_",
+        "--",
+        "--nocapture"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 175.47691178601235,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2264096768,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    {
+      "check": "Strict bounded cast/entry trace regression",
+      "report": "<cache>/rustmage-build-reports/fda747e0c3c34ddd8e650b70a6d77e87.json",
+      "log": "<cache>/rustmage-optional-cost-traces-strict.log",
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "supported_cards_retain_bounded_cast_and_entry_traces",
+        "--",
+        "--nocapture"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 37.36906382499728,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 37756928,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    {
+      "check": "All-target Clippy with warnings denied",
+      "report": "<cache>/rustmage-build-reports/51f539ba9b59440b9dbd2fb7025be0a0.json",
+      "log": "<cache>/rustmage-optional-cost-clippy.log",
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 36.56321634305641,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1765376000,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  ],
+  "full_trace_proof": {
+    "inherited": 2461,
+    "normal_candidate": 2462,
+    "previous_schema": 141,
+    "projection": "Existing recording-only helper changes only schema for 141; preserves Power-up, placement history, keyword counters, finality, and every inherited field. Ordinary assertions remain strict; helper is unchanged.",
+    "inherited_complete_trace_equality": true,
+    "inherited_journals_and_other_non_observation_fields_unchanged": true,
+    "normal_observation_hashes_changed_only_for_wire_schema": 2461,
+    "added_rows": [
+      "Vision of Love"
+    ],
+    "new_default_trace": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Graveyard",
+      "journal": "d7212bf99c322558",
+      "observations": "cab92543befcc695"
+    },
+    "new_trace_scope": "The bounded trace chooses decline. Independent paid positive-route rules cases prove payment and drawing.",
+    "base_baseline_sha256": "4bca89bf9e430e607a3ba7600fb039574567382f5ab87bc7d3596eeb361fc1bc",
+    "normal_export": "<cache>/rustmage-optional-cost-traces-final-20261024.json",
+    "normal_export_sha256": "d6c84d39eab74fc3cbef80393400d9589217b0bf4373b1c47cade81d16e57f5d",
+    "previous_export": "<cache>/rustmage-optional-cost-traces-final-20261024.previous-schema.json",
+    "previous_export_sha256": "c41a1ca5800df80e823fd275dcaf20597dd7e966b13d3c6108534fe63e7af101",
+    "committed_baseline_exact": true
+  },
+  "format_and_sources": "Direct edition-2024 rustfmt --check, git diff --check, metadata-only link regeneration and full pinned Java source verification pass.",
+  "tested_source_sha256": {
+    "data/observation-schema.txt": "1dadd7223f8953c76459851cca53c62990c1a7b87a5795d31bbfa4059160e9f8",
+    "data/standard/coverage.json": "568d5b36c060a8b26750b1bbd6f2e44704f4a51d937b781812f2b1524fd27813",
+    "src/cards.rs": "15f58821682f7d9fad03bf96b17f2d6542a2838daa8ec2518098d536da9877a2",
+    "src/engine.rs": "e9b7505b6e9e1f92ee5b1dc0f1785d57ede4a3509b083e0cb0e00b71883a54e3",
+    "src/engine_effect_choices.rs": "9915bcd0e21dda720d65025307e5a6b0c91971ef3f22c00b267a1835965f7a34",
+    "src/engine_additional_costs.rs": "0b9ddb8b88acb8fe502734b112e055fe0e948885ff8f7811a3e66b876fb3be97",
+    "src/engine_resolution_alternative_cost_tests.rs": "fb09d767788d584b6e5dedaf7a252f0d107f2eeb8b49d77b73f1f0fd8d73e0ef",
+    "src/card_definitions/msh/vision_of_love.rs": "36c733a3c9015afbcd6b0d50f42884ad469193affb620e97d20823be6906ea87",
+    "src/card_definitions/msh/vision_of_love.json": "d003d48d3f12d8e817875f9884810535365f994feb3d3e2d944d4003e86757c1",
+    "src/assurance/card_traces.json": "d6c84d39eab74fc3cbef80393400d9589217b0bf4373b1c47cade81d16e57f5d",
+    "src/generated/catalogue.rs": "a1de8fbb9be88535cde3079eb6bc9a578422003c191e05ee0fc033f2dbbd7896"
+  },
+  "implementation_throughput": {
+    "scope": "One whole candidate plus shared resolution core from branch creation through focused tests, strict inherited proof, Clippy and evidence; includes shared-slot waits and fixture corrections, excludes prior read-only design and final reviews/integration.",
+    "started_utc": "2026-10-24T22:18:28+00:00",
+    "through_utc": "2026-10-24T22:42:02.496000+00:00",
+    "elapsed_seconds": 1414.496,
+    "candidate_cards": 1,
+    "candidate_cards_per_hour": 2.5450761260547923
+  },
+  "simulation_throughput": "No standalone full-game simulation benchmark was run. The strict bounded trace workload completed in 1.45 seconds; this is not an all-Standard gameplay throughput claim.",
+  "parked_consumers": {
+    "K'un-Lun Warrior": "ETB consumer remains gated until this core integrates.",
+    "Bullseye, Death Dealer": "Requires separate ETB reflexive targeting plus complete mandatory activation/funding union and source-LKI checks.",
+    "Titania, Rugged Rumbler": "Requires a separate mandatory discard-or-mana casting cost and captured-payer ward union."
+  },
+  "release_and_reviews": "Integrator will run one final combined release and obtain two independent nonauthor final published-head reviews. This branch deliberately does not repeat a parent full native/release run.",
+  "cleanup": {
+    "report": "<cache>/rustmage-optional-cost-cleanup-20261024.json",
+    "removed_files": 1019,
+    "removed_bytes": 151692890,
+    "preserved_shared_libraries": [
+      {
+        "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "rules_sources": [
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#118.11",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#118.12"
+  ]
+}

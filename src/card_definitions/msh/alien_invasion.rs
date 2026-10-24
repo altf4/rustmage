@@ -1,16 +1,26 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Creation completes, then counters are put on the exact resulting tokens, then the source.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::BeginCombat,
+            relation: CastRelation::You,
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::CreateTokensWithCounters {
+                token: Card(5395),
+                amount: 1,
+                kind: CounterKind::PlusOne,
+                counters: AmountValue::SourceCounterQuantity(CounterKind::Invasion),
+            },
+            Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::Invasion,
+                amount: 1,
+            },
+        ],
+    }],
     ..CardRules::EMPTY
 };

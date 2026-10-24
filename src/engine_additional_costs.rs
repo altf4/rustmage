@@ -516,7 +516,8 @@ impl Game {
             | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)
             | EffectChoiceKind::Forage
-            | EffectChoiceKind::ForageOrBlack => unreachable!(),
+            | EffectChoiceKind::ForageOrBlack
+            | EffectChoiceKind::SacrificeOrDiscard { .. } => unreachable!(),
             EffectChoiceKind::ExileGraveyard => {
                 self.move_object(object.card, Zone::Exile);
             }

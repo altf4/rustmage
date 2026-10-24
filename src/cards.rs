@@ -659,6 +659,11 @@ pub enum EffectChoiceKind {
     ReturnToHand,
     Discard,
     DiscardNamed(&'static str),
+    /// One controlled permanent matching the sacrifice filter, or one private hand card.
+    /// Resolution-only; the flag restricts the discard route, not the permanent.
+    SacrificeOrDiscard {
+        nonland: bool,
+    },
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2363,6 +2368,8 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    /// Trigger-time attachment relation; wrap the step event in When.
+    AttachedControllerTurn,
     CardExiledThisTurn,
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
@@ -2536,6 +2543,11 @@ pub(crate) enum TriggerCondition {
     },
     /// One event per battlefield recipient; the placing player controls this observer.
     CounterPlacedByYou {
+        kind: CounterKind,
+        filter: CountFilter,
+    },
+    /// One event for the whole simultaneous placement, across all recipients and kinds.
+    CounterBatchPlacedByYou {
         kind: CounterKind,
         filter: CountFilter,
     },
