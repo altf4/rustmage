@@ -28,6 +28,10 @@ impl Game {
         object: ObjectRef,
     ) -> bool {
         let o = &self.state.objects[object.card as usize];
+        if choice.kind == EffectChoiceKind::ExileGraveyard {
+            return !choice.selected[player.index()].contains(&object) && self.additional_candidate(AdditionalCost { kind: choice.kind, filter: choice.filter }, player, choice.source, object);
+        }
+        if matches!(choice.kind, EffectChoiceKind::TapPermanents(_)) && o.tapped { return false; }
         if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
             return o.zone == Zone::Battlefield
                 && self.current_kinds(object.card) & 2 != 0
@@ -447,7 +451,13 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if choice.kind == EffectChoiceKind::Discard {
+        if choice.kind == EffectChoiceKind::ExileGraveyard || matches!(choice.kind, EffectChoiceKind::TapPermanents(_)) {
+            let ids: Vec<_> = choice.selected.iter().flat_map(|rows| rows.iter().map(|r| r.card)).collect();
+            if choice.kind == EffectChoiceKind::ExileGraveyard {
+                let events = self.move_objects_raw(&ids, Zone::Exile);
+                self.finish_zone_events(&events, &[]);
+            } else { self.tap_objects(&ids); }
+        } else if choice.kind == EffectChoiceKind::Discard {
             let ids: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()
                 .flat_map(|p| choice.selected[p.index()].iter().map(|object| object.card))
