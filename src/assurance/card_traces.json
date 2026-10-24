@@ -79,6 +79,14 @@
     "journal": "308e6690fa72d89e",
     "observations": "2b2222b0e168de2a"
   },
+  "Abomination, Terrifying Titan": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "1ac3501e048f59c2",
+    "observations": "59f27afa796b6629"
+  },
   "Abrade": {
     "root": "main",
     "status": "completed",
@@ -1919,6 +1927,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "53a505f9bbb1f32d"
   },
+  "Bold Biochemist": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "13e336cb1484938b"
+  },
   "Boldwyr Aggressor": {
     "root": "main",
     "status": "completed",
@@ -2094,6 +2110,14 @@
     "zone": "Graveyard",
     "journal": "8db807facd88bd40",
     "observations": "ed14f4a0f6a34389"
+  },
+  "Brave Brawler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "bf3caeef1acad559"
   },
   "Brave-Kin Duo": {
     "root": "main",
@@ -7719,6 +7743,14 @@
     "journal": "c86d8fd6b3c4cd65",
     "observations": "6bbf444337a8ff3b"
   },
+  "Hercules, Prince of Power": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "91bf41a6770ecc79"
+  },
   "Heritage Reclamation": {
     "root": "main",
     "status": "completed",
@@ -11207,6 +11239,14 @@
     "journal": "0322b5dea1560864",
     "observations": "dcb387b96c174b32"
   },
+  "Ninja of the Hand": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "4324aa4c9fd9325c",
+    "observations": "43e609cd9bc2abdb"
+  },
   "Ninja's Blades": {
     "root": "main",
     "status": "completed",
@@ -11926,6 +11966,14 @@
     "zone": "Battlefield",
     "journal": "3ad6d4893695dc9c",
     "observations": "4f013cba2f65a002"
+  },
+  "Pet Avengers": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "60609359dae9f3fd",
+    "observations": "27cfea4081252e6b"
   },
   "Petrified Hamlet": {
     "root": "main",
@@ -14383,6 +14431,14 @@
     "journal": "ab5d0017e9730bcf",
     "observations": "c73fb8c1188cb355"
   },
+  "Serpent Specialist": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "d96ad4ca883f316e",
+    "observations": "20e12f5a5de9828b"
+  },
   "Serpent's Pass": {
     "root": "main",
     "status": "completed",
@@ -14478,6 +14534,14 @@
     "zone": "Battlefield",
     "journal": "3ad6d4893695dc9c",
     "observations": "2b6430551aeb26ef"
+  },
+  "She-Hulk, Jade Defender": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "60609359dae9f3fd",
+    "observations": "8146bdbaef22522b"
   },
   "Shefet Archfiend": {
     "root": "main",
@@ -17759,6 +17823,14 @@
     "journal": "2356426cfbfb4061",
     "observations": "0a0d7c2a7ec1b6da"
   },
+  "Ultron Drone": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "903e360914c6c94c",
+    "observations": "f0883a6290555177"
+  },
   "Ultros, Obnoxious Octopus": {
     "root": "main",
     "status": "completed",
@@ -17918,6 +17990,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "f06fcf6eaf0b4371"
+  },
+  "Unliving Legionnaire": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9d78478b460edd3d",
+    "observations": "0e5ae78197a375f9"
   },
   "Unlucky Drop": {
     "root": "main",
@@ -18447,6 +18527,14 @@
     "journal": "9f4ce993ec0a416c",
     "observations": "bea84408fb351136"
   },
+  "Viv Vision, Teen Synthezoid": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "903e360914c6c94c",
+    "observations": "3b7602d36f9d814b"
+  },
   "Vivien Reid": {
     "root": "main",
     "status": "completed",
@@ -18478,6 +18566,14 @@
     "zone": "Battlefield",
     "journal": "b43781f2834dd88f",
     "observations": "6c710e294888e368"
+  },
+  "Volcanic Villain": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "03d7ac8782c60213"
   },
   "Volley Veteran": {
     "root": "main",
@@ -18838,6 +18934,14 @@
     "zone": "Battlefield",
     "journal": "da4528e6e02cf76f",
     "observations": "6b8d2fbeb7a71c5a"
+  },
+  "White Tiger, Ava Ayala": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "100cb581dd613f1f",
+    "observations": "a6ce650fbc9c134f"
   },
   "White Widow, Free Agent": {
     "root": "main",

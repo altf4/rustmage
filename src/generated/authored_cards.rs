@@ -48491,8 +48491,26 @@ pub(super) mod card_5387 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/token_msh_leviathan.rs");
 }
+pub(super) mod card_5388 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_msh_robot_villain.rs");
+}
+pub(super) mod card_5389 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_msh_tiger_god.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5388] = [
+pub(super) static RULES: [&CardRules; 5390] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -53881,6 +53899,8 @@ pub(super) static RULES: [&CardRules; 5388] = [
     &card_5385::RULES,
     &card_5386::RULES,
     &card_5387::RULES,
+    &card_5388::RULES,
+    &card_5389::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

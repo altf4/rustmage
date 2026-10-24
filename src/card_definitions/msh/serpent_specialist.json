@@ -3,10 +3,31 @@
   "catalogue_id": 3794,
   "oracle_id": "556f127f-6131-4171-b1ed-11420c21d345",
   "facts_sha256": "ede1c5ce4189e649f18c287a69b2de9870b0cf41e345bea1aedf73dda10eff1a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c2cfe5a47d80ba7ba742d88da5861674ed740780f5ebcc24ba8a05fe2381bc45"
   },
-  "physical_metadata_sha256": "00d8c2340686c00082f1cf5a373071128e9805f2c1b99eada57f65bfc90cbee3"
+  "physical_metadata_sha256": "00d8c2340686c00082f1cf5a373071128e9805f2c1b99eada57f65bfc90cbee3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SerpentSpecialist.java",
+  "java_sha256": "6aa1d34e5cfe15e843f00716b5725691507c0e034846773fecc4d6c4ead50c04",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    }
+  ],
+  "remaining_obligations": []
 }

@@ -3,10 +3,31 @@
   "catalogue_id": 529,
   "oracle_id": "a1a791be-71e6-4c1f-8717-08ca62d40de2",
   "facts_sha256": "c51ce2107b3e9b0c02e6f99dedf13932c06eaa6dee0cb72418d62eafa5eabc2c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "394c742494a2a1362b034d3b46a3d4f1f6060ef1f5fe7075d594aedb4d554d99"
   },
-  "physical_metadata_sha256": "db45abdfee5de630db14af21dfb0bd9a502476887f296af68a8e0c70b3dc27bd"
+  "physical_metadata_sha256": "db45abdfee5de630db14af21dfb0bd9a502476887f296af68a8e0c70b3dc27bd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BraveBrawler.java",
+  "java_sha256": "ab07f6f03ddaf5514ed21484620e09eb532b319257db79565758d8803032e2ff",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    }
+  ],
+  "remaining_obligations": []
 }
