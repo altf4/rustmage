@@ -1,7 +1,7 @@
 //! Rare failed proposals caused by another player's mandatory entry choices.
 //! The borrowed funding solver never owns this checkpoint or clones a Game.
-//! Failed proposals reverse their entire legal mana-ability chain (CR733.1),
-//! while preserving library movements, shuffles and reveals that cannot reverse.
+//! Failed proposals offer selective legal mana-ability reversal (CR733.1),
+//! preserving irreversible library actions and the completed events that remain.
 use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
