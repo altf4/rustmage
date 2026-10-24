@@ -232,6 +232,12 @@ impl Announcement {
             && self.item.source_card.has_bargain()
             && self.item.cast.is_some_and(|c| c.bargain.is_none())
     }
+    pub(super) fn needs_teamwork(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self.item.source_card.teamwork().is_some()
+            && self.item.cast.is_some_and(|c| c.teamwork.is_none())
+    }
     pub(super) fn needs_kicker(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
@@ -623,7 +629,9 @@ impl Game {
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
         // declarations precede targets, mana abilities and payment.
-        if needs_mode {
+        if a.needs_teamwork() {
+            self.state.pending = Pending::TeamworkIntent { player };
+        } else if needs_mode || a.item.modes().is_some() && a.item.mode.is_none() {
             self.state.pending = Pending::Modes { player };
         } else if a.pay_window && a.has_x_cost() && a.item.x.is_none() {
             self.state.pending = Pending::X { player };
@@ -1284,6 +1292,7 @@ impl Game {
                 flash_surcharge: false,
                 offspring: None,
                 kicker: None,
+                teamwork: None,
                 bargain: None,
                 evidence: None,
             }),
@@ -1399,6 +1408,11 @@ impl Game {
                 || item.source_card.gift().is_some_and(|gift| {
                     self.item_targets_available(&item, gift.promised_targets)
                 })
+                || item
+                    .source_card
+                    .teamwork()
+                    .and_then(|s| s.paid_targets)
+                    .is_some_and(|plan| self.item_targets_available(&item, plan))
                 || item
                     .source_card
                     .kicked_targets()

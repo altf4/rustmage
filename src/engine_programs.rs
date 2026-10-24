@@ -603,6 +603,7 @@ impl Game {
                     | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
+                    | TriggerCondition::SelfPaysTeamwork
                     | TriggerCondition::EquippedAttacks
                     | TriggerCondition::GrantedAttacks
                     | TriggerCondition::AttachedBecomesUntapped
@@ -2186,6 +2187,11 @@ impl Game {
                 }
                 Instruction::IfBargained { skip } => {
                     if !item.cast.is_some_and(|c| c.bargain == Some(true)) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::IfTeamwork { skip } => {
+                    if !item.cast.is_some_and(|c| c.teamwork == Some(true)) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }

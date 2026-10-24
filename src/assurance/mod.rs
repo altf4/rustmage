@@ -174,3 +174,6 @@ mod sos_complete_games;
 mod sos_evidence_funding;
 
 mod sos_mana_rollback;
+
+#[path = "../engine_teamwork_tests.rs"]
+mod teamwork_tests;

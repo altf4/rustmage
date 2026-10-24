@@ -1,16 +1,30 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Teamwork expands the target restriction when the cost is declared.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 1,
+            relation: -1,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: 3,
+        }),
+        &[
+            Instruction::Exile,
+            Instruction::IfTeamwork { skip: 1 },
+            Instruction::GainLife(PlayerSet::Controller, 3),
+        ],
+    ),
+    extras: &CardExtras {
+        teamwork: Some(TeamworkSpec {
+            minimum: 2,
+            paid_targets: Some(one(TargetRule::Creature)),
+            normal_modes: 0,
+            paid_modes: 0,
+        }),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

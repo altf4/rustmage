@@ -2,6 +2,7 @@
 use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CastCostClause {
+    Teamwork(u16),
     Casualty(u16),
     Additional,
     Mana,
@@ -17,11 +18,15 @@ pub struct CastCostTransaction {
     pub clauses: Vec<CastCostRow>,
     pub active: Option<u16>,
     pub mana_paid: bool,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub teammates: Vec<ObjectRef>,
     pub mana_closed: bool,
 }
 impl CastCostTransaction {
     pub(super) fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>() + self.clauses.len() * std::mem::size_of::<CastCostRow>()
+        std::mem::size_of::<Self>()
+            + self.clauses.len() * std::mem::size_of::<CastCostRow>()
+            + self.teammates.len() * std::mem::size_of::<ObjectRef>()
     }
 }
 impl Announcement {
@@ -36,6 +41,11 @@ impl Announcement {
         }
     }
     pub(super) fn initialize_cast_costs(&mut self) {
+        if self.item.cast.is_some_and(|c| c.teamwork == Some(true)) {
+            self.add_cast_cost_clause(CastCostClause::Teamwork(
+                self.item.source_card.teamwork().unwrap().minimum,
+            ));
+        }
         let casualty: Vec<_> = self
             .casualty
             .as_deref()
@@ -117,6 +127,12 @@ impl Game {
         let kind = a.cast_costs.as_ref().unwrap().clauses[usize::from(index)].clause;
         a.cast_costs.as_mut().unwrap().active = Some(index);
         match kind {
+            CastCostClause::Teamwork(_) => {
+                self.state.pending = Pending::TeamworkPayment {
+                    player: a.item.controller,
+                };
+                self.state.announcing = Some(a);
+            }
             CastCostClause::Mana => {
                 self.state.pending = Pending::Convoke {
                     player: a.item.controller,

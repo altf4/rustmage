@@ -318,6 +318,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             payment: info.payment,
                             offspring: None,
                             kicker: None,
+                            teamwork: None,
                             bargain: None,
                             evidence: None,
                             origin: if info.method == CastMethod::Flashback {
