@@ -1327,6 +1327,10 @@ pub(crate) enum Instruction {
     },
     Draw(PlayerSet, u16),
     DrawScaled(PlayerSet, AmountValue),
+    AddCastEntryCounters {
+        kind: CounterKind,
+        amount: AmountValue,
+    },
     DrawThenDiscardIfDrew {
         amount: AmountValue,
         discard: u16,

@@ -1408,6 +1408,7 @@ impl Game {
                                 )
                             })
                     }) || item.x.is_some()
+                        || self.has_cast_entry_counters(item.object)
                         || !item.source_card.hand_cast_entry_counters().is_empty()
                         || !item.source_card.cast_entry_counters().is_empty()
                         || item.source_card.entry_choice().is_some()
@@ -2956,6 +2957,9 @@ impl Game {
                         .collect();
                     let events = self.move_objects_raw(&ids, Zone::Exile);
                     self.finish_zone_events(&events, &[]);
+                }
+                Instruction::AddCastEntryCounters { kind, amount } => {
+                    self.add_cast_entry_counters(&item, kind, amount)
                 }
                 Instruction::DrawThenDiscardIfDrew { amount, discard } => {
                     let player = item.controller;

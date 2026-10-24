@@ -1526,6 +1526,7 @@ struct State {
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     counter_placement_history: counter_placement_history::Rows,
+    cast_entry_counters: cast_entry_counters::Rows,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
@@ -1890,6 +1891,7 @@ pub struct Observation {
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub counter_placement_history: Vec<CounterPlacementHistoryView>,
+    pub cast_entry_counters: Vec<CastEntryCounterView>,
     pub additional_combats: u64,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
@@ -2135,6 +2137,7 @@ impl Game {
                 combat_rules: None,
                 creature_damage_history: None,
                 counter_placement_history: None,
+                cast_entry_counters: None,
                 entry_values: None,
                 copy_recipes: None,
                 graveyard_entries: None,
@@ -5059,6 +5062,7 @@ impl Game {
             self.state.step_sources.retain(|&source| source != id);
         }
         self.forget_borrowed_source(before.reference);
+        self.forget_cast_entry_counters(before.reference);
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
@@ -5346,6 +5350,7 @@ impl Game {
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
         self.state.counter_placement_history = None;
+        self.state.cast_entry_counters = None;
         self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
         self.state.cards_exiled_this_turn = false;
@@ -5941,6 +5946,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.animations.clone()),
+            cast_entry_counters: s
+                .cast_entry_counters
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             counter_placement_history: s
                 .counter_placement_history
                 .as_ref()
@@ -6458,6 +6467,7 @@ impl Game {
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.linked_choices.as_ref().map_or(0, |c| c.bytes())
+            + cast_entry_counters::owned_bytes(&s.cast_entry_counters)
             + counter_placement_history::owned_bytes(&s.counter_placement_history)
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
@@ -6755,6 +6765,9 @@ impl Game {
 #[path = "engine_card_quantities.rs"]
 mod card_quantities;
 pub use card_quantities::SourceCounterQuantityView;
+#[path = "engine_cast_entry_counters.rs"]
+mod cast_entry_counters;
+pub use cast_entry_counters::CastEntryCounterView;
 #[path = "engine_counter_placement_history.rs"]
 mod counter_placement_history;
 pub use counter_placement_history::CounterPlacementHistoryView;

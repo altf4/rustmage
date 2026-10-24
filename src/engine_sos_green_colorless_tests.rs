@@ -1515,3 +1515,123 @@ fn sos_zimone_reveals_selected_only_during_land_entry_choices_and_finishes_creat
         assert!(g.observe(p.other()).objects.iter().all(|o| o.id != private));
     }
 }
+
+fn paid_wildgrowth(g: &mut Game, p: Player, cost: u16, payment: Mana) -> CardId {
+    g.state.players[p.index()].mana = payment;
+    let card = named(g, p, "Wildgrowth Archaic", Zone::Hand);
+    checked(g, Action::AnnounceCast { card });
+    checked(g, Action::ChooseSpellCost { cost });
+    checked(g, Action::PayCosts { payment });
+    card
+}
+
+#[test]
+fn sos_wildgrowth_hybrid_costs_intrinsic_converge_keywords_and_zero_color_death() {
+    for p in [Player::P0, Player::P1] {
+        for (cost, payment, count) in [
+            (0, [0, 0, 0, 0, 0, 4], 0),
+            (0, [1, 1, 0, 0, 0, 2], 2),
+            (1, [1, 0, 0, 0, 2, 0], 2),
+            (2, [0, 0, 0, 0, 2, 0], 1),
+        ] {
+            let mut g = setup(p);
+            let source = paid_wildgrowth(&mut g, p, cost, payment);
+            settle(&mut g);
+            if count == 0 {
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            } else {
+                assert_eq!(g.counter_count(source, CounterKind::PlusOne), count);
+                assert!(
+                    g.keywords(source)
+                        .contains(Keywords::REACH.union(Keywords::TRAMPLE))
+                );
+                assert_eq!(g.stats(source).power, i128::from(count));
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_wildgrowth_multiple_departed_sources_stack_entry_counters_and_replacements() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let first = paid_wildgrowth(&mut g, p, 2, [0, 0, 0, 0, 2, 0]);
+        settle(&mut g);
+        let second = paid_wildgrowth(&mut g, p, 2, [0, 0, 0, 0, 2, 0]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(first, CounterKind::PlusOne), 1);
+        assert_eq!(g.counter_count(second, CounterKind::PlusOne), 2);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 1, 0];
+        let creature = paid(&mut g, p, "Bear Cub", None, &[]);
+        g.move_object(first, Zone::Graveyard);
+        g.move_object(second, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 8);
+        assert_eq!(g.stats(creature).power, 10);
+        assert!(g.state.cast_entry_counters.is_none());
+    }
+}
+
+#[test]
+fn sos_wildgrowth_incoming_controller_places_counters_after_spell_control_change() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid_wildgrowth(&mut g, p, 2, [0, 0, 0, 0, 2, 0]);
+        settle(&mut g);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 1, 3];
+        let source = paid(&mut g, p, "Fractal Tender", None, &[]);
+        let spell = g
+            .state
+            .stack
+            .iter_mut()
+            .find(|s| s.card == source && s.kind == StackKind::Spell)
+            .unwrap();
+        spell.controller = p.other();
+        g.state.objects[source as usize].controller = p.other();
+        settle(&mut g);
+        assert_eq!(g.object_view(source).controller, p.other());
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 2);
+        assert!(g.put_counter_on_source_this_turn(g.object_ref(source), p.other()));
+        assert!(!g.put_counter_on_source_this_turn(g.object_ref(source), p));
+    }
+}
+
+#[test]
+fn sos_wildgrowth_countered_spell_and_new_incarnation_cannot_inherit_pending_bonus() {
+    for p in [Player::P0, Player::P1] {
+        for resolve_trigger in [false, true] {
+            let mut g = setup(p);
+            paid_wildgrowth(&mut g, p, 2, [0, 0, 0, 0, 2, 0]);
+            settle(&mut g);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 1, 0];
+            let creature = paid(&mut g, p, "Bear Cub", None, &[]);
+            let spell = g
+                .state
+                .stack
+                .iter()
+                .find(|s| s.card == creature && s.kind == StackKind::Spell)
+                .unwrap()
+                .id;
+            if resolve_trigger {
+                for _ in 0..12 {
+                    g.prepare_triggers();
+                    if g.has_cast_entry_counters(g.object_ref(creature)) {
+                        break;
+                    }
+                    checked(&mut g, Action::Pass);
+                }
+                assert!(g.has_cast_entry_counters(g.object_ref(creature)));
+                assert_eq!(
+                    g.observe(p).cast_entry_counters,
+                    g.observe(p.other()).cast_entry_counters
+                );
+            }
+            g.counter_stack_item(spell, false);
+            g.move_object(creature, Zone::Battlefield);
+            settle(&mut g);
+            assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 0);
+            assert!(g.state.cast_entry_counters.is_none());
+        }
+    }
+}

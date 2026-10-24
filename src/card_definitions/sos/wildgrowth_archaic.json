@@ -3,10 +3,25 @@
   "catalogue_id": 5066,
   "oracle_id": "4469ff35-54ec-4ff5-bc19-3808ae0f711b",
   "facts_sha256": "06a97206a94e03790c2e55624b985eb0544cf9c901e17c43a5f749dea1895017",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b8c13e524020e04eeb0902eeb1e578b57e533f0ad1b917f9ebac83b28a231ddb"
   },
-  "physical_metadata_sha256": "16968b22679956a8a4514df46c5ef624f7d79e87069564c1782468533f876b9a"
+  "physical_metadata_sha256": "16968b22679956a8a4514df46c5ef624f7d79e87069564c1782468533f876b9a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WildgrowthArchaic.java",
+  "java_sha256": "fa30e817158a68ef6edc11beea0a508b46ae53864e35f7cfbbbe9bdc418d7f63",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "java_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsOfManaSpentToCastCount.java",
+      "sha256": "92b55d92985654d437785d464387ae3c981b4a2542a0f9780c8710b3b7819f8b"
+    }
+  ],
+  "rules_resolution": "Oracle and CR122.6a assign all entry counters to the incoming controller. The XMage effect passes its source controller; this discrepancy is intentionally corrected. Official SOS notes also specify copied spells have zero colors spent.",
+  "rules_sources": [
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf",
+    "https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes"
+  ]
 }

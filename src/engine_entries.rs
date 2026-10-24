@@ -291,6 +291,7 @@ impl Game {
                 movement.controller,
                 movement.x,
             );
+            self.apply_cast_entry_counters(movement);
             if movement.destination == Zone::Battlefield && movement.cast_origin.is_some() {
                 for &(kind, amount) in movement.before.card.cast_entry_counters() {
                     movement.counters.add(kind, amount);
