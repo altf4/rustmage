@@ -158,16 +158,16 @@ fn sos_pursue_the_past_optional_discard_and_flashback() {
             let spare=put(&mut g,p,"Island",Zone::Hand);
             let spell=put(&mut g,p,"Pursue the Past",Zone::Hand);
             cast(&mut g,spell,None);pause(&mut g);
-            if discard {let object=g.object_ref(spare);checked(&mut g,Action::Sacrifice{object});} else {checked(&mut g,Action::DeclineEffectPayment);}
+            if discard {checked(&mut g,Action::Discard{card:spare});} else {checked(&mut g,Action::DeclineEffectPayment);}
             settle(&mut g);
             assert_eq!(g.state.players[p.index()].life,22);
             assert_eq!(g.hand_count(p),if discard{2}else{1});
             assert_eq!(g.object_view(spare).zone,if discard{Zone::Graveyard}else{Zone::Hand});
             g.state.players[p.index()].mana=[1,0,0,1,0,0];
             reject(&mut g,Action::AnnounceExile{card:spell});
-            assert!(!g.legal_actions().iter().any(|a|matches!(a,Action::AnnounceCast{card}if *card==spell)));
+            assert!(!g.legal_actions().iter().any(|a|matches!(a,Action::AnnounceFlashback{card}if *card==spell)));
             g.state.players[p.index()].mana=[1,0,0,1,0,2];
-            checked(&mut g,Action::AnnounceCast{card:spell});pay(&mut g);pause(&mut g);act(&mut g,Action::DeclineEffectPayment);settle(&mut g);
+            checked(&mut g,Action::AnnounceFlashback{card:spell});pay(&mut g);pause(&mut g);act(&mut g,Action::DeclineEffectPayment);settle(&mut g);
             assert_eq!(g.state.players[p.index()].life,24);assert_eq!(g.object_view(spell).zone,Zone::Exile);
         }
     }
@@ -217,14 +217,14 @@ fn sos_opus_pump_copy_lki_and_exile_play() {
 #[test]
 fn sos_wilt_reduction_history_and_delayed_exact_exile() {
     for p in [Player::P0,Player::P1] {
-        let mut g=scenario(p);let target=put(&mut g,p.other(),"Colossal Dreadmaw",Zone::Battlefield);let spell=put(&mut g,p,"Wilt in the Heat",Zone::Hand);
+        let mut g=scenario(p);let target=put(&mut g,p.other(),"Gigantosaurus",Zone::Battlefield);let spell=put(&mut g,p,"Wilt in the Heat",Zone::Hand);
         g.state.players[p.index()].mana=[1,0,0,1,0,0];
         reject(&mut g,Action::AnnounceCast{card:spell});
         let grave=put(&mut g,p,"Island",Zone::Graveyard);g.move_object(grave,Zone::Hand);
         assert!(g.observe(p.other()).players[p.index()].card_left_graveyard_this_turn);
         checked(&mut g,Action::AnnounceCast{card:spell});checked(&mut g,Action::ChooseTarget{target:Target::Card(target)});pay(&mut g);settle(&mut g);
         assert_eq!(g.object_view(target).damage,5);assert_eq!(g.object_view(target).zone,Zone::Battlefield);
-        g.state.players[p.index()].mana=[0,0,0,1,0,0];let shock=put(&mut g,p,"Shock",Zone::Hand);cast(&mut g,shock,Some(Target::Card(target)));settle(&mut g);assert_eq!(g.object_view(target).zone,Zone::Exile);
+        g.state.players[p.index()].mana=[0,0,2,0,0,1];let murder=put(&mut g,p,"Murder",Zone::Hand);cast(&mut g,murder,Some(Target::Card(target)));settle(&mut g);assert_eq!(g.object_view(target).zone,Zone::Exile);
     }
 }
 

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "cb426172db5431a23638b4a014b308e017cb6bf42e6114ddfc517839bd0d5407",
+  "catalogue_version": "ba19dffa9a7346172acbea5bbbfe9c137350dec66b5ce4f2b432735b71ce5950",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2247,
-  "implemented_total": 2253,
+  "implemented_standard_cards": 2283,
+  "implemented_total": 2289,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 130,
-      "gated": 134
+      "complete": 166,
+      "gated": 98
     },
     "spm": {
       "total": 134,
@@ -462,8 +462,8 @@
     {
       "name": "Abigale, Poet Laureate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/abigale_poet_laureate_heroic_stanza.rs",
       "set": "sos"
     },
@@ -726,8 +726,8 @@
     {
       "name": "Adventurous Eater",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/adventurous_eater_have_a_bite.rs",
       "set": "sos"
     },
@@ -1358,8 +1358,8 @@
     {
       "name": "Ambitious Augmenter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/ambitious_augmenter.rs",
       "set": "sos"
     },
@@ -1454,8 +1454,8 @@
     {
       "name": "Ancestral Anger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/ancestral_anger.rs",
       "set": "sos"
     },
@@ -2062,8 +2062,8 @@
     {
       "name": "Arnyn, Deathbloom Botanist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/arnyn_deathbloom_botanist.rs",
       "set": "sos"
     },
@@ -2550,8 +2550,8 @@
     {
       "name": "Aziza, Mage Tower Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/aziza_mage_tower_captain.rs",
       "set": "sos"
     },
@@ -3750,8 +3750,8 @@
     {
       "name": "Blazing Firesinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/blazing_firesinger_seething_song.rs",
       "set": "sos"
     },
@@ -5222,8 +5222,8 @@
     {
       "name": "Campus Composer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/campus_composer_aqueous_aria.rs",
       "set": "sos"
     },
@@ -6062,8 +6062,8 @@
     {
       "name": "Cheerful Osteomancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/cheerful_osteomancer_raise_dead.rs",
       "set": "sos"
     },
@@ -6686,8 +6686,8 @@
     {
       "name": "Comforting Counsel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/comforting_counsel.rs",
       "set": "sos"
     },
@@ -8326,8 +8326,8 @@
     {
       "name": "Decorum Dissertation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/decorum_dissertation.rs",
       "set": "sos"
     },
@@ -10726,8 +10726,8 @@
     {
       "name": "Emeritus of Conflict",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/emeritus_of_conflict_lightning_bolt.rs",
       "set": "sos"
     },
@@ -10750,8 +10750,8 @@
     {
       "name": "Emeritus of Woe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/emeritus_of_woe_demonic_tutor.rs",
       "set": "sos"
     },
@@ -10814,8 +10814,8 @@
     {
       "name": "Encouraging Aviator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/encouraging_aviator_jump.rs",
       "set": "sos"
     },
@@ -13686,8 +13686,8 @@
     {
       "name": "Garrison Excavator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/garrison_excavator.rs",
       "set": "sos"
     },
@@ -13942,8 +13942,8 @@
     {
       "name": "Germination Practicum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/germination_practicum.rs",
       "set": "sos"
     },
@@ -14630,8 +14630,8 @@
     {
       "name": "Goblin Glasswright",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/goblin_glasswright_craft_with_pride.rs",
       "set": "sos"
     },
@@ -15030,8 +15030,8 @@
     {
       "name": "Grave Researcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/grave_researcher_reanimate.rs",
       "set": "sos"
     },
@@ -16734,8 +16734,8 @@
     {
       "name": "Honorbound Page",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/honorbound_page_forum_s_favor.rs",
       "set": "sos"
     },
@@ -17430,8 +17430,8 @@
     {
       "name": "Improvisation Capstone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/improvisation_capstone.rs",
       "set": "sos"
     },
@@ -19166,8 +19166,8 @@
     {
       "name": "Kirol, History Buff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/kirol_history_buff_pack_a_punch.rs",
       "set": "sos"
     },
@@ -19758,8 +19758,8 @@
     {
       "name": "Landscape Painter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/landscape_painter_vibrant_idea.rs",
       "set": "sos"
     },
@@ -19950,8 +19950,8 @@
     {
       "name": "Leech Collector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/leech_collector_bloodletting.rs",
       "set": "sos"
     },
@@ -20390,8 +20390,8 @@
     {
       "name": "Living History",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/living_history.rs",
       "set": "sos"
     },
@@ -20430,8 +20430,8 @@
     {
       "name": "Lluwen, Exchange Student",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/lluwen_exchange_student_pest_friend.rs",
       "set": "sos"
     },
@@ -21086,8 +21086,8 @@
     {
       "name": "Maelstrom Artisan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/maelstrom_artisan_rocket_volley.rs",
       "set": "sos"
     },
@@ -21174,8 +21174,8 @@
     {
       "name": "Magmablood Archaic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/magmablood_archaic.rs",
       "set": "sos"
     },
@@ -22758,8 +22758,8 @@
     {
       "name": "Molten-Core Maestro",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/molten_core_maestro.rs",
       "set": "sos"
     },
@@ -25486,8 +25486,8 @@
     {
       "name": "Pigment Wrangler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/pigment_wrangler_striking_palette.rs",
       "set": "sos"
     },
@@ -26734,8 +26734,8 @@
     {
       "name": "Quill-Blade Laureate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/quill_blade_laureate_twofold_intent.rs",
       "set": "sos"
     },
@@ -29574,8 +29574,8 @@
     {
       "name": "Sanar, Unfinished Genius",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/sanar_unfinished_genius_wild_idea.rs",
       "set": "sos"
     },
@@ -29934,8 +29934,8 @@
     {
       "name": "Scathing Shadelock",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/scathing_shadelock_venomous_words.rs",
       "set": "sos"
     },
@@ -29974,8 +29974,8 @@
     {
       "name": "Scheming Silvertongue",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/scheming_silvertongue_sign_in_blood.rs",
       "set": "sos"
     },
@@ -32270,8 +32270,8 @@
     {
       "name": "Spellbook Seeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/spellbook_seeker_careful_study.rs",
       "set": "sos"
     },
@@ -33702,8 +33702,8 @@
     {
       "name": "Strife Scholar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/strife_scholar_awaken_the_ages.rs",
       "set": "sos"
     },
@@ -34838,8 +34838,8 @@
     {
       "name": "Tam, Observant Sequencer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/tam_observant_sequencer_deep_sight.rs",
       "set": "sos"
     },

@@ -1415,6 +1415,7 @@ pub(crate) enum SourceCharacteristicFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    InstantSorceryCastThisTurn,
     CardLeftGraveyardThisTurn,
     Fixed(u16),
     TappedCount(CountFilter),
@@ -2496,6 +2497,7 @@ impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
             Self::Always
+            | Self::CastInstantSorceryThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
             | Self::LifeAboveStarting(_) => &[],

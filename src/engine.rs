@@ -2781,7 +2781,7 @@ impl Game {
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::LandCards { .. }
                             | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
-                            EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
+                            EffectChoiceKind::Sacrifice | EffectChoiceKind::ExileGraveyard | EffectChoiceKind::TapPermanents(_) => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
                         };
