@@ -495,6 +495,14 @@
     "journal": "dc0112764aa2bb2e",
     "observations": "071ad2f72e5beb0e"
   },
+  "Alien Invasion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "93960e4584c5ba85",
+    "observations": "a7f3899608d2baff"
+  },
   "All-Fates Scroll": {
     "root": "main",
     "status": "completed",
@@ -17158,6 +17166,14 @@
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
     "observations": "d7530296e482b7aa"
+  },
+  "The Sentry, Golden Guardian": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "d3cfe4a97aad8424",
+    "observations": "7b89d4191a1b8e22"
   },
   "The Serpent Society": {
     "root": "main",
