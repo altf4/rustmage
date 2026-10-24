@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e201d09db2189bc706b74b658b036c25b737bf99b2b53accfd2a9f11d35c943b",
+  "catalogue_version": "044aab9b08ecc323947b7b600c2d2af7c63b98f9e0a079584acce6b4ede663f2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2373,
-  "implemented_total": 2379,
+  "implemented_standard_cards": 2374,
+  "implemented_total": 2380,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 256,
-      "gated": 8
+      "complete": 257,
+      "gated": 7
     },
     "spm": {
       "total": 134,
@@ -20686,8 +20686,8 @@
     {
       "name": "Lorehold, the Historian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/lorehold_the_historian.rs",
       "set": "sos"
     },
