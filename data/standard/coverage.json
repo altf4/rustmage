@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e623e98a3a16cf01b042e64f01e75567f9c868fdd09e76e694510ff5b84340ac",
+  "catalogue_version": "165a0842fa9b51808cb3d53c282152faab8999577f0e32b0a85d84ec87e703a3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2364,
-  "implemented_total": 2370,
+  "implemented_standard_cards": 2365,
+  "implemented_total": 2371,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 247,
-      "gated": 17
+      "complete": 248,
+      "gated": 16
     },
     "spm": {
       "total": 134,
@@ -23790,8 +23790,8 @@
     {
       "name": "Nita, Forum Conciliator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/nita_forum_conciliator.rs",
       "set": "sos"
     },
