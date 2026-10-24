@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "scope": "Shared controlled-creature attacks-alone declaration event and four whole MSH candidates; full-set acceptance remains open",
+  "base": "bd8cdf35db047ea8a1787daee4006c963eb52196",
+  "cards": [
+    "Agent 13, Sharon Carter",
+    "Agents of S.H.I.E.L.D.",
+    "Black Widow, Double Agent",
+    "HYDRA Infiltration"
+  ],
+  "mechanics": [
+    "One event per completed declaration with exactly one declared creature; already-attacking tokens and later combat membership do not change qualification.",
+    "Freeze the declared attacker as an exact non-targeted object using the existing entering_object event reference; source departure/control and attacker blink do not rebind the packet.",
+    "Observer need not attack; current controller and printed-ability availability qualify at the event. Existing SelfAttacksAlone behavior is preserved. No new wire field or token recipe."
+  ],
+  "rules_scenarios": 10,
+  "evidence": [
+    "Paid both-seat spells, real turn aging, self and other lone attackers, three independent observers, duration cleanup.",
+    "Zero/two/opponent declarations, later attacker departure, already-attacking and later-added tokens.",
+    "Exact attacker blink and control change, source departure/control change, printed ability suppression before and after event.",
+    "Actual Clue sacrifice/draw payment and private draw; Doubling Season token replacement; attacking a planeswalker.",
+    "Paid HYDRA entry opponent-only target, private selected discards with zero through three hand cards, source departure.",
+    "HYDRA drain captured controller, player hexproof invalidation and no-legal-target behavior.",
+    "Real first-strike combat with deathtouch and menace; incomplete one-blocker declaration rejects atomically.",
+    "Shared checked helper proves wrong actor, raw/index replay, independent owned branch after parent disposal, restore and stale revision."
+  ],
+  "initial_focused_result": {
+    "passed": 8,
+    "fixture_failures": 2,
+    "runtime_changes_required": false,
+    "log": "<cache>/rustmage-msh-controlled-attacks-focus-fixed.log",
+    "corrections": [
+      "Discard choices commit as one simultaneous batch; public-zone assertions now run after the whole choice resolves.",
+      "Absent Craw Wurm fixture replaced with supported Gigantosaurus."
+    ]
+  },
+  "remaining_validation": "Corrected focused/native run, exact inherited full-trace proof, Clippy, final published-head two independent nonauthor reviews and required full release validation pending."
+}
