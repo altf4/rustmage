@@ -2447,6 +2447,14 @@
     "journal": "b6cf3749b9ab6fcf",
     "observations": "6143e2f5604f4066"
   },
+  "Call Damage Control": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "9d37fd6925470aea",
+    "observations": "9f0b1cc07fc7900d"
+  },
   "Call the Mountain Chocobo": {
     "root": "main",
     "status": "completed",
@@ -8191,6 +8199,14 @@
     "journal": "495aca2929aa3e6e",
     "observations": "e5c743d16bb66c00"
   },
+  "Human Torch, Johnny Storm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "a12f23baa5838a8b"
+  },
   "Humbling Elder": {
     "root": "main",
     "status": "completed",
@@ -8982,6 +8998,14 @@
     "zone": "Graveyard",
     "journal": "1e18fcea2671d04d",
     "observations": "a73b366806512960"
+  },
+  "Killmonger, Scourge of Wakanda": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "13164334f35897ee",
+    "observations": "04ca2def0de4e532"
   },
   "Kin-Tree Nurturer": {
     "root": "main",
@@ -13446,6 +13470,14 @@
     "zone": "Graveyard",
     "journal": "7d1cb528fd49a8cd",
     "observations": "444339228977044d"
+  },
+  "Rick Jones, Destined Sidekick": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "d96ad4ca883f316e",
+    "observations": "8eefe3543ce9a1b6"
   },
   "Rictus Robber": {
     "root": "main",

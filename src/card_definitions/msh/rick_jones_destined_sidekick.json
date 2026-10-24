@@ -3,10 +3,36 @@
   "catalogue_id": 3517,
   "oracle_id": "4bccfa67-0c6f-42a1-b8d4-0842a8230d1e",
   "facts_sha256": "06c22b7f26b60a5633a3ba1da0115b58be9df4ac6ad9d7a5aefe93a5a7e6bffe",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a92f12d49cfe9c62ef47e885a4bde598c4e5cb4553eada97c8c323937e825b87"
   },
-  "physical_metadata_sha256": "41839570f77b652123c39d059032c4900753f0c6b0bce538a9b8f4fa96f007e4"
+  "physical_metadata_sha256": "41839570f77b652123c39d059032c4900753f0c6b0bce538a9b8f4fa96f007e4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RickJonesDestinedSidekick.java",
+  "java_sha256": "6d931f600bdd76a26e62b3b17262a7878c259340d26c30f0bfc9f8b5f70c3762",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    }
+  ],
+  "remaining_obligations": []
 }

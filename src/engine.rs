@@ -7382,3 +7382,7 @@ mod keyword_counter_tests;
 #[cfg(test)]
 #[path = "engine_msh_inherited_tests.rs"]
 mod msh_inherited_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_four_existing_tests.rs"]
+mod msh_four_existing_tests;

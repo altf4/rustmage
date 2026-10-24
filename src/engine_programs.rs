@@ -1805,6 +1805,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
@@ -4025,6 +4026,20 @@ impl Game {
                         })
                         .collect();
                     self.stage_entries(moves, None);
+                }
+                Instruction::ReturnAllTargetsToHand => {
+                    // One printed movement shared by multiple targeting clauses.
+                    // Preserve their independently validated bindings while moving
+                    // an object chosen in multiple groups only once (CR115.3).
+                    let mut targets: Vec<BoundTarget> = Vec::new();
+                    for bound in &item.targets {
+                        if bound.object.is_some()
+                            && !targets.iter().any(|prior| prior.object == bound.object)
+                        {
+                            targets.push(*bound);
+                        }
+                    }
+                    self.move_target_batch(&targets, Zone::Hand);
                 }
                 Instruction::ReturnToHandDrawForSubtype(subtype) => {
                     // Capture the legal target before changing its incarnation.
