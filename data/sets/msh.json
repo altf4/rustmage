@@ -1,0 +1,2426 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "table": {
+    "source": "Mage.Sets/src/mage/sets/MarvelSuperHeroes.java",
+    "sha256": "a513dc8acd4a7253635ef8915fd71f90c2001ed4297bab80e833b84d68a5c2d1",
+    "printing_count": 448
+  },
+  "scope": "All physical set card identities, including reprints and starter products; cosmetic printings counted once",
+  "card_count": 281,
+  "cards": [
+    {
+      "name": "A.I.M. Labs",
+      "oracle_id": "8417f2d5-93c9-474a-a143-5c4e17097a88",
+      "facts_sha256": "6d413be4399ee179e20f10e5f45caa74200e5bf9fd717fdf0a020e97de9f15b2",
+      "printings": [
+        "257"
+      ]
+    },
+    {
+      "name": "A.I.M. Scientists",
+      "oracle_id": "fa732888-5b7d-4087-a6e5-1db1c98fbd4c",
+      "facts_sha256": "044b0458a3a2340577a89fd4b5083ea8616d867c89c00b35290d21185bbf302a",
+      "printings": [
+        "44"
+      ]
+    },
+    {
+      "name": "A.I.M. Synthoids",
+      "oracle_id": "10916f33-aaa6-43a1-9835-b60fd061161f",
+      "facts_sha256": "31ed7557b297aa7e02625ff14bf1b11d6d3e9d4f27409fcfae11badcc421fabe",
+      "printings": [
+        "242"
+      ]
+    },
+    {
+      "name": "Abomination, Terrifying Titan",
+      "oracle_id": "72101185-4336-480a-b4d7-f8ceb0007a51",
+      "facts_sha256": "d817593065523c6c082d432b2df091fb6e9ef05f2555e184c35e3db629bef2ac",
+      "printings": [
+        "198",
+        "333"
+      ]
+    },
+    {
+      "name": "Absorbing Man",
+      "oracle_id": "ec8e310f-e871-498f-8d80-c3617c5e1433",
+      "facts_sha256": "c76253acf1b3305b8cee40daf9c7d8b567cfcb2fc46624b7aed34fe62a99a9ac",
+      "printings": [
+        "199",
+        "416"
+      ]
+    },
+    {
+      "name": "Aerial Doombot",
+      "oracle_id": "f24efc60-fdac-4a5d-bcbc-784ec5ae6d96",
+      "facts_sha256": "8a89aa88efda58fabd27abcee4839ef1a47b35e1d63fb652699e1a24f00c1f49",
+      "printings": [
+        "43"
+      ]
+    },
+    {
+      "name": "Agent 13, Sharon Carter",
+      "oracle_id": "ddf7201a-6672-416d-be6b-202dafbeccab",
+      "facts_sha256": "4b920a78bca5151b9378513d6cba2b3d42f9fc1d0164d1a6b1a1974cd940ee46",
+      "printings": [
+        "1"
+      ]
+    },
+    {
+      "name": "Agent Maria Hill",
+      "oracle_id": "a2d90efe-80f2-4069-b135-a8bd00ccd2b0",
+      "facts_sha256": "b1c6e6965fd7ae2fa3a5ce40be61886cbe6a3aae0dae25058c7e8a3fa0dd3761",
+      "printings": [
+        "2"
+      ]
+    },
+    {
+      "name": "Agent Phil Coulson",
+      "oracle_id": "dae20bcd-dc24-4f9d-9400-a6f013b49f14",
+      "facts_sha256": "b00a1f3fb8fe722a2bb275f784b76821fda5224731ac183edd8b46c9bc9a1776",
+      "printings": [
+        "4",
+        "402"
+      ]
+    },
+    {
+      "name": "Agent of Atlas",
+      "oracle_id": "cd403866-bef1-413a-85e2-c86e295b3589",
+      "facts_sha256": "9fecf1b6bdde841e63903d25fbf1dec327d196db4cbc7437189a4c04ccbc975b",
+      "printings": [
+        "3"
+      ]
+    },
+    {
+      "name": "Agents of HYDRA",
+      "oracle_id": "31816924-1430-4581-86e8-325e2ca16217",
+      "facts_sha256": "03b42bf378498227822b2f8dfa23ac1a5a6a4b6c9498b7332b41735d153707e2",
+      "printings": [
+        "85"
+      ]
+    },
+    {
+      "name": "Agents of S.H.I.E.L.D.",
+      "oracle_id": "203b72d2-a273-49cc-bd10-2fbc07ed2fc8",
+      "facts_sha256": "3fb26e329eecf05b127dfe8f265baf74239ac2b9a87465243c2865dcfe5a2fad",
+      "printings": [
+        "5"
+      ]
+    },
+    {
+      "name": "Alien Invasion",
+      "oracle_id": "7c854a07-e031-458e-a335-9c31865020b8",
+      "facts_sha256": "16f5af00706a05671708fe54487d287efca95afa99c48ee009a74de4e873c6f1",
+      "printings": [
+        "200",
+        "417"
+      ]
+    },
+    {
+      "name": "Ant-Man's Army",
+      "oracle_id": "34c0f75d-10a9-428d-b202-3defb3949090",
+      "facts_sha256": "4d4c833eec2c6846ee1991b3e16de28dd2a7e5fc88717480763ddcee29907b11",
+      "printings": [
+        "161"
+      ]
+    },
+    {
+      "name": "Ant-Man, Colony Commander",
+      "oracle_id": "b0ed9fbe-324d-467a-a326-c6f85a4c688a",
+      "facts_sha256": "d342fc1a63151543e48b83461895b24b8c5eeda33966f027ccc427797366d9e7",
+      "printings": [
+        "201"
+      ]
+    },
+    {
+      "name": "Arc Reactor",
+      "oracle_id": "55f7b005-31ea-4865-a8f3-460d15bed795",
+      "facts_sha256": "575bc86c583030420434419df1bb1c6294e6097369239c5a2913d74b19e88130",
+      "printings": [
+        "243",
+        "310"
+      ]
+    },
+    {
+      "name": "Ares, God of War",
+      "oracle_id": "8a09d4a2-4796-4a15-ab75-a3a0b717f62d",
+      "facts_sha256": "329424453f5ff1f2aeb167f157b3ae778ef4714e36bb2dbf4509ba0fe781b700",
+      "printings": [
+        "202",
+        "418"
+      ]
+    },
+    {
+      "name": "Armor Wars",
+      "oracle_id": "1ad83cac-2c85-477b-ab00-1369f9683db5",
+      "facts_sha256": "ebf5f4db2ee4a0d7c4bdb6c933c3b519ffd2dcbbe90cdae638d2cf91023de288",
+      "printings": [
+        "203",
+        "305"
+      ]
+    },
+    {
+      "name": "Arnim Zola, Bio-Fanatic",
+      "oracle_id": "95161e23-e4c4-411f-bce5-58a02abc0958",
+      "facts_sha256": "a931a7a375a724df5a80b8f4e14e9417be6c9b956bb4da2f235f01a950da645f",
+      "printings": [
+        "319",
+        "86"
+      ]
+    },
+    {
+      "name": "Asgardian Citadel",
+      "oracle_id": "e3614df6-ce84-4180-ade1-a1751e8e3c9a",
+      "facts_sha256": "fbe041874ba1dbda4b7388e481ee2c77d306c39b274f6cc67fbcaa8c14140ba8",
+      "printings": [
+        "258"
+      ]
+    },
+    {
+      "name": "Atlantean Cavalry",
+      "oracle_id": "e929b730-9aa2-49e1-9a65-50afc0fbe3e0",
+      "facts_sha256": "f62d9af93a54e986ad0caf6f3e4d6328938857970f9de2f503785f189fdebe3c",
+      "printings": [
+        "45"
+      ]
+    },
+    {
+      "name": "Atlantis Attacks",
+      "oracle_id": "b5c8e24a-f4d7-42dc-8117-905ad0bad888",
+      "facts_sha256": "4ff5a0e1705687e3e14373279c489d87196532d510388e8cfd6c2a112f0f91cb",
+      "printings": [
+        "46"
+      ]
+    },
+    {
+      "name": "Attuma, Atlantean Warlord",
+      "oracle_id": "e3b70a85-4296-411f-a673-7992b0c8a9aa",
+      "facts_sha256": "d49bbe6b99b26145c18fcc8d25d2cb970639a2b54bd1ad22c8021101cc872312",
+      "printings": [
+        "47"
+      ]
+    },
+    {
+      "name": "Avengers Assemble!",
+      "oracle_id": "3477e1cc-46af-46f4-9ea2-bdf0bf1f880e",
+      "facts_sha256": "cc151c839e5ff498ff3c3a24e6969164372345f4e1bb91421773ac90d44526e7",
+      "printings": [
+        "297",
+        "341",
+        "6"
+      ]
+    },
+    {
+      "name": "Avengers Disassembled",
+      "oracle_id": "34493cf5-7586-48ef-806d-57273b2ab034",
+      "facts_sha256": "464e268fc245124f85d9fb6eaae6df0604bc60d981900ad8c104194a140f99dd",
+      "printings": [
+        "124",
+        "302"
+      ]
+    },
+    {
+      "name": "Avengers Hangar",
+      "oracle_id": "10fc2009-4212-47c6-8a97-ab0f45c1f91b",
+      "facts_sha256": "7cf3e79f30b9403869ed7fd62ae5c63bbae0506b96fd62da76c7ecc5ce4eb008",
+      "printings": [
+        "259"
+      ]
+    },
+    {
+      "name": "Avengers Tower",
+      "oracle_id": "c5fc8e7c-a87e-4586-a13c-d30e0a3aafbf",
+      "facts_sha256": "860c73eeba2fd7112ea19dc7c943d0534e7d6cde3c1ea9d9ad98cb877e62f298",
+      "printings": [
+        "260",
+        "334",
+        "452"
+      ]
+    },
+    {
+      "name": "Avengers: Under Siege",
+      "oracle_id": "d911cf65-7273-4162-a766-7d4107699dc2",
+      "facts_sha256": "ddfb4b7ffbb58cdd956f8c9b7d47572f2737a298ce4ceee42e75bbc256664a67",
+      "printings": [
+        "205",
+        "306"
+      ]
+    },
+    {
+      "name": "Baron Helmut Zemo",
+      "oracle_id": "0fe6c042-1182-4392-8938-fee36149d74f",
+      "facts_sha256": "015d5c5972dea39c6597840fffc0945fe86b3a13c14c4bf1fd87cd5d88af113b",
+      "printings": [
+        "405",
+        "87"
+      ]
+    },
+    {
+      "name": "Baron Strucker, HYDRA Overlord",
+      "oracle_id": "c91e64d4-e687-4ccd-a56e-796cff6e052c",
+      "facts_sha256": "a4c5a7352a06b64d84f342d8e7c336a829517b4f112cf03c749e0e29ea19e724",
+      "printings": [
+        "315",
+        "446",
+        "88"
+      ]
+    },
+    {
+      "name": "Baxter Building",
+      "oracle_id": "71bc69a5-7cec-4abd-b97d-13f8e1f9afac",
+      "facts_sha256": "5c23d5af0113c794e99ca2f6f3ffc1583975d11d07fb0a507fa4dba72e1d97c4",
+      "printings": [
+        "261",
+        "453"
+      ]
+    },
+    {
+      "name": "Beast, Erudite Aerialist",
+      "oracle_id": "191ba5f0-45f4-4b7f-910d-4bd4d2d28b33",
+      "facts_sha256": "5f15dc64e2c1cd15521324dd1c798c51aaf52266a0d5ffb121719860adc883c0",
+      "printings": [
+        "206"
+      ]
+    },
+    {
+      "name": "Birnin Zana Plaza",
+      "oracle_id": "c3172c5d-c745-4422-b651-cd414c8da11b",
+      "facts_sha256": "86e2821662413ae45f9da186529b337c26b8cf12df76d8434ac9ffebcb8b1567",
+      "printings": [
+        "262"
+      ]
+    },
+    {
+      "name": "Black Panther, Vanguard",
+      "oracle_id": "b0bf1964-c543-4c53-9f09-0dd7c608d5c5",
+      "facts_sha256": "300163840cadc10fdc4901acd9d005233d643116aed21aec25dff0554cc31217",
+      "printings": [
+        "207"
+      ]
+    },
+    {
+      "name": "Black Widow, Double Agent",
+      "oracle_id": "e6c181f1-f4f7-4a96-b50c-717cf2a02098",
+      "facts_sha256": "1f846ea2dd144c0e95899a2be8f9f6416ed3c0148c5214ce54d110690d092cf4",
+      "printings": [
+        "208"
+      ]
+    },
+    {
+      "name": "Black Widow, Super Spy",
+      "oracle_id": "579f9a86-a1af-4c2a-a7e5-8fea0bd0eb61",
+      "facts_sha256": "575a5b0db0130243fcdd4122f1c86bac4713b65b635d068d67b6834e6d23cf8d",
+      "printings": [
+        "89",
+        "347",
+        "364",
+        "393"
+      ]
+    },
+    {
+      "name": "Blazing Crescendo",
+      "oracle_id": "6344c96a-efa5-4125-8219-d333228391cf",
+      "facts_sha256": "f077669de13212b0e8a71496885e4a4ff86937b36c16f5f32b2f139bd5925f43",
+      "printings": [
+        "125",
+        "340"
+      ]
+    },
+    {
+      "name": "Bold Biochemist",
+      "oracle_id": "45ddfa35-7b3c-4916-b231-dc721b7b56d9",
+      "facts_sha256": "6520ddfd7f3227c133d4e317a11254a0bb492b8273692548621f50ba24a0be4c",
+      "printings": [
+        "48"
+      ]
+    },
+    {
+      "name": "Borough Backup",
+      "oracle_id": "6effbf59-3933-4a77-9a6a-fd3bedf45c26",
+      "facts_sha256": "eff4b683859c6cd5154d5a85e9249b90b531512d101ecedcd16ded7ea94bc9f8",
+      "printings": [
+        "7"
+      ]
+    },
+    {
+      "name": "Brave Brawler",
+      "oracle_id": "a1a791be-71e6-4c1f-8717-08ca62d40de2",
+      "facts_sha256": "c51ce2107b3e9b0c02e6f99dedf13932c06eaa6dee0cb72418d62eafa5eabc2c",
+      "printings": [
+        "8"
+      ]
+    },
+    {
+      "name": "Bruce Banner // The Incredible Hulk",
+      "oracle_id": "b6c0ee14-2028-4e8b-9acd-ff78821bca9b",
+      "facts_sha256": "452ba06a5e9d2abdb5fe9626c7ebde2633461aa100fdeb37a1f10cc0987f9371",
+      "printings": [
+        "331",
+        "359",
+        "390",
+        "49"
+      ]
+    },
+    {
+      "name": "Bullseye, Death Dealer",
+      "oracle_id": "10db57b4-f895-4514-b610-2252ba676353",
+      "facts_sha256": "6ea12f9cd9fcfa2adc912260f406efc433b19668d08e7d37eb031f84b90bb640",
+      "printings": [
+        "209",
+        "325"
+      ]
+    },
+    {
+      "name": "Call Damage Control",
+      "oracle_id": "49a32f34-01a9-4f25-bf38-b4d46ca67b2d",
+      "facts_sha256": "c864732cd824d5ea5b4dbcbaa89033e248c64b37bf1037bf1d2cefc7977bff78",
+      "printings": [
+        "162"
+      ]
+    },
+    {
+      "name": "Captain America's Shield",
+      "oracle_id": "8255a797-ddd3-4db0-a3f5-dd8f38c3b908",
+      "facts_sha256": "e51c24e10b822db7d6911fdaf6c8710015fff6f65ca0eaf10d2f9b8183fef51a",
+      "printings": [
+        "244",
+        "311",
+        "317"
+      ]
+    },
+    {
+      "name": "Captain America, Living Legend",
+      "oracle_id": "67aa946d-e694-494e-ba0c-44880d5bc03e",
+      "facts_sha256": "f6e96b66ad2fa3287c8de171c5dfa0ac48935dbe243ce2b6e3f0e3d0a1300111",
+      "printings": [
+        "210",
+        "449"
+      ]
+    },
+    {
+      "name": "Captain America, Super-Soldier",
+      "oracle_id": "ac1b6ffc-12a9-4d9c-a9fc-68a839a40738",
+      "facts_sha256": "e31e00e496c00e829a5a53b027374a00c011d633e0b019b76b1d6466509b0b83",
+      "printings": [
+        "316",
+        "352",
+        "387",
+        "9"
+      ]
+    },
+    {
+      "name": "Captain America, Wings of Freedom",
+      "oracle_id": "942ac2ac-7528-4768-8398-8520a8ee15e5",
+      "facts_sha256": "5b766257335cc3f026a4ce5f0922fba60949067817f8d39bbf4f42fd42149fb4",
+      "printings": [
+        "10",
+        "353"
+      ]
+    },
+    {
+      "name": "Captain Mar-Vell, Space-Born",
+      "oracle_id": "b74c072d-77ac-460d-9d9c-75b25874f58b",
+      "facts_sha256": "b89a1c92584868759b31c9a0ed87246955f0434034a07720065bc3db4b6b8fc3",
+      "printings": [
+        "12",
+        "443"
+      ]
+    },
+    {
+      "name": "Captain Marvel, Earth's Protector",
+      "oracle_id": "2e665a03-bece-43df-bd15-b4496e233f2e",
+      "facts_sha256": "77ba92cdf3f035603513d5b3fe4c5c7b2f7498436bee4cb271f8800e2be1a9be",
+      "printings": [
+        "11",
+        "342",
+        "354"
+      ]
+    },
+    {
+      "name": "Castle Doom",
+      "oracle_id": "9bd013df-ad75-4099-940b-1765c58faf26",
+      "facts_sha256": "633f4f91e56c724f4b036d25a063e76621beb3af5becb5295faa98b4ad488912",
+      "printings": [
+        "263",
+        "429"
+      ]
+    },
+    {
+      "name": "Claim the Kingdom",
+      "oracle_id": "3cd15225-e9b6-4998-b545-76536c72e948",
+      "facts_sha256": "313433cd4c8f4882a867bc1206162ad2828146104beb7dd03c0458cf3dee3736",
+      "printings": [
+        "163"
+      ]
+    },
+    {
+      "name": "Cloak and Dagger, Entwined",
+      "oracle_id": "64132f93-66ac-4794-8c07-a88f9ed0e22b",
+      "facts_sha256": "e474281f28a85f96ecce4768ce930e3d8db6b8fdd7d5472ff68aec5c716dee97",
+      "printings": [
+        "211",
+        "419"
+      ]
+    },
+    {
+      "name": "Colleen Wing, Street Samurai",
+      "oracle_id": "685181dd-0124-4c76-9270-f9dd17e6a221",
+      "facts_sha256": "965eae5fcac8af21f659c1d2dcf736780f46e891abeddc4e14c719a57ae2688b",
+      "printings": [
+        "13"
+      ]
+    },
+    {
+      "name": "Construct a Cosmic Cube",
+      "oracle_id": "369aa9a6-af8a-432c-adff-ced2bb203dc7",
+      "facts_sha256": "f32e4f84c9c74dfd9c011a37b98d5432e49324403fa81fcf48aa9de044f83da0",
+      "printings": [
+        "406",
+        "90"
+      ]
+    },
+    {
+      "name": "Cosmic Cube",
+      "oracle_id": "0866a630-d962-4aa9-a15f-08b2947540ef",
+      "facts_sha256": "f3b3951097db43a25a7f2cd687afc36e7b2be782c205664f59164a7cf2c2bc5d",
+      "printings": [
+        "245",
+        "312",
+        "337"
+      ]
+    },
+    {
+      "name": "Crimson Operative",
+      "oracle_id": "d8863742-6c1c-415a-ad27-7def6d119c6a",
+      "facts_sha256": "5b1fbae2b99cbcac41e7c08d41c94a07e20510260afcf1fe4d7b1bc65d8d3ccb",
+      "printings": [
+        "126"
+      ]
+    },
+    {
+      "name": "Crossbones, Malicious Mercenary",
+      "oracle_id": "ac950d10-e373-42d3-907b-ee56e45a2084",
+      "facts_sha256": "6cb63ed502161f69c0c03fdc81d70453cba179e0fa8bfe369b434580b27b9bd8",
+      "printings": [
+        "91"
+      ]
+    },
+    {
+      "name": "Crowd of True Believers",
+      "oracle_id": "06296d4d-a1b3-4e9a-a2fd-a0183bb892a1",
+      "facts_sha256": "0cd6186904f3f0e66bf7aec917c1accd9235f1ebbc0cdc87e5924b1e569920a9",
+      "printings": [
+        "14"
+      ]
+    },
+    {
+      "name": "Cruel Alliance",
+      "oracle_id": "6897f9e0-f654-4c0a-9fda-2ad4e264bf9a",
+      "facts_sha256": "ce7f5fedb8e8274a5e2a86ef0f124131056c0e1db753a0c361c4fcedfb2ae10e",
+      "printings": [
+        "92"
+      ]
+    },
+    {
+      "name": "Daredevil, Man Without Fear",
+      "oracle_id": "88aadf60-91f9-4932-a2bc-63365a139d36",
+      "facts_sha256": "87d420b2c6472b141da54661eeb7b8f761ffd24a6ced83e824b6a73ca46921f4",
+      "printings": [
+        "213",
+        "324",
+        "372",
+        "398",
+        "432"
+      ]
+    },
+    {
+      "name": "Dark Deed",
+      "oracle_id": "e98cd00c-b812-4c6a-81d4-e3f94b64fc58",
+      "facts_sha256": "b6d502b570249818983b2c4436c0a7275b313b47527092259a352c8d9b720685",
+      "printings": [
+        "93"
+      ]
+    },
+    {
+      "name": "Dark Fortress",
+      "oracle_id": "40760bfa-a423-487c-ba29-043b2d00c736",
+      "facts_sha256": "fed28ee181770240f378695fdad9ae264daf606fb8bc4c7260f4d6c6f5492b7e",
+      "printings": [
+        "264",
+        "380"
+      ]
+    },
+    {
+      "name": "Death to Our Enemies",
+      "oracle_id": "c2b2b743-dfc7-439e-8563-1ccce54422bd",
+      "facts_sha256": "9e2f20f01ae6295df4c177968e24a02a422e803fd6080bd13b177f6250a91b48",
+      "printings": [
+        "127"
+      ]
+    },
+    {
+      "name": "Decoy Ploy",
+      "oracle_id": "035cddbc-39c9-42af-9e26-c88419b43b49",
+      "facts_sha256": "febe87adb0c44fa6bde6d2af158c02735d156acd694562d6c43473248b1098e2",
+      "printings": [
+        "94"
+      ]
+    },
+    {
+      "name": "Dependable Quinjet",
+      "oracle_id": "60105eb8-bdca-44b9-a970-68a7615526e8",
+      "facts_sha256": "0316bc45bb5ad5e0591e4ef670cd74e6cfe091805b23f33d03cc4fd1681d212a",
+      "printings": [
+        "246"
+      ]
+    },
+    {
+      "name": "Depower",
+      "oracle_id": "33f89437-885b-4850-88b7-239f5dfcc8b1",
+      "facts_sha256": "9272323f86c9e6e9ef8325e9d74bb8b51b2dcff4cfd0a177e57d01ff5c14a578",
+      "printings": [
+        "50"
+      ]
+    },
+    {
+      "name": "Doc Samson, Super Psychiatrist",
+      "oracle_id": "699610c9-c991-4faf-b712-d015ef0799ad",
+      "facts_sha256": "1357bb7408752eec9325104de93717be0bb658dc93a6f87cf925f535e586e8b4",
+      "printings": [
+        "164"
+      ]
+    },
+    {
+      "name": "Doctor Doom",
+      "oracle_id": "9e4fa592-71f8-4c71-8c91-78e6326cd736",
+      "facts_sha256": "e902a2cf9e3b57b211eb4f26e2035bd273e6e310af719b47f984241990ce2182",
+      "printings": [
+        "336",
+        "365",
+        "394",
+        "95"
+      ]
+    },
+    {
+      "name": "Doom Reigns Supreme",
+      "oracle_id": "f398a742-22c1-4da9-9d49-fdce2eb93d01",
+      "facts_sha256": "b135a825c040f024441e308d1b0fad14bd315e265fb45c1da1acb960ebea0547",
+      "printings": [
+        "407",
+        "96"
+      ]
+    },
+    {
+      "name": "Earth's Mightiest Heroes",
+      "oracle_id": "2b87bcac-ec64-4012-9e75-f459d3640eb3",
+      "facts_sha256": "9b7fca4607c4c8898387011f843a6f7631bbd52ade167f643ac6a49b3ec70056",
+      "printings": [
+        "165",
+        "349",
+        "413"
+      ]
+    },
+    {
+      "name": "Echo, Perceptive Prodigy",
+      "oracle_id": "1091c83a-a4b9-457f-a69a-9a44a7e10759",
+      "facts_sha256": "0e21244bc3a6c7def060ba621accf0b30b5757ddfe48983f2b1c71b9c0a5f02f",
+      "printings": [
+        "51"
+      ]
+    },
+    {
+      "name": "Elektra, Daughter of the Hand",
+      "oracle_id": "b46647a1-0c91-451b-8c0b-be8fe02faee2",
+      "facts_sha256": "61e1b69ea557f3aac8eb3c243920255848c595fa4a900d12387c4d2cd49e374f",
+      "printings": [
+        "326",
+        "366",
+        "395",
+        "97"
+      ]
+    },
+    {
+      "name": "Epic Fight",
+      "oracle_id": "4bdfc580-de51-445b-b170-8c6832e44704",
+      "facts_sha256": "c8ba003afb90015ddd66d8067cdc461ad5d668dd564813e8e1bfe2b5a4fe6321",
+      "printings": [
+        "166",
+        "351"
+      ]
+    },
+    {
+      "name": "Evil's Thrall",
+      "oracle_id": "d7562f89-4808-44ab-8dc9-fc4078e8a47b",
+      "facts_sha256": "873a4e5353b431ef6e1d997e2ec53f7606e38709efe5f7a2d8c65e9722c27212",
+      "printings": [
+        "128"
+      ]
+    },
+    {
+      "name": "Falcon's Wing Harness",
+      "oracle_id": "e69db5f0-beed-48e8-bc25-768b1e8be5ea",
+      "facts_sha256": "500ed79a614a0d8f6e70054ff3e40c84b1875e3e7c39b1a246b7ab9ac2e826bb",
+      "printings": [
+        "53"
+      ]
+    },
+    {
+      "name": "Falcon, Winged Wonder",
+      "oracle_id": "92e222c2-28e6-4d43-8b48-480ebcd88495",
+      "facts_sha256": "b0eaa9a8664d4763b403f82dd556855d9db8961934b72e8d85aa7fbda4d2cabe",
+      "printings": [
+        "52"
+      ]
+    },
+    {
+      "name": "Fin Fang Foom",
+      "oracle_id": "52ec472e-a745-4e25-b9a7-8e1eb8873594",
+      "facts_sha256": "bfdccb9fe4b85adab006415a71aecc2f94f0284affa5adaddb7dfae2b2d9644b",
+      "printings": [
+        "129",
+        "411"
+      ]
+    },
+    {
+      "name": "Fisk Tower",
+      "oracle_id": "5554db95-9676-4c24-b82a-8173513d7927",
+      "facts_sha256": "28e57da13bd36ef7a42625a611b97e418633e9a7e961638b32dcc5248c1381cb",
+      "printings": [
+        "265"
+      ]
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+      "printings": [
+        "442",
+        "441",
+        "285",
+        "286",
+        "295",
+        "296"
+      ]
+    },
+    {
+      "name": "Frozen in Ice",
+      "oracle_id": "82fa14d8-5019-4e1b-a86c-923d9292b87a",
+      "facts_sha256": "49e47f3903cca8b2c52ab0b11c62b3ca332d42539781fc12f2ef17c55fbad7c4",
+      "printings": [
+        "54"
+      ]
+    },
+    {
+      "name": "Futurist Forge",
+      "oracle_id": "0e5f97b5-bb8c-4688-a141-5db4d4eeccf0",
+      "facts_sha256": "1d1ea51b0eefec2313bc3d3f3fc9797998e7ec99c184e1fc836c661f0fe257e3",
+      "printings": [
+        "55"
+      ]
+    },
+    {
+      "name": "Gathering Place",
+      "oracle_id": "36b58705-c5a5-4547-8d8b-a7c35e1f69ae",
+      "facts_sha256": "64ffa5407cabac1fccb47dead5918f72177bb6814a29c51f8d8356347c871017",
+      "printings": [
+        "266",
+        "381"
+      ]
+    },
+    {
+      "name": "Ghost, Spectral Saboteur",
+      "oracle_id": "88f34d15-c338-40a7-b56c-c5b650847430",
+      "facts_sha256": "5555634b4879412f38b48bef6335a730fdf6ab512bcc946950611ffad1b55efb",
+      "printings": [
+        "214"
+      ]
+    },
+    {
+      "name": "Giant Growth",
+      "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
+      "facts_sha256": "ff9795f0e6963efdfa3dcf8a07881daf762de6477d95ad61e951c28a575043ce",
+      "printings": [
+        "167"
+      ]
+    },
+    {
+      "name": "Giant-Sized Flying Ant",
+      "oracle_id": "233e3b4b-faaf-451d-8a2e-e9f5a6ced671",
+      "facts_sha256": "559815180565d4945a022d074ccbc550f3538b27a80044d44344dfe4bd97b1f4",
+      "printings": [
+        "56"
+      ]
+    },
+    {
+      "name": "Gleaming Bastion",
+      "oracle_id": "7785ffd4-f169-475d-9558-ce4877b3378a",
+      "facts_sha256": "5666254dc6ae6af1202c777b8bfc2703cefaeb74215b6fc5b105d09dc5ca00dc",
+      "printings": [
+        "267",
+        "382"
+      ]
+    },
+    {
+      "name": "Go Nuts!",
+      "oracle_id": "0efe1357-bfbb-42c0-9cc9-6a919d686c66",
+      "facts_sha256": "dc8107b623452443e99c4dde4b910dcbf4a3741e109252bcd3d1f35882dc827d",
+      "printings": [
+        "168"
+      ]
+    },
+    {
+      "name": "Grim Reaper, Lethal Legionnaire",
+      "oracle_id": "edf429a8-6a4d-4d2a-b0ca-c0c72a0698a3",
+      "facts_sha256": "d975bfd4a628fe19a04d4111c51a83137d07c9347e115e2d2d6622ff78d1b6d3",
+      "printings": [
+        "98"
+      ]
+    },
+    {
+      "name": "Guerrilla Gorilla",
+      "oracle_id": "6cb65b68-91b2-45ba-867b-3b31d6dd5643",
+      "facts_sha256": "e8a7624b67e5ec65417a8d4c8f623b93c887e87cb5bef93853db31a439371150",
+      "printings": [
+        "169"
+      ]
+    },
+    {
+      "name": "H.E.R.B.I.E. Scout Unit",
+      "oracle_id": "393ff8c5-4da0-4290-b498-222cc0244026",
+      "facts_sha256": "3eada033cd75c1c296a7bebc85c2715fc943671289410d519f3548fd9093f402",
+      "printings": [
+        "247"
+      ]
+    },
+    {
+      "name": "HULK SMASH!",
+      "oracle_id": "5f97d49c-d0fa-4776-9455-93c1a172cd83",
+      "facts_sha256": "45ead20a818d016e5d35aea29e433f896691b55389810a160120a8d662360c54",
+      "printings": [
+        "135",
+        "332"
+      ]
+    },
+    {
+      "name": "HYDRA Assault Robot",
+      "oracle_id": "a2558476-5506-4a09-93fc-b8ab33c98985",
+      "facts_sha256": "ce537e25b56a28f071b7b707dfde99946f00c168b38b3dc4c938c55ae9c988cc",
+      "printings": [
+        "137"
+      ]
+    },
+    {
+      "name": "HYDRA Infiltration",
+      "oracle_id": "27692079-a517-4d38-b452-7409980b5912",
+      "facts_sha256": "00c3bfc177b476f16e6911d4610f378dd483910232b41fd02ef7e9839a0b728b",
+      "printings": [
+        "100"
+      ]
+    },
+    {
+      "name": "HYDRA Troopers",
+      "oracle_id": "6de67fad-0d01-443d-9ae0-4126ae903069",
+      "facts_sha256": "5f0fe6c3989afec5b2e3f1dadbcaaf1c8431a4d4bc9eeeaa202f2c49223d2ff7",
+      "printings": [
+        "101"
+      ]
+    },
+    {
+      "name": "Hawkeye's Bow",
+      "oracle_id": "83798eb8-b14f-4620-bce2-1a6804a24dc7",
+      "facts_sha256": "6af74fbe1f8acbe69601148914ca117d03a622e0966ae14af9e3aadc32b63b82",
+      "printings": [
+        "132"
+      ]
+    },
+    {
+      "name": "Hawkeye, Master Marksman",
+      "oracle_id": "6b59bb1f-f2d4-4d47-bd57-23927d588381",
+      "facts_sha256": "7db2bd745aa109b9cddbe494c9eca8f33f2a35d21a77882ff0531ced491cb4f9",
+      "printings": [
+        "130",
+        "367"
+      ]
+    },
+    {
+      "name": "Hawkeye, Young Avenger",
+      "oracle_id": "c8f8b4ed-8455-45cd-a24c-e2f42cd5e5b1",
+      "facts_sha256": "4de238a5dc77c7b1b9687354a8aa6d9a77e9023668429f833405ee57efab2b2e",
+      "printings": [
+        "131"
+      ]
+    },
+    {
+      "name": "Helicarrier Strike",
+      "oracle_id": "ca3cda24-0ecd-4edf-b1b3-54311ad58a51",
+      "facts_sha256": "ef8cf7750b807dc988700f06302d52388d5726d362081abbec74a4c674d77430",
+      "printings": [
+        "15"
+      ]
+    },
+    {
+      "name": "Hell's Kitchen",
+      "oracle_id": "1337d89e-a883-4568-a14f-9ca3305cc3df",
+      "facts_sha256": "91cf4aef31379cf4419f3e08941227f6dde2bf19c2a84d85872652b1c81aeda7",
+      "printings": [
+        "268"
+      ]
+    },
+    {
+      "name": "Hellcat, Undying Vigilante",
+      "oracle_id": "4c27ba61-6812-4dd7-8efc-65435a8df7b5",
+      "facts_sha256": "d78de0ce922d326631478b42b74978c8f30f7a98ee8794cc9644b2f5b9ed614f",
+      "printings": [
+        "170"
+      ]
+    },
+    {
+      "name": "Hercules, Prince of Power",
+      "oracle_id": "c3a8cc79-3771-484d-84dd-1a97f8bd12c2",
+      "facts_sha256": "6dc5499d15beedaf24e89bd41bc3be24ead3ea5192dfcaa77a5b3793e3caad77",
+      "printings": [
+        "171"
+      ]
+    },
+    {
+      "name": "Hero in Training",
+      "oracle_id": "87f1a840-021c-4699-a2c4-f2926daf98eb",
+      "facts_sha256": "80dc577ea9ef1016200c54114d1f1a28f3e9580bee08c20d82e3fd4332ed0774",
+      "printings": [
+        "16"
+      ]
+    },
+    {
+      "name": "Heroic Feast",
+      "oracle_id": "31cae00a-3a74-4a59-80b0-a656f524e878",
+      "facts_sha256": "053fa0a8b901fe99051009de8227d48e64c0820f24939321f2438d9a358152f0",
+      "printings": [
+        "172",
+        "414"
+      ]
+    },
+    {
+      "name": "Hex Magic",
+      "oracle_id": "2283729c-11db-471c-9f63-46092c97bd00",
+      "facts_sha256": "0fa454363b46d5504a2606537cf3bfe23b3623b0fa54e1e22627d84795ca5a4e",
+      "printings": [
+        "133"
+      ]
+    },
+    {
+      "name": "Hidden Lair",
+      "oracle_id": "7069d241-4e66-40bf-afd1-551a4a5457f0",
+      "facts_sha256": "749a2af6ad2a59c7107320bf2b9599c89a35b4b578f7f6fb4dedb903a1cd57e7",
+      "printings": [
+        "269",
+        "383"
+      ]
+    },
+    {
+      "name": "Hire a Crew",
+      "oracle_id": "6eb7a870-b626-4326-9e4c-45193f8ce138",
+      "facts_sha256": "84564ec17cb674b7091002bbaf030d54784e1c4990e51b243fed071e83e602dd",
+      "printings": [
+        "134"
+      ]
+    },
+    {
+      "name": "Hour of Defeat",
+      "oracle_id": "2774fcb7-8988-4a18-b5ec-7534dd8b2e05",
+      "facts_sha256": "34f5eb80c9d7197334f4df8a554a9291018d89b90e31486d784fac17099cd5a5",
+      "printings": [
+        "99"
+      ]
+    },
+    {
+      "name": "Hulk, Gamma Goliath",
+      "oracle_id": "3508fd7d-ca02-47f9-8b0a-525f7bde4f57",
+      "facts_sha256": "7cb10d9647fc41aa316d55897f7db5e01d21f60ff39c5fa30f9bf7d538677387",
+      "printings": [
+        "215"
+      ]
+    },
+    {
+      "name": "Hulkling, Burgeoning Bruiser",
+      "oracle_id": "03c934a6-be57-480d-8c84-4e46d9ccb406",
+      "facts_sha256": "eafcf2e539ba3f29d95dbd4c478e8d9097e449cc08feba51fb81d2afd3d57322",
+      "printings": [
+        "173"
+      ]
+    },
+    {
+      "name": "Human Torch, Johnny Storm",
+      "oracle_id": "5b6f2770-e774-4a77-801f-a3fda093c3dd",
+      "facts_sha256": "9a1a8beb6d64b9a61b23c032db1cd070aa0c97188a746a095c8ce1c30483ddd1",
+      "printings": [
+        "136",
+        "321"
+      ]
+    },
+    {
+      "name": "Hydraulic Helper",
+      "oracle_id": "503928cd-1abd-44cd-92c3-6dc19bb07f78",
+      "facts_sha256": "7e564c723a1df2838e82b67b586ec23907aa83686eb164e0e66ccf40ed9f7ff0",
+      "printings": [
+        "57"
+      ]
+    },
+    {
+      "name": "I Am Iron Man",
+      "oracle_id": "deb16a9a-2fa9-4ad3-bb20-7c16066e3d14",
+      "facts_sha256": "b53cb53e6a53037c080e067a6034fdad5ebd9b5b8e6f50354fd064885479783a",
+      "printings": [
+        "58"
+      ]
+    },
+    {
+      "name": "Invisible Woman, Sue Storm",
+      "oracle_id": "e9d20b6d-fa4f-473b-9866-230fd92a1319",
+      "facts_sha256": "ab3c415f56dbd37ee684584147365c49b33155f91b83f25fca56176d076dcf36",
+      "printings": [
+        "17",
+        "323"
+      ]
+    },
+    {
+      "name": "Iron Fist, Living Weapon",
+      "oracle_id": "bbf873c2-94c1-46b8-912e-e29e48e0212c",
+      "facts_sha256": "72d49068561bc193e60092a082f109baf73be56fa5508337e97fb169d264ccab",
+      "printings": [
+        "138"
+      ]
+    },
+    {
+      "name": "Iron Lad, Diverging Destiny",
+      "oracle_id": "3e715032-0d21-441b-b2d4-c91084728718",
+      "facts_sha256": "119df31d253cbb1a8792bb1a0098df3325b61cd5a9f52cb2115124133f75e3dc",
+      "printings": [
+        "59"
+      ]
+    },
+    {
+      "name": "Iron Man Armor",
+      "oracle_id": "958d81c2-ca09-4275-890e-3bb595317325",
+      "facts_sha256": "1653254302ec981c0945e17d2ba5f3e5c4a3a2df56e7ce58406c90648262059b",
+      "printings": [
+        "248",
+        "427"
+      ]
+    },
+    {
+      "name": "Iron Man, Master of Machines",
+      "oracle_id": "94bc796d-8c04-4835-8a99-7e5dce9540ee",
+      "facts_sha256": "c8ac4369c0952fb0305f5894e00e54d2a9d256ac4524f292e6924ae7096cded8",
+      "printings": [
+        "216"
+      ]
+    },
+    {
+      "name": "Ironheart, Clever Champion",
+      "oracle_id": "df3d5b86-7b75-4df9-8985-7159cde12261",
+      "facts_sha256": "480ed6c3652fcf0ba55341b46df73ab5330500363a95e2ef3125745bc61496d5",
+      "printings": [
+        "360",
+        "60"
+      ]
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "facts_sha256": "9663433a19f0b70520d2598600be1ddac39dd97fd02f80811dcce06dd0cbaf26",
+      "printings": [
+        "436",
+        "435",
+        "280",
+        "279",
+        "289",
+        "290"
+      ]
+    },
+    {
+      "name": "Jennifer Walters // The Sensational She-Hulk",
+      "oracle_id": "c867a778-97ef-4872-b890-b088b96a1281",
+      "facts_sha256": "fce922aa93fc790c9fc8672b46118cc96759ac581dff240e8f6fe1f76a6d9cdb",
+      "printings": [
+        "18",
+        "328",
+        "355",
+        "388"
+      ]
+    },
+    {
+      "name": "Jessica Jones, Private Eye",
+      "oracle_id": "6677cd5a-0785-499b-ba99-f6bdcfb196d5",
+      "facts_sha256": "bd89ac1c95dc9235cdd862be53a185cf75961584ed67c5fded6340ef1a9f76f2",
+      "printings": [
+        "139"
+      ]
+    },
+    {
+      "name": "Justice, Vance Astrovik",
+      "oracle_id": "184dba74-63ed-4820-9174-68adf26bfabf",
+      "facts_sha256": "dd280756055552b0f9f12ac51904714237ecc02edffa8be6f788c355c27d1f3b",
+      "printings": [
+        "61"
+      ]
+    },
+    {
+      "name": "K'un-Lun Warrior",
+      "oracle_id": "0618a217-2a6e-4fa1-bfe6-89c6612a594d",
+      "facts_sha256": "95a60a4f0bb751bd3d8f149111cdfffcec974e1d86273ff356d255216323b3e8",
+      "printings": [
+        "140"
+      ]
+    },
+    {
+      "name": "Ka-Zar of the Savage Land",
+      "oracle_id": "88eeb519-5782-4732-bd34-81d1ee6dbc8f",
+      "facts_sha256": "f0bccbe32ddcf606def92c74acc8e0022391b2eccfbc8a8949bb727f1b54eb35",
+      "printings": [
+        "174"
+      ]
+    },
+    {
+      "name": "Kang the Conqueror",
+      "oracle_id": "da6e24a4-8adc-41a1-b5eb-3e31dc1250c9",
+      "facts_sha256": "74935864dad224ea8a2ab79e5ae6cbad8ac48c95693806ec479ee0dad9b0c88a",
+      "printings": [
+        "62",
+        "403"
+      ]
+    },
+    {
+      "name": "Kang, Temporal Tyrant",
+      "oracle_id": "b43350a8-fc4d-41ed-becd-f0277512bb5f",
+      "facts_sha256": "6e839f2f152a5cf401bc8aa007a8acd1360c0aba8bd24962a3a16588dd0c1e4b",
+      "printings": [
+        "217",
+        "450"
+      ]
+    },
+    {
+      "name": "Kid Loki",
+      "oracle_id": "19ef0329-08de-4835-8079-2e791e19f3a6",
+      "facts_sha256": "008de003c61e632f968b98f547916306c7baf2d949bcb917fa7a1b1df6c3ec58",
+      "printings": []
+    },
+    {
+      "name": "Killmonger, Scourge of Wakanda",
+      "oracle_id": "1c3ba54a-a8ef-4838-b3aa-cb6df827a619",
+      "facts_sha256": "ff2823648a8a8f78e75e422b52bb55d8bc92712c1318d2b6043163045aa4a2ee",
+      "printings": [
+        "218"
+      ]
+    },
+    {
+      "name": "King T'Challa // Black Panther, Hope Enduring",
+      "oracle_id": "fe00278d-4385-4e3f-919c-12a794fd86f5",
+      "facts_sha256": "f00e76a17732715a33ed5b76de462577b8b3ff5b4873b8bb4268fd60b13e9d65",
+      "printings": [
+        "219",
+        "346",
+        "373",
+        "399"
+      ]
+    },
+    {
+      "name": "Kingpin's Enforcers",
+      "oracle_id": "342df67f-44d8-4b0a-b1d7-4241966d0598",
+      "facts_sha256": "eb564cd1a42e8bb22beeb5bbda89e814df307d78b1dc25ffe48d8cd353d2cbbe",
+      "printings": [
+        "102"
+      ]
+    },
+    {
+      "name": "Klaw, Sonic Subjugator",
+      "oracle_id": "1c233e08-d5a3-48d7-9074-20393896a480",
+      "facts_sha256": "e10306222a2f3871d3a692026a21d51080b63018de470cfb6cdc86e4d87e21fb",
+      "printings": [
+        "103"
+      ]
+    },
+    {
+      "name": "Knight of Wundagore",
+      "oracle_id": "39145960-a212-46b4-addb-4b187f6bf6fd",
+      "facts_sha256": "bb27576241568055e56eb1ade2ffa80b2d13729b7face7009da05b24b1b64d70",
+      "printings": [
+        "175"
+      ]
+    },
+    {
+      "name": "Kree Commandos",
+      "oracle_id": "09eb988a-e2eb-42e1-a786-01be63d2263f",
+      "facts_sha256": "306a96dcb4fa8325f808cd16b01b21bf5bd710ee59933e300ad10bac708a5c4a",
+      "printings": [
+        "19"
+      ]
+    },
+    {
+      "name": "Kree Sentinel",
+      "oracle_id": "3c2b9bb2-8201-47e8-84d5-f3518cac03cb",
+      "facts_sha256": "71752f0fe7fe0a00f2c045ad7aa03cde0ee9b4e1099da060c7ca6f1309638851",
+      "printings": [
+        "141"
+      ]
+    },
+    {
+      "name": "Leader, Super-Genius",
+      "oracle_id": "bec686dd-a9ea-4db5-bc20-8e40420b9a9b",
+      "facts_sha256": "8d712c75d410ec52b543cddec3d67830ffcf1662da33d1e6275ff804c264a3b5",
+      "printings": [
+        "64",
+        "330"
+      ]
+    },
+    {
+      "name": "Lightning Strike",
+      "oracle_id": "f34b9bc4-7bfe-47fd-ba23-4eeeb46026eb",
+      "facts_sha256": "0f71624f371316e9bf2b90c154f73cc9eb1c9ae61cd5b90b49c77bc97b7285a3",
+      "printings": [
+        "142"
+      ]
+    },
+    {
+      "name": "Loki Laufeyson",
+      "oracle_id": "9c78778a-6335-4949-8ade-11d0f085cb2b",
+      "facts_sha256": "23dd95859ef9b4c7aa9a3df2a8456061de8ccc9e704bc238504dd79f94bdcc41",
+      "printings": [
+        "143"
+      ]
+    },
+    {
+      "name": "Loki, God of Mischief",
+      "oracle_id": "c112852f-61d5-4b94-b864-c7d0b5333b29",
+      "facts_sha256": "db4d2ad730c6b860e9c28d1d7dae2184623f4062bd37e3552aa6056b95ade4bf",
+      "printings": [
+        "65",
+        "343"
+      ]
+    },
+    {
+      "name": "Los Diablos Missile Base",
+      "oracle_id": "4b17048f-8c7f-4e29-8f56-16db4c2106e6",
+      "facts_sha256": "0d12f3b19696e721d3b7490b14d8052b3c542d8b2661679fdd0aed94e7639f5c",
+      "printings": [
+        "270"
+      ]
+    },
+    {
+      "name": "Luke Cage, Power Man",
+      "oracle_id": "c95d1558-09a4-4dbc-b08a-fe21b47bc5d2",
+      "facts_sha256": "713e2043e78d8878ed321a1726edd0a2647b6b3b75cb3b743d19497e8e70c405",
+      "printings": [
+        "20"
+      ]
+    },
+    {
+      "name": "M.O.D.O.K.",
+      "oracle_id": "fe7cc414-42d0-4dad-8516-7a0be0860a67",
+      "facts_sha256": "de2b5beab383794b2fc634a510e3b63f506f81fb7cd25635dcbeeb5eeacdd9c0",
+      "printings": [
+        "106",
+        "408"
+      ]
+    },
+    {
+      "name": "Machinesmith Automaton",
+      "oracle_id": "945e8443-9647-4eab-b091-ee8e7bc347f5",
+      "facts_sha256": "502ca04db40dd6593ce095e00fe4bc1f8b1927d31f995c4c5dce1e50c8e4caa7",
+      "printings": [
+        "144"
+      ]
+    },
+    {
+      "name": "Madame Hydra",
+      "oracle_id": "d812c8e3-a475-4ad2-a93f-7208ad873676",
+      "facts_sha256": "2259c00b78b2cd0814c12a79ac487abb87c73bcfbb011cc84073475b45fbcc9c",
+      "printings": [
+        "221",
+        "318",
+        "451"
+      ]
+    },
+    {
+      "name": "Madame Masque",
+      "oracle_id": "b5b0e85f-6651-4667-829c-2253ff8b130d",
+      "facts_sha256": "9c725f20079d191e8cb40ac7d02a8d71ceb959b5f1320bcc77044e7bd0325dd3",
+      "printings": [
+        "104"
+      ]
+    },
+    {
+      "name": "Mister Fantastic, Reed Richards",
+      "oracle_id": "7fa5237e-dd79-4646-b935-cb8c6ee803ab",
+      "facts_sha256": "09800f330893ad6e3c3164de73fd021a990cc8741f4d4a42647fe6210b475f02",
+      "printings": [
+        "320",
+        "445",
+        "66"
+      ]
+    },
+    {
+      "name": "Mister Hyde, Monster Within",
+      "oracle_id": "4a7c7ecc-df72-4da0-af35-dd0af58ec02c",
+      "facts_sha256": "2f15aa060718f276396dfbee0e9fca3b5c41e2559e792d72c5d9277a0df958fc",
+      "printings": [
+        "176"
+      ]
+    },
+    {
+      "name": "Misty Knight, Hero for Hire",
+      "oracle_id": "5b090ba3-0ecb-4585-b5b7-9d6028c32487",
+      "facts_sha256": "04cf64c8d5f7dc572e21876baf1651484cdb83e4d48254af2eaf3d1e5db27697",
+      "printings": [
+        "145"
+      ]
+    },
+    {
+      "name": "Mjölnir, Hammer of Thor",
+      "oracle_id": "7f9a8845-d760-44a7-a4c9-8a20dba4e14a",
+      "facts_sha256": "46ce9e3c03a14be320b5100c687266a137b78557bc2771e39b7e2861cbbf44e7",
+      "printings": [
+        "146",
+        "303",
+        "339"
+      ]
+    },
+    {
+      "name": "Mockingbird, Ace Agent",
+      "oracle_id": "1fd00656-83ba-4feb-b089-224007936b99",
+      "facts_sha256": "87a5aa1c2b72cb0743e2fd4f42f1f0ed17a17118365958d8a09ee86c33f1d92a",
+      "printings": [
+        "22"
+      ]
+    },
+    {
+      "name": "Mole Man, Moloid Master",
+      "oracle_id": "34994475-b914-44f6-8ca1-c2747b6d5956",
+      "facts_sha256": "80ba1bb00f1b65f9aac025c8367fa30f0e38fc6eb41141420062f94d312d9bb7",
+      "printings": [
+        "177",
+        "415"
+      ]
+    },
+    {
+      "name": "Monica Rambeau // Photon, Living Light",
+      "oracle_id": "8dd929cb-0fe1-4cb3-bc8d-96ca37f194f3",
+      "facts_sha256": "83ebf6f346f7a62b11963c3ede985c67f59ae9af9d2051ea6f8a7f23b714a97b",
+      "printings": [
+        "23",
+        "345",
+        "356"
+      ]
+    },
+    {
+      "name": "Moon Girl and Devil Dinosaur",
+      "oracle_id": "bfe0818b-ae13-4174-85c8-24b895d28df0",
+      "facts_sha256": "cbf66e06a7f0df1f7fc08ee5480c32d41ae48bb2aa131116d3721333f544f96c",
+      "printings": [
+        "223",
+        "421"
+      ]
+    },
+    {
+      "name": "Moonstone, Harsh Mistress",
+      "oracle_id": "aeeb50f2-8e02-4d40-a1dd-28b1c5c85c7e",
+      "facts_sha256": "1c6d0817fabb00e64574c7626d996a64e2da4858de0a48848d96cfeb61845647",
+      "printings": [
+        "107",
+        "447"
+      ]
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+      "printings": [
+        "440",
+        "439",
+        "284",
+        "283",
+        "293",
+        "294"
+      ]
+    },
+    {
+      "name": "Ms. Marvel, Kamala Khan",
+      "oracle_id": "ebedff30-ae43-4861-aab2-afe1fc88337e",
+      "facts_sha256": "390bf275eb11a5365be36e30bd4c2848f809c85b243f21d559fe2af7ccb79983",
+      "printings": [
+        "67",
+        "361"
+      ]
+    },
+    {
+      "name": "Multiversal Incursion",
+      "oracle_id": "d3678fce-6897-4f2c-bf50-243facb6581b",
+      "facts_sha256": "ae1af4a2274c84d24e50aee6cd0e5ad68ff374269719b7f12f11bfb34bf56687",
+      "printings": [
+        "68",
+        "300"
+      ]
+    },
+    {
+      "name": "Murdock's Crusade",
+      "oracle_id": "36330947-5ef9-4bff-b541-bfbddd9715a3",
+      "facts_sha256": "de7e7d075035cc9ac7d4d9e762393c402f4aabd33a33ebec47b0c709474c44b9",
+      "printings": [
+        "24"
+      ]
+    },
+    {
+      "name": "Namor the Sub-Mariner",
+      "oracle_id": "dff11626-ad4d-443a-b7db-f508790b5fd2",
+      "facts_sha256": "4a97f67bf0456c9e9d909c4a7e96ccd0a60fba46b97bfffb3a7e780ad4156aa6",
+      "printings": [
+        "362",
+        "391",
+        "69"
+      ]
+    },
+    {
+      "name": "Nick Fury, Agent of S.H.I.E.L.D.",
+      "oracle_id": "62916107-14c0-4516-9fed-a032b1a80e5d",
+      "facts_sha256": "84307acf93fa4fd42feaec005723c3485c80c55b6e027611d23614bad329b1f4",
+      "printings": [
+        "25",
+        "314",
+        "357",
+        "389"
+      ]
+    },
+    {
+      "name": "Night Nurse, Healer of Heroes",
+      "oracle_id": "e3559565-0512-4525-addb-bf27903bcd13",
+      "facts_sha256": "2977171d7e7391c5f15a6870facc8920fe9e69a9db234524e9ba2e578fb62159",
+      "printings": [
+        "26"
+      ]
+    },
+    {
+      "name": "Ninja of the Hand",
+      "oracle_id": "c38f7447-e646-438d-81bd-fe2a71c8a79c",
+      "facts_sha256": "608ad3b27b98466ca15b8e60eae05d984732c1d1de659e0a9f589d8a5e90db33",
+      "printings": [
+        "108"
+      ]
+    },
+    {
+      "name": "Okoye, Dora Milaje Leader",
+      "oracle_id": "6d397d26-7e52-47b2-9880-2c10e90cfba4",
+      "facts_sha256": "7161dd0b85f8bc3cd2c8d39a1726137a549eb74615f3bd8377de33dc100629f2",
+      "printings": [
+        "27"
+      ]
+    },
+    {
+      "name": "Origin of the Avengers",
+      "oracle_id": "d7f3178d-7b7c-4346-af50-a7b0206bee22",
+      "facts_sha256": "5c282746b19b625b64822d96edc5ce3f696e237e6d1f5068cb549dc81181833c",
+      "printings": [
+        "28",
+        "298"
+      ]
+    },
+    {
+      "name": "Panther Pounce",
+      "oracle_id": "ead0820e-fc6b-4ab2-9110-048d6d53985d",
+      "facts_sha256": "b6cacb7c28289b4b3f499ee92395e6ba359e194ea37f91cf0ae5348f54c5693a",
+      "printings": [
+        "29"
+      ]
+    },
+    {
+      "name": "Patriot, Shield Wielder",
+      "oracle_id": "1df7a09f-fbc8-4c2a-a903-bab9e680eda7",
+      "facts_sha256": "5ebfa6ac56ccf8b40a801eabeb9c3fda4351a40e5ff2e2f5adac30e697fe5379",
+      "printings": [
+        "30",
+        "444"
+      ]
+    },
+    {
+      "name": "Pet Avengers",
+      "oracle_id": "bbee7921-19c9-4c70-8462-f16e7e9c25db",
+      "facts_sha256": "6ec4a3d9ecd3895a89b9fa2083863d2d5fd950d4664d6f8bf249490171d99068",
+      "printings": [
+        "178"
+      ]
+    },
+    {
+      "name": "Photon Blast Barrage",
+      "oracle_id": "a5424e33-ff4e-4c82-8aa9-9d25ced7830a",
+      "facts_sha256": "ce0a32d3c6998b31c3d03f94378fad6e59798e2474d180c1442fb4303100d3d6",
+      "printings": [
+        "147"
+      ]
+    },
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+      "printings": [
+        "434",
+        "433",
+        "278",
+        "277",
+        "288",
+        "287"
+      ]
+    },
+    {
+      "name": "Political Triumph",
+      "oracle_id": "0bbceb51-1fb8-44d7-8afc-b4746d292262",
+      "facts_sha256": "6e05b071bdf80eaecb69853427470e80c0f74c83cb86bd14b3e81a030a333603",
+      "printings": []
+    },
+    {
+      "name": "Powerful Broker",
+      "oracle_id": "2b3d76e7-faaa-4e6f-9e21-a88dd719247e",
+      "facts_sha256": "60373018b605d51158479855445dc0846f334611ee3f3e6604c6cd574b0a2f79",
+      "printings": [
+        "179"
+      ]
+    },
+    {
+      "name": "Project Deathlok Soldier",
+      "oracle_id": "d89aa87a-d59a-41e2-b92f-15c9bc6d3d13",
+      "facts_sha256": "8022544bbcbc01c133b5bdd45f83d3c4fc8ce7702a1af92a8046bf768121bf1a",
+      "printings": [
+        "109"
+      ]
+    },
+    {
+      "name": "Punishing Punch",
+      "oracle_id": "454c4e8b-e417-4381-a931-6a11356ef64e",
+      "facts_sha256": "783d3502841ba9d4ea7f62c74bca72d65a9d37eb476bf4ec76d9d0ab862dbf22",
+      "printings": [
+        "180"
+      ]
+    },
+    {
+      "name": "Pym Particles",
+      "oracle_id": "636b44dc-f7e4-42d2-abf6-ae49432b6052",
+      "facts_sha256": "b3a98d8b3e559385f5dd6b80bb9050ae263bae07026f2c300b0de3600a7a5861",
+      "printings": [
+        "70"
+      ]
+    },
+    {
+      "name": "Pym Technologies",
+      "oracle_id": "5a8977fc-0732-4807-b876-01819aedd70b",
+      "facts_sha256": "0b19ea87c3f3555e65da709bc061de14cb378f0bf369238d4f4e7571905b71b1",
+      "printings": [
+        "271"
+      ]
+    },
+    {
+      "name": "Quake, Agent of S.H.I.E.L.D.",
+      "oracle_id": "3966c94b-e597-4b3f-a4f5-001d52fff9fe",
+      "facts_sha256": "1e855e31361e25109b0d198aad1e971a63037e5f82e0d4f3308bf4e5a85d26ba",
+      "printings": [
+        "32"
+      ]
+    },
+    {
+      "name": "Quicksilver, Brash Blur",
+      "oracle_id": "b76ce131-e51a-445e-8216-00df5904ab93",
+      "facts_sha256": "2eef362e3108bed1e86d2ab7aac9cfcff7210b05df73c121976fb80a189f8845",
+      "printings": [
+        "148",
+        "412"
+      ]
+    },
+    {
+      "name": "Raft Security Officer",
+      "oracle_id": "60754d4b-2add-4928-8d30-8ce9c0f54f91",
+      "facts_sha256": "850d44b58c667a0610cc5f2c46b130f58111f8d17ff552f990abb3ca774f8a1d",
+      "printings": [
+        "33"
+      ]
+    },
+    {
+      "name": "Rapid Rescue",
+      "oracle_id": "de1ad369-5aa3-4c54-8fb1-30b7f1d4d542",
+      "facts_sha256": "c83a97df4104d42922aec6f1985e064d04c5859ab6e8ba3a6e7f17b9dec859c6",
+      "printings": [
+        "181"
+      ]
+    },
+    {
+      "name": "Red Guardian, Super-Soldier",
+      "oracle_id": "e85567e8-1102-4d44-a15b-d5f1fdef8465",
+      "facts_sha256": "c456bff973ae33d05743d3399658d66494048089398a96b53c01da62ad8188fc",
+      "printings": [
+        "34"
+      ]
+    },
+    {
+      "name": "Red Hulk",
+      "oracle_id": "a14a838a-49f4-45e3-9ec0-3c803af45a68",
+      "facts_sha256": "649337f787b74382acd136a50b54756065072c261800ff86997500fcc1206873",
+      "printings": [
+        "149",
+        "329"
+      ]
+    },
+    {
+      "name": "Red Room Recruit",
+      "oracle_id": "4e60c38c-cbf5-4ff7-8fff-634f7e3086cc",
+      "facts_sha256": "ce552868ddd766d122b10c5ff47d724df7b542b5c5621bb9433309ac3b0bbb49",
+      "printings": [
+        "110"
+      ]
+    },
+    {
+      "name": "Reptil, Dinomorpher",
+      "oracle_id": "c6284597-1983-4a21-a461-724135220e0d",
+      "facts_sha256": "1ec9d70eef75a027dda70b3f708a7c06755e3005924ea905d9161f16f0ffcb23",
+      "printings": [
+        "182"
+      ]
+    },
+    {
+      "name": "Repulsor Blast",
+      "oracle_id": "150f920c-c942-4feb-824f-79dd9b531687",
+      "facts_sha256": "bc4c2238e50941759c8edf757ad8dde56f85e7bd9a4c01c1042f34837f07dd8b",
+      "printings": [
+        "150"
+      ]
+    },
+    {
+      "name": "Restorative Technique",
+      "oracle_id": "f7b2606c-42b8-46d6-bcaa-8d4506b348eb",
+      "facts_sha256": "c7f3cbe4c270e8fc93eb441d0613e363293dbefdfdb7bea4c352bef760c736ed",
+      "printings": [
+        "183"
+      ]
+    },
+    {
+      "name": "Rewrite History",
+      "oracle_id": "f91c860e-3feb-4a5a-b7ef-4e7d38d61c75",
+      "facts_sha256": "f72a6c9e403fee0f616989b216c0da4515bbc79204ab333fcfd76c403585e97e",
+      "printings": [
+        "71"
+      ]
+    },
+    {
+      "name": "Rick Jones, Destined Sidekick",
+      "oracle_id": "4bccfa67-0c6f-42a1-b8d4-0842a8230d1e",
+      "facts_sha256": "06c22b7f26b60a5633a3ba1da0115b58be9df4ac6ad9d7a5aefe93a5a7e6bffe",
+      "printings": [
+        "184"
+      ]
+    },
+    {
+      "name": "Robot Domination",
+      "oracle_id": "4f69d2f9-c16a-4752-9026-794a29d73af8",
+      "facts_sha256": "de2dd594ff456a6e237a8ba35477974857742943a1a937cacdd771015aaf0297",
+      "printings": []
+    },
+    {
+      "name": "Ronin, Shadow Stalker",
+      "oracle_id": "8ceb1acf-5ff3-4f1a-af04-9f07ad454526",
+      "facts_sha256": "c91363c46da3dae45b80a195d67dd727487a964f732ec39ba25419a62e0015fc",
+      "printings": [
+        "112"
+      ]
+    },
+    {
+      "name": "Roxxon Brutes",
+      "oracle_id": "b92c2da9-eaa4-404b-8114-5527eec6390e",
+      "facts_sha256": "46b91d80b2356fb9610798800f21361ddfe2f8e21a97f509788e779448acbc2a",
+      "printings": [
+        "113"
+      ]
+    },
+    {
+      "name": "S.H.I.E.L.D. Deployment Drone",
+      "oracle_id": "c1669020-8f81-471a-9083-7e9ce3e8f387",
+      "facts_sha256": "94856d8415a2b630ee52add0e6a231e284fee42bd3144db21fe1d66984a1884b",
+      "printings": [
+        "73"
+      ]
+    },
+    {
+      "name": "S.H.I.E.L.D. Flying Car",
+      "oracle_id": "12d51534-a98d-487b-9ba9-c10861dff992",
+      "facts_sha256": "ef75a9c27e869eb5aa7e16918d2575ad493f2da0c2a40b1ddd7f1f5a4a157598",
+      "printings": [
+        "404",
+        "74"
+      ]
+    },
+    {
+      "name": "S.H.I.E.L.D. Helicarrier",
+      "oracle_id": "0f2335bf-6a13-4483-997a-fd19d30c4d48",
+      "facts_sha256": "e83522c3bcbe50dcff107d3048c9df6febbdee4deacf9786a0976b240c752f72",
+      "printings": [
+        "249"
+      ]
+    },
+    {
+      "name": "S.H.I.E.L.D. Spy Kit",
+      "oracle_id": "6fd44fb9-3433-4cb0-95a4-4ac8170b2166",
+      "facts_sha256": "071e0b3b27f4a8940d2e3129185faf776ccf1b67d9eec77e3dbd97f230d28549",
+      "printings": [
+        "36"
+      ]
+    },
+    {
+      "name": "Savage Land Dinosaur",
+      "oracle_id": "6e21ebdf-b97c-494e-a1d5-19db1b7d3016",
+      "facts_sha256": "f85da9f4aa0ff456689ba4ed2cc86c3250851db6b5e446427ead09927654a860",
+      "printings": [
+        "185"
+      ]
+    },
+    {
+      "name": "Scientist Supreme of A.I.M.",
+      "oracle_id": "c09c424b-6aba-4190-9f55-f0307d746386",
+      "facts_sha256": "a2de9144bc1feb734f813829b4bf2b72027795f73775a2949dc978ac4d2ddf79",
+      "printings": [
+        "225",
+        "423"
+      ]
+    },
+    {
+      "name": "Secret Invasion",
+      "oracle_id": "25443ea4-3177-4e29-a2b1-f3fee60b3205",
+      "facts_sha256": "23902f2567e877aaa06f761441273eaf27c474ef72e9c0481d7db7580f761f2b",
+      "printings": [
+        "72",
+        "301"
+      ]
+    },
+    {
+      "name": "Serpent Specialist",
+      "oracle_id": "556f127f-6131-4171-b1ed-11420c21d345",
+      "facts_sha256": "ede1c5ce4189e649f18c287a69b2de9870b0cf41e345bea1aedf73dda10eff1a",
+      "printings": [
+        "186"
+      ]
+    },
+    {
+      "name": "Shang-Chi, Master of Kung Fu",
+      "oracle_id": "700ef9c8-698b-45f7-a1fd-dec74e553224",
+      "facts_sha256": "96bec0faa158d6b3ad7474c75d7fe60c1180d093ded33f66ffaa7b058d79a14f",
+      "printings": [
+        "187",
+        "370",
+        "396"
+      ]
+    },
+    {
+      "name": "She-Hulk, Jade Defender",
+      "oracle_id": "bbd0a2a4-f81b-4a6b-bc4d-d7e53dc51333",
+      "facts_sha256": "e4c34e11c88c1dfb68a95cb7981cefd7817657242f3000bdce9a5e49a1d8fe78",
+      "printings": [
+        "188"
+      ]
+    },
+    {
+      "name": "Shuri, Wakandan Inventor",
+      "oracle_id": "a8c047fc-20a9-4c62-b8a6-9ead56d60ad0",
+      "facts_sha256": "1b1a01aa93f76b274780a05339bc540a20699318a6f15728097d3e5f1ee8b92c",
+      "printings": [
+        "75"
+      ]
+    },
+    {
+      "name": "Speed, Young Avenger",
+      "oracle_id": "2fb0f2d2-ed1f-4181-91f2-684a71c34998",
+      "facts_sha256": "237ecf7a4f3d7b72d24ce73141b9ed38e98bbf0b711da39be840efe6dfb013de",
+      "printings": [
+        "152",
+        "448"
+      ]
+    },
+    {
+      "name": "Speedball, New Warrior",
+      "oracle_id": "53d3ef8f-8e0f-4119-8cdc-a0bf076b4e91",
+      "facts_sha256": "54099ee6b2d3a836aa845d263654fbb103bb7b45de8f41993ec0e2992c5b14c1",
+      "printings": [
+        "227"
+      ]
+    },
+    {
+      "name": "Spider-Man, To the Rescue",
+      "oracle_id": "85dec6cf-6f27-4eb0-834b-5f6fbbe25fc8",
+      "facts_sha256": "bd024708a94e8ca29fe664ea2eff543f445cc895a55a777f1a3b49972bcbda75",
+      "printings": [
+        "228",
+        "335"
+      ]
+    },
+    {
+      "name": "Spider-Woman, Secret Agent",
+      "oracle_id": "04e53f36-9f16-4678-9caf-9afda85f76b4",
+      "facts_sha256": "3f1c9657203df6097bb7e6362c23722f46b3d3ec734da95a749c4fc70292d318",
+      "printings": [
+        "229"
+      ]
+    },
+    {
+      "name": "Stark Industries",
+      "oracle_id": "52401cb4-1bce-4191-9220-0d93ea4108b8",
+      "facts_sha256": "95836c3aaf6f888948f388e0f7c8fe65b7e0065953c57d8e29a0fa4e2c56e3c6",
+      "printings": [
+        "272"
+      ]
+    },
+    {
+      "name": "Stark Industries Executive",
+      "oracle_id": "7c07970d-063a-44a1-9761-b80aafa90dac",
+      "facts_sha256": "37f152f4c8ac3b2a3b975c58b25d80ed8f9ac3b687bd2b8bd53ecd312135fb0b",
+      "printings": [
+        "153"
+      ]
+    },
+    {
+      "name": "Stature, Size Shifter",
+      "oracle_id": "bd49a05c-ed51-4d69-ab9b-11192442ec17",
+      "facts_sha256": "f1054d8b4d14261afaf42c232f4e2b84ae55e1b0cb41f38ed1be90a5c4252c31",
+      "printings": [
+        "76"
+      ]
+    },
+    {
+      "name": "Stolen Stark Tech",
+      "oracle_id": "51023277-5434-4913-b9dc-df2a3fde1652",
+      "facts_sha256": "b9edc08976b2e04bc5addcbc25e12efb252645b8d2f563715b6071a845aba292",
+      "printings": [
+        "114"
+      ]
+    },
+    {
+      "name": "Storm, Windrider",
+      "oracle_id": "06e9287b-56d4-443e-97ba-b5dcdc4fa989",
+      "facts_sha256": "a142c9aae362474193cd10fed4f04e90bf49fbfefa84540972e935ae78cdfe4f",
+      "printings": [
+        "230",
+        "375"
+      ]
+    },
+    {
+      "name": "Subterranean Cavern",
+      "oracle_id": "d49a7525-eca5-48e1-b94b-d618a706fd02",
+      "facts_sha256": "a1449878f3c13a1d3ea4f0d27b467721129d4f6646b824937ded4e0cce24e694",
+      "printings": [
+        "273"
+      ]
+    },
+    {
+      "name": "Super Intelligence",
+      "oracle_id": "d82929f2-57ad-45be-a834-984437046026",
+      "facts_sha256": "0a38d82d0698b9e67480118b4ccccec447227793966aa676a217ddd08bf02dcb",
+      "printings": [
+        "77"
+      ]
+    },
+    {
+      "name": "Super Speed",
+      "oracle_id": "88923ca1-a793-42f0-b9f8-ed9ff9c1185d",
+      "facts_sha256": "4d9866dc4033156171ab5820c69f31e944b85d2e99f79d491717e295d2cf4269",
+      "printings": [
+        "154"
+      ]
+    },
+    {
+      "name": "Super Strength",
+      "oracle_id": "e1b577ad-1488-43b5-83d9-e40bd60c74be",
+      "facts_sha256": "39f511bf919a5c1a10ef8bb211bb6273eeccd455c5a05fec7a90d3fa8b80035c",
+      "printings": [
+        "189"
+      ]
+    },
+    {
+      "name": "Super Suit",
+      "oracle_id": "606092eb-8fe3-4ef7-aaf1-2d3b2687d27a",
+      "facts_sha256": "eff05677ebd4b9a1a03cfffa3719fe1254d855445ff06aec899f3ba9bea1cb4e",
+      "printings": [
+        "78"
+      ]
+    },
+    {
+      "name": "Super Villain Lockup",
+      "oracle_id": "192e150a-96b0-42d6-9d39-03d0bed61f41",
+      "facts_sha256": "19075c28bf77e9d36fbef7a0b2301de0536800a2bde5cf164aab8c0e57a99bce",
+      "printings": [
+        "37"
+      ]
+    },
+    {
+      "name": "Super-Adaptoid",
+      "oracle_id": "f93fa6ec-1f13-4109-aa60-11e148f7ba88",
+      "facts_sha256": "0481bc192f440a63fa0e81d0c71ea9a76c1868ad22a83019af960e6ab30eb75e",
+      "printings": [
+        "250",
+        "428"
+      ]
+    },
+    {
+      "name": "Super-Skrull",
+      "oracle_id": "4644013f-c96a-450e-a7bc-ddfa7a563050",
+      "facts_sha256": "523dff7d5028d3fb42485ac0df807042a7b5c6bdfe53fd6b4b69dcbd371eb101",
+      "printings": [
+        "115",
+        "409"
+      ]
+    },
+    {
+      "name": "Super-Soldier Serum",
+      "oracle_id": "6f2ba142-5e7c-4709-ae03-e028cb2a9872",
+      "facts_sha256": "60cf12ea50fdfa3c83145a5d346e8f84a3fdff5d004e36151c827bec082a4f8d",
+      "printings": [
+        "38",
+        "299"
+      ]
+    },
+    {
+      "name": "Surveillance Room",
+      "oracle_id": "a3648376-dc8b-409b-b2d1-c29e326a059c",
+      "facts_sha256": "a91be81461f88cd35a36442500a4e425a69b351cf30a56777aae51befdcc5c18",
+      "printings": [
+        "274"
+      ]
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+      "printings": [
+        "438",
+        "437",
+        "282",
+        "281",
+        "292",
+        "291"
+      ]
+    },
+    {
+      "name": "Swordsman, Sharp Scoundrel",
+      "oracle_id": "2f15abe7-54aa-40ed-a15d-5b827f1c3923",
+      "facts_sha256": "69be87ae9ce040f08173eff859b3c1fe6c0394563c695fbc48ab6ee688e0284b",
+      "printings": [
+        "116"
+      ]
+    },
+    {
+      "name": "Take Up the Shield",
+      "oracle_id": "e8d0eafe-540a-4b2e-a989-e98ff3c31105",
+      "facts_sha256": "9350bf349d015eeb759fc7e66775c481103c770ef8f5f2f34f565ec77fd79f20",
+      "printings": [
+        "348",
+        "39"
+      ]
+    },
+    {
+      "name": "Taskmaster, Mercenary Mimic",
+      "oracle_id": "dcd97730-b793-4c0c-b158-625ac3656b4a",
+      "facts_sha256": "901c65769a029dfe6af658c0715fb2ab2caa86bb233a0c30ad4ab7805f5ed5a0",
+      "printings": []
+    },
+    {
+      "name": "Team Tactics",
+      "oracle_id": "98b99d7c-d006-471a-8583-0468743c1597",
+      "facts_sha256": "6badccf6d4271d55fe11f4204af37929e04662a07e3c0e8de5137a9e19f80312",
+      "printings": [
+        "155"
+      ]
+    },
+    {
+      "name": "Thanos, the Mad Titan",
+      "oracle_id": "090d815b-b2c8-48cd-a0b3-dc662d5352ac",
+      "facts_sha256": "a156630a92fde4f36c18652ee638a41c6a59245180ccec11e0b66545ae9644fb",
+      "printings": [
+        "233",
+        "376",
+        "400"
+      ]
+    },
+    {
+      "name": "The Astonishing Ant-Man",
+      "oracle_id": "6c7e4e51-099a-4398-a4b7-e2f0ddd36429",
+      "facts_sha256": "10f5f6131639f51e5ba98163dbef13fabde32bd71f61adf43ef72811cf999c42",
+      "printings": [
+        "204",
+        "397"
+      ]
+    },
+    {
+      "name": "The Coming of Galactus",
+      "oracle_id": "e05f23ba-f2b2-4c40-83fa-8defce3cb978",
+      "facts_sha256": "3ba863442a42d840d44a08816554161a02c8788ee0b45097572d6d762885eb55",
+      "printings": [
+        "212",
+        "307"
+      ]
+    },
+    {
+      "name": "The Kingpin of Crime",
+      "oracle_id": "3eeeb159-aa45-4a9b-9618-8542604b9830",
+      "facts_sha256": "bf1ae9c42b79498b30c4e277103567827c1c0dd306b0da3d2adb164fbe4f457b",
+      "printings": [
+        "220",
+        "327",
+        "374"
+      ]
+    },
+    {
+      "name": "The Masters of Evil",
+      "oracle_id": "fcb1caea-e1ac-48f0-a67a-d4aadad490d9",
+      "facts_sha256": "746a761169f76dc3a0d3486a8ecafe66679f3d82083228565b866b8dfa9d686b",
+      "printings": [
+        "105"
+      ]
+    },
+    {
+      "name": "The Mighty Thor, Jane Foster",
+      "oracle_id": "57d02dc8-e22e-4874-9f02-490a2528a28f",
+      "facts_sha256": "fa4fabd2eed45dca382afdbb477490704681a9ff42a2e42709e363c048d9882d",
+      "printings": [
+        "222",
+        "420"
+      ]
+    },
+    {
+      "name": "The Mind Stone",
+      "oracle_id": "b175e826-09e8-4fae-9f2e-b902f95b282d",
+      "facts_sha256": "2d1251fd99d3d9cff8245178e5fd2fe18a28b5727b109c4ab3fc8b05db66cac2",
+      "printings": [
+        "21",
+        "385",
+        "386"
+      ]
+    },
+    {
+      "name": "The Ruinous Wrecking Crew",
+      "oracle_id": "0ff9c0cc-4fb3-4117-9a8e-5b51f62306c4",
+      "facts_sha256": "2aa3df1f0d9507f970071a62ae1a0a37af54e1e68125adeb2c9eb5282cfcdeb9",
+      "printings": [
+        "224",
+        "422"
+      ]
+    },
+    {
+      "name": "The Scarlet Witch",
+      "oracle_id": "d8ae8c38-501e-44ea-9faf-cf9d11ba6616",
+      "facts_sha256": "25e09ddcf5650d79dc4c129e9c790c4c0f0dc62e0ac6c5991b884b37ecafb306",
+      "printings": [
+        "151",
+        "368",
+        "431"
+      ]
+    },
+    {
+      "name": "The Sentry, Golden Guardian",
+      "oracle_id": "1fe549c3-79be-40ef-b57c-de59f24df5ab",
+      "facts_sha256": "ba597527232b915090332de4e23042149e4fa4c97560595e8b43b6433ad76540",
+      "printings": [
+        "35",
+        "358"
+      ]
+    },
+    {
+      "name": "The Serpent Society",
+      "oracle_id": "3688ad0d-653b-4d5d-a57e-444db679d83e",
+      "facts_sha256": "88c3f78f3a9bc969617b3d9b39f97f5bf7c3ce0355492b551a67e97d16453189",
+      "printings": [
+        "226",
+        "424"
+      ]
+    },
+    {
+      "name": "The Super Hero Civil War",
+      "oracle_id": "11d74dc2-8c11-4d4b-b727-8216d2eb6b4e",
+      "facts_sha256": "e1bde7deaf758e4d42b722bccb1ad942a1322617673f9eeb0c56ef57815b4308",
+      "printings": [
+        "231",
+        "308"
+      ]
+    },
+    {
+      "name": "The Ten Rings",
+      "oracle_id": "a82d855c-50c8-43f2-99ba-a84fe84539c5",
+      "facts_sha256": "96ca3a56ea02f53d3bbedd7384d72fbf952aae75931416d1d373c0dbdc7203c3",
+      "printings": [
+        "251",
+        "313"
+      ]
+    },
+    {
+      "name": "The Thing, Ben Grimm",
+      "oracle_id": "d566d5f1-5abd-405b-8553-d267ecbe72ab",
+      "facts_sha256": "c394539d0cb7a7542e5219e8c57d0c4a9c89740c192c5abda21b9d9435becc3f",
+      "printings": [
+        "190",
+        "322"
+      ]
+    },
+    {
+      "name": "The Unbeatable Squirrel Girl",
+      "oracle_id": "80312910-5d53-44f1-9982-e46dc7532abb",
+      "facts_sha256": "da9e1793e67b9b384d182f8dd3e4f24a5b93708218894bd00ca23c3b7c4940f7",
+      "printings": [
+        "193",
+        "371"
+      ]
+    },
+    {
+      "name": "The Vision",
+      "oracle_id": "32aee76a-e738-4898-985a-801d1cce15ea",
+      "facts_sha256": "07fb1672c77832ab8731a941164bedcd79eb29fd5d8cfeaf713ae3e749fef05a",
+      "printings": [
+        "255",
+        "379"
+      ]
+    },
+    {
+      "name": "The Wondrous Wasp",
+      "oracle_id": "5ad8963b-8091-4787-9147-20a1fe7bf0fb",
+      "facts_sha256": "2dde2fe81e0f3b894439f4c041cbce943b1e753540ac166e1a859c52e8d47915",
+      "printings": [
+        "84"
+      ]
+    },
+    {
+      "name": "Thirst for Knowledge",
+      "oracle_id": "939e6f71-185e-41f2-9d54-72cce06f1dce",
+      "facts_sha256": "5a4e57579954b73ef132eec595039926c6128f151accad586d9930a018aa6941",
+      "printings": [
+        "79"
+      ]
+    },
+    {
+      "name": "Thor Odinson",
+      "oracle_id": "ec9b74d0-e4fe-4764-b628-992a62f2a1cf",
+      "facts_sha256": "c32716fd70947019b13d2ab4ddbbc615793add0d31588486df4645f0ec50bf6d",
+      "printings": [
+        "234"
+      ]
+    },
+    {
+      "name": "Thor, God of Thunder",
+      "oracle_id": "2842217a-173e-4879-8b25-fefe2fc1123f",
+      "facts_sha256": "6a35c8b96d185a7c9e36ec47de44012e9cb242b7ccd52c9472a929429da59df0",
+      "printings": [
+        "156",
+        "338",
+        "369"
+      ]
+    },
+    {
+      "name": "Thunderbolts Conspiracy",
+      "oracle_id": "d90a5213-3363-4cd1-97d6-4fc057f78b2a",
+      "facts_sha256": "e2b5edbe99dd5fca5216887116076e5348200423f1b636aa6c22b54cde6b6809",
+      "printings": [
+        "117",
+        "410"
+      ]
+    },
+    {
+      "name": "Tigra, Feline Fury",
+      "oracle_id": "39d993be-30ad-4756-a494-fd8808d474c9",
+      "facts_sha256": "fe67ce54105c494247a962e11114b2a80939827694a25aa030ee06e6f8e659be",
+      "printings": [
+        "191"
+      ]
+    },
+    {
+      "name": "Titania, Rugged Rumbler",
+      "oracle_id": "e380e37d-926b-4a4b-a275-7844bf4956d5",
+      "facts_sha256": "d76ccf9f1a39ba35d0d18f9a954f94cdb35320ca31877cda3dd8fea036c6fa88",
+      "printings": [
+        "235"
+      ]
+    },
+    {
+      "name": "Tony Stark // The Invincible Iron Man",
+      "oracle_id": "4a46ea59-6c5d-4bed-9951-b5590f9a1bdb",
+      "facts_sha256": "4927b2cbcd71e54a9aecccc05357877807d00a8c42421a882ab8eade9deeb342",
+      "printings": [
+        "80",
+        "350",
+        "363",
+        "392"
+      ]
+    },
+    {
+      "name": "Too Evil to Stay Dead",
+      "oracle_id": "e50fecff-8872-42f5-8882-41ad13d9d1ae",
+      "facts_sha256": "9505b535cef7ae9364eb0a254710965de36e38023998b77a6c105eccf99d5d82",
+      "printings": [
+        "118"
+      ]
+    },
+    {
+      "name": "Training Compound",
+      "oracle_id": "99c70f4e-de8a-426d-99aa-17b2f87625ba",
+      "facts_sha256": "b75a5b76540c873100eebe4239d12b221c099bca5a5723bfe1a77098b2c837de",
+      "printings": [
+        "275",
+        "384"
+      ]
+    },
+    {
+      "name": "Training Regimen",
+      "oracle_id": "f44bde8b-43e9-4719-ac60-b8f0cee8df9b",
+      "facts_sha256": "efe78db008b775346ab08aeab51ae47f9670218d19a512e402e68a82db657aeb",
+      "printings": [
+        "192"
+      ]
+    },
+    {
+      "name": "Trickster's Stratagem",
+      "oracle_id": "170ee399-d3cd-40ef-a340-193c0f0f6002",
+      "facts_sha256": "203ea04d5ebf27c8fb549f4a07c8477d91d814b611f83ffdf97e673c01aa9906",
+      "printings": [
+        "81"
+      ]
+    },
+    {
+      "name": "Truck Toss",
+      "oracle_id": "7d765055-da62-43f7-9580-98e9d164753b",
+      "facts_sha256": "1039338a92856926e460a3e6bd6c2521a9168c83d6cdb2e679de06da84508bb9",
+      "printings": [
+        "157"
+      ]
+    },
+    {
+      "name": "U.S.Agent, John Walker",
+      "oracle_id": "2b6fa8b6-4865-4eb6-974b-00f6b16b6f0f",
+      "facts_sha256": "fcb91ce09c6e9237cb22dbba49a095bd4825d94d319b6f40a73da4d80a27c8dc",
+      "printings": [
+        "236"
+      ]
+    },
+    {
+      "name": "Ultron Drone",
+      "oracle_id": "51c1f21d-1512-4885-bfdc-58790cf77d51",
+      "facts_sha256": "29338eaa2af073a2761975e6c596688f1d247cdbd82e6a0bd8b9c917608ac430",
+      "printings": [
+        "253"
+      ]
+    },
+    {
+      "name": "Ultron, Artificial Malevolence",
+      "oracle_id": "a8f25e67-2112-4355-9298-363ed04a5cb8",
+      "facts_sha256": "9b2d673916203f821b00aef54368aa5b6c524ecec737beb64a28bc2ff003db4f",
+      "printings": [
+        "252",
+        "344",
+        "401"
+      ]
+    },
+    {
+      "name": "Undercover Skrull",
+      "oracle_id": "33b1379f-b329-42cd-92ed-4811d44ed8dd",
+      "facts_sha256": "cafb8f1655e076a95f6e96ac9604375352b921d7b3d215b102dfdefb1649e1a1",
+      "printings": [
+        "194"
+      ]
+    },
+    {
+      "name": "Unliving Legionnaire",
+      "oracle_id": "0edaf433-4ded-4841-bc86-136780c0767f",
+      "facts_sha256": "243260add64b3ea97b2d28f582c3e0a9efd3916c2e207964f18e5b85aad77d6c",
+      "printings": [
+        "119"
+      ]
+    },
+    {
+      "name": "Vibranium Energy Daggers",
+      "oracle_id": "be0b86fc-8450-41d4-9836-6de11cecb857",
+      "facts_sha256": "4f053360f1af4add9353ce297b3794cebcbdc0ab0239079239fe1cc4b6d49f4b",
+      "printings": [
+        "254"
+      ]
+    },
+    {
+      "name": "Villainous Hideout",
+      "oracle_id": "cd2888aa-71f3-47ee-ba33-7bb95d5bc836",
+      "facts_sha256": "8e3407755aa35bfe41104e49560b68a87c1201f8d826757a636b73a739890837",
+      "printings": [
+        "276",
+        "454"
+      ]
+    },
+    {
+      "name": "Vision Quest",
+      "oracle_id": "240410a0-3288-4336-b1ad-34936e64ccf2",
+      "facts_sha256": "50fc23f339b55d251d38903f00dca45b449ce70b14063668b4f239092ff4fa88",
+      "printings": [
+        "237",
+        "309"
+      ]
+    },
+    {
+      "name": "Vision of Love",
+      "oracle_id": "70c96b50-ac2b-493d-bd15-fc66eb767111",
+      "facts_sha256": "31436cf66ffc8fad0851563404154d2d7a7437f85ecd12f7a8aec35ace2d4277",
+      "printings": [
+        "158"
+      ]
+    },
+    {
+      "name": "Visions of Villainy",
+      "oracle_id": "3b46800b-711b-4cbb-b296-26115b4f6839",
+      "facts_sha256": "a28ce227c316160eee73fdfdbb6dbb69e73ec401214f1089730c85364636a4db",
+      "printings": [
+        "120"
+      ]
+    },
+    {
+      "name": "Viv Vision, Teen Synthezoid",
+      "oracle_id": "f67a599c-200a-4831-9e73-126c7435a396",
+      "facts_sha256": "a093b5068007c89660e6de97ec0f726ff188c88151105f69a417e884061e8e81",
+      "printings": [
+        "256"
+      ]
+    },
+    {
+      "name": "Volcanic Villain",
+      "oracle_id": "a257426d-70c9-4d58-bd8b-97ec38f6e133",
+      "facts_sha256": "b973f1554f5444eb2fd0fdca5d4afda0b8210fe9eadd0df87e05d999974a23a7",
+      "printings": [
+        "159"
+      ]
+    },
+    {
+      "name": "Wakandan Drone Flock",
+      "oracle_id": "282d6e61-3240-4f1e-9c2d-8ddb59b03af4",
+      "facts_sha256": "3ceeb114e64009022db358ce2fd597236f6a433f306de8e0732b85f8e829275a",
+      "printings": [
+        "40"
+      ]
+    },
+    {
+      "name": "Wakandan Royal Guard",
+      "oracle_id": "4ae15bd1-e0ea-4c1a-a311-dae421381ebc",
+      "facts_sha256": "82a1cec69f49e9f81ac92da62c004425dda5782b1c8db37a23bb1d8939984b49",
+      "printings": [
+        "195"
+      ]
+    },
+    {
+      "name": "War Machine, Legacy of Iron",
+      "oracle_id": "ae6d1aa3-4ceb-4fc1-a3a6-033afd4b3bce",
+      "facts_sha256": "be774c1ef9ff94e34e10c9e0917d239e31c4375b7b0ee8478107a82424fbc735",
+      "printings": [
+        "238"
+      ]
+    },
+    {
+      "name": "We Say Thee Nay!",
+      "oracle_id": "1abe8246-d2f9-407b-8c16-83da0a6b7de3",
+      "facts_sha256": "7aca3e917f33036e840f0a4447131327341fe2a52c4a8160816bbaa1b95d7231",
+      "printings": [
+        "82"
+      ]
+    },
+    {
+      "name": "Web Up",
+      "oracle_id": "9b9b086c-d201-4574-a1e9-0d6f8de53d7d",
+      "facts_sha256": "fad996bbf471964a8b7bb0ad69ebce94e19455de329ba2b70cb24cbac5e54557",
+      "printings": [
+        "41"
+      ]
+    },
+    {
+      "name": "Whiplash, Vengeful Engineer",
+      "oracle_id": "00ed7aca-b3c1-4d48-acd5-b1596daeb4c3",
+      "facts_sha256": "de6b32c7a897c7d86fe63f43336cec59693e3e34748cba94a1bf2ee3e71b4f29",
+      "printings": [
+        "121"
+      ]
+    },
+    {
+      "name": "White Tiger, Ava Ayala",
+      "oracle_id": "e2084d73-5a4c-4b17-942a-93c1a1f7ac2a",
+      "facts_sha256": "941a2d7854f409438b52f45dffbc4d6da1f77fa985c36817495bfd83be62dd46",
+      "printings": [
+        "196"
+      ]
+    },
+    {
+      "name": "White Widow, Free Agent",
+      "oracle_id": "4f0c055f-f614-44b0-9374-c53541f89185",
+      "facts_sha256": "ab79ea0688feacb827eb00ef08a29e13f28a441e9a8628d16a5f74a5fdcc5e78",
+      "printings": [
+        "42"
+      ]
+    },
+    {
+      "name": "Wiccan, Rising Magician",
+      "oracle_id": "fc17b7a3-7711-4449-80bd-692e8ed9087d",
+      "facts_sha256": "6d0e417703ad92319d46eb6a4394237cba9562c343655aab0e93c337d700e171",
+      "printings": [
+        "83"
+      ]
+    },
+    {
+      "name": "Widow's Bite",
+      "oracle_id": "39f2a632-30d2-4b35-9e7f-fef27713a4f7",
+      "facts_sha256": "697fce471fea50d18059531f24e17213422d7c5125b4b9e18fab02eccb8910cd",
+      "printings": [
+        "122"
+      ]
+    },
+    {
+      "name": "Winter Soldier, Icy Assassin",
+      "oracle_id": "6f4c94b6-f829-4646-a574-083997b78dfb",
+      "facts_sha256": "1fe7c689d946e3dbdfafadc5b71aeea1cc9e9b697dd3d24d1aa90e3b9fe8ca81",
+      "printings": [
+        "239",
+        "377"
+      ]
+    },
+    {
+      "name": "Wolverine, Fierce Fighter",
+      "oracle_id": "8429ba6a-6c06-4a83-a6ee-023b64b825f8",
+      "facts_sha256": "8d2f738c58c39349f22824e288d597b1307e03666fedfbcf2f6d44d693965a78",
+      "printings": [
+        "240",
+        "378"
+      ]
+    },
+    {
+      "name": "Wonder Man, Hollywood Hero",
+      "oracle_id": "e2c49754-711e-43b3-82f1-5376a4d99701",
+      "facts_sha256": "5749e516276900a3ef2a47b25ef14a02fdc21310a73ab359df44aa7ef92fd13a",
+      "printings": [
+        "160"
+      ]
+    },
+    {
+      "name": "World War Hulk",
+      "oracle_id": "8c4da760-8913-46ca-b00c-bba6d877d482",
+      "facts_sha256": "b9e36eaae63f89e42bd788dc2985ced360daf8d608555ca1f6ee948cf2308f7f",
+      "printings": [
+        "197",
+        "304"
+      ]
+    },
+    {
+      "name": "Worlds Within Worlds",
+      "oracle_id": "e25062ba-7176-4d59-ac3e-26d19b26f02a",
+      "facts_sha256": "c495b3e3578f1405b65504d6b324dde533406f84d86a7c5f7726783743ec134c",
+      "printings": [
+        "241",
+        "426"
+      ]
+    },
+    {
+      "name": "Yellowjacket, Heartless Marauder",
+      "oracle_id": "0a364879-31bd-4760-833d-165cde1e96c6",
+      "facts_sha256": "f190cd4bd6c2d093589cf4079e2f84dc7d7af3dc3bd85e64d419a5df27e727ed",
+      "printings": [
+        "123"
+      ]
+    }
+  ],
+  "unresolved": []
+}
