@@ -611,6 +611,7 @@ impl Game {
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
+                    | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
                     | TriggerCondition::SelfPaysTeamwork
@@ -1218,7 +1219,7 @@ impl Game {
     }
 
     /// One event per completed declaration, irrespective of whether its observer attacked.
-    pub(super) fn declaration_triggers(&mut self, actor: Player) {
+    pub(super) fn declaration_triggers(&mut self, actor: Player, alone: Option<ObjectRef>) {
         self.attachment_attack_triggers(actor);
         self.temporary_attack_triggers(actor);
         let sources: Vec<_> = self
@@ -1233,6 +1234,18 @@ impl Game {
             .collect();
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::ControlledCreatureAttacksAlone
+                    && let Some(attacker) = alone
+                    && self.queue_trigger(&source, index)
+                {
+                    // This existing field holds a generic exact event object.
+                    // Capture the declared attacker, not a target or later combat count.
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .entering_object = Some(attacker);
+                }
                 if let TriggerCondition::CreatureAttacksYou { colors } = ability.condition.event() {
                     let count = self
                         .state

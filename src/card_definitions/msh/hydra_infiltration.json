@@ -3,10 +3,49 @@
   "catalogue_id": 1923,
   "oracle_id": "27692079-a517-4d38-b452-7409980b5912",
   "facts_sha256": "00c3bfc177b476f16e6911d4610f378dd483910232b41fd02ef7e9839a0b728b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f2fdb25d0fbbabe6f966c25158e97fd6290b8fd3d858c45da20c5771831aa201"
   },
-  "physical_metadata_sha256": "fd9d6b738da2905cba6e3703d16661ebc35a8fa9e08d2a3c87f2eb1745628166"
+  "physical_metadata_sha256": "fd9d6b738da2905cba6e3703d16661ebc35a8fa9e08d2a3c87f2eb1745628166",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HYDRAInfiltration.java",
+  "java_sha256": "cc180732eeaf6deedacfccf034e04351bb481511d86460bad23cee500b8a9bcd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAloneControlledTriggeredAbility.java",
+      "sha256": "0e4f4629c0db74cd882e9f1774afb20468981ae2d2249669d00c5156753ac384"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardTargetEffect.java",
+      "sha256": "1011f870b5768153b7d9d7d194431db724bfc61844195b66efc06e759dae57a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/rules",
+    "rules": "CR506.5, 603.2, 603.3, 608.2; attacking alone counts declared attackers, not later combat membership. The attacker is a frozen non-targeted exact object. Investigation creates the complete standard Clue recipe."
+  }
 }

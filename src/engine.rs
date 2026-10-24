@@ -5684,6 +5684,7 @@ impl Game {
         self.state.attack_declared = !self.state.selected_attackers.is_empty();
         self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
         let declared = std::mem::take(&mut self.state.selected_attackers);
+        let alone = (declared.len() == 1).then(|| self.object_ref(declared[0].card));
         // Determine vigilance before any simultaneous tap changes characteristics.
         let to_tap: Vec<_> = declared
             .iter()
@@ -5702,7 +5703,7 @@ impl Game {
             event(self, attack.card);
         }
         if self.state.attack_declared {
-            self.declaration_triggers(actor);
+            self.declaration_triggers(actor, alone);
         }
     }
 

@@ -2551,6 +2551,8 @@ pub(crate) enum TriggerCondition {
     },
     /// Declaration-time condition; not a resolution-time intervening if.
     SelfAttacksAlone,
+    /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
+    ControlledCreatureAttacksAlone,
     EquippedAttacks,
     GrantedAttacks,
     SelfBecomesTapped,

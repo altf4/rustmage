@@ -68,6 +68,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
+                    | TriggerCondition::ControlledCreatureAttacksAlone
             )
         }) {
             self.state.attack_sources.push(id);

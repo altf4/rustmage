@@ -3,10 +3,39 @@
   "catalogue_id": 87,
   "oracle_id": "ddf7201a-6672-416d-be6b-202dafbeccab",
   "facts_sha256": "4b920a78bca5151b9378513d6cba2b3d42f9fc1d0164d1a6b1a1974cd940ee46",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "61412e1c573810558ac7c55949ebb7fb6510239f73209effa8004d82b61bc2b3"
   },
-  "physical_metadata_sha256": "1b82897136bd318fe3a804e25de72988cbbe467327d47d0a9a3efe7df6cb45c0"
+  "physical_metadata_sha256": "1b82897136bd318fe3a804e25de72988cbbe467327d47d0a9a3efe7df6cb45c0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/Agent13SharonCarter.java",
+  "java_sha256": "62a6adcb00860e34dfa7989255a876f8e2419fb0aebb1648fe3790e847f65ee3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAloneControlledTriggeredAbility.java",
+      "sha256": "0e4f4629c0db74cd882e9f1774afb20468981ae2d2249669d00c5156753ac384"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+      "sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+      "sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/rules",
+    "rules": "CR506.5, 603.2, 603.3, 608.2; attacking alone counts declared attackers, not later combat membership. The attacker is a frozen non-targeted exact object. Investigation creates the complete standard Clue recipe."
+  }
 }
