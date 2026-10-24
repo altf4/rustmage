@@ -43,6 +43,7 @@ impl Game {
     fn library_selection_matches(&self, filter: LibrarySelectionFilter, id: CardId) -> bool {
         let c = self.state.objects[id as usize].card;
         match filter {
+            LibrarySelectionFilter::HasX => c.x_symbols() > 0,
             LibrarySelectionFilter::Any => true,
             LibrarySelectionFilter::Kinds(mask) => c.kind_mask() & mask != 0,
             LibrarySelectionFilter::ExcludingKinds(mask) => c.kind_mask() & mask == 0,

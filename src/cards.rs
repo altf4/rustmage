@@ -465,6 +465,7 @@ pub(crate) enum LibraryRemainder {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibrarySelectionFilter {
+    HasX,
     Any,
     Kinds(u16),
     ExcludingKinds(u16),
@@ -1450,6 +1451,7 @@ pub(crate) enum SourceCharacteristicFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    ControlledCreatureDiedThisTurn,
     CardLeftGraveyardThisTurn,
     Fixed(u16),
     TappedCount(CountFilter),

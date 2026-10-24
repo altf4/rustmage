@@ -122,6 +122,9 @@ impl Game {
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
             }
+            StatValue::ControlledCreatureDiedThisTurn => {
+                i128::from(self.state.players[owner.index()].controlled_creature_died_this_turn)
+            }
             StatValue::CardLeftGraveyardThisTurn => {
                 i128::from(self.state.players[owner.index()].card_left_graveyard_this_turn)
             }

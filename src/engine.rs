@@ -715,6 +715,7 @@ struct PlayerState {
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
     card_left_graveyard_this_turn: bool,
+    controlled_creature_died_this_turn: bool,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
     life_lost_this_turn: u128,
@@ -1716,6 +1717,7 @@ pub struct PlayerView {
     pub cards_drawn_this_turn: u64,
     pub cards_discarded_this_turn: u64,
     pub card_left_graveyard_this_turn: bool,
+    pub controlled_creature_died_this_turn: bool,
     pub life_gain_events_this_turn: u64,
     pub life_gained_this_turn: u128,
     pub life_lost_this_turn: u128,
@@ -2068,6 +2070,7 @@ impl Game {
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
             card_left_graveyard_this_turn: false,
+            controlled_creature_died_this_turn: false,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
@@ -5049,6 +5052,7 @@ impl Game {
             && destination == Zone::Graveyard
             && before.is_creature()
         {
+            self.state.players[before.controller.index()].controlled_creature_died_this_turn = true;
             self.state.creatures_died_this_turn = self
                 .state
                 .creatures_died_this_turn
@@ -5334,6 +5338,7 @@ impl Game {
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
+            player.controlled_creature_died_this_turn = false;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
@@ -6035,6 +6040,7 @@ impl Game {
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
                 card_left_graveyard_this_turn: s.players[i].card_left_graveyard_this_turn,
+                controlled_creature_died_this_turn: s.players[i].controlled_creature_died_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
                 life_lost_this_turn: s.players[i].life_lost_this_turn,
