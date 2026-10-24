@@ -3,10 +3,81 @@
   "catalogue_id": 4894,
   "oracle_id": "cd2888aa-71f3-47ee-ba33-7bb95d5bc836",
   "facts_sha256": "8e3407755aa35bfe41104e49560b68a87c1201f8d826757a636b73a739890837",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "d8d395bd6d6009d5a65e48438a5bdb9d17fa48afde1c2bf4f93a25ff84365c5a"
-  },
-  "physical_metadata_sha256": "3097e77b98ad298dd395ccc98ebab3797ed70146dad77f2488b568b646ca97fd"
+  "complete": true,
+  "physical_metadata_sha256": "3097e77b98ad298dd395ccc98ebab3797ed70146dad77f2488b568b646ca97fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VillainousHideout.java",
+  "java_sha256": "62115e74e65fb2526ba7c94160e7b3fb2199d0c7781a34e71852a69f295de4d8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+      "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+      "sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/ManaCondition.java",
+      "sha256": "77289b6566dab4372ae2b7e7133b8ee8d32463672475820d61883ba829795369"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaOfAnyColorEffect.java",
+      "sha256": "e9ae10c4ad12c5a3280946079ff7c3278e879af65f0a3afdb6f8841861797bed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ConniveTargetEffect.java",
+      "sha256": "346bded28edee4c31d82766c2cfe989fa1a72d101c5ffcac2c78dbc5a5c3982f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ConniveSourceEffect.java",
+      "sha256": "469ee6e08805cc7745bde31232b310bde37a9fea5ea8bac89c8a3ddeeda7af53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    }
+  ]
 }

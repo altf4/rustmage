@@ -7453,3 +7453,7 @@ mod msh_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_coulson_tests.rs"]
 mod msh_coulson_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_hideout_falcon_tests.rs"]
+mod msh_hideout_falcon_tests;
