@@ -2962,3 +2962,154 @@ fn sos_lute_land_type_loss_controller_change_and_new_provider_identity() {
         checked(&mut g, granted_land_mana(land, fresh, [0, 0, 2, 0, 0, 0]));
     }
 }
+
+fn await_mind_roots_discard(g: &mut Game, player: Player) {
+    for _ in 0..30 {
+        if matches!(g.state.pending, Pending::EffectDiscard { player: actor, .. } if actor == player)
+        {
+            return;
+        }
+        checked(g, Action::Pass);
+    }
+    panic!("missing discard phase: {:?}", g.state.pending);
+}
+#[test]
+fn sos_mind_roots_private_simultaneous_discard_then_public_exact_foreign_land() {
+    for p in [Player::P0, Player::P1] {
+        for targeted in [p, p.other()] {
+            let mut g = setup(p);
+            let land = named(&mut g, targeted, "Forest", Zone::Hand);
+            let spell = named(&mut g, targeted, "Shock", Zone::Hand);
+            let unrelated = named(&mut g, targeted, "Forest", Zone::Graveyard);
+            paid(&mut g, p, "Mind Roots", None, &[Target::Player(targeted)]);
+            await_mind_roots_discard(&mut g, targeted);
+            let before = g.snapshot();
+            assert!(g.observe(targeted.other()).effect_discards.is_empty());
+            checked(&mut g, Action::Discard { card: land });
+            assert_eq!(
+                g.object_view(land).zone,
+                Zone::Hand,
+                "all choices precede simultaneous movement"
+            );
+            assert_eq!(g.observe(targeted).effect_discards, vec![land]);
+            assert!(g.observe(targeted.other()).effect_discards.is_empty());
+            checked(&mut g, Action::Discard { card: spell });
+            assert_eq!(g.object_view(land).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            for viewer in [p, p.other()] {
+                let choice = g.observe(viewer).effect_choice.unwrap();
+                assert_eq!(choice.candidates, vec![g.object_ref(land)]);
+                assert!(choice.optional);
+            }
+            let unrelated_ref = g.object_ref(unrelated);
+            reject(
+                &mut g,
+                Action::SelectLand {
+                    object: unrelated_ref,
+                },
+            );
+            let spell_ref = g.object_ref(spell);
+            reject(&mut g, Action::SelectLand { object: spell_ref });
+            let reference = g.object_ref(land);
+            checked(&mut g, Action::SelectLand { object: reference });
+            settle(&mut g);
+            let view = g.object_view(land);
+            assert_eq!(
+                (view.zone, view.controller, view.owner, view.tapped),
+                (Zone::Battlefield, p, targeted, true)
+            );
+            let after = g.snapshot();
+            let mut restored = g.clone();
+            restored.restore(&before).unwrap();
+            checked(&mut restored, Action::Discard { card: land });
+            checked(&mut restored, Action::Discard { card: spell });
+            checked(&mut restored, Action::SelectLand { object: reference });
+            settle(&mut restored);
+            assert_eq!(restored.snapshot(), after);
+        }
+    }
+}
+#[test]
+fn sos_mind_roots_discard_replacement_to_exile_and_optional_decline_preserves_identity() {
+    for p in [Player::P0, Player::P1] {
+        for decline in [false, true] {
+            let mut g = setup(p);
+            paid(&mut g, p, "Rest in Peace", None, &[]);
+            settle(&mut g);
+            let land = named(&mut g, p.other(), "Forest", Zone::Hand);
+            let spell = named(&mut g, p.other(), "Shock", Zone::Hand);
+            let old = g.object_ref(land);
+            paid(&mut g, p, "Mind Roots", None, &[Target::Player(p.other())]);
+            await_mind_roots_discard(&mut g, p.other());
+            checked(&mut g, Action::Discard { card: land });
+            checked(&mut g, Action::Discard { card: spell });
+            assert_eq!(g.object_view(land).zone, Zone::Exile);
+            let discarded = g.object_ref(land);
+            assert_ne!(old, discarded);
+            reject(&mut g, Action::SelectLand { object: old });
+            if decline {
+                checked(&mut g, Action::FinishLandSelection);
+            } else {
+                checked(&mut g, Action::SelectLand { object: discarded });
+            }
+            settle(&mut g);
+            if decline {
+                assert_eq!(g.object_ref(land), discarded);
+                assert_eq!(g.object_view(land).zone, Zone::Exile);
+            } else {
+                assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+                assert_eq!(g.object_view(land).controller, p);
+                assert!(g.object_view(land).tapped);
+            }
+        }
+    }
+}
+#[test]
+fn sos_mind_roots_staged_discard_entry_and_later_incarnation_are_not_unrelated_cards() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p.other(), "Forest", Zone::Hand);
+        let liege = named(&mut g, p.other(), "Wilt-Leaf Liege", Zone::Hand);
+        paid(&mut g, p, "Mind Roots", None, &[Target::Player(p.other())]);
+        await_mind_roots_discard(&mut g, p.other());
+        checked(&mut g, Action::Discard { card: land });
+        checked(&mut g, Action::Discard { card: liege });
+        assert_eq!(g.object_view(liege).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(liege).controller, p.other());
+        assert!(matches!(g.state.pending,Pending::EffectChoice{player} if player==p));
+        let exact = g.object_ref(land);
+        g.move_object(land, Zone::Hand);
+        g.move_object(land, Zone::Graveyard);
+        reject(&mut g, Action::SelectLand { object: exact });
+        let changed = g.object_ref(land);
+        reject(&mut g, Action::SelectLand { object: changed });
+        checked(&mut g, Action::FinishLandSelection);
+        settle(&mut g);
+        assert_eq!(g.object_ref(land), changed);
+        assert_eq!(g.object_view(land).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn sos_mind_roots_short_or_empty_hand_and_no_land_finish_without_spurious_entry() {
+    for p in [Player::P0, Player::P1] {
+        for count in 0..=2 {
+            let mut g = setup(p);
+            let mut spells = Vec::new();
+            for _ in 0..count {
+                spells.push(named(&mut g, p.other(), "Shock", Zone::Hand));
+            }
+            paid(&mut g, p, "Mind Roots", None, &[Target::Player(p.other())]);
+            if count > 0 {
+                await_mind_roots_discard(&mut g, p.other());
+                for card in &spells {
+                    checked(&mut g, Action::Discard { card: *card });
+                }
+            }
+            settle(&mut g);
+            for card in spells {
+                assert_eq!(g.object_view(card).zone, Zone::Graveyard);
+            }
+            assert!(g.state.resolving.is_none());
+        }
+    }
+}

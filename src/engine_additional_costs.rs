@@ -501,6 +501,7 @@ impl Game {
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::LandCards { .. }
+            | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack => unreachable!(),

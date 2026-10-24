@@ -640,6 +640,10 @@ pub enum EffectChoiceKind {
     HandLand {
         tapped: bool,
     },
+    /// Exact public cards from the current simultaneous discard batch.
+    DiscardedLand {
+        tapped: bool,
+    },
     LandCards {
         maximum: u32,
         tapped: bool,
@@ -1166,6 +1170,11 @@ pub(crate) enum Instruction {
     DrawDamageAmount,
     PutDiscardCounters(CounterKind),
     DamageDiscardAmount(PlayerSet),
+    DiscardThenPutLand {
+        players: PlayerSet,
+        amount: u16,
+        tapped: bool,
+    },
     DiscardHand(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),

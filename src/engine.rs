@@ -2870,7 +2870,9 @@ impl Game {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
                 if matches!(
                     choice.kind,
-                    EffectChoiceKind::LandCards { .. } | EffectChoiceKind::UntapLands { .. }
+                    EffectChoiceKind::LandCards { .. }
+                        | EffectChoiceKind::UntapLands { .. }
+                        | EffectChoiceKind::DiscardedLand { .. }
                 ) && emit(Action::FinishLandSelection)
                 {
                     return true;
@@ -2878,7 +2880,9 @@ impl Game {
                 if choice.skip_to.is_some()
                     && !matches!(
                         choice.kind,
-                        EffectChoiceKind::LandCards { .. } | EffectChoiceKind::UntapLands { .. }
+                        EffectChoiceKind::LandCards { .. }
+                            | EffectChoiceKind::UntapLands { .. }
+                            | EffectChoiceKind::DiscardedLand { .. }
                     )
                     && emit(
                         if matches!(
@@ -2908,6 +2912,7 @@ impl Game {
                             }
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::LandCards { .. }
+                            | EffectChoiceKind::DiscardedLand { .. }
                             | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
                             EffectChoiceKind::Sacrifice
                             | EffectChoiceKind::ExileGreatestManaValue

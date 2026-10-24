@@ -13,6 +13,7 @@ pub(super) enum DiscardAfter {
     LoseLife(Player, i128),
     DrawActual { players: [bool; 2], bonus: u16 },
     ConniveCounters(ObjectRef, u64),
+    ChooseLand { player: Player, tapped: bool },
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct DiscardContext {
@@ -60,7 +61,7 @@ impl Game {
         after: Option<DiscardAfter>,
     ) {
         if cards.is_empty() {
-            self.finish_discard_after(after, [0; 2]);
+            self.finish_discard_after(after, [0; 2], &[]);
             return;
         }
         assert!(
@@ -230,10 +231,40 @@ impl Game {
                 }
             }
         }
-        self.finish_discard_after(after, counts);
+        self.finish_discard_after(after, counts, events);
     }
-    fn finish_discard_after(&mut self, after: Option<DiscardAfter>, counts: [u32; 2]) {
+    fn finish_discard_after(
+        &mut self,
+        after: Option<DiscardAfter>,
+        counts: [u32; 2],
+        events: &[ZoneChange],
+    ) {
         match after {
+            Some(DiscardAfter::ChooseLand { player, tapped }) => {
+                // CR400.7j: follow only this effect's first move to a public zone.
+                // Hidden replacement destinations cannot be recovered by identity.
+                let objects = events
+                    .iter()
+                    .filter(|event| {
+                        event.moved
+                            && matches!(
+                                event.destination,
+                                Zone::Graveyard
+                                    | Zone::Exile
+                                    | Zone::Battlefield
+                                    | Zone::Stack
+                                    | Zone::Command
+                            )
+                    })
+                    .map(|event| event.after)
+                    .filter(|reference| {
+                        self.object_ref(reference.card) == *reference
+                            && self.current_kinds(reference.card) & 2 != 0
+                            && !self.state.objects[reference.card as usize].is_token()
+                    })
+                    .collect();
+                self.start_discarded_land_choice(player, tapped, objects);
+            }
             Some(DiscardAfter::DrawActual { players, bonus }) => {
                 for player in [self.state.active, self.state.active.other()] {
                     if players[player.index()] {

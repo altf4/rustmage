@@ -27,6 +27,7 @@ pub(super) struct Resolution {
     pub pc: usize,
     pub target_group: u16,
     pub moved_count: Option<u64>,
+    pub discard_after: Option<discard_events::DiscardAfter>,
     pub discards: [usize; 2],
     pub selected_discards: [Vec<CardId>; 2],
     pub milled: Vec<ObjectRef>,
@@ -1550,6 +1551,7 @@ impl Game {
             pc: 0,
             target_group: 0,
             moved_count: None,
+            discard_after: None,
             discards: [0; 2],
             mana_payment: None,
             forage: None,
@@ -1671,6 +1673,18 @@ impl Game {
             {
                 return;
             }
+            if self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .choice
+                .as_ref()
+                .is_some_and(|choice| matches!(choice.kind, EffectChoiceKind::DiscardedLand { .. }))
+                && self.advance_effect_choice()
+            {
+                return;
+            }
             if self.resume_immediate_blink() {
                 continue;
             }
@@ -1704,10 +1718,13 @@ impl Game {
                 .into_iter()
                 .flat_map(|player| selected[player.index()].iter().copied())
                 .collect();
-            if !discarded.is_empty() {
+            let after = self.state.resolving.as_mut().unwrap().discard_after.take();
+            if !discarded.is_empty() || after.is_some() {
                 let cause = self.state.resolving.as_ref().unwrap().item.controller;
-                self.discard_batch_caused(&discarded, None, Some(cause));
-                if self.state.entry_batch.is_some() {
+                self.discard_batch_with_after(&discarded, None, Some(cause), after);
+                if self.state.entry_batch.is_some()
+                    || self.state.resolving.as_ref().unwrap().choice.is_some()
+                {
                     return;
                 }
             }
@@ -2381,6 +2398,21 @@ impl Game {
                             .expect("damage-sized effect requires event")
                             .amount,
                     );
+                }
+                Instruction::DiscardThenPutLand {
+                    players,
+                    amount,
+                    tapped,
+                } => {
+                    for player in self.program_players(players, &item) {
+                        self.state.resolving.as_mut().unwrap().discards[player.index()] =
+                            usize::from(amount);
+                    }
+                    self.state.resolving.as_mut().unwrap().discard_after =
+                        Some(discard_events::DiscardAfter::ChooseLand {
+                            player: item.controller,
+                            tapped,
+                        });
                 }
                 Instruction::DiscardHand(players) => {
                     for player in self.program_players(players, &item) {
