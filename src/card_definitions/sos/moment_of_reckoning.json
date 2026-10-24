@@ -3,10 +3,39 @@
   "catalogue_id": 2822,
   "oracle_id": "8e9576c1-b0c2-4be5-9005-35b51164f78e",
   "facts_sha256": "dca4658241078144ec5717f4ffb4243a2a79816035ee7c5a8f92b7b403708e74",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d782a3d053cfcbf96b08ffbccd758d4ff3b4a2739361797157534d439b435efb"
   },
-  "physical_metadata_sha256": "24686783bb8522926746b74f3cba92c097a9744e73e9944b70f3b0844e0a88b0"
+  "physical_metadata_sha256": "24686783bb8522926746b74f3cba92c097a9744e73e9944b70f3b0844e0a88b0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MomentOfReckoning.java",
+  "java_sha256": "29b180b469197bbd3f783e3f4f4ab50d1ee9a0fe7dd5582ecbb14caf23ea08a2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+      "sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterNonlandCard.java",
+      "sha256": "84443dc244a44b44937d5ba9e4e51ff0b34e73795c11f2e985820daaed5b46ae"
+    }
+  ],
+  "rules_notes": [
+    "The fifteen immutable typed mode variants enumerate all multiplicities of the two printed modes totaling zero through four. Destroy instances resolve before return instances. Ordered target groups choose the relative order within each repeated mode; copied spells retain the same variant.",
+    "Official SOS release notes for Moment of Reckoning: https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes"
+  ]
 }
