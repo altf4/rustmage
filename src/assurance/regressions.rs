@@ -71,6 +71,14 @@ fn trace(card: Card) -> Trace {
     let mut root = "main";
     if !g.legal_actions().contains(&opening) {
         match card.identity() {
+            "Choreographed Sparks" => {
+                root = "own_stack";
+                // Its modes copy only controlled spells, unlike counterspell roots.
+                let creature = put(&mut g, Player::P0, "Bear Cub", Zone::Hand);
+                cast(&mut g, creature, None);
+                let instant = put(&mut g, Player::P0, "Shock", Zone::Hand);
+                cast(&mut g, instant, Some(Target::Player(Player::P1)));
+            }
             "Cosmium Blast"
             | "Elspeth's Smite"
             | "Joust Through"
