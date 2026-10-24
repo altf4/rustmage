@@ -715,3 +715,202 @@ fn sos_graveyard_leave_consumers_create_spirits_and_attack_boost() {
         assert_eq!(stats(&g, attacker), (2, 2));
     }
 }
+
+fn associated_prepared_copy(g: &Game, source: CardId) -> ObjectRef {
+    g.observe(g.state.objects[source as usize].controller)
+        .preparations
+        .iter()
+        .find(|row| row.permanent == g.object_ref(source))
+        .unwrap()
+        .spell_copy
+}
+fn cast_associated_prepared(g: &mut Game, source: CardId, targets: &[Target]) -> CardId {
+    let copy = associated_prepared_copy(g, source);
+    act(g, Action::AnnounceExile { card: copy.card });
+    assert!(
+        g.is_prepared(g.object_ref(source)),
+        "announcement alone does not unprepare"
+    );
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    pay(g);
+    assert!(!g.is_prepared(g.object_ref(source)));
+    copy.card
+}
+
+#[test]
+fn sos_prepared_fronts_whole_bodies_keywords_entry_preparation_and_paid_copy_lifecycle() {
+    let cases = [
+        ("Adventurous Eater", 3, 2, true, Keywords::NONE),
+        ("Blazing Firesinger", 2, 3, true, Keywords::NONE),
+        ("Cheerful Osteomancer", 4, 2, true, Keywords::NONE),
+        ("Emeritus of Conflict", 2, 2, false, Keywords::FIRST_STRIKE),
+        ("Emeritus of Woe", 5, 4, true, Keywords::NONE),
+        ("Goblin Glasswright", 2, 2, true, Keywords::NONE),
+        ("Grave Researcher", 3, 3, false, Keywords::NONE),
+        ("Leech Collector", 2, 2, false, Keywords::NONE),
+        ("Maelstrom Artisan", 3, 2, true, Keywords::HASTE),
+        ("Pigment Wrangler", 4, 4, true, Keywords::FLYING),
+        ("Scathing Shadelock", 4, 6, false, Keywords::NONE),
+        (
+            "Scheming Silvertongue",
+            1,
+            3,
+            false,
+            Keywords::FLYING.union(Keywords::LIFELINK),
+        ),
+        ("Strife Scholar", 3, 2, true, Keywords::NONE),
+    ];
+    for p in [Player::P0, Player::P1] {
+        for (name, power, toughness, prepared, keywords) in cases {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, name, Zone::Hand);
+            cast(&mut g, source, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (power, toughness), "{name}");
+            assert_eq!(g.keywords(source), keywords, "{name}");
+            assert_eq!(g.is_prepared(g.object_ref(source)), prepared, "{name}");
+            assert_eq!(g.object_view(source).prepared, prepared, "{name}");
+        }
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Adventurous Eater", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        let copy = cast_associated_prepared(&mut g, source, &[Target::Card(source)]);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (4, 3));
+        assert_eq!(g.state.players[p.index()].life, 21);
+        assert_eq!(g.object_view(copy).zone, Zone::Outside);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        let bounce = put(&mut g, p, "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, Some(Target::Card(source)));
+        settle(&mut g);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (3, 2));
+        assert!(g.is_prepared(g.object_ref(source)));
+    }
+}
+
+#[test]
+fn sos_conflict_prepares_on_third_cast_only_and_leech_on_first_life_event_only() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let conflict = put(&mut g, p, "Emeritus of Conflict", Zone::Hand);
+        cast(&mut g, conflict, None);
+        settle(&mut g);
+        for ordinal in [2, 3] {
+            let spell = put(&mut g, p, "Shock", Zone::Hand);
+            cast(&mut g, spell, Some(Target::Player(p.other())));
+            settle(&mut g);
+            assert_eq!(g.is_prepared(g.object_ref(conflict)), ordinal == 3);
+        }
+        cast_associated_prepared(&mut g, conflict, &[Target::Player(p.other())]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 13);
+        assert!(
+            !g.is_prepared(g.object_ref(conflict)),
+            "fourth spell does not reprepare"
+        );
+
+        let mut g = scenario(p);
+        let leech = put(&mut g, p, "Leech Collector", Zone::Hand);
+        cast(&mut g, leech, None);
+        settle(&mut g);
+        let angel = put(&mut g, p, "Inspiring Overseer", Zone::Hand);
+        cast(&mut g, angel, None);
+        settle(&mut g);
+        assert!(g.is_prepared(g.object_ref(leech)));
+        cast_associated_prepared(&mut g, leech, &[]);
+        settle(&mut g);
+        let angel = put(&mut g, p, "Inspiring Overseer", Zone::Hand);
+        cast(&mut g, angel, None);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 22);
+        assert!(!g.is_prepared(g.object_ref(leech)));
+    }
+}
+
+#[test]
+fn sos_woe_requires_two_deaths_and_own_end_step_and_silvertongue_two_life_main2() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let woe = put(&mut g, p, "Emeritus of Woe", Zone::Hand);
+        cast(&mut g, woe, None);
+        settle(&mut g);
+        cast_associated_prepared(&mut g, woe, &[]);
+        until_choice(&mut g);
+        choose(&mut g, |a| matches!(a, Action::ChooseSearch { .. }));
+        act(&mut g, Action::FinishSearch);
+        settle(&mut g);
+        for (index, owner) in [p, p.other()].into_iter().enumerate() {
+            let bear = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+            let murder = put(&mut g, p, "Murder", Zone::Hand);
+            cast(&mut g, murder, Some(Target::Card(bear)));
+            settle(&mut g);
+            assert_eq!(g.state.creatures_died_this_turn, index as u64 + 1);
+            begin_paradigm_main(&mut g, p, Step::End);
+            settle(&mut g);
+            assert_eq!(g.is_prepared(g.object_ref(woe)), index == 1);
+        }
+
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Scheming Silvertongue", Zone::Hand);
+        cast(&mut g, silver, None);
+        settle(&mut g);
+        for count in [1, 2] {
+            let angel = put(&mut g, p, "Inspiring Overseer", Zone::Hand);
+            cast(&mut g, angel, None);
+            settle(&mut g);
+            begin_paradigm_main(&mut g, p, Step::Main2);
+            settle(&mut g);
+            assert_eq!(g.is_prepared(g.object_ref(silver)), count == 2);
+        }
+    }
+}
+
+#[test]
+fn sos_researcher_surveillance_precedes_threshold_and_shadelock_own_main1_only() {
+    for p in [Player::P0, Player::P1] {
+        for third_creature in [false, true] {
+            let mut g = scenario(p);
+            let researcher = put(&mut g, p, "Grave Researcher", Zone::Hand);
+            cast(&mut g, researcher, None);
+            settle(&mut g);
+            put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let top = put(
+                &mut g,
+                p,
+                if third_creature { "Bear Cub" } else { "Forest" },
+                Zone::Library,
+            );
+            begin_paradigm_main(&mut g, p, Step::Upkeep);
+            until_choice(&mut g);
+            assert!(!g.is_prepared(g.object_ref(researcher)));
+            act(
+                &mut g,
+                Action::ArrangeLibrary {
+                    card: top,
+                    destination: LibraryDestination::Graveyard,
+                },
+            );
+            settle(&mut g);
+            assert_eq!(g.is_prepared(g.object_ref(researcher)), third_creature);
+        }
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Scathing Shadelock", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        begin_paradigm_main(&mut g, p.other(), Step::Main1);
+        settle(&mut g);
+        assert!(!g.is_prepared(g.object_ref(source)));
+        begin_paradigm_main(&mut g, p, Step::Main2);
+        settle(&mut g);
+        assert!(!g.is_prepared(g.object_ref(source)));
+        begin_paradigm_main(&mut g, p, Step::Main1);
+        settle(&mut g);
+        assert!(g.is_prepared(g.object_ref(source)));
+    }
+}
