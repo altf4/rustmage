@@ -197,3 +197,32 @@ fn token_factories_reject_deck_submission_in_every_format() {
         }
     }
 }
+
+#[test]
+fn sos_admitted_spell_x_declarations_match_pinned_printed_mana_costs() {
+    let set: serde_json::Value =
+        serde_json::from_str(include_str!("../../data/sets/sos.json")).unwrap();
+    let coverage: serde_json::Value =
+        serde_json::from_str(include_str!("../../data/standard/coverage.json")).unwrap();
+    for row in coverage["cards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|row| row["implemented"] == true)
+    {
+        let card = Card::from_name(row["name"].as_str().unwrap()).unwrap();
+        if set["cards"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|member| member["oracle_id"].as_str() == card.info().oracle_id)
+        {
+            assert_eq!(
+                usize::from(card.x_symbols()),
+                card.info().mana_cost.matches("{X}").count(),
+                "{} must declare each printed mana X independently of effect or activation X",
+                card.name()
+            );
+        }
+    }
+}

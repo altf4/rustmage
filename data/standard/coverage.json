@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d5ff8c0622ac1d311111fc6751bbb35bf1ed9a632bf04d6907795d73a7d82f7c",
+  "catalogue_version": "8fbb3e2deedbc984827ccc0d0d6b4abd8dc01f5be06144eb980d3e2871139307",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2353,
-  "implemented_total": 2359,
+  "implemented_standard_cards": 2359,
+  "implemented_total": 2365,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 236,
-      "gated": 28
+      "complete": 242,
+      "gated": 22
     },
     "spm": {
       "total": 134,
@@ -6174,8 +6174,8 @@
     {
       "name": "Choreographed Sparks",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/choreographed_sparks.rs",
       "set": "sos"
     },
@@ -13110,8 +13110,8 @@
     {
       "name": "Fractalize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/fractalize.rs",
       "set": "sos"
     },
@@ -22334,8 +22334,8 @@
     {
       "name": "Mind into Matter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/mind_into_matter.rs",
       "set": "sos"
     },
@@ -27862,8 +27862,8 @@
     {
       "name": "Render Speechless",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/render_speechless.rs",
       "set": "sos"
     },
@@ -28894,8 +28894,8 @@
     {
       "name": "Root Manipulation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/root_manipulation.rs",
       "set": "sos"
     },
@@ -35422,8 +35422,8 @@
     {
       "name": "Tester of the Tangential",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/tester_of_the_tangential.rs",
       "set": "sos"
     },
