@@ -23,6 +23,7 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
     })
 }
 impl Game {
+    #[cfg(test)]
     pub(super) fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
         self.state
             .entry_values

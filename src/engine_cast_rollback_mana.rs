@@ -141,13 +141,6 @@ impl Game {
         self.state.pending = Pending::ManaRollback { player };
         true
     }
-    pub(super) fn replaying_frozen_mana(&self) -> bool {
-        self.state
-            .cast_rollback
-            .as_ref()
-            .and_then(|r| r.replay.as_ref())
-            .is_some_and(|r| r.active.is_some())
-    }
     pub(super) fn mana_rollback_view(&self, viewer: Player) -> Option<ManaRollbackView> {
         if !matches!(self.state.pending, Pending::ManaRollback { .. }) {
             return None;
@@ -345,13 +338,12 @@ impl Game {
                 {
                     return false;
                 }
-                if let Some((spec, external)) = additional {
-                    if spec.kind != EffectChoiceKind::ExileGraveyard
+                if let Some((spec, external)) = additional
+                    && (spec.kind != EffectChoiceKind::ExileGraveyard
                         || self.object_ref(external.card) != *external
-                        || self.state.objects[external.card as usize].zone != Zone::Graveyard
-                    {
-                        return false;
-                    }
+                        || self.state.objects[external.card as usize].zone != Zone::Graveyard)
+                {
+                    return false;
                 }
             }
         }
