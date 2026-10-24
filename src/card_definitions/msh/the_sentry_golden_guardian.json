@@ -3,10 +3,56 @@
   "catalogue_id": 4495,
   "oracle_id": "1fe549c3-79be-40ef-b57c-de59f24df5ab",
   "facts_sha256": "ba597527232b915090332de4e23042149e4fa4c97560595e8b43b6433ad76540",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "d84e2f8e3a95dea8e6e2fd7803bb6f69e4fb41ba159c907dbf11adb720f4db8b"
-  },
-  "physical_metadata_sha256": "2b716b534461e63da7161b229351a4b71d6d761a30caa8332a70818ca6c3e5fd"
+  "complete": true,
+  "physical_metadata_sha256": "2b716b534461e63da7161b229351a4b71d6d761a30caa8332a70818ca6c3e5fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheSentryGoldenGuardian.java",
+  "java_sha256": "02a6f91252a4327b964ed3e9bce0d162bcfab40a65363010442bc9600753dc5a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenTargetEffect.java",
+      "sha256": "899cbb24bb096977a1368027ba991506de15e4dcda39c6378a05daef65c295a7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TheVoidToken.java",
+      "sha256": "41a1fe7f60cab30c5803afd1f1ec1a464cd4dad12a5a2de89aa93307d52c9ad2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksEachCombatStaticAbility.java",
+      "sha256": "85243fdf02d35648e569259e01a901a2b356807971b1db74bb8d27153c6ae40d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/AttacksIfAbleSourceEffect.java",
+      "sha256": "d6230d30e62ef789a51c2584ff4b0d213f744792672d6fc99263ea6d9ba5194a"
+    }
+  ]
 }
