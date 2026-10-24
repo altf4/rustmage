@@ -33,12 +33,47 @@ pub(super) fn owned_bytes(data: &Option<Box<ParadigmState>>) -> usize {
                 .sum::<usize>()
     })
 }
+/// Derive immutable relevant names from authored typed programs once per process.
+/// Ordinary games never allocate historical rows for names which cannot matter
+/// to paradigm. A same-name spell still qualifies even without the ability.
+fn possible_paradigm_name(name: &str) -> bool {
+    static NAMES: std::sync::OnceLock<Box<[&'static str]>> = std::sync::OnceLock::new();
+    NAMES
+        .get_or_init(|| {
+            let paradigm = |program: &[Instruction]| {
+                program
+                    .iter()
+                    .any(|instruction| matches!(instruction, Instruction::Paradigm { .. }))
+            };
+            let mut names: Vec<&'static str> = Vec::new();
+            for card in Card::catalogue() {
+                let relevant = match card.effect() {
+                    Effect::Spell(_, program) => paradigm(program),
+                    Effect::Modal(modes) => modes.iter().any(|mode| paradigm(mode.program)),
+                    _ => false,
+                };
+                if relevant
+                    && !names
+                        .iter()
+                        .any(|previous| crate::card_names::same_name(previous, card.name()))
+                {
+                    names.push(card.name());
+                }
+            }
+            names.into_boxed_slice()
+        })
+        .iter()
+        .any(|candidate| crate::card_names::same_name(candidate, name))
+}
 impl Game {
     pub(super) fn record_resolved_spell_name(&mut self, item: &SpellView) {
         if item.kind != StackKind::Spell {
             return;
         }
         let name = item.source_card.name();
+        if !possible_paradigm_name(name) {
+            return;
+        }
         let data = self.state.paradigm.get_or_insert_with(Default::default);
         if !data.resolved.iter().any(|row| {
             row.player == item.controller && crate::card_names::same_name(row.name, name)

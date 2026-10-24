@@ -1135,3 +1135,190 @@ fn sos_maestro_counts_before_live_power_mana_uses_payment_and_departure_lki() {
         );
     }
 }
+
+#[test]
+fn sos_ordinary_resolutions_do_not_allocate_paradigm_history() {
+    let mut g = scenario(Player::P0);
+    let bear = put(&mut g, Player::P0, "Bear Cub", Zone::Hand);
+    cast(&mut g, bear, None);
+    settle(&mut g);
+    let shock = put(&mut g, Player::P0, "Shock", Zone::Hand);
+    cast(&mut g, shock, Some(Target::Player(Player::P1)));
+    settle(&mut g);
+    assert!(g.state.paradigm.is_none());
+    assert!(g.observe(Player::P0).resolved_spell_names.is_empty());
+}
+
+#[test]
+fn sos_professor_graveyard_additional_cost_legality_reentry_and_attack_drain() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Postmortem Professor", Zone::Graveyard);
+        let fuel = put(&mut g, p, "Shock", Zone::Graveyard);
+        let wrong_type = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let wrong_owner = put(&mut g, p.other(), "Shock", Zone::Graveyard);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        for id in [wrong_type, wrong_owner] {
+            let object = g.object_ref(id);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        let object = g.object_ref(fuel);
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        assert_eq!(g.object_view(fuel).zone, Zone::Exile);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert!(g.object_view(source).summoning_sick);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        reject(&mut g, Action::Attack { card: source });
+        g.state.objects[source as usize].summoning_sick = false;
+        act(&mut g, Action::Attack { card: source });
+        act(&mut g, Action::FinishAttackers);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 21);
+        assert_eq!(g.state.players[p.other().index()].life, 19);
+    }
+}
+
+#[test]
+fn sos_professor_cannot_block_is_a_removable_printed_ability() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p.other());
+        let source = put(&mut g, p, "Postmortem Professor", Zone::Battlefield);
+        let attacker = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        assert!(!g.can_block_pair(source, attacker));
+        let protection = put(&mut g, p.other(), "Witness Protection", Zone::Hand);
+        cast(&mut g, protection, Some(Target::Card(source)));
+        settle(&mut g);
+        assert!(g.can_block_pair(source, attacker));
+    }
+}
+
+#[test]
+fn sos_tragedy_ward_discard_payment_decline_and_empty_hand() {
+    for p in [Player::P0, Player::P1] {
+        for (have_card, discard) in [(true, true), (true, false), (false, false)] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Tragedy Feaster", Zone::Battlefield);
+            let fuel = have_card.then(|| put(&mut g, p.other(), "Shock", Zone::Hand));
+            let murder = put(&mut g, p.other(), "Murder", Zone::Hand);
+            act(&mut g, Action::Pass);
+            cast(&mut g, murder, Some(Target::Card(source)));
+            if let Some(fuel) = fuel {
+                until_choice(&mut g);
+                assert_eq!(g.actor(), Some(p.other()));
+                assert!(
+                    g.observe(p).effect_choice.is_none(),
+                    "ward discard identities remain private"
+                );
+                act(
+                    &mut g,
+                    if discard {
+                        Action::Discard { card: fuel }
+                    } else {
+                        Action::DeclineEffectPayment
+                    },
+                );
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(source).zone,
+                if discard {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            if let Some(fuel) = fuel {
+                assert_eq!(
+                    g.object_view(fuel).zone,
+                    if discard { Zone::Graveyard } else { Zone::Hand }
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_tragedy_checks_life_gain_when_end_trigger_resolves_and_can_sacrifice_self() {
+    for p in [Player::P0, Player::P1] {
+        for gain_in_response in [false, true] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Tragedy Feaster", Zone::Battlefield);
+            assert_eq!(stats(&g, source), (7, 6));
+            assert!(g.keywords(source).contains(Keywords::TRAMPLE));
+            begin_paradigm_main(&mut g, p, Step::End);
+            if gain_in_response {
+                let spell = put(&mut g, p, "Dissection Practice", Zone::Hand);
+                act(&mut g, Action::AnnounceCast { card: spell });
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    },
+                );
+                act(&mut g, Action::FinishTargets);
+                act(&mut g, Action::FinishTargets);
+                pay(&mut g);
+                settle(&mut g);
+                assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+            } else {
+                until_choice(&mut g);
+                reject(&mut g, Action::DeclineEffectPayment);
+                let object = g.object_ref(source);
+                act(&mut g, Action::Sacrifice { object });
+                settle(&mut g);
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_duel_tactics_damage_block_restriction_survives_ability_removal_flashback_and_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let blocker = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let attacker = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let growth = put(&mut g, p, "Giant Growth", Zone::Hand);
+        cast(&mut g, growth, Some(Target::Card(blocker)));
+        settle(&mut g);
+        let spell = put(&mut g, p, "Duel Tactics", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(blocker)));
+        settle(&mut g);
+        assert_eq!(g.object_view(blocker).damage, 1);
+        assert!(!g.can_block_pair(blocker, attacker));
+        let protection = put(&mut g, p, "Witness Protection", Zone::Hand);
+        cast(&mut g, protection, Some(Target::Card(blocker)));
+        settle(&mut g);
+        assert!(
+            !g.can_block_pair(blocker, attacker),
+            "resolution restriction is not an ability grant"
+        );
+        g.finish_cleanup();
+        assert_eq!(g.object_view(blocker).damage, 0);
+        assert!(g.can_block_pair(blocker, attacker));
+        let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        act(&mut g, Action::AnnounceFlashback { card: spell });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert_eq!(g.object_view(target).damage, 1);
+        assert!(!g.can_block_pair(target, attacker));
+    }
+}
