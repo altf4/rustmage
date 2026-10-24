@@ -5352,7 +5352,10 @@
     8,
     4,
     0,
-    0
+    0,
+    18,
+    20,
+    10
   ],
   "aliases": [
     [
@@ -6006,6 +6009,18 @@
     [
       "@token/scion_of_the_deep",
       5334
+    ],
+    [
+      "@token/sos-elemental",
+      5349
+    ],
+    [
+      "@token/sos-fractal",
+      5347
+    ],
+    [
+      "@token/sos-pest",
+      5348
     ],
     [
       "@token/spirit_1_1_white_flying",
@@ -27820,6 +27835,24 @@
       "name": "Blood Token",
       "subtypes": "Blood",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/sos-fractal",
+      "name": "Fractal Token",
+      "subtypes": "Fractal",
+      "colors": 18
+    },
+    {
+      "factory_identity": "@token/sos-pest",
+      "name": "Pest Token",
+      "subtypes": "Pest",
+      "colors": 20
+    },
+    {
+      "factory_identity": "@token/sos-elemental",
+      "name": "Elemental Token",
+      "subtypes": "Elemental",
+      "colors": 10
     }
   ],
   "emblems": [
@@ -28176,7 +28209,10 @@
     "Counterspell": 13,
     "DrakeToken": 5339,
     "KaitoNinjaToken": 5340,
-    "KaitoEmblem": 5341
+    "KaitoEmblem": 5341,
+    "SosFractalToken": 5347,
+    "SosPestToken": 5348,
+    "SosElementalToken": 5349
   },
   "helper_interface": [
     [
@@ -180603,6 +180639,89 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5347,
+      "module": "card_5347",
+      "path": "synthetic/token_sos_fractal.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/sos-fractal",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Fractal",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5348,
+      "module": "card_5348",
+      "path": "synthetic/token_sos_pest.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/sos-pest",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Pest",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5349,
+      "module": "card_5349",
+      "path": "synthetic/token_sos_elemental.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/sos-elemental",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Elemental",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
