@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c6bafedde404e9559e394c3b12df6837890c053a120d7cd5467e082de5a7ad1c"
   },
-  "physical_metadata_sha256": "b016926c5764933a0b5141396f191c9ee9220b1d75f52da797995b9d36b0decb"
+  "physical_metadata_sha256": "b016926c5764933a0b5141396f191c9ee9220b1d75f52da797995b9d36b0decb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HungryGraffalon.java",
+  "java_sha256": "a606f1deeb9caef3a35d701a1aa576f7753879cc01d952ecb66a309a0f881b9f",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IncrementAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4d44b4a352b0c3056cc317e0647ceef6a13307e64c2a2563ad2986277f9ab09d"
+    }
+  ]
 }

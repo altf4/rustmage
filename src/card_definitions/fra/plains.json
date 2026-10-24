@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "81efbbbe17dbe0b33d90d9e29b0a9045188d67b1cc089b2e93c734e54ac02528"
   },
-  "physical_metadata_sha256": "d6d0094f0cc623381957411f7ae91b0cf35d8de5e0a164cea27469da1339e8f4"
+  "physical_metadata_sha256": "d6d0094f0cc623381957411f7ae91b0cf35d8de5e0a164cea27469da1339e8f4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/cards/basiclands/Plains.java",
+  "java_sha256": "da74b1b93697ec78ec2fc7665715f40c60e393e43845b88c8f5c491bc38c8eaf",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/cards/basiclands/BasicLand.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4eb89e2e86f2d29dd2bd4990f7f72089edbe07f6c17b0eb9fb48b3493ef79215"
+    }
+  ]
 }

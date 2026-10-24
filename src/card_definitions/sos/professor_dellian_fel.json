@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f9ee15dc2faa57d551d6cfd20eb15d8136ff94fcfe0f625dfa469ad9ceaf42a8"
   },
-  "physical_metadata_sha256": "9cdda5c82d322c971baf954710525d12bffde3ae824a7d728915191d2c489e34"
+  "physical_metadata_sha256": "9cdda5c82d322c971baf954710525d12bffde3ae824a7d728915191d2c489e34",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ProfessorDellianFel.java",
+  "java_sha256": "a2695a49d2204e941396e893bb7a38ae8974f20a9223225c74a9e4c9e16329e5",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/game/command/emblems/ProfessorDellianFelEmblem.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f35cc896d8dc2626b7f7eacf400ab67ec1970a98ce70c380523aa1f9b5faa86d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedGainedLifeValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0debc20ff35f4da6bdca2b99270dd881823230107b21bf4a0ed53b62069d714e"
+    }
+  ]
 }

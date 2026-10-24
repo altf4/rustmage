@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "54ce173f7520cf9f68dfd8049e5ce72cee8e0482e4be2b84f280a723d4fafd20"
   },
-  "physical_metadata_sha256": "cd930b507e7d8be13eb9b85de9a0319aadb0d422bea28aed0725980921adab70"
+  "physical_metadata_sha256": "cd930b507e7d8be13eb9b85de9a0319aadb0d422bea28aed0725980921adab70",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TerramorphicExpanse.java",
+  "java_sha256": "c5536a093cf331474d0d2681e6649defd45e318398851362bd0744dcd36025f5",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    }
+  ]
 }

@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "09dfec076f0778c050ca7117fecc165b4b1508684430184be129f9dcc0443dba"
   },
-  "physical_metadata_sha256": "71975127a6320a999a6684a85e5e0076aef647f7a6729562e2a6139897ad1906"
+  "physical_metadata_sha256": "71975127a6320a999a6684a85e5e0076aef647f7a6729562e2a6139897ad1906",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SundownPass.java",
+  "java_sha256": "e04a0a9bd781ddb82c293d504f3c0bd04bf66b7e9bbda5940136336e0e2930fb",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    }
+  ]
 }

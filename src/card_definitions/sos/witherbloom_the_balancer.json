@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ef85feb12c9fda7a49c418affda68277f04e7efb8e1bd276ab502992ff13c691"
   },
-  "physical_metadata_sha256": "7131631cef7b19d0541ecf3740d81175c6e742418cd448033c5af974170575b0"
+  "physical_metadata_sha256": "7131631cef7b19d0541ecf3740d81175c6e742418cd448033c5af974170575b0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WitherbloomTheBalancer.java",
+  "java_sha256": "c9b511022e909d7e4f1e8486f6102cfedf64783dc53236cd5a383c5b787c2db8",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledSpellsEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe96f9ccb2dbf72b35b14b2fa8c2e131e1e8e4e399b9cfd55ad6d4a198741227"
+    }
+  ]
 }

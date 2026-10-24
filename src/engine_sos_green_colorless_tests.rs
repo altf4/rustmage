@@ -3113,3 +3113,1077 @@ fn sos_mind_roots_short_or_empty_hand_and_no_land_finish_without_spurious_entry(
         }
     }
 }
+
+fn original_until(g: &mut Game, predicate: impl Fn(&Pending) -> bool) {
+    for _ in 0..80 {
+        g.prepare_triggers();
+        if predicate(&g.state.pending) {
+            return;
+        }
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            g.legal_actions()
+                .into_iter()
+                .find(|a| !matches!(a, Action::Concede))
+                .unwrap()
+        };
+        checked(g, action);
+    }
+    panic!("original SOS phase missing: {:?}", g.state.pending);
+}
+fn original_activate(g: &mut Game, card: CardId, ability: u16, targets: &[Target]) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    for &target in targets {
+        checked(g, Action::ChooseTarget { target });
+    }
+    if g.state.announcing.is_some() {
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(g, action);
+    }
+}
+#[test]
+fn sos_original_basic_and_slow_land_play_thresholds_and_exact_colors() {
+    for p in [Player::P0, Player::P1] {
+        for (name, color) in [
+            ("Plains", 0),
+            ("Island", 1),
+            ("Swamp", 2),
+            ("Mountain", 3),
+            ("Forest", 4),
+        ] {
+            let mut g = setup(p);
+            let land = named(&mut g, p, name, Zone::Hand);
+            checked(&mut g, Action::PlayLand { card: land });
+            assert!(!g.object_view(land).tapped);
+            let before = g.state.players[p.index()].mana;
+            checked(&mut g, Action::TapMana { card: land });
+            assert_eq!(g.state.players[p.index()].mana[color], before[color] + 1);
+            reject(&mut g, Action::TapMana { card: land });
+        }
+        for (name, colors) in [
+            ("Deathcap Glade", [2, 4]),
+            ("Dreamroot Cascade", [1, 4]),
+            ("Shattered Sanctum", [0, 2]),
+            ("Stormcarved Coast", [1, 3]),
+            ("Sundown Pass", [0, 3]),
+        ] {
+            for own in 0..=2 {
+                let mut g = setup(p);
+                for _ in 0..own {
+                    named(&mut g, p, "Forest", Zone::Battlefield);
+                }
+                for _ in 0..3 {
+                    named(&mut g, p.other(), "Forest", Zone::Battlefield);
+                }
+                let land = named(&mut g, p, name, Zone::Hand);
+                checked(&mut g, Action::PlayLand { card: land });
+                assert_eq!(g.object_view(land).tapped, own < 2);
+                for color in colors {
+                    g.state.objects[land as usize].tapped = false;
+                    let mut production = [0; 6];
+                    production[color] = 1;
+                    checked(
+                        &mut g,
+                        Action::ActivateMana {
+                            card: land,
+                            ability: 0,
+                            payment: [0; 6],
+                            counter_payment: Counters::default(),
+                            production,
+                        },
+                    );
+                }
+                g.state.objects[land as usize].tapped = false;
+                reject(
+                    &mut g,
+                    Action::ActivateMana {
+                        card: land,
+                        ability: 0,
+                        payment: [0; 6],
+                        counter_payment: Counters::default(),
+                        production: [0, 0, 0, 0, 0, 1],
+                    },
+                );
+            }
+        }
+    }
+}
+#[test]
+fn sos_original_surveil_land_paid_colors_tap_private_choices_and_departure() {
+    for p in [Player::P0, Player::P1] {
+        for (name, colors) in [
+            ("Fields of Strife", [0, 3]),
+            ("Forum of Amity", [0, 2]),
+            ("Paradox Gardens", [1, 4]),
+            ("Spectacle Summit", [1, 3]),
+            ("Titan's Grave", [2, 4]),
+        ] {
+            for grave in [false, true] {
+                let mut g = setup(p);
+                let land = named(&mut g, p, name, Zone::Hand);
+                checked(&mut g, Action::PlayLand { card: land });
+                assert!(g.object_view(land).tapped);
+                reject(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: land,
+                        ability: 1,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                for color in colors {
+                    g.state.objects[land as usize].tapped = false;
+                    let mut production = [0; 6];
+                    production[color] = 1;
+                    checked(
+                        &mut g,
+                        Action::ActivateMana {
+                            card: land,
+                            ability: 0,
+                            payment: [0; 6],
+                            counter_payment: Counters::default(),
+                            production,
+                        },
+                    );
+                }
+                g.state.objects[land as usize].tapped = false;
+                let top = named(&mut g, p, "Shock", Zone::Library);
+                checked(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: land,
+                        ability: 1,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                reject(&mut g, Action::PayCosts { payment: [0; 6] });
+                let pay = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+                    .unwrap();
+                checked(&mut g, pay);
+                assert!(g.object_view(land).tapped);
+                g.move_object(land, Zone::Graveyard);
+                original_until(&mut g, |pending| {
+                    matches!(pending, Pending::EffectLibrary { .. })
+                });
+                assert!(g.observe(p.other()).library_choice.is_none());
+                assert!(g.observe(p).library_choice.is_some());
+                checked(
+                    &mut g,
+                    Action::ArrangeLibrary {
+                        card: top,
+                        destination: if grave {
+                            LibraryDestination::Graveyard
+                        } else {
+                            LibraryDestination::Top
+                        },
+                    },
+                );
+                settle(&mut g);
+                assert_eq!(
+                    g.object_view(top).zone,
+                    if grave {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Library
+                    }
+                );
+                if !grave {
+                    assert_eq!(g.state.players[p.index()].library.last(), Some(&top));
+                }
+            }
+        }
+    }
+}
+#[test]
+fn sos_original_scientist_skycoach_and_expanse_optional_private_basic_searches() {
+    for p in [Player::P0, Player::P1] {
+        for name in [
+            "Environmental Scientist",
+            "Strixhaven Skycoach",
+            "Terramorphic Expanse",
+        ] {
+            for choice in 0..=2 {
+                let mut g = setup(p);
+                let basic = named(&mut g, p, "Island", Zone::Library);
+                let nonbasic = named(&mut g, p, "Soulstone Sanctuary", Zone::Library);
+                let source = if name == "Terramorphic Expanse" {
+                    let id = named(&mut g, p, name, Zone::Hand);
+                    checked(&mut g, Action::PlayLand { card: id });
+                    original_activate(&mut g, id, 0, &[]);
+                    assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+                    id
+                } else {
+                    let id = paid(&mut g, p, name, None, &[]);
+                    until_optional(&mut g);
+                    g.move_object(id, Zone::Graveyard);
+                    checked(
+                        &mut g,
+                        Action::ChooseOptional {
+                            accept: choice != 0,
+                        },
+                    );
+                    id
+                };
+                if name != "Terramorphic Expanse" && choice == 0 {
+                    settle(&mut g);
+                    assert_eq!(g.object_view(basic).zone, Zone::Library);
+                    continue;
+                }
+                original_until(&mut g, |pending| {
+                    matches!(pending, Pending::EffectSearch { .. })
+                });
+                assert!(g.observe(p.other()).search_choice.is_none());
+                reject(&mut g, Action::ChooseSearch { card: nonbasic });
+                if choice == 2 {
+                    checked(&mut g, Action::ChooseSearch { card: basic });
+                }
+                checked(&mut g, Action::FinishSearch);
+                settle(&mut g);
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+                assert_eq!(
+                    g.object_view(basic).zone,
+                    if choice != 2 {
+                        Zone::Library
+                    } else if name == "Terramorphic Expanse" {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Hand
+                    }
+                );
+                if choice == 2 && name == "Terramorphic Expanse" {
+                    assert!(g.object_view(basic).tapped);
+                } else if choice == 2 {
+                    assert!(
+                        g.observe(p.other())
+                            .objects
+                            .iter()
+                            .any(|o| o.id == basic && o.zone == Zone::Hand)
+                    );
+                }
+            }
+        }
+    }
+}
+#[test]
+fn sos_original_skycoach_crew_sick_creatures_exact_power_and_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let vehicle = paid(&mut g, p, "Strixhaven Skycoach", None, &[]);
+        until_optional(&mut g);
+        checked(&mut g, Action::ChooseOptional { accept: false });
+        settle(&mut g);
+        let first = paid(&mut g, p, "Noxious Newt", None, &[]);
+        settle(&mut g);
+        let second = paid(&mut g, p, "Llanowar Elves", None, &[]);
+        settle(&mut g);
+        let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        assert!(!g.is_creature(vehicle));
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: vehicle,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(&mut g, Action::FinishCrew);
+        let enemy_ref = g.object_ref(enemy);
+        reject(&mut g, Action::ChooseCrewer { object: enemy_ref });
+        let first_ref = g.object_ref(first);
+        checked(&mut g, Action::ChooseCrewer { object: first_ref });
+        reject(&mut g, Action::ChooseCrewer { object: first_ref });
+        reject(&mut g, Action::FinishCrew);
+        let second_ref = g.object_ref(second);
+        checked(&mut g, Action::ChooseCrewer { object: second_ref });
+        checked(&mut g, Action::FinishCrew);
+        if g.state.announcing.is_some() {
+            checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        }
+        assert!(g.object_view(first).tapped && g.object_view(second).tapped);
+        assert!(!g.is_creature(vehicle));
+        settle(&mut g);
+        assert_eq!((g.stats(vehicle).power, g.stats(vehicle).toughness), (3, 2));
+        assert!(g.keywords(vehicle).contains(Keywords::FLYING));
+        g.finish_cleanup();
+        assert!(!g.is_creature(vehicle));
+    }
+}
+#[test]
+fn sos_original_efflorescence_infusion_at_resolution_persistent_counters_and_fizzle() {
+    for p in [Player::P0, Player::P1] {
+        for (life, leaves) in [(false, false), (true, false), (true, true)] {
+            let mut g = setup(p);
+            let creature = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            paid(&mut g, p, "Efflorescence", None, &[Target::Card(creature)]);
+            if life {
+                paid(
+                    &mut g,
+                    p,
+                    "Lightning Helix",
+                    None,
+                    &[Target::Player(p.other())],
+                );
+            }
+            if leaves {
+                g.move_object(creature, Zone::Hand);
+                g.move_object(creature, Zone::Battlefield);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(creature).counters.plus_one,
+                if leaves { 0 } else { 2 }
+            );
+            assert_eq!(
+                g.keywords(creature).contains(Keywords::INDESTRUCTIBLE),
+                life && !leaves
+            );
+            assert_eq!(
+                g.keywords(creature).contains(Keywords::TRAMPLE),
+                life && !leaves
+            );
+            g.finish_cleanup();
+            assert!(!g.keywords(creature).contains(Keywords::INDESTRUCTIBLE));
+            assert_eq!(
+                g.object_view(creature).counters.plus_one,
+                if leaves { 0 } else { 2 }
+            );
+        }
+    }
+}
+#[test]
+fn sos_original_follow_lumarets_infusion_private_quota_reveal_and_random_remainder() {
+    for p in [Player::P0, Player::P1] {
+        for life in [false, true] {
+            let mut g = setup(p);
+            let original_top = *g.state.players[p.index()].library.last().unwrap();
+            let bad = named(&mut g, p, "Shock", Zone::Library);
+            let artifact = named(&mut g, p, "Mox Jasper", Zone::Library);
+            let creature = named(&mut g, p, "Bear Cub", Zone::Library);
+            let land = named(&mut g, p, "Island", Zone::Library);
+            paid(&mut g, p, "Follow the Lumarets", None, &[]);
+            if life {
+                paid(
+                    &mut g,
+                    p,
+                    "Lightning Helix",
+                    None,
+                    &[Target::Player(p.other())],
+                );
+            }
+            original_until(&mut g, |pending| {
+                matches!(pending, Pending::EffectLibrarySelection { .. })
+            });
+            assert!(g.observe(p.other()).library_selection.is_none());
+            let frame = g.observe(p).library_selection.unwrap();
+            assert_eq!(frame.maximum, if life { 2 } else { 1 });
+            reject(&mut g, Action::SelectLibrary { card: bad });
+            reject(&mut g, Action::SelectLibrary { card: artifact });
+            checked(&mut g, Action::SelectLibrary { card: land });
+            if life {
+                checked(&mut g, Action::SelectLibrary { card: creature });
+            } else {
+                reject(&mut g, Action::SelectLibrary { card: creature });
+            }
+            checked(&mut g, Action::FinishLibrarySelection);
+            settle(&mut g);
+            assert_eq!(g.object_view(land).zone, Zone::Hand);
+            assert_eq!(
+                g.object_view(creature).zone,
+                if life { Zone::Hand } else { Zone::Library }
+            );
+            assert_eq!(
+                g.state.players[p.index()].library.last(),
+                Some(&original_top)
+            );
+            let known = g.observe(p.other()).objects;
+            assert!(known.iter().any(|o| o.id == land && o.zone == Zone::Hand));
+            assert!(!known.iter().any(|o| o.id == bad || o.id == artifact));
+            let bottom = &g.state.players[p.index()].library[..if life { 2 } else { 3 }];
+            assert!(bottom.contains(&bad) && bottom.contains(&artifact));
+        }
+    }
+}
+#[test]
+fn sos_original_graffalon_increment_strict_trigger_and_resolution_checks() {
+    for p in [Player::P0, Player::P1] {
+        for buff in [false, true] {
+            let mut g = setup(p);
+            let graffalon = paid(&mut g, p, "Hungry Graffalon", None, &[]);
+            settle(&mut g);
+            assert!(g.keywords(graffalon).contains(Keywords::REACH));
+            paid(&mut g, p, "Shopkeeper's Bane", None, &[]);
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(graffalon).counters.plus_one,
+                0,
+                "three is not greater than three or four"
+            );
+            paid(&mut g, p, "Rancorous Archaic", None, &[]);
+            g.prepare_triggers();
+            if buff {
+                paid(&mut g, p, "Giant Growth", None, &[Target::Card(graffalon)]);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(graffalon).counters.plus_one, u64::from(!buff));
+        }
+    }
+}
+#[test]
+fn sos_original_rancorous_converge_paid_colors_replacements_and_uncast_return() {
+    for p in [Player::P0, Player::P1] {
+        for (payment, colors) in [
+            ([0, 0, 0, 0, 0, 5], 0),
+            ([0, 0, 0, 0, 5, 0], 1),
+            ([1, 1, 1, 1, 1, 0], 5),
+        ] {
+            let mut g = setup(p);
+            paid(&mut g, p, "Doubling Season", None, &[]);
+            settle(&mut g);
+            g.state.players[p.index()].mana = payment;
+            let source = paid(&mut g, p, "Rancorous Archaic", None, &[]);
+            settle(&mut g);
+            assert_eq!(g.object_view(source).counters.plus_one, colors * 2);
+            assert!(
+                g.keywords(source).contains(Keywords::REACH)
+                    && g.keywords(source).contains(Keywords::TRAMPLE)
+            );
+            g.move_object(source, Zone::Graveyard);
+            g.state.players[p.index()].mana = [30; 6];
+            paid(&mut g, p, "Zombify", None, &[Target::Card(source)]);
+            settle(&mut g);
+            assert_eq!(g.object_view(source).counters.plus_one, 0);
+        }
+    }
+}
+#[test]
+fn sos_original_biomancer_once_each_turn_and_newt_sickness_mana_deathtouch_fight() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let life = g.state.players[p.index()].life;
+        let biomancer = paid(&mut g, p, "Mindful Biomancer", None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, life + 1);
+        original_activate(&mut g, biomancer, 0, &[]);
+        settle(&mut g);
+        assert_eq!(
+            (g.stats(biomancer).power, g.stats(biomancer).toughness),
+            (4, 4)
+        );
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: biomancer,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        g.finish_cleanup();
+        g.state.priority = p;
+        g.state.players[p.index()].mana = [30; 6];
+        g.state.step = Step::Main1;
+        original_activate(&mut g, biomancer, 0, &[]);
+        settle(&mut g);
+        assert_eq!(g.stats(biomancer).power, 4);
+        let mut g = setup(p);
+        let newt = paid(&mut g, p, "Noxious Newt", None, &[]);
+        settle(&mut g);
+        let mana = Action::ActivateMana {
+            card: newt,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 1, 0],
+        };
+        reject(&mut g, mana.clone());
+        g.state.objects[newt as usize].summoning_sick = false;
+        let before = g.state.players[p.index()].mana[4];
+        checked(&mut g, mana);
+        assert_eq!(g.state.players[p.index()].mana[4], before + 1);
+        let enemy = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        paid(
+            &mut g,
+            p,
+            "Chelonian Tackle",
+            None,
+            &[Target::Card(newt), Target::Card(enemy)],
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+        assert!(g.on_battlefield(newt));
+    }
+}
+#[test]
+fn sos_original_manawurm_referee_and_witherbloom_distinguish_actual_payment_and_color() {
+    for p in [Player::P0, Player::P1] {
+        for provider_leaves in [false, true] {
+            let mut g = setup(p);
+            let wurm = paid(&mut g, p, "Aberrant Manawurm", None, &[]);
+            settle(&mut g);
+            let referee = paid(&mut g, p, "Mage Tower Referee", None, &[]);
+            settle(&mut g);
+            for _ in 0..6 {
+                named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            }
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 1, 4];
+            let dragon = paid(&mut g, p, "Witherbloom, the Balancer", None, &[]);
+            assert_eq!(
+                g.state
+                    .stack
+                    .iter()
+                    .find(|item| item.card == dragon)
+                    .unwrap()
+                    .cast
+                    .unwrap()
+                    .payment
+                    .iter()
+                    .sum::<u32>(),
+                6
+            );
+            settle(&mut g);
+            assert_eq!(g.object_view(referee).counters.plus_one, 1);
+            assert_eq!(g.stats(wurm).power, 2);
+            assert!(
+                g.keywords(dragon).contains(Keywords::FLYING)
+                    && g.keywords(dragon).contains(Keywords::DEATHTOUCH)
+            );
+            if provider_leaves {
+                g.move_object(dragon, Zone::Graveyard);
+            }
+            g.state.players[p.index()].mana = [30; 6];
+            let target = named(&mut g, p.other(), "Mox Jasper", Zone::Battlefield);
+            let spell = paid(
+                &mut g,
+                p,
+                "Grapple with Death",
+                None,
+                &[Target::Card(target)],
+            );
+            let amount = if provider_leaves { 3 } else { 2 };
+            assert_eq!(
+                g.state
+                    .stack
+                    .iter()
+                    .find(|item| item.card == spell)
+                    .unwrap()
+                    .cast
+                    .unwrap()
+                    .payment
+                    .iter()
+                    .sum::<u32>(),
+                amount
+            );
+            settle(&mut g);
+            assert_eq!(g.stats(wurm).power, 2 + i128::from(amount));
+            assert_eq!(g.object_view(referee).counters.plus_one, 2);
+            assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+            g.state.players[p.index()].mana = [1, 1, 1, 1, 1, 0];
+            paid(&mut g, p, "Rancorous Archaic", None, &[]);
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(referee).counters.plus_one,
+                2,
+                "five payment colors do not make a colorless spell multicolored"
+            );
+            g.finish_cleanup();
+            assert_eq!(g.stats(wurm).power, 2);
+        }
+    }
+}
+
+#[test]
+fn sos_original_shopkeeper_attack_life_and_live_infusion_control_and_removal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let striker = paid(&mut g, p, "Thornfist Striker", None, &[]);
+        settle(&mut g);
+        let concocter = paid(&mut g, p, "Tenured Concocter", None, &[]);
+        settle(&mut g);
+        let bane = paid(&mut g, p, "Shopkeeper's Bane", None, &[]);
+        settle(&mut g);
+        let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        assert_eq!(g.stats(concocter).power, 4);
+        assert_eq!(g.stats(bane).power, 4);
+        let life = g.state.players[p.index()].life;
+        g.state.objects[bane as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: bane });
+        checked(&mut g, Action::FinishAttackers);
+        original_until(&mut g, |pending| matches!(pending, Pending::Blockers));
+        assert_eq!(g.state.players[p.index()].life, life + 2);
+        assert_eq!(g.stats(concocter).power, 7);
+        assert_eq!(g.stats(bane).power, 5);
+        assert!(g.keywords(bane).contains(Keywords::TRAMPLE));
+        for player in &mut g.state.players {
+            player.mana = [30; 6];
+        }
+        g.state.step = Step::Main2;
+        g.state.pending = Pending::Priority;
+        g.state.priority = p;
+        paid(
+            &mut g,
+            p,
+            "Harmless Offering",
+            None,
+            &[Target::Player(p.other()), Target::Card(striker)],
+        );
+        settle(&mut g);
+        assert_eq!(g.stats(bane).power, 4);
+        assert!(!g.keywords(enemy).contains(Keywords::TRAMPLE));
+        g.state.priority = p.other();
+        paid(
+            &mut g,
+            p.other(),
+            "Lightning Helix",
+            None,
+            &[Target::Player(p)],
+        );
+        settle(&mut g);
+        assert_eq!(g.stats(enemy).power, 3);
+        assert!(g.keywords(enemy).contains(Keywords::TRAMPLE));
+        let aura = paid(
+            &mut g,
+            p,
+            "Witness Protection",
+            None,
+            &[Target::Card(striker)],
+        );
+        original_until(&mut g, |pending| {
+            matches!(pending, Pending::ResolutionMana { .. })
+        });
+        let ward = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayResolutionMana { .. }))
+            .unwrap();
+        checked(&mut g, ward);
+        settle(&mut g);
+        assert_eq!(g.stats(enemy).power, 2);
+        assert!(!g.keywords(enemy).contains(Keywords::TRAMPLE));
+        g.move_object(aura, Zone::Graveyard);
+        assert_eq!(g.stats(enemy).power, 3);
+        g.finish_cleanup();
+        assert_eq!(g.stats(concocter).power, 4);
+        assert_eq!(g.stats(enemy).power, 2);
+    }
+}
+#[test]
+fn sos_original_tenured_opponent_target_optional_draw_and_thornfist_ward_payment() {
+    for p in [Player::P0, Player::P1] {
+        for accept in [false, true] {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "Tenured Concocter", None, &[]);
+            settle(&mut g);
+            assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+            let hand = g.hand_count(p);
+            g.state.priority = p.other();
+            paid(
+                &mut g,
+                p.other(),
+                "Giant Growth",
+                None,
+                &[Target::Card(source)],
+            );
+            until_optional(&mut g);
+            g.move_object(source, Zone::Graveyard);
+            checked(&mut g, Action::ChooseOptional { accept });
+            settle(&mut g);
+            assert_eq!(g.hand_count(p), hand + usize::from(accept));
+        }
+        let mut g = setup(p);
+        let striker = paid(&mut g, p, "Thornfist Striker", None, &[]);
+        settle(&mut g);
+        g.state.priority = p.other();
+        let spell = paid(&mut g, p.other(), "Shock", None, &[Target::Card(striker)]);
+        original_until(&mut g, |pending| {
+            matches!(pending, Pending::ResolutionMana { .. })
+        });
+        checked(&mut g, Action::DeclineResolutionMana);
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(striker).damage, 0);
+    }
+}
+#[test]
+fn sos_original_bg_entry_death_life_events_and_mascot_count_events_not_amount() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let start = g.state.players[p.index()].life;
+        let lumaret = paid(&mut g, p, "Bogwater Lumaret", None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, start + 1);
+        let mascot = paid(&mut g, p, "Pest Mascot", None, &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(mascot).counters.plus_one, 1);
+        assert!(g.keywords(mascot).contains(Keywords::TRAMPLE));
+        paid(&mut g, p, "Cauldron of Essence", None, &[]);
+        settle(&mut g);
+        let before = g.state.players[p.index()].life;
+        g.state.priority = p.other();
+        paid(&mut g, p.other(), "Spectral Sailor", None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, before);
+        g.state.priority = p;
+        let first = paid(&mut g, p, "Noxious Newt", None, &[]);
+        settle(&mut g);
+        let second = paid(&mut g, p, "Mindful Biomancer", None, &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(mascot).counters.plus_one, 4);
+        let own = g.state.players[p.index()].life;
+        let enemy = g.state.players[p.other().index()].life;
+        g.sacrifice_batch(&[(p, first), (p, second)]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, own + 2);
+        assert_eq!(g.state.players[p.other().index()].life, enemy - 2);
+        assert_eq!(g.object_view(mascot).counters.plus_one, 6);
+        paid(
+            &mut g,
+            p,
+            "Lightning Helix",
+            None,
+            &[Target::Player(p.other())],
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(mascot).counters.plus_one, 7);
+        assert!(g.on_battlefield(lumaret));
+    }
+}
+#[test]
+fn sos_original_old_growth_educator_checks_life_at_trigger_resolution() {
+    for p in [Player::P0, Player::P1] {
+        for late_gain in [false, true] {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "Old-Growth Educator", None, &[]); // Resolve only the creature, leaving its ETB trigger pending.
+            checked(&mut g, Action::Pass);
+            checked(&mut g, Action::Pass);
+            assert!(g.on_battlefield(source));
+            g.prepare_triggers();
+            if late_gain {
+                paid(
+                    &mut g,
+                    p,
+                    "Lightning Helix",
+                    None,
+                    &[Target::Player(p.other())],
+                );
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(source).counters.plus_one,
+                if late_gain { 2 } else { 0 }
+            );
+            assert!(
+                g.keywords(source)
+                    .contains(Keywords::REACH.union(Keywords::VIGILANCE))
+            );
+        }
+    }
+}
+#[test]
+fn sos_original_cauldron_sorcery_exact_target_and_paid_sacrifice_drain() {
+    for p in [Player::P0, Player::P1] {
+        for leaves in [false, true] {
+            let mut g = setup(p);
+            let cauldron = paid(&mut g, p, "Cauldron of Essence", None, &[]);
+            settle(&mut g);
+            let sacrifice = paid(&mut g, p, "Bear Cub", None, &[]);
+            settle(&mut g);
+            let target = named(&mut g, p, "Noxious Newt", Zone::Graveyard);
+            let foreign = named(&mut g, p.other(), "Noxious Newt", Zone::Graveyard);
+            let land = named(&mut g, p, "Forest", Zone::Graveyard);
+            g.state.step = Step::BeginCombat;
+            reject(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: cauldron,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            g.state.step = Step::Main1;
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: cauldron,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            for card in [foreign, land, sacrifice] {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(card),
+                    },
+                );
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            let object = g.object_ref(sacrifice);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+            let pay = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            let own = g.state.players[p.index()].life;
+            let enemy = g.state.players[p.other().index()].life;
+            checked(&mut g, pay);
+            assert_eq!(g.object_view(sacrifice).zone, Zone::Graveyard);
+            assert!(g.object_view(cauldron).tapped);
+            if leaves {
+                g.move_object(target, Zone::Hand);
+                g.move_object(target, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].life, own + 1);
+            assert_eq!(g.state.players[p.other().index()].life, enemy - 1);
+            assert_eq!(
+                g.object_view(target).zone,
+                if leaves {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+        }
+    }
+}
+#[test]
+fn sos_original_teachers_pest_paid_grave_return_tapped_exact_incarnation_and_menace() {
+    for p in [Player::P0, Player::P1] {
+        for changed in [false, true] {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "Teacher's Pest", None, &[]);
+            settle(&mut g);
+            g.move_object(source, Zone::Graveyard);
+            original_activate(&mut g, source, 0, &[]);
+            if changed {
+                g.move_object(source, Zone::Hand);
+                g.move_object(source, Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(source).zone,
+                if changed {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            if changed {
+                continue;
+            }
+            assert!(g.object_view(source).tapped);
+            assert!(g.keywords(source).contains(Keywords::MENACE));
+            g.state.objects[source as usize].tapped = false;
+            g.state.objects[source as usize].summoning_sick = false;
+            let first = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let second = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let life = g.state.players[p.index()].life;
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            checked(&mut g, Action::Attack { card: source });
+            checked(&mut g, Action::FinishAttackers);
+            original_until(&mut g, |pending| matches!(pending, Pending::Blockers));
+            assert_eq!(g.state.players[p.index()].life, life + 1);
+            checked(
+                &mut g,
+                Action::Block {
+                    blocker: first,
+                    attacker: source,
+                },
+            );
+            reject(&mut g, Action::FinishBlockers);
+            checked(
+                &mut g,
+                Action::Block {
+                    blocker: second,
+                    attacker: source,
+                },
+            );
+            checked(&mut g, Action::FinishBlockers);
+        }
+    }
+}
+#[test]
+fn sos_original_professor_dellian_all_loyalty_modes_and_source_independent_emblem() {
+    for p in [Player::P0, Player::P1] {
+        for ability in 0..4 {
+            let mut g = setup(p);
+            if ability == 3 {
+                paid(&mut g, p, "Doubling Season", None, &[]);
+                settle(&mut g);
+            }
+            let walker = paid(&mut g, p, "Professor Dellian Fel", None, &[]);
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(walker).counters.loyalty,
+                if ability == 3 { 10 } else { 5 }
+            );
+            let creature = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+            let hand = g.hand_count(p);
+            let life = g.state.players[p.index()].life;
+            if ability != 3 {
+                reject(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: walker,
+                        ability: 3,
+                        counter_payment: Counters::default(),
+                    },
+                );
+            }
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: walker,
+                    ability,
+                    counter_payment: Counters::default(),
+                },
+            );
+            if ability == 2 {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(land),
+                    },
+                );
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(creature),
+                    },
+                );
+            }
+            if g.state.announcing.is_some() {
+                checked(&mut g, Action::PayCosts { payment: [0; 6] });
+            }
+            settle(&mut g);
+            reject(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: walker,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            match ability {
+                0 => {
+                    assert_eq!(g.state.players[p.index()].life, life + 3);
+                    assert_eq!(g.object_view(walker).counters.loyalty, 7);
+                }
+                1 => {
+                    assert_eq!(g.hand_count(p), hand + 1);
+                    assert_eq!(g.state.players[p.index()].life, life - 1);
+                    assert_eq!(g.object_view(walker).counters.loyalty, 5);
+                }
+                2 => {
+                    assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+                    assert_eq!(g.object_view(walker).counters.loyalty, 2);
+                }
+                3 => {
+                    assert_eq!(g.object_view(walker).counters.loyalty, 4);
+                    g.move_object(walker, Zone::Graveyard);
+                    let enemy = g.state.players[p.other().index()].life;
+                    paid(
+                        &mut g,
+                        p,
+                        "Lightning Helix",
+                        None,
+                        &[Target::Player(p.other())],
+                    );
+                    original_until(&mut g, |pending| matches!(pending, Pending::Targets { .. }));
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Player(p),
+                        },
+                    );
+                    checked(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Player(p.other()),
+                        },
+                    );
+                    if g.state.announcing.is_some() {
+                        checked(&mut g, Action::PayCosts { payment: [0; 6] });
+                    }
+                    settle(&mut g);
+                    assert_eq!(g.state.players[p.other().index()].life, enemy - 6);
+                }
+                _ => unreachable!(),
+            }
+        }
+    }
+}
+#[test]
+fn sos_original_grapple_artifact_or_creature_targets_and_whole_spell_fizzle() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Bear Cub", "Mox Jasper"] {
+            for leaves in [false, true] {
+                let mut g = setup(p);
+                let target = named(&mut g, p.other(), name, Zone::Battlefield);
+                let land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+                let enchantment = named(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+                let spell = named(&mut g, p, "Grapple with Death", Zone::Hand);
+                let life = g.state.players[p.index()].life;
+                checked(&mut g, Action::AnnounceCast { card: spell });
+                for card in [land, enchantment] {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(card),
+                        },
+                    );
+                }
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+                let pay = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a, Action::PayCosts { .. }))
+                    .unwrap();
+                checked(&mut g, pay);
+                if leaves {
+                    g.move_object(target, Zone::Hand);
+                    g.move_object(target, Zone::Battlefield);
+                }
+                settle(&mut g);
+                assert_eq!(g.state.players[p.index()].life, life + i128::from(!leaves));
+                assert_eq!(
+                    g.object_view(target).zone,
+                    if leaves {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+            }
+        }
+    }
+}

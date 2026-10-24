@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5ae8d0ca3a36e5f65cb27fd7ab9f7bdd5a6ad67c6baab3a4f8218ee4fc9bf46e"
   },
-  "physical_metadata_sha256": "e628257d0d9a217cf4648d6b06f36799893ce96b1403991c503dbd83af35b230"
+  "physical_metadata_sha256": "e628257d0d9a217cf4648d6b06f36799893ce96b1403991c503dbd83af35b230",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShopkeepersBane.java",
+  "java_sha256": "49dccf6d3d71a0a9c0f43bb974c1a6582f90a62f09a82870ca422743063e60d0",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": []
 }

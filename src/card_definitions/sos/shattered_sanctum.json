@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d004789b15eb9af3527e2adbe3a3178c8e2e0ee1b6605d771c53e9015462515d"
   },
-  "physical_metadata_sha256": "09402bbdce2d0f02ff5268a3ea4b4a448fbea0e3d3a24de9bd946ca6d2bec8dc"
+  "physical_metadata_sha256": "09402bbdce2d0f02ff5268a3ea4b4a448fbea0e3d3a24de9bd946ca6d2bec8dc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShatteredSanctum.java",
+  "java_sha256": "33b5062451d12e6db9e0f832921f6701b20ce1f2e4b0bc79ab4a98085d66370e",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    }
+  ]
 }

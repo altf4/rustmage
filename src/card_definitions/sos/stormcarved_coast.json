@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fd910f3811c51425064fc3b75b4c485e37f72841beca1668261ec74ca5cf46ff"
   },
-  "physical_metadata_sha256": "bf6a0ff3eedca5d85be49448f80222c5612cd69fad1256ee12f8df92c50a3b87"
+  "physical_metadata_sha256": "bf6a0ff3eedca5d85be49448f80222c5612cd69fad1256ee12f8df92c50a3b87",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StormcarvedCoast.java",
+  "java_sha256": "1f5befa7b6b2515b3e12a62cbdd9bbb4058303a23f7642c2990ac8cd181b3dcc",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    }
+  ]
 }

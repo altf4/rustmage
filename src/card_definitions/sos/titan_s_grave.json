@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9a11fd5d35ef91549306a7cb71940619c762a84c26ebca637e8023c8f7b40630"
   },
-  "physical_metadata_sha256": "17e457c8ab67b90abc1fc33cf9bd8b412448e804a0642e3768c9638a8915ac83"
+  "physical_metadata_sha256": "17e457c8ab67b90abc1fc33cf9bd8b412448e804a0642e3768c9638a8915ac83",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TitansGrave.java",
+  "java_sha256": "cfa6af1b76df1b05b7cdc7b9f097b83b596feb4850de5fd989acb45e7bb1d7fb",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }

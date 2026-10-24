@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c5e1adf77ed1917b9dfaf48f4bc7bc0d37825e504ccbdbcd9d00fa148901d67b"
   },
-  "physical_metadata_sha256": "ae7370c070e7cd6406e290faaaaa52083455409045cf43964487e218dbcd6f5f"
+  "physical_metadata_sha256": "ae7370c070e7cd6406e290faaaaa52083455409045cf43964487e218dbcd6f5f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ParadoxGardens.java",
+  "java_sha256": "974bc59f2fa97aab528b711c8df688876ec64014942aaa4976b12fcc3686b165",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }
