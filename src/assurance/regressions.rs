@@ -80,6 +80,7 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
                 cast(&mut g, instant, Some(Target::Player(Player::P1)));
             }
             "Cosmium Blast"
+            | "Helicarrier Strike"
             | "Elspeth's Smite"
             | "Joust Through"
             | "Kellan's Lightblades"

@@ -3,10 +3,74 @@
   "catalogue_id": 254,
   "oracle_id": "b5c8e24a-f4d7-42dc-8117-905ad0bad888",
   "facts_sha256": "4ff5a0e1705687e3e14373279c489d87196532d510388e8cfd6c2a112f0f91cb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6f6ec56212ca6fbcf767919f45cc9b83ac5b46eb019b05b07f294dc56bd1db4b"
   },
-  "physical_metadata_sha256": "7df30f97806be53093fce1143136001d13cb5c75240a30431b41fbd7acd7352b"
+  "physical_metadata_sha256": "7df30f97806be53093fce1143136001d13cb5c75240a30431b41fbd7acd7352b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AtlantisAttacks.java",
+  "java_sha256": "3e40aa025aff7862844ffc3363dc46aefe90591163fe906636ef12b37aa99303",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TeamworkCondition.java",
+      "sha256": "2db81465f0f14108a78438083147cba77c15031fb63358f6b2983fca7ca356fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TeamworkCost.java",
+      "sha256": "1069592dc1ab5aadfe5b298836831d95fd24fcd15db3fe4a623022bff606d4c5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenTargetEffect.java",
+      "sha256": "899cbb24bb096977a1368027ba991506de15e4dcda39c6378a05daef65c295a7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofBaseAbility.java",
+      "sha256": "eb33a62a2d3a0cfd4fffee6d99691000ed3d9cadd4937b41d0b53c4e5abacdea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TeamworkAbility.java",
+      "sha256": "be5c08a933319ee23fbc15a1d6aa6f352607c87d4bc5c26ffefc53b5eed148a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/LeviathanToken.java",
+      "sha256": "9c24ea0d0b6330ffd578b3ffee03248c5f1bb49d01b43473d70b9091127f4968"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "rules": "CR 601.2b, 601.2h, 702.194, 608.2b; teamwork is an optional additional cost; modes and targets are frozen before payment."
+  }
 }

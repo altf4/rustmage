@@ -1,0 +1,11 @@
+{
+  "name": "@token/msh-leviathan",
+  "catalogue_id": 5387,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "1cb6dec6201c85a5239148fa839db3f693c039821e0f38c5fe3a969d3ec12ab7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/LeviathanToken.java",
+  "java_sha256": "9c24ea0d0b6330ffd578b3ffee03248c5f1bb49d01b43473d70b9091127f4968"
+}

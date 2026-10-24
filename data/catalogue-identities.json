@@ -5392,7 +5392,8 @@
     8,
     16,
     18,
-    16
+    16,
+    2
   ],
   "aliases": [
     [
@@ -6174,6 +6175,10 @@
     [
       "@token/komas_coil",
       5335
+    ],
+    [
+      "@token/msh-leviathan",
+      5387
     ],
     [
       "@token/ninja_2_1_blue",
@@ -28328,6 +28333,12 @@
       "name": "Spirit Token",
       "subtypes": "Spirit",
       "colors": 9
+    },
+    {
+      "factory_identity": "@token/msh-leviathan",
+      "name": "Leviathan Token",
+      "subtypes": "Leviathan",
+      "colors": 2
     }
   ],
   "emblems": [
@@ -28688,7 +28699,8 @@
     "SosFractalToken": 5347,
     "SosPestToken": 5348,
     "SosElementalToken": 5349,
-    "SosSpiritToken": 5350
+    "SosSpiritToken": 5350,
+    "MshLeviathanToken": 5387
   },
   "helper_interface": [
     [
@@ -182208,6 +182220,35 @@
         0
       ],
       "generic": 4
+    },
+    {
+      "index": 5387,
+      "module": "card_5387",
+      "path": "synthetic/token_msh_leviathan.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-leviathan",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Leviathan",
+      "oracle_keywords": [
+        "Hexproof"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

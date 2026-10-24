@@ -3,10 +3,54 @@
   "catalogue_id": 3466,
   "oracle_id": "150f920c-c942-4feb-824f-79dd9b531687",
   "facts_sha256": "bc4c2238e50941759c8edf757ad8dde56f85e7bd9a4c01c1042f34837f07dd8b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6f7b358a4b6b20701f5ba821135cc4e5d7fddb180edb9180ae14d85061a4573e"
   },
-  "physical_metadata_sha256": "5b6d1df1dfa00d7a9ad77a4be95e6edcbeb8042204bb7c9e6158790d73da99b7"
+  "physical_metadata_sha256": "5b6d1df1dfa00d7a9ad77a4be95e6edcbeb8042204bb7c9e6158790d73da99b7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RepulsorBlast.java",
+  "java_sha256": "a2f36498eab5ef8e2e5e58cff30fd4f3bc4efb1be1098e0d0b5e4a85092f39b5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TeamworkCondition.java",
+      "sha256": "2db81465f0f14108a78438083147cba77c15031fb63358f6b2983fca7ca356fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TeamworkCost.java",
+      "sha256": "1069592dc1ab5aadfe5b298836831d95fd24fcd15db3fe4a623022bff606d4c5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetControllerEffect.java",
+      "sha256": "3840f10d46eb873900ab403a544a466553ac695a889f4276165cc1b4c2510edf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TeamworkAbility.java",
+      "sha256": "be5c08a933319ee23fbc15a1d6aa6f352607c87d4bc5c26ffefc53b5eed148a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "rules": "CR 601.2b, 601.2h, 702.194, 608.2b; teamwork is an optional additional cost; modes and targets are frozen before payment."
+  }
 }
