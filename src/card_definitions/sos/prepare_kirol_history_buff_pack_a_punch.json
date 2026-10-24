@@ -3,7 +3,7 @@
   "catalogue_id": 5370,
   "oracle_id": "df1c0d06-2109-4297-9271-8a003fc892bc",
   "facts_sha256": "a7ec270956ece201f4d0a74856dd039207fcc7c1ccf8848e8909ed11a96041b2",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "02f57b5605ad210ff8d263481ed7be0c3a3736689032a5649453538051f42014",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/k/KirolHistoryBuff.java",

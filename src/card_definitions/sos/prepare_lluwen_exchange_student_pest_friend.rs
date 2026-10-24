@@ -1,8 +1,6 @@
-// Preparation spell characteristics, gated until every printed obligation is authored.
+// Complete typed Oracle behavior; see paired source provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    extras: &CardExtras {
-        prepared_identity: Some("@prepare/lluwen_exchange_student_pest_friend"),
-        ..CardExtras::EMPTY
-    },
+    effect: Effect::Spell(TargetPlan::NONE, &[Instruction::CreateTokens { token: Card::SosPestToken, amount: 1, tapped: false }]),
+    extras: &CardExtras { prepared_identity: Some("@prepare/lluwen_exchange_student_pest_friend"), ..CardExtras::EMPTY },
     ..CardRules::EMPTY
 };

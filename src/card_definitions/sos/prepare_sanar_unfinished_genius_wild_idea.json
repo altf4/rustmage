@@ -3,7 +3,7 @@
   "catalogue_id": 5377,
   "oracle_id": "a8c44bd9-6470-47d7-934f-77c76a44a984",
   "facts_sha256": "0204f5fe1ab77f44ce6d6cc1894b3b3c647483ed8341ba2b8c2dbb0f87b6452d",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "e7314baa4a3f47f92c12de12891a29557915b71e39431f2223de57cc25d73f8a",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SanarUnfinishedGenius.java",

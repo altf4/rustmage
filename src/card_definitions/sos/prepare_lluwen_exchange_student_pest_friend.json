@@ -3,7 +3,7 @@
   "catalogue_id": 5373,
   "oracle_id": "cb125cd4-c7c2-415d-b802-bdcfc2454403",
   "facts_sha256": "d8da86800e5616e45f23bbafd85c6c2d0384ffa24226cae8ba866b92cc42a621",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "72e9b773d8edb0e6936febfae69898a8056a1bb7979c6a2c6b635ecdc04d9e60",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/l/LluwenExchangeStudent.java",
