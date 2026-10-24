@@ -1221,6 +1221,11 @@ impl<'g> FundingState<'g> {
             let object = &mut self.resources[step.resource].object;
             object.zone = destination;
             if !preserve_departure_counters {
+                // The slow path still needs the old face for replacement planning.
+                // Normalize only when this step commits the virtual departure.
+                if !object.is_token() && !object.is_spell_copy() {
+                    object.card = object.card.front_face();
+                }
                 object.counters = InitialCounters::default();
                 live_counters::set(&mut self.named_counters, reference, None);
             }
@@ -2909,3 +2914,7 @@ mod msh_conditional_lands_tests;
 #[cfg(test)]
 #[path = "engine_msh_placement_funding_tests.rs"]
 mod msh_placement_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_faces_funding_tests.rs"]
+mod msh_faces_funding_tests;

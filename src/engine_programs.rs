@@ -902,6 +902,7 @@ impl Game {
             kind: StackKind::TriggeredAbility {
                 ability: u16::try_from(index).expect("ability index"),
             },
+            source_transform: None,
             source_card: source.card,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
@@ -931,7 +932,8 @@ impl Game {
 
     /// A spell becomes cast only after every declaration and cost is complete.
     /// Completed insertion paths share this hook; abilities never count as casts.
-    pub(super) fn push_stack_item(&mut self, item: SpellView) {
+    pub(super) fn push_stack_item(&mut self, mut item: SpellView) {
+        self.capture_transform_stack_serial(&mut item);
         let cast = (item.kind == StackKind::Spell && item.cast.is_some() && !item.is_copy)
             .then_some((item.controller, item.source_card));
         if cast.is_some() {
@@ -1515,6 +1517,9 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
+                    if item.source_card.other_face().is_some() {
+                        self.state.objects[item.card as usize].card = item.source_card;
+                    }
                     self.record_resolved_spell_name(&item);
                     if item.cast.is_some_and(|c| {
                         c.offspring == Some(true)
@@ -2785,6 +2790,7 @@ impl Game {
                     self.state.damage_prevention_prohibited = true;
                 }
                 Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::ActivationX => (),
                 Instruction::DestroyCombatDamagedPlayersPermanents => {

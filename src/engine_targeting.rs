@@ -1311,6 +1311,7 @@ impl Game {
             }),
             id,
             kind: StackKind::Spell,
+            source_transform: None,
             source_card: self.state.objects[card as usize].card,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,
@@ -1372,6 +1373,8 @@ impl Game {
         if !has_choice {
             // Prepaid declarations settle their deferred costs in the caller.
             // A spell is still only a proposal here, so do not fire cast triggers.
+            let mut item = item;
+            self.capture_transform_stack_serial(&mut item);
             self.state.stack.push(item);
             return false;
         }
@@ -1412,6 +1415,9 @@ impl Game {
         counters: Counters,
         production: Option<Mana>,
     ) {
+        if item.cast.is_some_and(|cast| cast.face == CastFace::Back) {
+            self.state.objects[item.card as usize].card = item.source_card;
+        }
         if production.is_some() {
             self.suspend_mana_announcement();
             self.capture_announced_mana_quality(&item);

@@ -164,7 +164,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     400
                 }
             }
-            Action::AnnounceAdventure { .. } | Action::AnnounceOmen { .. } => 30,
+            Action::AnnounceAdventure { .. }
+            | Action::AnnounceOmen { .. }
+            | Action::AnnounceBack { .. } => 30,
             Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
             Action::ChooseEntryTimestamp { .. } => 120,
             Action::ChooseReplacement { .. } => 120,

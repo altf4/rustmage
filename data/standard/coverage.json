@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e2e48be103194ee6bbc62e677e8035863ada5511518b2f868e640dde36f49a7d",
+  "catalogue_version": "861416e69e3ef8097007e412b07aacac524762b2cda12f8c5b79b934f1df641a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2454,
-  "implemented_total": 2460,
+  "implemented_standard_cards": 2455,
+  "implemented_total": 2461,
   "token_definitions": 116,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 149,
-      "gated": 124
+      "complete": 150,
+      "gated": 123
     },
     "one": {
       "total": 1,
@@ -22861,8 +22861,8 @@
     {
       "name": "Monica Rambeau // Photon, Living Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/monica_rambeau_photon_living_light.rs",
       "set": "msh"
     },

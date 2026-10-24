@@ -3,10 +3,76 @@
   "catalogue_id": 2832,
   "oracle_id": "8dd929cb-0fe1-4cb3-bc8d-96ca37f194f3",
   "facts_sha256": "83ebf6f346f7a62b11963c3ede985c67f59ae9af9d2051ea6f8a7f23b714a97b",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "a8141ffd49e293cbf18e9e53d6624b11edb062b03e290f0cd8ef8d4c9051ec06"
-  },
-  "physical_metadata_sha256": "74c9d7b6f0f7802c4a330d02c22715f9518efd963a3573479700b7f6514dc947"
+  "complete": true,
+  "physical_metadata_sha256": "3daa010550ef529f3ec29df0a915a1130340e57008aa00431cb532f30f704518",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MonicaRambeau.java",
+  "java_sha256": "2dea62b67ec40d2d54fb0505112b6b61c0a8b239cf80845c50202c9817e7e053",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/ModalDoubleFacedCard.java",
+      "sha256": "e5f3411b714da1f2b68d5003bc2bb7ef39a1fafbd3fef94fb69fdef21a8d0edb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/ModalDoubleFacedCardHalf.java",
+      "sha256": "37d2bee15a7f11769410f0a6caee99e41a9eeaad0daa965aa3d12600bf11f59f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/DoubleFacedCard.java",
+      "sha256": "84cf08e3f8ac922aadb4856757341b6cbdf9db66e8b2401b43b9be9ee0316db0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/DoubleFacedCardHalf.java",
+      "sha256": "238869dbb53fc008cf0cf72225f9c983040317b4e7979acfd01db5114772f5e2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java",
+      "sha256": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    }
+  ],
+  "oracle_face": {
+    "oracle_id": "8dd929cb-0fe1-4cb3-bc8d-96ca37f194f3",
+    "index": 0,
+    "sha256": "733f0acf7d92a4847bb34587e14c6b86fe88e7f83f3aae83f469ca5d043b4c03"
+  }
 }

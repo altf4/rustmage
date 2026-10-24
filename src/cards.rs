@@ -1022,6 +1022,7 @@ pub(crate) enum Instruction {
         required_all: bool,
     },
     AdditionalCombat,
+    TransformSource,
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.
     ActivationX,
@@ -3047,6 +3048,9 @@ impl Card {
     }
     /// Stable catalogue lookup/serialization identity, distinct from a token copy's printed name.
     pub fn identity(self) -> &'static str {
+        if let Some(identity) = generated::physical_identity(self) {
+            return identity;
+        }
         if let Some(identity) =
             authored::rules(self).and_then(|rules| rules.extras.prepared_identity)
         {
@@ -3112,6 +3116,18 @@ impl Card {
         generated::vehicle_stats(self).map(|s| (s.power, s.toughness))
     }
     /// Immutable inset spell definition; never a second physical deck card.
+    pub fn back_face(self) -> Option<Card> {
+        generated::back_face(self)
+    }
+    pub fn face_parent(self) -> Option<Card> {
+        generated::face_parent(self)
+    }
+    pub fn front_face(self) -> Card {
+        self.face_parent().unwrap_or(self)
+    }
+    pub(crate) fn other_face(self) -> Option<Card> {
+        self.back_face().or_else(|| self.face_parent())
+    }
     pub fn adventure_spell(self) -> Option<Card> {
         generated::adventure_spell(self)
     }

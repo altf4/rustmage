@@ -888,6 +888,13 @@ impl FundingState<'_> {
                 .find(|r| r.id == m.before.id)
                 .expect("entry resource retained");
             let o = &mut row.object;
+            o.card = if m.destination == Zone::Battlefield && m.before.zone == Zone::Stack {
+                m.before.card
+            } else if !o.is_token() && !o.is_spell_copy() {
+                o.card.front_face()
+            } else {
+                o.card
+            };
             o.zone = m.destination;
             o.generation = o
                 .generation
@@ -1366,3 +1373,7 @@ mod keyword_counter_tests;
 #[cfg(test)]
 #[path = "engine_finality_funding_tests.rs"]
 mod finality_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_combined_funding_tests.rs"]
+mod msh_combined_tests;
