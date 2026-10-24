@@ -146,3 +146,10 @@ explicit prior-139 candidate when comparing with the second MSH cohort. A
 separate prior-138 export can compare the older inherited subset while projecting
 only the schema-139 counter-history addition. Power-up fields are removed only
 for explicitly requested versions below 138; ordinary validation is unprojected.
+
+The modal-face schema141 cohort records prior140 with every existing Power-up,
+counter-placement history and keyword field intact. New optional face/transform
+fields are omitted on inherited roots, so the previous-schema export changes only
+that version and must exactly match all2453 inherited full traces. Whole Monica
+interactions are covered by `engine_msh_faces_tests.rs`; the sole new physical
+trace and immutable comparison hashes are in `msh-faces-core-evidence.json`.

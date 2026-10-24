@@ -13,8 +13,9 @@ def validate_simple_mana_components(metadata, records):
     """Check fixed printed components, skipping hybrid and other special symbols."""
     checked = 0
     for card in metadata['cards']:
-        if card['category'] != 'physical' or not records[card['index']]['complete']:
+        if card['category'] not in ('physical', 'back_face') or not records[card['index']]['complete']:
             continue
+        card = dict(card, **card.get('front_face', {}))
         cost = card['mana_cost']
         if not re.fullmatch(r'(?:\{(?:[0-9]+|[WUBRGCX])\})*', cost):
             continue
@@ -54,6 +55,18 @@ def load(root=ROOT):
         records[index]=dict(record,source=source,relative=source.relative_to(root).as_posix())
         fingerprint.extend(canonical(record));fingerprint.extend(source.read_bytes())
     if records.keys()!=by_id.keys():raise ValueError('missing card definitions: '+str(sorted(by_id.keys()-records.keys())))
+    for card in metadata['cards']:
+        if 'front_face' in card:
+            oracle = facts[card['oracle_id']]
+            if oracle['layout'] != 'modal_dfc': raise ValueError('face metadata requires modal DFC')
+            face = oracle['card_faces'][0]
+            if any(card['front_face'][key] != face[key] for key in ['name','mana_cost','type_line']): raise ValueError('front face facts changed')
+            back = by_id[card['back_face']]
+            if back['face_parent'] != card['index'] or any(back[key] != oracle['card_faces'][1][key] for key in ['name','mana_cost','type_line']): raise ValueError('back face facts changed')
+        face_pin = records[card['index']].get('oracle_face')
+        if face_pin:
+            face = facts[face_pin['oracle_id']]['card_faces'][face_pin['index']]
+            if hashlib.sha256(canonical(face)).hexdigest() != face_pin['sha256']: raise ValueError('Oracle face pin changed')
     validate_simple_mana_components(metadata, records)
     fingerprint.extend((directory/'mod.rs').read_bytes())
     return metadata,records,hashlib.sha256(fingerprint).hexdigest()
@@ -86,10 +99,19 @@ def render(metadata,records,version):
     lines=['// Metadata/module linkage only; card behavior lives in src/card_definitions/.',f'pub const CATALOGUE_VERSION: &str = "{version}";','#[rustfmt::skip]',f'pub(super) static COLORS: [u8; {n}] = {metadata["colors"]!r};','#[rustfmt::skip]',f'pub(super) static DEFINITIONS: [Definition; {n}] = [']
     for c in cards:
         r='authored::'+c['module']+'::RULES';complete=records[c['index']]['complete']
+        c = dict(c, **c.get('front_face', {}))
         info='CardInfo { '+', '.join([f'name: {quote(c["name"])}',f'oracle_id: '+('Some('+quote(c['oracle_id'])+')'if c['oracle_id'] else 'None'),f'mana_cost: {quote(c["mana_cost"])}',f'type_line: {quote(c["type_line"])}','oracle_keywords: &['+', '.join(map(quote,c['oracle_keywords']))+']',f'standard_legal: {boolean(c["standard_legal"])}',f'legendary: {boolean(c["legendary"])}',f'implemented: {boolean(complete)}',f'keywords: {r}.keywords',f'deck_limit: {r}.deck_limit'])+' }'
         expr=[f'info: {info}',f'effect: {r}.checked_effect()'if complete else f'effect: {r}.effect',*[f'{f}: {r}.{f}'for f in ['triggers','activated','enters','entry']],f'kind: {c["kind"]}',f'basic: {boolean(c["basic"])}','mana_color: '+('None'if c['mana_color'] is None else f'Some({c["mana_color"]})'),f'colored: {c["colored"]!r}',f'generic: {c["generic"]}']
         lines.append('    Definition { '+', '.join(expr)+' },')
-    lines+= ['];','#[rustfmt::skip]',f'pub(super) static NAME_INDEX: [(&str,u16); {len(metadata["aliases"])}] = [']
+    lines+= ['];']
+    for key in ['back_face','face_parent']:
+        lines.append(f'pub(super) fn {key}(card: Card) -> Option<Card> {{ match card.index() {{')
+        lines.extend(f"{c['index']} => Some(Card({c[key]}))," for c in cards if key in c)
+        lines.append('_ => None, } }')
+    lines.append("pub(super) fn physical_identity(card: Card) -> Option<&'static str> { match card.index() {")
+    lines.extend(f"{c['index']} => Some({quote(c['name'])})," for c in cards if 'front_face' in c)
+    lines.append('_ => None, } }')
+    lines+= ['#[rustfmt::skip]' ,f'pub(super) static NAME_INDEX: [(&str,u16); {len(metadata["aliases"])}] = [']
     lines.extend(f'    ({quote(name)}, {index}),'for name,index in metadata['aliases']);lines.append('];')
     for k in ['token_base','emblem_base']:lines.append(f'#[allow(dead_code)] pub(super) const {k.upper()}: usize = {metadata[k]};')
     for key,ty in [('tokens','TokenInfo'),('emblems','EmblemInfo')]:

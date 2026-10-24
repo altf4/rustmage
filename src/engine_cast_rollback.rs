@@ -69,6 +69,7 @@ impl Game {
             | Action::AnnounceWarp { card }
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
+            | Action::AnnounceBack { card }
             | Action::AnnouncePlotted { card }
             | Action::AnnounceFlashback { card }
             | Action::AnnounceGrantedFlashback { card, .. }

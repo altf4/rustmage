@@ -171,3 +171,29 @@ battlefield-to-graveyard/exile movement, including a later Aura SBA. It binds on
 once, preserves source LKI and rejects subsequent departures/reentries. It can
 also return the unchanged live source. This tracking does not rebind unrelated
 death observers or infer a zone-change generation.
+
+## Modal double-faced cards
+
+A physical row keeps its canonical catalogue ID and joined serialization identity.
+Explicit `front_face` metadata supplies its actual front name, type and mana cost;
+`back_face` points to one nonphysical definition with `face_parent`. The linker
+checks both against the pinned Oracle faces and validates numeric mana components.
+Both faces have ordinary paired Rust/provenance files. A back definition cannot
+be submitted as a separate deck card. `Card::name()` is the represented rules name;
+`Card::identity()` remains the stable lookup/serialization identity.
+
+Use `CastFace::Back` through the existing permission/free-cast machinery, or
+`Action::AnnounceBack` for an ordinary paid back-face spell. The selected definition
+owns stack costs, targeting and traits. A resolving permanent enters with that
+face up; direct puts and later reentries use the front. Real departures freeze
+old-face facts before restoring the canonical front; speculative funding follows
+the same boundary.
+
+`Instruction::TransformSource` changes the exact live permanent's face without a
+zone event. It retains counters, control, tap/damage, combat and attachments, and
+refreshes only intrinsic providers. The packet captures a transform serial when
+put on the stack; a stale packet cannot toggle the source again or bind a new
+incarnation. Public `ObjectView.face` and `SpellView.source_transform` are absent
+for ordinary objects/packets. Copied double-faced tokens use the immutable pair
+and retain their `CopyRecipe` exceptions across transformation. This does not
+admit arbitrary in-place copy effects or the remaining gated DFC consumers.

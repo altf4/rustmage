@@ -887,6 +887,13 @@ impl FundingState<'_> {
                 .find(|r| r.id == m.before.id)
                 .expect("entry resource retained");
             let o = &mut row.object;
+            o.card = if m.destination == Zone::Battlefield && m.before.zone == Zone::Stack {
+                m.before.card
+            } else if !o.is_token() && !o.is_spell_copy() {
+                o.card.front_face()
+            } else {
+                o.card
+            };
             o.zone = m.destination;
             o.generation = o
                 .generation

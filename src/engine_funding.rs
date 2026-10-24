@@ -1209,6 +1209,9 @@ impl<'g> FundingState<'g> {
             let reference = self.reference(id);
             let object = &mut self.resources[step.resource].object;
             object.zone = destination;
+            if !object.is_token() && !object.is_spell_copy() {
+                object.card = object.card.front_face();
+            }
             object.counters = InitialCounters::default();
             live_counters::set(&mut self.named_counters, reference, None);
         }
