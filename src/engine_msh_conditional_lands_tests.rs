@@ -151,3 +151,91 @@ fn msh_conditional_lands_nonbasic_with_basic_type_and_ability_loss() {
         assert_eq!(g.object_view(basic).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn msh_conditional_lands_borrowed_guard_uses_forge_entry_and_funding_source() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let donor = put(&mut g, p.other(), "Dark Fortress", Zone::Battlefield);
+        g.state.entered_this_turn = None;
+        let forge = put(&mut g, p, "Territory Forge", Zone::Hand);
+        cast(&mut g, forge, None);
+        for _ in 0..24 {
+            if g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+                && g.state.announcing.is_none()
+            {
+                break;
+            }
+            let target = Action::ChooseTarget {
+                target: Target::Card(donor),
+            };
+            if g.legal_actions().contains(&target) {
+                checked(&mut g, target);
+            } else if g.legal_actions().contains(&Action::FinishTargets) {
+                checked(&mut g, Action::FinishTargets);
+            } else {
+                checked(&mut g, Action::Pass);
+            }
+        }
+        assert_eq!(g.object_view(donor).zone, Zone::Exile);
+        assert!(g.entered_this_turn(g.object_ref(forge)));
+        assert!(!g.entered_this_turn(g.object_ref(donor)));
+        g.state.players[p.index()].mana = [0; 6];
+        let descriptor = g
+            .borrowed_ability_views()
+            .into_iter()
+            .find(|a| a.source.card == forge && a.ability == 1)
+            .unwrap();
+        let action = Action::AnnounceBorrowedMana {
+            card: forge,
+            exiled: descriptor.exiled,
+            ability: 1,
+            counter_payment: Counters::default(),
+            production: [0, 0, 1, 0, 0, 0],
+        };
+        let funding = FundingGoal {
+            actor: p,
+            required: [0, 0, 1, 0, 0, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        assert!(g.can_fund(funding.clone()));
+        assert_eq!(
+            g.observe(p).borrowed_abilities,
+            g.observe(p.other()).borrowed_abilities
+        );
+        checked(&mut g, action.clone());
+        if g.state.announcing.is_some() {
+            let payment = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, payment);
+        }
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 0, 0]);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        g.state.priority = p;
+        g.state.players[p.index()].mana = [0; 6];
+        assert!(!g.entered_this_turn(g.object_ref(forge)));
+        assert!(!g.can_fund(funding.clone()));
+        reject(&mut g, action.clone());
+        let basic = put(&mut g, p, "Forest", Zone::Battlefield);
+        g.state.objects[basic as usize].tapped = true;
+        assert!(g.can_fund(funding));
+        checked(&mut g, action);
+        if g.state.announcing.is_some() {
+            let payment = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, payment);
+        }
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 0, 0]);
+    }
+}

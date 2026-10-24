@@ -14,14 +14,16 @@
     "Actual, borrowed and funding activation paths pass the actual source ID; virtual departures/control/kinds and immediate entries use the borrowed world.",
     "Funding memo key distinguishes entered histories only for immutable printed guarded mana definitions; ordinary basic lands remain interchangeable. No wire schema change."
   ],
-  "scenarios": 6,
+  "scenarios": 8,
   "test_scope": [
     "Both seats; all five lands, both colored choices, exact one colorless, no off-color or double tap, untapped entry.",
     "Real land play, turn expiry, tapped basic witness, opponent versus owned witness, basic departure, blink/new incarnation and control change.",
     "Actual colored spells paid in each color; unavailable colored funding rejects announcement.",
     "Basic land subtypes on nonbasic Breeding Pool do not qualify; Imprisoned in the Moon suppresses printed abilities and leaving restores them.",
     "Private funding overlays reject departed/stolen basic witness; old/fresh same-definition sources have distinct states; exact immediate virtual entry and parent snapshot preserved.",
-    "Existing checked helper covers wrong actor, raw/index owned branches, parent disposal, restore and stale revision for actual decisions."
+    "Existing checked helper covers wrong actor, raw/index owned branches, parent disposal, restore and stale revision for actual decisions.",
+    "Paid Territory Forge borrows an older Dark Fortress: exact fresh bearer entry, expiry, tapped basic witness and speculative funding agree.",
+    "Ordinary basic-land funding keys remain equivalent when only entry history differs; summoning-sickness fixture flags are aligned to isolate that property."
   ],
   "validation": {
     "native_before_final_key_refinement": {
@@ -35,7 +37,12 @@
     "inherited_full_traces_exact": 2421,
     "new_full_traces": 5,
     "source_definitions": 5388,
-    "verified_java_blobs": 1051
+    "verified_java_blobs": 1051,
+    "additional_cases": {
+      "borrowed_guard": "Passed both seats in the eight-case focused run.",
+      "ordinary_basic_equivalence": "First fixture retained different preexisting summoning-sickness key flags after actual play; aligned those flags to isolate entry history. Final combined verification pending.",
+      "log": "<cache>/rustmage-msh-conditional-lands-borrowed-final.log"
+    }
   },
   "initial_fixture_correction": "register_battlefield_sources records actual entry. Explicit older-land fixtures clear only entry history; no guard behavior defect was found in the first focused run.",
   "implementation_interval": {

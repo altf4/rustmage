@@ -115,3 +115,32 @@ fn msh_conditional_land_funding_observes_immediate_virtual_entry_incarnation() {
         ));
     }
 }
+
+#[test]
+fn msh_conditional_land_funding_retains_ordinary_basic_land_equivalence() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let old = named(&mut g, p, "Forest", Zone::Battlefield);
+        g.state.entered_this_turn = None;
+        let fresh = named(&mut g, p, "Forest", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: fresh });
+        // Isolate entry history from the preexisting summoning-sickness key.
+        g.state.objects[fresh as usize].summoning_sick = false;
+        let goal = goal(p, 4, 1);
+        let mut a = FundingState::from_game(&g, &goal);
+        a.resources
+            .iter_mut()
+            .find(|r| r.id == old)
+            .unwrap()
+            .object
+            .tapped = true;
+        let mut b = FundingState::from_game(&g, &goal);
+        b.resources
+            .iter_mut()
+            .find(|r| r.id == fresh)
+            .unwrap()
+            .object
+            .tapped = true;
+        assert!(a.key(&goal) == b.key(&goal));
+    }
+}
