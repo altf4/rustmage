@@ -611,6 +611,52 @@ fn msh_modok_lord_life_cost_connive_land_nonland_and_timing() {
 }
 
 #[test]
+fn msh_modok_connives_for_current_or_last_controller_without_new_object_counters() {
+    for p in [Player::P0, Player::P1] {
+        for departure in 0..3 {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "M.O.D.O.K.");
+            let original = g.object_ref(source);
+            let discard = named(&mut g, p.other(), "Hill Giant", Zone::Hand);
+            let old_hand = g.hand_count(p);
+            let new_hand = g.hand_count(p.other());
+            let life = g.life(p);
+            activate(&mut g, source);
+            assert_eq!(g.life(p), life - 3);
+            g.change_controller(original, p.other());
+            if departure > 0 {
+                g.move_object(source, Zone::Graveyard);
+                assert_ne!(g.object_ref(source), original);
+            }
+            if departure == 2 {
+                g.move_object(source, Zone::Battlefield);
+                assert_ne!(g.object_ref(source), original);
+                assert_eq!(g.object_view(source).controller, p);
+            }
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::EffectDiscard { .. })
+            });
+            assert_eq!(g.actor(), Some(p.other()));
+            assert_eq!(g.hand_count(p), old_hand);
+            assert_eq!(g.hand_count(p.other()), new_hand + 1);
+            assert!(
+                !g.observe(p)
+                    .objects
+                    .iter()
+                    .any(|o| o.reference.card == discard)
+            );
+            checked(&mut g, Action::Discard { card: discard });
+            settle(&mut g);
+            assert_eq!(g.hand_count(p.other()), new_hand);
+            assert_eq!(
+                g.counter_count(source, CounterKind::PlusOne),
+                u64::from(departure == 0)
+            );
+        }
+    }
+}
+
+#[test]
 fn msh_masters_villain_lord_and_paid_revealed_hand_tutor() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);

@@ -47,7 +47,7 @@ impl Game {
                     {
                         self.state.objects[item.card as usize].controller
                     } else {
-                        item.controller
+                        item.source_facts.controller
                     },
                 }]
             }
