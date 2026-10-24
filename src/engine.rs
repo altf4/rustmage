@@ -756,6 +756,8 @@ pub enum CastFace {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// Captured permission to spend mana of any type on this particular spell.
+    pub spend_any_mana: bool,
     /// Exact spell replacement: only a stack-to-graveyard move becomes exile.
     pub exile_on_graveyard: bool,
     /// Player who cast this exact spell; stack control changes do not alter history.
@@ -3318,7 +3320,10 @@ impl Game {
                             if obj.card.has_bargain() {
                                 return self.initial_bargain_fundable(actor, card, cost);
                             }
+                            // Object-specific mana permissions cannot share the
+                            // printed-definition-only prefunding cache.
                             if self.foreign_stash(actor, card)
+                                || self.exile_cast_modifiers(actor, card).0
                                 || obj.card.has_convoke()
                                 || obj.card.additional_cost().is_some()
                             {

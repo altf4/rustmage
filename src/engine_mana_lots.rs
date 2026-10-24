@@ -168,6 +168,7 @@ pub(super) struct Source {
     pub kinds: u16,
     pub subtypes: GrantedSubtypes,
     pub foreign_stash: bool,
+    pub spend_any_mana: bool,
 }
 impl Source {
     fn has_subtype(self, subtype: &str) -> bool {
@@ -179,6 +180,7 @@ impl Source {
             kinds: card.kind_mask(),
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
+            spend_any_mana: false,
         }
     }
 }
@@ -189,6 +191,7 @@ impl From<DamageFacts> for Source {
             kinds: facts.kinds,
             subtypes: facts.granted_subtypes,
             foreign_stash: false,
+            spend_any_mana: false,
         }
     }
 }
@@ -611,6 +614,7 @@ impl Game {
         if item.kind == StackKind::Spell {
             let mut source = Source::printed(item.source_card);
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
+            source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
             Purpose::Spell(source)
         } else {
             let facts = if self
@@ -634,6 +638,10 @@ impl Game {
         definition: Card,
     ) -> Purpose {
         let mut source = Source::printed(definition);
+        source.spend_any_mana = self.exile_cast_modifiers(actor, card).0
+            || self.state.announcing.as_ref().is_some_and(|a| {
+                a.item.card == card && a.item.cast.is_some_and(|c| c.spend_any_mana)
+            });
         source.foreign_stash = self.foreign_stash(actor, card)
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item.card == card && a.item.cast.is_some_and(|c| c.stash_origin)

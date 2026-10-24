@@ -39,10 +39,11 @@ pub(super) fn spends_any_type<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     purpose: mana_lots::Purpose,
 ) -> bool {
-    (matches!(purpose, mana_lots::Purpose::Spell(source) if source.kinds & 1 != 0)
-        && has_fragment(world, player, |f| {
-            matches!(f, StaticAbilityFragment::SpendAnyManaForCreatures)
-        }))
+    matches!(purpose, mana_lots::Purpose::Spell(source) if source.spend_any_mana)
+        || (matches!(purpose, mana_lots::Purpose::Spell(source) if source.kinds & 1 != 0)
+            && has_fragment(world, player, |f| {
+                matches!(f, StaticAbilityFragment::SpendAnyManaForCreatures)
+            }))
         || (matches!(purpose, mana_lots::Purpose::Spell(source) if source.foreign_stash)
             && world.game().state.active == player
             && has_fragment(world, player, |f| {

@@ -894,6 +894,7 @@ impl Game {
     /// CR115.9b: inspect the current expected zone/incarnation; never use target LKI.
     fn cast_filter_matches_value(
         &self,
+        spell_owner: Option<Player>,
         filter: CastFilter,
         card: Card,
         mana_value: u64,
@@ -902,6 +903,9 @@ impl Game {
         targets: &[BoundTarget],
     ) -> bool {
         match filter {
+            CastFilter::NotOwnedByYou => {
+                spell_owner.is_some_and(|owner| owner != source.controller)
+            }
             CastFilter::SourceChosenColor => {
                 matches!(source.entry_choice, Some(EntryChoiceValue::Color(color)) if card.colors() & (1 << color.index()) != 0)
             }
@@ -912,59 +916,91 @@ impl Game {
             CastFilter::Colors { filter, mask } => {
                 card.colors() & mask != 0
                     && self.cast_filter_matches_value(
-                        *filter, card, mana_value, caster, source, targets,
+                        spell_owner,
+                        *filter,
+                        card,
+                        mana_value,
+                        caster,
+                        source,
+                        targets,
                     )
             }
             CastFilter::AnyOf(filters) => filters.iter().any(|f| {
-                self.cast_filter_matches_value(*f, card, mana_value, caster, source, targets)
+                self.cast_filter_matches_value(
+                    spell_owner,
+                    *f,
+                    card,
+                    mana_value,
+                    caster,
+                    source,
+                    targets,
+                )
             }),
             CastFilter::ManaValueMaximum { filter, maximum } => {
                 mana_value <= maximum
                     && self.cast_filter_matches_value(
-                        *filter, card, mana_value, caster, source, targets,
+                        spell_owner,
+                        *filter,
+                        card,
+                        mana_value,
+                        caster,
+                        source,
+                        targets,
                     )
             }
             CastFilter::ManaValueMinimum { filter, minimum } => {
                 mana_value >= minimum
                     && self.cast_filter_matches_value(
-                        *filter, card, mana_value, caster, source, targets,
+                        spell_owner,
+                        *filter,
+                        card,
+                        mana_value,
+                        caster,
+                        source,
+                        targets,
                     )
             }
             CastFilter::Targeted { filter, target } => {
-                self.cast_filter_matches_value(*filter, card, mana_value, caster, source, targets)
-                    && targets.iter().any(|bound| {
-                        if let Target::Player(player) = bound.target {
-                            return target == CastTarget::OpponentOrCreature
-                                && player != source.controller;
+                self.cast_filter_matches_value(
+                    spell_owner,
+                    *filter,
+                    card,
+                    mana_value,
+                    caster,
+                    source,
+                    targets,
+                ) && targets.iter().any(|bound| {
+                    if let Target::Player(player) = bound.target {
+                        return target == CastTarget::OpponentOrCreature
+                            && player != source.controller;
+                    }
+                    let (Target::Card(id), Some(reference)) = (bound.target, bound.object) else {
+                        return false;
+                    };
+                    if id != reference.card
+                        || !self.on_battlefield(id)
+                        || self.object_ref(id) != reference
+                    {
+                        return false;
+                    }
+                    let object = &self.state.objects[id as usize];
+                    match target {
+                        CastTarget::Source => reference == source.reference,
+                        CastTarget::OpponentOrCreature => {
+                            self.is_creature(id) && object.controller != source.controller
                         }
-                        let (Target::Card(id), Some(reference)) = (bound.target, bound.object)
-                        else {
-                            return false;
-                        };
-                        if id != reference.card
-                            || !self.on_battlefield(id)
-                            || self.object_ref(id) != reference
-                        {
-                            return false;
-                        }
-                        let object = &self.state.objects[id as usize];
-                        match target {
-                            CastTarget::Source => reference == source.reference,
-                            CastTarget::OpponentOrCreature => {
-                                self.is_creature(id) && object.controller != source.controller
-                            }
-                            CastTarget::Creature(relation) => {
-                                self.is_creature(id)
-                                    && match relation {
-                                        CastRelation::You => object.controller == source.controller,
-                                        CastRelation::Opponent => {
-                                            object.controller != source.controller
-                                        }
-                                        CastRelation::Any => true,
+                        CastTarget::Creature(relation) => {
+                            self.is_creature(id)
+                                && match relation {
+                                    CastRelation::You => object.controller == source.controller,
+                                    CastRelation::Opponent => {
+                                        object.controller != source.controller
                                     }
-                            }
+                                    CastRelation::Any => true,
+                                }
                         }
-                    })
+                    }
+                })
             }
             _ => filter.matches(card),
         }
@@ -972,6 +1008,8 @@ impl Game {
 
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
         let first_trigger = self.state.pending_triggers.len();
+        let spell_owner =
+            stack.map(|i| self.state.objects[self.state.stack[i].card as usize].owner);
         let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
@@ -1016,6 +1054,7 @@ impl Game {
                         && (!ability.condition.requires_opponents_turn()
                             || self.state.active != source.controller)
                         && self.cast_filter_matches_value(
+                            spell_owner,
                             filter,
                             card,
                             stack
@@ -3018,6 +3057,9 @@ impl Game {
                         skip_to,
                     };
                     return;
+                }
+                Instruction::ExileTargetsForModifiedCast => {
+                    self.exile_targets_for_modified_cast(&item)
                 }
                 Instruction::ExileTargetsPlay { next_turn } => {
                     self.exile_targets_play(&item, next_turn, false, false)

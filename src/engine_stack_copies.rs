@@ -288,6 +288,7 @@ impl Game {
             cast.payment = [0; 6];
             // The permission-created replacement is external to copiable values.
             cast.exile_on_graveyard = false;
+            cast.spend_any_mana = false;
         }
         copy.copy_event = None;
         copy.mana_copy_sources = None;

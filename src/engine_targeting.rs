@@ -1164,6 +1164,7 @@ impl Game {
         );
         self.state.passes = 0;
         let stash_origin = self.foreign_stash(actor, card);
+        let modifiers = self.exile_cast_modifiers(actor, card);
         let origin = self.state.objects[card as usize].zone;
         let before = self.object_view(card);
         let event = self.transition_object_under_control(
@@ -1183,6 +1184,8 @@ impl Game {
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
         item.mana_copy_sources = outcome.copies;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
+        item.cast.as_mut().unwrap().spend_any_mana = modifiers.0;
+        item.cast.as_mut().unwrap().exile_on_graveyard = modifiers.1;
         item
     }
     pub(super) fn cast_preview(
@@ -1214,7 +1217,8 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
-                exile_on_graveyard: false,
+                spend_any_mana: self.exile_cast_modifiers(actor, card).0,
+                exile_on_graveyard: self.exile_cast_modifiers(actor, card).1,
                 caster: actor,
                 gift: None,
                 physical_card: None,

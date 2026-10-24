@@ -1301,6 +1301,7 @@ pub(crate) enum Instruction {
     },
     Counter,
     Exile,
+    ExileTargetsForModifiedCast,
     ExileTargetsPlay {
         next_turn: bool,
     },
@@ -2088,6 +2089,7 @@ pub(crate) enum CastTarget {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
+    NotOwnedByYou,
     HasX,
     SourceChosenColor,
     PermanentAdventure,
@@ -2135,9 +2137,10 @@ impl CastFilter {
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
             }
             // Contextual cast observers use Game::cast_filter_matches instead.
-            Self::SourceChosenColor | Self::Targeted { .. } | Self::InstantSorceryOrdinal(_) => {
-                false
-            }
+            Self::NotOwnedByYou
+            | Self::SourceChosenColor
+            | Self::Targeted { .. }
+            | Self::InstantSorceryOrdinal(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::Colors { filter, mask } => {
                 card.colors() & mask != 0 && filter.matches_mana_value(card, mana_value)
