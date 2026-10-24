@@ -275,6 +275,8 @@ fn restricted_ward_is_allowed_for_helper_but_not_tower_activated_only_mana() {
                 tower(&mut g, p)
             };
             let target = named(&mut g, p.other(), "Colorstorm Stallion", Zone::Battlefield);
+            // A Hero ward source still has a triggered, not activated, cost.
+            types(&mut g, target, &["Hero"]);
             g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
             checked(
                 &mut g,
@@ -574,5 +576,118 @@ fn restricted_guided_nested_mana_keeps_outer_hero_purpose_and_private_payment() 
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         assert_eq!(g.state.players[p.other().index()].life, 19);
         assert!(g.state.mana_announcement_stack.is_none());
+    }
+}
+
+#[test]
+fn restricted_virtual_departure_freezes_last_live_source_types_and_keys() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let t = tower(&mut g, p);
+        let dragon = named(&mut g, p, "Shivan Dragon", Zone::Battlefield);
+        types(&mut g, dragon, &["Hero"]);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(&mut g, mana(t, 1, [0, 0, 0, 1, 0, 0]));
+        checked(&mut g, announce(dragon, 0));
+        let goal = g.funding_goal(g.state.announcing.as_ref().unwrap());
+        let reference = g.object_ref(dragon);
+        let before = g.snapshot();
+        let mut keys = Vec::new();
+        for hero_at_departure in [false, true] {
+            let mut world = FundingState::from_game(&g, &goal);
+            world.prepare_entry_projection();
+            // A virtual type change after announcement must be captured at
+            // departure, rather than recycling announcement-time facts.
+            let roles = &mut world.entry_projection.as_mut().unwrap().roles;
+            roles
+                .creature_types
+                .retain(|row| row.recipient != reference);
+            roles
+                .creature_types
+                .push(subtypes::CreatureTypesEffectView {
+                    recipient: reference,
+                    source: reference,
+                    types: if hero_at_departure {
+                        &["Hero"]
+                    } else {
+                        &["Citizen"]
+                    },
+                    additional: false,
+                    timestamp: 100,
+                });
+            assert_eq!(
+                quality().eligible(world.payment_purpose(&goal)),
+                hero_at_departure
+            );
+            let mut visits = 0;
+            world.cost_departures(&[reference], Zone::Graveyard, &mut |departed| {
+                visits += 1;
+                assert_eq!(departed.object(dragon).zone, Zone::Graveyard);
+                assert_ne!(departed.reference(dragon), reference);
+                assert!(
+                    !departed
+                        .subtypes(dragon)
+                        .has(departed.object(dragon).card, "Hero")
+                );
+                assert_eq!(
+                    quality().eligible(departed.payment_purpose(&goal)),
+                    hero_at_departure
+                );
+                assert_eq!(
+                    departed.reachable(&goal, &mut HashSet::new()),
+                    hero_at_departure
+                );
+                keys.push(departed.key(&goal));
+                false
+            });
+            assert_eq!(visits, 1);
+        }
+        // Same post-departure object/pool facts can have different saved types.
+        assert!(keys[0] != keys[1]);
+        assert_eq!(g.snapshot(), before);
+    }
+}
+
+#[test]
+fn restricted_funding_after_real_source_departure_and_blink_uses_announcement_lki() {
+    for p in [Player::P0, Player::P1] {
+        for blink in [false, true] {
+            let mut g = setup(p);
+            let t = tower(&mut g, p);
+            let dragon = named(&mut g, p, "Shivan Dragon", Zone::Battlefield);
+            types(&mut g, dragon, &["Hero"]);
+            g.state.players[p.index()].mana = [0; 6];
+            checked(&mut g, mana(t, 1, [0, 0, 0, 1, 0, 0]));
+            checked(&mut g, announce(dragon, 0));
+            let goal = g.funding_goal(g.state.announcing.as_ref().unwrap());
+            let old = g.object_ref(dragon);
+            g.move_object(dragon, Zone::Graveyard);
+            if blink {
+                g.move_object(dragon, Zone::Battlefield);
+            }
+            assert_ne!(g.object_ref(dragon), old);
+            assert!(!g.has_subtype(dragon, "Hero"));
+            let snapshot = g.snapshot();
+            let mut branch = {
+                let parent = g.clone();
+                parent.clone()
+            };
+            assert!(g.can_fund(goal.clone()));
+            assert!(branch.can_fund(goal.clone()));
+            let world = FundingState::from_game(&g, &goal);
+            assert!(quality().eligible(world.payment_purpose(&goal)));
+            assert!(world.reachable(&goal, &mut HashSet::new()));
+            assert_eq!(g.snapshot(), snapshot);
+            pay(&mut g);
+            pay(&mut branch);
+            settle(&mut g);
+            settle(&mut branch);
+            assert_eq!(g.snapshot(), branch.snapshot());
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert!(g.mana_lots(p).is_empty());
+            if blink {
+                assert_eq!(g.object_view(dragon).power, 5);
+            }
+        }
     }
 }

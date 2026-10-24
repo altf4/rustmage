@@ -177,7 +177,7 @@ pub(super) enum Purpose {
     Spell(Source),
     Activation(Source),
 }
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub(super) struct Source {
     pub card: Card,
     pub kinds: u16,
@@ -875,8 +875,38 @@ pub(super) fn visit_allocations(
 
 impl Game {
     pub(super) fn funding_purpose(&self, goal: &FundingGoal) -> Purpose {
-        if let Some((source, _, _, _, _)) = &goal.source {
-            return Purpose::Activation(Source::in_world(self, source.card));
+        if let Some((source, ability, _, definition, slot)) = &goal.source {
+            if let Some(item) = self
+                .state
+                .announcing
+                .as_ref()
+                .map(|a| &a.item)
+                .into_iter()
+                .chain(
+                    self.state
+                        .mana_announcement_stack
+                        .iter()
+                        .flat_map(|frames| frames.iter().rev())
+                        .map(|frame| &frame.announcement.item),
+                )
+                .find(|item| {
+                    item.object == *source
+                        && item.controller == goal.actor
+                        && item.kind == StackKind::ActivatedAbility { ability: *ability }
+                        && item.source_card == *definition
+                        && item.borrowed_slot == *slot
+                })
+            {
+                return self.purpose_for_item(item);
+            }
+            return if self.object_ref(source.card) == *source
+                && self.state.objects[source.card as usize].zone
+                    == definition.activation(*ability).source_zone()
+            {
+                Purpose::Activation(Source::in_world(self, source.card))
+            } else {
+                Purpose::Other
+            };
         }
         self.state
             .announcing

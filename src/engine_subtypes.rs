@@ -49,7 +49,7 @@ const LAND_ONLY: u32 = SUPPRESS_PRINTED << 1;
 const ALL_CREATURE_TYPES: u32 = LAND_ONLY << 1;
 const FLAGS_MASK: u32 = SUPPRESS_PRINTED | LAND_ONLY | ALL_CREATURE_TYPES;
 const _: () = assert!(JOB_TYPES.len() + 3 <= u32::BITS as usize);
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
     added: u32,
     chosen: Option<crate::cards::CreatureType>,

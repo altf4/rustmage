@@ -868,6 +868,11 @@ impl FundingState<'_> {
         let mut next = self.clone();
         next.prepare_entry_projection();
         for m in &moves {
+            if !m.skipped {
+                next.remember_payment_departure(m.before.id);
+            }
+        }
+        for m in &moves {
             if m.skipped {
                 continue;
             }
