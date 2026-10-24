@@ -1913,6 +1913,8 @@ pub struct Observation {
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_artifact_copies: Vec<SpellView>,
     pub delayed_returns: Vec<DelayedReturnView>,
+    /// Exact public exile objects awaiting immediate return after departure events.
+    pub immediate_blink_return: Option<Vec<ReturnLinkView>>,
     pub mobilize_choice: Option<MobilizeChoiceView>,
     pub saddle_choice: Option<SaddleChoiceView>,
     /// Complete scalar domain, visible only to its choosing actor.
@@ -5909,6 +5911,11 @@ impl Game {
             } else {
                 None
             },
+            immediate_blink_return: self
+                .state
+                .resolving
+                .as_ref()
+                .and_then(|r| r.immediate_blink_return.as_deref().cloned()),
             delayed_returns: self
                 .state
                 .delayed_returns
@@ -6571,6 +6578,13 @@ impl Game {
                         .explore
                         .as_ref()
                         .map_or(0, |_| std::mem::size_of::<ExploreChoiceView>())
+                        + resolution
+                            .immediate_blink_return
+                            .as_ref()
+                            .map_or(0, |rows| {
+                                std::mem::size_of::<Vec<ReturnLinkView>>()
+                                    + rows.len() * std::mem::size_of::<ReturnLinkView>()
+                            })
                         + resolution
                             .milled_selection
                             .as_ref()

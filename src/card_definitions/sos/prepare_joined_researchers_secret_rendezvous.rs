@@ -4,10 +4,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         one(TargetRule::Player {
             opponent_only: true,
         }),
-        &[
-            Instruction::Draw(PlayerSet::Controller, 3),
-            Instruction::Draw(PlayerSet::Targeted, 3),
-        ],
+        &[Instruction::Draw(PlayerSet::Each, 3)],
     ),
     extras: &CardExtras {
         prepared_identity: Some("@prepare/joined_researchers_secret_rendezvous"),

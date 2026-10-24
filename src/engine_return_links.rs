@@ -95,24 +95,54 @@ impl Game {
             })
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Exile);
-        let moves = events
-            .into_iter()
+        let returning = events
+            .iter()
             .filter_map(|event| {
-                if !event.moved
-                    || event.destination != Zone::Exile
-                    || event.before.is_token()
-                    || self.object_ref(event.after.card) != event.after
-                    || self.state.objects[event.after.card as usize].zone != Zone::Exile
+                (event.moved && event.destination == Zone::Exile && !event.before.is_token())
+                    .then_some(ReturnLinkView {
+                        object: event.after,
+                        zone: Zone::Exile,
+                        controller: event.before.owner,
+                        counter,
+                    })
+            })
+            .collect();
+        // Departure events can themselves stage a choice-bearing linked return.
+        // Keep our exact exiled incarnations owned until that entry batch finishes.
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .immediate_blink_return = Some(Box::new(returning));
+        self.finish_zone_events(&events, &[]);
+    }
+    pub(super) fn resume_immediate_blink(&mut self) -> bool {
+        let Some(rows) = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .immediate_blink_return
+            .take()
+        else {
+            return false;
+        };
+        let moves = rows
+            .iter()
+            .filter_map(|row| {
+                if self.object_ref(row.object.card) != row.object
+                    || self.state.objects[row.object.card as usize].zone != row.zone
                 {
                     return None;
                 }
-                let mut movement = self.entry_move(event.after.card, Zone::Battlefield, false);
-                movement.controller = event.before.owner;
-                movement.effect_counter = counter;
+                let mut movement = self.entry_move(row.object.card, Zone::Battlefield, false);
+                movement.controller = row.controller;
+                movement.effect_counter = row.counter;
                 Some(movement)
             })
             .collect();
         self.stage_entries(moves, None);
+        true
     }
     pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
         for bound in &item.targets {

@@ -13,6 +13,8 @@ pub(super) struct TargetCardFacts {
 pub(super) struct Resolution {
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
+    #[allow(clippy::box_collection)]
+    pub immediate_blink_return: Option<Box<Vec<ReturnLinkView>>>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
@@ -1488,6 +1490,7 @@ impl Game {
             });
         self.state.resolving = Some(Resolution {
             target_card_facts,
+            immediate_blink_return: None,
             explore: None,
             evidence: None,
             connive: None,
@@ -1609,6 +1612,9 @@ impl Game {
                     .is_some()
             {
                 return;
+            }
+            if self.resume_immediate_blink() {
+                continue;
             }
             if self.advance_optional_searches() {
                 return;
@@ -2123,7 +2129,7 @@ impl Game {
                 }
                 Instruction::BlinkImmediately { counter } => self.blink_immediately(&item, counter),
                 Instruction::IfCastFromNonHand { skip } => {
-                    if !item.cast.is_some_and(|cast| cast.origin != Zone::Hand) {
+                    if item.is_copy || !item.cast.is_some_and(|cast| cast.origin != Zone::Hand) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }

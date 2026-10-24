@@ -759,6 +759,7 @@ impl Game {
             selected: std::array::from_fn(|index| {
                 choice.selected[index]
                     .iter()
+                    .filter(|_| choice.kind != EffectChoiceKind::Discard || index == viewer.index())
                     .copied()
                     .filter(|object| {
                         !public_only
