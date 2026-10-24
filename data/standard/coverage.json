@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b437af20ebe668b5096bff401fa71daddff8267f2d5b180647b373168184835b",
+  "catalogue_version": "27a4d9630d08579f08559ffb1df0af44f574df628d90120d4977f6c08749714e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2292,
-  "implemented_total": 2298,
+  "implemented_standard_cards": 2303,
+  "implemented_total": 2309,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 175,
-      "gated": 89
+      "complete": 186,
+      "gated": 78
     },
     "spm": {
       "total": 134,
@@ -10214,8 +10214,8 @@
     {
       "name": "Echocasting Symposium",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/echocasting_symposium.rs",
       "set": "sos"
     },
@@ -10734,8 +10734,8 @@
     {
       "name": "Emeritus of Ideation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/emeritus_of_ideation_ancestral_recall.rs",
       "set": "sos"
     },
@@ -12878,8 +12878,8 @@
     {
       "name": "Foolish Fate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/foolish_fate.rs",
       "set": "sos"
     },
@@ -13086,8 +13086,8 @@
     {
       "name": "Fractal Anomaly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/fractal_anomaly.rs",
       "set": "sos"
     },
@@ -16086,8 +16086,8 @@
     {
       "name": "Heated Argument",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/heated_argument.rs",
       "set": "sos"
     },
@@ -18254,8 +18254,8 @@
     {
       "name": "Jadzi, Steward of Fate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/jadzi_steward_of_fate_oracle_s_gift.rs",
       "set": "sos"
     },
@@ -24862,8 +24862,8 @@
     {
       "name": "Owlin Historian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/owlin_historian.rs",
       "set": "sos"
     },
@@ -25198,8 +25198,8 @@
     {
       "name": "Pensive Professor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/pensive_professor.rs",
       "set": "sos"
     },
@@ -26070,8 +26070,8 @@
     {
       "name": "Primary Research",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/primary_research.rs",
       "set": "sos"
     },
@@ -28158,8 +28158,8 @@
     {
       "name": "Restoration Seminar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/restoration_seminar.rs",
       "set": "sos"
     },
@@ -31654,8 +31654,8 @@
     {
       "name": "Slumbering Trudge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/slumbering_trudge.rs",
       "set": "sos"
     },
