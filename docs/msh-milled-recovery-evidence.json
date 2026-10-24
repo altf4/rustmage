@@ -32,6 +32,11 @@
     {
       "name": "Scout the City",
       "complete": true
+    },
+    {
+      "name": "Deadly Brew",
+      "complete": true,
+      "path": "Instruction::RecoverAnotherPermanent through engine_linked_choices::recover_another_permanent; exact graveyard references share Pending::RecoverMilled validation"
     }
   ],
   "source_pin_check": {
