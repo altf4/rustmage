@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "base": "319802ddc91d45b4bfc3d07090b49326ee897960",
+  "tracking_issue": 478,
+  "authored_complete_candidates": [
+    "Punishing Punch",
+    "Arnim Zola, Bio-Fanatic"
+  ],
+  "new_physical_admissions": 2,
+  "shared_rules_changes": [
+    "Private ScaledPowerDamage(source group, recipient group, factor) uses current legal creature characteristics, then the existing noncombat damage and replacement pipeline. Existing Fight/PowerDamage use factor one.",
+    "Private ActivationGuard::GraveyardCardsAtLeast(kind, minimum), evaluated by one borrowed actual/speculative owner/kind/non-token graveyard helper. It is a starting restriction, with no resolution guard."
+  ],
+  "wire_schema": 142,
+  "wire_schema_change": false,
+  "new_recipes": [],
+  "reused_recipe": {
+    "id": 5312,
+    "factory": "@token/cf0227c0984ee9114e6c311f",
+    "recipe": "2/1 black Villain creature token with menace; Arnim creates it tapped."
+  },
+  "obligation_evidence": {
+    "Punishing Punch": {
+      "cost": "Actual full 2G payment for zero/one own graveyard creature and actual G payment for two; opponent graveyards and noncreatures excluded. Colored mana request remains mandatory and private. Generic reduction uses an existing typed CountFilter expression.",
+      "targets": "Separate own-creature/opponent-creature groups reject wrong relations, lands and players atomically; departure, blink, control change or enemy hexproof after binding prevents all damage when either target is illegal.",
+      "damage": "Paid Giant Growth response changes power before damage; current power is doubled before damage replacements. Negative/zero power deals no damage. Source lifelink/deathtouch apply, source takes no return damage, Black Panther prevention is respected, and paid Twinflame Tyrant doubles the resulting damage."
+    },
+    "Arnim Zola, Bio-Fanatic": {
+      "body": "Actual 2B cast; legendary black 2/3 artifact creature, Scientist Villain, with no other printed keywords.",
+      "restriction_and_cost": "Requires two actual creature cards owned by the activating player in their graveyard; opponents, noncreatures and tokens excluded. Summoning sickness, tapped source, wrong payment and underpayment reject atomically; actual generic-three payment taps the source.",
+      "starting_only": "Removing both graveyard creatures after activation does not stop token creation. Actual nested Rubble Rouser mana payment exiles one of the two creatures while paying; the false guard does not prevent completing the original activation.",
+      "captured_controller_and_incarnation": "Queued ability creates the token for its captured controller after source control change, departure or blink; a different owner does not redirect the token. Current controller graveyard and token replacement effects apply when activating a stolen Arnim.",
+      "token": "Existing exact recipe is tapped, black, 2/1, Villain and menace; recipient Doubling Season creates two tapped tokens. Actual combat permits one tentative blocker but rejects finishing until a second blocker is declared."
+    }
+  },
+  "xmage_discrepancy": "Pinned ActivateIfConditionActivatedAbility.getEffects rechecks the condition during resolution. Official MSH release notes explicitly state that removing graveyard creature cards after activation cannot stop resolution; follow Oracle and CR602 starting restrictions instead.",
+  "rules_authority": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+  "tests": [
+    "msh_punch_zola_punch_exact_paid_full_discount_threshold_and_private_mana_request",
+    "msh_punch_zola_punch_target_routes_reject_wrong_relations_players_and_land_atomically",
+    "msh_punch_zola_punch_partial_illegality_blink_departure_control_and_hexproof_no_damage",
+    "msh_punch_zola_punch_uses_current_power_after_paid_response_and_not_spell_power",
+    "msh_punch_zola_punch_damage_source_lifelink_deathtouch_and_negative_power",
+    "msh_punch_zola_punch_respects_prevention",
+    "msh_punch_zola_zola_paid_body_and_graveyard_start_restriction_excludes_opponents_tokens_noncreatures",
+    "msh_punch_zola_zola_activation_restriction_not_rechecked_after_graveyard_or_source_changes",
+    "msh_punch_zola_zola_current_controller_restriction_and_token_replacement_owner",
+    "msh_punch_zola_zola_token_menace_requires_two_blockers",
+    "msh_punch_zola_punch_factor_precedes_damage_replacement_with_creature_controller",
+    "msh_punch_zola_zola_threshold_can_disappear_during_actual_nested_mana_payment",
+    "msh_punch_zola_funding_guard_uses_actual_owner_non_tokens_and_virtual_departures"
+  ],
+  "owned_and_privacy": "Existing big_helpers::checked verifies wrong-actor atomicity, owned raw/index equality after dropping a parent, snapshot restore/stale revision, and repeated-action equality at every legal decision in both seats. Illegal actions preserve snapshot and revision. Payment requests and suspended nested payment details are hidden from the nonactor; hands remain hidden.",
+  "fixtures": "Existing admitted supporting cards and production helpers are used. Starting readiness/growth/graveyard/control and combat phase fixtures use existing scenario state setup; consequential casts, targeting, payments, damage replacements and combat choices use actual legal actions. No new test hooks, parser rules or bots.",
+  "validation": {
+    "focused": {
+      "passed": 13,
+      "both_seats": true,
+      "log": "<cache>/rustmage-msh-punch-zola-focused-final-2.log",
+      "guard_report": "<cache>/rustmage-build-reports/ebaba38ecb2a4958b2ce502544e5d968.json",
+      "test_execution_seconds_rounded": 0.01,
+      "guard": {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_punch_zola",
+          "--",
+          "--nocapture"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 378.1940040200134,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2297475072,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "strict_trace_and_clippy": {
+      "terminal": true,
+      "phases": [
+        {
+          "name": "strict-traces",
+          "exit": 0,
+          "seconds": 0.8466708880150691,
+          "log": "<cache>/rustmage-msh-punch-zola-strict-traces.log"
+        },
+        {
+          "name": "final-existing-fight",
+          "exit": 0,
+          "seconds": 0.01645157200982794,
+          "log": "<cache>/rustmage-msh-punch-zola-final-existing-fight.log"
+        },
+        {
+          "name": "final-clippy",
+          "exit": 0,
+          "seconds": 34.88027929398231,
+          "log": "<cache>/rustmage-msh-punch-zola-final-clippy.log"
+        }
+      ],
+      "head": "319802ddc91d45b4bfc3d07090b49326ee897960",
+      "files_verified": 11680,
+      "changed": [],
+      "success": true
+    },
+    "final_checks_guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-msh-punch-zola-final-checks.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 139.86598215898266,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1817460736,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "existing_fight_scenarios_passed": 9,
+    "trace_audit": {
+      "schema": 1,
+      "base": "319802ddc91d45b4bfc3d07090b49326ee897960",
+      "terminal": true,
+      "success": true,
+      "comparison": "Every inherited full Trace object exactly equal; no schema projection or omitted fields.",
+      "inherited_rows": 2469,
+      "unchanged_rows": 2469,
+      "new_rows": 2471,
+      "changed": [],
+      "removed": [],
+      "added": [
+        "Arnim Zola, Bio-Fanatic",
+        "Punishing Punch"
+      ],
+      "base_sha256": "875c9bc250cc499e7fa8e256494d862137eafcad09366cfd259942762f0e25da",
+      "candidate_sha256": "d187a60046cbf04f828bb7763e562029dab885294926144fcf619f6714fb5de8",
+      "metadata_unchanged_sha256": "c1cd27d34f452e2b0f10335d69cff731ea0250b356a8c4f82705038a78fa77cd",
+      "wire_schema": 142
+    },
+    "source_link_format": "check_sources.py verifies all 5,396 definitions and 1,135 unique Java blobs. Final linker --check, changed Rust format checks and git diff --check pass. Full frozen Oracle/direct Java/helper pins are in paired records.",
+    "full_release": "Required exact final published integration head python3 scripts/validate.py --release and two independent nonauthor reviews remain integration gates; no separate redundant release job in this author checkout.",
+    "early_runs": "Initial test-only fixture/API compile errors were repaired after terminal completion. One queued unit was explicitly stopped before consuming source to fix a new test borrow typo, then polled to terminal; its report is not counted as a test pass. All logs are retained."
+  },
+  "resource_safety": "Cargo ran only through resource_guard.py with one global build, one job/test thread and a 6 GiB shared memory cap. Every completed measured unit reports zero OOM and OOM kills.",
+  "cleanup": {
+    "terminal": true,
+    "active_target_consumers": [],
+    "removed_files": 1019,
+    "removed_allocated_path_bytes": 124416000,
+    "allocation_caveat": "Sum of per-path allocated blocks; not an independently measured physical reclaim amount because hard links may share storage.",
+    "preserved": {
+      "<cache>/rustmage-msh-punch-zola-target/debug/deps/rustmage-b764cd26223fba2c": "9f04956eb8a68a459af6d49fd426accf1a5794e0c919fd7456f555101b9f3a58",
+      "<cache>/rustmage-msh-punch-zola-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    }
+  },
+  "throughput": {
+    "interval_start_utc": "2026-10-24T23:16:37+00:00",
+    "interval_end_utc": "2026-10-24T23:46:13.053318+00:00",
+    "elapsed_seconds": 1776.053318,
+    "authored_candidate_cards_per_hour": 4.053932349344031,
+    "scope": "Two whole physical candidate cards, two narrow private mechanics, source/rules evidence and focused/trace verification. Includes serialized build waits and fixture repair. These are candidate counts, not newly merged cards.",
+    "simulation_benchmark": "Not run. Native scenario timings are not a set simulation benchmark."
+  },
+  "remaining_scope": "No further scaled-damage or graveyard-guard consumers expanded before these two first whole representatives are reviewed and integrated. All other gated MSH obligations and full 281-card MSH-only game/performance acceptance remain open."
+}

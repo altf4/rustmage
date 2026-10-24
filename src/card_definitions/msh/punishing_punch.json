@@ -3,10 +3,54 @@
   "catalogue_id": 3281,
   "oracle_id": "454c4e8b-e417-4381-a931-6a11356ef64e",
   "facts_sha256": "783d3502841ba9d4ea7f62c74bca72d65a9d37eb476bf4ec76d9d0ab862dbf22",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1c3921a558ad7865f3f474d8e11d032297e957e03dad3122dc15a016c54192d6"
   },
-  "physical_metadata_sha256": "8f4b8a56b6c9c203729c3f54cbdeded148afcaa10d04eae435fb79d1eb50f170"
+  "physical_metadata_sha256": "8f4b8a56b6c9c203729c3f54cbdeded148afcaa10d04eae435fb79d1eb50f170",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PunishingPunch.java",
+  "java_sha256": "639cbf56d72bb8e39a88cb44b6aa1e5638cf1e8e3afd3d4dd495e756a86c9c3c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CardsInControllerGraveyardCondition.java",
+      "sha256": "e166edec7baa8ef4ba55eb826264e0dbaee21891cd2928ffcd8add99d06c5bce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "rules": "CR601.2f, 608.2b, 608.2h, 120.4. Both targets must remain legal; use the current power and damage-source characteristics of the legal creature. This is one-way noncombat damage, with twice the nonnegative power. The graveyard reduction counts the caster's creature cards while locking the total cost."
+  }
 }

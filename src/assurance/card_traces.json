@@ -911,6 +911,14 @@
     "journal": "5a37305467443acc",
     "observations": "674cc63f430b1b26"
   },
+  "Arnim Zola, Bio-Fanatic": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "4324aa4c9fd9325c",
+    "observations": "789d38842c8d73fe"
+  },
   "Arnyn, Deathbloom Botanist": {
     "root": "main",
     "status": "completed",
@@ -12710,6 +12718,14 @@
     "zone": "Battlefield",
     "journal": "7def026c1597d7ae",
     "observations": "cebf9b693f0a298a"
+  },
+  "Punishing Punch": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "1a39953da3451863",
+    "observations": "1ea4cd7c513e664a"
   },
   "Punk Frogs": {
     "root": "main",

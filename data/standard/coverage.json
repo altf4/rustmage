@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9f67c067bf7a3caea5ee398101b9a6580880910ea447cc87ae541bc988841d5a",
+  "catalogue_version": "77bb3bbc59243f1669c529afdd1fb1d11decc898d9896b1678d0c1447cf3f96f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2463,
-  "implemented_total": 2469,
+  "implemented_standard_cards": 2465,
+  "implemented_total": 2471,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 158,
-      "gated": 115
+      "complete": 160,
+      "gated": 113
     },
     "one": {
       "total": 1,
@@ -2053,8 +2053,8 @@
     {
       "name": "Arnim Zola, Bio-Fanatic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/arnim_zola_bio_fanatic.rs",
       "set": "msh"
     },
@@ -26453,8 +26453,8 @@
     {
       "name": "Punishing Punch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/punishing_punch.rs",
       "set": "msh"
     },

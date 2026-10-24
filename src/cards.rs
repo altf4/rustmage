@@ -1236,6 +1236,11 @@ pub(crate) enum Instruction {
         source: u16,
         recipient: u16,
     },
+    ScaledPowerDamage {
+        source: u16,
+        recipient: u16,
+        factor: u16,
+    },
     AddMana(ManaProduction),
     AddColorlessScaled(AmountValue),
     AddManaScaled {
@@ -2787,6 +2792,7 @@ pub(crate) enum ActivationGuard {
     ControlLandsAtLeast(u16),
     SourceEnteredOrControlsBasicLand,
     HandSizeAtLeast(u16),
+    GraveyardCardsAtLeast { kind: u16, minimum: u16 },
     LifeAboveStarting(u16),
 }
 impl ActivationGuard {
@@ -2798,6 +2804,7 @@ impl ActivationGuard {
             | Self::ControlLandsAtLeast(_)
             | Self::SourceEnteredOrControlsBasicLand
             | Self::HandSizeAtLeast(_)
+            | Self::GraveyardCardsAtLeast { .. }
             | Self::LifeAboveStarting(_) => &[],
             Self::ControlSubtypeAny(types) => types,
         }
