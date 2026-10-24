@@ -5395,7 +5395,8 @@
     16,
     2,
     0,
-    16
+    16,
+    0
   ],
   "aliases": [
     [
@@ -6189,6 +6190,10 @@
     [
       "@token/msh-tiger-god",
       5389
+    ],
+    [
+      "@token/msh-wall",
+      5390
     ],
     [
       "@token/ninja_2_1_blue",
@@ -28361,6 +28366,12 @@
       "name": "The Tiger God",
       "subtypes": "Cat God",
       "colors": 16
+    },
+    {
+      "factory_identity": "@token/msh-wall",
+      "name": "Wall Token",
+      "subtypes": "Wall",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -182315,6 +182326,35 @@
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5390,
+      "module": "card_5390",
+      "path": "synthetic/token_msh_wall.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-wall",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Wall",
+      "oracle_keywords": [
+        "Defender"
+      ],
+      "standard_legal": false,
+      "legendary": false,
       "kind": 1,
       "basic": false,
       "mana_color": null,

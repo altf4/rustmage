@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "e27439333768637c7a9c3de7ae594481891cd064bc0a4b714f84a93870352fdc",
+  "catalogue_version": "3d6da8fada9b7d6e7245587ee7e00c56b17b730b2fe0744505a636db8d75ab71",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2428,
-  "implemented_total": 2434,
-  "token_definitions": 115,
+  "implemented_standard_cards": 2431,
+  "implemented_total": 2437,
+  "token_definitions": 116,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 123,
-      "gated": 150
+      "complete": 126,
+      "gated": 147
     },
     "one": {
       "total": 1,
@@ -24973,8 +24973,8 @@
     {
       "name": "Panther Pounce",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/panther_pounce.rs",
       "set": "msh"
     },
@@ -34253,8 +34253,8 @@
     {
       "name": "Super Suit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_suit.rs",
       "set": "msh"
     },
@@ -34277,8 +34277,8 @@
     {
       "name": "Super-Skrull",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_skrull.rs",
       "set": "msh"
     },

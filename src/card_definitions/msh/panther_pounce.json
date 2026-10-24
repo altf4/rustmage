@@ -3,10 +3,76 @@
   "catalogue_id": 3096,
   "oracle_id": "ead0820e-fc6b-4ab2-9110-048d6d53985d",
   "facts_sha256": "b6cacb7c28289b4b3f499ee92395e6ba359e194ea37f91cf0ae5348f54c5693a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "60406e0948896688335eb441d5c3e37a2d07ce4ed1304fbe0215fc6a3f448191"
   },
-  "physical_metadata_sha256": "12252be47b0309de25d6570c27f5edeedbb431b847fbc99322d12afe129eab3c"
+  "physical_metadata_sha256": "12252be47b0309de25d6570c27f5edeedbb431b847fbc99322d12afe129eab3c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PantherPounce.java",
+  "java_sha256": "d9d4832c560971f220e0d4a58643ea9a368e7ccd9a4fdf24133149144aa64e25",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateTargetEffect.java",
+      "sha256": "69a71bd8901258bb5075cdf659470e99ea28daafd6f39b96501f91212f1d12cf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+      "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/NthTargetPointer.java",
+      "sha256": "d3f06450efa592e446dbcab29c913f7946e36b31d5d0a7f6b1d3e5ac824ebc73"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ClueArtifactToken.java",
+      "sha256": "711939b0212d808576d149e8c95b0007df2e003c29095ddb26c4cdce94a3ddd8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+      "sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+    }
+  ],
+  "remaining_obligations": []
 }

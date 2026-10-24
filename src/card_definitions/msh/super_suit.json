@@ -3,10 +3,46 @@
   "catalogue_id": 4256,
   "oracle_id": "606092eb-8fe3-4ef7-aaf1-2d3b2687d27a",
   "facts_sha256": "eff05677ebd4b9a1a03cfffa3719fe1254d855445ff06aec899f3ba9bea1cb4e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "60b005b53f811ef540e9941dbe747f4b5e2eae0cf3773d0c78dde3207ef5813c"
   },
-  "physical_metadata_sha256": "3944f282291ffc023cca8c206941d64e36719deb187aade5448023f38856b713"
+  "physical_metadata_sha256": "3944f282291ffc023cca8c206941d64e36719deb187aade5448023f38856b713",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SuperSuit.java",
+  "java_sha256": "1123646e118d663f2a41936b6de61daf97e4f37b47d4f1dfc5694a0b88964bc7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+      "sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    }
+  ],
+  "remaining_obligations": []
 }
