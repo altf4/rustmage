@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "400319996aec39e1a7ace188d19805d854e4ec244d4367e3ea9c5dbc92acf7ab"
   },
-  "physical_metadata_sha256": "9da6df14c7249b4a376cd06bf3c680a639e37b18d9bc08d3409589990cbf06ac"
+  "physical_metadata_sha256": "9da6df14c7249b4a376cd06bf3c680a639e37b18d9bc08d3409589990cbf06ac",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExpressiveFiredancer.java",
+  "java_sha256": "f8bc46bdb55281924fe7777d89ef90ae27852ca91ed04cab2160c66d9644bee6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/OpusAbility.java",
+      "sha256": "2fdef128f01b7c2f3ad1ffc3f9817cf19d505266fe4ee3006ccf7138ceb2a1c4"
+    }
+  ]
 }

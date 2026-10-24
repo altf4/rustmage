@@ -6,11 +6,12 @@ use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::{LiveStatValue, LiveStaticEffect, RoleKind, StaticAbilityFragment};
 
-pub(super) struct CharacteristicQuery<'a> {
+pub(super) struct CharacteristicQuery<'a, W: CharacteristicWorld + ?Sized = Game> {
+    world: &'a W,
     game: &'a Game,
     evaluation: Option<AbilityEvaluation>,
 }
-impl std::ops::Deref for CharacteristicQuery<'_> {
+impl<W: CharacteristicWorld + ?Sized> std::ops::Deref for CharacteristicQuery<'_, W> {
     type Target = Game;
     fn deref(&self) -> &Game {
         self.game
@@ -22,13 +23,102 @@ impl Game {
         CharacteristicWorld::name(self, id)
     }
     pub(super) fn characteristic_query(&self) -> CharacteristicQuery<'_> {
-        CharacteristicQuery {
-            game: self,
-            evaluation: ability_evaluation::evaluate_if_needed(self),
-        }
+        CharacteristicQuery::in_world(self)
     }
 }
-impl CharacteristicQuery<'_> {
+impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
+    pub(super) fn in_world(world: &'a W) -> Self {
+        Self {
+            world,
+            game: world.game(),
+            evaluation: ability_evaluation::evaluate_if_needed(world),
+        }
+    }
+
+    pub(super) fn object_ref(&self, id: CardId) -> ObjectRef {
+        self.reference(id)
+    }
+    fn on_battlefield(&self, id: CardId) -> bool {
+        self.object(id).zone == Zone::Battlefield
+    }
+    fn current_kinds(&self, id: CardId) -> u16 {
+        self.kinds(id)
+    }
+    fn is_creature(&self, id: CardId) -> bool {
+        self.kinds(id) & 1 != 0
+    }
+    fn granted_subtypes(&self, id: CardId) -> GrantedSubtypes {
+        self.subtypes(id)
+    }
+    fn is_enchanted(&self, id: CardId) -> bool {
+        self.on_battlefield(id)
+            && self.attachment_sources().iter().any(|&aura| {
+                let object = self.object(aura);
+                object.zone == Zone::Battlefield
+                    && object.card.aura().is_some()
+                    && object.attached_to == Some(self.reference(id))
+            })
+    }
+    fn is_modified(&self, id: CardId) -> bool {
+        Game::object_modified_with(
+            self.reference(id),
+            self.object(id),
+            self.counter_amounts(id).has_any(),
+            self.attachment_sources().iter().map(|&id| self.object(id)),
+        )
+    }
+    fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
+        self.stat_value_without_hand(value, source, owner, None)
+    }
+    fn stat_value_without_hand(
+        &self,
+        value: StatValue,
+        source: ObjectRef,
+        owner: Player,
+        departing: Option<CardId>,
+    ) -> i128 {
+        if value == StatValue::CreaturesDiedThisTurn {
+            return i128::from(self.creatures_died());
+        }
+        if value == StatValue::CardLeftGraveyardThisTurn {
+            return i128::from(self.card_left_graveyard(owner));
+        }
+        if value == StatValue::LifeGainOccurredThisTurn {
+            return i128::from(self.gained_life(owner));
+        }
+        self.game.stat_value_with(
+            value,
+            source,
+            owner,
+            &|| {
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .map(|(id, _)| (id as CardId, self.object(id as CardId)))
+                    .filter(move |(id, object)| departing != Some(*id) || object.zone != Zone::Hand)
+            },
+            &|id| self.subtypes(id),
+            &|id, _| self.kinds(id),
+            &|id| self.name(id),
+            &|id| self.colors(id),
+            &|id| self.counter_amounts(id).has_any(),
+            self.life(owner),
+            self.state.attack_declared && self.attacking(source.card),
+        )
+    }
+    fn stat_expression_without_hand(
+        &self,
+        expr: StatExpr,
+        source: ObjectRef,
+        owner: Player,
+        departing: Option<CardId>,
+    ) -> i128 {
+        self.stat_value_without_hand(expr.value, source, owner, departing)
+            .checked_mul(expr.multiplier)
+            .and_then(|value| value.checked_add(expr.offset))
+            .capacity("stat expression exhausted")
+    }
     pub(super) fn creature_matches(
         &self,
         filter: CreatureFilter,
@@ -36,7 +126,7 @@ impl CharacteristicQuery<'_> {
         source: ObjectRef,
         id: CardId,
     ) -> bool {
-        let object = &self.state.objects[id as usize];
+        let object = self.object(id);
         object.zone == Zone::Battlefield
             && self.is_creature(id)
             && filter.matches_characteristics(
@@ -54,7 +144,7 @@ impl CharacteristicQuery<'_> {
         self.stats_without_hand(id, None)
     }
     pub(super) fn base_stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
-        let object = &self.state.objects[id as usize];
+        let object = self.object(id);
         let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
             if !self.is_creature(id) {
                 return Stats::default();
@@ -69,20 +159,20 @@ impl CharacteristicQuery<'_> {
                 _ => Stats::default(),
             }
         };
-        if self
+        if let Some((power, toughness)) = self
             .copy_recipe(self.object_ref(id))
-            .is_some_and(|r| r.exceptions.golem)
+            .and_then(|r| r.exceptions.base)
         {
             stats = Stats {
-                power: 3,
-                toughness: 3,
+                power: i128::from(power),
+                toughness: i128::from(toughness),
             };
         }
         // Layer 7a applies in every zone, before setters and additive modifiers.
         if let Some(base) = object.card.dynamic_stats()
             && !self
                 .copy_recipe(self.object_ref(id))
-                .is_some_and(|r| r.exceptions.golem)
+                .is_some_and(|r| r.exceptions.base.is_some())
             && self.continuous_fragment_available(id, |fragment| {
                 matches!(fragment, StaticAbilityFragment::DynamicStats(..))
             })
@@ -123,7 +213,7 @@ impl CharacteristicQuery<'_> {
         id: CardId,
         departing: Option<CardId>,
     ) -> (Stats, Stats) {
-        let object = &self.state.objects[id as usize];
+        let object = self.object(id);
         let base = self.base_stats_without_hand(id, departing);
         // A Vehicle has no effective creature stats while it is not a creature.
         // Counters remain on it, ready for a later successful crew.
@@ -155,12 +245,22 @@ impl CharacteristicQuery<'_> {
             stats.power = stats
                 .power
                 .checked_add(object.growth.power)
-                .and_then(|v| v.checked_add(object.counter_delta()))
+                .and_then(|v| {
+                    v.checked_add(
+                        i128::from(self.counter_count(id, CounterKind::PlusOne))
+                            - i128::from(self.counter_count(id, CounterKind::MinusOne)),
+                    )
+                })
                 .capacity(power_resource);
             stats.toughness = stats
                 .toughness
                 .checked_add(object.growth.toughness)
-                .and_then(|v| v.checked_add(object.counter_delta()))
+                .and_then(|v| {
+                    v.checked_add(
+                        i128::from(self.counter_count(id, CounterKind::PlusOne))
+                            - i128::from(self.counter_count(id, CounterKind::MinusOne)),
+                    )
+                })
                 .capacity(toughness_resource);
         }
         if !battlefield_creature {
@@ -171,8 +271,11 @@ impl CharacteristicQuery<'_> {
         stats += self.attachment_bonus(id).0;
         // Only the small live-source index is traversed. Central zone transitions
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
-        for &source in &self.state.static_sources {
-            let object = &self.state.objects[source as usize];
+        for &source in self.static_sources() {
+            let object = self.object(source);
+            if object.zone != Zone::Battlefield {
+                continue;
+            }
             if object.card.static_ability_groups().iter().any(|group| {
                 group
                     .fragments
@@ -258,8 +361,7 @@ impl CharacteristicQuery<'_> {
                     continue;
                 }
                 if (!modifier.own_turn || self.state.active == object.controller)
-                    && (!modifier.requires_life_gain
-                        || self.state.players[object.controller.index()].life_gained_this_turn > 0)
+                    && (!modifier.requires_life_gain || self.gained_life(object.controller))
                     && self.creature_matches(
                         modifier.filter,
                         object.controller,
@@ -295,8 +397,11 @@ impl CharacteristicQuery<'_> {
         }
         let target = self.object_ref(id);
         let evaluation = self.evaluation.as_ref();
-        for &source in &self.state.attachment_sources {
-            let object = &self.state.objects[source as usize];
+        for &source in self.attachment_sources() {
+            let object = self.object(source);
+            if object.zone != Zone::Battlefield {
+                continue;
+            }
             if object.attached_to == Some(target) && !self.is_creature(source) {
                 if let Some(evaluation) = &evaluation {
                     for (index, group) in object.card.static_ability_groups().iter().enumerate() {
@@ -343,20 +448,18 @@ impl CharacteristicQuery<'_> {
         (stats, keywords)
     }
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
-        if matches!(
-            self.state.objects[id as usize].zone,
-            Zone::Battlefield | Zone::Stack
-        ) && let Some(evaluation) = self.evaluation.as_ref()
+        if matches!(self.object(id).zone, Zone::Battlefield | Zone::Stack)
+            && let Some(evaluation) = self.evaluation.as_ref()
         {
             return evaluation.result.objects[id as usize].keywords;
         }
-        if self.state.objects[id as usize].zone == Zone::Stack {
+        if self.object(id).zone == Zone::Stack {
             let definition = self.effective_spell_card(id);
             if definition.inset_parent().is_some() {
                 return definition.info().keywords;
             }
         }
-        let target = &self.state.objects[id as usize];
+        let target = self.object(id);
         let mut keywords = target
             .keywords()
             .union(self.copied_keywords(self.object_ref(id)))
@@ -370,8 +473,11 @@ impl CharacteristicQuery<'_> {
         }
         let reference = self.object_ref(id);
         let attacking = self.state.attackers.iter().any(|a| a.card == id);
-        for &source in &self.state.static_sources {
-            let object = &self.state.objects[source as usize];
+        for &source in self.static_sources() {
+            let object = self.object(source);
+            if object.zone != Zone::Battlefield {
+                continue;
+            }
             if self.is_creature(id) && target.controller == object.controller {
                 for &(kind, grant) in object.card.counter_keyword_grants() {
                     if self.counter_count(id, kind) > 0 {
@@ -406,8 +512,7 @@ impl CharacteristicQuery<'_> {
             for grant in object.card.keyword_grants() {
                 if grant.condition.is_none_or(|value| {
                     self.stat_value(value, self.object_ref(source), object.controller) != 0
-                }) && (!grant.requires_life_gain
-                    || self.state.players[object.controller.index()].life_gained_this_turn > 0)
+                }) && (!grant.requires_life_gain || self.gained_life(object.controller))
                     && grant.matches_characteristics(
                         target.card,
                         target.is_token(),
@@ -441,13 +546,13 @@ impl CharacteristicQuery<'_> {
                 toughness: 1,
             };
         }
-        if let Some(state) = &self.state.roles {
+        if let Some(state) = self.roles() {
             for effect in &state.base_stats {
                 if effect.recipient != object {
                     continue;
                 }
                 if effect.static_source {
-                    let source = &self.state.objects[effect.source.card as usize];
+                    let source = self.object(effect.source.card);
                     if source.zone != Zone::Battlefield
                         || self.object_ref(effect.source.card) != effect.source
                     {
@@ -518,9 +623,7 @@ impl CharacteristicQuery<'_> {
     fn live_stat_value(&self, value: LiveStatValue, source: ObjectRef) -> i128 {
         match value {
             LiveStatValue::Fixed(value) => value,
-            LiveStatValue::ControllerLife => {
-                self.state.players[self.state.objects[source.card as usize].controller.index()].life
-            }
+            LiveStatValue::ControllerLife => self.life(self.object(source.card).controller),
         }
     }
     pub(super) fn apply_live_base_stat_layers(
@@ -530,7 +633,7 @@ impl CharacteristicQuery<'_> {
         power_time: &mut Option<u64>,
         toughness_time: &mut Option<u64>,
     ) -> Stats {
-        if let Some(r) = &self.state.roles {
+        if let Some(r) = self.roles() {
             for row in &r.live_static {
                 for (index, effect) in row.effects.iter().enumerate() {
                     if !self.live_static_applies(row, effect, index, id) {
@@ -555,7 +658,7 @@ impl CharacteristicQuery<'_> {
     }
     pub(super) fn live_static_bonus(&self, id: CardId) -> Stats {
         let mut stats = Stats::default();
-        if let Some(r) = &self.state.roles {
+        if let Some(r) = self.roles() {
             for row in &r.live_static {
                 for (index, effect) in row.effects.iter().enumerate() {
                     if self.live_static_applies(row, effect, index, id) {
@@ -571,7 +674,7 @@ impl CharacteristicQuery<'_> {
     }
     pub(super) fn live_static_keywords(&self, id: CardId) -> Keywords {
         let mut keywords = Keywords::NONE;
-        if let Some(r) = &self.state.roles {
+        if let Some(r) = self.roles() {
             for row in &r.live_static {
                 for (index, effect) in row.effects.iter().enumerate() {
                     if self.live_static_applies(row, effect, index, id) {
@@ -583,29 +686,28 @@ impl CharacteristicQuery<'_> {
         keywords
     }
     pub(super) fn live_static_forbids_block(&self, blocker: CardId, attacker: CardId) -> bool {
-        self.state.roles.as_ref().is_some_and(|r| {
+        self.roles().is_some_and(|r| {
             r.live_static.iter().any(|row| {
                 row.effects.iter().enumerate().any(|(index, effect)| {
                     self.live_static_applies(row, effect, index, blocker)
                         && effect.cannot_block_subtype.is_some_and(|subtype| {
                             self.granted_subtypes(attacker)
-                                .has(self.state.objects[attacker as usize].card, subtype)
+                                .has(self.object(attacker).card, subtype)
                         })
                 })
             })
         })
     }
     pub(super) fn cursed_role_timestamp(&self, recipient: ObjectRef) -> Option<u64> {
-        self.state.roles.as_ref().and_then(|r| {
+        self.roles().and_then(|r| {
             r.attached
                 .iter()
                 .filter(|v| {
                     v.recipient == recipient
                         && self.on_battlefield(v.aura.card)
                         && self.object_ref(v.aura.card) == v.aura
-                        && self.state.objects[v.aura.card as usize].card.role()
-                            == Some(RoleKind::Cursed)
-                        && self.state.objects[v.aura.card as usize].attached_to == Some(recipient)
+                        && self.object(v.aura.card).card.role() == Some(RoleKind::Cursed)
+                        && self.object(v.aura.card).attached_to == Some(recipient)
                         && self.continuous_fragment_available(v.aura.card, |fragment| {
                             matches!(
                                 fragment,
@@ -631,7 +733,8 @@ impl CharacteristicQuery<'_> {
         let reference = self.object_ref(source);
         let mut bound = false;
         let mut available = false;
-        for (index, group) in self.state.objects[source as usize]
+        for (index, group) in self
+            .object(source)
             .card
             .static_ability_groups()
             .iter()
@@ -670,7 +773,7 @@ impl CharacteristicQuery<'_> {
         }))
     }
     pub(super) fn object_view(&self, id: CardId) -> ObjectView {
-        let obj = &self.state.objects[id as usize];
+        let obj = self.object(id);
         let definition = if obj.zone == Zone::Stack {
             self.effective_spell_card(id)
         } else {
@@ -729,21 +832,45 @@ impl CharacteristicQuery<'_> {
     }
 }
 
-impl CharacteristicWorld for CharacteristicQuery<'_> {
+impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuery<'_, W> {
     fn game(&self) -> &Game {
         self.game
     }
     fn object(&self, id: CardId) -> &Object {
-        &self.game.state.objects[id as usize]
+        self.world.object(id)
+    }
+    fn controls(&self) -> Option<&continuous_control::ControlState> {
+        self.world.controls()
+    }
+    fn creatures_died(&self) -> u64 {
+        self.world.creatures_died()
+    }
+    fn card_left_graveyard(&self, player: Player) -> bool {
+        self.world.card_left_graveyard(player)
+    }
+    fn static_sources(&self) -> &[CardId] {
+        self.world.static_sources()
+    }
+    fn attachment_sources(&self) -> &[CardId] {
+        self.world.attachment_sources()
+    }
+    fn roles(&self) -> Option<&roles::RoleState> {
+        self.world.roles()
+    }
+    fn entry_values(&self) -> &[entry_choices::ChoiceRow] {
+        self.world.entry_values()
+    }
+    fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
+        self.world.counter_amounts(id)
     }
     fn life(&self, player: Player) -> i128 {
-        CharacteristicWorld::life(self.game, player)
+        self.world.life(player)
     }
     fn gained_life(&self, player: Player) -> bool {
-        CharacteristicWorld::gained_life(self.game, player)
+        self.world.gained_life(player)
     }
     fn attacking(&self, id: CardId) -> bool {
-        CharacteristicWorld::attacking(self.game, id)
+        self.world.attacking(id)
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
         self.object(id).zone != Zone::Battlefield

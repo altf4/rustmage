@@ -114,6 +114,8 @@ const fn object(kinds: u8) -> TargetRule {
 }
 pub(super) struct CardExtras {
     pub targets_up_to_x: bool,
+    pub life_x_cost: bool,
+    pub spell_cannot_be_copied: bool,
     pub prepared_spell: Option<Card>,
     pub enters_prepared: bool,
     pub prepared_identity: Option<&'static str>,
@@ -121,6 +123,8 @@ pub(super) struct CardExtras {
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
+    /// Source-counter discounts for the specified nonmana activated slot.
+    pub activation_counter_discounts: &'static [(u16, CounterKind)],
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
     pub entry_choice: Option<EntryChoiceKind>,
@@ -165,6 +169,7 @@ pub(super) struct CardExtras {
     pub offspring_cost: Option<ManaCost>,
     pub offspring_copy: Option<Card>,
     pub flashback_cost: Option<ManaCost>,
+    pub flashback_additional: Option<AdditionalCost>,
     pub target_cost_reduction: Option<&'static TargetSpellReduction>,
     pub cast_timing_grants: &'static [CastFilter],
     pub cost_reductions: &'static [SpellReduction],
@@ -186,12 +191,15 @@ pub(super) struct CardExtras {
 impl CardExtras {
     pub const EMPTY: Self = Self {
         targets_up_to_x: false,
+        life_x_cost: false,
+        spell_cannot_be_copied: false,
         prepared_spell: None,
         enters_prepared: false,
         prepared_identity: None,
         borrows_exiled_activations: false,
         zone_replacement: None,
         opening_hand_battlefield: false,
+        activation_counter_discounts: &[],
         activation_put_counters: &[],
         fixed_entry_counters: &[],
         cast_entry_counters: &[],
@@ -239,6 +247,7 @@ impl CardExtras {
         offspring_cost: None,
         offspring_copy: None,
         flashback_cost: None,
+        flashback_additional: None,
         target_cost_reduction: None,
         cast_timing_grants: &[],
         cost_reductions: &[],

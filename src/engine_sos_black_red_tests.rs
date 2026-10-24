@@ -2047,3 +2047,1720 @@ fn sos_tablet_milled_spell_play_and_both_mana_abilities_respect_restrictions() {
         assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
     }
 }
+
+fn announce_rubble_mana(g: &mut Game, source: CardId) {
+    act(
+        g,
+        Action::AnnounceMana {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 1, 0, 0],
+        },
+    );
+}
+
+#[test]
+fn sos_rubble_optional_entry_and_immediate_mana_reflexive_survives_departure() {
+    for p in [Player::P0, Player::P1] {
+        for discard in [false, true] {
+            let mut g = scenario(p);
+            let fuel = put(&mut g, p, "Forest", Zone::Hand);
+            let source = put(&mut g, p, "Rubble Rouser", Zone::Hand);
+            cast(&mut g, source, None);
+            until_choice(&mut g);
+            if discard {
+                act(&mut g, Action::Discard { card: fuel });
+            } else {
+                act(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (1, 4));
+            assert_eq!(
+                g.state.players[p.index()].cards_drawn_this_turn,
+                u64::from(discard)
+            );
+            reject(
+                &mut g,
+                Action::AnnounceMana {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production: [0, 0, 0, 1, 0, 0],
+                },
+            );
+            g.state.objects[source as usize].summoning_sick = false;
+            let fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+            let foreign = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+            g.state.players[p.index()].mana = [0; 6];
+            announce_rubble_mana(&mut g, source);
+            let object = g.object_ref(foreign);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+            let object = g.object_ref(fuel);
+            act(&mut g, Action::ChooseAdditionalCost { object });
+            pay(&mut g);
+            assert_eq!(g.state.players[p.index()].mana[3], 1);
+            assert_eq!(g.object_view(fuel).zone, Zone::Exile);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                20,
+                "reflexive damage has not resolved with the mana ability"
+            );
+            assert_eq!(g.state.stack.len(), 1);
+            let murder = put(&mut g, p.other(), "Murder", Zone::Hand);
+            act(&mut g, Action::Pass);
+            cast(&mut g, murder, Some(Target::Card(source)));
+            settle(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(g.state.players[p.other().index()].life, 19);
+        }
+    }
+}
+
+#[test]
+fn sos_rubble_nested_payment_preserves_private_parent_and_queues_only_committed_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        let fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+        let foreign = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        let before = g.snapshot();
+        for _ in 0..2 {
+            assert!(
+                g.legal_actions()
+                    .contains(&Action::AnnounceCast { card: spell })
+            );
+        }
+        assert_eq!(
+            g.snapshot(),
+            before,
+            "funding search must not commit exile or reflexive triggers"
+        );
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        let parent = g.state.announcing.as_ref().unwrap().item.clone();
+        big_helpers::checked(
+            &mut g,
+            Action::AnnounceMana {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        let own = g.observe(p).suspended_mana_announcements;
+        let other = g.observe(p.other()).suspended_mana_announcements;
+        assert_eq!(own.len(), 1);
+        assert_eq!(own[0].item, parent);
+        assert!(own[0].cost.is_some());
+        assert!(other[0].item.targets.is_empty());
+        assert!(other[0].cost.is_none() && other[0].counters.is_none());
+        let object = g.object_ref(foreign);
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        let object = g.object_ref(fuel);
+        big_helpers::checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        assert!(g.state.mana_announcement_stack.is_none());
+        assert_eq!(g.state.announcing.as_ref().unwrap().item, parent);
+        assert_eq!(g.state.pending, Pending::PayCosts { player: p });
+        assert_eq!(g.state.pending_triggers.len(), 1);
+        assert!(g.state.stack.is_empty());
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.other().index()].life, 19);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+    }
+}
+
+#[test]
+fn sos_rubble_virtual_exile_fuel_is_consumed_once_and_token_graves_are_not_fuel() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let a = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        let b = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        let fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+        let spell = put(&mut g, p, "Lightning Strike", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        let second = put(&mut g, p, "Island", Zone::Graveyard);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        for (source, fuel) in [(a, fuel), (b, second)] {
+            announce_rubble_mana(&mut g, source);
+            let object = g.object_ref(fuel);
+            act(&mut g, Action::ChooseAdditionalCost { object });
+            pay(&mut g);
+        }
+        pay(&mut g);
+        while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut g, |a| matches!(a, Action::PutTrigger { .. }));
+        }
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 15);
+        assert_eq!(g.object_view(fuel).zone, Zone::Exile);
+        assert_eq!(g.object_view(second).zone, Zone::Exile);
+
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        put(&mut g, p, "@token/sos-pest", Zone::Graveyard);
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        reject(
+            &mut g,
+            Action::AnnounceMana {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+    }
+}
+
+#[test]
+fn sos_rubble_nested_payment_preserves_outer_graveyard_source_and_reserved_cost() {
+    for p in [Player::P0, Player::P1] {
+        for exile_source in [false, true] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+            let professor = put(&mut g, p, "Postmortem Professor", Zone::Graveyard);
+            let reserved = put(&mut g, p, "Shock", Zone::Graveyard);
+            let fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: professor,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let object = g.object_ref(reserved);
+            act(&mut g, Action::ChooseAdditionalCost { object });
+            announce_rubble_mana(&mut g, source);
+            let object = g.object_ref(reserved);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+            let object = g.object_ref(if exile_source { professor } else { fuel });
+            act(&mut g, Action::ChooseAdditionalCost { object });
+            pay(&mut g);
+            assert_eq!(g.state.announcing.as_ref().unwrap().item.card, professor);
+            assert_eq!(g.object_view(reserved).zone, Zone::Graveyard);
+            assert_eq!(
+                g.object_view(professor).zone,
+                if exile_source {
+                    Zone::Exile
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(professor).zone,
+                if exile_source {
+                    Zone::Exile
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(g.object_view(reserved).zone, Zone::Exile);
+            assert_eq!(
+                g.object_view(fuel).zone,
+                if exile_source {
+                    Zone::Graveyard
+                } else {
+                    Zone::Exile
+                }
+            );
+            assert_eq!(g.state.players[p.other().index()].life, 19);
+        }
+    }
+}
+
+#[test]
+fn sos_rubble_can_fund_using_a_physical_card_sacrificed_by_an_earlier_mana_step() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        let pizza = put(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        let spell = put(&mut g, p, "Lightning Strike", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        act(
+            &mut g,
+            Action::ActivateMana {
+                card: pizza,
+                ability: 0,
+                payment: [0, 0, 0, 0, 0, 1],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        assert_eq!(g.object_view(pizza).zone, Zone::Graveyard);
+        announce_rubble_mana(&mut g, source);
+        let object = g.object_ref(pizza);
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(pizza).zone, Zone::Exile);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+    }
+}
+
+fn activate_ral(g: &mut Game, source: CardId, ability: u16, targets: &[Target]) {
+    act(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    pay(g);
+}
+
+#[test]
+fn sos_ral_paid_entry_private_surveil_loyalty_lock_and_graveyard_limit() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Ral Zarek, Guest Lecturer", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Loyalty), 3);
+        let keep = put(&mut g, p, "Forest", Zone::Library);
+        let discard = put(&mut g, p, "Shock", Zone::Library);
+        activate_ral(&mut g, source, 0, &[]);
+        until_choice(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Loyalty), 4);
+        assert!(g.observe(p.other()).library_choice.is_none());
+        big_helpers::checked(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: discard,
+                destination: LibraryDestination::Graveyard,
+            },
+        );
+        act(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: keep,
+                destination: LibraryDestination::Top,
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].library.last(), Some(&keep));
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Ral Zarek, Guest Lecturer", Zone::Battlefield);
+        g.state.objects[source as usize].counters.loyalty = 3;
+        let own = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let large = put(&mut g, p, "Hill Giant", Zone::Graveyard);
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 2,
+                counter_payment: Counters::default(),
+            },
+        );
+        for invalid in [large, foreign] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(invalid),
+                },
+            );
+        }
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(own).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(source, CounterKind::Loyalty), 1);
+    }
+}
+
+#[test]
+fn sos_ral_any_number_players_discard_privately_in_apnap_order() {
+    for p in [Player::P0, Player::P1] {
+        for targets in [0, 1, 2] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Ral Zarek, Guest Lecturer", Zone::Battlefield);
+            g.state.objects[source as usize].counters.loyalty = 3;
+            let a = put(&mut g, p, "Forest", Zone::Hand);
+            let b = put(&mut g, p.other(), "Island", Zone::Hand);
+            let all = [Target::Player(p), Target::Player(p.other())];
+            activate_ral(&mut g, source, 1, &all[..targets]);
+            if targets > 0 {
+                until_choice(&mut g);
+                reject(&mut g, Action::Discard { card: b });
+                act(&mut g, Action::Discard { card: a });
+                if targets == 2 {
+                    act(&mut g, Action::Discard { card: b });
+                }
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(a).zone,
+                if targets > 0 {
+                    Zone::Graveyard
+                } else {
+                    Zone::Hand
+                }
+            );
+            assert_eq!(
+                g.object_view(b).zone,
+                if targets == 2 {
+                    Zone::Graveyard
+                } else {
+                    Zone::Hand
+                }
+            );
+            assert_eq!(g.counter_count(source, CounterKind::Loyalty), 2);
+        }
+    }
+}
+
+fn coin_heads(seed: u64) -> u64 {
+    let mut rng = Rng(seed);
+    (0..5).filter(|_| rng.below(2) == 1).count() as u64
+}
+
+#[test]
+fn sos_ral_coins_owned_replay_and_actual_turn_skips_omit_upkeep_and_turn_numbers() {
+    let zero = (0..1000).find(|&seed| coin_heads(seed) == 0).unwrap();
+    let five = (0..1000).find(|&seed| coin_heads(seed) == 5).unwrap();
+    for p in [Player::P0, Player::P1] {
+        for seed in [zero, five, 20261023] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Ral Zarek, Guest Lecturer", Zone::Battlefield);
+            g.state.objects[source as usize].counters.loyalty = 7;
+            put(&mut g, p.other(), "Phyrexian Arena", Zone::Battlefield);
+            g.state.rng = Rng(seed);
+            let heads = coin_heads(seed);
+            activate_ral(&mut g, source, 3, &[Target::Player(p.other())]);
+            assert_eq!(
+                g.object_view(source).zone,
+                Zone::Graveyard,
+                "loyalty cost removes the source before the ability resolves"
+            );
+            act(&mut g, Action::Pass);
+            big_helpers::checked(&mut g, Action::Pass);
+            assert_eq!(g.observe(p).players[p.other().index()].turns_to_skip, heads);
+            assert_eq!(
+                g.observe(p.other()).players[p.other().index()].turns_to_skip,
+                heads
+            );
+            for remaining in (0..heads).rev() {
+                let turn = g.state.turn;
+                g.finish_cleanup();
+                assert_eq!(g.state.active, p);
+                assert_eq!(g.state.turn, turn + 1);
+                assert_eq!(
+                    g.observe(p).players[p.other().index()].turns_to_skip,
+                    remaining
+                );
+                assert!(
+                    g.state.pending_triggers.is_empty(),
+                    "skipped upkeep never queues Arena"
+                );
+            }
+            g.finish_cleanup();
+            assert_eq!(g.state.active, p.other());
+            assert_eq!(
+                g.state.pending_triggers.len(),
+                1,
+                "the actual upkeep queues Arena"
+            );
+            assert!(g.state.turn_skips.is_none());
+        }
+    }
+}
+
+#[test]
+fn sos_actual_turn_skip_cycles_are_bulk_and_next_turn_exile_waits_for_grantee() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let card = put(&mut g, p.other(), "Bear Cub", Zone::Exile);
+        let object = g.object_ref(card);
+        g.grant_exile_play_permission(p.other(), object, true);
+        g.state.turn_skips = Some(Box::new([u64::MAX - 1; 2]));
+        g.state.turn_skips.as_mut().unwrap()[p.other().index()] += 1;
+        let turn = g.state.turn;
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p);
+        assert_eq!(g.state.turn, turn + 1);
+        assert!(g.can_play_exiled(p.other(), card));
+        assert!(g.state.exile_permissions[0].expiry == ExilePlayExpiry::EndOfNextTurn);
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p.other());
+        assert_eq!(
+            g.state.exile_permissions[0].expiry,
+            ExilePlayExpiry::Turn(g.state.turn)
+        );
+        assert!(g.can_play_exiled(p.other(), card));
+        g.finish_cleanup();
+        assert!(!g.can_play_exiled(p.other(), card));
+    }
+}
+
+#[test]
+fn sos_memory_vessel_waits_for_activator_actual_turn_across_skips_for_both_grantees() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let vessel = put(&mut g, p, "Memory Vessel", Zone::Battlefield);
+        activate_ral(&mut g, vessel, 0, &[]);
+        settle(&mut g);
+        assert!(g.hand_play_prohibited());
+        assert_eq!(g.state.exile_permissions.len(), 14);
+        assert!(
+            g.state
+                .exile_permissions
+                .iter()
+                .all(|v| v.expiry == ExilePlayExpiry::StartOfNextTurn(p))
+        );
+        let mut skips = [0; 2];
+        skips[p.index()] = 1;
+        g.state.turn_skips = Some(Box::new(skips));
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p.other());
+        assert!(g.hand_play_prohibited());
+        assert_eq!(g.state.exile_permissions.len(), 14);
+        g.finish_cleanup();
+        assert_eq!(
+            g.state.active,
+            p.other(),
+            "activator's next candidate turn is skipped"
+        );
+        assert!(g.hand_play_prohibited());
+        assert_eq!(g.state.exile_permissions.len(), 14);
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p);
+        assert!(!g.hand_play_prohibited());
+        assert!(g.state.exile_permissions.is_empty());
+    }
+}
+
+fn announce_sparks(g: &mut Game, spell: CardId, mode: u16, targets: &[CardId]) {
+    act(g, Action::AnnounceCast { card: spell });
+    act(g, Action::ChooseMode { mode });
+    for &card in targets {
+        act(
+            g,
+            Action::ChooseTarget {
+                target: Target::Spell(card),
+            },
+        );
+    }
+    pay(g);
+}
+
+#[test]
+fn sos_sparks_instant_copy_retargets_and_neither_copy_counts_as_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 0, &[shock]);
+        until_choice(&mut g);
+        act(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Player(p),
+            },
+        );
+        big_helpers::checked(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 18);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 2);
+    }
+}
+
+#[test]
+fn sos_sparks_both_modes_copy_spells_in_order_and_only_token_is_sacrificed() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, bear, None);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 2, &[shock, bear]);
+        until_choice(&mut g);
+        big_helpers::checked(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        let copied = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| {
+                o.zone == Zone::Battlefield
+                    && o.card == Card::from_name("Bear Cub").unwrap()
+                    && o.is_token()
+            })
+            .map(|(id, _)| id as CardId)
+            .collect::<Vec<_>>();
+        assert_eq!(copied.len(), 1);
+        assert!(g.keywords(copied[0]).contains(Keywords::HASTE));
+        assert!(!g.keywords(bear).contains(Keywords::HASTE));
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        begin_paradigm_main(&mut g, p, Step::End);
+        settle(&mut g);
+        assert_ne!(g.object_view(copied[0]).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn sos_sparks_creature_copy_keeps_x_and_entry_replacements_but_is_not_token_creation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let trudge = put(&mut g, p, "Slumbering Trudge", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: trudge });
+        act(&mut g, Action::ChooseX { value: 1 });
+        pay(&mut g);
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 1, &[trudge]);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        act(&mut g, Action::Pass);
+        big_helpers::checked(&mut g, Action::Pass);
+        settle(&mut g);
+        let creatures = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| {
+                o.zone == Zone::Battlefield
+                    && o.card == Card::from_name("Slumbering Trudge").unwrap()
+            })
+            .map(|(id, _)| id as CardId)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            creatures.len(),
+            2,
+            "a resolving copied permanent spell is not token creation"
+        );
+        assert_eq!(
+            creatures
+                .iter()
+                .filter(|&&id| g.state.objects[id as usize].is_token())
+                .count(),
+            1
+        );
+        for id in creatures {
+            assert_eq!(stats(&g, id), (6, 6));
+            assert_eq!(g.counter_count(id, CounterKind::Stun), 4);
+            assert!(g.object_view(id).tapped);
+        }
+    }
+}
+
+#[test]
+fn sos_sparks_targets_only_controlled_spells_and_survives_one_invalid_target() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p.other());
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Hand);
+        cast(&mut g, foreign, None);
+        act(&mut g, Action::Pass);
+        let own = put(&mut g, p, "Spectral Sailor", Zone::Hand);
+        cast(&mut g, own, None);
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: sparks });
+        act(&mut g, Action::ChooseMode { mode: 1 });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(foreign),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(own),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.is_token())
+                .count(),
+            1
+        );
+
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, bear, None);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 2, &[shock, bear]);
+        act(&mut g, Action::Pass);
+        let negate = put(&mut g, p.other(), "Negate", Zone::Hand);
+        cast(&mut g, negate, Some(Target::Spell(shock)));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.is_token())
+                .count(),
+            1
+        );
+    }
+}
+
+#[test]
+fn sos_sparks_cannot_be_copied_by_targeted_or_captured_copy_effects() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        let first = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, first, 0, &[shock]);
+        let second = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, second, 0, &[first]);
+        until_choice(&mut g);
+        assert_eq!(
+            g.observe(p).retarget.as_ref().unwrap().item.source_card,
+            Card::Shock
+        );
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+
+        let mut g = scenario(p);
+        put(&mut g, p, "Mica, Reader of Ruins", Zone::Battlefield);
+        let artifact = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        cast(&mut g, shock, Some(Target::Player(p.other())));
+        until_choice(&mut g);
+        act(&mut g, Action::DeclineEffectPayment);
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        announce_sparks(&mut g, sparks, 0, &[shock]);
+        until_choice(&mut g);
+        let object = g.object_ref(artifact);
+        big_helpers::checked(&mut g, Action::Sacrifice { object });
+        assert_eq!(
+            g.state.pending,
+            Pending::Priority,
+            "Mica paid but cannot copy Sparks"
+        );
+        until_choice(&mut g);
+        assert_eq!(
+            g.observe(p).retarget.as_ref().unwrap().item.source_card,
+            Card::Shock
+        );
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        assert_eq!(g.object_view(artifact).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_cast_life_clause_preview_payment_and_owned_restore() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.players[p.index()].life = 5;
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        let goal = funding::FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 1, 0, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let purpose = g.spell_mana_purpose_for_card(p, spell, Card::Shock);
+        let before = g.snapshot();
+        assert!(g.can_fund_life_cost(goal.clone(), purpose, 0));
+        assert!(g.can_fund_life_cost(goal.clone(), purpose, 5));
+        assert!(!g.can_fund_life_cost(goal.clone(), purpose, 6));
+        assert_eq!(g.snapshot(), before, "previews cannot spend resources");
+        act(&mut g, Action::AnnounceCast { card: spell });
+        // A life-X author adds its chosen Life clause during declaration.
+        g.state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .add_cast_cost_clause(CastCostClause::Life(4));
+        assert!(
+            g.can_fund_life_cost(goal, purpose, 4),
+            "the existing clause must not be charged twice"
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 5);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 0);
+        assert!(g.observe(p.other()).cast_costs.is_none());
+        let clause = g
+            .observe(p)
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|r| r.clause == CastCostClause::Life(4))
+            .unwrap() as u16;
+        super::big_helpers::checked(&mut g, Action::ChooseCastCost { clause });
+        assert_eq!(g.state.players[p.index()].life, 1);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        g.state.players[p.index()].life = -1;
+        let zero = funding::FundingGoal {
+            actor: p,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        assert!(g.can_fund_life_cost(zero.clone(), mana_lots::Purpose::Other, 0));
+        assert!(!g.can_fund_life_cost(zero, mana_lots::Purpose::Other, 1));
+    }
+}
+
+fn choose_cast_clause(g: &mut Game, kind: CastCostClause) {
+    let clause = g
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|r| !r.paid && r.clause == kind)
+        .unwrap() as u16;
+    act(g, Action::ChooseCastCost { clause });
+}
+fn pay_casualty(g: &mut Game, victim: CardId) {
+    choose_cast_clause(g, CastCostClause::Casualty(0));
+    let object = g.object_ref(victim);
+    act(g, Action::PayCasualty { object });
+}
+fn casualty_shock(g: &mut Game, shock: CardId, victim: Option<CardId>, target: Player) {
+    act(g, Action::AnnounceCast { card: shock });
+    act(
+        g,
+        Action::ChooseCasualty {
+            pay: victim.is_some(),
+        },
+    );
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Player(target),
+        },
+    );
+    pay(g);
+    if let Some(victim) = victim {
+        pay_casualty(g, victim);
+    }
+}
+#[test]
+fn sos_silverquill_paid_entry_optional_casualty_and_owned_private_declarations() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = scenario(p);
+            let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Hand);
+            cast(&mut g, silver, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, silver), (4, 4));
+            assert!(
+                g.keywords(silver)
+                    .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
+            );
+            let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let shock = put(&mut g, p, "Shock", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: shock });
+            assert_eq!(g.observe(p).casualty_declarations.len(), 1);
+            assert!(g.observe(p.other()).casualty_declarations.is_empty());
+            big_helpers::checked(&mut g, Action::ChooseCasualty { pay: paid });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            pay(&mut g);
+            if paid {
+                assert_eq!(
+                    g.object_view(bear).zone,
+                    Zone::Battlefield,
+                    "intent chooses no victim before mana"
+                );
+                assert!(g.observe(p.other()).cast_costs.is_none());
+                choose_cast_clause(&mut g, CastCostClause::Casualty(0));
+                let object = g.object_ref(bear);
+                big_helpers::checked(&mut g, Action::PayCasualty { object });
+                until_choice(&mut g);
+                act(&mut g, Action::FinishStackTargets);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(bear).zone,
+                if paid {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if paid { 16 } else { 18 }
+            );
+            assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+        }
+    }
+}
+#[test]
+fn sos_silverquill_can_pay_itself_but_loses_the_on_cast_ability_before_triggering() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        casualty_shock(&mut g, shock, Some(silver), p.other());
+        settle(&mut g);
+        assert_eq!(g.object_view(silver).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert!(g.state.stack_copy_data.is_none());
+    }
+}
+#[test]
+fn sos_silverquill_copy_trigger_survives_grantor_removal_and_original_spell_counter() {
+    for p in [Player::P0, Player::P1] {
+        for counter in [false, true] {
+            let mut g = scenario(p);
+            let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+            let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let shock = put(&mut g, p, "Shock", Zone::Hand);
+            casualty_shock(&mut g, shock, Some(bear), p.other());
+            act(&mut g, Action::Pass);
+            let answer = put(
+                &mut g,
+                p.other(),
+                if counter { "Negate" } else { "Murder" },
+                Zone::Hand,
+            );
+            cast(
+                &mut g,
+                answer,
+                Some(if counter {
+                    Target::Spell(shock)
+                } else {
+                    Target::Card(silver)
+                }),
+            );
+            until_choice(&mut g);
+            big_helpers::checked(&mut g, Action::FinishStackTargets);
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if counter { 18 } else { 16 }
+            );
+            assert_eq!(
+                g.object_view(silver).zone,
+                if counter {
+                    Zone::Battlefield
+                } else {
+                    Zone::Graveyard
+                }
+            );
+        }
+    }
+}
+#[test]
+fn sos_silverquill_additional_sacrifices_are_disjoint_and_copies_do_not_pay_again() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        let first = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let second = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Corrupted Conviction", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        pay(&mut g);
+        pay_casualty(&mut g, first);
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        let object = g.object_ref(first);
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        let object = g.object_ref(second);
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        settle(&mut g);
+        assert_eq!(g.object_view(first).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(second).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 4);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+    }
+}
+#[test]
+fn sos_silverquill_zero_power_foreign_creatures_and_cannot_copy_spell() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        let wall = put(&mut g, p, "Rune-Sealed Wall", Zone::Battlefield);
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: shock });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        choose_cast_clause(&mut g, CastCostClause::Casualty(0));
+        for id in [wall, foreign] {
+            let object = g.object_ref(id);
+            reject(&mut g, Action::PayCasualty { object });
+        }
+        let object = g.object_ref(bear);
+        act(&mut g, Action::PayCasualty { object });
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        let mut g = scenario(p);
+        put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        casualty_shock(&mut g, shock, None, p.other());
+        let sparks = put(&mut g, p, "Choreographed Sparks", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: sparks });
+        act(&mut g, Action::ChooseMode { mode: 0 });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(shock),
+            },
+        );
+        pay(&mut g);
+        pay_casualty(&mut g, bear);
+        until_choice(&mut g);
+        assert_eq!(
+            g.observe(p).retarget.as_ref().unwrap().item.source_card,
+            Card::Shock
+        );
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+    }
+}
+#[test]
+fn sos_silverquill_virtual_power_rejects_mana_sacrifice_that_removes_last_eligible_creature() {
+    for p in [Player::P0, Player::P1] {
+        for prefunded in [false, true] {
+            let mut g = scenario(p);
+            let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+            g.state.objects[silver as usize].growth.power = -4;
+            let wall = put(&mut g, p, "Rune-Sealed Wall", Zone::Battlefield);
+            let arsenal = put(&mut g, p, "Machinist's Arsenal", Zone::Battlefield);
+            let pizza = put(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: arsenal,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(wall),
+                },
+            );
+            pay(&mut g);
+            settle(&mut g);
+            g.set_counters(wall, Counters::of(CounterKind::MinusOne, 5));
+            assert_eq!(stats(&g, wall).0, 1);
+            g.state.players[p.index()].mana = [0, 0, 0, u32::from(prefunded), 0, 1];
+            let action=g.legal_actions().into_iter().find(|a|matches!(a,Action::ActivateMana{card,ability:0,production,..}if *card==pizza && production[3]==1)).unwrap();
+            let shock = put(&mut g, p, "Shock", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: shock });
+            if !prefunded {
+                reject(&mut g, Action::ChooseCasualty { pay: true });
+                act(&mut g, Action::ChooseCasualty { pay: false });
+            } else {
+                act(&mut g, Action::ChooseCasualty { pay: true });
+            }
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            if prefunded {
+                reject(&mut g, action);
+            } else {
+                act(&mut g, action);
+            }
+            pay(&mut g);
+            if prefunded {
+                pay_casualty(&mut g, wall);
+                until_choice(&mut g);
+                act(&mut g, Action::FinishStackTargets);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(wall).zone,
+                if prefunded {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if prefunded { 16 } else { 18 }
+            );
+        }
+    }
+}
+#[test]
+fn sos_silverquill_casualty_supplies_forage_and_mana_cannot_reopen_between_clauses() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let a = put(&mut g, p, "Forest", Zone::Graveyard);
+        let b = put(&mut g, p, "Forest", Zone::Graveyard);
+        let mountain = put(&mut g, p, "Mountain", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 1];
+        let spell = put(&mut g, p, "Feed the Cycle", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(
+            &mut g,
+            Action::ChooseForageRoute {
+                route: ForageRoute::ExileThree,
+            },
+        );
+        reject(&mut g, Action::ChooseCasualty { pay: false });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        let base = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|r| r.clause == CastCostClause::Additional)
+            .unwrap() as u16;
+        reject(&mut g, Action::ChooseCastCost { clause: base });
+        reject(&mut g, Action::TapMana { card: mountain });
+        pay_casualty(&mut g, bear);
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        for card in [a, b, bear] {
+            let object = g.object_ref(card);
+            act(&mut g, Action::ChooseForage { object });
+        }
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+    }
+}
+#[test]
+fn sos_silverquill_casualty_supplies_evidence_before_the_spell_becomes_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        let victim = put(&mut g, p, "Rune-Scarred Demon", Zone::Battlefield);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Bite Down on Crime", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, Action::ChooseCollectEvidence { collect: true });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(silver),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        pay_casualty(&mut g, victim);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 0);
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        let object = g.object_ref(victim);
+        big_helpers::checked(&mut g, Action::ChooseEvidence { object });
+        big_helpers::checked(&mut g, Action::FinishEvidence);
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(victim).zone, Zone::Exile);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+    }
+}
+#[test]
+fn sos_silverquill_tap_cost_must_precede_sacrificing_a_tapped_member() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        let a = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let b = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Group Project", Zone::Graveyard);
+        act(&mut g, Action::AnnounceFlashback { card: spell });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        pay(&mut g);
+        let casualty = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|r| r.clause == CastCostClause::Casualty(0))
+            .unwrap() as u16;
+        reject(&mut g, Action::ChooseCastCost { clause: casualty });
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        for card in [silver, a, b] {
+            let object = g.object_ref(card);
+            act(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        assert!(g.object_view(a).tapped);
+        pay_casualty(&mut g, a);
+        settle(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.card == Card::SosSpiritToken)
+                .count(),
+            2
+        );
+    }
+}
+
+fn silverquill_exile_return_setup(p: Player, name: &str) -> (Game, CardId, CardId, CardId) {
+    let mut g = scenario(p);
+    let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+    g.state.objects[silver as usize].growth.power = -4;
+    let skeleton = put(&mut g, p, "Reassembling Skeleton", Zone::Battlefield);
+    g.state.objects[skeleton as usize].growth.power = -1;
+    let returning = put(&mut g, p, name, Zone::Battlefield);
+    g.record_control(g.object_ref(returning), p.other(), None);
+    let prison = put(&mut g, p, "Banishing Light", Zone::Hand);
+    cast(&mut g, prison, None);
+    until_choice(&mut g);
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(returning),
+        },
+    );
+    settle(&mut g);
+    assert_eq!(g.object_view(returning).zone, Zone::Exile);
+    assert_eq!(stats(&g, skeleton).0, 0);
+    (g, prison, skeleton, returning)
+}
+#[test]
+fn sos_silverquill_cost_returned_lord_changes_later_casualty_power() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, prison, skeleton, baron) = silverquill_exile_return_setup(p, "Death Baron");
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        let sacrifice = Some(g.object_ref(prison));
+        act(&mut g, Action::ChooseBargain { sacrifice });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        assert_eq!(g.object_view(baron).zone, Zone::Battlefield);
+        assert_eq!(stats(&g, skeleton).0, 1);
+        pay_casualty(&mut g, skeleton);
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(skeleton).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(prison).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn sos_silverquill_returned_banner_choice_cannot_strand_declared_casualty() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, prison, skeleton, banner) =
+            silverquill_exile_return_setup(p, "Banner of Kinship");
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        let sacrifice = Some(g.object_ref(prison));
+        act(&mut g, Action::ChooseBargain { sacrifice });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+        let shark =
+            EntryChoiceValue::CreatureType(crate::cards::CreatureType::from_name("Shark").unwrap());
+        reject(&mut g, Action::ChooseEntryValue { value: shark });
+        let skeleton_type = EntryChoiceValue::CreatureType(
+            crate::cards::CreatureType::from_name("Skeleton").unwrap(),
+        );
+        super::big_helpers::checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: skeleton_type,
+            },
+        );
+        assert_eq!(g.object_view(banner).zone, Zone::Battlefield);
+        assert_eq!(stats(&g, skeleton).0, 1);
+        pay_casualty(&mut g, skeleton);
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(skeleton).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_silverquill_casualty_can_return_a_creature_before_convoking_it() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.record_control(g.object_ref(bear), p.other(), None);
+        let chariot = put(&mut g, p, "Detention Chariot", Zone::Hand);
+        cast(&mut g, chariot, None);
+        until_choice(&mut g);
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: chariot,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let object = g.object_ref(silver);
+        act(&mut g, Action::ChooseCrewer { object });
+        act(&mut g, Action::FinishCrew);
+        settle(&mut g);
+        assert!(g.object_view(silver).tapped);
+        g.state.objects[chariot as usize].tapped = true;
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Vote Out", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 2];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        super::big_helpers::checked(&mut g, Action::BeginConvoke);
+        let costs = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap();
+        assert!(costs.mana_closed);
+        assert!(!costs.mana_paid);
+        pay_casualty(&mut g, chariot);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert!(!g.object_view(bear).tapped);
+        choose_cast_clause(&mut g, CastCostClause::Mana);
+        let object = g.object_ref(bear);
+        super::big_helpers::checked(
+            &mut g,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Generic,
+            },
+        );
+        assert!(g.object_view(bear).tapped);
+        choose_cast_clause(&mut g, CastCostClause::Mana);
+        pay(&mut g);
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(chariot).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn sos_silverquill_nested_mana_keeps_the_original_casualty_obligation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        g.state.objects[silver as usize].growth.power = -4;
+        let rubble = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        g.state.objects[rubble as usize].growth.power = -1;
+        let goyf = put(&mut g, p, "Tarmogoyf", Zone::Battlefield);
+        g.state.objects[goyf as usize].growth.power = -1;
+        let bear = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let forest = put(&mut g, p, "Forest", Zone::Graveyard);
+        put(&mut g, p, "Forest", Zone::Graveyard);
+        assert_eq!(stats(&g, goyf).0, 1);
+        g.state.players[p.index()].mana = [0; 6];
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: shock });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        announce_rubble_mana(&mut g, rubble);
+        let object = g.object_ref(bear);
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        let object = g.object_ref(forest);
+        super::big_helpers::checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        assert_eq!(stats(&g, goyf).0, 1);
+        pay(&mut g);
+        pay_casualty(&mut g, goyf);
+        while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut g, |a| matches!(a, Action::PutTrigger { .. }));
+        }
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 15);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(forest).zone, Zone::Exile);
+    }
+}
+
+#[test]
+fn sos_silverquill_life_payment_order_uses_projected_layered_power() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        g.state.objects[silver as usize].growth.power = -4;
+        let wall = put(&mut g, p, "Rune-Sealed Wall", Zone::Battlefield);
+        g.state.objects[wall as usize].growth.power = -1;
+        let sword = put(&mut g, p, "Aettir and Priwen", Zone::Battlefield);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: sword,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(wall),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        g.state.players[p.index()].life = 2;
+        assert_eq!(stats(&g, wall).0, 1);
+        let shock = put(&mut g, p, "Shock", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: shock });
+        g.state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .add_cast_cost_clause(CastCostClause::Life(1));
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        let index = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|r| r.clause == CastCostClause::Life(1))
+            .unwrap() as u16;
+        reject(&mut g, Action::ChooseCastCost { clause: index });
+        pay_casualty(&mut g, wall);
+        choose_cast_clause(&mut g, CastCostClause::Life(1));
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 1);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+    }
+}
+
+#[test]
+fn sos_silverquill_mana_counter_cost_cannot_remove_the_last_casualty_power() {
+    for p in [Player::P0, Player::P1] {
+        for prefunded in [false, true] {
+            let mut g = scenario(p);
+            let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+            g.state.objects[silver as usize].growth.power = -4;
+            let ramos = put(&mut g, p, "Ramos, Dragon Engine", Zone::Battlefield);
+            g.state.objects[ramos as usize].growth.power = -4;
+            g.set_counters(ramos, Counters::of(CounterKind::PlusOne, 5));
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a,Action::ActivateMana{card,..}if *card==ramos))
+                .unwrap();
+            let shock = put(&mut g, p, "Shock", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, u32::from(prefunded), 0, 0];
+            act(&mut g, Action::AnnounceCast { card: shock });
+            if !prefunded {
+                reject(&mut g, Action::ChooseCasualty { pay: true });
+                act(&mut g, Action::ChooseCasualty { pay: false });
+            } else {
+                act(&mut g, Action::ChooseCasualty { pay: true });
+            }
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            if prefunded {
+                reject(&mut g, action);
+            } else {
+                act(&mut g, action);
+            }
+            pay(&mut g);
+            if prefunded {
+                pay_casualty(&mut g, ramos);
+                until_choice(&mut g);
+                act(&mut g, Action::FinishStackTargets);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if prefunded { 16 } else { 18 }
+            );
+            assert_eq!(
+                g.object_view(ramos).zone,
+                if prefunded {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+        }
+    }
+}
+
+#[test]
+fn sos_silverquill_returned_aura_attachment_uses_projected_layers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        g.state.objects[silver as usize].growth.power = -4;
+        let victim = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[victim as usize].growth.power = -1;
+        let other = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let aura = put(&mut g, p, "Witness Protection", Zone::Hand);
+        cast(&mut g, aura, Some(Target::Card(other)));
+        settle(&mut g);
+        g.record_control(g.object_ref(aura), p.other(), None);
+        let prison = put(&mut g, p, "Banishing Light", Zone::Hand);
+        cast(&mut g, prison, None);
+        until_choice(&mut g);
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(aura),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(aura).zone, Zone::Exile);
+        let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        let sacrifice = Some(g.object_ref(prison));
+        act(&mut g, Action::ChooseBargain { sacrifice });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(other),
+            },
+        );
+        pay(&mut g);
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        assert!(matches!(g.state.pending, Pending::AuraEntry { .. }));
+        let object = g.object_ref(victim);
+        reject(&mut g, Action::ChooseAuraAttachment { object });
+        let object = g.object_ref(other);
+        super::big_helpers::checked(&mut g, Action::ChooseAuraAttachment { object });
+        assert_eq!(stats(&g, victim).0, 1);
+        assert_eq!(stats(&g, other), (1, 1));
+        pay_casualty(&mut g, victim);
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(other).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_silverquill_control_aura_must_be_sacrificed_after_its_stolen_casualty_victim() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        g.state.objects[silver as usize].growth.power = -4;
+        let stolen = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let confiscate = put(&mut g, p, "Confiscate", Zone::Hand);
+        cast(&mut g, confiscate, Some(Target::Card(stolen)));
+        settle(&mut g);
+        assert_eq!(g.object_view(stolen).controller, p);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        let sacrifice = Some(g.object_ref(confiscate));
+        act(&mut g, Action::ChooseBargain { sacrifice });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        let additional = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|r| r.clause == CastCostClause::Additional)
+            .unwrap() as u16;
+        reject(&mut g, Action::ChooseCastCost { clause: additional });
+        choose_cast_clause(&mut g, CastCostClause::Casualty(0));
+        let object = g.object_ref(stolen);
+        super::big_helpers::checked(&mut g, Action::PayCasualty { object });
+        assert_eq!(g.object_view(stolen).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(stolen).owner, p.other());
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(confiscate).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 2);
+    }
+}

@@ -9,6 +9,7 @@ pub(super) struct DiscardDrawChoice {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EffectChoice {
     discard_draw: Option<DiscardDrawChoice>,
+    pub discarded: Option<Box<[ObjectRef]>>,
     pub kind: EffectChoiceKind,
     pub filter: SacrificeFilter,
     pub amount: u32,
@@ -24,7 +25,9 @@ pub(super) struct EffectChoice {
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
-            + self.selected.iter().map(Vec::len).sum::<usize>() * std::mem::size_of::<ObjectRef>()
+            + (self.selected.iter().map(Vec::len).sum::<usize>()
+                + self.discarded.as_ref().map_or(0, |rows| rows.len()))
+                * std::mem::size_of::<ObjectRef>()
     }
 }
 impl Game {
@@ -35,6 +38,20 @@ impl Game {
         object: ObjectRef,
     ) -> bool {
         let o = &self.state.objects[object.card as usize];
+        if matches!(choice.kind, EffectChoiceKind::DiscardedLand { .. }) {
+            return self.state.resolving.as_ref().unwrap().item.controller == player
+                && self.object_ref(object.card) == object
+                && choice
+                    .discarded
+                    .as_ref()
+                    .is_some_and(|rows| rows.contains(&object))
+                && matches!(
+                    o.zone,
+                    Zone::Graveyard | Zone::Exile | Zone::Battlefield | Zone::Stack | Zone::Command
+                )
+                && self.current_kinds(object.card) & 2 != 0
+                && choice.selected[player.index()].is_empty();
+        }
         if choice.kind == EffectChoiceKind::ExileGraveyard {
             return !choice.selected[player.index()].contains(&object)
                 && self.additional_candidate(
@@ -68,8 +85,10 @@ impl Game {
         let hand_choice = matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         );
         let entitled_player = if hand_choice { o.owner } else { o.controller };
@@ -82,13 +101,19 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) {
             return o.zone == Zone::Hand
                 && match choice.kind {
                     EffectChoiceKind::HandCreature => o.card.is_creature(),
+                    EffectChoiceKind::HandPermanent { maximum, .. } => {
+                        o.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
+                            && o.card.fixed_mana_value() <= u64::from(maximum)
+                    }
                     EffectChoiceKind::HandExileCopy => o.card.is_creature() || o.card.is_artifact(),
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
                     _ => true,
@@ -123,6 +148,7 @@ impl Game {
         ));
         let mut choice = EffectChoice {
             discard_draw: None,
+            discarded: None,
             kind,
             filter: evidence::cost(0).filter,
             amount: 0,
@@ -189,6 +215,7 @@ impl Game {
         }
         let pc = self.state.resolving.as_ref().unwrap().pc;
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
+            discarded: None,
             discard_draw: Some(DiscardDrawChoice {
                 players: participants,
                 finished: [false; 2],
@@ -254,6 +281,24 @@ impl Game {
             None,
         )
     }
+    pub(super) fn start_hand_permanent(
+        &mut self,
+        item: &SpellView,
+        maximum: AmountValue,
+        tapped: bool,
+    ) -> bool {
+        let maximum = u32::try_from(self.item_amount(maximum, item)).unwrap_or(u32::MAX);
+        self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::HandPermanent { maximum, tapped },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            Some(0),
+            false,
+            None,
+        )
+    }
     pub(super) fn start_hand_land(&mut self, item: &SpellView, tapped: bool) -> bool {
         self.start_effect_choice_inner(
             item,
@@ -287,6 +332,34 @@ impl Game {
         )
     }
 
+    pub(super) fn start_discarded_land_choice(
+        &mut self,
+        player: Player,
+        tapped: bool,
+        objects: Vec<ObjectRef>,
+    ) {
+        if objects.is_empty() {
+            return;
+        }
+        let source = self.state.resolving.as_ref().unwrap().item.object;
+        let pc = self.state.resolving.as_ref().unwrap().pc;
+        self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
+            discard_draw: None,
+            discarded: Some(objects.into_boxed_slice()),
+            kind: EffectChoiceKind::DiscardedLand { tapped },
+            filter: evidence::cost(0).filter,
+            amount: 1,
+            source,
+            required: [0; 2],
+            selected: std::array::from_fn(|_| Vec::new()),
+            skip_to: Some(pc),
+            greatest_value: [None; 2],
+            discard_mana_value_life: None,
+            hand_defender: None,
+            entry_life_bonus: None,
+        }));
+        self.state.pending = Pending::EffectChoice { player };
+    }
     pub(super) fn finish_land_selection(&mut self) {
         let choice = self
             .state
@@ -302,20 +375,28 @@ impl Game {
             }
             return;
         }
-        let EffectChoiceKind::LandCards { tapped, .. } = choice.kind else {
-            unreachable!()
+        let (tapped, discarded) = match choice.kind {
+            EffectChoiceKind::LandCards { tapped, .. } => (tapped, false),
+            EffectChoiceKind::DiscardedLand { tapped } => (tapped, true),
+            _ => unreachable!(),
         };
         let player = self.state.resolving.as_ref().unwrap().item.controller;
         let movements = choice.selected[player.index()]
             .iter()
+            .filter(|reference| {
+                !discarded || self.state.objects[reference.card as usize].zone != Zone::Battlefield
+            })
             .map(|reference| {
                 assert_eq!(self.object_ref(reference.card), *reference);
                 let object = &self.state.objects[reference.card as usize];
-                assert!(
+                assert!(if discarded {
+                    choice.discarded.as_ref().unwrap().contains(reference)
+                        && self.current_kinds(reference.card) & 2 != 0
+                } else {
                     object.owner == player
                         && matches!(object.zone, Zone::Hand | Zone::Graveyard)
                         && object.card.is_land()
-                );
+                });
                 let mut movement = self.entry_move(reference.card, Zone::Battlefield, tapped);
                 movement.controller = player;
                 movement
@@ -386,6 +467,7 @@ impl Game {
         let pc = self.state.resolving.as_ref().unwrap().pc;
         let mut choice = EffectChoice {
             discard_draw: None,
+            discarded: None,
             kind,
             filter,
             amount: u32::from(amount),
@@ -444,6 +526,7 @@ impl Game {
                     kind,
                     EffectChoiceKind::HandExileCopy
                         | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
                 )
                 && available < usize::from(amount)
@@ -458,6 +541,7 @@ impl Game {
                 kind,
                 EffectChoiceKind::HandExileCopy
                     | EffectChoiceKind::HandCreature
+                    | EffectChoiceKind::HandPermanent { .. }
                     | EffectChoiceKind::HandLand { .. }
             ) {
                 u32::from(amount)
@@ -469,7 +553,7 @@ impl Game {
         self.advance_effect_choice()
     }
 
-    fn advance_effect_choice(&mut self) -> bool {
+    pub(super) fn advance_effect_choice(&mut self) -> bool {
         let choice = self
             .state
             .resolving
@@ -495,6 +579,15 @@ impl Game {
             self.state.pending = Pending::EffectChoice { player };
             return true;
         }
+        if matches!(choice.kind, EffectChoiceKind::DiscardedLand { .. }) {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if !choice.selected[player.index()].is_empty() {
+                self.finish_land_selection();
+                return false;
+            }
+            self.state.pending = Pending::EffectChoice { player };
+            return true;
+        }
         if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if choice.selected[player.index()].len() >= maximum as usize {
@@ -512,10 +605,30 @@ impl Game {
                 return true;
             }
         }
+        if choice.kind == EffectChoiceKind::HandToTop {
+            let choice = self
+                .state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .choice
+                .take()
+                .unwrap();
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let ids: Vec<_> = choice.selected[player.index()]
+                .iter()
+                .map(|r| r.card)
+                .collect();
+            self.forget_library_top(player);
+            let events = self.move_objects_raw(&ids, Zone::Library);
+            self.finish_zone_events(&events, &[]);
+            return false;
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
@@ -540,7 +653,11 @@ impl Game {
             }
             let enchantment = choice.kind == EffectChoiceKind::HandCreature
                 && self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
-            let forced_tapped = matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
+            let forced_tapped = matches!(
+                choice.kind,
+                EffectChoiceKind::HandLand { tapped: true }
+                    | EffectChoiceKind::HandPermanent { tapped: true, .. }
+            );
             if enchantment && choice.hand_defender.is_none() {
                 if self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield
@@ -731,8 +848,10 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) && viewer != actor
         {

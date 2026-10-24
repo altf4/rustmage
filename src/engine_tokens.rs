@@ -151,19 +151,22 @@ impl Game {
             let token = group.token;
             let tapped = group.tapped || self.opponent_entry_requires_tapped(token, controller);
             for _ in 0..group.amount {
-                let (id, generation) = match self.state.free_tokens.pop() {
-                    Some(id) => {
-                        let old = &self.state.objects[id as usize];
-                        assert_eq!(old.zone, Zone::Outside);
-                        assert!(old.is_token() || old.is_spell_copy());
-                        (id, old.generation)
+                let (id, generation) = self.replay_frozen_mana_copy_slot().unwrap_or_else(|| {
+                    match self.state.free_tokens.pop() {
+                        Some(id) => {
+                            let old = &self.state.objects[id as usize];
+                            assert_eq!(old.zone, Zone::Outside);
+                            assert!(old.is_token() || old.is_spell_copy());
+                            (id, old.generation)
+                        }
+                        None => (
+                            CardId::try_from(self.state.objects.len())
+                                .capacity("object slots exhausted"),
+                            0,
+                        ),
                     }
-                    None => (
-                        CardId::try_from(self.state.objects.len())
-                            .capacity("object slots exhausted"),
-                        0,
-                    ),
-                };
+                });
+                self.record_cast_mana_allocation(id, generation);
                 let object = Object {
                     card: token,
                     copy_kind: CopyKind::None,

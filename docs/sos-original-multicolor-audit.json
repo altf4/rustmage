@@ -1,0 +1,532 @@
+{
+  "schema": 1,
+  "set": "SOS",
+  "scope": "The 15 original non-BG multicolor members admitted before this task; ownership list from integrator",
+  "admission_base": "d5cd65c1e905ff00377f0e158742a58a3d5c5415",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "test_module": "src/assurance/sos_original_multicolor_audit.rs",
+  "test_module_sha256": "d39b7c8324ef3add914ebe1ade29d09c982ac2573ef6fa5f164b57cb2747a06b",
+  "verification": "Both seats, paid legal actions, actual combat, private choices, illegal-action atomicity, owned raw/index branching and restore via big_helpers::checked. Author audit; independent final-head reviews and full-set games remain separate.",
+  "helpers": {
+    "AddCountersSourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    "BasicManaEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    "BoostSourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    "CantBeBlockedSourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+      "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+    },
+    "CounterUnlessPaysEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    "DamageAllEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    },
+    "DamageTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    "DealsCombatDamageToAPlayerTriggeredAbility": {
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    "DestroyTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    "DrawCardSourceControllerEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    "DrawDiscardControllerEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    "EntersBattlefieldOrAttacksSourceTriggeredAbility": {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    "EntersBattlefieldWithXCountersEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java",
+      "sha256": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7"
+    },
+    "FlashAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    "FlyingAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    "GainAbilitySourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    "GainLifeEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    "IncrementAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IncrementAbility.java",
+      "sha256": "4d44b4a352b0c3056cc317e0647ceef6a13307e64c2a2563ad2986277f9ab09d"
+    },
+    "LifelinkAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    "LoseLifeSourceControllerEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    "OpusAbility": {
+      "path": "Mage/src/main/java/mage/abilities/abilityword/OpusAbility.java",
+      "sha256": "2fdef128f01b7c2f3ad1ffc3f9817cf19d505266fe4ee3006ccf7138ceb2a1c4"
+    },
+    "PutCardFromHandOntoBattlefieldEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+      "sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+    },
+    "ReparteeAbility": {
+      "path": "Mage/src/main/java/mage/abilities/abilityword/ReparteeAbility.java",
+      "sha256": "da66e3be816abbc0e9f6ffa1d5d5475ea18346311290872735e8f03027b0c574"
+    },
+    "ReturnToHandTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    "SearchLibraryPutInPlayEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    "SetBasePowerToughnessTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+      "sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+    },
+    "SurveilEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    "TapTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    "TargetsPermanentPredicate": {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/TargetsPermanentPredicate.java",
+      "sha256": "6a52724f6a33c15df7f3951dc83aeb026acc8c20a5ccc6a031b11e18b08ea096"
+    },
+    "TrampleAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    "VigilanceAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  },
+  "cards": [
+    {
+      "oracle_id": "20f3388f-0931-4a09-bcda-96deb01e1787",
+      "name": "Cuboid Colony",
+      "facts_sha256": "6e9513bb4e9c90e49f90a9c97bfaf915e10794f51b34f488918cab86fcd2f043",
+      "definition": "src/card_definitions/sos/cuboid_colony.rs",
+      "definition_sha256": "d3c0701418faa7dca3fc273f571ec0271183e8d8053c364c97da140fe69452d4",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/c/CuboidColony.java",
+          "sha256": "27a01e72bd8046d0c41d12867a05f00dfb2b523d0b9d2b3bb55a3ceec28b7255"
+        }
+      ],
+      "helpers": [
+        "AddCountersSourceEffect",
+        "FlashAbility",
+        "FlyingAbility",
+        "IncrementAbility",
+        "TrampleAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_cuboid_flash_increment_recheck_and_flying_combat"
+      ],
+      "obligations": [
+        "Flash",
+        "Flying, trample",
+        "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)"
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "b9110be0-3f0c-449b-8baf-689e92fdb8f0",
+      "name": "Embrace the Paradox",
+      "facts_sha256": "e1515b4288078627ede3083ef15f22474daaae1d32c898efb73d368df5117c9f",
+      "definition": "src/card_definitions/sos/embrace_the_paradox.rs",
+      "definition_sha256": "8d7ff8853fbc4c852867b613197c49b242d1ff5da2d2e46538fd7b659f339c83",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/e/EmbraceTheParadox.java",
+          "sha256": "8aac45eb6c554aedd9b8a19a887013bde5c29c2bad4ad62b56c1a62c4df6530f"
+        }
+      ],
+      "helpers": [
+        "DrawCardSourceControllerEffect",
+        "PutCardFromHandOntoBattlefieldEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_embrace_draw_three_private_optional_choice_bearing_tapped_land"
+      ],
+      "obligations": [
+        "Draw three cards. You may put a land card from your hand onto the battlefield tapped."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "fcd31653-4964-46a6-820c-f17e8cbaa1fa",
+      "name": "Imperious Inkmage",
+      "facts_sha256": "05933bf4d44546c3fe2857a304325c0871f642ba57f10d040cebeb7dc0f2d6c2",
+      "definition": "src/card_definitions/sos/imperious_inkmage.rs",
+      "definition_sha256": "aa98092b20e53d67452f25d4bee2ffb16f1f904d8be9dcda6451d09ccaaa7a70",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/i/ImperiousInkmage.java",
+          "sha256": "5b75925d05b51db246b229d803af16fb1dc57c4c5d36da1a0bf141f9bb480b8f"
+        }
+      ],
+      "helpers": [
+        "SurveilEffect",
+        "VigilanceAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_imperious_vigilance_private_two_card_surveil_order"
+      ],
+      "obligations": [
+        "Vigilance",
+        "When this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)"
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "0f0959ff-4464-4738-9d79-5b06f368f144",
+      "name": "Inkling Mascot",
+      "facts_sha256": "9c36c5587d7cd579e3e4e4f5a6d1105b8384490630f56d70d3f6b575f4a37e45",
+      "definition": "src/card_definitions/sos/inkling_mascot.rs",
+      "definition_sha256": "6f12e8f4120b5eae07033f1d09d2aa3e384bf7ff2bab2920c0460627d9c1be7a",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/i/InklingMascot.java",
+          "sha256": "201d2f2b7b828c38229d67263acf286dafaa5154275eb509ad1f3ab8be33989e"
+        }
+      ],
+      "helpers": [
+        "FlyingAbility",
+        "GainAbilitySourceEffect",
+        "ReparteeAbility",
+        "SurveilEffect",
+        "TargetsPermanentPredicate"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_inkling_repartee_surveil_survives_departure_and_flying_expires"
+      ],
+      "obligations": [
+        "Repartee \u2014 Whenever you cast an instant or sorcery spell that targets a creature, this creature gains flying until end of turn. Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "a7fe7621-9bb1-4d0d-8b50-c179c685d79d",
+      "name": "Proctor's Gaze",
+      "facts_sha256": "2023fe1a39a272c01e89ab2ef87e5ee0b947b1b3e1ecb2173eced9eede319759",
+      "definition": "src/card_definitions/sos/proctor_s_gaze.rs",
+      "definition_sha256": "253d8b66ece1a8d2f6589910309e447a3969a6733d5746acc83e661646531c95",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/p/ProctorsGaze.java",
+          "sha256": "d022a6fc88331b79908019a6040e4794f29253f3d78de97b54ba28bef81b60a1"
+        }
+      ],
+      "helpers": [
+        "ReturnToHandTargetEffect",
+        "SearchLibraryPutInPlayEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_proctor_optional_target_search_fail_to_find_and_full_fizzle"
+      ],
+      "obligations": [
+        "Return up to one target nonland permanent to its owner's hand. Search your library for a basic land card, put it onto the battlefield tapped, then shuffle."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "cca03b76-dd3c-4228-b97a-f7fa20819b2e",
+      "name": "Pterafractyl",
+      "facts_sha256": "dd1145ca4c9c4f119ea18314589b7b07ef44a931bd6624ff7d259dd060778387",
+      "definition": "src/card_definitions/sos/pterafractyl.rs",
+      "definition_sha256": "1417d97e98e254157cc728b2fe5fa17140ff7d921ce10972fbef172fa17399e1",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/p/Pterafractyl.java",
+          "sha256": "3e3278f1c6a5be456645858624c4527dafcee3dcb54396d44b198244f1de1268"
+        }
+      ],
+      "helpers": [
+        "EntersBattlefieldWithXCountersEffect",
+        "FlyingAbility",
+        "GainLifeEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_pterafractyl_x_entry_life_and_blink_x_zero"
+      ],
+      "obligations": [
+        "Flying",
+        "This creature enters with X +1/+1 counters on it.",
+        "When this creature enters, you gain 2 life."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "f43e36ea-6bf5-45bd-a4ad-cc507ae45641",
+      "name": "Quandrix Charm",
+      "facts_sha256": "9f11d1f1105145ce508c721576888da13c234a066dc3d13f111bd12bb147d5c0",
+      "definition": "src/card_definitions/sos/quandrix_charm.rs",
+      "definition_sha256": "a90da1f53a2f9a201f8adf55669a76f80bd7c664cfb132c35e324d1bfd4a4daa",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/q/QuandrixCharm.java",
+          "sha256": "fc7df544e3fed8c633dd2128fa1078b44bf796c36312f0664c2fdcb13cd3d003"
+        }
+      ],
+      "helpers": [
+        "CounterUnlessPaysEffect",
+        "DestroyTargetEffect",
+        "SetBasePowerToughnessTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_quandrix_charm_all_modes_payment_and_base_layer"
+      ],
+      "obligations": [
+        "Choose one \u2014",
+        "\u2022 Counter target spell unless its controller pays {2}.",
+        "\u2022 Destroy target enchantment.",
+        "\u2022 Target creature has base power and toughness 5/5 until end of turn."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "c997afb7-82cb-4579-885e-3628cb1b51e4",
+      "name": "Rapturous Moment",
+      "facts_sha256": "8b1aa60dec226d806cb13d47ecdeb7215cabc6e703ed956a26b5f860b4645929",
+      "definition": "src/card_definitions/sos/rapturous_moment.rs",
+      "definition_sha256": "a75e6f4d2af5c344cb6aab2cc54de7f945ab7d41208d586303576ffe663de815",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/r/RapturousMoment.java",
+          "sha256": "5ba823a3eed1f1bd58e4e523f98f17cf09c43a110b78a80351155abbe251947c"
+        }
+      ],
+      "helpers": [
+        "BasicManaEffect",
+        "DrawDiscardControllerEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_rapturous_private_two_discards_before_exact_mana"
+      ],
+      "obligations": [
+        "Draw three cards, then discard two cards. Add {U}{U}{R}{R}{R}."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "f07c07d7-00f1-44a5-b51f-0a22cc51fd2b",
+      "name": "Snooping Page",
+      "facts_sha256": "857897d2a74638cadb16ff7efc05d4fdbe3c0066984e5a7d353b8252677bf3ec",
+      "definition": "src/card_definitions/sos/snooping_page.rs",
+      "definition_sha256": "3cfa9785e0c2fe0c41f18fe1330041da28fd1189e262cbeb3acaae003298a44a",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SnoopingPage.java",
+          "sha256": "91f65ac8ebcf78e8bf77976f698c2400d1c61e17d0d5f9f7331d6eeabee28083"
+        }
+      ],
+      "helpers": [
+        "CantBeBlockedSourceEffect",
+        "DealsCombatDamageToAPlayerTriggeredAbility",
+        "DrawCardSourceControllerEffect",
+        "LoseLifeSourceControllerEffect",
+        "ReparteeAbility",
+        "TargetsPermanentPredicate"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_snooping_repartee_unblockable_combat_draw_and_life_loss"
+      ],
+      "obligations": [
+        "Repartee \u2014 Whenever you cast an instant or sorcery spell that targets a creature, this creature can't be blocked this turn.",
+        "Whenever this creature deals combat damage to a player, you draw a card and lose 1 life."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "6a6b19db-cdeb-4922-8642-5d872f90e7a1",
+      "name": "Spectacular Skywhale",
+      "facts_sha256": "cef44ada2bf4fc3817f0820c5044b1af953909d7f7c3a3cbd3b3c0c88af6cf3e",
+      "definition": "src/card_definitions/sos/spectacular_skywhale.rs",
+      "definition_sha256": "ee2dc1067c4ea73bf30d1d2a429ee2c5080b2e3bf34129a4777176494f76464b",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SpectacularSkywhale.java",
+          "sha256": "7f889e032e41656a04d939db0e28dd97d90c8f1a33bcffb50f1b5a8f1be82360"
+        }
+      ],
+      "helpers": [
+        "AddCountersSourceEffect",
+        "BoostSourceEffect",
+        "FlyingAbility",
+        "OpusAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_skywhale_opus_x_paid_four_or_five_and_critique_loot"
+      ],
+      "obligations": [
+        "Flying",
+        "Opus \u2014 Whenever you cast an instant or sorcery spell, this creature gets +3/+0 until end of turn. If five or more mana was spent to cast that spell, put three +1/+1 counters on this creature instead."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "2620dcfe-8738-4f81-b23d-0c1c60cf9047",
+      "name": "Splatter Technique",
+      "facts_sha256": "9aa9c219f7e5999d301635bb0abcee788774714b497c27c3716bf0480297ec5a",
+      "definition": "src/card_definitions/sos/splatter_technique.rs",
+      "definition_sha256": "31edc832c05232d9698981b5d61743695cc47d57518fb0208ac1fab75c64b837",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SplatterTechnique.java",
+          "sha256": "52f148089fbe0dc26299698ff532e57cb4e19b0419b1b534c166e85e35bf6eda"
+        }
+      ],
+      "helpers": [
+        "DamageAllEffect",
+        "DrawCardSourceControllerEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_splatter_both_modes_all_creatures_planeswalkers_not_players"
+      ],
+      "obligations": [
+        "Choose one \u2014",
+        "\u2022 Draw four cards.",
+        "\u2022 Splatter Technique deals 4 damage to each creature and planeswalker."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "1c45e872-3af8-47a4-9dc7-a99c293338f8",
+      "name": "Stadium Tidalmage",
+      "facts_sha256": "d37151c10b2490cbeb8c4c8de176350f92a605f18ef1c46cd968512c44216b46",
+      "definition": "src/card_definitions/sos/stadium_tidalmage.rs",
+      "definition_sha256": "fea513b4f4e19337d24d5f306ba47cf0a1589df2f7de5698f3c683047ef56656",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/StadiumTidalmage.java",
+          "sha256": "8b3a4805cfb7dd347401315612d32692011c20c67c2e39eb5cf9d2dfe6a4630f"
+        }
+      ],
+      "helpers": [
+        "DrawDiscardControllerEffect",
+        "EntersBattlefieldOrAttacksSourceTriggeredAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_stadium_entry_and_attack_optional_loot"
+      ],
+      "obligations": [
+        "Whenever this creature enters or attacks, you may draw a card. If you do, discard a card."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "5d46e85f-4a04-48b1-afe9-3a47678041d4",
+      "name": "Startled Relic Sloth",
+      "facts_sha256": "b187fe814bb922057131cc2cfd646cf199812eaad2013e72a79616b42c7aa69d",
+      "definition": "src/card_definitions/sos/startled_relic_sloth.rs",
+      "definition_sha256": "e8075eedcc936a1a8492afe6473bd9e4a4106288f0f896e1a7a1663e7c1491f6",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/StartledRelicSloth.java",
+          "sha256": "c5bd4adaccfe46c17607d7d392d829425079715b32597a0f8021b169ab481017"
+        }
+      ],
+      "helpers": [
+        "LifelinkAbility",
+        "TrampleAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_relic_sloth_optional_graveyard_and_actual_trample_lifelink"
+      ],
+      "obligations": [
+        "Trample, lifelink",
+        "At the beginning of combat on your turn, exile up to one target card from a graveyard."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "06c1f8a4-4948-435b-ae98-b1276b57e958",
+      "name": "Traumatic Critique",
+      "facts_sha256": "7c277f36f55c9f859160ea77c1807c18093d7d433859cf0c4c0ea005bd7d71ed",
+      "definition": "src/card_definitions/sos/traumatic_critique.rs",
+      "definition_sha256": "bf33de3fcbcaa542c199fda041da118e0a8416e8434cea7d6c5cca599c03b87c",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TraumaticCritique.java",
+          "sha256": "82f708ccc10631754c76973cf6bcda9c83afe57e0c914eb35429fcea0bdd6441"
+        }
+      ],
+      "helpers": [
+        "DamageTargetEffect",
+        "DrawDiscardControllerEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_skywhale_opus_x_paid_four_or_five_and_critique_loot",
+        "sos_audit_multi_critique_any_target_x_zero_damage_order_and_full_fizzle"
+      ],
+      "obligations": [
+        "Traumatic Critique deals X damage to any target. Draw two cards, then discard a card."
+      ],
+      "blockers": []
+    },
+    {
+      "oracle_id": "a0cbb1ba-73b1-4418-bbe3-5d1a02007c08",
+      "name": "Vibrant Outburst",
+      "facts_sha256": "0406aca750d56b6204320472c7d741e18f00ff3e0f8ff0191b8e95d43c189234",
+      "definition": "src/card_definitions/sos/vibrant_outburst.rs",
+      "definition_sha256": "1d593e7475cb759eb2a224b6c016027ddec1d91ba10e2f6399dac542704e7ff5",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/v/VibrantOutburst.java",
+          "sha256": "a8099e7cc5444011ec56a87190de854ee38cb6d310987ef7d23b0c416e80ceed"
+        }
+      ],
+      "helpers": [
+        "DamageTargetEffect",
+        "TapTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_multi_vibrant_optional_and_independently_legal_target_groups"
+      ],
+      "obligations": [
+        "Vibrant Outburst deals 3 damage to any target. Tap up to one target creature."
+      ],
+      "blockers": []
+    }
+  ],
+  "native_run": {
+    "report": "f6b4907e1d88439cb5f6f33981582120",
+    "passed": 15,
+    "test_seconds": 0.01,
+    "filter": "sos_audit_multi_"
+  }
+}

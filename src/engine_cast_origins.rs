@@ -7,7 +7,9 @@ impl Card {
             g.fragments.iter().any(|f| {
                 matches!(
                     f,
-                    StaticAbilityFragment::LookAtLibraryTop
+                    StaticAbilityFragment::HandMiracle { .. }
+                        | StaticAbilityFragment::CascadeFromHand { .. }
+                        | StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
@@ -22,7 +24,7 @@ fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     predicate: impl Fn(&StaticAbilityFragment) -> bool,
 ) -> bool {
-    world.game().state.static_sources.iter().any(|&id| {
+    world.static_sources().iter().any(|&id| {
         let object = world.object(id);
         object.zone == Zone::Battlefield
             && object.controller == player
@@ -39,10 +41,11 @@ pub(super) fn spends_any_type<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     purpose: mana_lots::Purpose,
 ) -> bool {
-    (matches!(purpose, mana_lots::Purpose::Spell(source) if source.kinds & 1 != 0)
-        && has_fragment(world, player, |f| {
-            matches!(f, StaticAbilityFragment::SpendAnyManaForCreatures)
-        }))
+    matches!(purpose, mana_lots::Purpose::Spell(source) if source.spend_any_mana)
+        || (matches!(purpose, mana_lots::Purpose::Spell(source) if source.kinds & 1 != 0)
+            && has_fragment(world, player, |f| {
+                matches!(f, StaticAbilityFragment::SpendAnyManaForCreatures)
+            }))
         || (matches!(purpose, mana_lots::Purpose::Spell(source) if source.foreign_stash)
             && world.game().state.active == player
             && has_fragment(world, player, |f| {
@@ -255,11 +258,43 @@ impl Game {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
+    pub alternative_cost: Option<ManaCost>,
+    pub maximum_mana_value: Option<u64>,
+    pub origin: Zone,
+    pub exile_on_graveyard: bool,
     pub allow_lands: bool,
     pub player: Player,
     pub remaining: Vec<ObjectRef>,
 }
 impl Game {
+    pub(super) fn offer_targeted_graveyard_free_cast(&mut self, item: &SpellView) -> bool {
+        let remaining: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                bound.object.filter(|object| {
+                    self.same_target_object(*bound)
+                        && self.state.objects[object.card as usize].zone == Zone::Graveyard
+                })
+            })
+            .collect();
+        if remaining.is_empty() {
+            return false;
+        }
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            alternative_cost: None,
+            maximum_mana_value: None,
+            origin: Zone::Graveyard,
+            exile_on_graveyard: true,
+            allow_lands: false,
+            player: item.controller,
+            remaining,
+        }));
+        self.state.pending = Pending::ResolutionCasts {
+            player: item.controller,
+        };
+        true
+    }
     pub(super) fn exile_each_top_cast_free(&mut self, player: Player) {
         let cards: Vec<_> = [self.state.active, self.state.active.other()]
             .into_iter()
@@ -273,6 +308,10 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            alternative_cost: None,
+            maximum_mana_value: None,
+            origin: Zone::Exile,
+            exile_on_graveyard: false,
             player,
             remaining,
             allow_lands: false,
@@ -294,7 +333,7 @@ impl Game {
         };
         for &object in &free.remaining {
             if self.object_ref(object.card) != object
-                || self.state.objects[object.card as usize].zone != Zone::Exile
+                || self.state.objects[object.card as usize].zone != free.origin
             {
                 continue;
             }
@@ -322,16 +361,23 @@ impl Game {
                     CastFace::Adventure => physical.adventure_spell(),
                     CastFace::Omen => physical.omen_spell(),
                 };
-                if definition.is_some_and(|card| !card.is_land())
-                    && self.permitted_cast_available(
-                        player,
-                        object.card,
-                        CastMethod::Free,
-                        face,
-                        true,
-                        false,
-                    )
-                    && emit(Action::CastExiledDuringResolution { object, face })
+                if definition.is_some_and(|card| {
+                    !card.is_land()
+                        && free
+                            .maximum_mana_value
+                            .is_none_or(|maximum| card.fixed_mana_value() < maximum)
+                }) && self.permitted_cast_available(
+                    player,
+                    object.card,
+                    if free.alternative_cost.is_some() {
+                        CastMethod::Miracle
+                    } else {
+                        CastMethod::Free
+                    },
+                    face,
+                    true,
+                    false,
+                ) && emit(Action::CastExiledDuringResolution { object, face })
                 {
                     return true;
                 }
@@ -345,6 +391,18 @@ impl Game {
         object: ObjectRef,
         face: CastFace,
     ) {
+        let alternative_cost = self
+            .state
+            .resolution_free_casts
+            .as_ref()
+            .unwrap()
+            .alternative_cost;
+        let exile_on_graveyard = self
+            .state
+            .resolution_free_casts
+            .as_ref()
+            .unwrap()
+            .exile_on_graveyard;
         self.state
             .resolution_free_casts
             .as_mut()
@@ -354,7 +412,12 @@ impl Game {
         self.reveal_hideaway_object(object);
         let mut item = self.cast_item(player, object.card, [0; 6]);
         self.set_cast_face(&mut item, face);
-        item.cast.as_mut().unwrap().method = CastMethod::Free;
+        item.cast.as_mut().unwrap().method = if alternative_cost.is_some() {
+            CastMethod::Miracle
+        } else {
+            CastMethod::Free
+        };
+        item.cast.as_mut().unwrap().exile_on_graveyard = exile_on_graveyard;
         if item.source_card.x_symbols() > 0 {
             item.x = Some(0);
         }

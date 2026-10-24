@@ -57,6 +57,7 @@ pub(super) struct ZoneState {
     choice: Option<Box<Choice>>,
     replay: Option<Box<Replay>>,
     reveals: SharedVec<ZoneRevealView>,
+    graveyard_exile_spells: SharedVec<ObjectRef>,
 }
 #[derive(Clone, Copy, Debug, Default)]
 pub(super) struct FrozenRules {
@@ -104,6 +105,7 @@ impl ZoneState {
         };
         std::mem::size_of::<Self>()
             + self.reveals.len() * std::mem::size_of::<ZoneRevealView>()
+            + self.graveyard_exile_spells.len() * std::mem::size_of::<ObjectRef>()
             + self.choice.as_ref().map_or(0, |c| {
                 std::mem::size_of::<Choice>()
                     + base_bytes(&c.base)
@@ -116,6 +118,37 @@ impl ZoneState {
     }
 }
 impl Game {
+    pub(super) fn register_stack_graveyard_exile(&mut self, item: &SpellView) {
+        if item.kind == StackKind::Spell
+            && !item.is_copy
+            && item.cast.is_some_and(|cast| cast.exile_on_graveyard)
+        {
+            let rows = &mut self
+                .state
+                .zone_rules
+                .get_or_insert_default()
+                .graveyard_exile_spells;
+            if !rows.contains(&item.object) {
+                rows.push(item.object);
+            }
+        }
+    }
+    pub(super) fn forget_stack_graveyard_exile(&mut self, object: ObjectRef) {
+        if let Some(rules) = &mut self.state.zone_rules
+            && rules.graveyard_exile_spells.contains(&object)
+        {
+            rules
+                .graveyard_exile_spells
+                .retain(|reference| *reference != object);
+        }
+    }
+    fn stack_graveyard_exile(&self, object: ObjectRef) -> bool {
+        self.state
+            .zone_rules
+            .as_ref()
+            .is_some_and(|rules| rules.graveyard_exile_spells.contains(&object))
+    }
+
     pub(super) fn register_zone_rule_card(&mut self, card: Card) {
         if card.zone_replacement().is_some() {
             self.state.zone_rules.get_or_insert_default();
@@ -178,15 +211,17 @@ impl Game {
         let spell = before.kinds & 12 != 0 && !before.is_token();
         FrozenRules {
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
-            exile_spell: self.state.static_sources.iter().any(|&id| {
-                self.on_battlefield(id)
-                    && self.printed_abilities_available(id)
-                    && match self.state.objects[id as usize].card.zone_replacement() {
-                        Some(ZoneReplacementRule::ExileAllCardsAndTokens) => true,
-                        Some(ZoneReplacementRule::ExileInstantSorceryCards) => spell,
-                        _ => false,
-                    }
-            }),
+            exile_spell: (before.zone == Zone::Stack
+                && self.stack_graveyard_exile(before.reference))
+                || self.state.static_sources.iter().any(|&id| {
+                    self.on_battlefield(id)
+                        && self.printed_abilities_available(id)
+                        && match self.state.objects[id as usize].card.zone_replacement() {
+                            Some(ZoneReplacementRule::ExileAllCardsAndTokens) => true,
+                            Some(ZoneReplacementRule::ExileInstantSorceryCards) => spell,
+                            _ => false,
+                        }
+                }),
             discard_to_battlefield: before.zone == Zone::Hand
                 && own == Some(ZoneReplacementRule::OpponentDiscardToBattlefield)
                 && discard_cause.is_some_and(|cause| cause != before.owner),
@@ -198,8 +233,24 @@ impl Game {
         requested: Zone,
         rules: FrozenRules,
     ) -> Plan {
+        if let Some(plan) = self.replay_frozen_mana_zone_plan(before.reference, requested) {
+            return plan;
+        }
+        let plan = self.plan_zone_move_unrecorded(before, requested, rules);
+        self.record_cast_mana_zone_plan(before, plan);
+        plan
+    }
+    fn plan_zone_move_unrecorded(
+        &mut self,
+        before: &ObjectView,
+        requested: Zone,
+        rules: FrozenRules,
+    ) -> Plan {
         // A stack copy ceases without a physical card event or replacement choice.
-        if before.zone == Zone::Stack && self.state.objects[before.id as usize].is_spell_copy() {
+        if before.zone == Zone::Stack
+            && requested != Zone::Battlefield
+            && self.state.objects[before.id as usize].is_spell_copy()
+        {
             return Plan {
                 destination: Zone::Outside,
                 shuffle: false,
@@ -345,6 +396,7 @@ impl Game {
         Ok(())
     }
     pub(super) fn choose_zone_replacement(&mut self, effect: ZoneReplacementKind) {
+        let foreign_cast_choice = self.foreign_cast_choice_pending();
         let choice = self
             .state
             .zone_rules
@@ -389,5 +441,25 @@ impl Game {
             "complete zone replay prefix"
         );
         self.revision = revision;
+        // The saved action runs as its original actor. Retain the actual foreign
+        // replacement decision only after replay bookkeeping has been consumed.
+        if foreign_cast_choice {
+            self.mark_foreign_cast_choice();
+        }
+    }
+}
+
+/// A failed casting proposal cannot conceal a real irreversible library reveal.
+/// The choice/replay stack and stack-to-graveyard permissions remain checkpoint-owned.
+pub(super) fn preserve_irreversible_reveals(
+    target: &mut Option<Box<ZoneState>>,
+    source: Option<&ZoneState>,
+) {
+    if let Some(source) = source {
+        if !source.reveals.is_empty() || target.is_some() {
+            target.get_or_insert_default().reveals = source.reveals.clone();
+        }
+    } else if let Some(target) = target {
+        target.reveals.clear();
     }
 }

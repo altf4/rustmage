@@ -39,8 +39,11 @@ impl Card {
 }
 /// Re-evaluate using the supplied actual or speculative object facts. Layer-six
 /// removal cannot undo an effect that already started in layer two (CR613.6).
-pub(super) fn controllers(game: &Game, object: impl Fn(CardId) -> Object) -> Vec<ControlBase> {
-    let Some(state) = game.state.controls.as_ref() else {
+pub(super) fn controllers<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+) -> Vec<ControlBase> {
+    let object = |id| world.object(id).clone();
+    let Some(state) = world.controls() else {
         return Vec::new();
     };
     let present = |r: ObjectRef| {
@@ -64,7 +67,7 @@ pub(super) fn controllers(game: &Game, object: impl Fn(CardId) -> Object) -> Vec
             timestamp: row.timestamp,
         })
         .collect();
-    for &id in &game.state.attachment_sources {
+    for &id in world.attachment_sources() {
         let aura = object(id);
         let source = ObjectRef {
             card: id,
@@ -76,10 +79,8 @@ pub(super) fn controllers(game: &Game, object: impl Fn(CardId) -> Object) -> Vec
         let Some(target) = aura.attached_to.filter(|&r| present(r)) else {
             continue;
         };
-        let timestamp = game
-            .state
-            .roles
-            .as_ref()
+        let timestamp = world
+            .roles()
             .and_then(|r| r.ability_timestamps.iter().find(|r| r.source == source))
             .expect("registered layer-two source")
             .timestamp;
@@ -197,7 +198,7 @@ impl Game {
         if self.state.controls.is_none() {
             return;
         }
-        for row in controllers(self, |id| self.state.objects[id as usize].clone()) {
+        for row in controllers(self) {
             self.change_controller(row.object, row.controller);
         }
         let live: Vec<_> = self

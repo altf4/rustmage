@@ -1,0 +1,1300 @@
+//! Cold owned facts for immediate entries inside a declared cost transaction.
+use super::*;
+use ability_world::CharacteristicWorld;
+
+#[derive(Clone)]
+pub(super) struct PaymentContinuation<'g> {
+    head: &'g Announcement,
+    outer: &'g [mana_announcements::ManaAnnouncement],
+    quality: Option<&'g mana_lots::Quality>,
+}
+#[derive(Clone)]
+pub(super) struct EntryProjection {
+    pub static_sources: Vec<CardId>,
+    pub attachment_sources: Vec<CardId>,
+    pub roles: roles::RoleState,
+    pub controls: continuous_control::ControlState,
+    pub entry_values: Vec<entry_choices::ChoiceRow>,
+    pub order: Vec<ObjectRef>,
+    pub consumed: Vec<ObjectRef>,
+    pub counter: Option<replacements::CounterPreview>,
+}
+impl EntryProjection {
+    fn from_world(w: &FundingState<'_>) -> Self {
+        Self {
+            static_sources: w.static_sources().to_vec(),
+            attachment_sources: w.attachment_sources().to_vec(),
+            roles: w.roles().cloned().unwrap_or_default(),
+            controls: w.controls().cloned().unwrap_or_default(),
+            entry_values: w.entry_values().to_vec(),
+            order: Vec::new(),
+            consumed: Vec::new(),
+            counter: None,
+        }
+    }
+    fn register(&mut self, source: ObjectRef, card: Card) -> u64 {
+        self.order.push(source);
+        if !self.static_sources.contains(&source.card) {
+            self.static_sources.push(source.card);
+        }
+        if card.attachment_bonus().is_some() && !self.attachment_sources.contains(&source.card) {
+            self.attachment_sources.push(source.card);
+        }
+        let timestamp = self.roles.next_timestamp();
+        if let Some(spec) = card.base_stat_setter() {
+            self.roles.base_stats.push(BaseStatsEffectView {
+                recipient: source,
+                source,
+                power: spec.power,
+                toughness: spec.toughness,
+                timestamp,
+                static_source: true,
+                permanent: false,
+            });
+        }
+        if !card.live_static_effects().is_empty() {
+            self.roles.live_static.push(LiveStaticSourceView {
+                source,
+                timestamp,
+                effects: card.live_static_effects(),
+            });
+        }
+        if card.has_layer6_provider() {
+            use crate::cards::StaticAbilityFragment as F;
+            self.roles
+                .ability_timestamps
+                .push(AbilitySourceTimestampView { source, timestamp });
+            if card.static_ability_groups().iter().any(|g| {
+                g.fragments
+                    .iter()
+                    .any(|f| matches!(f, F::RemoveAttachedAbilities))
+            }) {
+                self.roles.ability_removal_sources.push(source);
+            }
+            if card.static_ability_groups().iter().any(|g| {
+                g.fragments
+                    .iter()
+                    .any(|f| matches!(f, F::AttachedCharacteristics(_)))
+            }) {
+                self.roles.characteristic_sources.push(source);
+            }
+        }
+        timestamp
+    }
+}
+impl FundingState<'_> {
+    pub(super) fn prepare_entry_projection(&mut self) {
+        if self.entry_projection.is_none() {
+            self.entry_projection = Some(Box::new(EntryProjection::from_world(self)));
+            self.power_sensitive = true;
+            for (id, object) in self.game.state.objects.iter().enumerate() {
+                if !self.resources.iter().any(|r| r.id == id as CardId) {
+                    self.resources.push(Resource {
+                        id: id as CardId,
+                        object: object.clone(),
+                        attacking: self
+                            .game
+                            .state
+                            .attackers
+                            .iter()
+                            .any(|r| r.card == id as CardId),
+                    });
+                }
+            }
+        }
+    }
+    /// Current links are immutable rules records. Exact virtual incarnations decide
+    /// whether each immediate zone-change effect still has an object to return.
+    pub(super) fn visit_linked_returns(&self, emit: &mut dyn FnMut(&Self) -> bool) -> bool {
+        if self.game.state.exile_links.is_empty() {
+            return emit(self);
+        }
+        let links = self
+            .game
+            .state
+            .exile_links
+            .iter()
+            .filter(|link| {
+                let source = self.object(link.source.card);
+                let exiled = self.object(link.exiled.card);
+                (source.zone != Zone::Battlefield
+                    || self.reference(link.source.card) != link.source)
+                    && exiled.zone == Zone::Exile
+                    && self.reference(link.exiled.card) == link.exiled
+                    && !exiled.is_token()
+                    && self
+                        .entry_projection
+                        .as_ref()
+                        .is_none_or(|p| !p.consumed.contains(&link.exiled))
+            })
+            .collect::<Vec<_>>();
+        if links.is_empty() {
+            return emit(self);
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        let moves = links
+            .into_iter()
+            .map(|link| {
+                entries::EntryMove::from_view(
+                    query.object_view(link.exiled.card),
+                    link.return_zone,
+                    false,
+                )
+            })
+            .collect::<Vec<_>>();
+        if moves.is_empty() {
+            return emit(self);
+        }
+        let mut next = self.clone();
+        next.prepare_entry_projection();
+        next.entry_projection
+            .as_mut()
+            .unwrap()
+            .consumed
+            .extend(moves.iter().map(|m| m.before.reference));
+        next.visit_entry_moves(moves, true, None, emit)
+    }
+}
+
+impl FundingState<'_> {
+    fn entry_guard(&self, guard: StepGuard, movement: &entries::EntryMove) -> bool {
+        let player = movement.controller;
+        let source = movement.before.reference;
+        let state = &self.game.state.players[player.index()];
+        let count = |zone, owner| {
+            self.resources
+                .iter()
+                .filter(|r| {
+                    r.object.zone == zone
+                        && if zone == Zone::Battlefield {
+                            r.object.controller == owner
+                        } else {
+                            r.object.owner == owner
+                        }
+                })
+                .count()
+        };
+        match guard {
+            StepGuard::Always => true,
+            StepGuard::YourTurn => self.active == player,
+            StepGuard::GainedLife => self.gained_life(player),
+            StepGuard::Attacked => state.attacked_this_turn,
+            StepGuard::CreatureDied => self.creatures_died > 0,
+            StepGuard::OpponentLostLife => {
+                self.game.state.players[player.other().index()].life_lost_this_turn > 0
+                    || self.life(player.other())
+                        < self.game.state.players[player.other().index()].life
+            }
+            StepGuard::CardExiledThisTurn => {
+                self.game.state.cards_exiled_this_turn
+                    || self.resources.iter().any(|r| {
+                        r.object.zone == Zone::Exile
+                            && (self.game.state.objects[r.id as usize].zone != Zone::Exile
+                                || self.game.object_ref(r.id) != self.reference(r.id))
+                    })
+            }
+            StepGuard::OpponentHasMoreCardsInHand => {
+                count(Zone::Hand, player.other()) > count(Zone::Hand, player)
+            }
+            StepGuard::OpponentControlsMoreCreatures => {
+                let creatures = |p| {
+                    self.resources
+                        .iter()
+                        .filter(|r| {
+                            r.object.zone == Zone::Battlefield
+                                && r.object.controller == p
+                                && CharacteristicWorld::kinds(self, r.id) & 1 != 0
+                        })
+                        .count()
+                };
+                creatures(player.other()) > creatures(player)
+            }
+            StepGuard::SourceTapped => {
+                if self.reference(source.card) == source
+                    && self.object(source.card).zone == Zone::Battlefield
+                {
+                    self.object(source.card).tapped
+                } else {
+                    movement.before.tapped
+                }
+            }
+            StepGuard::SourceReceivedCounterThisTurn => {
+                self.game.put_counter_on_source_this_turn(source, player)
+            }
+            StepGuard::SourcePowerAtLeast(n) => {
+                self.reference(source.card) == source
+                    && self.object(source.card).zone == Zone::Battlefield
+                    && self.power(source.card) >= i128::from(n)
+            }
+            StepGuard::SourceToughnessAtMost(n) => {
+                self.reference(source.card) == source
+                    && self.object(source.card).zone == Zone::Battlefield
+                    && characteristic_query::CharacteristicQuery::in_world(self)
+                        .stats(source.card)
+                        .toughness
+                        <= i128::from(n)
+            }
+            StepGuard::Outlaw => self.resources.iter().any(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.controller == player
+                    && ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                        .iter()
+                        .any(|s| self.subtypes(r.id).has(r.object.card, s))
+            }),
+            StepGuard::Expression {
+                value,
+                minimum,
+                maximum,
+            } => {
+                let v = self.value(value, source.card);
+                minimum.is_none_or(|n| v >= n) && maximum.is_none_or(|n| v <= n)
+            }
+            StepGuard::Threshold {
+                value,
+                minimum,
+                maximum,
+            } => {
+                let creatures = self
+                    .resources
+                    .iter()
+                    .filter(|r| {
+                        r.object.zone == Zone::Battlefield
+                            && r.object.controller == player
+                            && CharacteristicWorld::kinds(self, r.id) & 1 != 0
+                    })
+                    .collect::<Vec<_>>();
+                let v = match value {
+                    StepValue::Life => Some(self.life(player)),
+                    StepValue::Hand => Some(count(Zone::Hand, player) as i128),
+                    StepValue::SpellsCast => Some(i128::from(state.spells_cast_this_turn)),
+                    StepValue::Creatures => Some(creatures.len() as i128),
+                    StepValue::TappedCreatures => {
+                        Some(creatures.iter().filter(|r| r.object.tapped).count() as i128)
+                    }
+                    StepValue::EnchantedCreatures => Some(
+                        creatures
+                            .iter()
+                            .filter(|r| {
+                                self.attachment_sources().iter().any(|&id| {
+                                    self.object(id).zone == Zone::Battlefield
+                                        && self.object(id).card.aura().is_some()
+                                        && self.object(id).attached_to == Some(self.reference(r.id))
+                                })
+                            })
+                            .count() as i128,
+                    ),
+                    StepValue::Lands => Some(
+                        self.resources
+                            .iter()
+                            .filter(|r| {
+                                r.object.zone == Zone::Battlefield
+                                    && r.object.controller == player
+                                    && CharacteristicWorld::kinds(self, r.id) & 2 != 0
+                            })
+                            .count() as i128,
+                    ),
+                    StepValue::GreatestCreaturePower => {
+                        creatures.iter().map(|r| self.power(r.id)).max()
+                    }
+                    StepValue::GreatestOtherCreaturePower => creatures
+                        .iter()
+                        .filter(|r| self.reference(r.id) != source)
+                        .map(|r| self.power(r.id))
+                        .max(),
+                    StepValue::TotalCreaturePower => Some(
+                        creatures
+                            .iter()
+                            .map(|r| self.power(r.id))
+                            .try_fold(0i128, i128::checked_add)
+                            .capacity("entry power exhausted"),
+                    ),
+                    StepValue::TotalCreatureToughness => Some(
+                        creatures
+                            .iter()
+                            .map(|r| {
+                                characteristic_query::CharacteristicQuery::in_world(self)
+                                    .stats(r.id)
+                                    .toughness
+                            })
+                            .try_fold(0i128, i128::checked_add)
+                            .capacity("entry toughness exhausted"),
+                    ),
+                };
+                v.is_some_and(|v| minimum.is_none_or(|n| v >= n) && maximum.is_none_or(|n| v <= n))
+            }
+        }
+    }
+    fn entry_counters(&self, m: &entries::EntryMove) -> Counters {
+        if m.destination != Zone::Battlefield {
+            return Counters::default();
+        }
+        let card = m.before.card;
+        let mut counters = card.enters_counters();
+        if let Some((kind, max)) = card.x_complement_entry_counters() {
+            counters.add(kind, u64::from(max.saturating_sub(m.x)));
+        }
+        for rule in card.entry_counter_rules() {
+            if !self.entry_guard(rule.guard, m) {
+                continue;
+            }
+            let amount = match rule.amount {
+                EntryCounterAmount::GreatestOtherCreaturePower => self
+                    .resources
+                    .iter()
+                    .filter(|r| {
+                        r.object.zone == Zone::Battlefield
+                            && r.object.controller == m.controller
+                            && r.id != m.before.id
+                            && CharacteristicWorld::kinds(self, r.id) & 1 != 0
+                    })
+                    .map(|r| self.power(r.id))
+                    .max()
+                    .unwrap_or(0)
+                    .max(0)
+                    .try_into()
+                    .capacity("entry power exhausted"),
+                EntryCounterAmount::ColorsSpent => m
+                    .cast_payment
+                    .map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64),
+                EntryCounterAmount::IfNotCastOrZero(n) => {
+                    if m.cast_payment.is_none_or(|p| p == [0; 6]) {
+                        u64::from(n)
+                    } else {
+                        0
+                    }
+                }
+                EntryCounterAmount::Fixed(n) => u64::from(n),
+                EntryCounterAmount::Stat(v) => u64::try_from(self.value(v, m.before.id).max(0))
+                    .capacity("entry counter amount exhausted"),
+            };
+            counters.add(CounterKind::PlusOne, amount);
+        }
+        if m.cast_origin.is_some() {
+            for &(kind, n) in card.cast_entry_counters() {
+                counters.add(kind, n)
+            }
+        }
+        if m.cast_origin == Some(Zone::Hand) {
+            for &(kind, n) in card.hand_cast_entry_counters() {
+                counters.add(kind, n)
+            }
+        }
+        if let Some((kind, n)) = m.effect_counter {
+            counters.add(kind, n)
+        }
+        if card.x_entry_counters() {
+            counters.add(CounterKind::PlusOne, u64::from(m.x))
+        }
+        if m.kicked {
+            counters.add(
+                CounterKind::PlusOne,
+                u64::from(card.kicked_entry_counters()),
+            )
+        }
+        counters
+    }
+    fn entry_tapped(&self, m: &entries::EntryMove) -> bool {
+        let owner = m.controller;
+        let land_count = || {
+            self.resources
+                .iter()
+                .filter(|r| {
+                    r.id != m.before.id
+                        && r.object.zone == Zone::Battlefield
+                        && r.object.controller == owner
+                        && CharacteristicWorld::kinds(self, r.id) & 2 != 0
+                })
+                .count()
+        };
+        match m.before.card.entry_tapped() {
+            EntryTapped::Never | EntryTapped::PayLife(_) => false,
+            EntryTapped::Always => true,
+            EntryTapped::ChosenXAtMost(n) => m.x <= n,
+            EntryTapped::OpponentsTurn => owner != self.active,
+            EntryTapped::UnlessLowLife => [Player::P0, Player::P1]
+                .into_iter()
+                .all(|p| self.life(p) > 13),
+            EntryTapped::UnlessAtMostTwo => land_count() > 2,
+            EntryTapped::UnlessAtLeastTwo => land_count() < 2,
+            EntryTapped::UnlessBasic => !self.resources.iter().any(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.controller == owner
+                    && r.object.card.is_basic_land()
+                    && CharacteristicWorld::kinds(self, r.id) & 2 != 0
+            }),
+            EntryTapped::UnlessPlaneswalker => !self.resources.iter().any(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.controller == owner
+                    && CharacteristicWorld::kinds(self, r.id) & 64 != 0
+            }),
+            EntryTapped::UnlessPlainsOrIsland => !self.resources.iter().any(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.controller == owner
+                    && (self.subtypes(r.id).has(r.object.card, "Plains")
+                        || self.subtypes(r.id).has(r.object.card, "Island"))
+            }),
+        }
+    }
+    fn initialize_entry_tap(&self, m: &mut entries::EntryMove) -> Vec<entry_tap::EntryTapEffect> {
+        let mut effects = Vec::new();
+        for &id in self.static_sources() {
+            let o = self.object(id);
+            if o.zone == Zone::Battlefield
+                && o.controller == m.controller
+                && o.card.controlled_entry_untapped() & m.before.card.kind_mask() != 0
+                && self.fragment_available(id, |f| {
+                    matches!(
+                        f,
+                        crate::cards::StaticAbilityFragment::ControlledEntryUntapped
+                    )
+                })
+            {
+                effects.push(entry_tap::EntryTapEffect {
+                    source: self.reference(id),
+                    intrinsic: false,
+                    kind: entry_tap::EntryTapKind::Untapped,
+                });
+            }
+        }
+        let opponent = self
+            .static_sources()
+            .iter()
+            .copied()
+            .filter(|&id| {
+                let o = self.object(id);
+                o.zone == Zone::Battlefield
+                    && o.controller != m.controller
+                    && o.card.opponent_entry_tapped() & m.before.card.kind_mask() != 0
+                    && self.printed_abilities_available(id)
+            })
+            .collect::<Vec<_>>();
+        if effects.is_empty() {
+            m.tapped |= self.entry_tapped(m) || !opponent.is_empty();
+            return effects;
+        }
+        for id in opponent {
+            effects.push(entry_tap::EntryTapEffect {
+                source: self.reference(id),
+                intrinsic: false,
+                kind: entry_tap::EntryTapKind::Tapped,
+            });
+        }
+        if self.entry_tapped(m) {
+            effects.push(entry_tap::EntryTapEffect {
+                source: m.before.reference,
+                intrinsic: true,
+                kind: entry_tap::EntryTapKind::Tapped,
+            });
+        }
+        if let EntryTapped::PayLife(n) = m.before.card.entry_tapped() {
+            effects.push(entry_tap::EntryTapEffect {
+                source: m.before.reference,
+                intrinsic: true,
+                kind: entry_tap::EntryTapKind::PayLife(n),
+            });
+        }
+        effects
+    }
+    fn visit_entry_moves(
+        &self,
+        mut moves: Vec<entries::EntryMove>,
+        initial: bool,
+        actual: Option<&entries::EntryBatch>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let mut taps = actual.map_or_else(Vec::new, |b| b.tap_events[b.tap_next..].to_vec());
+        if initial {
+            for (index, m) in moves.iter_mut().enumerate() {
+                m.counters = self.entry_counters(m);
+                if m.destination == Zone::Battlefield {
+                    let effects = self.initialize_entry_tap(m);
+                    if !effects.is_empty() {
+                        taps.push(entry_tap::EntryTapEvent {
+                            index,
+                            effects,
+                            payment: None,
+                        });
+                    }
+                }
+            }
+        }
+        self.visit_entry_taps(moves, taps, 0, actual, emit)
+    }
+    fn visit_entry_taps(
+        &self,
+        moves: Vec<entries::EntryMove>,
+        taps: Vec<entry_tap::EntryTapEvent>,
+        at: usize,
+        actual: Option<&entries::EntryBatch>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let Some(event) = taps.get(at) else {
+            return self.visit_entry_values(moves, 0, actual, emit);
+        };
+        if let Some(cost) = event.payment {
+            for pay in [false, true] {
+                let m = &moves[event.index];
+                if pay && self.life(m.controller) < i128::from(cost) {
+                    continue;
+                }
+                let mut w = self.clone();
+                if pay {
+                    w.pay_projected_life(m.controller, cost)
+                }
+                let mut next = moves.clone();
+                next[event.index].life_paid = Some(pay);
+                next[event.index].tapped |= !pay;
+                let mut events = taps.clone();
+                events[at].payment = None;
+                if w.visit_entry_taps(next, events, at, actual, emit) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if event.effects.is_empty() {
+            return self.visit_entry_taps(moves, taps, at + 1, actual, emit);
+        }
+        for index in 0..event.effects.len() {
+            let mut next = moves.clone();
+            let mut events = taps.clone();
+            let effect = events[at].effects.remove(index);
+            match effect.kind {
+                entry_tap::EntryTapKind::Tapped => next[event.index].tapped = true,
+                entry_tap::EntryTapKind::Untapped => next[event.index].tapped = false,
+                entry_tap::EntryTapKind::PayLife(n) => events[at].payment = Some(n),
+            }
+            if self.visit_entry_taps(next, events, at, actual, emit) {
+                return true;
+            }
+        }
+        false
+    }
+    fn pay_projected_life(&mut self, player: Player, n: u32) {
+        if player == self.actor {
+            self.life -= i128::from(n)
+        } else {
+            self.other_life -= i128::from(n)
+        }
+    }
+    fn aura_candidate(&self, m: &entries::EntryMove, target: ObjectRef) -> bool {
+        let Some(spec) = m.before.card.aura() else {
+            return false;
+        };
+        let o = self.object(target.card);
+        o.zone == Zone::Battlefield
+            && self.reference(target.card) == target
+            && !characteristic_query::CharacteristicQuery::in_world(self)
+                .keywords(target.card)
+                .contains(Keywords::PROTECTION_EVERYTHING)
+            && if spec.kinds == 0 {
+                CharacteristicWorld::kinds(self, target.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
+            } else {
+                CharacteristicWorld::kinds(self, target.card) & u16::from(spec.kinds) != 0
+            }
+            && match spec.relation {
+                0 => o.controller == m.controller,
+                1 => o.controller != m.controller,
+                _ => true,
+            }
+    }
+    fn visit_entry_values(
+        &self,
+        moves: Vec<entries::EntryMove>,
+        at: usize,
+        actual: Option<&entries::EntryBatch>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let Some(m) = moves.get(at) else {
+            return self.visit_entry_counter_rows(moves, actual, emit);
+        };
+        if m.skipped || m.destination != Zone::Battlefield {
+            return self.visit_entry_values(moves, at + 1, actual, emit);
+        }
+        if let Some(kind) = m.before.card.entry_choice()
+            && m.choice.is_none()
+        {
+            let mut choices = Vec::new();
+            match kind {
+                crate::cards::EntryChoiceKind::Color => choices.extend(
+                    crate::cards::ChoiceColor::ALL
+                        .into_iter()
+                        .map(EntryChoiceValue::Color),
+                ),
+                crate::cards::EntryChoiceKind::CreatureType => {
+                    choices.extend(crate::CREATURE_TYPES.iter().map(|name| {
+                        EntryChoiceValue::CreatureType(
+                            crate::cards::CreatureType::from_name(name).unwrap(),
+                        )
+                    }))
+                }
+                crate::cards::EntryChoiceKind::LandCardName => {
+                    choices.extend(crate::CardName::lands().map(EntryChoiceValue::CardName));
+                }
+                crate::cards::EntryChoiceKind::CardNameAfterOpponentHand => {
+                    // Names absent from this world are equivalent for cost completion.
+                    let mut unmatched = false;
+                    for name in crate::CardName::all() {
+                        let present = self.resources.iter().any(|r| name.matches(self.name(r.id)));
+                        if present || !unmatched {
+                            choices.push(EntryChoiceValue::CardName(name));
+                            unmatched |= !present;
+                        }
+                    }
+                }
+            }
+            for value in choices {
+                let mut next = moves.clone();
+                let row = &mut next[at];
+                row.choice = Some(value);
+                if let (Some(kind), EntryChoiceValue::CreatureType(typ)) =
+                    (row.before.card.chosen_entry_counters(), value)
+                {
+                    let n = self
+                        .resources
+                        .iter()
+                        .filter(|r| {
+                            r.object.zone == Zone::Battlefield
+                                && r.object.controller == row.controller
+                                && CharacteristicWorld::kinds(self, r.id) & 1 != 0
+                                && self.subtypes(r.id).has(r.object.card, typ.name())
+                        })
+                        .count() as u64;
+                    row.counters.add(kind, n)
+                }
+                if self.visit_entry_values(next, at, actual, emit) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if m.life_paid.is_none()
+            && let EntryTapped::PayLife(cost) = m.before.card.entry_tapped()
+        {
+            for pay in [false, true] {
+                if pay && self.life(m.controller) < i128::from(cost) {
+                    continue;
+                }
+                let mut w = self.clone();
+                if pay {
+                    w.pay_projected_life(m.controller, cost)
+                }
+                let mut next = moves.clone();
+                next[at].life_paid = Some(pay);
+                next[at].tapped |= !pay;
+                if w.visit_entry_values(next, at, actual, emit) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if m.before.card.aura().is_some() && m.attachment.is_none() {
+            let mut any = false;
+            for r in &self.resources {
+                let target = self.reference(r.id);
+                if self.aura_candidate(m, target) {
+                    any = true;
+                    let mut next = moves.clone();
+                    next[at].attachment = Some(target);
+                    if self.visit_entry_values(next, at + 1, actual, emit) {
+                        return true;
+                    }
+                }
+            }
+            if !any {
+                let mut next = moves.clone();
+                if m.before.zone == Zone::Stack {
+                    next[at].destination = Zone::Graveyard
+                } else {
+                    next[at].skipped = true
+                }
+                return self.visit_entry_values(next, at + 1, actual, emit);
+            }
+            return false;
+        }
+        self.visit_entry_values(moves, at + 1, actual, emit)
+    }
+}
+
+impl FundingState<'_> {
+    fn visit_entry_counter_rows(
+        &self,
+        mut moves: Vec<entries::EntryMove>,
+        actual: Option<&entries::EntryBatch>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        if actual.is_none_or(|b| !b.entry_bonuses_ready) {
+            for &id in self.static_sources() {
+                let provider = self.object(id);
+                if provider.zone != Zone::Battlefield {
+                    continue;
+                }
+                for group in provider.card.static_ability_groups() {
+                    for fragment in group.fragments {
+                        let crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(subtype) =
+                            fragment
+                        else {
+                            continue;
+                        };
+                        if !self.fragment_available(id,|f|matches!(f,crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(s)if s==subtype)){continue}
+                        let count = self
+                            .resources
+                            .iter()
+                            .filter(|r| {
+                                r.object.zone == Zone::Battlefield
+                                    && r.object.controller == provider.controller
+                                    && self.subtypes(r.id).has(r.object.card, subtype)
+                            })
+                            .count() as u64;
+                        for m in &mut moves {
+                            if !m.skipped
+                                && m.destination == Zone::Battlefield
+                                && m.controller == provider.controller
+                                && m.before.reference != self.reference(id)
+                                && Game::entry_choice_subtypes(m).has(m.before.card, subtype)
+                            {
+                                m.counters.add(CounterKind::PlusOne, count)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        let mut order = (0..moves.len()).collect::<Vec<_>>();
+        order.sort_by_key(|&i| (moves[i].controller != self.active, i));
+        self.visit_entry_counters(moves, &order, 0, actual, emit)
+    }
+    fn visit_entry_counters(
+        &self,
+        moves: Vec<entries::EntryMove>,
+        order: &[usize],
+        at: usize,
+        actual: Option<&entries::EntryBatch>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let Some(&index) = order.get(at) else {
+            return self.visit_entry_timestamps(
+                moves,
+                actual.map_or_else(Vec::new, |b| b.timestamp_order.clone()),
+                emit,
+            );
+        };
+        let m = &moves[index];
+        let current = self
+            .entry_projection
+            .as_ref()
+            .and_then(|p| p.counter.as_ref())
+            .filter(|p| p.index == index);
+        let processed = actual.is_some_and(|b| b.counter_order[..b.counter_next].contains(&index))
+            && current.is_none();
+        if m.skipped || m.destination != Zone::Battlefield || m.counters.is_empty() || processed {
+            return self.visit_entry_counters(moves, order, at + 1, actual, emit);
+        }
+        let (placement, mut used) = current.map_or_else(
+            || {
+                (
+                    replacements::CounterPlacement {
+                        placed_by: m.controller,
+                        object: m.before.reference,
+                        card: m.before.card,
+                        owner: m.before.owner,
+                        controller: m.controller,
+                        subtypes: Game::entry_choice_subtypes(m),
+                        kind: m.before.card.kind_mask(),
+                        amount: m.counters.clone(),
+                        effect: true,
+                        entry_index: Some(index),
+                        private: false,
+                    },
+                    Vec::new(),
+                )
+            },
+            |p| (p.placement.clone(), p.used.clone()),
+        );
+        replacements::counter_outcomes(self, &placement, &mut used, &mut |amount| {
+            let mut next = moves.clone();
+            next[index].counters = amount.clone();
+            self.visit_entry_counters(next, order, at + 1, actual, emit)
+        })
+    }
+    fn visit_entry_timestamps(
+        &self,
+        moves: Vec<entries::EntryMove>,
+        prefix: Vec<usize>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let mut rest = moves
+            .iter()
+            .enumerate()
+            .filter(|(i, m)| {
+                !prefix.contains(i)
+                    && !m.skipped
+                    && m.destination == Zone::Battlefield
+                    && Self::entry_has_timestamp(m.before.card)
+            })
+            .map(|(i, _)| i)
+            .collect::<Vec<_>>();
+        rest.sort_by_key(|&i| (moves[i].controller != self.active, i));
+        let Some(&first) = rest.first() else {
+            return self.commit_projected_entries(moves, &prefix, emit);
+        };
+        let controller = moves[first].controller;
+        for index in rest
+            .into_iter()
+            .filter(|&i| moves[i].controller == controller)
+        {
+            let mut next = prefix.clone();
+            next.push(index);
+            if self.visit_entry_timestamps(moves.clone(), next, emit) {
+                return true;
+            }
+        }
+        false
+    }
+    fn entry_has_timestamp(card: Card) -> bool {
+        card.base_stat_setter().is_some()
+            || !card.live_static_effects().is_empty()
+            || card.role().is_some()
+            || card.has_layer6_provider()
+    }
+    fn commit_projected_entries(
+        &self,
+        moves: Vec<entries::EntryMove>,
+        order: &[usize],
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let mut next = self.clone();
+        next.prepare_entry_projection();
+        for m in &moves {
+            if m.skipped {
+                continue;
+            }
+            let row = next
+                .resources
+                .iter_mut()
+                .find(|r| r.id == m.before.id)
+                .expect("entry resource retained");
+            let o = &mut row.object;
+            o.zone = m.destination;
+            o.generation = o
+                .generation
+                .checked_add(1)
+                .capacity("virtual generation exhausted");
+            o.controller = if m.destination == Zone::Battlefield {
+                m.controller
+            } else {
+                o.owner
+            };
+            o.summoning_sick = true;
+            o.gained_keywords = Keywords::NONE;
+            o.growth = Stats::default();
+            o.counters = m.counters.hot();
+            o.used_abilities = 0;
+            o.damage = 0;
+            o.damaged_this_turn = false;
+            o.dealt_damage_this_turn = false;
+            o.deathtouch_since_sba = false;
+            o.attached_to = m.attachment;
+            o.tapped = m.tapped;
+            row.attacking = false;
+            let source = ObjectRef {
+                card: row.id,
+                generation: o.generation,
+            };
+            live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
+            if m.destination == Zone::Battlefield {
+                let p = next.entry_projection.as_mut().unwrap();
+                if !p.static_sources.contains(&row.id) {
+                    p.static_sources.push(row.id)
+                }
+                if o.card.attachment_bonus().is_some() && !p.attachment_sources.contains(&row.id) {
+                    p.attachment_sources.push(row.id)
+                }
+                if let Some(value) = m.choice {
+                    p.entry_values.push(entry_choices::ChoiceRow {
+                        object: source,
+                        value,
+                    });
+                }
+            }
+        }
+        for &i in order {
+            let m = &moves[i];
+            if m.skipped || m.destination != Zone::Battlefield {
+                continue;
+            }
+            let source = next.reference(m.before.id);
+            let p = next.entry_projection.as_mut().unwrap();
+            let timestamp = p.register(source, m.before.card);
+            if let Some(recipient) = m.attachment
+                && m.before.card.role().is_some()
+            {
+                p.roles.attached.push(RoleTimestampView {
+                    aura: source,
+                    recipient,
+                    timestamp,
+                });
+            }
+        }
+        for m in &moves {
+            if m.skipped || m.destination != Zone::Battlefield || !m.before.card.controls_attached()
+            {
+                continue;
+            }
+            if let Some(target) = m.attachment {
+                let controller = next.object(target.card).controller;
+                let p = next.entry_projection.as_mut().unwrap();
+                if !p.controls.bases.iter().any(|r| r.object == target) {
+                    p.controls.bases.push(continuous_control::ControlBase {
+                        object: target,
+                        controller,
+                    });
+                }
+            }
+        }
+        next.entry_projection.as_mut().unwrap().counter = None;
+        next.refresh_control_projection();
+        emit(&next)
+    }
+}
+
+impl Game {
+    pub(in crate::engine) fn cast_entry_action_fundable(&self, action: &Action) -> bool {
+        // A completed legal mana ability must finish its mandatory entry choices
+        // even when a foreign decision has already made its parent cast fail.
+        if self.foreign_cast_choice_pending()
+            && self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.capture.is_some())
+        {
+            return true;
+        }
+        if !matches!(
+            action,
+            Action::ChooseEntryValue { .. }
+                | Action::ChooseEntryLife { .. }
+                | Action::ChooseAuraAttachment { .. }
+                | Action::ChooseEntryReplacement { .. }
+                | Action::ChooseEntryTimestamp { .. }
+                | Action::ChooseReplacement { .. }
+        ) {
+            return true;
+        }
+        let caster = self
+            .state
+            .mana_announcement_stack
+            .as_ref()
+            .and_then(|v| v.first())
+            .map(|f| f.announcement.item.controller)
+            .or_else(|| self.state.announcing.as_ref().map(|a| a.item.controller));
+        if self.actor() != caster {
+            return true;
+        }
+        self.projected_cast_entries_fundable(Some(action))
+    }
+    /// Complete the current casting attempt after an entry decision, including
+    /// outstanding entry choices and every suspended mana-payment ancestor.
+    #[allow(
+        dead_code,
+        reason = "Consumed by the integrating foreign-entry rollback hook"
+    )]
+    pub(in crate::engine) fn current_cast_costs_fundable(&self) -> bool {
+        self.projected_cast_entries_fundable(None)
+    }
+    fn projected_cast_entries_fundable(&self, action: Option<&Action>) -> bool {
+        let Some(a) = self.state.announcing.as_ref() else {
+            return true;
+        };
+        let transaction = a.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
+        let nested = self
+            .state
+            .mana_announcement_stack
+            .as_deref()
+            .and_then(|frames| frames.split_last())
+            .filter(|_| a.production.is_some());
+        let (mut world, goal) = if transaction {
+            (self.cast_cost_world(a), None)
+        } else if let Some((parent, outer)) = nested {
+            let goal = self.funding_goal(&parent.announcement);
+            let mut world = FundingState::from_game_with_convoke(
+                self,
+                &goal,
+                parent.announcement.item.kind == StackKind::Spell
+                    && parent.announcement.item.source_card.has_convoke(),
+            );
+            world.purpose = self.purpose_for_item(&parent.announcement.item);
+            world.set_payment_context(&parent.announcement);
+            world.set_funding_continuation(
+                &parent.announcement,
+                outer,
+                parent.quality.as_ref().map(|(_, q)| q),
+            );
+            (world, Some(goal))
+        } else if a.cast_costs.is_some() {
+            let goal = self.funding_goal(a);
+            let mut world = FundingState::from_game_with_convoke(
+                self,
+                &goal,
+                a.item.kind == StackKind::Spell && a.item.source_card.has_convoke(),
+            );
+            world.purpose = self.purpose_for_item(&a.item);
+            world.set_payment_context(a);
+            (world, Some(goal))
+        } else {
+            return true;
+        };
+        let mut complete = |w: &FundingState<'_>| {
+            if let Some(goal) = &goal {
+                let mut next = w.clone();
+                if let Some(production) = a.production {
+                    for (pool, amount) in next.mana.iter_mut().zip(production) {
+                        *pool += u128::from(amount);
+                    }
+                    if let Some((_, quality)) = self
+                        .state
+                        .mana_lots
+                        .as_ref()
+                        .and_then(|m| m.announcement_quality.as_ref())
+                    {
+                        mana_lots::add_lot(&mut next.lots, *quality, production.map(u128::from));
+                    }
+                }
+                next.reachable(goal, &mut HashSet::new())
+            } else {
+                w.cost_completion()
+            }
+        };
+        let Some(mut batch) = self.state.entry_batch.as_deref().cloned() else {
+            return complete(&world);
+        };
+        world.prepare_entry_projection();
+        let counter_choice = if let Some(Action::ChooseReplacement { source, ability }) = action {
+            Some((*source, *ability))
+        } else {
+            None
+        };
+        world.entry_projection.as_mut().unwrap().counter =
+            self.projected_entry_counter(counter_choice);
+        match action {
+            Some(Action::ChooseEntryValue { value }) => {
+                let i = batch.choices[batch.next];
+                let m = &mut batch.moves[i];
+                m.choice = Some(*value);
+                if let (Some(kind), EntryChoiceValue::CreatureType(typ)) =
+                    (m.before.card.chosen_entry_counters(), *value)
+                {
+                    let count = world
+                        .resources
+                        .iter()
+                        .filter(|r| {
+                            r.object.zone == Zone::Battlefield
+                                && r.object.controller == m.controller
+                                && CharacteristicWorld::kinds(&world, r.id) & 1 != 0
+                                && world.subtypes(r.id).has(r.object.card, typ.name())
+                        })
+                        .count() as u64;
+                    m.counters.add(kind, count);
+                }
+            }
+            Some(Action::ChooseAuraAttachment { object }) => {
+                batch.moves[batch.choices[batch.next]].attachment = Some(*object)
+            }
+            Some(Action::ChooseEntryLife { pay }) => {
+                let payment = batch
+                    .tap_events
+                    .get(batch.tap_next)
+                    .and_then(|e| e.payment.map(|cost| (e.index, cost)));
+                let (index, cost) = payment.unwrap_or_else(|| {
+                    let i = batch.choices[batch.next];
+                    let EntryTapped::PayLife(cost) = batch.moves[i].before.card.entry_tapped()
+                    else {
+                        unreachable!()
+                    };
+                    (i, cost)
+                });
+                let m = &mut batch.moves[index];
+                m.life_paid = Some(*pay);
+                m.tapped |= !*pay;
+                if *pay {
+                    world.pay_projected_life(m.controller, cost)
+                }
+                if payment.is_some() {
+                    batch.tap_events[batch.tap_next].payment = None;
+                }
+            }
+            Some(Action::ChooseEntryReplacement { source, intrinsic }) => {
+                let event = &mut batch.tap_events[batch.tap_next];
+                let Some(i) = event
+                    .effects
+                    .iter()
+                    .position(|e| e.source == *source && e.intrinsic == *intrinsic)
+                else {
+                    return false;
+                };
+                let effect = event.effects.remove(i);
+                match effect.kind {
+                    entry_tap::EntryTapKind::Tapped => batch.moves[event.index].tapped = true,
+                    entry_tap::EntryTapKind::Untapped => batch.moves[event.index].tapped = false,
+                    entry_tap::EntryTapKind::PayLife(cost) => event.payment = Some(cost),
+                }
+            }
+            Some(Action::ChooseEntryTimestamp { object }) => {
+                let Some(i) = batch
+                    .moves
+                    .iter()
+                    .position(|m| m.before.reference == *object)
+                else {
+                    return false;
+                };
+                batch.timestamp_order.push(i);
+            }
+            Some(Action::ChooseReplacement { .. }) => {
+                if world.entry_projection.as_ref().unwrap().counter.is_none() {
+                    return true;
+                }
+            }
+            None => {}
+            _ => return true,
+        }
+        world.visit_entry_moves(batch.moves.clone(), false, Some(&batch), &mut complete)
+    }
+}
+
+impl<'g> FundingState<'g> {
+    pub(super) fn visit_applied(
+        &self,
+        step: &FundingMove,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        if self.cast_costs.is_none()
+            && self.continuation.is_none()
+            && self.entry_projection.is_none()
+            && self.game.state.exile_links.is_empty()
+            && self.game.state.zone_rules.is_none()
+            && self.game.state.death_exile_replacements.is_none()
+        {
+            let mut next = self.clone();
+            next.apply(step);
+            return emit(&next);
+        }
+        let source = &self.resources[step.resource];
+        let reference = self.reference(source.id);
+        let mut next = self.clone();
+        next.apply(step);
+        let departed = source.object.zone == Zone::Battlefield
+            && next.object(source.id).zone != Zone::Battlefield;
+        let destination = next.object(source.id).zone;
+        if departed {
+            next.resources[step.resource].object.zone = Zone::Battlefield;
+        }
+        if let Some(index) = step.external {
+            next.resources[index].object.zone = Zone::Graveyard;
+        }
+        let mut after_source = |w: &Self| {
+            if let Some(index) = step.external {
+                let external = w.reference(w.resources[index].id);
+                w.cost_departures(&[external], Zone::Exile, emit)
+            } else {
+                emit(w)
+            }
+        };
+        if departed {
+            next.cost_departures(&[reference], destination, &mut after_source)
+        } else if step.external.is_some() {
+            after_source(&next)
+        } else {
+            next.visit_linked_returns(&mut after_source)
+        }
+    }
+    pub(super) fn set_funding_continuation(
+        &mut self,
+        head: &'g Announcement,
+        outer: &'g [mana_announcements::ManaAnnouncement],
+        quality: Option<&'g mana_lots::Quality>,
+    ) {
+        self.continuation = (head.production.is_some() && !outer.is_empty()).then(|| {
+            Box::new(PaymentContinuation {
+                head,
+                outer,
+                quality,
+            })
+        });
+    }
+    pub(super) fn complete_funding_continuation(&self, goal: &FundingGoal) -> bool {
+        let Some(current) = self.continuation.as_deref() else {
+            return self.cost_completion();
+        };
+        let a = current.head;
+        let Some(production) = a.production else {
+            return self.cost_completion();
+        };
+        let Some((parent, outer)) = current.outer.split_last() else {
+            return false;
+        };
+        let StackKind::ActivatedAbility { ability } = a.item.kind else {
+            return false;
+        };
+        let Some(resource) = self
+            .resources
+            .iter()
+            .position(|r| r.id == a.item.object.card)
+        else {
+            return false;
+        };
+        let parent_goal = self.game.funding_goal(&parent.announcement);
+        let purpose = self.game.purpose_for_item(&a.item);
+        let mut found = false;
+        let pool = mana_lots::available(self.mana, &self.lots, purpose);
+        funding_payments(pool, goal.required, goal.generic, |payment| {
+            if found {
+                return;
+            }
+            mana_lots::visit_allocations(self.mana, &self.lots, purpose, payment, |allocation| {
+                if found {
+                    return;
+                }
+                let external = a.additional.and_then(|object| {
+                    self.resources.iter().position(|r| {
+                        r.id == object.card && r.object.generation == object.generation
+                    })
+                });
+                if a.additional.is_some() && external.is_none() {
+                    return;
+                }
+                let step = FundingMove {
+                    resource,
+                    ability: Some(ability),
+                    grantor: None,
+                    borrowed: None,
+                    payment,
+                    counters: a.counter_payment.clone(),
+                    production,
+                    quality: current.quality.copied(),
+                    allocation,
+                    external,
+                    frozen: Some(Box::new((a.item.source_card, a.item.borrowed_slot))),
+                };
+                found = self.visit_applied(&step, &mut |w| {
+                    let mut next = w.clone();
+                    next.set_funding_continuation(
+                        &parent.announcement,
+                        outer,
+                        parent.quality.as_ref().map(|(_, q)| q),
+                    );
+                    next.purpose = self.game.purpose_for_item(&parent.announcement.item);
+                    next.convoke = parent.announcement.item.kind == StackKind::Spell
+                        && parent.announcement.item.source_card.has_convoke();
+                    next.set_payment_context(&parent.announcement);
+                    next.reachable_with_evidence(
+                        &parent_goal,
+                        parent.announcement.evidence.as_ref().map(|e| e.threshold),
+                        &mut HashSet::new(),
+                    )
+                });
+            });
+        });
+        found
+    }
+}

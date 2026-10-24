@@ -285,7 +285,13 @@ impl Game {
                             FundingGoal {
                                 actor,
                                 required: cost.colored,
-                                generic: cost.generic,
+                                generic: cost.generic.saturating_sub(
+                                    self.activation_generic_discount(
+                                        card,
+                                        descriptor.definition,
+                                        descriptor.ability,
+                                    ),
+                                ),
                                 reserve: None,
                                 source: Some((
                                     descriptor.source,

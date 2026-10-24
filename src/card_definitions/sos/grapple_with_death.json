@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7da714458405029179b6b8dda10612b5765bb3770fd584ed30f3d8a5417329ed"
   },
-  "physical_metadata_sha256": "d219bdf050ce75e0d1f96ca8458bb9663da8c6b9358a58aa2d3bdf5374498e23"
+  "physical_metadata_sha256": "d219bdf050ce75e0d1f96ca8458bb9663da8c6b9358a58aa2d3bdf5374498e23",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrappleWithDeath.java",
+  "java_sha256": "9073d80cd98b3dfdfb540b3f6419c6566ba8e5683bee054ec942f8c344649953",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": []
 }

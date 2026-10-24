@@ -39,10 +39,20 @@ pub(super) fn owned_bytes(state: &Option<Box<CopyState>>) -> usize {
     })
 }
 impl Game {
-    pub(super) fn stack_target_rule_matches(&self, rule: TargetRule, item: &SpellView) -> bool {
+    pub(super) fn stack_target_rule_matches(
+        &self,
+        rule: TargetRule,
+        item: &SpellView,
+        controller: Player,
+    ) -> bool {
         match rule {
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
             TargetRule::Spell => item.kind == StackKind::Spell,
+            TargetRule::YourSpellKinds { kinds } => {
+                item.kind == StackKind::Spell
+                    && item.controller == controller
+                    && item.source_card.kind_mask() & u16::from(kinds) != 0
+            }
             TargetRule::SpellKinds { kinds, excluded } => {
                 item.kind == StackKind::Spell
                     && (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
@@ -233,9 +243,10 @@ impl Game {
         self.release_stack_copy_state();
     }
     fn allocate_spell_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
-        // These consumers copy only instant/sorcery spells, which never enter as permanents.
-        assert!(crate::cards::CastFilter::InstantSorcery.matches(template.source_card));
-        let (card, generation) = if let Some(id) = self.state.free_tokens.pop() {
+        assert_eq!(template.kind, StackKind::Spell);
+        let (card, generation) = if let Some(slot) = self.replay_frozen_mana_copy_slot() {
+            slot
+        } else if let Some(id) = self.state.free_tokens.pop() {
             (id, self.state.objects[id as usize].generation)
         } else {
             (
@@ -243,6 +254,7 @@ impl Game {
                 0,
             )
         };
+        self.record_cast_mana_allocation(card, generation);
         let object = Object {
             card: template.source_card,
             copy_kind: CopyKind::Spell,
@@ -277,12 +289,70 @@ impl Game {
         copy.is_copy = true;
         if let Some(cast) = &mut copy.cast {
             cast.payment = [0; 6];
+            // The permission-created replacement is external to copiable values.
+            cast.exile_on_graveyard = false;
+            cast.spend_any_mana = false;
         }
         copy.copy_event = None;
         copy.mana_copy_sources = None;
         copy.cast_event = None;
-
+        if template.source_card.kind_mask() & (1 | 16 | 32 | 64) != 0 {
+            let recipe = template
+                .source_copy_recipe
+                .as_deref()
+                .copied()
+                .unwrap_or_else(|| CopyRecipe::new(template.source_card));
+            self.set_copy_recipe(copy.object, recipe);
+            copy.source_copy_recipe = Some(Box::new(recipe));
+        }
         copy
+    }
+    pub(super) fn copy_target_spell(
+        &mut self,
+        item: &SpellView,
+        group: u16,
+        retarget: bool,
+        exceptions: CopyExceptions,
+    ) -> bool {
+        let Some(template) = item
+            .targets
+            .iter()
+            .find(|b| b.group == group)
+            .and_then(|b| self.bound_stack_item(b))
+            .cloned()
+        else {
+            return false;
+        };
+        if template.source_card.spell_cannot_be_copied() {
+            return false;
+        }
+        let mut copy = self.allocate_spell_copy(&template, item.controller);
+        if exceptions != CopyExceptions::NONE {
+            let mut recipe = copy
+                .source_copy_recipe
+                .as_deref()
+                .copied()
+                .unwrap_or_else(|| CopyRecipe::new(copy.source_card));
+            recipe.exceptions = recipe.exceptions.union(exceptions);
+            self.set_copy_recipe(copy.object, recipe);
+            copy.source_copy_recipe = Some(Box::new(recipe));
+            if exceptions.sacrifice_abilities != 0 {
+                copy.source_keywords = copy.source_keywords.union(Keywords::HASTE);
+            }
+        }
+        self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
+            item: copy,
+            template,
+            remaining: 0,
+            victim: None,
+        });
+        if retarget {
+            self.advance_copy_targets()
+        } else {
+            self.commit_stack_targets();
+            self.release_stack_copy_state();
+            false
+        }
     }
     pub(super) fn copy_captured_spell(&mut self, item: &SpellView) -> bool {
         let Some(event) = &item.copy_event else {
@@ -298,6 +368,9 @@ impl Game {
             .find(|s| s.id == event.spell.id)
             .cloned()
             .unwrap_or_else(|| event.spell.clone());
+        if template.source_card.spell_cannot_be_copied() {
+            return false;
+        }
         let copy = self.allocate_spell_copy(&template, item.controller);
         self.state
             .stack_copy_data

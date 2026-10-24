@@ -3,10 +3,45 @@
   "catalogue_id": 2948,
   "oracle_id": "f589e5ee-399c-4613-b7a2-9ab2866cc830",
   "facts_sha256": "03dedf56d9af47d93c53146becc9f2b4d490e478217bfb66cbb6f8377c558b6e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0732246c8be76578713145d9fc3d1f031f4ce28c442b05c8b2d6d09a98f5cf2e"
   },
-  "physical_metadata_sha256": "fb88a4001ad81cf3c21d2e160a984a76333dd50a9f3d0ce9bcac3495630fda44"
+  "physical_metadata_sha256": "fb88a4001ad81cf3c21d2e160a984a76333dd50a9f3d0ce9bcac3495630fda44",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NitaForumConciliator.java",
+  "java_sha256": "b65e831d1811b93dacd5db7c19d9ac15490b7d50f2ecdc2e1a5c94c972b664e7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/ThatSpellGraveyardExileReplacementEffect.java",
+      "sha256": "8160766e556475aa93967edc5c2ea2ab5ca0dfcb7d170c5f75ff4647b95f93b0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ]
 }

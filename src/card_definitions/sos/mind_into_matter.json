@@ -3,10 +3,30 @@
   "catalogue_id": 2766,
   "oracle_id": "9f9e4be0-814a-4cab-948b-114769035a4a",
   "facts_sha256": "1505fa7439cc9acf02faf92de45f9259f6c24ffa24f3ea11f698e3948fdbbe89",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d67aadfd21f93d353dc0f5f89516e9554c7aa47faf77656f44686946a4d9bc6b"
   },
-  "physical_metadata_sha256": "3482c934214465dede90d4ce7fffbf6f0075092df5da55c93ca9a7187146248d"
+  "physical_metadata_sha256": "599711680a75172066d04aa0de93006b5f65f9bc2bcb1222320c78b3361aed78",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MindIntoMatter.java",
+  "java_sha256": "6191ef38543456903751c92a896cdc3e0ebe9cb45b861862a61b65f94e62d4e7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+      "sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+    }
+  ]
 }

@@ -248,6 +248,7 @@ impl Game {
             self.state.pending = Pending::PayCosts {
                 player: a.item.controller,
             };
+            self.resume_cast_cost_selection();
         }
     }
     pub(super) fn controlled_combat_damage_triggers(&mut self, events: &[DamageEvent]) {

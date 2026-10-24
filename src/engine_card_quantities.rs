@@ -16,6 +16,11 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                 }
             }
             AmountValue::Multiple { value, .. } => amount(*value, kinds),
+            AmountValue::Sum(values) => {
+                for value in values {
+                    amount(*value, kinds);
+                }
+            }
             _ => (),
         }
     }
@@ -44,11 +49,14 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }
             | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
+            | Instruction::SetCreatureForm { base: value, .. }
+            | Instruction::MoveCountersFromSource { amount: value, .. }
             | Instruction::DrawScaled(_, value)
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)
             | Instruction::DrainLifeScaled(value)
             | Instruction::DamageScaled(value)
+            | Instruction::AddColorlessScaled(value)
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }

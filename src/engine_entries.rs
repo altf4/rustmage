@@ -56,6 +56,38 @@ pub(super) struct EntryBatch {
     pub tap_events: Vec<EntryTapEvent>,
     pub tap_next: usize,
 }
+impl EntryMove {
+    pub(super) fn from_view(before: ObjectView, destination: Zone, tapped: bool) -> Self {
+        EntryMove {
+            choice: None,
+            gift: None,
+            controller: before.controller,
+            before,
+            destination,
+            tapped,
+            attachment: None,
+            role_after: None,
+            suspect_after: false,
+            life_bonus: None,
+            effect_counter: None,
+            return_modification: None,
+            attacking: None,
+            skipped: false,
+            reveal_hand: false,
+            life_paid: None,
+            offspring_paid: false,
+            cast_payment: None,
+            cast_event: None,
+            cast_origin: None,
+            warp_controller: None,
+            kicked: false,
+            bargained: false,
+            x: 0,
+            evidence_collected: false,
+            counters: Counters::default(),
+        }
+    }
+}
 impl EntryBatch {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
@@ -184,34 +216,7 @@ impl Game {
             }
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
-        EntryMove {
-            choice: None,
-            gift: None,
-            before: self.object_view(id),
-            controller: self.state.objects[id as usize].controller,
-            destination,
-            tapped,
-            attachment: None,
-            role_after: None,
-            suspect_after: false,
-            life_bonus: None,
-            effect_counter: None,
-            return_modification: None,
-            attacking: None,
-            skipped: false,
-            reveal_hand: false,
-            life_paid: None,
-            offspring_paid: false,
-            cast_payment: None,
-            cast_event: None,
-            cast_origin: None,
-            warp_controller: None,
-            kicked: false,
-            bargained: false,
-            x: 0,
-            evidence_collected: false,
-            counters: Counters::default(),
-        }
+        EntryMove::from_view(self.object_view(id), destination, tapped)
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
         self.stage_entries_inner(moves, shuffle_after, None, None);
@@ -233,6 +238,9 @@ impl Game {
         discard_context: Option<discard_events::DiscardContext>,
         temporary_copy: Option<Box<SpellView>>,
     ) {
+        if self.replay_frozen_mana_entries() {
+            return;
+        }
         assert!(
             self.state.entry_batch.is_none(),
             "one entry transaction at a time"
@@ -464,7 +472,7 @@ impl Game {
         }
         counters
     }
-    fn commit_entries(&mut self, batch: EntryBatch) {
+    pub(super) fn commit_entries(&mut self, mut batch: EntryBatch) {
         for movement in &batch.moves {
             if movement.skipped
                 && movement.before.zone == Zone::Outside
@@ -479,6 +487,9 @@ impl Game {
             assert!(!self.entry_needs_timestamp_choice(&batch));
             timestamp_order = self.entry_timestamp_indices(&batch);
         }
+        batch.timestamp_order = timestamp_order.clone();
+        batch.timestamps_ready = true;
+        self.record_cast_mana_entries(&batch);
         let timestamp_cards: Vec<_> = timestamp_order
             .iter()
             .map(|&i| batch.moves[i].before.id)
@@ -772,12 +783,12 @@ impl Game {
             } else if self.state.resolving.is_some() {
                 self.run_program();
             }
-            if self
-                .state
-                .announcing
-                .as_ref()
-                .is_some_and(|a| a.additional_paid)
-            {
+            if self.state.announcing.as_ref().is_some_and(|a| {
+                a.additional_paid
+                    || a.cast_costs
+                        .as_ref()
+                        .is_some_and(|c| c.mana_closed && c.active.is_none())
+            }) {
                 self.finish_announcement();
             }
         }
@@ -820,6 +831,7 @@ impl Game {
         movement.tapped |= !pay;
         batch.next += 1;
         if pay {
+            self.record_cast_mana_entry_life(player, cost);
             self.lose_life(player, i128::from(cost));
         }
     }

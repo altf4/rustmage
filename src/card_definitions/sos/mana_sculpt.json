@@ -3,10 +3,35 @@
   "catalogue_id": 2648,
   "oracle_id": "35e2f82e-7ca3-4a92-9134-b7999eef5337",
   "facts_sha256": "0ffdb75ba2688ffb359a6ea18fc97f46605768b8f624c64707a0ffa76bad33ad",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c7481ddf10acdaa67c89902f245c3485f27b9d12215bd70a1c4780585450bffe"
   },
-  "physical_metadata_sha256": "26dd2344c37c8c58be5b9c70b0efe2c51a37f02074791fc7e8d75fdfcef17f93"
+  "physical_metadata_sha256": "26dd2344c37c8c58be5b9c70b0efe2c51a37f02074791fc7e8d75fdfcef17f93",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/ManaSculpt.java",
+  "java_sha256": "52a7d3848895a127767ec87451e4611107679ecc9c76f69f071ceab2e9af0ba2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfMainPhaseDelayedTriggeredAbility.java",
+      "sha256": "6471ee03a3ca2333b878f8729cb95d2e637ff7225ceff2c69e1ab4daacd14dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaToManaPoolTargetControllerEffect.java",
+      "sha256": "287f27eb941ebdcedb84597bdf1faf94470948826a8a3f495bdc72a8e63538fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/ManaPaidSourceWatcher.java",
+      "sha256": "890808f5706f88165d4770eac155b605aed3adaacb41d5c2f5262535810d9a9e"
+    }
+  ]
 }

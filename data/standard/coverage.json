@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5edffc415d7eea31cd6d3786fa2ad37059b94a8259e7dbc43538fa66cd093204",
+  "catalogue_version": "5f8fc3870930fbac1ce6d8740185a52c8a829986600844c8843d2c6f5f829372",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2345,
-  "implemented_total": 2351,
+  "implemented_standard_cards": 2381,
+  "implemented_total": 2387,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,7 @@
     },
     "sos": {
       "total": 264,
-      "complete": 228,
-      "gated": 36
+      "complete": 264
     },
     "spm": {
       "total": 134,
@@ -1726,8 +1725,8 @@
     {
       "name": "Applied Geometry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/applied_geometry.rs",
       "set": "sos"
     },
@@ -4270,8 +4269,8 @@
     {
       "name": "Borrowed Knowledge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/borrowed_knowledge.rs",
       "set": "sos"
     },
@@ -6174,8 +6173,8 @@
     {
       "name": "Choreographed Sparks",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/choreographed_sparks.rs",
       "set": "sos"
     },
@@ -6638,8 +6637,8 @@
     {
       "name": "Colossus of the Blood Age",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/colossus_of_the_blood_age.rs",
       "set": "sos"
     },
@@ -8774,8 +8773,8 @@
     {
       "name": "Diary of Dreams",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/diary_of_dreams.rs",
       "set": "sos"
     },
@@ -8854,8 +8853,8 @@
     {
       "name": "Dina's Guidance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/dina_s_guidance.rs",
       "set": "sos"
     },
@@ -12518,8 +12517,8 @@
     {
       "name": "Fix What's Broken",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/fix_what_s_broken.rs",
       "set": "sos"
     },
@@ -13110,8 +13109,8 @@
     {
       "name": "Fractalize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/fractalize.rs",
       "set": "sos"
     },
@@ -15126,8 +15125,8 @@
     {
       "name": "Great Hall of the Biblioplex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/great_hall_of_the_biblioplex.rs",
       "set": "sos"
     },
@@ -15294,8 +15293,8 @@
     {
       "name": "Group Project",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/group_project.rs",
       "set": "sos"
     },
@@ -15814,8 +15813,8 @@
     {
       "name": "Harmonized Trio",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/harmonized_trio_brainstorm.rs",
       "set": "sos"
     },
@@ -19014,8 +19013,8 @@
     {
       "name": "Killian's Confidence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/killian_s_confidence.rs",
       "set": "sos"
     },
@@ -20686,8 +20685,8 @@
     {
       "name": "Lorehold, the Historian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/lorehold_the_historian.rs",
       "set": "sos"
     },
@@ -21390,8 +21389,8 @@
     {
       "name": "Mana Sculpt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/mana_sculpt.rs",
       "set": "sos"
     },
@@ -22302,8 +22301,8 @@
     {
       "name": "Mind Roots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/mind_roots.rs",
       "set": "sos"
     },
@@ -22334,8 +22333,8 @@
     {
       "name": "Mind into Matter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/mind_into_matter.rs",
       "set": "sos"
     },
@@ -22782,8 +22781,8 @@
     {
       "name": "Moment of Reckoning",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/moment_of_reckoning.rs",
       "set": "sos"
     },
@@ -23790,8 +23789,8 @@
     {
       "name": "Nita, Forum Conciliator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/nita_forum_conciliator.rs",
       "set": "sos"
     },
@@ -24910,8 +24909,8 @@
     {
       "name": "Page, Loose Leaf",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/page_loose_leaf.rs",
       "set": "sos"
     },
@@ -25358,8 +25357,8 @@
     {
       "name": "Petrified Hamlet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/petrified_hamlet.rs",
       "set": "sos"
     },
@@ -25926,8 +25925,8 @@
     {
       "name": "Practiced Scrollsmith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/practiced_scrollsmith.rs",
       "set": "sos"
     },
@@ -26134,8 +26133,8 @@
     {
       "name": "Prismari, the Inspiration",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/prismari_the_inspiration.rs",
       "set": "sos"
     },
@@ -26646,8 +26645,8 @@
     {
       "name": "Quandrix, the Proof",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/quandrix_the_proof.rs",
       "set": "sos"
     },
@@ -27062,8 +27061,8 @@
     {
       "name": "Ral Zarek, Guest Lecturer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/ral_zarek_guest_lecturer.rs",
       "set": "sos"
     },
@@ -27862,8 +27861,8 @@
     {
       "name": "Render Speechless",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/render_speechless.rs",
       "set": "sos"
     },
@@ -28046,8 +28045,8 @@
     {
       "name": "Resonating Lute",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/resonating_lute.rs",
       "set": "sos"
     },
@@ -28894,8 +28893,8 @@
     {
       "name": "Root Manipulation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/root_manipulation.rs",
       "set": "sos"
     },
@@ -29054,8 +29053,8 @@
     {
       "name": "Rubble Rouser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/rubble_rouser.rs",
       "set": "sos"
     },
@@ -31206,8 +31205,8 @@
     {
       "name": "Silverquill, the Disputant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/silverquill_the_disputant.rs",
       "set": "sos"
     },
@@ -31806,8 +31805,8 @@
     {
       "name": "Soaring Stoneglider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/soaring_stoneglider.rs",
       "set": "sos"
     },
@@ -34422,8 +34421,8 @@
     {
       "name": "Suspend Aggression",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/suspend_aggression.rs",
       "set": "sos"
     },
@@ -35422,8 +35421,8 @@
     {
       "name": "Tester of the Tangential",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/tester_of_the_tangential.rs",
       "set": "sos"
     },
@@ -35670,8 +35669,8 @@
     {
       "name": "The Dawning Archaic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/the_dawning_archaic.rs",
       "set": "sos"
     },
@@ -37294,8 +37293,8 @@
     {
       "name": "Topiary Lecturer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/topiary_lecturer.rs",
       "set": "sos"
     },
@@ -39302,8 +39301,8 @@
     {
       "name": "Vicious Rivalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/vicious_rivalry.rs",
       "set": "sos"
     },
@@ -41414,8 +41413,8 @@
     {
       "name": "Zaffai and the Tempests",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/zaffai_and_the_tempests.rs",
       "set": "sos"
     },

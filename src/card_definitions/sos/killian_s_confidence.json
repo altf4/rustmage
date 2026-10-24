@@ -3,10 +3,60 @@
   "catalogue_id": 2351,
   "oracle_id": "c17f0e65-e5a3-4113-b782-0b192ab52046",
   "facts_sha256": "eb02e3732a1338f93e313cc0ffb9bb6cc5f2a98a2469239c26e02538e5ec64eb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "548d35868c982c3b9d78fd106ef167b2e9d90acbc81c69985930ff65c6077094"
   },
-  "physical_metadata_sha256": "4240f75709b9f4dfbdfe29c51e7cb82f8f288920da147873f1167285b909342a"
+  "physical_metadata_sha256": "4240f75709b9f4dfbdfe29c51e7cb82f8f288920da147873f1167285b909342a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KilliansConfidence.java",
+  "java_sha256": "1380a5bd3d5b9c92b6a2d40a70f796dab6cfae7f76da47252a2536bbb107d62f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/OneOrMoreCombatDamagePlayerTriggeredAbility.java",
+      "sha256": "bd049af604d636cbafb61dcbb6ef46b80207734f4f606bc6c902f017ada0a2e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/OneOrMoreDamagePlayerTriggeredAbility.java",
+      "sha256": "6b1a39143a4330ceea86033cef9212e4ebea416fa70ee2ba30a55b3aded6b92b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/HybridManaCost.java",
+      "sha256": "75a83ce4be6ff11778f6f32c6782df9c68250cc55d04e22b03a5efec27de8ee6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/DamagedPlayerThisCombatWatcher.java",
+      "sha256": "8ca4eee7d72952a34d3ea89408adf35a3f69ccc7d048cd90456e719a2ca2144b"
+    }
+  ]
 }

@@ -147,6 +147,22 @@ impl Game {
         route: Option<ForageRoute>,
         purpose: mana_lots::Purpose,
     ) -> bool {
+        if let Some(result) = self.preview_optional_cast_costs(
+            goal.clone(),
+            purpose,
+            ObjectRef {
+                card: CardId::MAX,
+                generation: 0,
+            },
+            Some(spec),
+            route,
+            &[],
+            false,
+            &[],
+            &[],
+        ) {
+            return result;
+        }
         if route.is_none_or(|r| r == ForageRoute::ExileThree)
             && self.forage_graveyard_count(goal.actor) >= 3
             && self.can_fund_for(goal.clone(), purpose)
@@ -218,6 +234,24 @@ impl Game {
         if self.object_ref(r.card) != r || f.selected.contains(&r) {
             return false;
         }
+        if self.cast_costs_mana_paid() {
+            let valid = match f.route {
+                Some(ForageRoute::ExileThree) => {
+                    o.zone == Zone::Graveyard
+                        && o.owner == p
+                        && !o.is_token()
+                        && o.copy_kind != CopyKind::Card
+                }
+                Some(ForageRoute::Food) => self.additional_candidate(food_cost(), p, r, r),
+                _ => false,
+            };
+            if !valid {
+                return false;
+            }
+            let mut selected = f.selected.clone();
+            selected.push(r);
+            return self.cast_cost_group_fundable(&selected, false);
+        }
         match f.route {
             Some(ForageRoute::ExileThree) => {
                 o.zone == Zone::Graveyard && o.owner == p && !o.is_token()
@@ -283,6 +317,7 @@ impl Game {
             self.state.pending = Pending::PayCosts {
                 player: self.actor().unwrap(),
             };
+            self.resume_cast_cost_selection();
         } else {
             let selection = self
                 .state

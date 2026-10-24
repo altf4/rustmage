@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Whole-card Oracle behavior; source and casualty keyword implementation pinned beside this file.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(4, 4),
     keywords: Keywords::FLYING.union(Keywords::VIGILANCE),
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::FLYING.union(Keywords::VIGILANCE),
+            )],
+        },
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::ControlledSpellsCasualty {
+                kinds: 12,
+                minimum: 1,
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };

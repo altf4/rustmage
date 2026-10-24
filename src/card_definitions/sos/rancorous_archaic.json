@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c5d19be98d1e1d40c42e7bd3a24c8b7f129a74fc589be7162fdb06c373f34d19"
   },
-  "physical_metadata_sha256": "89a76423555e728fe54f86feedd4793234addeec6c8d69e7476e5c0ab5256f25"
+  "physical_metadata_sha256": "89a76423555e728fe54f86feedd4793234addeec6c8d69e7476e5c0ab5256f25",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RancorousArchaic.java",
+  "java_sha256": "ebbc36f56258f11fb661910d0f04d7d67405a6a458ec2bcbe29aa8f47763e333",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsOfManaSpentToCastCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "92b55d92985654d437785d464387ae3c981b4a2542a0f9780c8710b3b7819f8b"
+    }
+  ]
 }

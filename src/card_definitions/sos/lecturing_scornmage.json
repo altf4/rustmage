@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8d2b310f14f601c8d579d9567ae5f7a00046b3d568ca12b1850de60b7fb35255"
   },
-  "physical_metadata_sha256": "3bca282777be57a5733741a2abe4ff270681be99008ffd5d0a55f846d5825ed8"
+  "physical_metadata_sha256": "3bca282777be57a5733741a2abe4ff270681be99008ffd5d0a55f846d5825ed8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LecturingScornmage.java",
+  "java_sha256": "7b23093da239f0eb6ace0de63e4136d3ccb6a8fe6dcef13ddf670b640dc780ea",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/ReparteeAbility.java",
+      "sha256": "da66e3be816abbc0e9f6ffa1d5d5475ea18346311290872735e8f03027b0c574"
+    }
+  ]
 }

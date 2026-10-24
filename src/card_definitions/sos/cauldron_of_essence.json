@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "16cc166add40c84f77d9a7d7b1d6d477c26b9feac13ce8812f6f9446a8040657"
   },
-  "physical_metadata_sha256": "1c1f85cfc194a33f2cb9625646f9b030544de20bffb30964baa1d1d0ea201280"
+  "physical_metadata_sha256": "1c1f85cfc194a33f2cb9625646f9b030544de20bffb30964baa1d1d0ea201280",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CauldronOfEssence.java",
+  "java_sha256": "7ed1bf89748271877cac2cc5e666ac96b39b77715b2a9a026f322ac56b1df441",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": []
 }

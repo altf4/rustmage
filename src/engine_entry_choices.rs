@@ -23,6 +23,7 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
     })
 }
 impl Game {
+    #[cfg(test)]
     pub(super) fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
         self.state
             .entry_values
@@ -58,9 +59,15 @@ impl Game {
         &self,
         mut emit: impl FnMut(EntryChoiceValue) -> bool,
     ) -> bool {
+        if matches!(self.state.pending, Pending::LandCardName { .. }) {
+            return crate::CardName::lands().any(|name| emit(EntryChoiceValue::CardName(name)));
+        }
         let batch = self.state.entry_batch.as_ref().unwrap();
         let movement = &batch.moves[batch.choices[batch.next]];
         match movement.before.card.entry_choice().unwrap() {
+            EntryChoiceKind::LandCardName => {
+                crate::CardName::lands().any(|name| emit(EntryChoiceValue::CardName(name)))
+            }
             EntryChoiceKind::CardNameAfterOpponentHand => {
                 crate::CardName::all().any(|name| emit(EntryChoiceValue::CardName(name)))
             }
@@ -75,6 +82,15 @@ impl Game {
         }
     }
     pub(super) fn choose_entry_value(&mut self, value: EntryChoiceValue) {
+        if matches!(self.state.pending, Pending::LandCardName { .. }) {
+            assert!(EntryChoiceKind::LandCardName.matches(value));
+            let source = self.state.resolving.as_ref().unwrap().item.object;
+            if self.on_battlefield(source.card) && self.object_ref(source.card) == source {
+                self.set_entry_value(source, value);
+            }
+            self.run_program();
+            return;
+        }
         let batch = self.state.entry_batch.as_ref().unwrap();
         let index = batch.choices[batch.next];
         let movement = &batch.moves[index];
@@ -108,6 +124,16 @@ impl Game {
         }
     }
     pub(super) fn entry_choice_view(&self, viewer: Player) -> Option<EntryChoiceView> {
+        if matches!(self.state.pending, Pending::LandCardName { .. }) {
+            let item = &self.state.resolving.as_ref()?.item;
+            return Some(EntryChoiceView {
+                object: item.object,
+                card: item.source_card,
+                kind: EntryChoiceKind::LandCardName,
+                opponent_hand: None,
+                selected: Vec::new(),
+            });
+        }
         if !matches!(self.state.pending, Pending::EntryValue { .. }) {
             return None;
         }
@@ -159,10 +185,7 @@ pub(super) fn modifier_bonus<W: CharacteristicWorld + ?Sized>(
     {
         return Stats::default();
     }
-    let matches = match (
-        modifier.kind,
-        world.game().entry_value(world.reference(source)),
-    ) {
+    let matches = match (modifier.kind, world.entry_value(world.reference(source))) {
         (EntryChoiceKind::Color, Some(EntryChoiceValue::Color(c))) => {
             world.colors(target) & (1 << c.index()) != 0
         }
@@ -190,21 +213,18 @@ pub(super) fn modifier_bonus<W: CharacteristicWorld + ?Sized>(
             .capacity("chosen toughness exhausted"),
     }
 }
-impl super::characteristic_query::CharacteristicQuery<'_> {
+impl<W: CharacteristicWorld + ?Sized> super::characteristic_query::CharacteristicQuery<'_, W> {
     pub(super) fn chosen_bonus(&self, target: CardId) -> Stats {
         let mut result = Stats::default();
-        let Some(rows) = self.state.entry_values.as_ref() else {
-            return result;
-        };
-        for row in rows {
+        for row in self.entry_values() {
             let source = row.object.card;
             if self.object_ref(source) != row.object {
                 continue;
             }
-            for group in self.state.objects[source as usize]
-                .card
-                .static_ability_groups()
-            {
+            if self.object(source).zone != Zone::Battlefield {
+                continue;
+            }
+            for group in self.object(source).card.static_ability_groups() {
                 for fragment in group.fragments {
                     if let crate::cards::StaticAbilityFragment::ChosenModifier(modifier)=*fragment
                         && self.continuous_fragment_available(source,|f| matches!(f,crate::cards::StaticAbilityFragment::ChosenModifier(m) if *m==modifier)) {

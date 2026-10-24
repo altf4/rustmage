@@ -3,10 +3,35 @@
   "catalogue_id": 1951,
   "oracle_id": "f6036065-7196-44d4-8a27-2199f0e1a03c",
   "facts_sha256": "6b6048438e852a1034b6fe5b80b8b66535a54842d171b8bf043c7bb20a5689a1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "979e19d99167cf544ba1dd89beec184c7768320b4597f36c47ba1e281df42754"
   },
-  "physical_metadata_sha256": "79ac798d5cae6c6fcd6bf6f4831ca9e5964447ad112bb9507dc7865ba6761e5f"
+  "physical_metadata_sha256": "79ac798d5cae6c6fcd6bf6f4831ca9e5964447ad112bb9507dc7865ba6761e5f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HarmonizedTrio.java",
+  "java_sha256": "043690dbaba9dd0616259d992b24bc54c64c7992db15d96eb3d73285f44b4e2c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BrainstormEffect.java",
+      "sha256": "f67ad9d0b8dbac6772005a09bdc75181f011b1f404e95188bb64b3d185cde2bd"
+    }
+  ]
 }

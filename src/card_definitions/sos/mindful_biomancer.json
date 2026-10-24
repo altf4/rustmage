@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "775e7cede6c532283da6812fc7828344eb2785149da16b30206a731c17e83841"
   },
-  "physical_metadata_sha256": "e57f8b78184e99f2491a21611145c93fb8af81276341038648a35d54a96a2160"
+  "physical_metadata_sha256": "e57f8b78184e99f2491a21611145c93fb8af81276341038648a35d54a96a2160",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MindfulBiomancer.java",
+  "java_sha256": "4d7c9750be788ae9f571eb172b60cc3963c462a6eda8874be1a2bfc776f8c580",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/LimitedTimesPerTurnActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "11b6039cca03fb60836b3339e38e2b2dccfb7a47bfa599964d14ebf12696cdf7"
+    }
+  ]
 }

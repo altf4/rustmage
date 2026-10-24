@@ -8,9 +8,10 @@ import re
 import subprocess
 
 if __package__:
-    from . import link_catalogue
+    from . import land_card_names, link_catalogue
     from .source_paths import xmage_source
 else:
+    import land_card_names
     import link_catalogue
     from source_paths import xmage_source
 
@@ -48,6 +49,27 @@ def source_pins(records, inventory):
     return pins
 
 
+
+def check_absences(records, inventory, raw_inventory):
+    """Verify explicit missing-class evidence without inventing a card class pin."""
+    by_oracle = {card['oracle_id']: card for card in inventory['cards']}
+    digest = hashlib.sha256(raw_inventory).hexdigest()
+    for record in records.values():
+        evidence = record.get('xmage_absence')
+        if evidence is None:
+            continue
+        entry = by_oracle.get(record.get('oracle_id'))
+        if (evidence.get('revision') != inventory['xmage_source_commit']
+                or evidence.get('oracle_id') != record.get('oracle_id')
+                or evidence.get('inventory_path') != 'data/standard/xmage-inventory.json'
+                or evidence.get('inventory_sha256') != digest
+                or entry is None or entry['name'] != record['name']
+                or entry.get('implementations') or entry.get('xmage_name') is not None
+                or 'java_source' in record or not record.get('xmage_dependencies')
+                or not record.get('rules_authority', {}).get('url', '').startswith('https://')):
+            raise ValueError('invalid explicit XMage absence evidence: '+record['name'])
+
+
 def check_java(pins):
     # One git process reads every immutable blob. No XMage working-tree checkout,
     # Java compilation, network request per card, or repeated helper-source hash.
@@ -77,6 +99,7 @@ def main():
     parser.add_argument('--metadata-only', action='store_true',
                         help='check local metadata only; ordinary validation also verifies XMage blobs')
     args = parser.parse_args()
+    land_card_names.check(ROOT)
     metadata, records, version = link_catalogue.load()
     if [card['index'] for card in metadata['cards']] != list(range(len(records))):
         raise ValueError('catalogue IDs must be contiguous and stable')
@@ -92,6 +115,7 @@ def main():
     oracle = json.loads((ROOT/'data/standard/cards.json').read_text())
     if inventory['oracle_cards_sha256'] != oracle['cards_sha256']:
         raise ValueError('XMage inventory and Oracle source pins disagree')
+    check_absences(records, inventory, (ROOT/'data/standard/xmage-inventory.json').read_bytes())
     pins = source_pins(records, inventory)
     if not args.metadata_only:
         check_java(pins)

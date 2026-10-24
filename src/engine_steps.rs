@@ -3,6 +3,17 @@ use super::*;
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        if matches!(step, Step::Main1 | Step::Main2)
+            && let Some(rows) = self.state.delayed_main_mana.take()
+        {
+            let (ready, remaining): (Vec<_>, Vec<_>) = rows
+                .into_iter()
+                .partition(|row| row.controller == self.state.active);
+            self.state.pending_triggers.extend(ready);
+            if !remaining.is_empty() {
+                self.state.delayed_main_mana = Some(Box::new(remaining));
+            }
+        }
         if step == Step::Main1 {
             self.queue_paradigm_triggers();
             self.precombat_lore_counters();

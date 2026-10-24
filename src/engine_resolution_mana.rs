@@ -4,6 +4,7 @@ use super::*;
 pub(super) struct ResolutionPayment {
     pub payer: Player,
     pub cost: ManaCost,
+    pub alternatives: &'static [ManaCost],
     pub life: Option<u32>,
     pub victim: Option<u64>,
     pub exile: bool,
@@ -13,6 +14,7 @@ pub(super) struct ResolutionPayment {
 pub struct ResolutionPaymentView {
     pub payer: Player,
     pub cost: ManaCost,
+    pub alternatives: Vec<ManaCost>,
     pub life: Option<u32>,
     pub victim: Option<u64>,
     pub exile: bool,
@@ -145,6 +147,7 @@ impl Game {
         resolution.mana_payment = Some(Box::new(ResolutionPayment {
             payer: victim.controller,
             cost,
+            alternatives: &[],
             life: None,
             victim: Some(victim.id),
             exile,
@@ -167,6 +170,7 @@ impl Game {
         resolution.mana_payment = Some(Box::new(ResolutionPayment {
             payer: item.controller,
             cost,
+            alternatives: &[],
             life: None,
             victim: None,
             exile: false,
@@ -197,6 +201,7 @@ impl Game {
                 colored: [0; 6],
                 generic: 0,
             },
+            alternatives: &[],
             life: Some(amount),
             victim: Some(victim.id),
             exile: false,

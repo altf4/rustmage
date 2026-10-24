@@ -16,17 +16,23 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         let request = observation.resolution_payment.as_ref().unwrap();
         let pool = observation.players[actor.index()].mana;
         let deficit = |pool: crate::Mana| {
-            let colored: u64 = pool
-                .iter()
-                .zip(request.cost.colored)
-                .map(|(&pool, need)| u64::from(need.saturating_sub(pool)))
-                .sum();
-            let spare: u64 = pool
-                .iter()
-                .zip(request.cost.colored)
-                .map(|(&pool, need)| u64::from(pool.saturating_sub(need)))
-                .sum();
-            colored + u64::from(request.cost.generic).saturating_sub(spare)
+            std::iter::once(request.cost)
+                .chain(request.alternatives.iter().copied())
+                .map(|cost| {
+                    let colored: u64 = pool
+                        .iter()
+                        .zip(cost.colored)
+                        .map(|(&pool, need)| u64::from(need.saturating_sub(pool)))
+                        .sum();
+                    let spare: u64 = pool
+                        .iter()
+                        .zip(cost.colored)
+                        .map(|(&pool, need)| u64::from(pool.saturating_sub(need)))
+                        .sum();
+                    colored + u64::from(cost.generic).saturating_sub(spare)
+                })
+                .min()
+                .expect("resolution cost")
         };
         let after = std::array::from_fn(|i| pool[i] - payment[i] + production[i]);
         if deficit(after) < deficit(pool) {
@@ -48,7 +54,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 Instruction::GrantKeywords { .. } => Some(true),
                 Instruction::Connive { .. }
                 | Instruction::CreateCopyToken { .. }
-                | Instruction::CreateCopyTokenWithExceptions { .. } => Some(true),
+                | Instruction::CreateCopyTokenWithExceptions { .. }
+                | Instruction::CreateCounteredCopyToken { .. } => Some(true),
                 Instruction::Grow {
                     power, toughness, ..
                 }
@@ -123,6 +130,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             return -10;
         }
         match action {
+            Action::ChooseManaRollback { keep } => i128::from(*keep),
             Action::AssignLibraryPile { pile, .. } => {
                 let piles = observation.library_piles.as_ref().unwrap();
                 // A balanced split is a generic deterministic baseline, using only
@@ -172,13 +180,27 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseConvoker { .. } => 50,
             Action::ChooseMobilizeDefender { .. } | Action::ChooseHandDefender { .. } => 50,
             Action::PutHandCreature { .. }
+            | Action::PutHandPermanent { .. }
             | Action::PutHandLand { .. }
             | Action::SelectLand { .. } => 50,
             Action::FinishLandSelection => -1,
             Action::DeclineHandEntry => -1,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
-            Action::ChooseX { value } => 80 + i128::from((*value).min(20)),
+            Action::ChooseX { value } => {
+                let life_cost = observation
+                    .announcing
+                    .as_ref()
+                    .is_some_and(|s| s.source_card.life_x_cost());
+                if life_cost
+                    && i128::from(*value) >= observation.players[actor.index()].life
+                    && *value != 0
+                {
+                    -100
+                } else {
+                    80 + i128::from((*value).min(20))
+                }
+            }
             Action::ChooseGift { beneficiary } => {
                 if beneficiary.is_some() {
                     40
@@ -186,7 +208,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
-            Action::ChooseOffspring { pay } | Action::ChooseKicker { pay } => {
+            Action::ChooseCasualty { pay }
+            | Action::ChooseOffspring { pay }
+            | Action::ChooseKicker { pay } => {
                 if *pay {
                     100
                 } else {
@@ -210,7 +234,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
-            Action::ChooseAdditionalCost { .. } | Action::ChooseCreatureCounterCost { .. } => 60,
+            Action::ChooseCastCost { .. }
+            | Action::PayCasualty { .. }
+            | Action::ChooseAdditionalCost { .. }
+            | Action::ChooseCreatureCounterCost { .. } => 60,
             Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,
             Action::ChooseConniver { .. } => 60,
@@ -233,11 +260,16 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseZoneReplacement { .. } => 50,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
-            Action::AnnounceFree {
+            Action::AnnounceFreeFromPermission {
+                flash_surcharge: false,
+                ..
+            }
+            | Action::AnnounceFree {
                 flash_surcharge: false,
                 ..
             } => 81,
-            Action::AnnounceFree { .. }
+            Action::AnnounceFreeFromPermission { .. }
+            | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceCast { .. }
@@ -255,6 +287,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
+            Action::ChooseSearchDestination { destination } => {
+                if *destination == crate::SearchDestination::Hand {
+                    60
+                } else {
+                    0
+                }
+            }
             Action::FinishSearch => 0,
             Action::ChooseEntryValue {
                 value: crate::EntryChoiceValue::CreatureType(typ),
@@ -326,6 +365,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::PlayGraveyardPermanent { .. } => 79,
             Action::CastExiledDuringResolution { .. } => 81,
             Action::FinishResolutionCasts => -1,
+            Action::RevealMiracle => 82,
+            Action::DeclineMiracle => -1,
             Action::BeginCast { .. } => 80,
             // Once a complete target set is legal, commit it instead of
             // revisiting optional edits (which may otherwise oscillate).

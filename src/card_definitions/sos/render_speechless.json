@@ -3,10 +3,30 @@
   "catalogue_id": 3457,
   "oracle_id": "6fdddab4-fcc9-4622-9c17-c69f9d4bca08",
   "facts_sha256": "caf0db88f23f754b1be0613fdf0b3ac1e6a0a42c2131dd572a5ffd98a20066ab",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d055d1d8dffdd3b8a1045dc39e9ab6ab94f6811db845a5745af420bfa9b0d65e"
   },
-  "physical_metadata_sha256": "f9918159797b66fcc701f5ef89383807a9af218cdc4bce7b0aac10d9bad84a58"
+  "physical_metadata_sha256": "f9918159797b66fcc701f5ef89383807a9af218cdc4bce7b0aac10d9bad84a58",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RenderSpeechless.java",
+  "java_sha256": "9cadd6fd148245e2ed32e2799b55aa346f7ea257783f5cb83e1ab1320e3c0949",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+      "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+      "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+    }
+  ]
 }

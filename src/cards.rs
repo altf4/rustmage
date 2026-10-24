@@ -2,8 +2,8 @@
 mod ability_layers;
 pub(crate) use ability_layers::{
     AbilityLayer, AnimationCreatureTypes, AnimationDuration, AnimationSpec,
-    AttachedCharacteristics, PermanentForm, StaticAbilityFragment, StaticAbilityGroup,
-    UntapRestriction,
+    AttachedCharacteristics, LandManaRecipients, PermanentForm, StaticAbilityFragment,
+    StaticAbilityGroup, UntapRestriction,
 };
 
 use crate::capacity::CapacityExt;
@@ -17,6 +17,8 @@ pub struct CopyExceptions {
     pub nightmare: bool,
     pub artifact: bool,
     pub golem: bool,
+    pub fractal: bool,
+    pub base: Option<(i16, i16)>,
 }
 impl CopyExceptions {
     pub const NONE: Self = Self {
@@ -24,18 +26,24 @@ impl CopyExceptions {
         nightmare: false,
         artifact: false,
         golem: false,
+        fractal: false,
+        base: None,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
         nightmare: false,
         artifact: false,
         golem: false,
+        fractal: false,
+        base: None,
     };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
         nightmare: true,
         artifact: false,
         golem: false,
+        fractal: false,
+        base: None,
     };
     pub const ARTIFACT: Self = Self {
         artifact: true,
@@ -44,6 +52,12 @@ impl CopyExceptions {
     pub const GOLEM: Self = Self {
         artifact: true,
         golem: true,
+        base: Some((3, 3)),
+        ..Self::NONE
+    };
+    pub const FRACTAL: Self = Self {
+        fractal: true,
+        base: Some((0, 0)),
         ..Self::NONE
     };
     pub fn union(self, other: Self) -> Self {
@@ -55,6 +69,8 @@ impl CopyExceptions {
             nightmare: self.nightmare || other.nightmare,
             artifact: self.artifact || other.artifact,
             golem: self.golem || other.golem,
+            fractal: self.fractal || other.fractal,
+            base: other.base.or(self.base),
         }
     }
 }
@@ -155,6 +171,9 @@ pub(crate) enum TargetRule {
     Any,
     Spell,
     SingleTargetStackObject,
+    YourSpellKinds {
+        kinds: u8,
+    },
     SpellKinds {
         kinds: u8,
         excluded: u8,
@@ -354,11 +373,15 @@ pub enum EntryChoiceValue {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EntryChoiceKind {
     CardNameAfterOpponentHand,
+    LandCardName,
     Color,
     CreatureType,
 }
 impl EntryChoiceKind {
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
+        if self == Self::LandCardName {
+            return matches!(value, EntryChoiceValue::CardName(name) if name.is_land());
+        }
         matches!(
             (self, value),
             (
@@ -412,6 +435,9 @@ pub(crate) enum ManaProduction {
         quality: &'static ManaQuality,
     },
     ChosenColor,
+    SourcePower {
+        color: u8,
+    },
     MonocoloredPermanentColors,
     Fixed(Mana),
     CountSubtype {
@@ -443,7 +469,10 @@ impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
             Self::Tagged { production, .. } => production.visit(emit),
-            Self::ChosenColor | Self::MonocoloredPermanentColors | Self::CountSubtype { .. } => {
+            Self::ChosenColor
+            | Self::SourcePower { .. }
+            | Self::MonocoloredPermanentColors
+            | Self::CountSubtype { .. } => {
                 panic!("dynamic mana requires a characteristic world")
             }
             Self::Fixed(mana) => emit(mana),
@@ -563,8 +592,10 @@ impl SearchFilter {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SearchDestination {
+    /// Reveal the selected cards, then choose one destination for the selection.
+    HandOrGraveyard,
     /// Face-up exile linked to this exact source incarnation, without an automatic return.
     LinkedExile,
     Graveyard,
@@ -594,13 +625,23 @@ pub enum EffectChoiceKind {
     SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
+    ExileGraveyardCards(u16),
+    HandToTop,
     RemoveCreatureCounters(u16),
     UntapLands {
         maximum: u16,
     },
     HandCreature,
+    HandPermanent {
+        maximum: u32,
+        tapped: bool,
+    },
     HandExileCopy,
     HandLand {
+        tapped: bool,
+    },
+    /// Exact public cards from the current simultaneous discard batch.
+    DiscardedLand {
         tapped: bool,
     },
     LandCards {
@@ -613,6 +654,7 @@ pub enum EffectChoiceKind {
     Sacrifice,
     ReturnToHand,
     Discard,
+    DiscardNamed(&'static str),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -722,6 +764,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    OfferMiracleCast(ManaCost),
+    Cascade,
     CreateCopyTokenForPlayer {
         subject: Subject,
         amount: u16,
@@ -742,6 +786,7 @@ pub(crate) enum Instruction {
     DamageTargetController(u16),
     ExileUntilManaValueCastFree(u16),
     PrepareSource,
+    ChooseLandCardName,
     Prepare {
         subject: Subject,
     },
@@ -783,12 +828,14 @@ pub(crate) enum Instruction {
     CopyCastSpell {
         prior_spells: bool,
     },
+    CopyStormSpell,
     ChangeSingleStackTarget,
     GrantGraveyardCast(GraveyardCastKind),
     /// Permission for the exact public card(s) just milled by this resolution.
     GrantMilledPlay,
     ExileDiscardedWithStash,
     ExileEachLibraryTopCastFree,
+    CastTargetedGraveyardFree,
     CounterRelatedUnlessPayLife(u32),
     /// One combined ward cost, paid atomically or the related item is countered.
     CounterRelatedUnlessPayManaLife {
@@ -869,6 +916,10 @@ pub(crate) enum Instruction {
         skip: usize,
     },
     CounterThenDrawIfDiscounted,
+    CounterAndDelayManaIfSubtype {
+        subtype: &'static str,
+        ability: u16,
+    },
     /// Countering may fail; the spell's captured current controller still creates tokens.
     CounterAndCreateForController {
         token: Card,
@@ -888,6 +939,10 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     PutHandCreature,
+    PutHandPermanent {
+        maximum: AmountValue,
+        tapped: bool,
+    },
     PutHandLand {
         tapped: bool,
     },
@@ -905,6 +960,10 @@ pub(crate) enum Instruction {
     },
     MayPayMana {
         cost: ManaCost,
+        skip: usize,
+    },
+    MayPayManaAlternatives {
+        costs: &'static [ManaCost],
         skip: usize,
     },
     Endure {
@@ -938,6 +997,14 @@ pub(crate) enum Instruction {
     },
     DamageCannotBePreventedThisTurn,
     LoseHalfLife(PlayerSet),
+    CopyTargetSpell {
+        group: u16,
+        retarget: bool,
+        exceptions: CopyExceptions,
+    },
+    FlipCoinsSkipTurns {
+        coins: u16,
+    },
     ChooseHalf {
         kind: EffectChoiceKind,
     },
@@ -955,6 +1022,12 @@ pub(crate) enum Instruction {
         subject: Subject,
         amount: u16,
         exceptions: CopyExceptions,
+    },
+    CreateCounteredCopyToken {
+        subject: Subject,
+        exceptions: CopyExceptions,
+        kind: CounterKind,
+        amount: u64,
     },
     ExileWarpedPermanent,
     Crew {
@@ -1035,6 +1108,14 @@ pub(crate) enum Instruction {
         subject: Subject,
         controller: PlayerSet,
     },
+    ReturnGraveyardManaValue {
+        kinds: u16,
+        value: AmountValue,
+    },
+    DestroyManaValue {
+        kinds: u16,
+        maximum: AmountValue,
+    },
     ReturnGraveyardCreatures {
         players: PlayerSet,
         maximum_mana_value: u64,
@@ -1098,6 +1179,11 @@ pub(crate) enum Instruction {
     DrawDamageAmount,
     PutDiscardCounters(CounterKind),
     DamageDiscardAmount(PlayerSet),
+    DiscardThenPutLand {
+        players: PlayerSet,
+        amount: u16,
+        tapped: bool,
+    },
     DiscardHand(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
@@ -1134,6 +1220,7 @@ pub(crate) enum Instruction {
         recipient: u16,
     },
     AddMana(ManaProduction),
+    AddColorlessScaled(AmountValue),
     AddManaScaled {
         color: ChoiceColor,
         amount: AmountValue,
@@ -1143,6 +1230,19 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     AnimateSource(AnimationSpec),
+    SetCreatureForm {
+        types: &'static [&'static str],
+        colors: u8,
+        base: AmountValue,
+    },
+    MoveCountersFromSource {
+        kind: CounterKind,
+        amount: AmountValue,
+    },
+    AnimateSourceIfNoncreature {
+        spec: AnimationSpec,
+        ability: u16,
+    },
     Search(SearchSpec),
     SearchTargetController(SearchSpec),
     MayTargetController {
@@ -1224,6 +1324,10 @@ pub(crate) enum Instruction {
     },
     SacrificeAbilitySource,
     ExileSourceGainLifeIfMoved(u16),
+    GrantCreatureAbility {
+        filter: CreatureFilter,
+        ability: u16,
+    },
     GrantUntilEndTurn {
         ability: u16,
     },
@@ -1253,6 +1357,11 @@ pub(crate) enum Instruction {
     },
     Counter,
     Exile,
+    ExileTargetsForModifiedCast,
+    ExileTargetsPlay {
+        next_turn: bool,
+    },
+    ExileTargetsAndTopPlayForOwners,
     ExileUntilSourceLeaves,
     ExileGraveyard(PlayerSet),
     ReturnToHand,
@@ -1436,6 +1545,9 @@ pub(crate) struct CountFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum AmountValue {
+    /// Current hand size of the spell's surviving targeted player.
+    TargetPlayerHandSize,
+    Sum(&'static [AmountValue]),
     ManaSpent,
     ColorsSpent,
     SpellColors,
@@ -2033,6 +2145,7 @@ pub(crate) enum CastTarget {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
+    NotOwnedByYou,
     HasX,
     SourceChosenColor,
     PermanentAdventure,
@@ -2080,9 +2193,10 @@ impl CastFilter {
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
             }
             // Contextual cast observers use Game::cast_filter_matches instead.
-            Self::SourceChosenColor | Self::Targeted { .. } | Self::InstantSorceryOrdinal(_) => {
-                false
-            }
+            Self::NotOwnedByYou
+            | Self::SourceChosenColor
+            | Self::Targeted { .. }
+            | Self::InstantSorceryOrdinal(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::Colors { filter, mask } => {
                 card.colors() & mask != 0 && filter.matches_mana_value(card, mana_value)
@@ -2571,6 +2685,7 @@ pub(crate) enum ActivationGuard {
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
     ControlLandsAtLeast(u16),
+    HandSizeAtLeast(u16),
     LifeAboveStarting(u16),
 }
 impl ActivationGuard {
@@ -2580,6 +2695,7 @@ impl ActivationGuard {
             | Self::CastInstantSorceryThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
+            | Self::HandSizeAtLeast(_)
             | Self::LifeAboveStarting(_) => &[],
             Self::ControlSubtypeAny(types) => types,
         }
@@ -2604,7 +2720,11 @@ impl ActivatedAbility {
             return None;
         }
         match self.program {
-            [Instruction::AddMana(production)] if !self.targets.has_targets() => Some(*production),
+            [Instruction::AddMana(production)]
+            | [
+                Instruction::AddMana(production),
+                Instruction::Reflexive { .. },
+            ] if !self.targets.has_targets() => Some(*production),
             _ => None,
         }
     }
@@ -2903,8 +3023,14 @@ impl Card {
         generated::adventure_spell(self)
     }
     /// Homogeneous optional target group whose maximum is the chosen X.
+    pub(crate) fn life_x_cost(self) -> bool {
+        authored::rules(self).is_some_and(|r| r.extras.life_x_cost)
+    }
     pub(crate) fn targets_up_to_x(self) -> bool {
         authored::rules(self).is_some_and(|rules| rules.extras.targets_up_to_x)
+    }
+    pub(crate) fn spell_cannot_be_copied(self) -> bool {
+        authored::rules(self).is_some_and(|r| r.extras.spell_cannot_be_copied)
     }
     pub(crate) fn prepared_spell(self) -> Option<Card> {
         authored::rules(self).and_then(|rules| rules.extras.prepared_spell)
@@ -2933,6 +3059,28 @@ impl Card {
     }
     pub fn plot_cost(self) -> Option<ManaCost> {
         generated::plot_cost(self)
+    }
+    pub(crate) fn mana_additional_alternative(self) -> Option<ManaCost> {
+        let r = authored::rules(self)?;
+        if !r.extras.mana_alternative_replaces_additional {
+            return None;
+        }
+        let alternative = *r.extras.cost_alternatives.first()?;
+        let (colored, generic) = self.cost();
+        Some(ManaCost {
+            colored: std::array::from_fn(|i| {
+                alternative.colored[i]
+                    .checked_sub(colored[i])
+                    .expect("additional mana branch")
+            }),
+            generic: alternative
+                .generic
+                .checked_sub(generic)
+                .expect("additional generic branch"),
+        })
+    }
+    pub(crate) fn flashback_additional(self) -> Option<AdditionalCost> {
+        authored::rules(self).and_then(|r| r.extras.flashback_additional)
     }
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)
@@ -3276,6 +3424,14 @@ impl Card {
     }
     pub(crate) fn chosen_entry_counters(self) -> Option<CounterKind> {
         authored::RULES[self.index()].extras.chosen_entry_counters
+    }
+    pub(crate) fn activation_counter_discount(self, ability: u16) -> Option<CounterKind> {
+        authored::RULES[self.index()]
+            .extras
+            .activation_counter_discounts
+            .iter()
+            .find(|(index, _)| *index == ability)
+            .map(|(_, kind)| *kind)
     }
     pub(crate) fn activation_put_counter(self, ability: u16) -> Option<(CounterKind, u64)> {
         authored::RULES[self.index()]

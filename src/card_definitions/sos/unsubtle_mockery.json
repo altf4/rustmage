@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b5436bc6ff0ea29c3ce6bb83d96d9634cbae899402c0f8aad64798ec5667eec9"
   },
-  "physical_metadata_sha256": "a01b6e5d3ce502c707399f2a7f10738b399334980a5ec92e17d252fd116934ee"
+  "physical_metadata_sha256": "a01b6e5d3ce502c707399f2a7f10738b399334980a5ec92e17d252fd116934ee",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnsubtleMockery.java",
+  "java_sha256": "4dc97c09787941286c96808abaf31309f7405d3999c5ba5d9d890db2a69655b1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }

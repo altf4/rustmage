@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "76f17df86c4abb976dbabcbcef7e7d31e499a6e1b54b4645fa86efeffba7129d"
   },
-  "physical_metadata_sha256": "eb982b3e9499da5cac3d79c0a562baabdaee1bd764b4e6ff7d23958f97d068c5"
+  "physical_metadata_sha256": "eb982b3e9499da5cac3d79c0a562baabdaee1bd764b4e6ff7d23958f97d068c5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeathcapGlade.java",
+  "java_sha256": "7da5eac33515cdd7647b5e1b1b04dd48ef7818e2d48b4e53234f95beec5f5caa",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    }
+  ]
 }

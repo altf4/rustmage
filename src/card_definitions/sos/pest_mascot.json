@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a14b52a1a1b5e16bd677958b83ac3646f7901efc12267971fb9fe8be7a920793"
   },
-  "physical_metadata_sha256": "927ba52f07a6a4cb10908316fad92487fc08f5a86fc7c6569f8a89ba6eb64a1b"
+  "physical_metadata_sha256": "927ba52f07a6a4cb10908316fad92487fc08f5a86fc7c6569f8a89ba6eb64a1b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PestMascot.java",
+  "java_sha256": "3b69c51b4a64a342123eb814cc87a40ce8038a5bca4654b38f3ec71843972f73",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+    }
+  ]
 }

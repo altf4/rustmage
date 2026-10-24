@@ -43,6 +43,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentActivation(..)
                             | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::AttachmentSacrificeMana(..)
+                            | StaticAbilityFragment::LandMana { .. }
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                             | StaticAbilityFragment::DeathBaronLord

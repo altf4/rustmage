@@ -140,7 +140,10 @@ impl Game {
         let definition = a.item.source_card.activation(ability);
         let base = a.cost.unwrap_or(ManaCost {
             colored: definition.cost.colored,
-            generic: definition.cost.generic,
+            generic: definition
+                .cost
+                .generic
+                .saturating_sub(a.activation_discount),
         });
         let fundable = |value: u32| {
             base.generic.checked_add(value).is_some_and(|generic| {
@@ -179,6 +182,27 @@ impl Game {
             maximum: low,
         }]
     }
+    fn life_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        let goal = self.funding_goal(a);
+        let purpose = self.purpose_for_item(&a.item);
+        let fundable = |x| self.can_fund_life_cost(goal.clone(), purpose, x);
+        if !fundable(0) {
+            return Vec::new();
+        }
+        let (mut low, mut high) = (0u64, u64::from(u32::MAX));
+        while low < high {
+            let mid = low + (high - low).div_ceil(2);
+            if fundable(mid as u32) {
+                low = mid;
+            } else {
+                high = mid - 1;
+            }
+        }
+        vec![XInterval {
+            minimum: 0,
+            maximum: low as u32,
+        }]
+    }
     pub fn x_choice(&self) -> Option<XChoiceView> {
         if let Pending::ResolutionX { player } = self.state.pending {
             let mut lo = 0u64;
@@ -211,7 +235,9 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         Some(XChoiceView {
             card: a.item.object,
-            intervals: if a.item.kind == StackKind::Spell {
+            intervals: if a.item.kind == StackKind::Spell && a.item.source_card.life_x_cost() {
+                self.life_x_intervals(a)
+            } else if a.item.kind == StackKind::Spell {
                 self.scalar_x_intervals(a.item.controller, a.item.card)
             } else {
                 self.activation_x_intervals(a)
@@ -220,6 +246,17 @@ impl Game {
     }
     pub(super) fn item_amount(&self, value: AmountValue, item: &SpellView) -> u128 {
         match value {
+            AmountValue::TargetPlayerHandSize => item
+                .targets
+                .iter()
+                .find_map(|bound| {
+                    if let Target::Player(player) = bound.target {
+                        Some(self.hand_count(player) as u128)
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or(0),
             AmountValue::ManaSpent => u128::from(
                 self.item_cast_payment(item)
                     .into_iter()
@@ -263,6 +300,11 @@ impl Game {
             AmountValue::LifeEventAmount => {
                 item.life_event.expect("saved life event").amount.max(0) as u128
             }
+            AmountValue::Sum(values) => values.iter().fold(0u128, |total, value| {
+                total
+                    .checked_add(self.item_amount(*value, item))
+                    .capacity("effect sum exhausted")
+            }),
             AmountValue::ChosenX => u128::from(item.x.unwrap_or(0)),
             AmountValue::MilledCreatures => self
                 .state

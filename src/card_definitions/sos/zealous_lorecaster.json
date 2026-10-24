@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7f642507b31702f40a345235e30bc32e29bcb04f48531fd10d234e616095344a"
   },
-  "physical_metadata_sha256": "e56e401cec96a3d4d554f65628614691a2fe58deeb92af302e11d28a18021876"
+  "physical_metadata_sha256": "e56e401cec96a3d4d554f65628614691a2fe58deeb92af302e11d28a18021876",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZealousLorecaster.java",
+  "java_sha256": "2a94f17cd7ad5e0cd3c115f6390f272ffed11d1d1e9473a60e67adda04ae8b55",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    }
+  ]
 }

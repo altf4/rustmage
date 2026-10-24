@@ -357,7 +357,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && let Some(item) = &before.announcing
             {
                 match item.kind {
-                    StackKind::CopyEndStepSacrifice
+                    StackKind::CasualtyCopy
+                    | StackKind::CopyEndStepSacrifice
                     | StackKind::DelayedReturn
                     | StackKind::DelayedSacrifice
                     | StackKind::DelayedWarpExile => {

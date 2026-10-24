@@ -3,6 +3,7 @@ use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
+    pub miracle_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
     pub plan: TargetPlan,
@@ -11,6 +12,9 @@ pub(super) struct Announcement {
     pub payment: Option<Mana>,
     pub cost: Option<ManaCost>,
     pub total_cost: Option<ManaCost>,
+    /// Locked before mana abilities or any nonmana payment changes the source.
+    pub activation_discount: u32,
+    pub free_hand_permission: Option<Box<ObjectRef>>,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
@@ -26,13 +30,37 @@ pub(super) struct Announcement {
     )]
     pub creature_counter_cost: Option<Box<Vec<(ObjectRef, CounterKind)>>>,
     pub forage: Option<Box<forage::ForageSelection>>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare casualty declarations use one pointer in ordinary announcements"
+    )]
+    pub casualty: Option<Box<Vec<CasualtyDeclaration>>>,
+    pub cast_costs: Option<Box<CastCostTransaction>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
     pub additional_paid: bool,
 }
 
 impl Announcement {
+    pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
+        self.item.cast.and_then(|c| match c.method {
+            CastMethod::Miracle => self.miracle_cost,
+            CastMethod::Free | CastMethod::Plot => Some(ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            }),
+            _ => None,
+        })
+    }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
+        if self
+            .item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::Flashback)
+            && let Some(spec) = self.item.source_card.flashback_additional()
+        {
+            return Some(spec);
+        }
         match self.item.kind {
             StackKind::Spell
                 if self
@@ -51,15 +79,23 @@ impl Announcement {
                 Some(bargain::COST)
             }
             StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| c.method == CastMethod::Normal)
-                    && self.cost.is_some_and(|cost| {
+                if self.item.cast.is_some_and(|c| match c.method {
+                    CastMethod::Normal => self.cost.is_some_and(|cost| {
                         self.item
                             .source_card
                             .mana_alternative_replaces_additional(cost)
-                    }) =>
+                    }),
+                    CastMethod::Free | CastMethod::Plot | CastMethod::Miracle => {
+                        self.fixed_alternative_cost()
+                            .is_some_and(|base| self.cost.is_some_and(|cost| cost != base))
+                            && self
+                                .item
+                                .source_card
+                                .mana_additional_alternative()
+                                .is_some()
+                    }
+                    _ => false,
+                }) =>
             {
                 None
             }
@@ -69,6 +105,7 @@ impl Announcement {
             }
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => None,
@@ -77,6 +114,14 @@ impl Announcement {
 
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
         let options = match self.item.kind {
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Miracle) =>
+            {
+                std::iter::once(self.miracle_cost.expect("miracle cost")).chain([].iter().copied())
+            }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
                 std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
                     .chain([].iter().copied())
@@ -111,13 +156,34 @@ impl Announcement {
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
             | StackKind::CopyEndStepSacrifice
+            | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedWarpExile => {
                 unreachable!("triggered ability has no activation cost")
             }
         };
+        let extra = self.fixed_alternative_cost().and_then(|base| {
+            self.item
+                .source_card
+                .mana_additional_alternative()
+                .map(|extra| ManaCost {
+                    colored: std::array::from_fn(|i| {
+                        base.colored[i]
+                            .checked_add(extra.colored[i])
+                            .capacity("additional mana cost exhausted")
+                    }),
+                    generic: base
+                        .generic
+                        .checked_add(extra.generic)
+                        .capacity("additional mana cost exhausted"),
+                })
+        });
         options
+            .map(|mut cost| {
+                cost.generic = cost.generic.saturating_sub(self.activation_discount);
+                cost
+            })
             .filter(|cost| {
                 self.item
                     .cast
@@ -143,6 +209,16 @@ impl Announcement {
                     &self.item,
                 )
             })
+            .chain(extra.and_then(|cost| {
+                Game::with_tiered_mana(
+                    Game::with_flash_surcharge(
+                        cost,
+                        self.item.source_card,
+                        self.item.cast.is_some_and(|c| c.flash_surcharge),
+                    ),
+                    &self.item,
+                )
+            }))
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -180,14 +256,8 @@ impl Announcement {
             && match self.item.kind {
                 StackKind::Spell => {
                     self.item.cast.is_none_or(|cast| {
-                        !matches!(
-                            cast.method,
-                            CastMethod::Flashback
-                                | CastMethod::Plot
-                                | CastMethod::Warp
-                                | CastMethod::Free
-                        )
-                    }) && self.item.source_card.has_hybrid_cost()
+                        !matches!(cast.method, CastMethod::Flashback | CastMethod::Warp)
+                    }) && self.cost_options().count() > 1
                 }
                 StackKind::ActivatedAbility { ability } => !self
                     .item
@@ -198,6 +268,7 @@ impl Announcement {
                     .is_empty(),
                 StackKind::TriggeredAbility { .. }
                 | StackKind::CopyEndStepSacrifice
+                | StackKind::CasualtyCopy
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
                 | StackKind::DelayedWarpExile => false,
@@ -574,7 +645,18 @@ impl Game {
             };
         } else if a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none() {
             self.state.pending = Pending::ForageMethod { player };
+        } else if a
+            .casualty
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|row| !row.declared))
+        {
+            self.state.pending = Pending::Casualty { player };
         } else {
+            self.state
+                .announcing
+                .as_mut()
+                .unwrap()
+                .initialize_cast_costs();
             self.state.pending = Pending::Targets { player };
             self.advance_target_groups();
         }
@@ -916,11 +998,9 @@ impl Game {
                         _ => false,
                     }
             }
-            Target::Stack(id) => self
-                .state
-                .stack
-                .iter()
-                .any(|item| item.id == id && self.stack_target_rule_matches(rule, item)),
+            Target::Stack(id) => self.state.stack.iter().any(|item| {
+                item.id == id && self.stack_target_rule_matches(rule, item, controller)
+            }),
             Target::Spell(id) => self.state.stack.iter().any(|item| {
                 item.kind == StackKind::Spell
                     && item.card == id
@@ -928,6 +1008,10 @@ impl Game {
                     && match rule {
                         TargetRule::SingleTargetStackObject => item.targets.len() == 1,
                         TargetRule::Spell => true,
+                        TargetRule::YourSpellKinds { kinds } => {
+                            item.controller == controller
+                                && item.source_card.kind_mask() & u16::from(kinds) != 0
+                        }
                         TargetRule::SpellKinds { kinds, excluded } => {
                             (kinds == 0 || item.source_card.kind_mask() & u16::from(kinds) != 0)
                                 && item.source_card.kind_mask() & u16::from(excluded) == 0
@@ -1134,6 +1218,7 @@ impl Game {
         );
         self.state.passes = 0;
         let stash_origin = self.foreign_stash(actor, card);
+        let modifiers = self.exile_cast_modifiers(actor, card);
         let origin = self.state.objects[card as usize].zone;
         let before = self.object_view(card);
         let event = self.transition_object_under_control(
@@ -1153,6 +1238,8 @@ impl Game {
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
         item.mana_copy_sources = outcome.copies;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
+        item.cast.as_mut().unwrap().spend_any_mana = modifiers.0;
+        item.cast.as_mut().unwrap().exile_on_graveyard = modifiers.1;
         item
     }
     pub(super) fn cast_preview(
@@ -1184,6 +1271,8 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
+                spend_any_mana: self.exile_cast_modifiers(actor, card).0,
+                exile_on_graveyard: self.exile_cast_modifiers(actor, card).1,
                 caster: actor,
                 gift: None,
                 physical_card: None,
@@ -1266,6 +1355,9 @@ impl Game {
         }
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
+            activation_discount: self.item_activation_discount(&item),
+            free_hand_permission: None,
+            miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -1279,6 +1371,8 @@ impl Game {
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
+            casualty: None,
+            cast_costs: None,
             evidence: None,
             convoke: None,
             additional_paid: false,
@@ -1296,6 +1390,7 @@ impl Game {
         production: Option<Mana>,
     ) {
         if production.is_some() {
+            self.suspend_mana_announcement();
             self.capture_announced_mana_quality(&item);
         }
         let plan = self.target_spec(&item);
@@ -1310,7 +1405,11 @@ impl Game {
                     .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
+        let casualty = self.casualty_declarations(&item);
         self.state.announcing = Some(Announcement {
+            activation_discount: self.item_activation_discount(&item),
+            free_hand_permission: None,
+            miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -1324,6 +1423,8 @@ impl Game {
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
+            casualty,
+            cast_costs: None,
             evidence: None,
             convoke: None,
             additional_paid: false,
@@ -1367,20 +1468,25 @@ impl Game {
                 };
                 self.state.announcing.as_mut().unwrap().total_cost = Some(total);
             }
-            if self
-                .state
-                .announcing
-                .as_ref()
-                .unwrap()
-                .additional_cost()
-                .and_then(evidence::threshold)
-                .is_some()
+            if self.state.announcing.as_ref().unwrap().cast_costs.is_none()
+                && self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .additional_cost()
+                    .and_then(evidence::threshold)
+                    .is_some()
             {
                 self.start_announcement_evidence();
                 return;
             }
             let announcement = self.state.announcing.as_ref().unwrap();
-            self.state.pending = if announcement
+            self.state.pending = if announcement.cast_costs.is_some() {
+                Pending::PayCosts {
+                    player: announcement.item.controller,
+                }
+            } else if announcement
                 .additional_cost()
                 .is_some_and(forage::is_forage_cost)
                 && announcement.forage.as_ref().is_some_and(|f| !f.complete())
@@ -1404,7 +1510,10 @@ impl Game {
             return;
         }
         let mut announcement = self.state.announcing.take().unwrap();
-        if let Some(frame) = announcement.convoke.take() {
+        self.capture_announced_cast_mana(&announcement);
+        if announcement.cast_costs.is_none()
+            && let Some(frame) = announcement.convoke.take()
+        {
             self.tap_objects(
                 &frame
                     .selected
@@ -1469,7 +1578,14 @@ impl Game {
             self.state.announcing = Some(announcement);
             return;
         }
-        if announcement.item.kind == StackKind::Spell && !announcement.additional_paid {
+        if self.continue_cast_cost_payment(&mut announcement) {
+            self.state.announcing = Some(announcement);
+            return;
+        }
+        if announcement.cast_costs.is_none()
+            && announcement.item.kind == StackKind::Spell
+            && !announcement.additional_paid
+        {
             self.pay_additional_cost(&mut announcement);
             if self.state.entry_batch.is_some() {
                 self.state.announcing = Some(announcement);
@@ -1483,7 +1599,15 @@ impl Game {
         };
         if let Some(production) = announcement.production {
             self.add_announced_mana(&announcement.item, production);
+            self.committed_mana_reflexive(&announcement.item);
+            if self.restore_mana_announcement() {
+                return;
+            }
         } else {
+            if let Some(permission) = announcement.free_hand_permission.take() {
+                self.use_free_hand_permission(*permission);
+            }
+            self.queue_casualty_copies(&announcement);
             self.push_stack_item(announcement.item);
         }
         if announcement.trigger {

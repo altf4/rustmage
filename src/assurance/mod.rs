@@ -148,6 +148,29 @@ mod sos_white_blue;
 mod sos_milled_play;
 mod sos_multicolor_next;
 
+mod sos_discard_followon;
+mod sos_exile_search;
+mod sos_hand_attack;
+mod sos_moment;
 mod sos_multicolor_more;
-
+mod sos_nita;
 mod sos_review_regressions;
+mod sos_white_blue_final;
+
+mod sos_applied;
+mod sos_killian;
+mod sos_white_blue_dragons;
+
+mod sos_br_audit;
+mod sos_life_x;
+mod sos_original_multicolor_audit;
+mod sos_storm;
+mod sos_wu_audit;
+mod sos_zaffai;
+
+mod sos_cast_rollback;
+mod sos_complete_games;
+
+mod sos_evidence_funding;
+
+mod sos_mana_rollback;

@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f8f8567990573c7d192b0d361832a0eacfc4e5cf10735f1b5c74d6404ec907e5"
   },
-  "physical_metadata_sha256": "ed57768d5fe6099082b4e92adf65ca3c199edaad1a96b9f553593c36465ebe65"
+  "physical_metadata_sha256": "ed57768d5fe6099082b4e92adf65ca3c199edaad1a96b9f553593c36465ebe65",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RearingEmbermare.java",
+  "java_sha256": "a899358c4969a8ea408f34807c69235b0913de82b7d012a09c265343ba13c47a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ]
 }

@@ -108,6 +108,9 @@ impl Game {
     }
     pub(super) fn advance_connive(&mut self) -> bool {
         loop {
+            if self.miracle_choice_pending() {
+                return true;
+            }
             if let Some(current) = self
                 .state
                 .resolving

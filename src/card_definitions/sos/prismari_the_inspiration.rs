@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Storm is granted to the actual instant/sorcery spell, not an observer ability.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(7, 7),
     keywords: Keywords::FLYING,
+    static_groups: &[StaticAbilityGroup {
+        line: 2,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::GrantInstantSorceryStorm { ability: 1 }],
+    }],
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Ward,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CounterRelatedUnlessPayLife(5)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Granted(&TriggerCondition::Reflexive),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CopyStormSpell],
+        },
+    ],
     ..CardRules::EMPTY
 };

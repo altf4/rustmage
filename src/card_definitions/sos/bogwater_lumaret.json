@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "57c3a6b96e4fda672b1cd98162988c891966809f99769c560a22ca532408a35f"
   },
-  "physical_metadata_sha256": "3933369ca7fb72f11600321adc683c960feb931d9fcf55f0c275fdf8f8ba50dd"
+  "physical_metadata_sha256": "3933369ca7fb72f11600321adc683c960feb931d9fcf55f0c275fdf8f8ba50dd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BogwaterLumaret.java",
+  "java_sha256": "539ac0b23c99e64e3dc3b5b81e3e2ab03b2d07a5cf157a65f86b710f929abfed",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": []
 }

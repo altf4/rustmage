@@ -1,0 +1,1042 @@
+{
+  "schema": 1,
+  "source_head": "c440fbcb31b12eb995ec6ca8bf35cb2444990306",
+  "pull_request": 477,
+  "workload": "SOS_COLLEGES_V1",
+  "catalogue": "5f8fc3870930fbac1ce6d8740185a52c8a829986600844c8843d2c6f5f829372",
+  "runtime_observation_schema": 136,
+  "status": "PASS: final-code candidate legal full-game verification, separate named benchmark, and standalone ordered-trace ABI replay",
+  "scope": "Six exactly 60-card Standard decks; physical SOS members only; max four nonbasic copies, 28 basic lands; natural terminals; existing observation-only smoke policy",
+  "pool": {
+    "physical_sos_members": 271,
+    "all_members_supported_gate": true,
+    "actual_spell_color_mask": 31,
+    "distinct_cast_definition_names": 46
+  },
+  "decks": [
+    {
+      "name": "Silverquill",
+      "cards": {
+        "Adventurous Eater": 4,
+        "Dig Site Inventory": 4,
+        "Imperious Inkmage": 4,
+        "Informed Inkwright": 4,
+        "Inkling Mascot": 4,
+        "Interjection": 4,
+        "Last Gasp": 4,
+        "Plains": 14,
+        "Silverquill, the Disputant": 4,
+        "Swamp": 14
+      },
+      "size": 60,
+      "standard_validation": true,
+      "sos_membership": true
+    },
+    {
+      "name": "Prismari",
+      "cards": {
+        "Deluge Virtuoso": 4,
+        "Echocasting Symposium": 4,
+        "Exhibition Tidecaller": 4,
+        "Goblin Glasswright": 4,
+        "Island": 14,
+        "Mountain": 14,
+        "Muse Seeker": 4,
+        "Prismari, the Inspiration": 4,
+        "Rapturous Moment": 4,
+        "Spectacular Skywhale": 4
+      },
+      "size": 60,
+      "standard_validation": true,
+      "sos_membership": true
+    },
+    {
+      "name": "Quandrix",
+      "cards": {
+        "Cuboid Colony": 4,
+        "Forest": 14,
+        "Fractalize": 4,
+        "Germination Practicum": 4,
+        "Island": 14,
+        "Pterafractyl": 4,
+        "Quandrix, the Proof": 4,
+        "Rancorous Archaic": 4,
+        "Tam, Observant Sequencer": 4,
+        "Textbook Tabulator": 4
+      },
+      "size": 60,
+      "standard_validation": true,
+      "sos_membership": true
+    },
+    {
+      "name": "Witherbloom",
+      "cards": {
+        "Adventurous Eater": 4,
+        "Decorum Dissertation": 4,
+        "Efflorescence": 4,
+        "Forest": 14,
+        "Lumaret's Favor": 4,
+        "Moseo, Vein's New Dean": 4,
+        "Old-Growth Educator": 4,
+        "Oracle's Restoration": 4,
+        "Swamp": 14,
+        "Thornfist Striker": 4
+      },
+      "size": 60,
+      "standard_validation": true,
+      "sos_membership": true
+    },
+    {
+      "name": "Lorehold",
+      "cards": {
+        "Daydream": 4,
+        "Dig Site Inventory": 4,
+        "Interjection": 4,
+        "Lorehold, the Historian": 4,
+        "Mountain": 14,
+        "Plains": 14,
+        "Restoration Seminar": 4,
+        "Shattered Acolyte": 4,
+        "Startled Relic Sloth": 4,
+        "Stirring Hopesinger": 4
+      },
+      "size": 60,
+      "standard_validation": true,
+      "sos_membership": true
+    },
+    {
+      "name": "Campus",
+      "cards": {
+        "Forest": 14,
+        "Moseo, Vein's New Dean": 4,
+        "Page, Loose Leaf": 4,
+        "Rancorous Archaic": 4,
+        "Snarl Song": 4,
+        "Strixhaven Skycoach": 4,
+        "Swamp": 14,
+        "Together as One": 4,
+        "Wildgrowth Archaic": 4,
+        "Witherbloom, the Balancer": 4
+      },
+      "size": 60,
+      "standard_validation": true,
+      "sos_membership": true
+    }
+  ],
+  "required_mechanics": [
+    "prepared_created",
+    "prepared_spell_cast",
+    "increment_trigger",
+    "repartee_trigger",
+    "opus_trigger",
+    "infusion_copy",
+    "paradigm_enrolled",
+    "paradigm_copy_cast",
+    "cascade_cast",
+    "miracle_cast",
+    "storm_copy",
+    "casualty_paid_surviving_grantor",
+    "casualty_copy",
+    "flashback_cast",
+    "converge_entry",
+    "grandeur_paid",
+    "crew_animated",
+    "landfall_trigger",
+    "affinity_reduced_cast",
+    "surveil_completed",
+    "mill_resolved",
+    "treasure_created"
+  ],
+  "witnesses": {
+    "actual_cast": 436,
+    "affinity_reduced_cast": 4,
+    "cascade_cast": 5,
+    "casualty_copy": 1,
+    "casualty_paid_surviving_grantor": 1,
+    "converge_entry": 13,
+    "crew_animated": 2,
+    "flashback_cast": 17,
+    "grandeur_paid": 2,
+    "graveyard_departure": 42,
+    "increment_trigger": 17,
+    "infusion_copy": 2,
+    "infusion_static": 15,
+    "landfall_trigger": 11,
+    "life_gain": 140,
+    "mill_resolved": 10,
+    "miracle_cast": 1,
+    "opus_trigger": 15,
+    "paradigm_copy_cast": 49,
+    "paradigm_enrolled": 23,
+    "prepared_created": 69,
+    "prepared_spell_cast": 31,
+    "private_library_choice": 11,
+    "repartee_trigger": 20,
+    "storm_copy": 4,
+    "surveil_completed": 12,
+    "treasure_created": 12,
+    "uncast_copy": 7
+  },
+  "verification": {
+    "unique_cases": 24,
+    "natural_terminal_games": 24,
+    "concessions": 0,
+    "budget_terminations": 0,
+    "decisions": 12743,
+    "complete_raw_replayed_actions": 12743,
+    "owned_raw_index_restore_wrong_actor_checks": 610,
+    "both_viewer_observation_checks": true,
+    "snapshot_equality_after_complete_replay": true,
+    "seconds": 0.641021993,
+    "outcomes": {
+      "P0": 13,
+      "P1": 11
+    },
+    "measurement": "Includes full raw trace replay, sampled wrong-actor/owned/raw/index/restore/observation contracts and telemetry; not a simulation benchmark"
+  },
+  "benchmark": {
+    "games": 2400,
+    "unique_cases": 24,
+    "repetitions_per_case": 100,
+    "decisions": 1274300,
+    "seconds": 28.454381473,
+    "games_per_second": 84.34553400070668,
+    "decisions_per_second": 44783.96415712522,
+    "owned_checks": 0,
+    "replayed_actions": 0,
+    "raw_trace_serialization": false,
+    "all_repetitions_match_verified_outcomes_decisions_witnesses_and_sampled_state_bytes": true,
+    "max_sampled_initialized_state_bytes": 23928,
+    "measurement": "Includes game construction, rules, action emission, shared smoke policy and observation telemetry. Excludes replay/owned checks, trace serialization, model inference, tensors and network. NamedSOSworkload only; not allStandard or XMage parity",
+    "timer_excludes": "Initial SOS inventory/deck validation, repeat-vector construction, final JSON report serialization, Cargo compilation and process startup.",
+    "scope_limit": "Deterministic mechanic-selected SOS_COLLEGES_V1 corpus with the existing smoke policy. This measurement is not an unbiased matchup estimate, all-Standard throughput, a training/model benchmark, or XMage parity."
+  },
+  "standalone_artifact_replay": {
+    "success": true,
+    "api": "Existing public Python/JSON C ABI, ABI version 1",
+    "games": 24,
+    "raw_actions": 12743,
+    "seconds": 2.7632225939887576,
+    "both_viewer_terminal_outcomes_match": true,
+    "measurement": "Separate from the native benchmark; includes Python/JSON serialization."
+  },
+  "cases": [
+    {
+      "pair": 0,
+      "seed": 676200,
+      "starting_player": "P0",
+      "decisions": 693,
+      "turns": 21,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 34,
+      "replayed_actions": 693,
+      "trace_digest": "6d9c515076066491",
+      "max_sampled_state_bytes": 23644,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-0-seed-676200.json",
+        "sha256": "619b5aaa0564936822e9c694be22cbd2128ee84d51e6b216ed51d1eb6a5b20e4",
+        "bytes": 22976
+      },
+      "witnesses": {
+        "actual_cast": 27,
+        "flashback_cast": 2,
+        "graveyard_departure": 2,
+        "life_gain": 1,
+        "mill_resolved": 3,
+        "opus_trigger": 1,
+        "paradigm_copy_cast": 2,
+        "paradigm_enrolled": 1,
+        "prepared_created": 10,
+        "prepared_spell_cast": 4,
+        "private_library_choice": 1,
+        "repartee_trigger": 1,
+        "storm_copy": 4,
+        "surveil_completed": 2,
+        "treasure_created": 7,
+        "uncast_copy": 4
+      }
+    },
+    {
+      "pair": 0,
+      "seed": 676201,
+      "starting_player": "P1",
+      "decisions": 363,
+      "turns": 14,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 15,
+      "replayed_actions": 363,
+      "trace_digest": "7da76c4f813520e4",
+      "max_sampled_state_bytes": 21976,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-0-seed-676201.json",
+        "sha256": "99ffd6b2daf2438522a53466dd11df42c482d1a0117d3e09615d03408ee1de2e",
+        "bytes": 12243
+      },
+      "witnesses": {
+        "actual_cast": 7,
+        "casualty_copy": 1,
+        "casualty_paid_surviving_grantor": 1,
+        "private_library_choice": 1,
+        "repartee_trigger": 3,
+        "surveil_completed": 1,
+        "uncast_copy": 1
+      }
+    },
+    {
+      "pair": 0,
+      "seed": 676202,
+      "starting_player": "P0",
+      "decisions": 432,
+      "turns": 15,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 23,
+      "replayed_actions": 432,
+      "trace_digest": "9a8c5789b1a7a9f2",
+      "max_sampled_state_bytes": 22384,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-0-seed-676202.json",
+        "sha256": "9d82a66f5ae633114e3d1f56e6a912588aefe6583b67ce8f550f922fd46502dc",
+        "bytes": 14827
+      },
+      "witnesses": {
+        "actual_cast": 14,
+        "flashback_cast": 1,
+        "graveyard_departure": 1,
+        "opus_trigger": 1,
+        "paradigm_enrolled": 1,
+        "prepared_created": 2,
+        "prepared_spell_cast": 1,
+        "private_library_choice": 2,
+        "surveil_completed": 2
+      }
+    },
+    {
+      "pair": 0,
+      "seed": 676203,
+      "starting_player": "P1",
+      "decisions": 555,
+      "turns": 18,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 25,
+      "replayed_actions": 555,
+      "trace_digest": "6aca7c7f877d38ad",
+      "max_sampled_state_bytes": 23084,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-0-seed-676203.json",
+        "sha256": "5f76a0c7cfa9b0f20359a1795ee1a851a3f857582c94573a527d5a09a4d285a8",
+        "bytes": 18534
+      },
+      "witnesses": {
+        "actual_cast": 19,
+        "flashback_cast": 1,
+        "graveyard_departure": 1,
+        "mill_resolved": 2,
+        "opus_trigger": 1,
+        "paradigm_copy_cast": 1,
+        "paradigm_enrolled": 1,
+        "private_library_choice": 2,
+        "surveil_completed": 2
+      }
+    },
+    {
+      "pair": 1,
+      "seed": 676300,
+      "starting_player": "P0",
+      "decisions": 519,
+      "turns": 18,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 25,
+      "replayed_actions": 519,
+      "trace_digest": "dc8b58a9a31e2d4a",
+      "max_sampled_state_bytes": 22404,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-1-seed-676300.json",
+        "sha256": "94dcea02e0dd457be806a259c6f7725211089f9334130fadcd8e5418573d002b",
+        "bytes": 16907
+      },
+      "witnesses": {
+        "actual_cast": 16,
+        "converge_entry": 1,
+        "increment_trigger": 1,
+        "life_gain": 3,
+        "paradigm_enrolled": 1,
+        "prepared_created": 4,
+        "prepared_spell_cast": 2,
+        "private_library_choice": 2,
+        "surveil_completed": 2
+      }
+    },
+    {
+      "pair": 1,
+      "seed": 676301,
+      "starting_player": "P1",
+      "decisions": 444,
+      "turns": 15,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 21,
+      "replayed_actions": 444,
+      "trace_digest": "83db30500356dadf",
+      "max_sampled_state_bytes": 22828,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-1-seed-676301.json",
+        "sha256": "6453ee0e628cdeb46bfbf8ba7cc9645368ab73db4aaf5e6fd94cc5e865f65c12",
+        "bytes": 15205
+      },
+      "witnesses": {
+        "actual_cast": 18,
+        "infusion_static": 2,
+        "life_gain": 6,
+        "paradigm_copy_cast": 2,
+        "paradigm_enrolled": 1,
+        "prepared_created": 2,
+        "prepared_spell_cast": 1
+      }
+    },
+    {
+      "pair": 1,
+      "seed": 676302,
+      "starting_player": "P0",
+      "decisions": 550,
+      "turns": 17,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 28,
+      "replayed_actions": 550,
+      "trace_digest": "b2634b90bfa47bb0",
+      "max_sampled_state_bytes": 23004,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-1-seed-676302.json",
+        "sha256": "9631713c2e965351242fc6c602d2586155fd6c959af1d3f740f815ad36ce4ae9",
+        "bytes": 18860
+      },
+      "witnesses": {
+        "actual_cast": 26,
+        "cascade_cast": 2,
+        "converge_entry": 2,
+        "infusion_static": 3,
+        "landfall_trigger": 1,
+        "life_gain": 5,
+        "paradigm_copy_cast": 7,
+        "paradigm_enrolled": 2,
+        "prepared_created": 4,
+        "prepared_spell_cast": 2
+      }
+    },
+    {
+      "pair": 1,
+      "seed": 676303,
+      "starting_player": "P1",
+      "decisions": 451,
+      "turns": 15,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 21,
+      "replayed_actions": 451,
+      "trace_digest": "482489a06860cdc8",
+      "max_sampled_state_bytes": 23372,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-1-seed-676303.json",
+        "sha256": "584ee7691ee43ddeb85bcdfb798d846b8b2c3a50a41a8bec8bc7d1c15706d564",
+        "bytes": 15474
+      },
+      "witnesses": {
+        "actual_cast": 19,
+        "life_gain": 4,
+        "paradigm_copy_cast": 4,
+        "paradigm_enrolled": 2,
+        "prepared_created": 2,
+        "prepared_spell_cast": 1
+      }
+    },
+    {
+      "pair": 2,
+      "seed": 676400,
+      "starting_player": "P0",
+      "decisions": 480,
+      "turns": 17,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 21,
+      "replayed_actions": 480,
+      "trace_digest": "660a11c5dfa93490",
+      "max_sampled_state_bytes": 22352,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-2-seed-676400.json",
+        "sha256": "c5c6e6fc5e17bc469adf48058cab2153ca332f889c914550d0105d37aafb40c2",
+        "bytes": 15681
+      },
+      "witnesses": {
+        "actual_cast": 11,
+        "flashback_cast": 1,
+        "graveyard_departure": 2,
+        "life_gain": 8,
+        "mill_resolved": 3,
+        "paradigm_enrolled": 2,
+        "repartee_trigger": 3
+      }
+    },
+    {
+      "pair": 2,
+      "seed": 676401,
+      "starting_player": "P1",
+      "decisions": 375,
+      "turns": 15,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 17,
+      "replayed_actions": 375,
+      "trace_digest": "bdc1b88b67232bb5",
+      "max_sampled_state_bytes": 23396,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-2-seed-676401.json",
+        "sha256": "b7daa9d5acc514be74b94d14338e6684bd691992661e72e3dcc539934e8c703b",
+        "bytes": 12671
+      },
+      "witnesses": {
+        "actual_cast": 8,
+        "life_gain": 1,
+        "opus_trigger": 5,
+        "paradigm_enrolled": 1,
+        "prepared_created": 3,
+        "prepared_spell_cast": 1,
+        "treasure_created": 1
+      }
+    },
+    {
+      "pair": 2,
+      "seed": 676402,
+      "starting_player": "P0",
+      "decisions": 466,
+      "turns": 15,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 20,
+      "replayed_actions": 466,
+      "trace_digest": "5622da2812b423e5",
+      "max_sampled_state_bytes": 22396,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-2-seed-676402.json",
+        "sha256": "9fdc6a7a2e9962028390ca1a0dcd5d2d15b3b6e0f57ac7e67be0466e41804a52",
+        "bytes": 15814
+      },
+      "witnesses": {
+        "actual_cast": 16,
+        "flashback_cast": 3,
+        "graveyard_departure": 5,
+        "life_gain": 5,
+        "miracle_cast": 1,
+        "opus_trigger": 1,
+        "prepared_created": 2,
+        "prepared_spell_cast": 1,
+        "treasure_created": 1
+      }
+    },
+    {
+      "pair": 2,
+      "seed": 676403,
+      "starting_player": "P1",
+      "decisions": 555,
+      "turns": 24,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 22,
+      "replayed_actions": 555,
+      "trace_digest": "5fa61d36b22cd04b",
+      "max_sampled_state_bytes": 21876,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-2-seed-676403.json",
+        "sha256": "98888417a2898c1274e84f84d8872411fa6317c58562304eb893b5eeff11d3dd",
+        "bytes": 17180
+      },
+      "witnesses": {
+        "actual_cast": 10,
+        "flashback_cast": 1,
+        "graveyard_departure": 1,
+        "life_gain": 6,
+        "prepared_created": 2,
+        "prepared_spell_cast": 1,
+        "repartee_trigger": 4,
+        "treasure_created": 1
+      }
+    },
+    {
+      "pair": 3,
+      "seed": 676500,
+      "starting_player": "P0",
+      "decisions": 443,
+      "turns": 14,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 20,
+      "replayed_actions": 443,
+      "trace_digest": "8d41c28a53e0b1c9",
+      "max_sampled_state_bytes": 22612,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-3-seed-676500.json",
+        "sha256": "534f77e4fb2af0b67df62d7e7d5183d22b708771adcb22463d00474777d37ca3",
+        "bytes": 15123
+      },
+      "witnesses": {
+        "actual_cast": 16,
+        "increment_trigger": 4,
+        "landfall_trigger": 2,
+        "life_gain": 4,
+        "opus_trigger": 3,
+        "paradigm_copy_cast": 1,
+        "paradigm_enrolled": 2,
+        "prepared_created": 4,
+        "prepared_spell_cast": 2
+      }
+    },
+    {
+      "pair": 3,
+      "seed": 676501,
+      "starting_player": "P1",
+      "decisions": 449,
+      "turns": 15,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 21,
+      "replayed_actions": 449,
+      "trace_digest": "10056fa68cd28186",
+      "max_sampled_state_bytes": 23788,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-3-seed-676501.json",
+        "sha256": "1f2097610f7dbf5a7ff1c7e573bb0536a9168351ef401f62cebc9149ed40d209",
+        "bytes": 15484
+      },
+      "witnesses": {
+        "actual_cast": 15,
+        "cascade_cast": 1,
+        "converge_entry": 1,
+        "life_gain": 1,
+        "mill_resolved": 1,
+        "paradigm_copy_cast": 3,
+        "paradigm_enrolled": 2,
+        "prepared_created": 4,
+        "prepared_spell_cast": 1,
+        "treasure_created": 1
+      }
+    },
+    {
+      "pair": 3,
+      "seed": 676502,
+      "starting_player": "P0",
+      "decisions": 457,
+      "turns": 15,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 22,
+      "replayed_actions": 457,
+      "trace_digest": "cfcf2d08a1bad246",
+      "max_sampled_state_bytes": 22068,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-3-seed-676502.json",
+        "sha256": "3704b629e1680a8cf8b359d4353040f6cb9b304d9686daa770c14cec42804ec4",
+        "bytes": 15100
+      },
+      "witnesses": {
+        "actual_cast": 12,
+        "increment_trigger": 2,
+        "life_gain": 1,
+        "mill_resolved": 1,
+        "opus_trigger": 3
+      }
+    },
+    {
+      "pair": 3,
+      "seed": 676503,
+      "starting_player": "P1",
+      "decisions": 495,
+      "turns": 17,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 23,
+      "replayed_actions": 495,
+      "trace_digest": "56859a2641155fba",
+      "max_sampled_state_bytes": 22392,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-3-seed-676503.json",
+        "sha256": "8f9fd216759a25f6acd7c3e84ac03e35d7c0e189a5f6431fe99e4fc1065d5597",
+        "bytes": 16420
+      },
+      "witnesses": {
+        "actual_cast": 17,
+        "converge_entry": 1,
+        "increment_trigger": 1,
+        "life_gain": 1,
+        "paradigm_copy_cast": 4,
+        "paradigm_enrolled": 1,
+        "prepared_created": 2,
+        "prepared_spell_cast": 1,
+        "treasure_created": 1
+      }
+    },
+    {
+      "pair": 4,
+      "seed": 676600,
+      "starting_player": "P0",
+      "decisions": 883,
+      "turns": 23,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 46,
+      "replayed_actions": 883,
+      "trace_digest": "95c92d7998e72f31",
+      "max_sampled_state_bytes": 23416,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-4-seed-676600.json",
+        "sha256": "4632827dce8a5b9feaf5d6b6e1e5ee874e5e3c55821ce13b7c6c44b53ed179dd",
+        "bytes": 29186
+      },
+      "witnesses": {
+        "actual_cast": 37,
+        "graveyard_departure": 11,
+        "infusion_static": 9,
+        "life_gain": 18,
+        "paradigm_copy_cast": 8,
+        "paradigm_enrolled": 2,
+        "prepared_created": 4,
+        "prepared_spell_cast": 1
+      }
+    },
+    {
+      "pair": 4,
+      "seed": 676601,
+      "starting_player": "P1",
+      "decisions": 368,
+      "turns": 13,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 15,
+      "replayed_actions": 368,
+      "trace_digest": "e8b53c43c55e3150",
+      "max_sampled_state_bytes": 22224,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-4-seed-676601.json",
+        "sha256": "9f58ed6000bddb64403f1f2fc955d3effc4095afaa1c2973f2e7d31dd7749d96",
+        "bytes": 12772
+      },
+      "witnesses": {
+        "actual_cast": 13,
+        "flashback_cast": 2,
+        "graveyard_departure": 2,
+        "life_gain": 4,
+        "paradigm_copy_cast": 1,
+        "paradigm_enrolled": 1,
+        "repartee_trigger": 5
+      }
+    },
+    {
+      "pair": 4,
+      "seed": 676602,
+      "starting_player": "P0",
+      "decisions": 799,
+      "turns": 23,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 46,
+      "replayed_actions": 799,
+      "trace_digest": "0add239a15085289",
+      "max_sampled_state_bytes": 23736,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-4-seed-676602.json",
+        "sha256": "21172a5be5601c1ada9deb9df2d59f067dfe4482187b0ee7d90a13cf8f21cc80",
+        "bytes": 25012
+      },
+      "witnesses": {
+        "actual_cast": 23,
+        "flashback_cast": 4,
+        "graveyard_departure": 7,
+        "life_gain": 34,
+        "prepared_created": 2,
+        "prepared_spell_cast": 1,
+        "repartee_trigger": 4
+      }
+    },
+    {
+      "pair": 4,
+      "seed": 676615,
+      "starting_player": "P1",
+      "decisions": 951,
+      "turns": 24,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 46,
+      "replayed_actions": 951,
+      "trace_digest": "1c4f85a173125ed5",
+      "max_sampled_state_bytes": 23928,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-4-seed-676615.json",
+        "sha256": "b4664e58f6670a16e8a2e77c923462ef56da86c8110173c656ea805770a64e7f",
+        "bytes": 31635
+      },
+      "witnesses": {
+        "actual_cast": 49,
+        "flashback_cast": 2,
+        "graveyard_departure": 10,
+        "infusion_copy": 2,
+        "infusion_static": 1,
+        "life_gain": 19,
+        "paradigm_copy_cast": 11,
+        "paradigm_enrolled": 2,
+        "prepared_created": 8,
+        "prepared_spell_cast": 4,
+        "uncast_copy": 2
+      }
+    },
+    {
+      "pair": 5,
+      "seed": 676700,
+      "starting_player": "P0",
+      "decisions": 367,
+      "turns": 12,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 17,
+      "replayed_actions": 367,
+      "trace_digest": "794adca76a3ae17a",
+      "max_sampled_state_bytes": 22396,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-5-seed-676700.json",
+        "sha256": "d827a686364fa00e607ffe4c7db46ca05000135bcedffeb93324fb160da2a3eb",
+        "bytes": 12819
+      },
+      "witnesses": {
+        "actual_cast": 10,
+        "crew_animated": 2,
+        "increment_trigger": 5,
+        "landfall_trigger": 2,
+        "life_gain": 3,
+        "prepared_created": 4,
+        "prepared_spell_cast": 2,
+        "private_library_choice": 2,
+        "surveil_completed": 2
+      }
+    },
+    {
+      "pair": 5,
+      "seed": 676701,
+      "starting_player": "P1",
+      "decisions": 357,
+      "turns": 14,
+      "outcome": {
+        "Winner": "P0"
+      },
+      "owned_branches": 13,
+      "replayed_actions": 357,
+      "trace_digest": "bb1a1b8519e65f91",
+      "max_sampled_state_bytes": 21820,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-5-seed-676701.json",
+        "sha256": "61c1927dc568db1b77b09fc63da14dad343e16fbe4c9261f738e9f794be9e77b",
+        "bytes": 12614
+      },
+      "witnesses": {
+        "actual_cast": 8,
+        "affinity_reduced_cast": 2,
+        "converge_entry": 1,
+        "life_gain": 1
+      }
+    },
+    {
+      "pair": 5,
+      "seed": 676702,
+      "starting_player": "P0",
+      "decisions": 719,
+      "turns": 22,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 38,
+      "replayed_actions": 719,
+      "trace_digest": "cd35fca4659e3a69",
+      "max_sampled_state_bytes": 23100,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-5-seed-676702.json",
+        "sha256": "ca4accce5775d08d2df97876386d52f87657afa1274ded9df7097814f17e331b",
+        "bytes": 23858
+      },
+      "witnesses": {
+        "actual_cast": 27,
+        "affinity_reduced_cast": 1,
+        "cascade_cast": 2,
+        "converge_entry": 4,
+        "landfall_trigger": 1,
+        "life_gain": 8,
+        "paradigm_copy_cast": 5,
+        "paradigm_enrolled": 1,
+        "prepared_created": 2,
+        "prepared_spell_cast": 1
+      }
+    },
+    {
+      "pair": 5,
+      "seed": 676711,
+      "starting_player": "P1",
+      "decisions": 572,
+      "turns": 17,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "owned_branches": 31,
+      "replayed_actions": 572,
+      "trace_digest": "30908417cb99b61e",
+      "max_sampled_state_bytes": 22496,
+      "trace": {
+        "path": "<cache>/rustmage-sos-c440fbcb-evidence/traces/pair-5-seed-676711.json",
+        "sha256": "bd575b82b348686193449b33b3bea3b047009c78bf9e9d8caf454fd1efa219f5",
+        "bytes": 19702
+      },
+      "witnesses": {
+        "actual_cast": 18,
+        "affinity_reduced_cast": 1,
+        "converge_entry": 3,
+        "grandeur_paid": 2,
+        "increment_trigger": 4,
+        "landfall_trigger": 5,
+        "life_gain": 7,
+        "prepared_created": 8,
+        "prepared_spell_cast": 4,
+        "private_library_choice": 1,
+        "surveil_completed": 1
+      }
+    }
+  ],
+  "case_selection": "Four cases per pairing; deterministic seed permutation retains naturally observed Infusion and paid Grandeur witnesses found in a 96-game discovery run. No gameplay state fixtures or injected actions; shared observation-only smoke policy selects all actions.",
+  "commands": {
+    "verify": "python3 scripts/resource_guard.py -- cargo run --release --example sos_acceptance -- verify 4",
+    "benchmark": "python3 scripts/resource_guard.py -- <cache>/rustmage-sos-acceptance-c440fbcb/release/examples/sos_acceptance benchmark 4 100",
+    "target_dir": "<cache>/rustmage-sos-acceptance-c440fbcb",
+    "trace_dir": "<cache>/rustmage-sos-c440fbcb-evidence/traces"
+  },
+  "environment": {
+    "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)\nbinary: rustc\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\ncommit-date: 2026-08-18\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0\nLLVM version: 22.1.8",
+    "architecture": "x86_64",
+    "cpu_model": "Intel(R) Core(TM) Ultra 5 335",
+    "execution": "Sequential single-thread native Rust game loop; guarded service CPU quota 200%, memory maximum 6 GiB, swap disabled.",
+    "profile": "release; thin LTO; codegen-units=1"
+  },
+  "resource_reports": {
+    "verify": {
+      "seconds": 102.91731405101018,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2506575872,
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n"
+    },
+    "benchmark": {
+      "seconds": 28.463429156981874,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 23408640,
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n"
+    },
+    "external-replay": {
+      "seconds": 2.7965303170203697,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 22876160,
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n"
+    }
+  },
+  "source_hashes": {
+    "Cargo.toml": "59caa05e777b4845c217144e745cd8304d61d499261e596deac64bf39a1b22b2",
+    "Cargo.lock": "539ee2f34373600ec29f06408d05eccb634b0258cae7a1acb7845ea03663eb5b",
+    "data/observation-schema.txt": "748ea33db356501af68a9e37a1583cfa57192a894aab2a692c5475f031d1e81a",
+    "data/sets/sos.json": "bdda864efea90afd41b0353e6141c11cbe9f86c561a69911bd0b49f3b7b2ca12",
+    "src/policy.rs": "b6432f7e8b291eaa30bb2b23f2cf2ce9c13362d55202061c1de3ef12b1d460d2",
+    "examples/sos_acceptance.rs": "a4319cd93ee6dfb136178fce20f5351fc1c8739c27be4057df0b84b4c259c872",
+    "examples/support/sos_games.rs": "5a4c658d3a4a10e4b77ac6d9cf96974d360649c579d684ab3ca76c879b280b5f",
+    "src/assurance/sos_complete_games.rs": "a94c4a70e9d77fc370abf1c6d1bebeb288c59d75fe4cb8677d081170f7d1d771",
+    "python/rustmage.py": "1ad978d02354b3655fbe4cad3286a9adc67633e6e1b88fa27bd1b433efa257f5"
+  },
+  "artifacts": {
+    "verify.json": {
+      "path": "<cache>/rustmage-sos-c440fbcb-evidence/verify.json",
+      "sha256": "440bf317fceed18755257bdc34458fab7d430bc851bcdb47f9e5c0cf8c71cb9d",
+      "bytes": 28991
+    },
+    "verify.log": {
+      "path": "<cache>/rustmage-sos-c440fbcb-evidence/verify.log",
+      "sha256": "5ad8f3654266d51ca186c2b57c455609349b3725da1cdbcbc24bb68757938e69",
+      "bytes": 30053
+    },
+    "verify-resource.json": {
+      "path": "<cache>/rustmage-sos-c440fbcb-evidence/verify-resource.json",
+      "sha256": "3427c976614877fe17a11a2b6a1e3934c879329a52997788df2b1a1391bfe1c1",
+      "bytes": 415
+    },
+    "benchmark.json": {
+      "path": "<cache>/rustmage-sos-c440fbcb-evidence/benchmark.json",
+      "sha256": "6db183b038879d90ecae2877085ec4c2ca15833f319ae00f3019d09101c7b50f",
+      "bytes": 2255260
+    },
+    "benchmark.log": {
+      "path": "<cache>/rustmage-sos-c440fbcb-evidence/benchmark.log",
+      "sha256": "271f015183b40aa9dcae57dd8e6f4cac30fa993c6472e6510b8d7a6aa75d794d",
+      "bytes": 2255741
+    },
+    "benchmark-resource.json": {
+      "path": "<cache>/rustmage-sos-c440fbcb-evidence/benchmark-resource.json",
+      "sha256": "a92458883b5795fe2bc100b9a0a87092d0e0d68429226c66f8ef44706a10bad1",
+      "bytes": 428
+    },
+    "external-replay.json": {
+      "path": "<cache>/rustmage-sos-c440fbcb-evidence/external-replay.json",
+      "sha256": "0a3a6b2e462efd8ec0ec9221eca4faebf44665fc0999e7f18318302f96a00cef",
+      "bytes": 5389
+    },
+    "external-replay.log": {
+      "path": "<cache>/rustmage-sos-c440fbcb-evidence/external-replay.log",
+      "sha256": "b213a68a75ee53d3eb5b8a4dc99357d977d92b7eb93ae4c5e01491878fa272d8",
+      "bytes": 4514
+    },
+    "external-replay-resource.json": {
+      "path": "<cache>/rustmage-sos-c440fbcb-evidence/external-replay-resource.json",
+      "sha256": "9cae82edb3e80ebf53ecbc0e5025fa67950e7bb55b3e0550f685774baf34361f",
+      "bytes": 501
+    }
+  },
+  "release_executable": {
+    "path": "<cache>/rustmage-sos-acceptance-c440fbcb/release/examples/sos_acceptance",
+    "sha256": "6556bea33eb60efeb45032396dd9f08ed0b6c43933b5be622912f234f74f430d",
+    "bytes": 14597104
+  },
+  "shared_library": {
+    "path": "<cache>/rustmage-sos-acceptance-c440fbcb/release/deps/librustmage.so",
+    "sha256": "ef139b4d81c4923c3fb9dd80713ec7195d63de595ae09e0a9d0e6172197aef9a",
+    "bytes": 12910992
+  },
+  "acceptance_boundary": "These actual legal-game witnesses complement the complete per-card Oracle/XMage obligation audits and native rules interactions. The game corpus does not cast every physical member and does not alone certify all printed obligations."
+}

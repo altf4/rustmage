@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "49201b402e194b226b1aef2755a6498d7ae12ab3b6bb976606f90069957151cb"
   },
-  "physical_metadata_sha256": "12a47ae30c88e2ee0b7205ae9fd8d84dd3cfbc5ef9ca3f235cf0107551608534"
+  "physical_metadata_sha256": "12a47ae30c88e2ee0b7205ae9fd8d84dd3cfbc5ef9ca3f235cf0107551608534",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EnvironmentalScientist.java",
+  "java_sha256": "5984b68a219540d8314f1eac5a00fb0d3e66a5aefa201e25a1821c1c7f1c9335",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ]
 }

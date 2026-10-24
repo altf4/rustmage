@@ -19,7 +19,8 @@ fn deck(lands: &[(&str, usize)], spells: &[&str]) -> Vec<Card> {
 fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
     let name = item.source_card.name();
     let known = match item.kind {
-        StackKind::CopyEndStepSacrifice
+        StackKind::CasualtyCopy
+        | StackKind::CopyEndStepSacrifice
         | StackKind::DelayedReturn
         | StackKind::DelayedSacrifice
         | StackKind::DelayedWarpExile => false,

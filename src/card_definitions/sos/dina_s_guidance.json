@@ -3,10 +3,13 @@
   "catalogue_id": 1081,
   "oracle_id": "a9abed25-9256-4fc7-8afb-edb4286e18f4",
   "facts_sha256": "664c1f30ee8b30cf4e3dda3d9509324f5f650b8bd61057b67f9ec5daceb66a42",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d6d227f288c924dfffd4bc0ac0e44b3464c669b48859cf011a6cf53a0347b9cb"
   },
-  "physical_metadata_sha256": "675f14e90ecfed9ec57d3a4f2f9b4f5568782871e3057c6fb0fb6ed90b8f3749"
+  "physical_metadata_sha256": "675f14e90ecfed9ec57d3a4f2f9b4f5568782871e3057c6fb0fb6ed90b8f3749",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DinasGuidance.java",
+  "java_sha256": "fee4d0cbc910294c93611a51d92eeef1544c7c9fdb18c7c2ad7886bd84dc5c82"
 }

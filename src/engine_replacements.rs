@@ -122,6 +122,11 @@ enum Event {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
+    CreatedCounters {
+        player: Player,
+        created: Vec<ObjectRef>,
+        counters: Box<Counters>,
+    },
     Damage(DamageBatch),
     Counters(CounterBatch),
     Tokens(TokenBatch),
@@ -186,6 +191,13 @@ impl ReplacementState {
                     }
                     Work::Counters(b) => counter_bytes(b),
                     Work::Tokens(b) => token_bytes(b),
+                    Work::CreatedCounters {
+                        created, counters, ..
+                    } => {
+                        created.len() * std::mem::size_of::<ObjectRef>()
+                            + std::mem::size_of::<Counters>()
+                            + counters.owned_bytes()
+                    }
                     Work::DestroyAndCreate { targets, .. } => {
                         targets.len() * std::mem::size_of::<BoundTarget>()
                     }
@@ -256,6 +268,101 @@ fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
     p.amount = result;
     // CR614.16: a replacement effect itself can make a non-effect event eligible.
     p.effect = true;
+}
+pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    p: &CounterPlacement,
+    used: &[(ObjectRef, u16)],
+) -> Vec<ReplacementEffectView> {
+    let mut out = Vec::new();
+    let mut add = |reference: ObjectRef, card: Card, controller: Player| {
+        if controller != p.controller {
+            return;
+        }
+        for (index, &spec) in card.replacement_effects().iter().enumerate() {
+            if world.object(reference.card).zone == Zone::Battlefield && world.reference(reference.card) == reference
+                    && !world.fragment_available(reference.card, |fragment| matches!(fragment,
+                        crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
+            let ability = u16::try_from(index).expect("immutable replacement index");
+            if !used.contains(&(reference, ability)) && counter_applies(spec, p) {
+                out.push(ReplacementEffectView {
+                    source: reference,
+                    source_card: card,
+                    ability,
+                });
+            }
+        }
+    };
+    for &id in world.static_sources() {
+        let o = world.object(id);
+        if o.zone == Zone::Battlefield {
+            add(world.reference(id), o.card, o.controller);
+        }
+    }
+    // CR614.12: only the incoming permanent's own effects may affect its entry;
+    // a different member of this simultaneous entry batch is not yet a source.
+    if p.entry_index.is_some() {
+        add(p.object, p.card, p.controller);
+    }
+    out
+}
+pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    placement: &CounterPlacement,
+    used: &mut Vec<(ObjectRef, u16)>,
+    emit: &mut dyn FnMut(&Counters) -> bool,
+) -> bool {
+    let choices = counter_replacements(world, placement, used);
+    if choices.is_empty() {
+        return emit(&placement.amount);
+    }
+    for choice in choices {
+        let mut next = placement.clone();
+        modify_counter(
+            choice.source_card.replacement_effects()[usize::from(choice.ability)],
+            &mut next,
+        );
+        used.push((choice.source, choice.ability));
+        if counter_outcomes(world, &next, used, emit) {
+            return true;
+        }
+        used.pop();
+    }
+    false
+}
+#[derive(Clone)]
+pub(super) struct CounterPreview {
+    pub index: usize,
+    pub placement: CounterPlacement,
+    pub used: Vec<(ObjectRef, u16)>,
+}
+impl Game {
+    pub(super) fn projected_entry_counter(
+        &self,
+        choice: Option<(ObjectRef, u16)>,
+    ) -> Option<CounterPreview> {
+        let Event::Counters(batch) = self.state.replacements.as_ref()?.active.as_ref()? else {
+            return None;
+        };
+        let mut placement = batch.placements[batch.next].clone();
+        let index = placement.entry_index?;
+        let mut used = batch.used.clone();
+        if let Some((source, ability)) = choice {
+            let effect = counter_replacements(self, &placement, &used)
+                .into_iter()
+                .find(|e| e.source == source && e.ability == ability)?;
+            modify_counter(
+                effect.source_card.replacement_effects()[usize::from(ability)],
+                &mut placement,
+            );
+            used.push((source, ability));
+        }
+        Some(CounterPreview {
+            index,
+            placement,
+            used,
+        })
+    }
 }
 impl Game {
     pub(super) fn active_rule_fragment(
@@ -393,37 +500,7 @@ impl Game {
         p: &CounterPlacement,
         used: &[(ObjectRef, u16)],
     ) -> Vec<ReplacementEffectView> {
-        let mut out = Vec::new();
-        let mut add = |reference: ObjectRef, card: Card, controller: Player| {
-            if controller != p.controller {
-                return;
-            }
-            for (index, &spec) in card.replacement_effects().iter().enumerate() {
-                if self.on_battlefield(reference.card) && self.object_ref(reference.card) == reference
-                    && !self.continuous_fragment_available(reference.card, |fragment| matches!(fragment,
-                        crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
-                let ability = u16::try_from(index).expect("immutable replacement index");
-                if !used.contains(&(reference, ability)) && counter_applies(spec, p) {
-                    out.push(ReplacementEffectView {
-                        source: reference,
-                        source_card: card,
-                        ability,
-                    });
-                }
-            }
-        };
-        for &id in &self.state.static_sources {
-            let o = &self.state.objects[id as usize];
-            if o.zone == Zone::Battlefield {
-                add(self.object_ref(id), o.card, o.controller);
-            }
-        }
-        // CR614.12: only the incoming permanent's own effects may affect its entry;
-        // a different member of this simultaneous entry batch is not yet a source.
-        if p.entry_index.is_some() {
-            add(p.object, p.card, p.controller);
-        }
-        out
+        counter_replacements(self, p, used)
     }
     fn commit_counter_placements(&mut self, placements: Vec<CounterPlacement>) {
         let mut lore = Vec::new();
@@ -693,7 +770,7 @@ impl Game {
             TokenCompletion::TemporaryCopy(Box::new(item.clone())),
         );
     }
-    fn stage_copy_creation_inner(
+    pub(super) fn stage_copy_creation_inner(
         &mut self,
         player: Player,
         recipe: CopyRecipe,
@@ -715,7 +792,12 @@ impl Game {
             used: Vec::new(),
             completion,
         };
-        if self.state.replacements.is_none() && self.token_replacements(&batch).is_empty() {
+        if matches!(
+            batch.completion,
+            TokenCompletion::None | TokenCompletion::TemporaryCopy(_)
+        ) && self.state.replacements.is_none()
+            && self.token_replacements(&batch).is_empty()
+        {
             let temporary = match &batch.completion {
                 TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()),
                 _ => None,
@@ -867,6 +949,22 @@ impl Game {
             }
             if state.active.is_none() {
                 match state.work.pop_front() {
+                    Some(Work::CreatedCounters {
+                        player,
+                        created,
+                        counters,
+                    }) => {
+                        let placements =
+                            self.created_token_counter_placements(player, &created, &counters);
+                        if !placements.is_empty() {
+                            state.work.push_front(Work::Counters(CounterBatch {
+                                placements,
+                                next: 0,
+                                used: Vec::new(),
+                            }));
+                        }
+                        continue;
+                    }
                     Some(Work::Damage(batch)) => state.active = Some(Event::Damage(batch)),
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
                     Some(Work::Tokens(batch)) => state.active = Some(Event::Tokens(batch)),
@@ -1005,12 +1103,28 @@ impl Game {
                                     TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()),
                                     _ => None,
                                 };
-                                self.create_copy_groups_inner(
+                                let created = self.create_copy_groups_inner(
                                     batch.player,
                                     &batch.groups,
                                     &batch.recipes,
                                     temporary,
                                 );
+                                let counters = match &batch.completion {
+                                    TokenCompletion::Counters { kind, amount } => {
+                                        Some(Counters::of(*kind, *amount))
+                                    }
+                                    TokenCompletion::CounterSet(counters) => {
+                                        Some(counters.as_ref().clone())
+                                    }
+                                    _ => None,
+                                };
+                                if let Some(counters) = counters {
+                                    state.work.push_front(Work::CreatedCounters {
+                                        player: batch.player,
+                                        created,
+                                        counters: Box::new(counters),
+                                    });
+                                }
                                 if let Some(entry) = self.state.entry_batch.as_mut() {
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);

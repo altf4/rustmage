@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c849eb9ac8203781fd49ded3a963634ab6045e48a65e1baf9739bba5c1e63b3b"
   },
-  "physical_metadata_sha256": "bc8fee0498fd29a9227f1db82f581863c2679059e5a146bdf3fa23c64b8b968b"
+  "physical_metadata_sha256": "bc8fee0498fd29a9227f1db82f581863c2679059e5a146bdf3fa23c64b8b968b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/Efflorescence.java",
+  "java_sha256": "0715239fdfcd236fca4a4d0ad0bcaa0a1a1d037a66d30781f3d2504a90c083f7",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+    }
+  ]
 }

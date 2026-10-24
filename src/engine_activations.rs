@@ -12,6 +12,26 @@ impl ActivatedAbility {
 }
 
 impl Game {
+    pub(super) fn activation_generic_discount(
+        &self,
+        source: CardId,
+        definition: Card,
+        ability: u16,
+    ) -> u32 {
+        definition
+            .activation_counter_discount(ability)
+            .map_or(0, |kind| {
+                u32::try_from(self.counter_count(source, kind)).unwrap_or(u32::MAX)
+            })
+    }
+    pub(super) fn item_activation_discount(&self, item: &SpellView) -> u32 {
+        match item.kind {
+            StackKind::ActivatedAbility { ability } => {
+                self.activation_generic_discount(item.card, item.source_card, ability)
+            }
+            _ => 0,
+        }
+    }
     pub(super) fn spend_mana(&mut self, actor: Player, payment: Mana) {
         self.spend_mana_for(actor, payment, mana_lots::Purpose::Other);
     }
@@ -59,6 +79,9 @@ impl Game {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::HandSizeAtLeast(minimum) => {
+                self.hand_count(actor) >= usize::from(minimum)
+            }
             ActivationGuard::LifeAboveStarting(extra) => {
                 self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)
             }
@@ -177,7 +200,7 @@ impl Game {
             return false;
         }
         for grant in ability_world::CharacteristicWorld::granted_mana(self, card) {
-            if grant.production.visit(|production| {
+            if grant.production.in_world(self, card).visit(|production| {
                 emit(Action::TapGrantedMana {
                     card,
                     grantor: grant.source,
@@ -240,7 +263,13 @@ impl Game {
                                     reserve: None,
                                     actor,
                                     required: cost.colored,
-                                    generic: cost.generic,
+                                    generic: cost.generic.saturating_sub(
+                                        self.activation_generic_discount(
+                                            card,
+                                            object.card,
+                                            index as u16,
+                                        ),
+                                    ),
                                     source: Some((
                                         self.object_ref(card),
                                         index as u16,
@@ -301,7 +330,12 @@ impl Game {
                         payments(
                             self.state.players[actor.index()].mana,
                             cost.colored,
-                            cost.generic,
+                            cost.generic
+                                .saturating_sub(self.activation_generic_discount(
+                                    card,
+                                    object.card,
+                                    index as u16,
+                                )),
                             |payment| {
                                 if done
                                     || (!ability.cost.alternatives.is_empty()
@@ -483,6 +517,7 @@ impl Game {
         definition: &ActivatedAbility,
     ) {
         let cost: ActivationCost = definition.cost;
+        self.record_cast_mana_activation(item, payment, &counter_payment);
         self.spend_mana_for(item.controller, payment, self.purpose_for_item(item));
         self.lose_life(item.controller, i128::from(cost.life));
         let object = &mut self.state.objects[item.card as usize];

@@ -4,18 +4,20 @@
 use super::*;
 
 impl Game {
-    // Reuse the existing owned step index; no new arena field or empty buffer.
+    // Reuse sparse event indexes for explicit graveyard observers.
     pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
-        if self.state.objects[id as usize]
-            .card
-            .triggers()
-            .iter()
-            .any(|ability| {
-                ability.condition.origin() == Some(TargetZone::Graveyard)
-                    && matches!(ability.condition.event(), TriggerCondition::AtStep { .. })
-            })
-        {
+        let triggers = self.state.objects[id as usize].card.triggers();
+        if triggers.iter().any(|a| {
+            a.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(a.condition.event(), TriggerCondition::AtStep { .. })
+        }) {
             self.state.step_sources.push(id);
+        }
+        if triggers.iter().any(|a| {
+            a.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(a.condition.event(), TriggerCondition::PlayerDamaged { .. })
+        }) {
+            self.state.damage_sources.push(id);
         }
     }
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
@@ -155,12 +157,14 @@ impl Game {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                        crate::cards::StaticAbilityFragment::LandMana { .. }
+                            | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
+                            | crate::cards::StaticAbilityFragment::ControlledSpellsCasualty { .. }
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
@@ -227,6 +231,10 @@ impl Game {
                 .cast_timing_grants()
                 .is_empty()
             || self.state.objects[id as usize].card.has_free_hand_cast()
+            || self.state.objects[id as usize].card.has_storm_grant()
+            || self.state.objects[id as usize]
+                .card
+                .has_own_turn_free_hand_cast()
             || self.state.objects[id as usize]
                 .card
                 .has_cast_origin_abilities()

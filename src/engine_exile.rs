@@ -7,7 +7,24 @@ use super::*;
 pub struct ExilePlayPermission {
     pub object: ObjectRef,
     pub player: Player,
-    pub expires_turn: u32,
+    pub expiry: ExilePlayExpiry,
+    pub spend_any_mana: bool,
+    pub exile_on_graveyard: bool,
+}
+/// Deadline boundaries refer to actual turns, never to skipped turn candidates.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum ExilePlayExpiry {
+    Turn(u32),
+    EndOfNextTurn,
+    StartOfNextTurn(Player),
+}
+impl ExilePlayExpiry {
+    pub(super) fn active(self, turn: u32) -> bool {
+        match self {
+            Self::Turn(deadline) => deadline >= turn,
+            _ => true,
+        }
+    }
 }
 impl Game {
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
@@ -21,8 +38,54 @@ impl Game {
         self.state.exile_permissions.iter().any(|p| {
             p.player == player
                 && p.object == self.object_ref(card)
-                && p.expires_turn >= self.state.turn
+                && p.expiry.active(self.state.turn)
         })
+    }
+    pub(super) fn exile_cast_modifiers(&self, player: Player, card: CardId) -> (bool, bool) {
+        if self.state.objects[card as usize].zone != Zone::Exile {
+            return (false, false);
+        }
+        self.state
+            .exile_permissions
+            .iter()
+            .filter(|row| {
+                row.player == player
+                    && row.object == self.object_ref(card)
+                    && row.expiry.active(self.state.turn)
+            })
+            .fold((false, false), |flags, row| {
+                (
+                    flags.0 || row.spend_any_mana,
+                    flags.1 || row.exile_on_graveyard,
+                )
+            })
+    }
+    pub(super) fn exile_targets_for_modified_cast(&mut self, item: &SpellView) {
+        let ids = item
+            .targets
+            .iter()
+            .filter(|&&bound| self.same_target_object(bound))
+            .filter_map(|bound| {
+                if let Target::Card(id) = bound.target {
+                    Some(id)
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile && !event.before.is_token() {
+                self.grant_exile_play_permission(item.controller, event.after, false);
+                for row in &mut self.state.exile_permissions {
+                    if row.player == item.controller && row.object == event.after {
+                        row.spend_any_mana = true;
+                        row.exile_on_graveyard = true;
+                    }
+                }
+            }
+        }
+        self.finish_zone_events(&events, &[]);
     }
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u16, next_turn: bool) {
         self.exile_top_play_from(player, player, amount, next_turn);
@@ -65,15 +128,11 @@ impl Game {
         {
             return;
         }
-        let expires_turn = self
-            .state
-            .turn
-            .checked_add(if next_turn {
-                if self.state.active == player { 2 } else { 1 }
-            } else {
-                0
-            })
-            .capacity("exile permission deadline exhausted");
+        let expiry = if next_turn {
+            ExilePlayExpiry::EndOfNextTurn
+        } else {
+            ExilePlayExpiry::Turn(self.state.turn)
+        };
         let at = self
             .state
             .exile_permissions
@@ -83,7 +142,9 @@ impl Game {
             ExilePlayPermission {
                 object,
                 player,
-                expires_turn,
+                expiry,
+                spend_any_mana: false,
+                exile_on_graveyard: false,
             },
         );
     }

@@ -56,6 +56,15 @@ impl Game {
         let index = self.copy_recipe_index(object)?;
         Some(self.state.copy_recipes.as_ref().unwrap()[index].recipe)
     }
+    pub(super) fn set_copy_recipe(&mut self, object: ObjectRef, recipe: CopyRecipe) {
+        assert_eq!(self.object_ref(object.card), object);
+        self.clear_copy_recipe(object);
+        let rows = self.state.copy_recipes.get_or_insert_default();
+        rows.try_reserve(1)
+            .capacity("copy recipe allocation exhausted");
+        let index = rows.partition_point(|row| row.object.card < object.card);
+        rows.insert(index, CopyRow { object, recipe });
+    }
     pub(super) fn object_token_info(&self, id: CardId) -> Option<TokenInfo> {
         let object = &self.state.objects[id as usize];
         if object.is_copy_token() {
@@ -107,7 +116,7 @@ impl Game {
         groups: &[TokenGroupView],
         recipes: &[Option<CopyRecipe>],
         temporary: Option<&SpellView>,
-    ) {
+    ) -> Vec<ObjectRef> {
         assert_eq!(groups.len(), recipes.len());
         let total = groups
             .iter()
@@ -130,7 +139,9 @@ impl Game {
         for (group, recipe) in groups.iter().zip(recipes) {
             assert!(recipe.is_some() || group.token.is_token());
             for _ in 0..group.amount {
-                let (id, generation) = if let Some(id) = self.state.free_tokens.pop() {
+                let (id, generation) = if let Some(slot) = self.replay_frozen_mana_copy_slot() {
+                    slot
+                } else if let Some(id) = self.state.free_tokens.pop() {
                     let old = &self.state.objects[id as usize];
                     assert!((old.is_token() || old.is_spell_copy()) && old.zone == Zone::Outside);
                     (id, old.generation)
@@ -141,6 +152,7 @@ impl Game {
                         0,
                     )
                 };
+                self.record_cast_mana_allocation(id, generation);
                 let object = Object {
                     card: group.token,
                     copy_kind: if recipe.is_some() {
@@ -187,6 +199,18 @@ impl Game {
                 moves.push(self.entry_move(id, Zone::Battlefield, group.tapped));
             }
         }
+        let created = moves
+            .iter()
+            .map(|m| ObjectRef {
+                card: m.before.id,
+                generation: m
+                    .before
+                    .reference
+                    .generation
+                    .checked_add(1)
+                    .capacity("object generation exhausted"),
+            })
+            .collect();
         if !moves.is_empty() {
             self.track_nightmare_copy_entries(&moves);
             if let Some(item) = temporary {
@@ -195,5 +219,6 @@ impl Game {
                 self.stage_entries(moves, None);
             }
         }
+        created
     }
 }

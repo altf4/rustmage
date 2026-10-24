@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "38ddb3e9af3a832520160084bc4549e42df28159ed7dc9030e32a7cad7149fc5"
   },
-  "physical_metadata_sha256": "7ba9fc20c9f33e4fa2dd52018afc2fde1aa9158c8f58bb71276c90888526fefa"
+  "physical_metadata_sha256": "7ba9fc20c9f33e4fa2dd52018afc2fde1aa9158c8f58bb71276c90888526fefa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AberrantManawurm.java",
+  "java_sha256": "49db02f8ccdcdf02e2379f14be1bbefe96567c1f90c1ee425fb491c4322db36c",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/ManaPaidSourceWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "890808f5706f88165d4770eac155b605aed3adaacb41d5c2f5262535810d9a9e"
+    }
+  ]
 }

@@ -3,10 +3,33 @@
   "catalogue_id": 190,
   "oracle_id": "88fc179c-055b-47c2-b830-1fd2b1377147",
   "facts_sha256": "75474b8f21f918b11eae6f0e7d9f31f61fa32fa495fe0b0e0e4addd49d13569b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fa12f7fb90e1787d8c64e5bdc403e6391a3e02d7fec44f18ecccd324a0bb571a"
   },
-  "physical_metadata_sha256": "87e5e9118e6cc16e84b276a897528b0ba1e48162ae56d9f6ed2eb707400f3d6c"
+  "physical_metadata_sha256": "87e5e9118e6cc16e84b276a897528b0ba1e48162ae56d9f6ed2eb707400f3d6c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AppliedGeometry.java",
+  "java_sha256": "dd6b4f68cd75641364a61eaea1dea65c3bb398850800d3ec182731c5d571c95d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    }
+  ],
+  "rules_notes": [
+    "The token copy receives its copiable 0/0 base, creature type and additional Fractal subtype before entry. Six counters are placed after entry, through an owned completion that waits for entry choices and applies counter replacements before priority or state-based actions."
+  ]
 }

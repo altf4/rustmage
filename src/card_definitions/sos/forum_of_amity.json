@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1a54967a2a8e98e38298e6ceed31e02d0712f8b87a42d8f0a9236fb529b8612a"
   },
-  "physical_metadata_sha256": "5997f2592d13ff9019fdfd5c26b3b7ccade7b4222085ad6f8ac0737991e15fd5"
+  "physical_metadata_sha256": "5997f2592d13ff9019fdfd5c26b3b7ccade7b4222085ad6f8ac0737991e15fd5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/ForumOfAmity.java",
+  "java_sha256": "c0e1f7e6f940b2b3f7e5b6020e54fcb90fce2de332e76dd15f096aa65b0cdb2f",
+  "implementation": "Original SOS admission audited against full pinned Oracle/XMage; paid both-seat legality/privacy and owned raw/index replay evidence mapped in docs/sos-original-green-audit.md. Existing complete typed behavior preserved.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }

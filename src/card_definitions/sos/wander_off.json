@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f29b9cf0a8475cd8b994c8572be29731302967319a81f5ce0fd09ac0077eaead"
   },
-  "physical_metadata_sha256": "d75a904c428e9c9cfb2d51eb2e0a6added12ff39cb71b07e65e6a2dd4b2d939e"
+  "physical_metadata_sha256": "d75a904c428e9c9cfb2d51eb2e0a6added12ff39cb71b07e65e6a2dd4b2d939e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WanderOff.java",
+  "java_sha256": "40ce922191d77e50545bf987d93d33d38b6cfa04e279e50eff5eaccc22ab3689",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    }
+  ]
 }

@@ -31,6 +31,16 @@ pub(super) struct RoleState {
     pub characteristic_sources: Vec<ObjectRef>,
 }
 impl RoleState {
+    pub(super) fn next_timestamp(&mut self) -> u64 {
+        if self.deferred_timestamps {
+            return 0;
+        }
+        self.clock = self
+            .clock
+            .checked_add(1)
+            .capacity("Role timestamps exhausted");
+        self.clock
+    }
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
@@ -115,11 +125,7 @@ impl Game {
 
     pub(super) fn next_role_timestamp(&mut self) -> u64 {
         let r = self.state.roles.get_or_insert_with(Default::default);
-        if r.deferred_timestamps {
-            return 0;
-        }
-        r.clock = r.clock.checked_add(1).capacity("Role timestamps exhausted");
-        r.clock
+        r.next_timestamp()
     }
     pub(super) fn static_source_timestamp(&mut self, source: ObjectRef) -> u64 {
         // All continuous abilities of a permanent share its most recent timestamp.

@@ -32,10 +32,9 @@ impl AbilityEvaluation {
     }
 }
 
-fn timestamp(game: &Game, source: ObjectRef) -> u64 {
-    game.state
-        .roles
-        .as_ref()
+fn timestamp<W: CharacteristicWorld + ?Sized>(world: &W, source: ObjectRef) -> u64 {
+    world
+        .roles()
         .and_then(|state| {
             state
                 .ability_timestamps
@@ -97,6 +96,24 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                         fragment,
                         StaticAbilityFragment::AttachmentSacrificeMana(_)
                     ),
+                }],
+            });
+        }
+        StaticAbilityFragment::LandMana {
+            recipients,
+            production,
+        } => {
+            if !world.land_mana_applies(source, id, recipients) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: Vec::new(),
+                mana: vec![GrantedManaAbility {
+                    source,
+                    production,
+                    sacrifice: false,
                 }],
             });
         }
@@ -191,7 +208,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
-        || world.game().state.roles.as_ref().is_some_and(|r| {
+        || world.roles().is_some_and(|r| {
             r.keyword_effects.iter().any(|row| {
                 matches!(
                     world.object(row.recipient.card).zone,
@@ -257,6 +274,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
+                        | StaticAbilityFragment::LandMana { .. }
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                         | StaticAbilityFragment::DeathBaronLord
@@ -265,7 +283,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 )
             });
             let effect = if removes || provides {
-                let time = timestamp(game, source);
+                let time = timestamp(world, source);
                 let recipients: Vec<_> = if removes {
                     object
                         .attached_to
@@ -316,7 +334,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             });
         }
     }
-    if let Some(state) = &game.state.roles {
+    if let Some(state) = world.roles() {
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
             if matches!(object.zone, Zone::Battlefield | Zone::Stack)
@@ -336,7 +354,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             }
         }
     }
-    if let Some(state) = &game.state.roles {
+    if let Some(state) = world.roles() {
         for row in &state.animations {
             if world.object(row.object.card).zone == Zone::Battlefield
                 && world.reference(row.object.card) == row.object
@@ -428,7 +446,7 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
             }
         }
     }
-    if let Some(state) = &game.state.roles {
+    if let Some(state) = world.roles() {
         for row in &state.keyword_effects {
             if matches!(
                 world.object(row.recipient.card).zone,
