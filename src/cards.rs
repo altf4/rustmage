@@ -2474,6 +2474,10 @@ pub(crate) enum TriggerCondition {
     LifeLost {
         relation: CastRelation,
     },
+    /// The placing player controls this observer; the other creature may belong to either player.
+    OtherCreatureCounterPlacedByYou {
+        kind: CounterKind,
+    },
     OtherCreatureCountersAdded {
         kind: CounterKind,
         excluded_subtype: &'static str,

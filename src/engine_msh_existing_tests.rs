@@ -704,7 +704,8 @@ fn msh_connive_counter_placer_survives_control_change_replacements_and_deferred_
                         g.observe(viewer).counter_placement_history,
                         vec![CounterPlacementHistoryView {
                             object: original,
-                            placed_by: p.other()
+                            placed_by: p.other(),
+                            plus_one: true,
                         }]
                     );
                 }

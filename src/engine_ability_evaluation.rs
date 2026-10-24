@@ -135,6 +135,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             Keywords::DEATHTOUCH
         }
+        StaticAbilityFragment::SourcePlusOnePlacedKeywords(keywords) => {
+            if id != source.card || !world.plus_one_placed_this_turn(source, provider.controller) {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::SourceCounterKeywords {
             kind,
             minimum,
@@ -266,7 +272,8 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let provides = origin.fragments.iter().any(|f| {
                 matches!(
                     f,
-                    StaticAbilityFragment::SourceCounterKeywords { .. }
+                    StaticAbilityFragment::SourcePlusOnePlacedKeywords(..)
+                        | StaticAbilityFragment::SourceCounterKeywords { .. }
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)

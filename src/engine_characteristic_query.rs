@@ -464,7 +464,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             .keywords()
             .union(self.copied_keywords(self.object_ref(id)))
             .union(self.attachment_bonus(id).1)
-            .union(CharacteristicWorld::counter_subtype_keywords(self, id));
+            .union(CharacteristicWorld::counter_subtype_keywords(self, id))
+            .union(CharacteristicWorld::placement_history_keywords(self, id));
         if target.zone != Zone::Battlefield {
             return keywords;
         }
@@ -861,6 +862,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn entry_values(&self) -> &[entry_choices::ChoiceRow] {
         self.world.entry_values()
+    }
+    fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
+        self.world.plus_one_placed_this_turn(object, player)
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         self.world.counter_amounts(id)
