@@ -3,10 +3,36 @@
   "catalogue_id": 5047,
   "oracle_id": "e2084d73-5a4c-4b17-942a-93c1a1f7ac2a",
   "facts_sha256": "941a2d7854f409438b52f45dffbc4d6da1f77fa985c36817495bfd83be62dd46",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bd36d05517b9094f3a1634fa9070b95478be964b36c3c84fd979146d29bbd9a7"
   },
-  "physical_metadata_sha256": "f6c463ee64252208498e214522ca08cb268e8ecd2be56317e9985d1e63586cf2"
+  "physical_metadata_sha256": "f6c463ee64252208498e214522ca08cb268e8ecd2be56317e9985d1e63586cf2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WhiteTigerAvaAyala.java",
+  "java_sha256": "df06defeb1f4fc07fe3f08a9ae7bd56a26a197fb3e2f6873046ccb314ef8646c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TigerGodToken.java",
+      "sha256": "0eca242d4b8b3fb0603aae63841be7876edcef50e9233ba43aed2025dd9b565c"
+    }
+  ],
+  "remaining_obligations": []
 }

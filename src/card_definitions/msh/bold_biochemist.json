@@ -3,10 +3,31 @@
   "catalogue_id": 484,
   "oracle_id": "45ddfa35-7b3c-4916-b231-dc721b7b56d9",
   "facts_sha256": "6520ddfd7f3227c133d4e317a11254a0bb492b8273692548621f50ba24a0be4c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2580b12474741d28028b80304551596c751b26ffa08b4c65784bf953884a1f65"
   },
-  "physical_metadata_sha256": "b5885f7d9fae9be5c9dbc71efa55a90e79b007eaa6cc0282d662efe13b8be05d"
+  "physical_metadata_sha256": "b5885f7d9fae9be5c9dbc71efa55a90e79b007eaa6cc0282d662efe13b8be05d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BoldBiochemist.java",
+  "java_sha256": "83333f937a19cc679beafaff4584fbf3e0147ec77d0cbbfa149a5e18ad64e1bc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    }
+  ],
+  "remaining_obligations": []
 }

@@ -7354,3 +7354,7 @@ mod msh_existing_tests;
 #[cfg(test)]
 #[path = "engine_milled_recovery_tests.rs"]
 mod milled_recovery_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_power_up_cards_tests.rs"]
+mod msh_power_up_cards_tests;

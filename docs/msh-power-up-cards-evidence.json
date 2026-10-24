@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "13 complete consumers of reviewed Power-up and existing typed effects, with two required token recipes; full-set acceptance pending",
+  "source_base": "afcc69f9c1290b1878a07dd5d8868b0d2f1e2b6b",
+  "observation_schema": 138,
+  "complete_cards": [
+    "Abomination, Terrifying Titan",
+    "Bold Biochemist",
+    "Brave Brawler",
+    "Hercules, Prince of Power",
+    "Ninja of the Hand",
+    "Pet Avengers",
+    "Serpent Specialist",
+    "She-Hulk, Jade Defender",
+    "Ultron Drone",
+    "Unliving Legionnaire",
+    "Viv Vision, Teen Synthezoid",
+    "Volcanic Villain",
+    "White Tiger, Ava Ayala"
+  ],
+  "new_token_recipes": {
+    "5388": "@token/msh-robot-villain",
+    "5389": "@token/msh-tiger-god"
+  },
+  "reused_token_recipe": {
+    "5265": "3/2 white Hero with vigilance"
+  },
+  "all_previous_catalogue_ids_aliases_colors_constants_and_recipes_preserved": true,
+  "inherited_trace_count": 2421,
+  "inherited_full_trace_matches": 2421,
+  "inherited_changes": [],
+  "baseline_sha256": "b041d1127c50d52afca366943a56d8c17f39250ebf4785fd7e998435a59dfe2b",
+  "candidate_sha256": "a4893b1d5de91569cf1bebc802579ad03061946922d124e4a2de401f8b996916",
+  "new_traces": {
+    "Abomination, Terrifying Titan": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Battlefield",
+      "journal": "1ac3501e048f59c2",
+      "observations": "59f27afa796b6629"
+    },
+    "Bold Biochemist": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "b6cf3749b9ab6fcf",
+      "observations": "13e336cb1484938b"
+    },
+    "Brave Brawler": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "ce93789b5fa64c9f",
+      "observations": "bf3caeef1acad559"
+    },
+    "Hercules, Prince of Power": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "7c50116fb450cf1c",
+      "observations": "91bf41a6770ecc79"
+    },
+    "Ninja of the Hand": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "4324aa4c9fd9325c",
+      "observations": "43e609cd9bc2abdb"
+    },
+    "Pet Avengers": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "60609359dae9f3fd",
+      "observations": "27cfea4081252e6b"
+    },
+    "Serpent Specialist": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "d96ad4ca883f316e",
+      "observations": "20e12f5a5de9828b"
+    },
+    "She-Hulk, Jade Defender": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "60609359dae9f3fd",
+      "observations": "8146bdbaef22522b"
+    },
+    "Ultron Drone": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "903e360914c6c94c",
+      "observations": "f0883a6290555177"
+    },
+    "Unliving Legionnaire": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "9d78478b460edd3d",
+      "observations": "0e5ae78197a375f9"
+    },
+    "Viv Vision, Teen Synthezoid": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "903e360914c6c94c",
+      "observations": "3b7602d36f9d814b"
+    },
+    "Volcanic Villain": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "543918deceb4be8c",
+      "observations": "03d7ac8782c60213"
+    },
+    "White Tiger, Ava Ayala": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "100cb581dd613f1f",
+      "observations": "a6ce650fbc9c134f"
+    }
+  },
+  "focused_rules_tests": 12,
+  "source_pin_check": {
+    "definitions": 5390,
+    "verified_blobs": 1056
+  },
+  "rules_evidence": "src/engine_msh_power_up_cards_tests.rs: both-seat paid actions; hybrid source and activation funding; optional and invalidated fight/destroy/graveyard return targets; source blink/departure; private discard and draw; current/departure-LKI Viv power at resolution; counter and keyword layers with actual combat; exact token recipes, Hero/Villain observers, legend rule and blocker limit; lifetime Power-up count; owned raw/index branch, parent disposal and restore",
+  "shared_engine_changes": [],
+  "validation": "12 focused tests and Clippy all-targets pass. Strict inherited trace audit is exact; final strict baseline rerun and combined full release validation are recorded in the PR.",
+  "implementation_throughput": {
+    "start": "2026-10-24T19:21:30+00:00",
+    "end": "2026-10-24T19:33:52.615054+00:00",
+    "elapsed_seconds": 742.615054,
+    "complete_candidate_cards": 13,
+    "cards_per_hour": 63.02053769031189,
+    "scope": "Candidate authoring, full-source reads, focused rules tests, Clippy and exact inherited trace audit; excludes final combined integration/reviews/full release and full-set acceptance"
+  },
+  "remaining_scope": "Two fresh nonauthor final-head reviews, integration and full release validation. In-place copy ability identity remains gated; full281-card set and entire-pool performance acceptance remain open."
+}

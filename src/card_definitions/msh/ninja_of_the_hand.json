@@ -3,10 +3,36 @@
   "catalogue_id": 2946,
   "oracle_id": "c38f7447-e646-438d-81bd-fe2a71c8a79c",
   "facts_sha256": "608ad3b27b98466ca15b8e60eae05d984732c1d1de659e0a9f589d8a5e90db33",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "91091c27ed75757027eb921de39ae002eb141bb7bffc62d3cc958bcf8ba2f63b"
   },
-  "physical_metadata_sha256": "cb7992c0032d667f47fff92269495fe81e84dca7f28cd23c3302ba2381cece63"
+  "physical_metadata_sha256": "cb7992c0032d667f47fff92269495fe81e84dca7f28cd23c3302ba2381cece63",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NinjaOfTheHand.java",
+  "java_sha256": "c2e71f74142424238830eefff9bc9dd79303bb89eeb3b486b921ddf1bed264a0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+      "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    }
+  ],
+  "remaining_obligations": []
 }
