@@ -715,6 +715,7 @@ struct PlayerState {
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
     card_left_graveyard_this_turn: bool,
+    controlled_creature_died_this_turn: bool,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
     life_lost_this_turn: u128,
@@ -1501,6 +1502,7 @@ struct State {
     #[allow(clippy::box_collection)]
     temporary_controls: Option<Box<Vec<TemporaryControlView>>>,
     casting_prohibited: bool,
+    damage_prevention_prohibited: bool,
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
     #[allow(clippy::box_collection)]
@@ -1524,6 +1526,7 @@ struct State {
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     counter_placement_history: counter_placement_history::Rows,
+    cast_entry_counters: cast_entry_counters::Rows,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
@@ -1534,6 +1537,7 @@ struct State {
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
+    cards_exiled_this_turn: bool,
     creatures_died_this_turn: u64,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
@@ -1684,6 +1688,7 @@ impl ObjectView {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    pub(super) cast_event: Option<Box<CastPaymentEvent>>,
     /// CR122.6a: intrinsic entry counters are put on by the incoming controller.
     pub(super) entry_counter_player: Option<Player>,
     pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
@@ -1716,6 +1721,7 @@ pub struct PlayerView {
     pub cards_drawn_this_turn: u64,
     pub cards_discarded_this_turn: u64,
     pub card_left_graveyard_this_turn: bool,
+    pub controlled_creature_died_this_turn: bool,
     pub life_gain_events_this_turn: u64,
     pub life_gained_this_turn: u128,
     pub life_lost_this_turn: u128,
@@ -1804,9 +1810,9 @@ pub struct RecoveryChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct EffectChoiceView {
     pub kind: EffectChoiceKind,
-    pub amount: u16,
+    pub amount: u32,
     pub optional: bool,
-    pub required: [u16; 2],
+    pub required: [u32; 2],
     pub selected: [Vec<ObjectRef>; 2],
     pub candidates: Vec<ObjectRef>,
     pub defender_choice: bool,
@@ -1885,12 +1891,14 @@ pub struct Observation {
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub counter_placement_history: Vec<CounterPlacementHistoryView>,
+    pub cast_entry_counters: Vec<CastEntryCounterView>,
     pub additional_combats: u64,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
+    pub damage_prevention_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
     pub suspected: Vec<ObjectRef>,
@@ -1905,6 +1913,8 @@ pub struct Observation {
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_artifact_copies: Vec<SpellView>,
     pub delayed_returns: Vec<DelayedReturnView>,
+    /// Exact public exile objects awaiting immediate return after departure events.
+    pub immediate_blink_return: Option<Vec<ReturnLinkView>>,
     pub mobilize_choice: Option<MobilizeChoiceView>,
     pub saddle_choice: Option<SaddleChoiceView>,
     /// Complete scalar domain, visible only to its choosing actor.
@@ -1913,6 +1923,7 @@ pub struct Observation {
     /// Number of distinct declared attacker objects this turn, including departures.
     pub creatures_attacked_this_turn: usize,
     /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
+    pub cards_exiled_this_turn: bool,
     pub creatures_died_this_turn: u64,
     pub graveyard_entries_this_turn: Vec<ObjectRef>,
     pub catalogue: &'static str,
@@ -2068,6 +2079,7 @@ impl Game {
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
             card_left_graveyard_this_turn: false,
+            controlled_creature_died_this_turn: false,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
@@ -2120,12 +2132,14 @@ impl Game {
                 controls: None,
                 temporary_controls: None,
                 casting_prohibited: false,
+                damage_prevention_prohibited: false,
                 replacements: None,
                 objects: objects.into(),
                 named_counters: None,
                 combat_rules: None,
                 creature_damage_history: None,
                 counter_placement_history: None,
+                cast_entry_counters: None,
                 entry_values: None,
                 copy_recipes: None,
                 graveyard_entries: None,
@@ -2135,6 +2149,7 @@ impl Game {
                 modal_history: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
+                cards_exiled_this_turn: false,
                 creatures_died_this_turn: 0,
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
@@ -2789,6 +2804,7 @@ impl Game {
                             EffectChoiceKind::LandCards { .. }
                             | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
                             EffectChoiceKind::Sacrifice
+                            | EffectChoiceKind::ExileGreatestManaValue
                             | EffectChoiceKind::ExileGraveyard
                             | EffectChoiceKind::TapPermanents(_) => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
@@ -3003,7 +3019,9 @@ impl Game {
                     if casting_prohibited {
                         if obj.card.is_land()
                             && sorcery
-                            && (obj.zone == Zone::Hand || self.can_play_exiled(actor, card))
+                            && (obj.zone == Zone::Hand
+                                || self.can_play_exiled(actor, card)
+                                || self.has_graveyard_cast(actor, card, GraveyardCastKind::Play))
                             && (!s.land_played
                                 || self
                                     .continuous_land_plays(actor)
@@ -3090,7 +3108,8 @@ impl Game {
                         {
                             return true;
                         }
-                        if self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast)
+                        if !obj.card.is_land()
+                            && self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast)
                             && self.permitted_cast_available(
                                 actor,
                                 card,
@@ -3125,7 +3144,13 @@ impl Game {
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
                     let exile = obj.zone == Zone::Exile && self.can_play_exiled(actor, card);
                     let library = self.can_cast_library_top(actor, card);
-                    if (obj.zone != Zone::Hand && !flashback && !exile && !library)
+                    let graveyard_land = obj.card.is_land()
+                        && self.has_graveyard_cast(actor, card, GraveyardCastKind::Play);
+                    if (obj.zone != Zone::Hand
+                        && !flashback
+                        && !exile
+                        && !library
+                        && !graveyard_land)
                         || obj.is_token()
                     {
                         continue;
@@ -3175,6 +3200,24 @@ impl Game {
                         _ => true,
                     };
                     if obj.card.x_symbols() > 0 {
+                        // The currently typed printed flashback costs are fixed mana costs.
+                        // Their alternative cost has no X, so the spell's declared X is zero.
+                        if flashback {
+                            if completable
+                                && self.permitted_cast_available(
+                                    actor,
+                                    card,
+                                    CastMethod::Flashback,
+                                    CastFace::Normal,
+                                    sorcery,
+                                    false,
+                                )
+                                && emit(Action::AnnounceFlashback { card })
+                            {
+                                return true;
+                            }
+                            continue;
+                        }
                         if completable
                             && !self.scalar_x_intervals(actor, card).is_empty()
                             && emit(if exile {
@@ -4053,6 +4096,9 @@ impl Game {
             Action::AnnounceFlashback { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Flashback;
+                if item.source_card.x_symbols() > 0 {
+                    item.x = Some(0);
+                }
                 self.state.objects[card as usize].flashback = true;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
@@ -4280,6 +4326,18 @@ impl Game {
             }
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
+                if self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .source_card
+                    .targets_up_to_x()
+                {
+                    let plan = self.target_spec(&self.state.announcing.as_ref().unwrap().item);
+                    self.state.announcing.as_mut().unwrap().plan = plan;
+                }
                 self.continue_announcement_choices(false);
             }
             Action::ChooseKicker { pay } => {
@@ -4922,6 +4980,7 @@ impl Game {
                 .capacity("object generation exhausted");
             self.state.free_tokens.push(id);
             return ZoneChange {
+                cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
                 was_cast: false,
@@ -4958,6 +5017,7 @@ impl Game {
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
+                cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
                 was_cast: false,
@@ -4977,6 +5037,7 @@ impl Game {
         if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
+                cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
                 was_cast: false,
@@ -4993,6 +5054,13 @@ impl Game {
                 evidence_collected: false,
             };
         }
+        if destination == Zone::Exile
+            && !before.is_token()
+            && !before.card.is_emblem()
+            && !self.state.objects[id as usize].is_spell_copy()
+        {
+            self.state.cards_exiled_this_turn = true;
+        }
         // CR400.8: re-exiling an exiled card creates a new incarnation even
         // though its zone stays exile. Clear exact links and permissions below.
         assert!(
@@ -5008,6 +5076,7 @@ impl Game {
             self.state.step_sources.retain(|&source| source != id);
         }
         self.forget_borrowed_source(before.reference);
+        self.forget_cast_entry_counters(before.reference);
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
@@ -5019,6 +5088,7 @@ impl Game {
             && destination == Zone::Graveyard
             && before.is_creature()
         {
+            self.state.players[before.controller.index()].controlled_creature_died_this_turn = true;
             self.state.creatures_died_this_turn = self
                 .state
                 .creatures_died_this_turn
@@ -5217,6 +5287,7 @@ impl Game {
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         ZoneChange {
+            cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
             graveyard_observers,
             was_cast: false,
@@ -5293,8 +5364,10 @@ impl Game {
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
         self.state.counter_placement_history = None;
+        self.state.cast_entry_counters = None;
         self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
+        self.state.cards_exiled_this_turn = false;
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
         for player in &mut self.state.players {
@@ -5304,6 +5377,7 @@ impl Game {
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
+            player.controlled_creature_died_this_turn = false;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
@@ -5442,6 +5516,7 @@ impl Game {
             rules.additional_combats = 0;
         }
         self.state.casting_prohibited = false;
+        self.state.damage_prevention_prohibited = false;
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
         }
@@ -5547,6 +5622,7 @@ impl Game {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
             event.preventable
+                && !self.state.damage_prevention_prohibited
                 && ((event.combat
                     && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
                         || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO))))
@@ -5805,6 +5881,7 @@ impl Game {
                     .collect()
             }),
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
+            damage_prevention_prohibited: s.damage_prevention_prohibited,
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
             zone_reveals: self.zone_reveals(),
@@ -5834,6 +5911,11 @@ impl Game {
             } else {
                 None
             },
+            immediate_blink_return: self
+                .state
+                .resolving
+                .as_ref()
+                .and_then(|r| r.immediate_blink_return.as_deref().cloned()),
             delayed_returns: self
                 .state
                 .delayed_returns
@@ -5883,6 +5965,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.animations.clone()),
+            cast_entry_counters: s
+                .cast_entry_counters
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             counter_placement_history: s
                 .counter_placement_history
                 .as_ref()
@@ -5902,6 +5988,7 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.damaged_players.clone()),
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
+            cards_exiled_this_turn: s.cards_exiled_this_turn,
             creatures_died_this_turn: s.creatures_died_this_turn,
             graveyard_entries_this_turn: s
                 .graveyard_entries
@@ -6005,6 +6092,7 @@ impl Game {
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
                 card_left_graveyard_this_turn: s.players[i].card_left_graveyard_this_turn,
+                controlled_creature_died_this_turn: s.players[i].controlled_creature_died_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
                 life_lost_this_turn: s.players[i].life_lost_this_turn,
@@ -6398,6 +6486,7 @@ impl Game {
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.linked_choices.as_ref().map_or(0, |c| c.bytes())
+            + cast_entry_counters::owned_bytes(&s.cast_entry_counters)
             + counter_placement_history::owned_bytes(&s.counter_placement_history)
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
@@ -6489,6 +6578,13 @@ impl Game {
                         .explore
                         .as_ref()
                         .map_or(0, |_| std::mem::size_of::<ExploreChoiceView>())
+                        + resolution
+                            .immediate_blink_return
+                            .as_ref()
+                            .map_or(0, |rows| {
+                                std::mem::size_of::<Vec<ReturnLinkView>>()
+                                    + rows.len() * std::mem::size_of::<ReturnLinkView>()
+                            })
                         + resolution
                             .milled_selection
                             .as_ref()
@@ -6695,6 +6791,9 @@ impl Game {
 #[path = "engine_card_quantities.rs"]
 mod card_quantities;
 pub use card_quantities::SourceCounterQuantityView;
+#[path = "engine_cast_entry_counters.rs"]
+mod cast_entry_counters;
+pub use cast_entry_counters::CastEntryCounterView;
 #[path = "engine_counter_placement_history.rs"]
 mod counter_placement_history;
 pub use counter_placement_history::CounterPlacementHistoryView;

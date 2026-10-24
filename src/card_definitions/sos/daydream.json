@@ -3,10 +3,25 @@
   "catalogue_id": 988,
   "oracle_id": "094c4486-6cae-4268-850e-ff0082e5ad10",
   "facts_sha256": "3e8322487c7d404bad45b844458a99592bbcabdcbf0c653263ced7ed7d773f5c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0c3e9cd1423f8f6c08e0384ef289b7567c89c8b39a1e59e1c813c9c4aa20f74f"
   },
-  "physical_metadata_sha256": "46b8fa1eccda44f8032987898712a0b933ae3c42ec21580e2622af05ee7725f5"
+  "physical_metadata_sha256": "46b8fa1eccda44f8032987898712a0b933ae3c42ec21580e2622af05ee7725f5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/Daydream.java",
+  "java_sha256": "eace935b0647c99184de21e3f617336941378d52e5a53fd0378bb714663ec30b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
+      "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    }
+  ]
 }

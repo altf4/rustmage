@@ -141,6 +141,30 @@ impl Game {
             }
         }
     }
+    pub(super) fn exile_excess_play(&mut self, item: &SpellView, next_turn: bool) {
+        let excess = self
+            .state
+            .combat_rules
+            .as_mut()
+            .and_then(|r| r.excess.take());
+        let Some(excess) = excess else { return };
+        let amount = usize::try_from(excess.dealt.saturating_sub(excess.lethal).max(0))
+            .unwrap_or(usize::MAX);
+        let ids: Vec<_> = self.state.players[item.controller.index()]
+            .library
+            .iter()
+            .rev()
+            .take(amount)
+            .copied()
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.grant_exile_play_permission(item.controller, event.after, next_turn);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
     pub(super) fn add_combat(&mut self) {
         let count = &mut self
             .state

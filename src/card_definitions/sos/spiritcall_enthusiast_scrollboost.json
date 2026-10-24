@@ -3,10 +3,25 @@
   "catalogue_id": 4057,
   "oracle_id": "c77ddcac-ce54-4348-bde2-5d9caf3d5b04",
   "facts_sha256": "418d5b39536af52c997ff3e1bebe5a8e2258e3f594b5598ae6fba031df8d1768",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "314c2ebbbe0ce2dd4545a245744428daa4219000ce0450800b055db743261403"
   },
-  "physical_metadata_sha256": "1f8e58d2b57c9936bf629a43f0d1569831edcce3c2d09f7bdf100ae4d52253fd"
+  "physical_metadata_sha256": "1f8e58d2b57c9936bf629a43f0d1569831edcce3c2d09f7bdf100ae4d52253fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiritcallEnthusiast.java",
+  "java_sha256": "900ba231cbb40f89995d8fa495bd746cae15ad2142994bd94f9074de8eb036ff",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOneOrMoreTriggeredAbility.java",
+      "sha256": "b2036e1b813dfb756550392d8942d44c19bc686360e9fd61d6253b4c982a8ed9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    }
+  ]
 }

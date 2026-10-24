@@ -43,6 +43,7 @@ impl Game {
     fn library_selection_matches(&self, filter: LibrarySelectionFilter, id: CardId) -> bool {
         let c = self.state.objects[id as usize].card;
         match filter {
+            LibrarySelectionFilter::HasX => c.x_symbols() > 0,
             LibrarySelectionFilter::Any => true,
             LibrarySelectionFilter::Kinds(mask) => c.kind_mask() & mask != 0,
             LibrarySelectionFilter::ExcludingKinds(mask) => c.kind_mask() & mask == 0,
@@ -251,6 +252,32 @@ impl Game {
                 Zone::Library
             );
         }
+        if f.destination == LibraryPickDestination::LandsTappedRestHand {
+            // The unchosen cards move first. During any ensuing entry choices,
+            // only the selected, revealed cards remain in the public frame.
+            self.commit_library_remainder(owner, (*f).clone());
+            f.remaining.clear();
+            f.bottom.clear();
+            f.public = true;
+            let moves: Vec<_> = f
+                .selected
+                .iter()
+                .filter(|r| self.state.objects[r.card as usize].card.is_land())
+                .map(|r| {
+                    let mut movement = self.entry_move(r.card, Zone::Battlefield, true);
+                    movement.controller = owner;
+                    movement
+                })
+                .collect();
+            if moves.is_empty() {
+                self.library_selected_nonlands_to_hand(&f);
+            } else {
+                f.entering = true;
+                self.state.resolving.as_mut().unwrap().selection = Some(f);
+                self.stage_entries(moves, None);
+            }
+            return;
+        }
         let ids: Vec<_> = f.selected.iter().map(|r| r.card).collect();
         let events = if f.destination == LibraryPickDestination::Hand {
             self.move_objects_raw(&ids, Zone::Hand)
@@ -301,6 +328,28 @@ impl Game {
         }
         self.commit_library_remainder(owner, *f);
     }
+    fn library_selected_nonlands_to_hand(&mut self, frame: &LibrarySelection) {
+        let ids: Vec<_> = frame
+            .selected
+            .iter()
+            .filter(|r| {
+                self.object_ref(r.card) == **r
+                    && self.state.objects[r.card as usize].zone == Zone::Library
+                    && !self.state.objects[r.card as usize].card.is_land()
+            })
+            .map(|r| r.card)
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Hand);
+        if frame.spec.reveal {
+            self.state.known_hand.extend(
+                events
+                    .iter()
+                    .filter(|e| e.moved && e.destination == Zone::Hand)
+                    .map(|e| e.after),
+            );
+        }
+        self.finish_zone_events(&events, &[]);
+    }
     fn commit_library_remainder(&mut self, owner: Player, mut f: LibrarySelection) {
         if f.destination == LibraryPickDestination::Battlefield {
             f.remaining.extend(f.selected.iter().copied().filter(|r| {
@@ -338,7 +387,11 @@ impl Game {
             let resolution = self.state.resolving.as_mut().unwrap();
             let owner = resolution.item.controller;
             let frame = resolution.selection.take().unwrap();
-            self.commit_library_remainder(owner, *frame);
+            if frame.destination == LibraryPickDestination::LandsTappedRestHand {
+                self.library_selected_nonlands_to_hand(&frame);
+            } else {
+                self.commit_library_remainder(owner, *frame);
+            }
         }
     }
     pub(super) fn library_selection_view(&self, viewer: Player) -> Option<LibrarySelectionView> {
@@ -370,6 +423,7 @@ impl Game {
             reveal: f.spec.reveal,
             public: f.public,
             destination: match f.destination {
+                LibraryPickDestination::LandsTappedRestHand => "lands_tapped_rest_hand",
                 LibraryPickDestination::Hand => "hand",
                 LibraryPickDestination::Battlefield => "battlefield",
                 LibraryPickDestination::Top => "top",

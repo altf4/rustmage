@@ -3,10 +3,13 @@
   "catalogue_id": 390,
   "oracle_id": "715f0832-696c-4111-b418-d9b6da403159",
   "facts_sha256": "8df26f394bc87a28e713f0d60b0422b7490f0585abc1286865e4f30c157e9eb5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "75d6e889852155ea448fa0cfc365fdceaff02a7d907521d637fc0741af1a6740"
   },
-  "physical_metadata_sha256": "953fc98cd325f9acf764422cf6752d93eb2d8b4c5ceb5495ca23056d058bb2b3"
+  "physical_metadata_sha256": "953fc98cd325f9acf764422cf6752d93eb2d8b4c5ceb5495ca23056d058bb2b3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BertaWiseExtrapolator.java",
+  "java_sha256": "de38572575e0f19f9cff3df94670de07d82898db680c2e582e98335370fc5b34"
 }

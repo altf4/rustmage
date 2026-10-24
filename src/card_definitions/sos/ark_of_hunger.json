@@ -3,10 +3,13 @@
   "catalogue_id": 221,
   "oracle_id": "2c654772-c786-4966-a46e-9556bbf31d7c",
   "facts_sha256": "3aca4ae4fae5192ad0638910e2bdf60ef19a0a2dc20689f5191ccf7e926b6f82",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "993b740b8b730ff9f835657f045cab464bfa7af14648f7c668d2ef900a4a708d"
   },
-  "physical_metadata_sha256": "c1a9644d81325f3d0e9a177d912e6fdeada9249e11d4b4124455c86340cd14d7"
+  "physical_metadata_sha256": "c1a9644d81325f3d0e9a177d912e6fdeada9249e11d4b4124455c86340cd14d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArkOfHunger.java",
+  "java_sha256": "a13b0f74421dc709c5f7e7eb4a6fab833650afbd5c50c72b185f947314c4684a"
 }

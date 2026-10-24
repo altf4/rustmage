@@ -62,6 +62,8 @@ impl CopyExceptions {
 /// A temporary permission on one graveyard incarnation, independent of its grantor.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum GraveyardCastKind {
+    /// Play this exact card normally, including a land, through the deadline.
+    Play,
     Cast,
     Flashback,
 }
@@ -118,6 +120,11 @@ pub(crate) enum TargetGroupConstraint {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetRule {
+    ManaValueAtMost {
+        base: &'static TargetRule,
+        amount: AmountValue,
+        maximum: Option<u64>,
+    },
     Grouped {
         base: &'static TargetRule,
         constraint: TargetGroupConstraint,
@@ -203,6 +210,7 @@ impl TargetRule {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetPredicate {
     OwnedByController,
+    ManaValueAtMostLifeGained,
     OtherThanSource,
     Blocking,
     Nontoken,
@@ -463,6 +471,7 @@ pub(crate) enum LibraryRemainder {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibrarySelectionFilter {
+    HasX,
     Any,
     Kinds(u16),
     ExcludingKinds(u16),
@@ -491,6 +500,7 @@ pub(crate) struct LibrarySelectionSpec {
 /// Explicit destinations for cards looked at without changing zones first.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryPickDestination {
+    LandsTappedRestHand,
     Hideaway,
     Hand,
     Battlefield,
@@ -579,6 +589,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    ExileGreatestManaValue,
     ExileGraveyard,
     SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
@@ -751,6 +762,12 @@ pub(crate) enum Instruction {
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
+    BlinkImmediately {
+        counter: Option<(CounterKind, u64)>,
+    },
+    IfCastFromNonHand {
+        skip: usize,
+    },
     BlinkUntilEndStep {
         under_owner: bool,
     },
@@ -768,6 +785,8 @@ pub(crate) enum Instruction {
     },
     ChangeSingleStackTarget,
     GrantGraveyardCast(GraveyardCastKind),
+    /// Permission for the exact public card(s) just milled by this resolution.
+    GrantMilledPlay,
     ExileDiscardedWithStash,
     ExileEachLibraryTopCastFree,
     CounterRelatedUnlessPayLife(u32),
@@ -914,6 +933,19 @@ pub(crate) enum Instruction {
     },
     DamageForExcess(AmountValue),
     CreateExcessTokens(Card),
+    ExileExcessPlay {
+        next_turn: bool,
+    },
+    DamageCannotBePreventedThisTurn,
+    LoseHalfLife(PlayerSet),
+    ChooseHalf {
+        kind: EffectChoiceKind,
+    },
+    DiscardAnyDraw {
+        players: PlayerSet,
+        bonus: u16,
+        required_all: bool,
+    },
     AdditionalCombat,
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.
@@ -1112,6 +1144,11 @@ pub(crate) enum Instruction {
     Surveil(u16),
     AnimateSource(AnimationSpec),
     Search(SearchSpec),
+    SearchTargetController(SearchSpec),
+    MayTargetController {
+        skip: usize,
+    },
+    ExileAndGainLifeEqualPower,
     /// Capture the destroyed land's controller, then offer both optional basic searches.
     DestroyLandAndSearch,
     /// Unqualified search: find the maximum, or every remaining card if fewer.
@@ -1288,8 +1325,17 @@ pub(crate) enum Instruction {
         amount: u16,
         tapped: bool,
     },
+    DrawPowerOfTwoChosenX(PlayerSet),
     Draw(PlayerSet, u16),
     DrawScaled(PlayerSet, AmountValue),
+    AddCastEntryCounters {
+        kind: CounterKind,
+        amount: AmountValue,
+    },
+    DrawThenDiscardIfDrew {
+        amount: AmountValue,
+        discard: u16,
+    },
     Discard(PlayerSet, u16),
     /// Optional resolution choice; its accepted branch records an exact ability use.
     MayOncePerTurn {
@@ -1440,6 +1486,7 @@ pub(crate) enum SourceCharacteristicFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StatValue {
+    ControlledCreatureDiedThisTurn,
     CardLeftGraveyardThisTurn,
     Fixed(u16),
     TappedCount(CountFilter),
@@ -1986,6 +2033,7 @@ pub(crate) enum CastTarget {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CastFilter {
+    HasX,
     SourceChosenColor,
     PermanentAdventure,
     Any,
@@ -2026,6 +2074,7 @@ impl CastFilter {
     pub(crate) fn matches_mana_value(self, card: Card, mana_value: u64) -> bool {
         match self {
             Self::Any => true,
+            Self::HasX => card.x_symbols() > 0,
             Self::PermanentAdventure => {
                 card.adventure_spell().is_some()
                     && card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
@@ -2131,6 +2180,9 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    CardExiledThisTurn,
+    OpponentHasMoreCardsInHand,
+    OpponentControlsMoreCreatures,
     SourceReceivedCounterThisTurn,
     YourTurn,
     SourcePowerAtLeast(u16),
@@ -2212,6 +2264,8 @@ pub(crate) enum ReturnKind {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// The physical source spell itself was cast; stack copies never dispatch it.
+    SelfCast,
     CardsLeaveGraveyard,
     ReturnDeath(ReturnDeathFilter),
     /// Delayed ability carried by a produced mana unit, independent of its source.
@@ -2378,6 +2432,7 @@ pub(crate) enum TriggerCondition {
     },
     OtherFilteredEntersYou(EntryPredicate),
     FilteredEntersYou(EntryPredicate),
+    TokensEnterYou,
     OtherCreatureEntersYou,
     CreatureEnters {
         relation: CastRelation,
@@ -2847,7 +2902,10 @@ impl Card {
     pub fn adventure_spell(self) -> Option<Card> {
         generated::adventure_spell(self)
     }
-    /// Physical parent of an internal Adventure spell definition.
+    /// Homogeneous optional target group whose maximum is the chosen X.
+    pub(crate) fn targets_up_to_x(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.targets_up_to_x)
+    }
     pub(crate) fn prepared_spell(self) -> Option<Card> {
         authored::rules(self).and_then(|rules| rules.extras.prepared_spell)
     }

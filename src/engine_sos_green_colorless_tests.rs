@@ -1184,3 +1184,454 @@ fn sos_scolding_optional_zero_target_and_target_reentry_failure() {
         assert_eq!(g.counter_count(target, CounterKind::Page), 0);
     }
 }
+
+#[test]
+fn sos_lumarets_favor_infusion_checks_life_at_resolution_and_may_retarget() {
+    for p in [Player::P0, Player::P1] {
+        for gained in [false, true] {
+            let mut g = setup(p);
+            let first = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let second = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            paid(&mut g, p, "Lumaret's Favor", None, &[Target::Card(first)]);
+            assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+            if gained {
+                g.gain_life(p, 1);
+            }
+            if gained {
+                for _ in 0..16 {
+                    g.prepare_triggers();
+                    if matches!(g.state.pending, Pending::Retarget { .. }) {
+                        break;
+                    }
+                    checked(&mut g, Action::Pass);
+                }
+                assert!(matches!(g.state.pending, Pending::Retarget { .. }));
+                checked(
+                    &mut g,
+                    Action::SetStackTarget {
+                        index: 0,
+                        target: Target::Card(second),
+                    },
+                );
+                checked(&mut g, Action::FinishStackTargets);
+            }
+            settle(&mut g);
+            assert_eq!((g.stats(first).power, g.stats(first).toughness), (4, 6));
+            assert_eq!(
+                (g.stats(second).power, g.stats(second).toughness),
+                if gained { (4, 6) } else { (2, 2) }
+            );
+            assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+            assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+        }
+    }
+}
+
+#[test]
+fn sos_lumarets_favor_source_copy_survives_countered_original_and_keeps_targets() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.gain_life(p, 1);
+        let original = paid(&mut g, p, "Lumaret's Favor", None, &[Target::Card(target)]);
+        let spell = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.card == original && s.kind == StackKind::Spell)
+            .unwrap()
+            .id;
+        g.counter_stack_item(spell, false);
+        settle(&mut g);
+        assert_eq!((g.stats(target).power, g.stats(target).toughness), (4, 6));
+        assert_eq!(g.object_view(original).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+    }
+}
+
+fn until_optional(g: &mut Game) {
+    for _ in 0..30 {
+        g.prepare_triggers();
+        if matches!(g.state.pending, Pending::EffectOptional { .. }) {
+            return;
+        }
+        checked(g, Action::Pass);
+    }
+    panic!("missing optional effect {:?}", g.state.pending);
+}
+
+#[test]
+fn sos_transcendent_converge_optional_actual_draw_count_and_departed_source() {
+    for p in [Player::P0, Player::P1] {
+        for accept in [false, true] {
+            for (payment, colors) in [
+                ([0, 0, 0, 0, 0, 7], 0),
+                ([0, 0, 0, 0, 7, 0], 1),
+                ([1, 1, 1, 1, 1, 2], 5),
+            ] {
+                let mut g = setup(p);
+                g.state.players[p.index()].mana = payment;
+                let before = g.state.players[p.index()].cards_drawn_this_turn;
+                let source = paid(&mut g, p, "Transcendent Archaic", None, &[]);
+                until_optional(&mut g);
+                assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+                g.move_object(source, Zone::Graveyard);
+                checked(&mut g, Action::ChooseOptional { accept });
+                settle(&mut g);
+                let drawn = if accept { colors } else { 0 };
+                assert_eq!(
+                    g.state.players[p.index()].cards_drawn_this_turn,
+                    before + drawn
+                );
+                assert_eq!(g.hand_count(p), drawn.saturating_sub(2) as usize);
+                assert_eq!(
+                    g.state.players[p.index()].cards_discarded_this_turn,
+                    drawn.min(2)
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_converge_reanimation_zero_and_cast_event_caster_copy_distinction() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Transcendent Archaic", Zone::Graveyard);
+        paid(&mut g, p, "Zombify", None, &[Target::Card(source)]);
+        until_optional(&mut g);
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+        assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 0);
+        g.state.players[p.index()].mana = [1, 1, 1, 1, 1, 2];
+        paid(&mut g, p, "Transcendent Archaic", None, &[]);
+        let mut item = g.state.stack.last().unwrap().clone();
+        item.controller = p.other();
+        let event = item.actual_cast_event().unwrap();
+        assert_eq!(event.controller, p);
+        assert_eq!(event.payment, [1, 1, 1, 1, 1, 2]);
+        item.is_copy = true;
+        assert!(item.actual_cast_event().is_none());
+    }
+}
+
+#[test]
+fn sos_sundering_converge_target_ceiling_nonland_opponent_and_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        for (payment, legal_name, illegal_name) in [
+            ([0, 0, 0, 0, 0, 6], "Mox Jasper", "Bear Cub"),
+            ([0, 0, 0, 0, 6, 0], "Ambitious Augmenter", "Bear Cub"),
+            ([1, 1, 1, 0, 0, 3], "Bear Cub", "Transcendent Archaic"),
+        ] {
+            let mut g = setup(p);
+            let legal = named(&mut g, p.other(), legal_name, Zone::Battlefield);
+            let illegal = named(&mut g, p.other(), illegal_name, Zone::Battlefield);
+            let own = named(&mut g, p, legal_name, Zone::Battlefield);
+            let land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+            g.state.players[p.index()].mana = payment;
+            let source = paid(&mut g, p, "Sundering Archaic", None, &[]);
+            for _ in 0..20 {
+                g.prepare_triggers();
+                if matches!(g.state.pending, Pending::Targets { .. }) {
+                    break;
+                }
+                checked(&mut g, Action::Pass);
+            }
+            assert!(matches!(g.state.pending, Pending::Targets { .. }));
+            for target in [illegal, own, land] {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(legal),
+                },
+            );
+            if g.state.announcing.is_some() {
+                checked(&mut g, Action::PayCosts { payment: [0; 6] });
+            }
+            g.move_object(source, Zone::Graveyard);
+            settle(&mut g);
+            assert_eq!(g.object_view(legal).zone, Zone::Exile);
+            assert!(g.on_battlefield(illegal));
+        }
+    }
+}
+
+#[test]
+fn sos_sundering_paid_graveyard_bottom_uses_owner_and_rejects_new_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        for leaves in [false, true] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Sundering Archaic", Zone::Battlefield);
+            let target = named(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            let payment = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, payment);
+            g.move_object(source, Zone::Graveyard);
+            if leaves {
+                g.move_object(target, Zone::Hand);
+                g.move_object(target, Zone::Graveyard);
+            }
+            settle(&mut g);
+            if leaves {
+                assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+            } else {
+                assert_eq!(
+                    g.state.players[p.other().index()].library.first(),
+                    Some(&target)
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_zimone_private_up_to_two_split_revealed_hand_and_tapped_lands() {
+    for p in [Player::P0, Player::P1] {
+        for count in [0, 1, 2] {
+            let mut g = setup(p);
+            let untouched = g.state.players[p.index()].library.clone();
+            let first = named(&mut g, p, "Forest", Zone::Library);
+            let second = named(&mut g, p, "Bear Cub", Zone::Library);
+            let illegal = named(&mut g, p, "Oracle's Restoration", Zone::Library);
+            let third = named(&mut g, p, "Island", Zone::Library);
+            let fourth = named(&mut g, p, "Bear Cub", Zone::Library);
+            paid(&mut g, p, "Zimone's Experiment", None, &[]);
+            for _ in 0..16 {
+                if matches!(g.state.pending, Pending::EffectLibrarySelection { .. }) {
+                    break;
+                }
+                checked(&mut g, Action::Pass);
+            }
+            assert_eq!(
+                g.observe(p)
+                    .library_selection
+                    .as_ref()
+                    .unwrap()
+                    .remaining
+                    .len(),
+                5
+            );
+            assert!(g.observe(p.other()).library_selection.is_none());
+            reject(&mut g, Action::SelectLibrary { card: illegal });
+            if count >= 1 {
+                checked(&mut g, Action::SelectLibrary { card: first });
+            }
+            if count >= 2 {
+                checked(&mut g, Action::SelectLibrary { card: second });
+            }
+            if count == 2 {
+                reject(&mut g, Action::SelectLibrary { card: third });
+            }
+            checked(&mut g, Action::FinishLibrarySelection);
+            settle(&mut g);
+            assert_eq!(g.on_battlefield(first), count >= 1);
+            if count >= 1 {
+                assert!(g.object_view(first).tapped);
+            }
+            assert_eq!(g.object_view(second).zone == Zone::Hand, count == 2);
+            assert_eq!(
+                g.observe(p.other()).objects.iter().any(|o| o.id == second),
+                count == 2
+            );
+            assert!(
+                g.observe(p.other())
+                    .objects
+                    .iter()
+                    .all(|o| o.id != illegal && o.id != third && o.id != fourth)
+            );
+            let library = &g.state.players[p.index()].library;
+            let remainder = 5 - count;
+            assert_eq!(&library[remainder..], untouched.as_slice());
+            let mut actual = library[..remainder].to_vec();
+            actual.sort_unstable();
+            let mut expected: Vec<_> = [first, second, illegal, third, fourth]
+                .into_iter()
+                .filter(|id| !(count >= 1 && *id == first || count == 2 && *id == second))
+                .collect();
+            expected.sort_unstable();
+            assert_eq!(actual, expected);
+        }
+    }
+}
+
+#[test]
+fn sos_zimone_reveals_selected_only_during_land_entry_choices_and_finishes_creature_hand() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Secluded Courtyard", Zone::Library);
+        let creature = named(&mut g, p, "Bear Cub", Zone::Library);
+        let private = named(&mut g, p, "Oracle's Restoration", Zone::Library);
+        paid(&mut g, p, "Zimone's Experiment", None, &[]);
+        for _ in 0..16 {
+            if matches!(g.state.pending, Pending::EffectLibrarySelection { .. }) {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        checked(&mut g, Action::SelectLibrary { card: land });
+        checked(&mut g, Action::SelectLibrary { card: creature });
+        checked(&mut g, Action::FinishLibrarySelection);
+        let public = g.observe(p.other()).library_selection.unwrap();
+        assert!(public.public);
+        assert!(public.remaining.is_empty());
+        assert!(public.bottom.is_empty());
+        assert_eq!(public.selected.len(), 2);
+        assert!(public.selected.iter().all(|o| o.id != private));
+        settle(&mut g);
+        assert!(g.on_battlefield(land));
+        assert!(g.object_view(land).tapped);
+        assert_eq!(g.object_view(creature).zone, Zone::Hand);
+        assert!(
+            g.observe(p.other())
+                .objects
+                .iter()
+                .any(|o| o.id == creature)
+        );
+        assert!(g.observe(p.other()).objects.iter().all(|o| o.id != private));
+    }
+}
+
+fn paid_wildgrowth(g: &mut Game, p: Player, cost: u16, payment: Mana) -> CardId {
+    g.state.players[p.index()].mana = payment;
+    let card = named(g, p, "Wildgrowth Archaic", Zone::Hand);
+    checked(g, Action::AnnounceCast { card });
+    checked(g, Action::ChooseSpellCost { cost });
+    checked(g, Action::PayCosts { payment });
+    card
+}
+
+#[test]
+fn sos_wildgrowth_hybrid_costs_intrinsic_converge_keywords_and_zero_color_death() {
+    for p in [Player::P0, Player::P1] {
+        for (cost, payment, count) in [
+            (0, [0, 0, 0, 0, 0, 4], 0),
+            (0, [1, 1, 0, 0, 0, 2], 2),
+            (1, [1, 0, 0, 0, 2, 0], 2),
+            (2, [0, 0, 0, 0, 2, 0], 1),
+        ] {
+            let mut g = setup(p);
+            let source = paid_wildgrowth(&mut g, p, cost, payment);
+            settle(&mut g);
+            if count == 0 {
+                assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            } else {
+                assert_eq!(g.counter_count(source, CounterKind::PlusOne), count);
+                assert!(
+                    g.keywords(source)
+                        .contains(Keywords::REACH.union(Keywords::TRAMPLE))
+                );
+                assert_eq!(g.stats(source).power, i128::from(count));
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_wildgrowth_multiple_departed_sources_stack_entry_counters_and_replacements() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let first = paid_wildgrowth(&mut g, p, 2, [0, 0, 0, 0, 2, 0]);
+        settle(&mut g);
+        let second = paid_wildgrowth(&mut g, p, 2, [0, 0, 0, 0, 2, 0]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(first, CounterKind::PlusOne), 1);
+        assert_eq!(g.counter_count(second, CounterKind::PlusOne), 2);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 1, 0];
+        let creature = paid(&mut g, p, "Bear Cub", None, &[]);
+        g.move_object(first, Zone::Graveyard);
+        g.move_object(second, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 8);
+        assert_eq!(g.stats(creature).power, 10);
+        assert!(g.state.cast_entry_counters.is_none());
+    }
+}
+
+#[test]
+fn sos_wildgrowth_incoming_controller_places_counters_after_spell_control_change() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid_wildgrowth(&mut g, p, 2, [0, 0, 0, 0, 2, 0]);
+        settle(&mut g);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 1, 3];
+        let source = paid(&mut g, p, "Fractal Tender", None, &[]);
+        let spell = g
+            .state
+            .stack
+            .iter_mut()
+            .find(|s| s.card == source && s.kind == StackKind::Spell)
+            .unwrap();
+        spell.controller = p.other();
+        g.state.objects[source as usize].controller = p.other();
+        settle(&mut g);
+        assert_eq!(g.object_view(source).controller, p.other());
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 2);
+        assert!(g.put_counter_on_source_this_turn(g.object_ref(source), p.other()));
+        assert!(!g.put_counter_on_source_this_turn(g.object_ref(source), p));
+    }
+}
+
+#[test]
+fn sos_wildgrowth_countered_spell_and_new_incarnation_cannot_inherit_pending_bonus() {
+    for p in [Player::P0, Player::P1] {
+        for resolve_trigger in [false, true] {
+            let mut g = setup(p);
+            paid_wildgrowth(&mut g, p, 2, [0, 0, 0, 0, 2, 0]);
+            settle(&mut g);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 1, 0];
+            let creature = paid(&mut g, p, "Bear Cub", None, &[]);
+            let spell = g
+                .state
+                .stack
+                .iter()
+                .find(|s| s.card == creature && s.kind == StackKind::Spell)
+                .unwrap()
+                .id;
+            if resolve_trigger {
+                for _ in 0..12 {
+                    g.prepare_triggers();
+                    if g.has_cast_entry_counters(g.object_ref(creature)) {
+                        break;
+                    }
+                    checked(&mut g, Action::Pass);
+                }
+                assert!(g.has_cast_entry_counters(g.object_ref(creature)));
+                assert_eq!(
+                    g.observe(p).cast_entry_counters,
+                    g.observe(p.other()).cast_entry_counters
+                );
+            }
+            g.counter_stack_item(spell, false);
+            g.move_object(creature, Zone::Battlefield);
+            settle(&mut g);
+            assert_eq!(g.counter_count(creature, CounterKind::PlusOne), 0);
+            assert!(g.state.cast_entry_counters.is_none());
+        }
+    }
+}

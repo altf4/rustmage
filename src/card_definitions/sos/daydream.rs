@@ -1,16 +1,17 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed Oracle/XMage behavior; full printed obligations pinned in paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        one(TargetRule::creature_you_control()),
+        &[Instruction::BlinkImmediately {
+            counter: Some((CounterKind::PlusOne, 1)),
+        }],
+    ),
+    extras: &CardExtras {
+        flashback_cost: Some(ManaCost {
+            colored: [1, 0, 0, 0, 0, 0],
+            generic: 2,
+        }),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

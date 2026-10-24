@@ -320,10 +320,12 @@ impl Game {
                     }
                     ReplacementSpec::PreventAllDamageToSelf => {
                         event.preventable
+                            && !self.state.damage_prevention_prohibited
                             && matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.object_ref(target) == source)
                     }
                     ReplacementSpec::PreventOtherCreatureNoncombatDamage => {
                         event.preventable
+                            && !self.state.damage_prevention_prohibited
                             && !event.combat
                             && matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.is_creature(target) && self.object_ref(target) != source && self.state.objects[target as usize].controller == object.controller)
                     }

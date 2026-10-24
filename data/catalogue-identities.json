@@ -60406,7 +60406,7 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
@@ -105409,7 +105409,7 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        2,
         0,
         0,
         0,
@@ -109173,10 +109173,10 @@
       "basic": false,
       "mana_color": null,
       "colored": [
+        1,
         0,
         0,
-        0,
-        0,
+        1,
         0,
         0
       ],

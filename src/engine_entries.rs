@@ -25,6 +25,7 @@ pub(super) struct EntryMove {
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
     pub cast_payment: Option<Mana>,
+    pub cast_event: Option<Box<CastPaymentEvent>>,
     /// Explicit origin of an actual spell cast; absent for reanimation/put effects.
     pub cast_origin: Option<Zone>,
     pub warp_controller: Option<Player>,
@@ -73,6 +74,8 @@ impl EntryBatch {
                 .iter()
                 .map(EntryTapEvent::bytes)
                 .sum::<usize>()
+            + self.moves.iter().filter(|m| m.cast_event.is_some()).count()
+                * std::mem::size_of::<CastPaymentEvent>()
             + self.moves.iter().filter(|m| m.gift.is_some()).count()
                 * std::mem::size_of::<GiftContext>()
             + self.choices.len() * std::mem::size_of::<usize>()
@@ -200,6 +203,7 @@ impl Game {
             life_paid: None,
             offspring_paid: false,
             cast_payment: None,
+            cast_event: None,
             cast_origin: None,
             warp_controller: None,
             kicked: false,
@@ -287,6 +291,7 @@ impl Game {
                 movement.controller,
                 movement.x,
             );
+            self.apply_cast_entry_counters(movement);
             if movement.destination == Zone::Battlefield && movement.cast_origin.is_some() {
                 for &(kind, amount) in movement.before.card.cast_entry_counters() {
                     movement.counters.add(kind, amount);
@@ -533,6 +538,7 @@ impl Game {
             {
                 self.apply_return_modification(event.after, kind, source);
             }
+            event.cast_event = movement.cast_event;
             event.was_cast = movement.cast_origin.is_some();
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;

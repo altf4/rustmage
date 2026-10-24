@@ -12,6 +12,16 @@ pub(super) struct SearchChoice {
 }
 
 impl Game {
+    pub(super) fn resolution_target_controller(&self) -> Option<Player> {
+        let resolution = self.state.resolving.as_ref()?;
+        resolution
+            .target_card_facts
+            .as_ref()?
+            .iter()
+            .find(|fact| fact.group == resolution.target_group)
+            .map(|fact| fact.controller)
+    }
+
     pub(super) fn choose_search(&mut self, card: CardId) {
         let choice = self
             .state

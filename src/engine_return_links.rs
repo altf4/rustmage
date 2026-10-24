@@ -77,6 +77,73 @@ impl Game {
                 item: item.clone(),
             });
     }
+    /// Exile as one movement batch, then return only the resulting exact physical cards.
+    /// Entry counters join the existing replacement event before battlefield entry.
+    pub(super) fn blink_immediately(
+        &mut self,
+        item: &SpellView,
+        counter: Option<(CounterKind, u64)>,
+    ) {
+        let ids: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let Target::Card(id) = bound.target else {
+                    return None;
+                };
+                (self.same_target_object(*bound) && self.on_battlefield(id)).then_some(id)
+            })
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let returning = events
+            .iter()
+            .filter_map(|event| {
+                (event.moved && event.destination == Zone::Exile && !event.before.is_token())
+                    .then_some(ReturnLinkView {
+                        object: event.after,
+                        zone: Zone::Exile,
+                        controller: event.before.owner,
+                        counter,
+                    })
+            })
+            .collect();
+        // Departure events can themselves stage a choice-bearing linked return.
+        // Keep our exact exiled incarnations owned until that entry batch finishes.
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .immediate_blink_return = Some(Box::new(returning));
+        self.finish_zone_events(&events, &[]);
+    }
+    pub(super) fn resume_immediate_blink(&mut self) -> bool {
+        let Some(rows) = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .immediate_blink_return
+            .take()
+        else {
+            return false;
+        };
+        let moves = rows
+            .iter()
+            .filter_map(|row| {
+                if self.object_ref(row.object.card) != row.object
+                    || self.state.objects[row.object.card as usize].zone != row.zone
+                {
+                    return None;
+                }
+                let mut movement = self.entry_move(row.object.card, Zone::Battlefield, false);
+                movement.controller = row.controller;
+                movement.effect_counter = row.counter;
+                Some(movement)
+            })
+            .collect();
+        self.stage_entries(moves, None);
+        true
+    }
     pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
         for bound in &item.targets {
             if !self.same_target_object(*bound) {

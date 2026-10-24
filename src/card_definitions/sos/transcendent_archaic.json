@@ -3,10 +3,28 @@
   "catalogue_id": 4656,
   "oracle_id": "fdd4b3a9-83ce-41bf-82e2-7808657e2c09",
   "facts_sha256": "368dc411bdd5c351fb094ab8243c3361501a9a09f59d830e0c14b48dc5f262c6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5b305bdb47034c46a7366e5330bc5a8e064c08f3048b6838bd3c4f2da4e08f7f"
   },
-  "physical_metadata_sha256": "4e880807492f68e8c90d52abe48489591538d59caf538137d9eeb7d9427b4727"
+  "physical_metadata_sha256": "4e880807492f68e8c90d52abe48489591538d59caf538137d9eeb7d9427b4727",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TranscendentArchaic.java",
+  "java_sha256": "68c1d466fff2fa37c6c498a0d65d23c1dfbfa9748c907f842d6686f5667a825f",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "java_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsOfManaSpentToCastCount.java",
+      "sha256": "92b55d92985654d437785d464387ae3c981b4a2542a0f9780c8710b3b7819f8b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+    }
+  ]
 }

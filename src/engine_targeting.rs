@@ -227,6 +227,24 @@ impl Game {
             .program()
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
+        if item.kind == StackKind::Spell && item.source_card.targets_up_to_x() {
+            let TargetPlan::Single(mut spec) = plan else {
+                panic!("X target maximum requires one homogeneous target group")
+            };
+            assert_eq!(spec.min, 0);
+            spec.max = usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX);
+            return TargetPlan::Single(spec);
+        }
+        if let TargetPlan::Single(mut spec) = plan
+            && let TargetRule::ManaValueAtMost { base, amount, .. } = spec.rule
+        {
+            spec.rule = TargetRule::ManaValueAtMost {
+                base,
+                amount,
+                maximum: Some(u64::try_from(self.item_amount(amount, item)).unwrap_or(u64::MAX)),
+            };
+            return TargetPlan::Single(spec);
+        }
         if let TargetPlan::Single(mut spec) = plan
             && matches!(spec.rule, TargetRule::GraveCreatureSourcePower { .. })
         {
@@ -751,6 +769,10 @@ impl Game {
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
         match rule {
+            TargetRule::ManaValueAtMost { base, maximum, .. } => {
+                return maximum.is_some_and(|maximum| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.card.fixed_mana_value() <= maximum)))
+                    && self.target_matches_without_hand(*base, controller, source, target, departing, qualification);
+            }
             TargetRule::GraveCreatureEnteredThisTurn => {
                 return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o|
                     o.zone == Zone::Graveyard && !o.is_token() && o.card.is_creature()
@@ -831,6 +853,10 @@ impl Game {
                 let object = &self.state.objects[id as usize];
                 return match *predicate {
                     TargetPredicate::OwnedByController => object.owner == controller,
+                    TargetPredicate::ManaValueAtMostLifeGained => {
+                        u128::from(object.card.fixed_mana_value())
+                            <= self.state.players[controller.index()].life_gained_this_turn
+                    }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),

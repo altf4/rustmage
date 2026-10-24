@@ -3,10 +3,13 @@
   "catalogue_id": 207,
   "oracle_id": "55d1a788-fe9a-4e19-a524-6709f728ea28",
   "facts_sha256": "e3fa9d361fa451537760b28db89854eb1841fc2c1d8d58c74d64fd203243d87d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "02aa1ed57462029f7dbf4a5b917dcac34cfdd9a5862e06d332a48cba1bbd747f"
   },
-  "physical_metadata_sha256": "e912d76a9abf6005d8a7e9124bd2d52d8cd0293f7541432678709a875a421fe3"
+  "physical_metadata_sha256": "e912d76a9abf6005d8a7e9124bd2d52d8cd0293f7541432678709a875a421fe3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArchaicsAgony.java",
+  "java_sha256": "443b694ee3b513bc5119ea2f4c495c2e01b21c9dc6972c77b26267ce5f2d7f50"
 }

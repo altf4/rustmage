@@ -3,10 +3,13 @@
   "catalogue_id": 39,
   "oracle_id": "bc899d5c-0a91-4f19-a3e4-3078ae966110",
   "facts_sha256": "3381578d141e892c3ca16ab31b28b5a980b8db571117ae07df576abe8471adfc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d1a86bacbe93dee912240415b827fe17a9a337f1bf33d74c1a3dc39e0fb0ee3e"
   },
-  "physical_metadata_sha256": "9743dceb2d76c0d9b62d6f52a5dc5d5d1b72eee0ccf7a3147f4245fdba39f779"
+  "physical_metadata_sha256": "9743dceb2d76c0d9b62d6f52a5dc5d5d1b72eee0ccf7a3147f4245fdba39f779",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AbstractPaintmage.java",
+  "java_sha256": "e717967c647499430bfdbd77a1efe0ce255510d18588f25dab7e5496f02cd7b9"
 }

@@ -3,10 +3,13 @@
   "catalogue_id": 1375,
   "oracle_id": "dd757328-0593-4fc7-a099-e82f5c0677ff",
   "facts_sha256": "5cd75d10c2c2eb93d6d6735b5194a3b130a6849742b6a4f6d81713f687719cb2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "30e193b3f6240adb0945cbdb78a43f27d616051a4dd0ff0f33f8b29f1084a8f8"
   },
-  "physical_metadata_sha256": "44733176b35dc8cfd4e10913dcb9d1cebda92d2ce1f8b6237e2541d1a5deb8b2"
+  "physical_metadata_sha256": "44733176b35dc8cfd4e10913dcb9d1cebda92d2ce1f8b6237e2541d1a5deb8b2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EssenceknitScholar.java",
+  "java_sha256": "0b60dc76443c83bd339d29f3faad81b5f645f928907b56984374ef35c595e834"
 }
