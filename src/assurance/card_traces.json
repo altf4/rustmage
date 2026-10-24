@@ -2303,6 +2303,14 @@
     "journal": "e52ccec308bcae2d",
     "observations": "dea72f311ea8006d"
   },
+  "Bullseye, Death Dealer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "e404ff90c0dbbc24",
+    "observations": "41c01dbf1dc1bad2"
+  },
   "Bumbleflower's Sharepot": {
     "root": "main",
     "status": "completed",
@@ -8926,6 +8934,14 @@
     "zone": "Battlefield",
     "journal": "17b1007f413b3222",
     "observations": "db892ca99ca292e1"
+  },
+  "K'un-Lun Warrior": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "3d3ee93213b6a8c8",
+    "observations": "12dc2c52784b8a0a"
   },
   "Kaito, Cunning Infiltrator": {
     "root": "main",

@@ -98,6 +98,7 @@ impl FundingState<'_> {
     }
     fn cost_object(&self, spec: AdditionalCost, r: ObjectRef, source: ObjectRef) -> bool {
         let o = self.object(r.card);
+        let spec = spec.in_zone(o.zone);
         self.reference(r.card) == r
             && (r != source
                 || !matches!(
@@ -565,6 +566,7 @@ impl FundingState<'_> {
             }
             EffectChoiceKind::ReturnToHand => destination = Zone::Hand,
             EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_) => {}
             _ => return false,

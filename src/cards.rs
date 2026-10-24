@@ -7,7 +7,7 @@ pub(crate) use ability_layers::{
 };
 
 use crate::capacity::CapacityExt;
-use crate::engine::GrantedSubtypes;
+use crate::engine::{GrantedSubtypes, Zone};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// Immutable additions made as part of a token-copy effect (CR707.9).
@@ -683,6 +683,34 @@ pub(crate) struct SacrificeFilter {
 pub(crate) struct AdditionalCost {
     pub kind: EffectChoiceKind,
     pub filter: SacrificeFilter,
+}
+
+impl AdditionalCost {
+    /// A union cost selects exactly one route using the selected object's zone.
+    /// The hand route has its own printed restriction; the permanent filter
+    /// applies only to the sacrifice route.
+    pub(crate) fn in_zone(mut self, zone: Zone) -> Self {
+        if let EffectChoiceKind::SacrificeOrDiscard { nonland } = self.kind {
+            match zone {
+                Zone::Hand => {
+                    self.kind = EffectChoiceKind::Discard;
+                    self.filter = SacrificeFilter {
+                        keywords: Keywords::NONE,
+                        source_only: false,
+                        kinds: 0,
+                        nonland,
+                        other: false,
+                        tokens: None,
+                        artifact_enchantment_or_token: false,
+                        subtype: None,
+                    };
+                }
+                Zone::Battlefield => self.kind = EffectChoiceKind::Sacrifice,
+                _ => {}
+            }
+        }
+        self
+    }
 }
 
 /// Public qualities for a non-targeted choice from one exact milling event.
