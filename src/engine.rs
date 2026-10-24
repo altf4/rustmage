@@ -758,6 +758,8 @@ pub enum CastFace {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// Exact spell replacement: only a stack-to-graveyard move becomes exile.
+    pub exile_on_graveyard: bool,
     /// Player who cast this exact spell; stack control changes do not alter history.
     pub caster: Player,
     /// A non-targeted promise, declared before targets; absent until chosen.
@@ -5121,6 +5123,7 @@ impl Game {
             self.state.step_sources.retain(|&source| source != id);
         }
         self.forget_borrowed_source(before.reference);
+        self.forget_stack_graveyard_exile(before.reference);
         self.forget_cast_entry_counters(before.reference);
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);

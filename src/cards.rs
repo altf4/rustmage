@@ -791,6 +791,7 @@ pub(crate) enum Instruction {
     GrantMilledPlay,
     ExileDiscardedWithStash,
     ExileEachLibraryTopCastFree,
+    CastTargetedGraveyardFree,
     CounterRelatedUnlessPayLife(u32),
     /// One combined ward cost, paid atomically or the related item is countered.
     CounterRelatedUnlessPayManaLife {

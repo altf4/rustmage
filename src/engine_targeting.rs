@@ -1184,6 +1184,7 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
+                exile_on_graveyard: false,
                 caster: actor,
                 gift: None,
                 physical_card: None,

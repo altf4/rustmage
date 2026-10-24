@@ -3,10 +3,24 @@
   "catalogue_id": 4433,
   "oracle_id": "a3e10b9b-9349-4b44-a46c-c825293dbd05",
   "facts_sha256": "0125a581db846ac6ff8e5317ee01aaf981f2f381a4fda5c8b253d5f46e9a5d34",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b6d4eef29e3e5b853ef2d309f6caaa5cc4ff1e7196bad706da3f13cde706c169"
   },
-  "physical_metadata_sha256": "8376a695f1703c62f113db7fc61b55618d65b19fefe8b47ef2535db923334bf8"
+  "physical_metadata_sha256": "8376a695f1703c62f113db7fc61b55618d65b19fefe8b47ef2535db923334bf8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheDawningArchaic.java",
+  "java_sha256": "5663943f4d4ec308fd343c2ad4e3cce9ac87647d6eac34a2b6844553b85625a1",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "java_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MayCastTargetCardEffect.java",
+      "sha256": "f2c37f7ccdb36f97486391bd46784eee91990f591c5fa3a445dea0e37c1e6c15"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/ThatSpellGraveyardExileReplacementEffect.java",
+      "sha256": "8160766e556475aa93967edc5c2ea2ab5ca0dfcb7d170c5f75ff4647b95f93b0"
+    }
+  ]
 }

@@ -1635,3 +1635,295 @@ fn sos_wildgrowth_countered_spell_and_new_incarnation_cannot_inherit_pending_bon
         }
     }
 }
+
+fn dawning_attack_offer(g: &mut Game, p: Player, source: CardId, target: CardId) {
+    g.state.objects[source as usize].summoning_sick = false;
+    g.state.active = p;
+    g.state.step = Step::Attackers;
+    g.state.pending = Pending::Attackers;
+    checked(g, Action::Attack { card: source });
+    checked(g, Action::FinishAttackers);
+    g.prepare_triggers();
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    if g.state.announcing.is_some() {
+        checked(g, Action::PayCosts { payment: [0; 6] });
+    }
+    for _ in 0..20 {
+        if matches!(g.state.pending, Pending::ResolutionCasts { .. }) {
+            return;
+        }
+        checked(g, Action::Pass);
+    }
+    panic!("missing graveyard cast offer {:?}", g.state.pending);
+}
+fn choose_free_target(g: &mut Game, target: ObjectRef) {
+    checked(
+        g,
+        Action::CastExiledDuringResolution {
+            object: target,
+            face: CastFace::Normal,
+        },
+    );
+}
+
+#[test]
+fn sos_dawning_own_graveyard_card_count_discount_and_reach() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Oracle's Restoration", Zone::Graveyard);
+        named(&mut g, p, "Wild Hypothesis", Zone::Graveyard);
+        named(&mut g, p.other(), "Oracle's Restoration", Zone::Graveyard);
+        named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 8];
+        let source = paid(&mut g, p, "The Dawning Archaic", None, &[]);
+        settle(&mut g);
+        assert!(g.keywords(source).contains(Keywords::REACH));
+        assert_eq!((g.stats(source).power, g.stats(source).toughness), (7, 7));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn sos_dawning_decline_preserves_exact_graveyard_target_and_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p, "Wild Hypothesis", Zone::Graveyard);
+        let object = g.object_ref(target);
+        let source = paid(&mut g, p, "The Dawning Archaic", None, &[]);
+        settle(&mut g);
+        dawning_attack_offer(&mut g, p, source, target);
+        let public = g.observe(p.other()).resolution_free_casts.unwrap();
+        assert_eq!(public.origin, Zone::Graveyard);
+        assert!(public.exile_on_graveyard);
+        assert_eq!(public.remaining, vec![object]);
+        g.move_object(source, Zone::Graveyard);
+        checked(&mut g, Action::FinishResolutionCasts);
+        settle(&mut g);
+        assert_eq!(g.object_ref(target), object);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_dawning_free_sorcery_during_combat_x_zero_and_exile_after_resolution_or_counter() {
+    for p in [Player::P0, Player::P1] {
+        for counter in [false, true] {
+            let mut g = setup(p);
+            let target = named(&mut g, p, "Wild Hypothesis", Zone::Graveyard);
+            let source = paid(&mut g, p, "The Dawning Archaic", None, &[]);
+            settle(&mut g);
+            dawning_attack_offer(&mut g, p, source, target);
+            g.move_object(source, Zone::Graveyard);
+            g.state.players[p.index()].mana = [0; 6];
+            let object = g.object_ref(target);
+            choose_free_target(&mut g, object);
+            checked(&mut g, Action::PayCosts { payment: [0; 6] });
+            let spell = g
+                .state
+                .stack
+                .iter()
+                .find(|s| s.card == target && s.kind == StackKind::Spell)
+                .unwrap();
+            assert_eq!(spell.x, Some(0));
+            assert_eq!(spell.cast.unwrap().origin, Zone::Graveyard);
+            assert!(spell.cast.unwrap().exile_on_graveyard);
+            assert_eq!(spell.cast.unwrap().payment, [0; 6]);
+            let stack_id = spell.id;
+            checked(&mut g, Action::FinishResolutionCasts);
+            if counter {
+                g.counter_stack_item(stack_id, false);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(target).zone, Zone::Exile);
+        }
+    }
+}
+
+#[test]
+fn sos_dawning_free_cast_still_requires_additional_sacrifice_and_has_no_stale_target() {
+    for p in [Player::P0, Player::P1] {
+        for sacrifice in [false, true] {
+            let mut g = setup(p);
+            let target = named(&mut g, p, "Worthy Cost", Zone::Graveyard);
+            let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let source = paid(&mut g, p, "The Dawning Archaic", None, &[]);
+            settle(&mut g);
+            dawning_attack_offer(&mut g, p, source, target);
+            let object = g.object_ref(target);
+            if !sacrifice {
+                g.move_object(source, Zone::Graveyard);
+                reject(
+                    &mut g,
+                    Action::CastExiledDuringResolution {
+                        object,
+                        face: CastFace::Normal,
+                    },
+                );
+                checked(&mut g, Action::FinishResolutionCasts);
+                settle(&mut g);
+                assert_eq!(g.object_ref(target), object);
+                continue;
+            }
+            choose_free_target(&mut g, object);
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            let source_ref = g.object_ref(source);
+            checked(&mut g, Action::ChooseAdditionalCost { object: source_ref });
+            checked(&mut g, Action::PayCosts { payment: [0; 6] });
+            checked(&mut g, Action::FinishResolutionCasts);
+            settle(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(enemy).zone, Zone::Exile);
+            assert_eq!(g.object_view(target).zone, Zone::Exile);
+        }
+    }
+}
+
+#[test]
+fn sos_stack_graveyard_exile_permission_only_changes_graveyard_and_expires_on_departure() {
+    for p in [Player::P0, Player::P1] {
+        for destination in [Zone::Hand, Zone::Exile, Zone::Graveyard] {
+            let mut g = setup(p);
+            let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let spell = named(&mut g, p, "Unsummon", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            g.state
+                .announcing
+                .as_mut()
+                .unwrap()
+                .item
+                .cast
+                .as_mut()
+                .unwrap()
+                .exile_on_graveyard = true;
+            checked(
+                &mut g,
+                Action::PayCosts {
+                    payment: [0, 1, 0, 0, 0, 0],
+                },
+            );
+            let event = g.move_object(spell, destination);
+            assert_eq!(
+                event.destination,
+                if destination == Zone::Graveyard {
+                    Zone::Exile
+                } else {
+                    destination
+                }
+            );
+            if g.object_view(spell).zone != Zone::Hand {
+                g.move_object(spell, Zone::Hand);
+            }
+            cast(&mut g, spell, None, &[Target::Card(bear)]);
+            settle(&mut g);
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        }
+    }
+}
+
+#[test]
+fn sos_copy_does_not_inherit_permission_graveyard_replacement() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.gain_life(p, 1);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p, "Lumaret's Favor", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        g.state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .item
+            .cast
+            .as_mut()
+            .unwrap()
+            .exile_on_graveyard = true;
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        for _ in 0..16 {
+            g.prepare_triggers();
+            if matches!(g.state.pending, Pending::Retarget { .. }) {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        assert!(
+            !g.observe(p)
+                .retarget
+                .unwrap()
+                .item
+                .cast
+                .unwrap()
+                .exile_on_graveyard
+        );
+        checked(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert_eq!(g.stats(bear).power, 6);
+    }
+}
+
+#[test]
+fn sos_dawning_attack_target_own_instant_sorcery_and_rechecks_exact_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p, "Wild Hypothesis", Zone::Graveyard);
+        let foreign = named(&mut g, p.other(), "Wild Hypothesis", Zone::Graveyard);
+        let creature = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let source = paid(&mut g, p, "The Dawning Archaic", None, &[]);
+        settle(&mut g);
+        g.state.objects[source as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: source });
+        checked(&mut g, Action::FinishAttackers);
+        g.prepare_triggers();
+        for card in [foreign, creature] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+        }
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        if g.state.announcing.is_some() {
+            checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        }
+        g.move_object(target, Zone::Hand);
+        g.move_object(target, Zone::Graveyard);
+        settle(&mut g);
+        assert!(g.state.resolution_free_casts.is_none());
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+    }
+}

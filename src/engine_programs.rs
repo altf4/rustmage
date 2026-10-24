@@ -885,6 +885,7 @@ impl Game {
         if cast.is_some() {
             self.complete_prepared_cast(item.object);
         }
+        self.register_stack_graveyard_exile(&item);
         self.state.stack.push(item);
         let Some((caster, card)) = cast else { return };
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));
@@ -2226,6 +2227,11 @@ impl Game {
                 Instruction::GrantGraveyardCast(kind) => self.grant_graveyard_cast(&item, kind),
                 Instruction::GrantMilledPlay => self.grant_milled_play(item.controller),
                 Instruction::ExileDiscardedWithStash => self.exile_discarded_with_stash(&item),
+                Instruction::CastTargetedGraveyardFree => {
+                    if self.offer_targeted_graveyard_free_cast(&item) {
+                        return;
+                    }
+                }
                 Instruction::ExileEachLibraryTopCastFree => {
                     self.exile_each_top_cast_free(item.controller);
                     return;
