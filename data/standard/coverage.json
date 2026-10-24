@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ca839d9642a5ab5b2a663184fd49b8f3a14b91ff8c4dde4591a6bf0db1ea6303",
+  "catalogue_version": "8d8d92164ee91e9c53248e0783ba6f2c7a1e74720e0832f2afdedc36e3b7c56e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2376,
-  "implemented_total": 2382,
+  "implemented_standard_cards": 2377,
+  "implemented_total": 2383,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 259,
-      "gated": 5
+      "complete": 260,
+      "gated": 4
     },
     "spm": {
       "total": 134,
@@ -22302,8 +22302,8 @@
     {
       "name": "Mind Roots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/mind_roots.rs",
       "set": "sos"
     },
