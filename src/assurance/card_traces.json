@@ -11831,6 +11831,14 @@
     "journal": "a8a230506a4f0c62",
     "observations": "b0990a2ec05f6dba"
   },
+  "Panther Pounce": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "40ee08632655d942",
+    "observations": "53479b97d4268492"
+  },
   "Paradox Gardens": {
     "root": "main",
     "status": "completed",
@@ -16303,6 +16311,14 @@
     "journal": "07cdce00d5f4d6d8",
     "observations": "47d84f2b3ed38ae5"
   },
+  "Super Suit": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "01b10efe7c28f699",
+    "observations": "4126dc7a81792235"
+  },
   "Super Villain Lockup": {
     "root": "main",
     "status": "completed",
@@ -16310,6 +16326,14 @@
     "zone": "Battlefield",
     "journal": "baa222c24e122f80",
     "observations": "f029889a1bfb1356"
+  },
+  "Super-Skrull": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "723f29e096ef2f1d",
+    "observations": "eb77511142735a3d"
   },
   "Suplex": {
     "root": "main",

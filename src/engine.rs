@@ -7365,3 +7365,6 @@ mod msh_power_up_cards_tests;
 #[path = "engine_counter_history_tests.rs"]
 mod counter_history_tests;
 
+#[cfg(test)]
+#[path = "engine_msh_forms_tests.rs"]
+mod msh_forms_tests;
