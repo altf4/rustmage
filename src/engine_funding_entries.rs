@@ -628,6 +628,9 @@ impl FundingState<'_> {
                         )
                     }))
                 }
+                crate::cards::EntryChoiceKind::LandCardName => {
+                    choices.extend(crate::CardName::lands().map(EntryChoiceValue::CardName));
+                }
                 crate::cards::EntryChoiceKind::CardNameAfterOpponentHand => {
                     // Names absent from this world are equivalent for cost completion.
                     let mut unmatched = false;
