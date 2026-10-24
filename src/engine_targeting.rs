@@ -831,6 +831,10 @@ impl Game {
                 let object = &self.state.objects[id as usize];
                 return match *predicate {
                     TargetPredicate::OwnedByController => object.owner == controller,
+                    TargetPredicate::ManaValueAtMostLifeGained => {
+                        u128::from(object.card.fixed_mana_value())
+                            <= self.state.players[controller.index()].life_gained_this_turn
+                    }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),

@@ -361,7 +361,8 @@ impl Game {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         match spec.kind {
-            EffectChoiceKind::SacrificeDifferentNames(_)
+            EffectChoiceKind::ExileGreatestManaValue
+            | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }

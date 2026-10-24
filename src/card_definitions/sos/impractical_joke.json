@@ -3,10 +3,13 @@
   "catalogue_id": 2151,
   "oracle_id": "c8da73ed-2834-4094-8723-a4ad75660290",
   "facts_sha256": "919597c9cc417dabe03a3d3369c4efa0517221819f0df71bdf8ce4dcc624b8fa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "002e08b60b09a9610b88ec19e191290c9233e8f410c49407104e6f9620622e16"
   },
-  "physical_metadata_sha256": "7364eedee678d68b72db8dd79af50e724c1654c7ff73e56471e33fecc17c8593"
+  "physical_metadata_sha256": "7364eedee678d68b72db8dd79af50e724c1654c7ff73e56471e33fecc17c8593",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/ImpracticalJoke.java",
+  "java_sha256": "ade2a1ba5a0a3cc7111dad469339054bc907b38a2c3ecb9b202821f68ad8c4e2"
 }

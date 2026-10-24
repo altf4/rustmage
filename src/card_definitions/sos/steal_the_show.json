@@ -3,10 +3,13 @@
   "catalogue_id": 4123,
   "oracle_id": "de403543-e61a-44fc-85e1-1e621d90ca8b",
   "facts_sha256": "2856b31393303f83624250017d7f1c5db910f5daf7b198bdb86bd5aac80f9f2a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ddc4e89c1f5d8f17c9024842fba3e930bcb66dde47e899b8f60bf3cdf05b53ad"
   },
-  "physical_metadata_sha256": "7154ad44f23109909b92a73dff6c7ac467910d61e2b24c37750f893f249fd0c9"
+  "physical_metadata_sha256": "7154ad44f23109909b92a73dff6c7ac467910d61e2b24c37750f893f249fd0c9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StealTheShow.java",
+  "java_sha256": "e381e11935489407de87e997e409b3cedb6f2802d6890d8bc6b6aaa357562359"
 }

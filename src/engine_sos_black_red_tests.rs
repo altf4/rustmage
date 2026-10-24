@@ -1617,3 +1617,310 @@ fn sos_burrog_uncast_copy_counts_original_and_controller_change_preserves_caster
         assert_eq!(stats(&g, source), (3, 2));
     }
 }
+
+#[test]
+fn sos_moseo_entry_pest_end_step_dynamic_life_limit_and_departed_source() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Moseo, Vein's New Dean", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (2, 1));
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield
+                    && o.card == Card::SosPestToken
+                    && o.controller == p)
+                .count(),
+            1
+        );
+        let small = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let large = put(&mut g, p, "Hill Giant", Zone::Graveyard);
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+        begin_paradigm_main(&mut g, p.other(), Step::End);
+        assert!(
+            g.state.stack.is_empty(),
+            "opponent's end step does not trigger"
+        );
+        begin_paradigm_main(&mut g, p, Step::Main2);
+        gain_one_with_dissection(&mut g, p);
+        gain_one_with_dissection(&mut g, p);
+        begin_paradigm_main(&mut g, p, Step::End);
+        for illegal in [large, foreign] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(illegal),
+                },
+            );
+        }
+        big_helpers::checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(small),
+            },
+        );
+        let murder = put(&mut g, p.other(), "Murder", Zone::Hand);
+        if g.actor() != Some(p.other()) {
+            act(&mut g, Action::Pass);
+        }
+        cast(&mut g, murder, Some(Target::Card(source)));
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(small).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(large).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(small).controller, p);
+
+        let mut g = scenario(p);
+        put(&mut g, p, "Moseo, Vein's New Dean", Zone::Battlefield);
+        let small = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        begin_paradigm_main(&mut g, p, Step::End);
+        assert!(g.state.stack.is_empty(), "no life gain means no trigger");
+        begin_paradigm_main(&mut g, p, Step::Main2);
+        gain_one_with_dissection(&mut g, p);
+        gain_one_with_dissection(&mut g, p);
+        begin_paradigm_main(&mut g, p, Step::End);
+        act(&mut g, Action::FinishTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(small).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_end_hunt_opponent_chooses_current_highest_ties_ignoring_permanent_protection() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let low = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let high = put(&mut g, p.other(), "Progenitus", Zone::Battlefield);
+        let spell = put(&mut g, p, "End of the Hunt", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        until_choice(&mut g);
+        assert_eq!(g.actor(), Some(p.other()));
+        let object = g.object_ref(low);
+        reject(&mut g, Action::Sacrifice { object });
+        let object = g.object_ref(high);
+        big_helpers::checked(&mut g, Action::Sacrifice { object });
+        settle(&mut g);
+        assert_eq!(g.object_view(high).zone, Zone::Exile);
+        assert_eq!(g.object_view(low).zone, Zone::Battlefield);
+
+        let mut g = scenario(p);
+        let a = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+        let b = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+        let walker = put(&mut g, p.other(), "Chandra, Flameshaper", Zone::Battlefield);
+        g.state.objects[walker as usize].counters.loyalty = 6;
+        let spell = put(&mut g, p, "End of the Hunt", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        until_choice(&mut g);
+        for lower in [a, b] {
+            let object = g.object_ref(lower);
+            reject(&mut g, Action::Sacrifice { object });
+        }
+        let object = g.object_ref(walker);
+        act(&mut g, Action::Sacrifice { object });
+        settle(&mut g);
+        assert_eq!(g.object_view(walker).zone, Zone::Exile);
+        let spell = put(&mut g, p, "End of the Hunt", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        until_choice(&mut g);
+        let object = g.object_ref(b);
+        act(&mut g, Action::Sacrifice { object });
+        settle(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(b).zone, Zone::Exile);
+
+        let mut g = scenario(p);
+        let spell = put(&mut g, p, "End of the Hunt", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Player(p.other())));
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_agony_colors_actual_excess_and_exact_next_turn_play_permission() {
+    for p in [Player::P0, Player::P1] {
+        for (prior, payment, exiled) in [
+            (false, [1, 1, 1, 1, 1, 0], 2),
+            (true, [1, 1, 1, 1, 1, 0], 4),
+            (false, [0, 0, 0, 1, 0, 4], 0),
+        ] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            if prior {
+                let shock = put(&mut g, p, "Shock", Zone::Hand);
+                cast(&mut g, shock, Some(Target::Card(target)));
+                settle(&mut g);
+            }
+            let card = put(&mut g, p, "Bear Cub", Zone::Library);
+            let spell = put(&mut g, p, "Archaic's Agony", Zone::Hand);
+            let before = g.state.players[p.index()].library.len();
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            act(&mut g, Action::PayCosts { payment });
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].library.len(), before - exiled);
+            if exiled > 0 {
+                assert_eq!(g.object_view(card).zone, Zone::Exile);
+                assert!(g.can_play_exiled(p, card));
+                assert!(!g.can_play_exiled(p.other(), card));
+                g.finish_cleanup();
+                assert!(g.can_play_exiled(p, card));
+                g.finish_cleanup();
+                assert!(g.can_play_exiled(p, card));
+                g.state.players[p.index()].mana = [8; 6];
+                begin_paradigm_main(&mut g, p, Step::Main1);
+                act(&mut g, Action::AnnounceExile { card });
+                pay(&mut g);
+                settle(&mut g);
+                assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+                g.finish_cleanup();
+                assert!(g.state.exile_permissions.is_empty());
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_joke_global_prevention_target_optional_fizzle_and_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        for target_joke in [false, true] {
+            let mut g = scenario(p);
+            put(&mut g, p.other(), "Crystal Barricade", Zone::Battlefield);
+            let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let joke = put(&mut g, p, "Impractical Joke", Zone::Hand);
+            cast(&mut g, joke, target_joke.then_some(Target::Card(target)));
+            settle(&mut g);
+            assert!(g.observe(p).damage_prevention_prohibited);
+            assert!(g.observe(p.other()).damage_prevention_prohibited);
+            if !target_joke {
+                let shock = put(&mut g, p, "Shock", Zone::Hand);
+                cast(&mut g, shock, Some(Target::Card(target)));
+                settle(&mut g);
+                assert_eq!(g.object_view(target).damage, 2);
+            } else {
+                assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+            }
+            g.finish_cleanup();
+            assert!(!g.observe(p).damage_prevention_prohibited);
+        }
+        let mut g = scenario(p);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let joke = put(&mut g, p, "Impractical Joke", Zone::Hand);
+        cast(&mut g, joke, Some(Target::Card(target)));
+        act(&mut g, Action::Pass);
+        let bounce = put(&mut g, p.other(), "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, Some(Target::Card(target)));
+        settle(&mut g);
+        assert!(!g.observe(p).damage_prevention_prohibited);
+    }
+}
+
+fn announce_steal(g: &mut Game, spell: CardId, mode: u16, targets: &[Target]) {
+    act(g, Action::AnnounceCast { card: spell });
+    act(g, Action::ChooseMode { mode });
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    pay(g);
+}
+
+#[test]
+fn sos_steal_private_any_number_actual_discard_and_replacement_entry_draw() {
+    for p in [Player::P0, Player::P1] {
+        for (target_self, selected) in [(false, 0), (false, 2), (true, 2)] {
+            let mut g = scenario(p);
+            let recipient = if target_self { p } else { p.other() };
+            let shock = put(&mut g, recipient, "Shock", Zone::Hand);
+            let baloth = put(&mut g, recipient, "Wilt-Leaf Liege", Zone::Hand);
+            let foreign = put(&mut g, recipient.other(), "Forest", Zone::Hand);
+            let spell = put(&mut g, p, "Steal the Show", Zone::Hand);
+            let library = g.state.players[recipient.index()].library.len();
+            announce_steal(&mut g, spell, 0, &[Target::Player(recipient)]);
+            until_choice(&mut g);
+            assert_eq!(g.actor(), Some(recipient));
+            assert!(g.observe(recipient.other()).effect_choice.is_none());
+            reject(&mut g, Action::Discard { card: foreign });
+            if selected > 0 {
+                big_helpers::checked(&mut g, Action::Discard { card: shock });
+                reject(&mut g, Action::Discard { card: shock });
+                act(&mut g, Action::Discard { card: baloth });
+                assert!(g.observe(recipient.other()).effect_choice.is_none());
+            }
+            act(&mut g, Action::DeclineEffectPayment);
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[recipient.index()].library.len(),
+                library - selected
+            );
+            assert_eq!(
+                g.state.players[recipient.index()].cards_discarded_this_turn,
+                selected as u64
+            );
+            assert_eq!(
+                g.object_view(shock).zone,
+                if selected == 0 {
+                    Zone::Hand
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            assert_eq!(
+                g.object_view(baloth).zone,
+                if selected == 0 {
+                    Zone::Hand
+                } else if target_self {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(g.state.players[recipient.index()].life, 20);
+        }
+    }
+}
+
+#[test]
+fn sos_steal_both_uses_newly_discarded_instants_and_zero_hand_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let discarded = put(&mut g, p, "Shock", Zone::Hand);
+        put(&mut g, p, "Murder", Zone::Graveyard);
+        put(&mut g, p.other(), "Shock", Zone::Graveyard);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Steal the Show", Zone::Hand);
+        announce_steal(&mut g, spell, 2, &[Target::Player(p), Target::Card(target)]);
+        until_choice(&mut g);
+        act(&mut g, Action::Discard { card: discarded });
+        act(&mut g, Action::DeclineEffectPayment);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+
+        let mut g = scenario(p);
+        let spell = put(&mut g, p, "Steal the Show", Zone::Hand);
+        announce_steal(&mut g, spell, 0, &[Target::Player(p.other())]);
+        until_choice(&mut g);
+        assert!(g.observe(p.other()).effect_choice.is_some());
+        assert!(g.observe(p).effect_choice.is_none());
+        act(&mut g, Action::DeclineEffectPayment);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].cards_drawn_this_turn, 0);
+
+        let mut g = scenario(p);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Steal the Show", Zone::Hand);
+        put(&mut g, p, "Murder", Zone::Graveyard);
+        announce_steal(&mut g, spell, 1, &[Target::Card(target)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).damage, 1);
+    }
+}

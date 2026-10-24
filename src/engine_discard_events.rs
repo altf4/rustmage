@@ -11,6 +11,7 @@ pub struct DiscardTriggerView {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum DiscardAfter {
     LoseLife(Player, i128),
+    DrawActual { players: [bool; 2], bonus: u16 },
     ConniveCounters(ObjectRef, u64),
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -49,7 +50,17 @@ impl Game {
         cycled: Option<ObjectRef>,
         cause: Option<Player>,
     ) {
+        self.discard_batch_with_after(cards, cycled, cause, None);
+    }
+    pub(super) fn discard_batch_with_after(
+        &mut self,
+        cards: &[CardId],
+        cycled: Option<ObjectRef>,
+        cause: Option<Player>,
+        after: Option<DiscardAfter>,
+    ) {
         if cards.is_empty() {
+            self.finish_discard_after(after, [0; 2]);
             return;
         }
         assert!(
@@ -67,7 +78,7 @@ impl Game {
             sources,
             cycled,
             shuffles: Vec::new(),
-            after: None,
+            after,
         };
         let redirected_entry = cards.iter().any(|&id| {
             let o = &self.state.objects[id as usize];
@@ -219,7 +230,20 @@ impl Game {
                 }
             }
         }
+        self.finish_discard_after(after, counts);
+    }
+    fn finish_discard_after(&mut self, after: Option<DiscardAfter>, counts: [u32; 2]) {
         match after {
+            Some(DiscardAfter::DrawActual { players, bonus }) => {
+                for player in [self.state.active, self.state.active.other()] {
+                    if players[player.index()] {
+                        self.draw_many(
+                            player,
+                            u128::from(counts[player.index()]) + u128::from(bonus),
+                        );
+                    }
+                }
+            }
             Some(DiscardAfter::LoseLife(player, amount)) => self.lose_life(player, amount),
             Some(DiscardAfter::ConniveCounters(object, amount))
                 if self.on_battlefield(object.card) && self.object_ref(object.card) == object =>

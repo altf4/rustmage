@@ -3,10 +3,13 @@
   "catalogue_id": 2857,
   "oracle_id": "c2e2f21a-0338-44d7-96a5-5a277f0ec419",
   "facts_sha256": "c436276154b61a12533beede649ab8c937bfc1d03354d005c9def44a6c1b6859",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ac6a92b729917a03549f2503e93205d7394af35d25c2005d2360e01c2916df26"
   },
-  "physical_metadata_sha256": "2e3a1415552a50b90e8b5994d8ca1b0e13906319cb98aa3589fe463e2803c988"
+  "physical_metadata_sha256": "2e3a1415552a50b90e8b5994d8ca1b0e13906319cb98aa3589fe463e2803c988",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MoseoVeinsNewDean.java",
+  "java_sha256": "a710acd5316e35b76cf8d785c8a3146e83f9a4d6f64da8543d725d7f76f52ebb"
 }

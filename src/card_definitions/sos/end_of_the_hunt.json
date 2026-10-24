@@ -3,10 +3,13 @@
   "catalogue_id": 1329,
   "oracle_id": "74b8182e-54be-444a-97b1-84fc5fd3c290",
   "facts_sha256": "f58ded261663f297157d4194a9ec0894494de33a887a95cd09b8163f72838f01",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e582abb0b936e4bd95edd3df8729285273879ea33e4cd62161738f5ceb9ff374"
   },
-  "physical_metadata_sha256": "783c7c9c758cfae4d441e6bb56e1639642fdd64edb4877fed5a98b6e671fdc69"
+  "physical_metadata_sha256": "783c7c9c758cfae4d441e6bb56e1639642fdd64edb4877fed5a98b6e671fdc69",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EndOfTheHunt.java",
+  "java_sha256": "a313a30ba0dca29feb90019f93e101079dea35a3605d89702b328c8adf449206"
 }

@@ -2436,6 +2436,21 @@ impl Game {
                 }
                 Instruction::DamageForExcess(amount) => self.damage_for_excess(&item, amount),
                 Instruction::CreateExcessTokens(token) => self.create_excess_tokens(&item, token),
+                Instruction::ExileExcessPlay { next_turn } => {
+                    self.exile_excess_play(&item, next_turn)
+                }
+                Instruction::DiscardAnyDraw {
+                    players,
+                    bonus,
+                    required_all,
+                } => {
+                    if self.start_discard_any_draw(&item, players, bonus, required_all) {
+                        return;
+                    }
+                }
+                Instruction::DamageCannotBePreventedThisTurn => {
+                    self.state.damage_prevention_prohibited = true;
+                }
                 Instruction::AdditionalCombat => self.add_combat(),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::ActivationX => (),

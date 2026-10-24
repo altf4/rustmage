@@ -1502,6 +1502,7 @@ struct State {
     #[allow(clippy::box_collection)]
     temporary_controls: Option<Box<Vec<TemporaryControlView>>>,
     casting_prohibited: bool,
+    damage_prevention_prohibited: bool,
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
     #[allow(clippy::box_collection)]
@@ -1893,6 +1894,7 @@ pub struct Observation {
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
+    pub damage_prevention_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
     pub suspected: Vec<ObjectRef>,
@@ -2123,6 +2125,7 @@ impl Game {
                 controls: None,
                 temporary_controls: None,
                 casting_prohibited: false,
+                damage_prevention_prohibited: false,
                 replacements: None,
                 objects: objects.into(),
                 named_counters: None,
@@ -2792,6 +2795,7 @@ impl Game {
                             EffectChoiceKind::LandCards { .. }
                             | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
                             EffectChoiceKind::Sacrifice
+                            | EffectChoiceKind::ExileGreatestManaValue
                             | EffectChoiceKind::ExileGraveyard
                             | EffectChoiceKind::TapPermanents(_) => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
@@ -5477,6 +5481,7 @@ impl Game {
             rules.additional_combats = 0;
         }
         self.state.casting_prohibited = false;
+        self.state.damage_prevention_prohibited = false;
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
         }
@@ -5582,6 +5587,7 @@ impl Game {
         // Avoid allocating on the ordinary, unprevented damage path.
         let prevented = |event: &DamageEvent| {
             event.preventable
+                && !self.state.damage_prevention_prohibited
                 && ((event.combat
                     && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
                         || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO))))
@@ -5840,6 +5846,7 @@ impl Game {
                     .collect()
             }),
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
+            damage_prevention_prohibited: s.damage_prevention_prohibited,
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
             zone_reveals: self.zone_reveals(),

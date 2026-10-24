@@ -205,6 +205,7 @@ impl TargetRule {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetPredicate {
     OwnedByController,
+    ManaValueAtMostLifeGained,
     OtherThanSource,
     Blocking,
     Nontoken,
@@ -582,6 +583,7 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    ExileGreatestManaValue,
     ExileGraveyard,
     SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
@@ -925,6 +927,15 @@ pub(crate) enum Instruction {
     },
     DamageForExcess(AmountValue),
     CreateExcessTokens(Card),
+    ExileExcessPlay {
+        next_turn: bool,
+    },
+    DamageCannotBePreventedThisTurn,
+    DiscardAnyDraw {
+        players: PlayerSet,
+        bonus: u16,
+        required_all: bool,
+    },
     AdditionalCombat,
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.

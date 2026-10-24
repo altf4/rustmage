@@ -1,7 +1,14 @@
 //! Simultaneous public sacrifices and private exact resolution-cost payments.
 use super::*;
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct DiscardDrawChoice {
+    players: [bool; 2],
+    finished: [bool; 2],
+    bonus: u16,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EffectChoice {
+    discard_draw: Option<DiscardDrawChoice>,
     pub kind: EffectChoiceKind,
     pub filter: SacrificeFilter,
     pub amount: u16,
@@ -9,7 +16,7 @@ pub(super) struct EffectChoice {
     pub required: [u16; 2],
     pub selected: [Vec<ObjectRef>; 2],
     pub skip_to: Option<usize>,
-    pub greatest_power: [Option<i128>; 2],
+    pub greatest_value: [Option<i128>; 2],
     pub discard_mana_value_life: Option<Player>,
     pub hand_defender: Option<CombatDefender>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
@@ -87,9 +94,14 @@ impl Game {
                     _ => true,
                 };
         }
-        if choice.greatest_power[player.index()]
-            .is_some_and(|max| self.object_view(object.card).power != max)
-        {
+        if choice.greatest_value[player.index()].is_some_and(|max| {
+            let value = if choice.kind == EffectChoiceKind::ExileGreatestManaValue {
+                i128::from(self.copiable_recipe(object).definition.fixed_mana_value())
+            } else {
+                self.object_view(object.card).power
+            };
+            value != max
+        }) {
             return false;
         }
         let f = choice.filter;
@@ -104,6 +116,58 @@ impl Game {
                 .is_none_or(|subtype| self.has_subtype(object.card, subtype))
     }
 
+    pub(super) fn start_discard_any_draw(
+        &mut self,
+        item: &SpellView,
+        players: PlayerSet,
+        bonus: u16,
+        required_all: bool,
+    ) -> bool {
+        let mut participants = [false; 2];
+        for player in self.program_players(players, item) {
+            participants[player.index()] = true;
+        }
+        if required_all {
+            let ids: Vec<_> = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, o)| o.zone == Zone::Hand && participants[o.owner.index()])
+                .map(|(id, _)| id as CardId)
+                .collect();
+            self.discard_batch_with_after(
+                &ids,
+                None,
+                Some(item.controller),
+                Some(discard_events::DiscardAfter::DrawActual {
+                    players: participants,
+                    bonus,
+                }),
+            );
+            return false;
+        }
+        let pc = self.state.resolving.as_ref().unwrap().pc;
+        self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
+            discard_draw: Some(DiscardDrawChoice {
+                players: participants,
+                finished: [false; 2],
+                bonus,
+            }),
+            kind: EffectChoiceKind::Discard,
+            filter: evidence::cost(0).filter,
+            amount: 0,
+            source: item.object,
+            required: [0; 2],
+            selected: std::array::from_fn(|_| Vec::new()),
+            skip_to: Some(pc),
+            greatest_value: [None; 2],
+            discard_mana_value_life: None,
+            hand_defender: None,
+            entry_life_bonus: None,
+        }));
+        self.advance_effect_choice()
+    }
     pub(super) fn start_greatest_power_choice(&mut self, item: &SpellView) -> bool {
         let mut filter = evidence::cost(0).filter;
         filter.kinds = 1;
@@ -281,6 +345,7 @@ impl Game {
     ) -> bool {
         let pc = self.state.resolving.as_ref().unwrap().pc;
         let mut choice = EffectChoice {
+            discard_draw: None,
             kind,
             filter,
             amount,
@@ -290,15 +355,15 @@ impl Game {
             source: item.object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
-            greatest_power: [None; 2],
+            greatest_value: [None; 2],
             skip_to: optional_skip.map(|skip| pc.checked_add(skip).expect("program offset")),
         };
         if let Some(skip_to) = choice.skip_to {
             assert!(skip_to <= self.state.resolving.as_ref().unwrap().program.len());
         }
         for player in self.program_players(players, item) {
-            if greatest {
-                choice.greatest_power[player.index()] = self
+            if greatest || kind == EffectChoiceKind::ExileGreatestManaValue {
+                choice.greatest_value[player.index()] = self
                     .state
                     .objects
                     .iter()
@@ -306,9 +371,23 @@ impl Game {
                     .filter(|(id, o)| {
                         o.zone == Zone::Battlefield
                             && o.controller == player
-                            && self.is_creature(*id as CardId)
+                            && if kind == EffectChoiceKind::ExileGreatestManaValue {
+                                self.current_kinds(*id as CardId) & 65 != 0
+                            } else {
+                                self.is_creature(*id as CardId)
+                            }
                     })
-                    .map(|(id, _)| self.object_view(id as CardId).power)
+                    .map(|(id, _)| {
+                        if kind == EffectChoiceKind::ExileGreatestManaValue {
+                            i128::from(
+                                self.copiable_recipe(self.object_ref(id as CardId))
+                                    .definition
+                                    .fixed_mana_value(),
+                            )
+                        } else {
+                            self.object_view(id as CardId).power
+                        }
+                    })
                     .max();
             }
             let available = self
@@ -359,6 +438,14 @@ impl Game {
             .choice
             .as_ref()
             .unwrap();
+        if let Some(draw) = &choice.discard_draw {
+            for player in [self.state.active, self.state.active.other()] {
+                if draw.players[player.index()] && !draw.finished[player.index()] {
+                    self.state.pending = Pending::EffectChoice { player };
+                    return true;
+                }
+            }
+        }
         if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if choice.selected[player.index()].len() >= usize::from(maximum) {
@@ -462,15 +549,20 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if choice.kind == EffectChoiceKind::ExileGraveyard
-            || matches!(choice.kind, EffectChoiceKind::TapPermanents(_))
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileGreatestManaValue
+        ) || matches!(choice.kind, EffectChoiceKind::TapPermanents(_))
         {
             let ids: Vec<_> = choice
                 .selected
                 .iter()
                 .flat_map(|rows| rows.iter().map(|r| r.card))
                 .collect();
-            if choice.kind == EffectChoiceKind::ExileGraveyard {
+            if matches!(
+                choice.kind,
+                EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileGreatestManaValue
+            ) {
                 let events = self.move_objects_raw(&ids, Zone::Exile);
                 self.finish_zone_events(&events, &[]);
             } else {
@@ -486,7 +578,13 @@ impl Game {
                 .map(|&id| i128::from(self.state.objects[id as usize].card.fixed_mana_value()))
                 .sum();
             let cause = self.state.resolving.as_ref().unwrap().item.controller;
-            self.discard_batch_caused(&ids, None, Some(cause));
+            let after = choice
+                .discard_draw
+                .map(|draw| discard_events::DiscardAfter::DrawActual {
+                    players: draw.players,
+                    bonus: draw.bonus,
+                });
+            self.discard_batch_with_after(&ids, None, Some(cause), after);
             if let Some(player) = choice.discard_mana_value_life {
                 if let Some(context) = self
                     .state
@@ -558,6 +656,24 @@ impl Game {
     }
 
     pub(super) fn decline_effect_payment(&mut self) {
+        let player = self.actor().expect("effect choice actor");
+        if let Some(draw) = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .as_mut()
+            .unwrap()
+            .discard_draw
+            .as_mut()
+        {
+            draw.finished[player.index()] = true;
+            if !self.advance_effect_choice() {
+                self.run_program();
+            }
+            return;
+        }
         let choice = self
             .state
             .resolving
