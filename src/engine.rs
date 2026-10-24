@@ -3028,6 +3028,13 @@ impl Game {
                             | EffectChoiceKind::TapPermanents(_)
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
+                            EffectChoiceKind::SacrificeOrDiscard { .. } => {
+                                if s.objects[index].zone == Zone::Hand {
+                                    Action::Discard { card: object.card }
+                                } else {
+                                    Action::Sacrifice { object }
+                                }
+                            }
                             _ => unreachable!("forage has its own choice"),
                         };
                         if emit(action) {
@@ -7460,3 +7467,7 @@ mod msh_coulson_tests;
 #[cfg(test)]
 #[path = "engine_msh_counter_batch_tests.rs"]
 mod msh_counter_batch_tests;
+
+#[cfg(test)]
+#[path = "engine_resolution_alternative_cost_tests.rs"]
+mod resolution_alternative_cost_tests;

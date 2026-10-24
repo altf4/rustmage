@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "da9a20dc736a23424ed01e8dc9a94eccf34cac7f6361a00a7e9c79cd4c161bd7",
+  "catalogue_version": "471d3ca645a1f1757506570c185b6c2f49d83eb3f6306e2fd152e214e6ca7c45",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2457,
-  "implemented_total": 2463,
+  "implemented_standard_cards": 2458,
+  "implemented_total": 2464,
   "token_definitions": 116,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 152,
-      "gated": 121
+      "complete": 153,
+      "gated": 120
     },
     "one": {
       "total": 1,
@@ -39533,8 +39533,8 @@
     {
       "name": "Vision of Love",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/vision_of_love.rs",
       "set": "msh"
     },
