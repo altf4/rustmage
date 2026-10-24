@@ -5397,7 +5397,8 @@
     0,
     16,
     0,
-    9
+    9,
+    3
   ],
   "aliases": [
     [
@@ -7979,6 +7980,10 @@
     [
       "Black Mage's Rod",
       430
+    ],
+    [
+      "Black Panther, Hope Enduring",
+      5392
     ],
     [
       "Black Panther, Vanguard",
@@ -16011,6 +16016,10 @@
     [
       "Kindred Judgment",
       2360
+    ],
+    [
+      "King T'Challa",
+      2361
     ],
     [
       "King T'Challa // Black Panther, Hope Enduring",
@@ -28745,7 +28754,8 @@
     "MshLeviathanToken": 5387,
     "MshRobotVillainToken": 5388,
     "MshTigerGodToken": 5389,
-    "MshPhotonLivingLight": 5391
+    "MshPhotonLivingLight": 5391,
+    "MshBlackPantherHopeEnduring": 5392
   },
   "helper_interface": [
     [
@@ -96192,7 +96202,25 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "King T'Challa",
+        "mana_cost": "{1}{W}{U}",
+        "type_line": "Legendary Creature — Human Noble Hero",
+        "colored": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Flash"
+        ]
+      },
+      "back_face": 5392
     },
     {
       "index": 2362,
@@ -182428,6 +182456,37 @@
       ],
       "generic": 2,
       "face_parent": 2832
+    },
+    {
+      "index": 5392,
+      "module": "card_5392",
+      "path": "msh/black_panther_hope_enduring.rs",
+      "set": "msh",
+      "category": "back_face",
+      "name": "Black Panther, Hope Enduring",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "{4}{W}{U}",
+      "type_line": "Legendary Creature — Human Warrior Hero",
+      "oracle_keywords": [
+        "Flash",
+        "Double strike"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4,
+      "face_parent": 2361
     }
   ]
 }
