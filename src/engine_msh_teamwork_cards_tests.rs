@@ -804,3 +804,100 @@ fn msh_teamwork_nay_taxes_opposing_spell_controller_and_invalid_spell_fizzles() 
     assert_eq!(g.state.players[p.other().index()].life, 20);
     assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
 }
+
+#[test]
+fn msh_teamwork_power_up_and_plan_crossing_share_paid_cast_and_resolution() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let plan = put(&mut g, p, "Death to Our Enemies", Zone::Hand);
+        super::big_helpers::cast(&mut g, plan, None, &[]);
+        settle(&mut g);
+        for _ in 0..3 {
+            let shock = put(&mut g, p, "Shock", Zone::Hand);
+            super::big_helpers::cast(&mut g, shock, None, &[Target::Player(p.other())]);
+            settle(&mut g);
+        }
+        assert_eq!(g.counter_count(plan, CounterKind::Plan), 3);
+        let aerial = put(&mut g, p, "Aerial Doombot", Zone::Hand);
+        super::big_helpers::cast(&mut g, aerial, None, &[]);
+        settle(&mut g);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: aerial,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        assert_eq!(g.announcement_payment_request(p).unwrap().generic, 5);
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        settle(&mut g);
+        assert_eq!(g.object_view(aerial).power, 4);
+        assert_eq!(g.counter_count(plan, CounterKind::Plan), 3);
+        let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let spell = put(&mut g, p, "Cruel Alliance", Zone::Hand);
+        cast_team(&mut g, spell, true, None, &[Target::Card(enemy)], &[aerial]);
+        for _ in 0..30 {
+            if g.state.announcing.as_ref().is_some_and(|a| {
+                a.item.card == plan && a.item.kind == (StackKind::TriggeredAbility { ability: 2 })
+            }) {
+                break;
+            }
+            let action = if g.state.pending == Pending::Priority {
+                Action::Pass
+            } else {
+                g.legal_actions()
+                    .into_iter()
+                    .find(|a| !matches!(a, Action::Concede))
+                    .unwrap()
+            };
+            checked(&mut g, action);
+        }
+        assert!(
+            g.state
+                .announcing
+                .as_ref()
+                .is_some_and(|a| a.item.card == plan
+                    && a.item.kind == (StackKind::TriggeredAbility { ability: 2 }))
+        );
+        assert_eq!(g.object_view(plan).zone, Zone::Graveyard);
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .find(|s| s.card == spell)
+                .unwrap()
+                .cast
+                .unwrap()
+                .teamwork,
+            Some(true)
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        checked(&mut g, Action::FinishTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(enemy).zone, Zone::Exile);
+        assert_eq!(g.state.players[p.index()].life, 23);
+        assert_eq!(g.state.players[p.other().index()].life, 7);
+        assert!(g.object_view(aerial).tapped);
+        assert_eq!(g.object_view(aerial).power_up_uses[0].count, 1);
+        let treasure = Card::from_name("@token/b60f6cd3b44b22bd289fe4e2").unwrap();
+        let tokens: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Battlefield && o.card == treasure && o.controller == p)
+            .collect();
+        assert_eq!(tokens.len(), 4);
+        assert!(tokens.iter().all(|o| o.tapped));
+    }
+}

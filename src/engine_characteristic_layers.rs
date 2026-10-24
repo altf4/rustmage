@@ -11,12 +11,22 @@ pub struct AnimationView {
     pub object: ObjectRef,
     pub timestamp: u64,
     pub artifact: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub preserve_card_types: bool,
     pub colors: Option<u8>,
     pub creature_types: Option<&'static [&'static str]>,
     pub all_creature_types: bool,
     pub base: Option<(i128, i128)>,
     pub keywords: Keywords,
     pub expires_turn: Option<u32>,
+}
+fn is_false(value: &bool) -> bool {
+    !value
+}
+#[derive(Clone, Copy)]
+pub(super) enum AnimationTypeMode {
+    AddCreature,
+    PreserveCardTypes,
 }
 fn aura_effects<W: CharacteristicWorld + ?Sized>(
     world: &W,
@@ -122,7 +132,7 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
             )
         })
         .collect();
-    for row in animations(world, id) {
+    for row in animations(world, id).filter(|row| !row.preserve_card_types) {
         changes.push((row.timestamp, if row.artifact { 17 } else { 1 }, true));
     }
     if world
@@ -265,6 +275,10 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         })
         .collect();
     changes.extend(animations(world, id).filter_map(|row| {
+        // A subtype-only form cannot give creature types to a noncreature/nonkindred.
+        if row.preserve_card_types && world.kinds(id) & (1 | 128) == 0 {
+            return None;
+        }
         if row.all_creature_types {
             Some((row.timestamp, SubtypeChange::All))
         } else {
@@ -300,6 +314,14 @@ impl Game {
         self.grant_source_permanent_trigger(item, ability, timestamp);
     }
     pub(super) fn animate_source(&mut self, item: &SpellView, spec: AnimationSpec) {
+        self.change_source_form(item, spec, AnimationTypeMode::AddCreature);
+    }
+    pub(super) fn change_source_form(
+        &mut self,
+        item: &SpellView,
+        spec: AnimationSpec,
+        type_mode: AnimationTypeMode,
+    ) {
         if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
             return;
         }
@@ -308,6 +330,7 @@ impl Game {
             object: item.object,
             timestamp,
             artifact: spec.artifact,
+            preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),
             colors: None,
             creature_types: match spec.creature_types {
                 AnimationCreatureTypes::Named(t) => Some(t),
@@ -341,6 +364,7 @@ impl Game {
                 object: self.object_ref(id),
                 timestamp: self.next_role_timestamp(),
                 artifact: false,
+                preserve_card_types: false,
                 colors: Some(colors),
                 creature_types: Some(types),
                 all_creature_types: false,

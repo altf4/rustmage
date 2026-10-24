@@ -596,6 +596,14 @@ impl Game {
         changes: Vec<(ObjectRef, Counters)>,
         mode: ResumeMode,
     ) {
+        self.effect_counters_by(changes, None, mode);
+    }
+    fn effect_counters_by(
+        &mut self,
+        changes: Vec<(ObjectRef, Counters)>,
+        placed_by: Option<Player>,
+        mode: ResumeMode,
+    ) {
         let placements = changes
             .into_iter()
             .filter_map(|(object, amount)| {
@@ -604,11 +612,12 @@ impl Game {
                 }
                 let o = &self.state.objects[object.card as usize];
                 Some(CounterPlacement {
-                    placed_by: self
-                        .state
-                        .resolving
-                        .as_ref()
-                        .map_or(o.controller, |r| r.item.controller),
+                    placed_by: placed_by.unwrap_or_else(|| {
+                        self.state
+                            .resolving
+                            .as_ref()
+                            .map_or(o.controller, |r| r.item.controller)
+                    }),
                     object,
                     card: o.card,
                     owner: o.owner,
@@ -634,6 +643,26 @@ impl Game {
         if amount == 0 {
             return;
         }
+        let placed_by = self
+            .state
+            .resolving
+            .as_ref()
+            .map_or(self.state.objects[id as usize].controller, |r| {
+                r.item.controller
+            });
+        self.effect_counter_by(id, kind, amount, placed_by, mode);
+    }
+    pub(super) fn effect_counter_by(
+        &mut self,
+        id: CardId,
+        kind: CounterKind,
+        amount: u64,
+        placed_by: Player,
+        mode: ResumeMode,
+    ) {
+        if amount == 0 {
+            return;
+        }
         if self.state.replacements.is_none()
             && !self.state.static_sources.iter().any(|&id| {
                 self.state.objects[id as usize]
@@ -645,13 +674,6 @@ impl Game {
         {
             let before = self.state.objects[id as usize].counters.lore;
             self.add_counter(id, kind, amount);
-            let placed_by = self
-                .state
-                .resolving
-                .as_ref()
-                .map_or(self.state.objects[id as usize].controller, |r| {
-                    r.item.controller
-                });
             self.self_counters_added(self.object_ref(id), kind, amount, placed_by);
             if kind == CounterKind::Lore {
                 self.lore_counters_added(self.object_ref(id), before);
@@ -660,7 +682,7 @@ impl Game {
         }
         let mut counters = Counters::default();
         counters.add(kind, amount);
-        self.effect_counters(vec![(self.object_ref(id), counters)], mode);
+        self.effect_counters_by(vec![(self.object_ref(id), counters)], Some(placed_by), mode);
     }
     pub(super) fn defer_empty_explore(&mut self, explorer: ExplorerView, counter_added: bool) {
         self.state

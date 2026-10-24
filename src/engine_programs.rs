@@ -1105,6 +1105,9 @@ impl Game {
                                 matches!(
                                     instruction,
                                     Instruction::GainLifeScaled(_, AmountValue::SpellColors)
+                                        | Instruction::DamageScaled(
+                                            AmountValue::CastSpellManaValue
+                                        )
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
@@ -2825,6 +2828,11 @@ impl Game {
                     }
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::ChangeSourceCreatureForm(spec) => self.change_source_form(
+                    &item,
+                    spec,
+                    characteristic_layers::AnimationTypeMode::PreserveCardTypes,
+                ),
                 Instruction::SetCreatureForm {
                     types,
                     colors,

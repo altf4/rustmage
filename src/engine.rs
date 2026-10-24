@@ -7338,3 +7338,7 @@ mod power_up_tests;
 #[cfg(test)]
 #[path = "engine_plan_threshold_tests.rs"]
 mod plan_threshold_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_existing_tests.rs"]
+mod msh_existing_tests;
