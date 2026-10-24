@@ -677,7 +677,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "1cba658877741a8e",
-    "observations": "472581c02d6d2868"
+    "observations": "c3052a77f3a73f2e"
   },
   "Anthem of Champions": {
     "root": "main",
@@ -2461,7 +2461,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "9d37fd6925470aea",
-    "observations": "9f0b1cc07fc7900d"
+    "observations": "93b4a9d329eb1b01"
   },
   "Call the Mountain Chocobo": {
     "root": "main",
@@ -8213,7 +8213,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
-    "observations": "a12f23baa5838a8b"
+    "observations": "e646b7665c86e667"
   },
   "Humbling Elder": {
     "root": "main",
@@ -9005,7 +9005,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "77fe8ec276f5ddde",
-    "observations": "f588860331ff46c6"
+    "observations": "c56cf53332d842d0"
   },
   "Killian's Confidence": {
     "root": "main",
@@ -9021,7 +9021,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "13164334f35897ee",
-    "observations": "04ca2def0de4e532"
+    "observations": "c0299a94b1825aa2"
   },
   "Kin-Tree Nurturer": {
     "root": "main",
@@ -10934,6 +10934,14 @@
     "zone": "Battlefield",
     "journal": "49c9a40ac8eec50b",
     "observations": "9372c58b713014ce"
+  },
+  "Monica Rambeau // Photon, Living Light": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3ad6d4893695dc9c",
+    "observations": "206d6ef467204cc2"
   },
   "Monk's Fist": {
     "root": "main",
@@ -13493,7 +13501,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "d96ad4ca883f316e",
-    "observations": "8eefe3543ce9a1b6"
+    "observations": "89ec151d19e48fe4"
   },
   "Rictus Robber": {
     "root": "main",
