@@ -48158,8 +48158,332 @@ pub(super) mod card_5350 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/token_sos_spirit.rs");
 }
+pub(super) mod card_5351 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_abigale_poet_laureate_heroic_stanza.rs");
+}
+pub(super) mod card_5352 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_adventurous_eater_have_a_bite.rs");
+}
+pub(super) mod card_5353 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_blazing_firesinger_seething_song.rs");
+}
+pub(super) mod card_5354 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_campus_composer_aqueous_aria.rs");
+}
+pub(super) mod card_5355 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_cheerful_osteomancer_raise_dead.rs");
+}
+pub(super) mod card_5356 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_elite_interceptor_rejoinder.rs");
+}
+pub(super) mod card_5357 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_emeritus_of_abundance_regrowth.rs");
+}
+pub(super) mod card_5358 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_emeritus_of_conflict_lightning_bolt.rs");
+}
+pub(super) mod card_5359 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_emeritus_of_ideation_ancestral_recall.rs");
+}
+pub(super) mod card_5360 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_emeritus_of_truce_swords_to_plowshares.rs");
+}
+pub(super) mod card_5361 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_emeritus_of_woe_demonic_tutor.rs");
+}
+pub(super) mod card_5362 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_encouraging_aviator_jump.rs");
+}
+pub(super) mod card_5363 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_goblin_glasswright_craft_with_pride.rs");
+}
+pub(super) mod card_5364 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_grave_researcher_reanimate.rs");
+}
+pub(super) mod card_5365 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_harmonized_trio_brainstorm.rs");
+}
+pub(super) mod card_5366 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_honorbound_page_forum_s_favor.rs");
+}
+pub(super) mod card_5367 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_infirmary_healer_stream_of_life.rs");
+}
+pub(super) mod card_5368 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_jadzi_steward_of_fate_oracle_s_gift.rs");
+}
+pub(super) mod card_5369 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_joined_researchers_secret_rendezvous.rs");
+}
+pub(super) mod card_5370 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_kirol_history_buff_pack_a_punch.rs");
+}
+pub(super) mod card_5371 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_landscape_painter_vibrant_idea.rs");
+}
+pub(super) mod card_5372 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_leech_collector_bloodletting.rs");
+}
+pub(super) mod card_5373 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_lluwen_exchange_student_pest_friend.rs");
+}
+pub(super) mod card_5374 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_maelstrom_artisan_rocket_volley.rs");
+}
+pub(super) mod card_5375 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_pigment_wrangler_striking_palette.rs");
+}
+pub(super) mod card_5376 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_quill_blade_laureate_twofold_intent.rs");
+}
+pub(super) mod card_5377 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_sanar_unfinished_genius_wild_idea.rs");
+}
+pub(super) mod card_5378 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_scathing_shadelock_venomous_words.rs");
+}
+pub(super) mod card_5379 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_scheming_silvertongue_sign_in_blood.rs");
+}
+pub(super) mod card_5380 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_skycoach_conductor_all_aboard.rs");
+}
+pub(super) mod card_5381 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_spellbook_seeker_careful_study.rs");
+}
+pub(super) mod card_5382 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_spiritcall_enthusiast_scrollboost.rs");
+}
+pub(super) mod card_5383 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_strife_scholar_awaken_the_ages.rs");
+}
+pub(super) mod card_5384 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_studious_first_year_rampant_growth.rs");
+}
+pub(super) mod card_5385 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_tam_observant_sequencer_deep_sight.rs");
+}
+pub(super) mod card_5386 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/sos/prepare_vastlands_scavenger_bind_to_life.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5351] = [
+pub(super) static RULES: [&CardRules; 5387] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -53511,6 +53835,42 @@ pub(super) static RULES: [&CardRules; 5351] = [
     &card_5348::RULES,
     &card_5349::RULES,
     &card_5350::RULES,
+    &card_5351::RULES,
+    &card_5352::RULES,
+    &card_5353::RULES,
+    &card_5354::RULES,
+    &card_5355::RULES,
+    &card_5356::RULES,
+    &card_5357::RULES,
+    &card_5358::RULES,
+    &card_5359::RULES,
+    &card_5360::RULES,
+    &card_5361::RULES,
+    &card_5362::RULES,
+    &card_5363::RULES,
+    &card_5364::RULES,
+    &card_5365::RULES,
+    &card_5366::RULES,
+    &card_5367::RULES,
+    &card_5368::RULES,
+    &card_5369::RULES,
+    &card_5370::RULES,
+    &card_5371::RULES,
+    &card_5372::RULES,
+    &card_5373::RULES,
+    &card_5374::RULES,
+    &card_5375::RULES,
+    &card_5376::RULES,
+    &card_5377::RULES,
+    &card_5378::RULES,
+    &card_5379::RULES,
+    &card_5380::RULES,
+    &card_5381::RULES,
+    &card_5382::RULES,
+    &card_5383::RULES,
+    &card_5384::RULES,
+    &card_5385::RULES,
+    &card_5386::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

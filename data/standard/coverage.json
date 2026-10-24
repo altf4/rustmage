@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "41b235e2ac5efe9eb92d3ec113437ca5269dbf7849f7a0f9c4275c0847e07476",
+  "catalogue_version": "cb426172db5431a23638b4a014b308e017cb6bf42e6114ddfc517839bd0d5407",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2237,
-  "implemented_total": 2243,
+  "implemented_standard_cards": 2247,
+  "implemented_total": 2253,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 120,
-      "gated": 144
+      "complete": 130,
+      "gated": 134
     },
     "spm": {
       "total": 134,
@@ -460,7 +460,7 @@
       "set": "ecl"
     },
     {
-      "name": "Abigale, Poet Laureate // Heroic Stanza",
+      "name": "Abigale, Poet Laureate",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -662,8 +662,8 @@
     {
       "name": "Additive Evolution",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/additive_evolution.rs",
       "set": "sos"
     },
@@ -724,7 +724,7 @@
       "set": "fdn"
     },
     {
-      "name": "Adventurous Eater // Have a Bite",
+      "name": "Adventurous Eater",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -3748,7 +3748,7 @@
       "set": "fra"
     },
     {
-      "name": "Blazing Firesinger // Seething Song",
+      "name": "Blazing Firesinger",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -5220,7 +5220,7 @@
       "set": "dft"
     },
     {
-      "name": "Campus Composer // Aqueous Aria",
+      "name": "Campus Composer",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -6060,7 +6060,7 @@
       "set": "woe"
     },
     {
-      "name": "Cheerful Osteomancer // Raise Dead",
+      "name": "Cheerful Osteomancer",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -6078,8 +6078,8 @@
     {
       "name": "Chelonian Tackle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/chelonian_tackle.rs",
       "set": "sos"
     },
@@ -10508,7 +10508,7 @@
       "set": "mkm"
     },
     {
-      "name": "Elite Interceptor // Rejoinder",
+      "name": "Elite Interceptor",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -10716,7 +10716,7 @@
       "set": "otj"
     },
     {
-      "name": "Emeritus of Abundance // Regrowth",
+      "name": "Emeritus of Abundance",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -10724,7 +10724,7 @@
       "set": "sos"
     },
     {
-      "name": "Emeritus of Conflict // Lightning Bolt",
+      "name": "Emeritus of Conflict",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -10732,7 +10732,7 @@
       "set": "sos"
     },
     {
-      "name": "Emeritus of Ideation // Ancestral Recall",
+      "name": "Emeritus of Ideation",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -10740,7 +10740,7 @@
       "set": "sos"
     },
     {
-      "name": "Emeritus of Truce // Swords to Plowshares",
+      "name": "Emeritus of Truce",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -10748,7 +10748,7 @@
       "set": "sos"
     },
     {
-      "name": "Emeritus of Woe // Demonic Tutor",
+      "name": "Emeritus of Woe",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -10766,8 +10766,8 @@
     {
       "name": "Emil, Vastlands Roamer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/emil_vastlands_roamer.rs",
       "set": "sos"
     },
@@ -10812,7 +10812,7 @@
       "set": "hob"
     },
     {
-      "name": "Encouraging Aviator // Jump",
+      "name": "Encouraging Aviator",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -14518,8 +14518,8 @@
     {
       "name": "Glorious Decay",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/glorious_decay.rs",
       "set": "sos"
     },
@@ -14628,7 +14628,7 @@
       "set": "fdn"
     },
     {
-      "name": "Goblin Glasswright // Craft with Pride",
+      "name": "Goblin Glasswright",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -15028,7 +15028,7 @@
       "set": "eoe"
     },
     {
-      "name": "Grave Researcher // Reanimate",
+      "name": "Grave Researcher",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -15812,7 +15812,7 @@
       "set": "ecl"
     },
     {
-      "name": "Harmonized Trio // Brainstorm",
+      "name": "Harmonized Trio",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -16732,7 +16732,7 @@
       "set": "eoe"
     },
     {
-      "name": "Honorbound Page // Forum's Favor",
+      "name": "Honorbound Page",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -17516,7 +17516,7 @@
       "set": "eoe"
     },
     {
-      "name": "Infirmary Healer // Stream of Life",
+      "name": "Infirmary Healer",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -18252,7 +18252,7 @@
       "set": "lci"
     },
     {
-      "name": "Jadzi, Steward of Fate // Oracle's Gift",
+      "name": "Jadzi, Steward of Fate",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -18484,7 +18484,7 @@
       "set": "lci"
     },
     {
-      "name": "Joined Researchers // Secret Rendezvous",
+      "name": "Joined Researchers",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -19164,7 +19164,7 @@
       "set": "ecl"
     },
     {
-      "name": "Kirol, History Buff // Pack a Punch",
+      "name": "Kirol, History Buff",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -19756,7 +19756,7 @@
       "set": "mkm"
     },
     {
-      "name": "Landscape Painter // Vibrant Idea",
+      "name": "Landscape Painter",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -19948,7 +19948,7 @@
       "set": "sos"
     },
     {
-      "name": "Leech Collector // Bloodletting",
+      "name": "Leech Collector",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -20428,7 +20428,7 @@
       "set": "spm"
     },
     {
-      "name": "Lluwen, Exchange Student // Pest Friend",
+      "name": "Lluwen, Exchange Student",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -21084,7 +21084,7 @@
       "set": "spm"
     },
     {
-      "name": "Maelstrom Artisan // Rocket Volley",
+      "name": "Maelstrom Artisan",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -24446,8 +24446,8 @@
     {
       "name": "Oracle's Restoration",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/oracle_s_restoration.rs",
       "set": "sos"
     },
@@ -25310,8 +25310,8 @@
     {
       "name": "Pestbrood Sloth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/pestbrood_sloth.rs",
       "set": "sos"
     },
@@ -25484,7 +25484,7 @@
       "set": "dsk"
     },
     {
-      "name": "Pigment Wrangler // Striking Palette",
+      "name": "Pigment Wrangler",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -25646,8 +25646,8 @@
     {
       "name": "Planar Engineering",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/planar_engineering.rs",
       "set": "sos"
     },
@@ -26732,7 +26732,7 @@
       "set": "msh"
     },
     {
-      "name": "Quill-Blade Laureate // Twofold Intent",
+      "name": "Quill-Blade Laureate",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -29572,7 +29572,7 @@
       "set": "ecl"
     },
     {
-      "name": "Sanar, Unfinished Genius // Wild Idea",
+      "name": "Sanar, Unfinished Genius",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -29932,7 +29932,7 @@
       "set": "spm"
     },
     {
-      "name": "Scathing Shadelock // Venomous Words",
+      "name": "Scathing Shadelock",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -29972,7 +29972,7 @@
       "set": "mkm"
     },
     {
-      "name": "Scheming Silvertongue // Sign in Blood",
+      "name": "Scheming Silvertongue",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -31396,7 +31396,7 @@
       "set": "dft"
     },
     {
-      "name": "Skycoach Conductor // All Aboard",
+      "name": "Skycoach Conductor",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -31742,8 +31742,8 @@
     {
       "name": "Snarl Song",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/snarl_song.rs",
       "set": "sos"
     },
@@ -32268,7 +32268,7 @@
       "set": "woe"
     },
     {
-      "name": "Spellbook Seeker // Careful Study",
+      "name": "Spellbook Seeker",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -32660,7 +32660,7 @@
       "set": "tla"
     },
     {
-      "name": "Spiritcall Enthusiast // Scrollboost",
+      "name": "Spiritcall Enthusiast",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -33700,7 +33700,7 @@
       "set": "sos"
     },
     {
-      "name": "Strife Scholar // Awaken the Ages",
+      "name": "Strife Scholar",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -33772,7 +33772,7 @@
       "set": "fin"
     },
     {
-      "name": "Studious First-Year // Rampant Growth",
+      "name": "Studious First-Year",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -34836,7 +34836,7 @@
       "set": "ecl"
     },
     {
-      "name": "Tam, Observant Sequencer // Deep Sight",
+      "name": "Tam, Observant Sequencer",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -37150,8 +37150,8 @@
     {
       "name": "Together as One",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/together_as_one.rs",
       "set": "sos"
     },
@@ -39012,7 +39012,7 @@
       "set": "fra"
     },
     {
-      "name": "Vastlands Scavenger // Bind to Life",
+      "name": "Vastlands Scavenger",
       "standard_legal": true,
       "implemented": false,
       "implementation": null,
@@ -40662,8 +40662,8 @@
     {
       "name": "Wild Hypothesis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/wild_hypothesis.rs",
       "set": "sos"
     },

@@ -1672,6 +1672,7 @@ impl ObjectView {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
     pub before: ObjectView,
@@ -4658,6 +4659,7 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        let graveyard_observers = if ids.iter().any(|&id| self.state.objects[id as usize].zone == Zone::Graveyard) { self.freeze_graveyard_observers() } else { None };
         if destination == Zone::Battlefield {
             let count = ids
                 .iter()
@@ -4706,7 +4708,9 @@ impl Game {
         let events = planned
             .into_iter()
             .map(|(before, plan, tapped, counters)| {
-                self.commit_planned_zone_move(before, plan, tapped, counters, None)
+                let mut event = self.commit_planned_zone_move(before, plan, tapped, counters, None);
+                event.graveyard_observers = graveyard_observers.clone();
+                event
             })
             .collect();
         self.refresh_controllers();
@@ -4850,6 +4854,7 @@ impl Game {
         counters: Counters,
         entry_controller: Option<Player>,
     ) -> ZoneChange {
+        let graveyard_observers = if before.zone == Zone::Graveyard { self.freeze_graveyard_observers() } else { None };
         let id = before.id;
         self.capture_mana_copy_source_departure(&before);
         if before.zone == Zone::Stack {
@@ -4869,6 +4874,7 @@ impl Game {
                 .capacity("object generation exhausted");
             self.state.free_tokens.push(id);
             return ZoneChange {
+                graveyard_observers: None,
                 was_cast: false,
                 gift: None,
                 after: self.object_ref(id),
@@ -4900,6 +4906,7 @@ impl Game {
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
+                graveyard_observers: None,
                 was_cast: false,
                 gift: None,
                 after: before.reference,
@@ -4917,6 +4924,7 @@ impl Game {
         if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
+                graveyard_observers: None,
                 was_cast: false,
                 gift: None,
                 after: before.reference,
@@ -5147,6 +5155,7 @@ impl Game {
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         ZoneChange {
+            graveyard_observers,
             was_cast: false,
             gift: None,
             before,
