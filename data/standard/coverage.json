@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "364ee9dc6461d3be84d6db8c2f8d7e24344ebb964f69be9b4a3f59ae8e83581d",
+  "catalogue_version": "808ab79c4120d761db34009d502fa43b7fe6bddaf816f1d0c306cc5260d5ef73",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2343,
-  "implemented_total": 2349,
+  "implemented_standard_cards": 2345,
+  "implemented_total": 2351,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 226,
-      "gated": 38
+      "complete": 228,
+      "gated": 36
     },
     "spm": {
       "total": 134,
@@ -9046,8 +9046,8 @@
     {
       "name": "Divergent Equation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/divergent_equation.rs",
       "set": "sos"
     },
@@ -21686,8 +21686,8 @@
     {
       "name": "Mathemagics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/mathemagics.rs",
       "set": "sos"
     },
