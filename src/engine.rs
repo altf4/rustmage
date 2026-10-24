@@ -7471,3 +7471,7 @@ mod msh_counter_batch_tests;
 #[cfg(test)]
 #[path = "engine_resolution_alternative_cost_tests.rs"]
 mod resolution_alternative_cost_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_fifth_combined_tests.rs"]
+mod msh_fifth_combined_tests;
