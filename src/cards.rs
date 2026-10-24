@@ -563,8 +563,10 @@ impl SearchFilter {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SearchDestination {
+    /// Reveal the selected cards, then choose one destination for the selection.
+    HandOrGraveyard,
     /// Face-up exile linked to this exact source incarnation, without an automatic return.
     LinkedExile,
     Graveyard,
@@ -1256,6 +1258,10 @@ pub(crate) enum Instruction {
     },
     Counter,
     Exile,
+    ExileTargetsPlay {
+        next_turn: bool,
+    },
+    ExileTargetsAndTopPlayForOwners,
     ExileUntilSourceLeaves,
     ExileGraveyard(PlayerSet),
     ReturnToHand,

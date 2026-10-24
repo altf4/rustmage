@@ -149,5 +149,5 @@ mod sos_milled_play;
 mod sos_multicolor_next;
 
 mod sos_multicolor_more;
-
 mod sos_review_regressions;
+mod sos_exile_search;

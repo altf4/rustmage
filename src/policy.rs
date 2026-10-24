@@ -255,6 +255,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
+            Action::ChooseSearchDestination { destination } => {
+                if *destination == crate::SearchDestination::Hand {
+                    60
+                } else {
+                    0
+                }
+            }
             Action::FinishSearch => 0,
             Action::ChooseEntryValue {
                 value: crate::EntryChoiceValue::CreatureType(typ),

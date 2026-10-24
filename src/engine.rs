@@ -171,6 +171,8 @@ mod combat_restrictions;
 mod effect_choices;
 #[path = "engine_exile.rs"]
 mod exile;
+#[path = "engine_target_exile_play.rs"]
+mod target_exile_play;
 pub use exile::{ExilePlayPermission, ExilePlayExpiry};
 #[path = "engine_explore.rs"]
 mod explore;
@@ -569,6 +571,7 @@ define_actions! {
     },
     FinishSearch,
     ChooseSearchBattlefield { card: CardId },
+    ChooseSearchDestination { destination: crate::SearchDestination },
     SelectLibrary { card: CardId },
     FinishLibrarySelection,
     OrderLibraryBottom { card: CardId },
@@ -1797,6 +1800,14 @@ pub struct SearchChoiceView {
     pub selected: Vec<CardId>,
 }
 
+/// Publicly revealed selected cards whose destinations are being chosen.
+#[derive(Clone, Debug, Serialize)]
+pub struct SearchDestinationChoiceView {
+    pub player: Player,
+    pub cards: Vec<ObjectView>,
+    pub destinations: [crate::SearchDestination; 2],
+}
+
 /// Revealed search results whose split destinations are being assigned.
 #[derive(Clone, Debug, Serialize)]
 pub struct SearchDistributionView {
@@ -1994,6 +2005,7 @@ pub struct Observation {
     pub milled_choice: Option<MilledSelectionView>,
     pub search_choice: Option<SearchChoiceView>,
     pub search_distribution: Option<SearchDistributionView>,
+    pub search_destination_choice: Option<SearchDestinationChoiceView>,
     pub effect_choice: Option<EffectChoiceView>,
     pub entry_value: Option<entry_choices::EntryChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
@@ -3756,7 +3768,16 @@ impl Game {
             }
             Pending::EffectSearch { player } => {
                 let choice = s.resolving.as_ref().unwrap().search.as_ref().unwrap();
-                if let Some(selected) = &choice.battlefield {
+                if choice.destination_pending {
+                    for destination in [
+                        crate::SearchDestination::Hand,
+                        crate::SearchDestination::Graveyard,
+                    ] {
+                        if emit(Action::ChooseSearchDestination { destination }) {
+                            return true;
+                        }
+                    }
+                } else if let Some(selected) = &choice.battlefield {
                     for &card in &choice.selected {
                         if !selected.contains(&card)
                             && emit(Action::ChooseSearchBattlefield { card })
@@ -4541,6 +4562,9 @@ impl Game {
             Action::ChooseSearch { card } => self.choose_search(card),
             Action::FinishSearch => self.finish_search(actor),
             Action::ChooseSearchBattlefield { card } => self.choose_search_battlefield(actor, card),
+            Action::ChooseSearchDestination { destination } => {
+                self.choose_search_destination(actor, destination)
+            }
             Action::SelectLibrary { card } => self.choose_library_selection(card),
             Action::FinishLibrarySelection => self.finish_library_selection(actor),
             Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
@@ -6371,7 +6395,7 @@ impl Game {
                 s.resolving
                     .as_ref()
                     .and_then(|r| r.search.as_ref())
-                    .filter(|choice| choice.battlefield.is_none())
+                    .filter(|choice| choice.battlefield.is_none() && !choice.destination_pending)
                     .map(|choice| SearchChoiceView {
                         filter: choice.spec.filter,
                         minimum: choice.minimum,
@@ -6389,6 +6413,23 @@ impl Game {
             } else {
                 None
             },
+            search_destination_choice: s
+                .resolving
+                .as_ref()
+                .and_then(|r| r.search.as_ref())
+                .filter(|choice| choice.destination_pending && (choice.spec.reveal || owns_choice))
+                .map(|choice| SearchDestinationChoiceView {
+                    player: self.actor().unwrap(),
+                    cards: choice
+                        .selected
+                        .iter()
+                        .map(|&id| query.object_view(id))
+                        .collect(),
+                    destinations: [
+                        crate::SearchDestination::Hand,
+                        crate::SearchDestination::Graveyard,
+                    ],
+                }),
             search_distribution: s
                 .resolving
                 .as_ref()

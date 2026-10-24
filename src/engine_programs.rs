@@ -2625,6 +2625,7 @@ impl Game {
                             ),
                             selected: Vec::new(),
                             battlefield: None,
+                            destination_pending: false,
                         }));
                     self.state.pending = Pending::EffectSearch { player };
                     return;
@@ -2950,6 +2951,12 @@ impl Game {
                         skip_to,
                     };
                     return;
+                }
+                Instruction::ExileTargetsPlay { next_turn } => {
+                    self.exile_targets_play(&item, next_turn, false, false)
+                }
+                Instruction::ExileTargetsAndTopPlayForOwners => {
+                    self.exile_targets_play(&item, true, true, true)
                 }
                 Instruction::ExileUntilSourceLeaves => self.exile_until_source_leaves(&item),
                 Instruction::ExileGraveyard(set) => {

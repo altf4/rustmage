@@ -9,6 +9,7 @@ pub(super) struct SearchChoice {
     pub different_names: bool,
     pub selected: Vec<CardId>,
     pub battlefield: Option<Vec<CardId>>,
+    pub destination_pending: bool,
 }
 
 impl Game {
@@ -64,6 +65,12 @@ impl Game {
             .search
             .as_mut()
             .unwrap();
+        if choice.spec.destination == SearchDestination::HandOrGraveyard
+            && !choice.selected.is_empty()
+        {
+            choice.destination_pending = true;
+            return;
+        }
         if let SearchDestination::BattlefieldThenHand { battlefield } = choice.spec.destination {
             if battlefield == 0 {
                 choice.battlefield = Some(Vec::new());
@@ -77,6 +84,30 @@ impl Game {
         self.commit_search(player);
     }
 
+    pub(super) fn choose_search_destination(
+        &mut self,
+        player: Player,
+        destination: SearchDestination,
+    ) {
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .search
+            .as_mut()
+            .unwrap();
+        assert!(
+            choice.destination_pending
+                && matches!(
+                    destination,
+                    SearchDestination::Hand | SearchDestination::Graveyard
+                )
+        );
+        choice.destination_pending = false;
+        choice.spec.destination = destination;
+        self.commit_search(player);
+    }
     fn commit_search(&mut self, player: Player) {
         let choice = self
             .state
@@ -123,6 +154,9 @@ impl Game {
                 let destination = match choice.spec.destination {
                     SearchDestination::Top => {
                         unreachable!("top search committed before entry moves")
+                    }
+                    SearchDestination::HandOrGraveyard => {
+                        unreachable!("destination chosen before movement")
                     }
                     SearchDestination::LinkedExile => Zone::Exile,
                     SearchDestination::Hand => Zone::Hand,
@@ -218,6 +252,7 @@ impl Game {
                 different_names: false,
                 selected: Vec::new(),
                 battlefield: None,
+                destination_pending: false,
             }));
             self.state.pending = Pending::EffectSearch { player };
         } else {
