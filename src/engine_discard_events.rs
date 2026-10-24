@@ -12,7 +12,7 @@ pub struct DiscardTriggerView {
 pub(super) enum DiscardAfter {
     LoseLife(Player, i128),
     DrawActual { players: [bool; 2], bonus: u16 },
-    ConniveCounters(ObjectRef, u64),
+    ConniveCounters(ObjectRef, u64, Player),
     ChooseLand { player: Player, tapped: bool },
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -276,13 +276,14 @@ impl Game {
                 }
             }
             Some(DiscardAfter::LoseLife(player, amount)) => self.lose_life(player, amount),
-            Some(DiscardAfter::ConniveCounters(object, amount))
+            Some(DiscardAfter::ConniveCounters(object, amount, placed_by))
                 if self.on_battlefield(object.card) && self.object_ref(object.card) == object =>
             {
-                self.effect_counter(
+                self.effect_counter_by(
                     object.card,
                     CounterKind::PlusOne,
                     amount,
+                    placed_by,
                     replacements::ResumeMode::Program,
                 );
             }

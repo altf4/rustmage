@@ -48,5 +48,12 @@
       "path": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
       "sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
     }
+  ],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#205.1a"
+  ],
+  "rules_notes": [
+    "Oracle changes only creature subtypes, base power/toughness and abilities. XMage generic BecomesCreatureSourceEffect additionally grants Creature; direct Rust preserves card types, including a queued activation after Imprisoned in the Moon resolves."
   ]
 }

@@ -657,6 +657,63 @@ fn msh_modok_connives_for_current_or_last_controller_without_new_object_counters
 }
 
 #[test]
+fn msh_connive_counter_placer_survives_control_change_replacements_and_deferred_discard() {
+    for p in [Player::P0, Player::P1] {
+        for doubled in [false, true] {
+            for deferred in [false, true] {
+                let mut g = setup(p);
+                let source = paid(&mut g, p, "M.O.D.O.K.");
+                let original = g.object_ref(source);
+                let discard = named(
+                    &mut g,
+                    p.other(),
+                    if deferred {
+                        "Wilt-Leaf Liege"
+                    } else {
+                        "Hill Giant"
+                    },
+                    Zone::Hand,
+                );
+                if doubled {
+                    named(&mut g, p.other(), "Doubling Season", Zone::Battlefield);
+                }
+                activate(&mut g, source);
+                g.change_controller(original, p.other());
+                until(&mut g, |g| {
+                    matches!(g.state.pending, Pending::EffectDiscard { .. })
+                });
+                assert_eq!(g.actor(), Some(p.other()));
+                checked(&mut g, Action::Discard { card: discard });
+                settle(&mut g);
+                assert_eq!(
+                    g.object_view(discard).zone,
+                    if deferred {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+                assert_eq!(
+                    g.counter_count(source, CounterKind::PlusOne),
+                    if doubled { 2 } else { 1 }
+                );
+                assert!(g.put_counter_on_source_this_turn(original, p.other()));
+                assert!(!g.put_counter_on_source_this_turn(original, p));
+                for viewer in [p, p.other()] {
+                    assert_eq!(
+                        g.observe(viewer).counter_placement_history,
+                        vec![CounterPlacementHistoryView {
+                            object: original,
+                            placed_by: p.other()
+                        }]
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
 fn msh_masters_villain_lord_and_paid_revealed_hand_tutor() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
@@ -1117,5 +1174,81 @@ fn msh_reptil_paid_repeatable_forms_keep_counters_and_combine_keywords_then_expi
             }
         );
         assert!(!g.has_subtype(source, "Dinosaur"));
+    }
+}
+
+#[test]
+fn msh_reptil_queued_forms_preserve_moon_land_types_then_expire() {
+    for p in [Player::P0, Player::P1] {
+        for ability in [0, 1] {
+            for remove_moon in [false, true] {
+                let mut g = setup(p);
+                let source = paid(&mut g, p, "Reptil, Dinomorpher");
+                named(&mut g, p, "High Fae Trickster", Zone::Battlefield);
+                checked(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: source,
+                        ability,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                until(&mut g, |g| g.state.announcing.is_none());
+                // Trickster gives actual flash permission for this paid response.
+                let moon = named(&mut g, p, "Imprisoned in the Moon", Zone::Hand);
+                cast(&mut g, moon, None, &[Target::Card(source)]);
+                settle(&mut g);
+                let keywords = if ability == 0 {
+                    Keywords::REACH.union(Keywords::VIGILANCE)
+                } else {
+                    Keywords::TRAMPLE
+                };
+                assert_eq!(g.current_kinds(source), 2);
+                assert_eq!(g.object_view(source).colors, 0);
+                assert!(!g.is_creature(source));
+                assert!(!g.has_subtype(source, "Dinosaur"));
+                assert!(!g.has_subtype(source, "Hero"));
+                assert!(!g.has_subtype(source, "Human"));
+                assert!(g.keywords(source).contains(keywords));
+                if remove_moon {
+                    g.move_object(moon, Zone::Graveyard);
+                    assert!(g.is_creature(source));
+                    assert!(g.has_subtype(source, "Dinosaur"));
+                    assert!(g.has_subtype(source, "Hero"));
+                    assert!(!g.has_subtype(source, "Human"));
+                    assert_eq!(
+                        g.stats(source),
+                        if ability == 0 {
+                            Stats {
+                                power: 3,
+                                toughness: 5,
+                            }
+                        } else {
+                            Stats {
+                                power: 6,
+                                toughness: 6,
+                            }
+                        }
+                    );
+                }
+                next_turn(&mut g);
+                assert!(g.observe(p).animations.is_empty());
+                assert!(!g.keywords(source).contains(keywords));
+                if remove_moon {
+                    assert_eq!(
+                        g.stats(source),
+                        Stats {
+                            power: 1,
+                            toughness: 2
+                        }
+                    );
+                    assert!(g.has_subtype(source, "Human"));
+                    assert!(!g.has_subtype(source, "Dinosaur"));
+                } else {
+                    assert_eq!(g.current_kinds(source), 2);
+                    assert_eq!(g.object_view(source).colors, 0);
+                }
+            }
+        }
     }
 }

@@ -157,21 +157,29 @@
   },
   "source_pin_check": {
     "definitions": 5387,
-    "verified_blobs": 1003
+    "verified_blobs": 1012
   },
   "rules_evidence": "src/engine_msh_existing_tests.rs; paid actions, legality/privacy, transactional failures and owned raw/index branch/restore through existing checked-action helpers",
   "set_game_acceptance": "pending; no full-set or all-Standard game/performance claim",
-  "focused_rules_tests": 22,
+  "focused_rules_tests": 24,
   "rules_sources": [
     "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
   ],
   "implementation_measurement": {
     "start_utc": "2026-10-24T17:43:55Z",
-    "candidate_verified_utc": "2026-10-24T18:30:01Z",
-    "elapsed_seconds": 2766,
+    "candidate_verified_utc": "2026-10-24T18:59:03.688173+00:00",
+    "elapsed_seconds": 4508.688,
     "cards": 17,
-    "cards_per_hour": 22.13,
-    "scope": "Source review, direct authoring, rules tests, build queues and two independent Power-up review passes; candidate throughput, not merged acceptance or simulation performance"
+    "cards_per_hour": 13.57,
+    "scope": "17-card corrected candidate, complete source review/direct authoring, paid rules tests, shared mechanics and two rounds of review corrections, main integration, build queues and independent sibling PR reviews; not merged/full-set acceptance or simulation throughput",
+    "initial_candidate_measurement": {
+      "start_utc": "2026-10-24T17:43:55Z",
+      "candidate_verified_utc": "2026-10-24T18:30:01Z",
+      "elapsed_seconds": 2766,
+      "cards": 17,
+      "cards_per_hour": 22.13,
+      "scope": "Source review, direct authoring, rules tests, build queues and two independent Power-up review passes; candidate throughput, not merged acceptance or simulation performance"
+    }
   },
   "integrated_trace_count": 2408,
   "connive_controller_lki": {
@@ -186,7 +194,8 @@
       "Doc Ock's Henchmen",
       "Prowler, Clawed Thief"
     ],
-    "regression": "Both seats, paid activation and life cost; change control, then live/departed/departed-and-reentered cases; private draw/discard plus owned raw/index action branching and restore."
+    "regression": "Both seats, paid activation and life cost; change control, then live/departed/departed-and-reentered cases; private draw/discard plus owned raw/index action branching and restore.",
+    "counter_placement": "Explicit conniver controller flows through immediate fast/replacement counter placement and deferred discard-to-battlefield completion; both seats with/without Doubling Season and Wilt-Leaf Liege verify public history attributes only the new controller."
   },
   "pre_integration_validation": {
     "head": "1a3d652852f7b090416c4b8e4f6a391aeb4352fd",
@@ -196,7 +205,20 @@
     "simulation": "10 limited-catalogue native smoke games; 4941 decisions; 183367 decisions/s; clone133.62ns/restore132.68ns. No set-game acceptance claim."
   },
   "integrated_native_tests": {
-    "passed": 482,
-    "expected_recording_failure": "Only the new-card observation hashes changed with inherited schema137; all2391 inherited fullTrace structs exact,22 focused rules scenarios passed."
-  }
+    "passed": 485,
+    "focused_own_tests": 24,
+    "focused_with_teamwork": 34,
+    "inherited_full_trace_matches": 2391,
+    "candidate_trace_count": 2408,
+    "trace_baseline_equals_export": true,
+    "log": "/home/altf4/.cache/rustmage/msh-existing/final-corrected-native-traces.log",
+    "resource_report": "/home/altf4/.cache/rustmage-build-reports/6dcdede577d640a79399d65e9be33e3a.json"
+  },
+  "reptil_card_types": {
+    "typed_instruction": "ChangeSourceCreatureForm(AnimationSpec)",
+    "shared_rule": "Explicit animation type mode preserves existing card types; no creature subtypes granted to a noncreature/nonkindred; previous true animations remain unchanged.",
+    "wire": "AnimationView preserve_card_types serializes only when true; inherited animation bytes unchanged. Final root integration uses schema138; this main137-based candidate documents the actual wire extension.",
+    "regression": "Both seats and both forms: actual paid activation, High Fae Trickster permits paid Moon response, Moon resolves before form; remains colorless land; after Moon leaves form applies until cleanup; cleanup removes form."
+  },
+  "required_release_validation": "Root runs scripts/validate.py --release on final combined published head; this corrected batch has485native+34focused green and pre-integration full release success. No redundant standalone validator after corrections."
 }

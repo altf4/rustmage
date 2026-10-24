@@ -22,7 +22,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 loyalty: None,
             },
             targets: TargetPlan::NONE,
-            program: &[Instruction::AnimateSource(AnimationSpec {
+            program: &[Instruction::ChangeSourceCreatureForm(AnimationSpec {
                 artifact: false,
                 creature_types: AnimationCreatureTypes::Named(&["Dinosaur", "Hero"]),
                 base: Some((3, 5)),
@@ -52,7 +52,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 loyalty: None,
             },
             targets: TargetPlan::NONE,
-            program: &[Instruction::AnimateSource(AnimationSpec {
+            program: &[Instruction::ChangeSourceCreatureForm(AnimationSpec {
                 artifact: false,
                 creature_types: AnimationCreatureTypes::Named(&["Dinosaur", "Hero"]),
                 base: Some((6, 6)),

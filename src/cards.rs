@@ -1233,6 +1233,8 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     AnimateSource(AnimationSpec),
+    /// Change creature subtypes, base stats and keywords without adding a card type.
+    ChangeSourceCreatureForm(AnimationSpec),
     SetCreatureForm {
         types: &'static [&'static str],
         colors: u8,

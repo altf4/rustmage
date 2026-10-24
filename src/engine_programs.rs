@@ -2800,6 +2800,11 @@ impl Game {
                     }
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::ChangeSourceCreatureForm(spec) => self.change_source_form(
+                    &item,
+                    spec,
+                    characteristic_layers::AnimationTypeMode::PreserveCardTypes,
+                ),
                 Instruction::SetCreatureForm {
                     types,
                     colors,
