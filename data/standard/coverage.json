@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "165a0842fa9b51808cb3d53c282152faab8999577f0e32b0a85d84ec87e703a3",
+  "catalogue_version": "3c678d93b8823f59f03cdde66a0f1f1dc007d33d2705dd585bb728843e78dc73",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2365,
-  "implemented_total": 2371,
+  "implemented_standard_cards": 2367,
+  "implemented_total": 2373,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 248,
-      "gated": 16
+      "complete": 250,
+      "gated": 14
     },
     "spm": {
       "total": 134,
@@ -8774,8 +8774,8 @@
     {
       "name": "Diary of Dreams",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/diary_of_dreams.rs",
       "set": "sos"
     },
@@ -24910,8 +24910,8 @@
     {
       "name": "Page, Loose Leaf",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/page_loose_leaf.rs",
       "set": "sos"
     },
