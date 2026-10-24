@@ -7490,3 +7490,7 @@ mod msh_sentry_alien_tests;
 #[cfg(test)]
 #[path = "engine_msh_mandatory_union_tests.rs"]
 mod msh_mandatory_union_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_punch_zola_tests.rs"]
+mod msh_punch_zola_tests;

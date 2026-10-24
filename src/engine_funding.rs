@@ -803,6 +803,9 @@ impl<'g> FundingState<'g> {
                 self.game.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::GraveyardCardsAtLeast { kind, minimum } => {
+                activations::graveyard_cards_at_least(self, actor, kind, minimum)
+            }
             ActivationGuard::SourceEnteredOrControlsBasicLand => {
                 ability_world::CharacteristicWorld::entered_this_turn(self, self.reference(source))
                     || ability_world::CharacteristicWorld::controls_basic_land(self, actor)
@@ -2922,3 +2925,7 @@ mod msh_faces_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_hideout_funding_tests.rs"]
 mod msh_hideout_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_punch_zola_funding_tests.rs"]
+mod msh_punch_zola_funding_tests;

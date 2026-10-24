@@ -11,6 +11,31 @@ impl ActivatedAbility {
     }
 }
 
+/// Starting restriction reads the same object overlay in actual and funding worlds.
+pub(super) fn graveyard_cards_at_least(
+    world: &impl ability_world::CharacteristicWorld,
+    actor: Player,
+    kind: u16,
+    minimum: u16,
+) -> bool {
+    world
+        .game()
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(id, _)| {
+            let id = *id as CardId;
+            let object = world.object(id);
+            object.zone == Zone::Graveyard
+                && object.owner == actor
+                && !object.is_token()
+                && (kind == 0 || world.kinds(id) & kind != 0)
+        })
+        .take(usize::from(minimum))
+        .count()
+        >= usize::from(minimum)
+}
 impl Game {
     pub(super) fn activation_generic_discount(
         &self,
@@ -87,6 +112,9 @@ impl Game {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::GraveyardCardsAtLeast { kind, minimum } => {
+                graveyard_cards_at_least(self, actor, kind, minimum)
+            }
             ActivationGuard::SourceEnteredOrControlsBasicLand => {
                 self.entered_this_turn(self.object_ref(source))
                     || ability_world::CharacteristicWorld::controls_basic_land(self, actor)

@@ -1903,6 +1903,7 @@ impl Game {
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
+                    | Instruction::ScaledPowerDamage { .. }
                     | Instruction::CreateCopyTokenForPlayer { .. }
                     | Instruction::GainControl {
                         controller: PlayerSet::Targeted,
@@ -2906,7 +2907,15 @@ impl Game {
                         source,
                         recipient,
                         matches!(instruction, Instruction::Fight { .. }),
+                        1,
                     );
+                }
+                Instruction::ScaledPowerDamage {
+                    source,
+                    recipient,
+                    factor,
+                } => {
+                    self.creature_power_damage(&item, source, recipient, false, factor);
                 }
                 Instruction::AddColorlessScaled(amount) => {
                     let amount = u32::try_from(self.item_amount(amount, &item))
