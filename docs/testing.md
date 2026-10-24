@@ -126,3 +126,10 @@ candidate to `src/assurance/card_traces.json`. Ordinary validation never updates
 baselines. Set `CARGO_TARGET_DIR` under `~/.cache` when doing local development
 builds, and keep logs/reports there. Refreshing fingerprints alone is insufficient
 review evidence for a changed card rule.
+
+For a wire-schema migration, the same explicit recording command may additionally set
+`RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA` to the former version. It writes a
+separate `.previous-schema.json` candidate with only the observation version projected
+back. Compare all inherited full traces with the committed baseline before accepting
+wire-only fingerprint changes. The recording run still asserts the ordinary current
+baseline and fails on drift; this option does not weaken normal validation.

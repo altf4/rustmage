@@ -185,6 +185,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::SelectLand { .. } => 50,
             Action::FinishLandSelection => -1,
             Action::DeclineHandEntry => -1,
+            Action::ChooseTeamwork { pay } => i128::from(*pay) * 40,
+            Action::ChooseTeammate { .. } => 50,
+            Action::FinishTeamwork => 100,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
             Action::ChooseX { value } => {

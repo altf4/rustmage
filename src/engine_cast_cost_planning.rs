@@ -15,6 +15,8 @@ pub(super) struct CostContext {
     exact: bool,
     counters: Vec<(ObjectRef, CounterKind)>,
     mana: Option<ManaCost>,
+    teammates: Vec<ObjectRef>,
+    teamwork_exact: bool,
 }
 impl CostContext {
     fn from_announcement(a: &Announcement) -> Option<Box<Self>> {
@@ -33,6 +35,8 @@ impl CostContext {
             exact = e.complete;
         }
         Some(Box::new(Self {
+            teammates: c.teammates.clone(),
+            teamwork_exact: false,
             actor: a.item.controller,
             mana: a
                 .convoke
@@ -256,6 +260,11 @@ impl FundingState<'_> {
                 later.counters.clear();
             }
             match c.clauses[index].clause {
+                CastCostClause::Teamwork(minimum) => {
+                    if self.complete_teamwork_clause(c, &later, &rest, minimum) {
+                        return true;
+                    }
+                }
                 CastCostClause::Mana => {
                     if self.complete_convoke_clause(c, &later, remaining, &rest) {
                         return true;
@@ -296,6 +305,104 @@ impl FundingState<'_> {
                     }
                 }
             }
+        }
+        false
+    }
+    pub(in crate::engine) fn set_teamwork_prefix(&mut self, selected: &[ObjectRef], exact: bool) {
+        let c = self.cast_costs.as_mut().expect("teamwork cost context");
+        c.teammates = selected.to_vec();
+        c.teamwork_exact = exact;
+    }
+    fn complete_teamwork_clause(
+        &self,
+        c: &CostContext,
+        later: &CostContext,
+        rest: &[usize],
+        minimum: u16,
+    ) -> bool {
+        let eligible = |r: ObjectRef| {
+            let o = self.object(r.card);
+            self.reference(r.card) == r
+                && o.zone == Zone::Battlefield
+                && o.controller == c.actor
+                && !o.tapped
+                && CharacteristicWorld::kinds(self, r.card) & 1 != 0
+        };
+        if !c.teammates.iter().all(|&r| eligible(r)) {
+            return false;
+        }
+        let candidates: Vec<_> = self
+            .resources
+            .iter()
+            .map(|r| self.reference(r.id))
+            .filter(|&r| eligible(r))
+            .collect();
+        let mut selected = c.teammates.clone();
+        self.complete_teamwork_choices(
+            later,
+            rest,
+            minimum,
+            &candidates,
+            0,
+            &mut selected,
+            c.teamwork_exact,
+        )
+    }
+    #[allow(clippy::too_many_arguments)]
+    fn complete_teamwork_choices(
+        &self,
+        later: &CostContext,
+        rest: &[usize],
+        minimum: u16,
+        candidates: &[ObjectRef],
+        at: usize,
+        selected: &mut Vec<ObjectRef>,
+        exact: bool,
+    ) -> bool {
+        let mut sum = saddle::PowerSum::default();
+        for r in selected.iter() {
+            sum.add(self.power(r.card));
+        }
+        if sum.enough(minimum) {
+            let mut next = self.clone();
+            for r in selected.iter() {
+                let i = next.resources.iter().position(|v| v.id == r.card).unwrap();
+                next.resources[i].object.tapped = true;
+            }
+            if next.complete_cost_rows(later, rest) {
+                return true;
+            }
+        }
+        if exact {
+            return false;
+        }
+        let mut maximum = sum;
+        for r in &candidates[at..] {
+            if !selected.contains(r) {
+                maximum.add(self.power(r.card).max(0));
+            }
+        }
+        if !maximum.enough(minimum) {
+            return false;
+        }
+        for i in at..candidates.len() {
+            let r = candidates[i];
+            if selected.contains(&r) {
+                continue;
+            }
+            selected.push(r);
+            if self.complete_teamwork_choices(
+                later,
+                rest,
+                minimum,
+                candidates,
+                i + 1,
+                selected,
+                false,
+            ) {
+                return true;
+            }
+            selected.pop();
         }
         false
     }
@@ -629,6 +736,31 @@ impl FundingState<'_> {
 }
 
 impl Game {
+    pub(in crate::engine) fn teamwork_proposal_fundable(&self, a: &Announcement) -> bool {
+        a.cost_options().any(|cost| {
+            let mut choice = a.clone();
+            choice.cost = Some(cost);
+            let goal = self.funding_goal(&choice);
+            let mut world = FundingState::from_game_with_convoke(
+                self,
+                &goal,
+                choice.item.source_card.has_convoke(),
+            );
+            world.purpose = self.purpose_for_item(&choice.item);
+            world.set_cost_context(Some(&choice));
+            world.reachable(&goal, &mut HashSet::new())
+        })
+    }
+    pub(in crate::engine) fn teamwork_prefix_fundable(
+        &self,
+        selected: &[ObjectRef],
+        exact: bool,
+    ) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let mut world = self.cast_cost_world(a);
+        world.set_teamwork_prefix(selected, exact);
+        world.cost_completion()
+    }
     pub(in crate::engine) fn cast_cost_world(&self, a: &Announcement) -> FundingState<'_> {
         let goal = FundingGoal {
             actor: a.item.controller,
@@ -761,6 +893,8 @@ impl Game {
         world.purpose = purpose;
         if world.cast_costs.is_none() {
             world.install_cost_context(Some(Box::new(CostContext {
+                teammates: Vec::new(),
+                teamwork_exact: false,
                 actor: goal.actor,
                 mana: None,
                 source: ObjectRef {
@@ -876,6 +1010,14 @@ impl Game {
                         paid: false,
                     })
                     .collect::<Vec<_>>();
+                if let Some(a) = current
+                    && a.item.cast.is_some_and(|c| c.teamwork == Some(true))
+                {
+                    clauses.push(CastCostRow {
+                        clause: CastCostClause::Teamwork(spell.card.teamwork().unwrap().minimum),
+                        paid: false,
+                    });
+                }
                 if additional.is_some() {
                     clauses.push(CastCostRow {
                         clause: CastCostClause::Additional,
@@ -897,6 +1039,10 @@ impl Game {
                     }
                 }
                 let context = CostContext {
+                    teammates: current
+                        .and_then(|a| a.cast_costs.as_ref())
+                        .map_or_else(Vec::new, |c| c.teammates.clone()),
+                    teamwork_exact: false,
                     actor: goal.actor,
                     mana: spell.card.has_convoke().then_some(ManaCost {
                         colored: attempt.required,
