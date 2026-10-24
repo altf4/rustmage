@@ -1325,6 +1325,7 @@ pub(crate) enum Instruction {
         amount: u16,
         tapped: bool,
     },
+    DrawPowerOfTwoChosenX(PlayerSet),
     Draw(PlayerSet, u16),
     DrawScaled(PlayerSet, AmountValue),
     AddCastEntryCounters {
@@ -2901,7 +2902,10 @@ impl Card {
     pub fn adventure_spell(self) -> Option<Card> {
         generated::adventure_spell(self)
     }
-    /// Physical parent of an internal Adventure spell definition.
+    /// Homogeneous optional target group whose maximum is the chosen X.
+    pub(crate) fn targets_up_to_x(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.targets_up_to_x)
+    }
     pub(crate) fn prepared_spell(self) -> Option<Card> {
         authored::rules(self).and_then(|rules| rules.extras.prepared_spell)
     }

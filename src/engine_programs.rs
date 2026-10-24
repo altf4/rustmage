@@ -2970,6 +2970,12 @@ impl Game {
                             usize::from(discard);
                     }
                 }
+                Instruction::DrawPowerOfTwoChosenX(set) => {
+                    let amount = 1u128.checked_shl(item.x.unwrap_or(0)).unwrap_or(u128::MAX);
+                    for player in self.program_players(set, &item) {
+                        self.draw_many(player, amount);
+                    }
+                }
                 Instruction::Draw(set, _) | Instruction::DrawScaled(set, _) => {
                     let amount = match instruction {
                         Instruction::Draw(_, amount) => u128::from(amount),

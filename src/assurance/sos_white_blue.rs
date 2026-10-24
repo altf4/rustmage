@@ -1626,3 +1626,112 @@ fn sos_ennis_history_excludes_tokens_and_copies_reexile_counts_and_cleanup_prese
         assert!(!g.observe(p).cards_exiled_this_turn);
     }
 }
+
+#[test]
+fn sos_divergent_x_zero_distinct_optional_targets_double_x_cost_and_partial_fizzle() {
+    for p in [Player::P0, Player::P1] {
+        for (x, count) in [(0, 0), (1, 1), (3, 2)] {
+            let mut g = scenario(p);
+            let cards: Vec<_> = ["Shock", "Divination", "Unsummon"]
+                .into_iter()
+                .map(|name| put(&mut g, p, name, Zone::Graveyard))
+                .collect();
+            let wrong = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let enemy = put(&mut g, p.other(), "Shock", Zone::Graveyard);
+            let spell = put(&mut g, p, "Divergent Equation", Zone::Hand);
+            big_helpers::checked(&mut g, Action::AnnounceCast { card: spell });
+            big_helpers::checked(&mut g, Action::ChooseX { value: x });
+            if count != 0 {
+                for target in [wrong, enemy] {
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(target),
+                        },
+                    );
+                }
+                for &card in cards.iter().take(count) {
+                    big_helpers::checked(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(card),
+                        },
+                    );
+                }
+                if count < usize::try_from(x).unwrap() {
+                    big_helpers::checked(&mut g, Action::FinishTargets);
+                }
+            }
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(cards[2]),
+                },
+            );
+            pay(&mut g);
+            assert_eq!(
+                g.state.players[p.index()]
+                    .mana
+                    .iter()
+                    .map(|&n| u128::from(n))
+                    .sum::<u128>(),
+                48 - u128::from(2 * x + 1)
+            );
+            if count == 2 {
+                g.move_object(cards[0], Zone::Exile);
+            }
+            big_helpers::settle(&mut g);
+            assert_eq!(g.object_view(spell).zone, Zone::Exile);
+            if count > 0 {
+                assert_eq!(g.object_view(cards[count - 1]).zone, Zone::Hand);
+            }
+            assert_eq!(g.object_view(cards[2]).zone, Zone::Graveyard);
+        }
+        let mut g = scenario(p);
+        let target = put(&mut g, p, "Shock", Zone::Graveyard);
+        let spell = put(&mut g, p, "Divergent Equation", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, Action::ChooseX { value: 1 });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        g.move_object(target, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sos_mathemagics_powers_two_double_x_payment_and_huge_x_failed_draw_are_bounded() {
+    for p in [Player::P0, Player::P1] {
+        for x in [0, 1, 2, 3, 128] {
+            let mut g = scenario(p);
+            g.state.players[p.index()].mana = [0; 6];
+            g.state.players[p.index()].mana[1] = 2 * x + 2;
+            let spell = put(&mut g, p, "Mathemagics", Zone::Hand);
+            big_helpers::checked(&mut g, Action::AnnounceCast { card: spell });
+            big_helpers::checked(&mut g, Action::ChooseX { value: x });
+            big_helpers::checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            pay(&mut g);
+            assert_eq!(g.state.players[p.index()].mana[1], 0);
+            big_helpers::settle(&mut g);
+            let expected = if x >= 128 { 8 } else { 1usize << x };
+            assert_eq!(g.hand_count(p.other()), expected);
+            if x >= 128 {
+                assert!(g.outcome().is_some());
+                assert!(g.state.players[p.other().index()].attempted_empty_draw);
+            } else {
+                assert!(g.outcome().is_none());
+            }
+        }
+    }
+}

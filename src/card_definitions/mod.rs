@@ -113,6 +113,7 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub targets_up_to_x: bool,
     pub prepared_spell: Option<Card>,
     pub enters_prepared: bool,
     pub prepared_identity: Option<&'static str>,
@@ -184,6 +185,7 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        targets_up_to_x: false,
         prepared_spell: None,
         enters_prepared: false,
         prepared_identity: None,

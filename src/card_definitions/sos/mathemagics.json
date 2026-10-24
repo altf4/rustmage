@@ -3,10 +3,25 @@
   "catalogue_id": 2685,
   "oracle_id": "5f56a303-b3da-41df-a959-7823a87ee60c",
   "facts_sha256": "3d0910078c4aead53ec676c71df6690dd99f106182aa1d1e47ed5f7e6d350433",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f9a50e87249d57b5aea167b1d96c759c377d3b559b9ee5f1cf662d92560e2d9a"
   },
-  "physical_metadata_sha256": "674c7e1162aa30cb3d024c7a8daeb8cb624828c28e714c38c7c98c6e6fec680e"
+  "physical_metadata_sha256": "3b1a76979620816629d589571c6cc797663d4310a35162b64891ed1a0afb5604",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/Mathemagics.java",
+  "java_sha256": "16c95092f2e822329851f2e875f1a166ff520893c78416f3f4d991a4a669630f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    }
+  ]
 }

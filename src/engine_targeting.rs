@@ -227,6 +227,14 @@ impl Game {
             .program()
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
+        if item.kind == StackKind::Spell && item.source_card.targets_up_to_x() {
+            let TargetPlan::Single(mut spec) = plan else {
+                panic!("X target maximum requires one homogeneous target group")
+            };
+            assert_eq!(spec.min, 0);
+            spec.max = usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX);
+            return TargetPlan::Single(spec);
+        }
         if let TargetPlan::Single(mut spec) = plan
             && let TargetRule::ManaValueAtMost { base, amount, .. } = spec.rule
         {

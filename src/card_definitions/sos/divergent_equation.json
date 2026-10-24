@@ -3,10 +3,40 @@
   "catalogue_id": 1105,
   "oracle_id": "84681f12-2978-4f62-ab89-b579033c5192",
   "facts_sha256": "c9c7ccc59f5213561ee2f5f67da06bcb657888c770a4e8ca6912ab8eba3c5d2f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8a29f2f746bb167dd17307a35c0d92acb2d8087d7a5ed19293d61c8dcd6a7762"
   },
-  "physical_metadata_sha256": "f48f05a2268b71fe7eef5702c80a379059854f5926fb1c20e2f4e6b3eb254547"
+  "physical_metadata_sha256": "41e673b248b30c39cb48517865cf54fe592907180a7964092febbb1979eab996",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DivergentEquation.java",
+  "java_sha256": "121183c5e5c3f07841488bdd7fc66c898c528334e2eef69c2310ec1ef8d78d7e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/XTargetsCountAdjuster.java",
+      "sha256": "0a0c03f91efb08ee51cbac58fc63d9f2c22d022e2fad1fcef7fd072a6143c217"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/TargetsCountAdjuster.java",
+      "sha256": "37eb71fcc39f89d8dda76a2b91d7cc3dcfa062f6149b2e82662f2ff84e8db479"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSpellEffect.java",
+      "sha256": "a7e5f14c36dc0938ad32916c58ae5c50971810fbdb26b8a69f4bfcfdd243b78c"
+    }
+  ]
 }

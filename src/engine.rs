@@ -4324,6 +4324,18 @@ impl Game {
             }
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
+                if self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .source_card
+                    .targets_up_to_x()
+                {
+                    let plan = self.target_spec(&self.state.announcing.as_ref().unwrap().item);
+                    self.state.announcing.as_mut().unwrap().plan = plan;
+                }
                 self.continue_announcement_choices(false);
             }
             Action::ChooseKicker { pay } => {
