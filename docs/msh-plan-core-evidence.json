@@ -22,7 +22,7 @@
   "focused_rules_tests": 11,
   "source_pin_check": {
     "definitions": 5387,
-    "verified_blobs": 981
+    "verified_blobs": 990
   },
   "rules_evidence": "src/engine_plan_threshold_tests.rs; paid casts, exact-object sacrifice, historical crossing and counter replacements/entry, divided targeting, privacy, overflow atomicity and owned raw/index branching/restore",
   "shared_mechanics": [
@@ -34,11 +34,33 @@
     "Rewrite History requires one-or-more controlled creatures simultaneously tap event",
     "Other six Plan cards remain gated pending this prerequisite review and their separate whole-card implementations"
   ],
-  "validation": "Full release validator pending on fixed candidate inputs",
+  "validation": {
+    "tested_parent": "f8b8a93e96cfe654021ff7146feda2aeb5421dbd",
+    "success": true,
+    "inputs_changed": [],
+    "native_tests": 472,
+    "elapsed_seconds": 241.53178883396322,
+    "report": "<cache>/rustmage-validation-3zx3tot4/report/result.json",
+    "resource_report": "<cache>/rustmage-build-reports/11812eca1702427babd2070e56373c12.json",
+    "post_validation_change": "Documentation-only correction of source blob count and addition of terminal evidence; source pins and format rechecked; no runtime or test changes"
+  },
   "set_game_acceptance": "Pending; one new consumer does not certify the 281-card full set or Standard gameplay",
   "rules_sources": [
     "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
     "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#603.2",
     "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#603.12"
-  ]
+  ],
+  "simulation_sample": {
+    "workload": "Existing native Freeform smoke policy and observation construction; no model/tensor/JSON/XMage parity or full-set/Standard performance claim",
+    "clone_ns": 140.71453,
+    "decisions": 4941,
+    "decisions_per_second": 177310.71005134258,
+    "games": 10,
+    "games_per_second": 358.8559199581918,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21304,
+    "max_decisions_per_game": 655,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 137.85255,
+    "seconds": 0.027866337
+  }
 }
