@@ -469,3 +469,70 @@ fn power_up_inherited_ability_uses_its_own_slot_and_the_actual_source_mana_cost(
         );
     }
 }
+
+#[test]
+fn power_up_mixed_teamwork_payment_uses_the_new_live_power() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let aerial = put(&mut g, p, "Aerial Doombot", Zone::Battlefield);
+        let victim = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let spell = put(&mut g, p, "Cruel Alliance", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 7];
+        // A normal cast could target Aerial, but the expanded target requires
+        // teamwork and the sole teammate has only one power. Prove the intent
+        // is unavailable in an owned branch before upgrading the parent.
+        let mut before_power_up = g.clone();
+        checked(&mut before_power_up, Action::AnnounceCast { card: spell });
+        reject(&mut before_power_up, Action::ChooseTeamwork { pay: true });
+        drop(before_power_up);
+        activate(&mut g, aerial);
+        assert_eq!(g.object_view(aerial).power, 4);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 0, 2]);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(&mut g, Action::ChooseTeamwork { pay: true });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(victim),
+            },
+        );
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, payment);
+        let clause = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|r| matches!(r.clause, CastCostClause::Teamwork(2)))
+            .unwrap() as u16;
+        checked(&mut g, Action::ChooseCastCost { clause });
+        let object = g.object_ref(aerial);
+        checked(&mut g, Action::ChooseTeammate { object });
+        assert_eq!(
+            g.observe(p).teamwork_choice.unwrap().selected_power,
+            Some(4)
+        );
+        assert!(g.observe(p.other()).teamwork_choice.is_none());
+        assert!(!g.object_view(aerial).tapped);
+        checked(&mut g, Action::FinishTeamwork);
+        assert!(g.object_view(aerial).tapped);
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().teamwork,
+            Some(true)
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(victim).zone, Zone::Exile);
+        assert_eq!(g.state.players[p.index()].life, 23);
+        assert_eq!(g.object_view(aerial).power_up_uses[0].count, 1);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}

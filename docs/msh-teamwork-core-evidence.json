@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Teamwork prerequisite and four complete representative consumers; full-set acceptance pending",
+  "source_base": "859fd820",
+  "previous_observation_schema": 136,
+  "observation_schema": 137,
+  "inherited_trace_count": 2387,
+  "inherited_previous_schema_full_trace_matches": 2387,
+  "inherited_journals_unchanged": true,
+  "new_traces": {
+    "Agent Maria Hill": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "97f197e40a843eee",
+      "observations": "1d0563885559fc22"
+    },
+    "Cruel Alliance": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 6,
+      "zone": "Graveyard",
+      "journal": "1216047830cdf0c0",
+      "observations": "e818aa320edd04eb"
+    },
+    "Team Tactics": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 6,
+      "zone": "Graveyard",
+      "journal": "660623b1ac3a67a3",
+      "observations": "752139ad56a27237"
+    },
+    "Widow's Bite": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 7,
+      "zone": "Graveyard",
+      "journal": "e6b46cce46e44a1c",
+      "observations": "40f770548f172c75"
+    }
+  },
+  "focused_rules_tests": 10,
+  "validation": "pending full release rerun after reviewed trace update",
+  "full_set_cards": 281,
+  "inherited_admission_flags": 84,
+  "new_complete_candidates": 4,
+  "merged_new_cards": 0,
+  "set_game_acceptance": "pending: no full-set game claim"
+}

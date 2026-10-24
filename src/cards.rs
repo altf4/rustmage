@@ -1084,6 +1084,9 @@ pub(crate) enum Instruction {
         token: Card,
         amount: u16,
     },
+    IfTeamwork {
+        skip: usize,
+    },
     IfKicked {
         skip: usize,
     },
@@ -2403,6 +2406,7 @@ pub(crate) enum TriggerCondition {
     SelfAttacksWhileSaddled,
     SelfEntersOrAttacksWhileSaddled,
     SelfSaddledFirst,
+    SelfPaysTeamwork,
     /// A paid promise belongs to this actual cast-to-battlefield entry event.
     SelfGiftEnters,
     SelfEntersIfCast,
@@ -2701,6 +2705,16 @@ impl ActivationGuard {
         }
     }
 }
+/// Optional creature-tap cost and immutable choices unlocked by paying it.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct TeamworkSpec {
+    pub minimum: u16,
+    pub paid_targets: Option<TargetPlan>,
+    /// Bitsets over the predeclared modal combinations; ignored for nonmodal spells.
+    pub normal_modes: u64,
+    pub paid_modes: u64,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct ActivatedAbility {
     pub exhaust: bool,
@@ -3536,6 +3550,9 @@ impl Card {
         generated::bargain_reduction(self).unwrap_or(0)
     }
     /// Fixed optional kicker surcharge for this immutable whole-card definition.
+    pub(crate) fn teamwork(self) -> Option<TeamworkSpec> {
+        authored::rules(self).and_then(|r| r.extras.teamwork)
+    }
     pub fn kicker_cost(self) -> Option<ManaCost> {
         generated::kicker_cost(self)
     }

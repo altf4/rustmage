@@ -3,10 +3,59 @@
   "catalogue_id": 4351,
   "oracle_id": "98b99d7c-d006-471a-8583-0468743c1597",
   "facts_sha256": "6badccf6d4271d55fe11f4204af37929e04662a07e3c0e8de5137a9e19f80312",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1adde972ddbc52c11040b5fdd7ab07200e9bd992641704719d796f3176cfb8f0"
   },
-  "physical_metadata_sha256": "5bd7bee8a2431df6e7c3361f103fc95586c3959aaff7a5988e8ea7b8b5bdd2fe"
+  "physical_metadata_sha256": "5bd7bee8a2431df6e7c3361f103fc95586c3959aaff7a5988e8ea7b8b5bdd2fe",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TeamTactics.java",
+  "java_sha256": "0a7c5533cbd680f8df62bbb169990eab246613450ead0d1c34e1584a9239e7c5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TeamworkCondition.java",
+      "sha256": "2db81465f0f14108a78438083147cba77c15031fb63358f6b2983fca7ca356fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TeamworkCost.java",
+      "sha256": "1069592dc1ab5aadfe5b298836831d95fd24fcd15db3fe4a623022bff606d4c5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TeamworkAbility.java",
+      "sha256": "be5c08a933319ee23fbc15a1d6aa6f352607c87d4bc5c26ffefc53b5eed148a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "rules": "CR 601.2b, 601.2h, 702.194, 707.10; teamwork selections are non-targeting and paid as one simultaneous tap cost."
+  }
 }

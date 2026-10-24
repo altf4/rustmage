@@ -295,6 +295,14 @@
     "journal": "3ad6d4893695dc9c",
     "observations": "cc2feb4d1fa79b7e"
   },
+  "Agent Maria Hill": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "97f197e40a843eee",
+    "observations": "f85dc38305d3ecbe"
+  },
   "Agent Phil Coulson": {
     "root": "main",
     "status": "completed",
@@ -3318,6 +3326,14 @@
     "zone": "Battlefield",
     "journal": "4fca55219094d015",
     "observations": "b5568d5bb364706c"
+  },
+  "Cruel Alliance": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "1216047830cdf0c0",
+    "observations": "c30b3d4c3de7dccb"
   },
   "Cruel Truths": {
     "root": "main",
@@ -16375,6 +16391,14 @@
     "journal": "6fa9681564dd188f",
     "observations": "71c67cb40981efa0"
   },
+  "Team Tactics": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "660623b1ac3a67a3",
+    "observations": "cee2d661b9df0fc5"
+  },
   "Technodrome": {
     "root": "main",
     "status": "completed",
@@ -18630,6 +18654,14 @@
     "zone": "Battlefield",
     "journal": "a4c714aeb662e85f",
     "observations": "d8e8b116832ca1b2"
+  },
+  "Widow's Bite": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "e6b46cce46e44a1c",
+    "observations": "c69632ad17aaf113"
   },
   "Wild Hypothesis": {
     "root": "main",

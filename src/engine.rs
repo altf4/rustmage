@@ -80,8 +80,11 @@ mod saddle;
 pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
+pub use teamwork::TeamworkChoiceView;
 #[path = "engine_gift.rs"]
 mod gift;
+#[path = "engine_teamwork.rs"]
+mod teamwork;
 pub use gift::{GiftContext, GiftDeclaration};
 /// Public observations, including Plot/Warp permissions and captured subtype grants.
 #[path = "observation_schema.rs"]
@@ -412,6 +415,9 @@ define_actions! {
     FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
+    ChooseTeamwork { pay: bool },
+    ChooseTeammate { object: ObjectRef },
+    FinishTeamwork,
     ChooseSaddler { object: ObjectRef },
     ChooseCrewer { object: ObjectRef },
     FinishCrew,
@@ -811,6 +817,9 @@ pub struct CastInfo {
     pub offspring: Option<bool>,
     /// One fixed optional surcharge, independent of casting method and offspring.
     pub kicker: Option<bool>,
+    /// Whether this cast declared the optional teamwork cost. Copied with the spell.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub teamwork: Option<bool>,
     /// Exact cast declaration; its reserved sacrifice is held by the announcement.
     pub bargain: Option<bool>,
     pub evidence: Option<bool>,
@@ -1155,6 +1164,14 @@ impl SpellView {
                     } else {
                         plan
                     };
+                    let plan = if self.cast.is_some_and(|c| c.teamwork == Some(true)) {
+                        self.source_card
+                            .teamwork()
+                            .and_then(|s| s.paid_targets)
+                            .unwrap_or(plan)
+                    } else {
+                        plan
+                    };
                     let plan = if self.cast.is_some_and(|c| c.kicker == Some(true)) {
                         self.source_card.kicked_targets().unwrap_or(plan)
                     } else {
@@ -1380,6 +1397,12 @@ enum Pending {
         player: Player,
     },
     Mobilize {
+        player: Player,
+    },
+    TeamworkIntent {
+        player: Player,
+    },
+    TeamworkPayment {
         player: Player,
     },
     Saddle {
@@ -2015,6 +2038,8 @@ pub struct Observation {
     pub immediate_blink_return: Option<Vec<ReturnLinkView>>,
     pub mobilize_choice: Option<MobilizeChoiceView>,
     pub saddle_choice: Option<SaddleChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub teamwork_choice: Option<TeamworkChoiceView>,
     /// Complete scalar domain, visible only to its choosing actor.
     pub x_choice: Option<XChoiceView>,
     pub schema: u32,
@@ -2390,6 +2415,8 @@ impl Game {
             | Pending::Endure { player, .. }
             | Pending::Convoke { player }
             | Pending::Mobilize { player }
+            | Pending::TeamworkIntent { player }
+            | Pending::TeamworkPayment { player }
             | Pending::Saddle { player }
             | Pending::Crew { player }
             | Pending::Explore { player }
@@ -2800,6 +2827,16 @@ impl Game {
                 if self.visit_crew_actions(&mut emit) {
                     return true;
                 }
+            }
+            Pending::TeamworkIntent { .. } => {
+                for pay in [false, true] {
+                    if self.teamwork_intent_fundable(pay) && emit(Action::ChooseTeamwork { pay }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::TeamworkPayment { .. } => {
+                return self.visit_teamwork_payments(&mut emit);
             }
             Pending::Saddle { .. } => {
                 if self.visit_saddle_actions(&mut emit) {
@@ -3415,6 +3452,17 @@ impl Game {
                                         self.object_ref(card),
                                     )
                                 })
+                                || obj
+                                    .card
+                                    .teamwork()
+                                    .and_then(|s| s.paid_targets)
+                                    .is_some_and(|plan| {
+                                        self.cast_targets_available(
+                                            plan,
+                                            actor,
+                                            self.object_ref(card),
+                                        )
+                                    })
                                 || self.kicked_cast_targets_available(actor, card)
                         }
                         _ => true,
@@ -3471,6 +3519,9 @@ impl Game {
                         let can_fund = costs.into_iter().any(|cost| {
                             if !self.spell_cost_option_available(actor, card, cost) {
                                 return false;
+                            }
+                            if obj.card.teamwork().is_some() {
+                                return self.teamwork_initial_fundable(actor, card, cost);
                             }
                             if obj.card.tiered_costs().is_some() {
                                 return self.tiered_initial_fundable(actor, card, cost);
@@ -3598,6 +3649,7 @@ impl Game {
                         || exile
                         || target_cost
                         || obj.card.offspring_cost().is_some()
+                        || obj.card.teamwork().is_some()
                         || obj.card.kicker_cost().is_some()
                         || obj.card.gift().is_some()
                         || obj.card.collect_evidence_cost().is_some()
@@ -4591,6 +4643,9 @@ impl Game {
                 self.continue_announcement_choices(false);
             }
             Action::ChooseMobilizeDefender { defender } => self.choose_mobilize_defender(defender),
+            Action::ChooseTeamwork { pay } => self.choose_teamwork(pay),
+            Action::ChooseTeammate { object } => self.choose_teammate(object),
+            Action::FinishTeamwork => self.finish_teamwork(),
             Action::ChooseSaddler { object } => self
                 .state
                 .saddle_payment
@@ -6296,6 +6351,11 @@ impl Game {
             } else {
                 None
             },
+            teamwork_choice: if owns_choice {
+                self.teamwork_choice()
+            } else {
+                None
+            },
             x_choice: if owns_choice { self.x_choice() } else { None },
             suspected: s
                 .suspected
@@ -6385,6 +6445,8 @@ impl Game {
                 Pending::Endure { .. } => "endure",
                 Pending::Convoke { .. } => "convoke",
                 Pending::Mobilize { .. } => "mobilize",
+                Pending::TeamworkIntent { .. } => "teamwork_intent",
+                Pending::TeamworkPayment { .. } => "teamwork_payment",
                 Pending::Saddle { .. } => "saddle",
                 Pending::Crew { .. } => "crew",
                 Pending::Explore { .. } => "explore",

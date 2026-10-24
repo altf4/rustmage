@@ -2,14 +2,14 @@
   "schema": 1,
   "set": "MSH",
   "scope": "Power-up prerequisite and three complete representative consumers; full-set acceptance pending",
-  "source_base": "859fd820",
+  "source_base": "19aec34c9523f8b834714ec0ba0725c652d44a3f",
   "behavior_head_before_trace_update": "f5c11b6ca66903ebe15804fad2308832483f6757",
-  "previous_observation_schema": 136,
+  "previous_observation_schema": 137,
   "observation_schema": 137,
-  "inherited_trace_count": 2387,
-  "inherited_previous_wire_full_trace_matches": 2387,
+  "inherited_trace_count": 2391,
+  "inherited_previous_wire_full_trace_matches": 2391,
   "inherited_journals_unchanged": true,
-  "wire_projection": "Recording-only audit sets schema 136 and removes only new ObjectView entered_this_turn and empty power_up_uses fields, preserving inherited field order and values; ordinary validation is unchanged.",
+  "wire_projection": "Recording-only audit retains schema 137 and removes only new ObjectView entered_this_turn and empty power_up_uses fields; all 2391 inherited full Trace structs including observation hashes match merged Teamwork main exactly. Ordinary validation is unchanged.",
   "new_traces": {
     "Aerial Doombot": {
       "root": "main",
@@ -36,8 +36,13 @@
       "observations": "018ebe25aaf9ff13"
     }
   },
-  "focused_rules_tests": 8,
+  "focused_rules_tests": 9,
   "validation": "Final immutable-head release results are recorded in PR #480 and external durable reports.",
   "copy_lifecycle_blocker": "In-place permanent copying and separately acquired identical ability instances remain gated for Taskmaster and Absorbing Man; intrinsic abilities, fresh copy tokens and distinct borrowed slots are covered.",
-  "set_game_acceptance": "pending; no full-set game claim"
+  "set_game_acceptance": "pending; no full-set game claim",
+  "power_up_head_before_teamwork_integration": "2a711a9b2043a3cfc39eda99ec69fa325a60d0c8",
+  "candidate_trace_count": 2394,
+  "mixed_teamwork_evidence": "Both seats pay Aerial Doombot Power-up with real mana pool consumption, prove Teamwork min2 intent unavailable at power1 and available at power4, then pay Cruel Alliance, select and simultaneously tap Aerial, exile opponent creature and gain3. Every action checks owned/raw/index branches and restore; the payment prefix is private.",
+  "baseline_sha256": "957d0c339e35d59dbc626f9aa257384b4790b7eb867eff611bdb34ced73cef5f",
+  "candidate_sha256": "035ca3f0ab1a6e87f998ad5bc6ffc5d0922ed62073a6c711d864fdb9d5ee2fa1"
 }

@@ -1971,6 +1971,7 @@ impl Game {
             || !a.pay_window
             || (a.has_x_cost() && a.item.x.is_none())
             || a.needs_offspring()
+            || a.needs_teamwork()
             || a.needs_kicker()
             || a.needs_gift()
             || a.needs_bargain()
