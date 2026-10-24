@@ -216,10 +216,12 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     (world.has_ability_removal()
         || world.roles().is_some_and(|r| {
             r.keyword_effects.iter().any(|row| {
-                matches!(
+                (matches!(
                     world.object(row.recipient.card).zone,
                     Zone::Battlefield | Zone::Stack
-                ) && world.reference(row.recipient.card) == row.recipient
+                ) || matches!(row.origin, KeywordEffectOrigin::Counter { .. }))
+                    && keyword_counters::applies(world, row)
+                    && world.reference(row.recipient.card) == row.recipient
             }) || r.animations.iter().any(|row| {
                 row.keywords != Keywords::NONE
                     && world.object(row.object.card).zone == Zone::Battlefield
@@ -344,7 +346,9 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
     if let Some(state) = world.roles() {
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
-            if matches!(object.zone, Zone::Battlefield | Zone::Stack)
+            if (matches!(object.zone, Zone::Battlefield | Zone::Stack)
+                || matches!(row.origin, KeywordEffectOrigin::Counter { .. }))
+                && keyword_counters::applies(world, row)
                 && world.reference(row.recipient.card) == row.recipient
                 && row.expires_turn.is_none_or(|turn| turn == game.state.turn)
             {

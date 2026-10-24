@@ -3834,23 +3834,34 @@ impl Game {
                         }
                     }
                 }
-                Instruction::PutCounters { .. } | Instruction::PutCountersScaled { .. } => {
-                    let (subject, kind, amount) = match instruction {
+                Instruction::PutCounters { .. }
+                | Instruction::PutCountersScaled { .. }
+                | Instruction::PutCountersMixed { .. } => {
+                    let (subject, counters) = match instruction {
                         Instruction::PutCounters {
                             subject,
                             kind,
                             amount,
-                        } => (subject, kind, u64::from(amount)),
+                        } => (subject, Counters::of(kind, u64::from(amount))),
                         Instruction::PutCountersScaled {
                             subject,
                             kind,
                             amount,
                         } => (
                             subject,
-                            kind,
-                            u64::try_from(self.item_amount(amount, &item))
-                                .capacity("counter amount exhausted"),
+                            Counters::of(
+                                kind,
+                                u64::try_from(self.item_amount(amount, &item))
+                                    .capacity("counter amount exhausted"),
+                            ),
                         ),
+                        Instruction::PutCountersMixed { subject, amounts } => {
+                            let mut counters = Counters::default();
+                            for &(kind, amount) in amounts {
+                                counters.add(kind, u64::from(amount));
+                            }
+                            (subject, counters)
+                        }
                         _ => unreachable!(),
                     };
                     let ids: Vec<_> = match subject {
@@ -3883,11 +3894,7 @@ impl Game {
                     };
                     let changes = ids
                         .into_iter()
-                        .map(|id| {
-                            let mut c = Counters::default();
-                            c.add(kind, amount);
-                            (self.object_ref(id), c)
-                        })
+                        .map(|id| (self.object_ref(id), counters.clone()))
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }

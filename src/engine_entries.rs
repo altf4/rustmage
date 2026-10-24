@@ -907,13 +907,22 @@ impl Game {
     fn entry_has_timestamp(m: &EntryMove) -> bool {
         m.destination == Zone::Battlefield
             && m.before.zone != Zone::Battlefield
-            && (!m.before.is_token() || m.before.copy_recipe.is_some())
+            && (!m.before.is_token()
+                || m.before.copy_recipe.is_some()
+                || CounterAmounts::from(&m.counters)
+                    .keyword_amounts()
+                    .iter()
+                    .any(|n| *n > 0))
             && !m.before.card.is_emblem()
             && !m.skipped
             && (m.before.card.base_stat_setter().is_some()
                 || !m.before.card.live_static_effects().is_empty()
                 || m.before.card.role().is_some()
-                || m.before.card.has_layer6_provider())
+                || m.before.card.has_layer6_provider()
+                || CounterAmounts::from(&m.counters)
+                    .keyword_amounts()
+                    .iter()
+                    .any(|n| *n > 0))
     }
     fn entry_timestamp_indices(&self, batch: &EntryBatch) -> Vec<usize> {
         let mut ids: Vec<_> = batch
