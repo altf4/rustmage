@@ -1400,6 +1400,12 @@ pub(crate) enum Instruction {
     Destroy,
     Tap,
     Untap,
+    /// One simultaneous placement on battlefield permanents matching the count predicate.
+    PutFilteredCounters {
+        filter: CountFilter,
+        kind: CounterKind,
+        amount: u16,
+    },
     PutCreatureCounters {
         filter: CreatureFilter,
         kind: CounterKind,

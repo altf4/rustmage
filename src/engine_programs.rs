@@ -3755,6 +3755,36 @@ impl Game {
                         );
                     }
                 }
+                Instruction::PutFilteredCounters {
+                    filter,
+                    kind,
+                    amount,
+                } => {
+                    let affected = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, object)| {
+                            Self::count_object_matches(
+                                filter,
+                                item.object,
+                                item.controller,
+                                *id as CardId,
+                                object,
+                                &|id| self.granted_subtypes(id),
+                                &|id, object| self.object_kinds(id, object),
+                            )
+                        })
+                        .map(|(id, _)| {
+                            (
+                                self.object_ref(id as CardId),
+                                Counters::of(kind, u64::from(amount)),
+                            )
+                        })
+                        .collect();
+                    self.effect_counters(affected, replacements::ResumeMode::Program);
+                }
                 Instruction::PutCreatureCounters {
                     filter,
                     kind,

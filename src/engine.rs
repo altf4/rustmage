@@ -7449,3 +7449,7 @@ mod msh_four_existing_tests;
 #[cfg(test)]
 #[path = "engine_msh_combined_tests.rs"]
 mod msh_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_coulson_tests.rs"]
+mod msh_coulson_tests;
