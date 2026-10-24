@@ -1568,6 +1568,9 @@ impl Game {
             && !announcement.additional_paid
         {
             if announcement.additional_cost().is_some_and(|spec| {
+                let spec = announcement.additional.map_or(spec, |object| {
+                    spec.in_zone(self.state.objects[object.card as usize].zone)
+                });
                 matches!(
                     spec.kind,
                     EffectChoiceKind::Sacrifice
