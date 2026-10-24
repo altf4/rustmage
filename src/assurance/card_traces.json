@@ -3583,6 +3583,14 @@
     "journal": "adcea180f71f0045",
     "observations": "057aa1d22f4b7f4d"
   },
+  "Dark Fortress": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "7830e31895c6640b"
+  },
   "Dark Knight's Greatsword": {
     "root": "main",
     "status": "completed",
@@ -6471,6 +6479,14 @@
     "journal": "d8264c734e03cb17",
     "observations": "a70c7887dc4ec4ad"
   },
+  "Gathering Place": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "dd35d35615726d93"
+  },
   "Geist of Saint Thalia": {
     "root": "main",
     "status": "completed",
@@ -6766,6 +6782,14 @@
     "zone": "Battlefield",
     "journal": "e9faa30ff25cc76d",
     "observations": "e05e25ed6390653a"
+  },
+  "Gleaming Bastion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "cf486b250c8029f3"
   },
   "Gleaming Geardrake": {
     "root": "main",
@@ -7774,6 +7798,14 @@
     "zone": "Battlefield",
     "journal": "bb652b9252f64f35",
     "observations": "3ab1e782c041d1b5"
+  },
+  "Hidden Lair": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "2b3674ef3e73dd3b"
   },
   "Hidetsugu's Second Rite": {
     "root": "main",
@@ -17422,6 +17454,14 @@
     "zone": "Battlefield",
     "journal": "ce93789b5fa64c9f",
     "observations": "18a9194467d49d1f"
+  },
+  "Training Compound": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "4b870d0a355c0ebb"
   },
   "Training Regimen": {
     "root": "main",

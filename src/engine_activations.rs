@@ -76,12 +76,21 @@ impl Game {
         }
     }
 
-    pub(super) fn activation_guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
+    pub(super) fn activation_guard_available(
+        &self,
+        guard: ActivationGuard,
+        source: CardId,
+        actor: Player,
+    ) -> bool {
         match guard {
             ActivationGuard::CastInstantSorceryThisTurn => {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::SourceEnteredOrControlsBasicLand => {
+                self.entered_this_turn(self.object_ref(source))
+                    || ability_world::CharacteristicWorld::controls_basic_land(self, actor)
+            }
             ActivationGuard::HandSizeAtLeast(minimum) => {
                 self.hand_count(actor) >= usize::from(minimum)
             }
@@ -125,7 +134,7 @@ impl Game {
         !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && self.printed_abilities_available(card)
             && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
-            && self.activation_guard_available(ability.guard, actor)
+            && self.activation_guard_available(ability.guard, card, actor)
             && self.power_up_available(
                 self.object_ref(card),
                 self.state.objects[card as usize].card,

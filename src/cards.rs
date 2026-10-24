@@ -2706,6 +2706,7 @@ pub(crate) enum ActivationGuard {
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
     ControlLandsAtLeast(u16),
+    SourceEnteredOrControlsBasicLand,
     HandSizeAtLeast(u16),
     LifeAboveStarting(u16),
 }
@@ -2716,6 +2717,7 @@ impl ActivationGuard {
             | Self::CastInstantSorceryThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
+            | Self::SourceEnteredOrControlsBasicLand
             | Self::HandSizeAtLeast(_)
             | Self::LifeAboveStarting(_) => &[],
             Self::ControlSubtypeAny(types) => types,

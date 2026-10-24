@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "scope": "Five complete MSH conditional dual lands and shared actual/speculative activation guard; full-set acceptance remains open",
+  "base": "afcc69f9c1290b1878a07dd5d8868b0d2f1e2b6b",
+  "cards": [
+    "Dark Fortress",
+    "Gathering Place",
+    "Gleaming Bastion",
+    "Hidden Lair",
+    "Training Compound"
+  ],
+  "shared_mechanics": [
+    "Source-qualified starting guard: exact incarnation entered this turn OR current controller controls a basic-supertype land; tapped basics still qualify.",
+    "Actual, borrowed and funding activation paths pass the actual source ID; virtual departures/control/kinds and immediate entries use the borrowed world.",
+    "Funding memo key distinguishes entered histories only for immutable printed guarded mana definitions; ordinary basic lands remain interchangeable. No wire schema change."
+  ],
+  "scenarios": 6,
+  "test_scope": [
+    "Both seats; all five lands, both colored choices, exact one colorless, no off-color or double tap, untapped entry.",
+    "Real land play, turn expiry, tapped basic witness, opponent versus owned witness, basic departure, blink/new incarnation and control change.",
+    "Actual colored spells paid in each color; unavailable colored funding rejects announcement.",
+    "Basic land subtypes on nonbasic Breeding Pool do not qualify; Imprisoned in the Moon suppresses printed abilities and leaving restores them.",
+    "Private funding overlays reject departed/stolen basic witness; old/fresh same-definition sources have distinct states; exact immediate virtual entry and parent snapshot preserved.",
+    "Existing checked helper covers wrong actor, raw/index owned branches, parent disposal, restore and stale revision for actual decisions."
+  ],
+  "validation": {
+    "native_before_final_key_refinement": {
+      "passed": 526,
+      "test_seconds": 4.18,
+      "log": "<cache>/rustmage-msh-conditional-lands-native-final.log",
+      "guard_report": "<cache>/rustmage-build-reports/593d1d7370344a00802ee92b21e7ccc4.json"
+    },
+    "final_key_refinement": "Limits entry-history key discrimination to immutable guarded mana definitions; final integrated focused/native/Clippy/release checks required.",
+    "trace_audit": "<cache>/rustmage-msh-conditional-lands-trace-audit.json",
+    "inherited_full_traces_exact": 2421,
+    "new_full_traces": 5,
+    "source_definitions": 5388,
+    "verified_java_blobs": 1051
+  },
+  "initial_fixture_correction": "register_battlefield_sources records actual entry. Explicit older-land fixtures clear only entry history; no guard behavior defect was found in the first focused run.",
+  "implementation_interval": {
+    "start_utc": "2026-10-24T19:16:35+00:00",
+    "six_scenarios_and_strict_native_verified_utc": "2026-10-24T19:44:12.115149+00:00",
+    "complete_candidates": 5,
+    "scope": "Includes full source/helper reading, authoring, guarded build queue, fixture correction, strict native and inherited trace proof. Final review/integration/performance remains separate."
+  }
+}

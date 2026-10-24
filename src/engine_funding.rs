@@ -94,6 +94,13 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
         self.borrowed_uses.contains(&(source, slot))
     }
+    fn entered_this_turn(&self, source: ObjectRef) -> bool {
+        self.game.entered_this_turn(source)
+            || self
+                .entry_projection
+                .as_ref()
+                .is_some_and(|p| p.order.contains(&source))
+    }
     fn game(&self) -> &Game {
         self.game
     }
@@ -155,6 +162,7 @@ struct ResourceKey {
     zone: u8,
     tapped: bool,
     sick: bool,
+    entered: bool,
     counters: InitialCounters,
     used: u64,
     gained: Keywords,
@@ -764,12 +772,16 @@ impl<'g> FundingState<'g> {
         }
         keywords
     }
-    fn guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
+    fn guard_available(&self, guard: ActivationGuard, source: CardId, actor: Player) -> bool {
         match guard {
             ActivationGuard::CastInstantSorceryThisTurn => {
                 self.game.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::SourceEnteredOrControlsBasicLand => {
+                ability_world::CharacteristicWorld::entered_this_turn(self, self.reference(source))
+                    || ability_world::CharacteristicWorld::controls_basic_land(self, actor)
+            }
             ActivationGuard::HandSizeAtLeast(minimum) => {
                 self.game
                     .state
@@ -925,7 +937,7 @@ impl<'g> FundingState<'g> {
                     ready_object.used_abilities = 0;
                 }
                 if borrowed.is_some_and(|a| a.used && (ability.once_per_turn || ability.exhaust))
-                    || !self.guard_available(ability.guard, goal.actor)
+                    || !self.guard_available(ability.guard, entry.id, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         &ready_object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
@@ -1193,6 +1205,13 @@ impl<'g> FundingState<'g> {
                 zone: r.object.zone as u8,
                 tapped: r.object.tapped,
                 sick: r.object.summoning_sick,
+                // Ordinary basic lands remain interchangeable. Only immutable
+                // guarded mana definitions need their entry history in this key;
+                // borrowed/virtual-entry worlds already retain exact identities.
+                entered: r.object.card.activations().iter().any(|ability| {
+                    ability.guard == ActivationGuard::SourceEnteredOrControlsBasicLand
+                        && ability.mana_production().is_some()
+                }) && self.entered_this_turn(self.reference(r.id)),
                 counters: r.object.counters,
                 used: r.object.used_abilities,
                 gained: r.object.gained_keywords,
@@ -1236,7 +1255,7 @@ impl<'g> FundingState<'g> {
                 r.kinds,
                 (r.protected, r.reserved),
                 r.zone,
-                r.tapped,
+                (r.tapped, r.entered),
                 r.sick,
                 [
                     r.counters.plus_one,
@@ -1536,7 +1555,7 @@ impl<'g> FundingState<'g> {
                             && object.generation == source.generation
                             && *pending == index
                     })
-                    || !self.guard_available(ability.guard, goal.actor)
+                    || !self.guard_available(ability.guard, resource.id, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
@@ -2765,3 +2784,7 @@ impl Game {
         world.fund_creature_counter_cost(&goal, amount, selected, &mut HashSet::new())
     }
 }
+
+#[cfg(test)]
+#[path = "engine_msh_conditional_lands_funding_tests.rs"]
+mod msh_conditional_lands_tests;

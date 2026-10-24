@@ -215,6 +215,20 @@ pub(super) trait CharacteristicWorld {
             game.state.attack_declared && self.attacking(source),
         )
     }
+    fn entered_this_turn(&self, source: ObjectRef) -> bool {
+        self.game().entered_this_turn(source)
+    }
+    /// Basic is a supertype; a basic land type alone is insufficient.
+    /// Read this world so virtual departures and control changes take effect.
+    fn controls_basic_land(&self, player: Player) -> bool {
+        self.game().state.objects.iter().enumerate().any(|(id, _)| {
+            let object = self.object(id as CardId);
+            object.zone == Zone::Battlefield
+                && object.controller == player
+                && object.card.is_basic_land()
+                && self.kinds(id as CardId) & 2 != 0
+        })
+    }
     fn land_mana_applies(
         &self,
         source: ObjectRef,
