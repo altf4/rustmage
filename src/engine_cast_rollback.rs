@@ -1,5 +1,7 @@
 //! Rare failed proposals caused by another player's mandatory entry choices.
 //! The borrowed funding solver never owns this checkpoint or clones a Game.
+//! Failed proposals reverse their entire legal mana-ability chain (CR733.1),
+//! while preserving library movements, shuffles and reveals that cannot reverse.
 use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -74,8 +76,8 @@ impl Game {
             }
             _ => return,
         };
-        // Such a foreign choice can arise only from an immediate linked return in
-        // the currently supported cost families. Ordinary casts allocate nothing.
+        // Foreign entry choices currently arise from immediate linked returns.
+        // Allocate no checkpoint when no opponent-owned return is possible.
         if !self.state.exile_links.iter().any(|link| {
             link.return_zone == Zone::Battlefield
                 && self.object_ref(link.exiled.card) == link.exiled
@@ -86,33 +88,6 @@ impl Game {
         }
         self.state.cast_rollback =
             Some(Box::new(CastRollback::new(self.state.clone(), actor, card)));
-    }
-    /// Completed legal mana abilities are retained when the subsequent spell is
-    /// reversed (CR733.1). Capture their complete effects, not merely their pool.
-    pub(super) fn refresh_cast_rollback_after_mana(&mut self) {
-        if self.state.mana_announcement_stack.is_some() {
-            return;
-        }
-        let Some(a) = self.state.announcing.as_ref() else {
-            return;
-        };
-        let Some(old) = self.state.cast_rollback.as_ref() else {
-            return;
-        };
-        if a.item.kind != StackKind::Spell || a.item.card != old.spell {
-            return;
-        }
-        let old = self.state.cast_rollback.take().unwrap();
-        let mut before = self.state.clone();
-        before.pending = old.before.pending.clone();
-        before.announcing = old.before.announcing.clone();
-        before.resolution_free_casts = old.before.resolution_free_casts.clone();
-        // The parent resolution remains suspended at its original cast window.
-        before.resolving = old.before.resolving.clone();
-        before.mana_announcement_stack = old.before.mana_announcement_stack.clone();
-        let mut next = CastRollback::new(before, old.player, old.spell);
-        next.foreign_choice = old.foreign_choice;
-        self.state.cast_rollback = Some(Box::new(next));
     }
     pub(super) fn foreign_cast_choice_pending(&self) -> bool {
         self.state

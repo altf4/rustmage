@@ -2617,13 +2617,6 @@ impl Game {
             if !legal {
                 return Err(Error::IllegalAction);
             }
-            let direct_mana = matches!(
-                action,
-                Action::TapMana { .. }
-                    | Action::TapGrantedMana { .. }
-                    | Action::ActivateMana { .. }
-                    | Action::ActivateBorrowedMana { .. }
-            );
             self.prepare_cast_rollback(actor, &action);
             self.clear_zone_reveals();
             self.prepare_mana_allocations(&action);
@@ -2655,10 +2648,6 @@ impl Game {
                     self.prepare_triggers();
                 }
                 break;
-            }
-            if direct_mana && self.state.entry_batch.is_none() && self.state.replacements.is_none()
-            {
-                self.refresh_cast_rollback_after_mana();
             }
         }
         if self.foreign_cast_choice_pending() {

@@ -32,9 +32,10 @@ fn pay(g: &mut Game) {
 fn setup(p: Player, foreign: bool) -> (Game, CardId, CardId, CardId, CardId) {
     let mut g = scenario(p);
     let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+    g.state.objects[silver as usize].growth.power = -1;
     let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
     let owner = if foreign { p.other() } else { p };
-    let aura = put(&mut g, owner, "Unable to Scream", Zone::Battlefield);
+    let aura = put(&mut g, owner, "Witness Protection", Zone::Battlefield);
     let r = g.object_ref(enemy);
     g.state.objects[aura as usize].attached_to = Some(r);
     if !foreign {
@@ -108,7 +109,7 @@ fn sos_cast_rollback_foreign_aura_can_strand_costs_and_returns_entire_proposal()
     }
 }
 #[test]
-fn sos_cast_rollback_keeps_completed_basic_mana_ability_but_cancels_spell_payments() {
+fn sos_cast_rollback_reverses_entire_mana_chain_and_spell_payments() {
     for p in [Player::P0, Player::P1] {
         let (mut g, silver, enemy, aura, prison) = setup(p, true);
         let forest = put(&mut g, p, "Forest", Zone::Battlefield);
@@ -124,8 +125,8 @@ fn sos_cast_rollback_keeps_completed_basic_mana_ability_but_cancels_spell_paymen
         assert_eq!(g.object_view(prison).zone, Zone::Battlefield);
         assert_eq!(g.object_view(aura).zone, Zone::Exile);
         assert_eq!(g.object_view(spell).zone, Zone::Hand);
-        assert!(g.object_view(forest).tapped);
-        assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 1, 0]);
+        assert!(!g.object_view(forest).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 0, 0, 0]);
         assert!(g.state.announcing.is_none());
         assert!(g.state.cast_rollback.is_none());
     }
