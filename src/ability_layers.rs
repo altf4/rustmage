@@ -89,6 +89,13 @@ pub(crate) enum StaticAbilityFragment {
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
+    /// Live layer-7c bonus while the exact granting source meets its counter threshold.
+    SourceCounterBonus {
+        kind: CounterKind,
+        minimum: u64,
+        filter: CreatureFilter,
+        stats: Stats,
+    },
     ScalingModifier(u16, ScalingModifier),
     EnchantedModifier(u16, EnchantedModifier),
     CounterKeyword(u16, CounterKind, Keywords),

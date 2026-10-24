@@ -1659,10 +1659,11 @@ pub enum CounterKind {
     Wish,
     Stash,
     Charge,
+    Growth,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 15] = [
+    pub const ALL: [Self; 16] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1678,6 +1679,7 @@ impl CounterKind {
         Self::Wish,
         Self::Stash,
         Self::Charge,
+        Self::Growth,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1692,6 +1694,7 @@ impl CounterKind {
                 | Self::Wish
                 | Self::Stash
                 | Self::Charge
+                | Self::Growth
         )
     }
 }

@@ -190,6 +190,29 @@ impl CharacteristicQuery<'_> {
                     toughness: 1,
                 };
             }
+            for group in object.card.static_ability_groups() {
+                for fragment in group.fragments {
+                    if let StaticAbilityFragment::SourceCounterBonus {
+                        kind,
+                        minimum,
+                        filter,
+                        stats: bonus,
+                    } = *fragment
+                        && self.counter_count(source, kind) >= minimum
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                        && self.creature_matches(
+                            filter,
+                            object.controller,
+                            self.object_ref(source),
+                            id,
+                        )
+                    {
+                        stats += bonus;
+                    }
+                }
+            }
             for (index, modifier) in object.card.scaling_modifiers().iter().enumerate() {
                 if !self.continuous_fragment_available(source, |fragment| {
                     matches!(fragment,

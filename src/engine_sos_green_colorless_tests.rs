@@ -588,3 +588,39 @@ fn sos_germination_practicum_counters_only_own_creatures_then_recurs_after_sourc
         assert_eq!(g.observe(p).paradigms.len(), 1);
     }
 }
+
+#[test]
+fn sos_comforting_counsel_counts_gain_events_live_threshold_control_and_reentry() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = paid(&mut g, p, "Comforting Counsel", None, &[]);
+        settle(&mut g);
+        let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.gain_life(p, 20);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Growth), 1);
+        g.gain_life(p, 0);
+        g.gain_life(p.other(), 5);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Growth), 1);
+        for counter in 2..=5 {
+            g.gain_life(p, 1);
+            settle(&mut g);
+            assert_eq!(g.counter_count(source, CounterKind::Growth), counter);
+            assert_eq!(g.stats(own).power, if counter == 5 { 5 } else { 2 });
+            assert_eq!(g.stats(enemy).power, 2);
+        }
+        assert_eq!(g.stats(own).toughness, 5);
+        let reference = g.object_ref(source);
+        g.change_controller(reference, p.other());
+        assert_eq!(g.stats(own).power, 2);
+        assert_eq!(g.stats(enemy).power, 5);
+        g.move_object(source, Zone::Graveyard);
+        assert_eq!(g.stats(enemy).power, 2);
+        g.move_object(source, Zone::Battlefield);
+        assert_eq!(g.counter_count(source, CounterKind::Growth), 0);
+        assert_eq!(g.stats(own).power, 2);
+        assert_eq!(g.stats(enemy).power, 2);
+    }
+}
