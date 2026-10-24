@@ -3,10 +3,30 @@
   "catalogue_id": 1733,
   "oracle_id": "88f34d15-c338-40a7-b56c-c5b650847430",
   "facts_sha256": "5555634b4879412f38b48bef6335a730fdf6ab512bcc946950611ffad1b55efb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cecf45ec697c8ef994cf19046cc508d1924a0148e28cc4a2732c25ddc891dcb3"
   },
-  "physical_metadata_sha256": "8b8d03a939bd754605338108543e7ca0718f026a009359438ae0b16c0dba8cf0"
+  "physical_metadata_sha256": "8b8d03a939bd754605338108543e7ca0718f026a009359438ae0b16c0dba8cf0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GhostSpectralSaboteur.java",
+  "java_sha256": "a2d4f705b1af8df1c97d4dc0d9ede7253f61deae992abb0e05843b17093e9af4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+      "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CantBeBlockedSourceAbility.java",
+      "sha256": "db5a7fc24b93fadd2bb8e9fd2e03c5ac39dc413d3e35d1a532fcc53aa08fadcb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    }
+  ]
 }

@@ -3,10 +3,35 @@
   "catalogue_id": 4691,
   "oracle_id": "7d765055-da62-43f7-9580-98e9d164753b",
   "facts_sha256": "1039338a92856926e460a3e6bd6c2521a9168c83d6cdb2e679de06da84508bb9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b821313028dc526a8c24000119e55ceecef086fb1decccebb5f1a1e93159922c"
   },
-  "physical_metadata_sha256": "7a59e92ab34a4d9819f61399c387917935f5dc5e6665af56e6189e1a4a78a62f"
+  "physical_metadata_sha256": "7a59e92ab34a4d9819f61399c387917935f5dc5e6665af56e6189e1a4a78a62f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TruckToss.java",
+  "java_sha256": "72595289d8452390b92fe93fb22b8f313c22a4e5455251012453616622a5baf9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    }
+  ]
 }

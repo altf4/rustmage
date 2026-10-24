@@ -3,10 +3,45 @@
   "catalogue_id": 174,
   "oracle_id": "34c0f75d-10a9-428d-b202-3defb3949090",
   "facts_sha256": "4d4c833eec2c6846ee1991b3e16de28dd2a7e5fc88717480763ddcee29907b11",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6d052a8c999c2f1c25c2fff8669799bd7ed45548de64d6384ab0fffa6e506999"
   },
-  "physical_metadata_sha256": "f1d376d6e499687190aa09b74bfbfe8a31033a008c421336a74a5d7fb0fe65fd"
+  "physical_metadata_sha256": "f1d376d6e499687190aa09b74bfbfe8a31033a008c421336a74a5d7fb0fe65fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AntMansArmy.java",
+  "java_sha256": "f8066fda3f7b7c3a0632ecd6229f3adba5ac045f1f2cade8ab582b2f7bd25332",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+      "sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+      "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+      "sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Token.java",
+      "sha256": "77098d7376c01bf204d0fed3cd83eb2a99b55b03525dfeff9188e1dbce27903f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    }
+  ]
 }
