@@ -11,6 +11,7 @@ pub(super) struct TargetCardFacts {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    pub cascade: Option<Box<cascade::CascadeView>>,
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
     #[allow(clippy::box_collection)]
@@ -1101,11 +1102,17 @@ impl Game {
             if !item.is_copy {
                 let source = self.object_view(item.card);
                 for (ability, trigger) in source.card.triggers().iter().enumerate() {
-                    if trigger.condition.event() == TriggerCondition::SelfCast {
-                        self.queue_trigger(&source, ability);
+                    if trigger.condition.event() == TriggerCondition::SelfCast
+                        && self.queue_trigger(&source, ability)
+                    {
+                        self.state.pending_triggers.last_mut().unwrap().cast_event =
+                            cast_event.map(Box::new);
                     }
                 }
             }
+        }
+        if let Some(index) = stack {
+            self.queue_hand_cascade(index);
         }
         self.capture_copy_cast(stack, first_trigger);
         if let Some(index) = stack {
@@ -1530,6 +1537,7 @@ impl Game {
                 )
             });
         self.state.resolving = Some(Resolution {
+            cascade: None,
             target_card_facts,
             immediate_blink_return: None,
             explore: None,
@@ -1640,6 +1648,7 @@ impl Game {
             return;
         }
         loop {
+            self.finish_cascade();
             if self.advance_replacements(false) {
                 return;
             }
@@ -1732,6 +1741,11 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::Cascade => {
+                    if self.start_cascade(&item) {
+                        return;
+                    }
+                }
                 Instruction::PrepareSource => self.prepare_permanent(item.object),
                 Instruction::Prepare { subject } => {
                     for id in self.keyword_subjects(&item, subject) {

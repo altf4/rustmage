@@ -7,7 +7,8 @@ impl Card {
             g.fragments.iter().any(|f| {
                 matches!(
                     f,
-                    StaticAbilityFragment::LookAtLibraryTop
+                    StaticAbilityFragment::CascadeFromHand { .. }
+                        | StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
@@ -256,6 +257,7 @@ impl Game {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
+    pub maximum_mana_value: Option<u64>,
     pub origin: Zone,
     pub exile_on_graveyard: bool,
     pub allow_lands: bool,
@@ -278,6 +280,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            maximum_mana_value: None,
             origin: Zone::Graveyard,
             exile_on_graveyard: true,
             allow_lands: false,
@@ -302,6 +305,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            maximum_mana_value: None,
             origin: Zone::Exile,
             exile_on_graveyard: false,
             player,
@@ -353,16 +357,19 @@ impl Game {
                     CastFace::Adventure => physical.adventure_spell(),
                     CastFace::Omen => physical.omen_spell(),
                 };
-                if definition.is_some_and(|card| !card.is_land())
-                    && self.permitted_cast_available(
-                        player,
-                        object.card,
-                        CastMethod::Free,
-                        face,
-                        true,
-                        false,
-                    )
-                    && emit(Action::CastExiledDuringResolution { object, face })
+                if definition.is_some_and(|card| {
+                    !card.is_land()
+                        && free
+                            .maximum_mana_value
+                            .is_none_or(|maximum| card.fixed_mana_value() < maximum)
+                }) && self.permitted_cast_available(
+                    player,
+                    object.card,
+                    CastMethod::Free,
+                    face,
+                    true,
+                    false,
+                ) && emit(Action::CastExiledDuringResolution { object, face })
                 {
                     return true;
                 }

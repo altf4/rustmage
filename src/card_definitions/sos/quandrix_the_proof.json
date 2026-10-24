@@ -3,10 +3,35 @@
   "catalogue_id": 3305,
   "oracle_id": "2cbccc46-bdef-4dfb-90a4-0278c5c8488a",
   "facts_sha256": "13290c6c3921f590c4d481eda72b8903b63bb85a1c4c5c01f334ce85e308939c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "48f0ced069cba8ee82993c5cabf1815dc0d9e75d7012516438f5c98f2f1a24f5"
   },
-  "physical_metadata_sha256": "758e0b337e35e094512702e55eed2840ece0505cc0b9f82dcd1813a1c569620d"
+  "physical_metadata_sha256": "758e0b337e35e094512702e55eed2840ece0505cc0b9f82dcd1813a1c569620d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuandrixTheProof.java",
+  "java_sha256": "ce52a2c07cf9ec42cfbef70e35fba00c3f39702147b619a38bd0e1ff8cbfd60a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CascadeAbility.java",
+      "sha256": "f75f7e7c31b2ab909c9cf2ce385ee4b55473295bf9eb67c0b62554861646f1c3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledSpellsEffect.java",
+      "sha256": "fe96f9ccb2dbf72b35b14b2fa8c2e131e1e8e4e399b9cfd55ad6d4a198741227"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/card/CastFromZonePredicate.java",
+      "sha256": "c656e76a2ab12ad6571b86d28436c3ebde0d212aeeacf0f46a2e11bee5bd8a83"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ]
 }

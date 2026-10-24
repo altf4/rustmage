@@ -431,6 +431,7 @@ impl Game {
             return;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            maximum_mana_value: None,
             origin: Zone::Exile,
             exile_on_graveyard: false,
             player: item.controller,

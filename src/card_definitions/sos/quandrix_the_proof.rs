@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed Oracle/XMage behavior; full printed obligations pinned in paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(6, 6),
     keywords: Keywords::FLYING.union(Keywords::TRAMPLE),
+    static_groups: &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::CascadeFromHand { ability: 1 }],
+    }],
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfCast,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Cascade],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Granted(&TriggerCondition::Reflexive),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Cascade],
+        },
+    ],
     ..CardRules::EMPTY
 };

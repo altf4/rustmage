@@ -158,3 +158,4 @@ mod sos_review_regressions;
 mod sos_white_blue_final;
 
 mod sos_killian;
+mod sos_white_blue_dragons;

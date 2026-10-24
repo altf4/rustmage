@@ -3,6 +3,9 @@ mod mana_announcements;
 #[path = "engine_turn_skips.rs"]
 mod turn_skips;
 pub use mana_announcements::ManaAnnouncementView;
+#[path = "engine_cascade.rs"]
+mod cascade;
+pub use cascade::CascadeView;
 #[path = "engine_paradigm.rs"]
 mod paradigm;
 pub use paradigm::{ParadigmView, ResolvedSpellNameView};
@@ -1971,6 +1974,7 @@ pub struct Observation {
     pub graveyard_cast_permissions: Vec<GraveyardCastPermissionView>,
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
     pub resolution_free_casts: Option<ResolutionFreeCasts>,
+    pub cascade: Option<CascadeView>,
     pub adventures: Vec<AdventurePermission>,
     pub spell_characteristics: Vec<SpellCharacteristicsView>,
     pub plotted_cards: Vec<PlottedCard>,
@@ -6243,6 +6247,10 @@ impl Game {
             spell_characteristics: self.spell_characteristics(),
             exile_permissions: s.exile_permissions.clone(),
             borrowed_abilities: self.borrowed_ability_views(),
+            cascade: s
+                .resolving
+                .as_ref()
+                .and_then(|r| r.cascade.as_deref().cloned()),
             resolution_free_casts: s.resolution_free_casts.as_deref().cloned(),
             graveyard_type_uses: s
                 .graveyard_type_uses
@@ -6706,7 +6714,10 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution
+                    resolution.cascade.as_ref().map_or(0, |row| {
+                        std::mem::size_of::<CascadeView>()
+                            + row.exiled.len() * std::mem::size_of::<ObjectRef>()
+                    }) + resolution
                         .explore
                         .as_ref()
                         .map_or(0, |_| std::mem::size_of::<ExploreChoiceView>())
