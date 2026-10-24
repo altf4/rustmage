@@ -1318,6 +1318,7 @@ impl Game {
             }
             StackKind::Spell => match item.source_card.effect() {
                 Effect::Aura(_) => {
+                    self.record_resolved_spell_name(&item);
                     let target = item.targets[0].object.unwrap();
                     let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
                     movement.attachment = Some(target);
@@ -1333,6 +1334,7 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
+                    self.record_resolved_spell_name(&item);
                     if item.cast.is_some_and(|c| {
                         c.offspring == Some(true)
                             || c.kicker == Some(true)
@@ -1556,6 +1558,7 @@ impl Game {
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
                 self.abandon_linked_choices();
                 let item = self.state.resolving.take().unwrap().item;
+                self.record_resolved_spell_name(&item);
                 if item.kind == StackKind::Spell
                     && self.state.objects[item.card as usize].zone == Zone::Stack
                 {
@@ -2452,6 +2455,15 @@ impl Game {
                 }
                 Instruction::NoMaximumHandSize => {
                     self.state.players[item.controller.index()].no_maximum_hand_size = true;
+                }
+                Instruction::Paradigm { ability } => self.resolve_paradigm(&item, ability),
+                Instruction::ExileUntilManaValueCastFree(minimum) => {
+                    self.exile_until_mana_value_cast_free(item.controller, minimum);
+                    return;
+                }
+                Instruction::CastParadigmCopy => {
+                    self.cast_paradigm_copy(&item);
+                    return;
                 }
                 Instruction::ExileResolvingSpell => {
                     if item.kind == StackKind::Spell

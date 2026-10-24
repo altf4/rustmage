@@ -261,7 +261,9 @@ fn sos_artistic_process_modes_opponent_only_damage_and_temporary_haste() {
                     .iter()
                     .enumerate()
                     .find_map(|(i, o)| {
-                        (o.zone == Zone::Battlefield && o.card == Card::from_name("@token/sos-elemental").unwrap()).then_some(i as CardId)
+                        (o.zone == Zone::Battlefield
+                            && o.card == Card::from_name("@token/sos-elemental").unwrap())
+                        .then_some(i as CardId)
                     })
                     .unwrap();
                 assert_eq!(stats(&g, elemental), (3, 3));
@@ -295,7 +297,9 @@ fn sos_send_pest_opponent_discard_and_attack_life_not_death_life() {
             .iter()
             .enumerate()
             .find_map(|(i, o)| {
-                (o.zone == Zone::Battlefield && o.card == Card::from_name("@token/sos-pest").unwrap()).then_some(i as CardId)
+                (o.zone == Zone::Battlefield
+                    && o.card == Card::from_name("@token/sos-pest").unwrap())
+                .then_some(i as CardId)
             })
             .unwrap();
         assert_eq!(stats(&g, pest), (1, 1));
@@ -308,5 +312,179 @@ fn sos_send_pest_opponent_discard_and_attack_life_not_death_life() {
         act(&mut g, Action::FinishAttackers);
         settle(&mut g);
         assert_eq!(g.state.players[p.index()].life, 21);
+    }
+}
+
+fn begin_paradigm_main(g: &mut Game, active: Player, step: Step) {
+    g.state.active = active;
+    g.state.priority = active;
+    g.state.pending = Pending::Priority;
+    g.begin_step(step);
+    g.prepare_triggers();
+}
+
+#[test]
+fn sos_paradigm_first_resolution_source_independence_optional_copy_and_cast_count() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let original = put(&mut g, p, "Decorum Dissertation", Zone::Hand);
+        let library = g.state.players[p.other().index()].library.len();
+        cast(&mut g, original, Some(Target::Player(p.other())));
+        settle(&mut g);
+        assert_eq!(
+            g.state.players[p.other().index()].library.len(),
+            library - 2
+        );
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.object_view(original).zone, Zone::Exile);
+        assert_eq!(g.observe(p).paradigms.len(), 1);
+        let second = put(&mut g, p, "Decorum Dissertation", Zone::Hand);
+        cast(&mut g, second, Some(Target::Player(p)));
+        settle(&mut g);
+        assert_eq!(
+            g.observe(p).paradigms.len(),
+            1,
+            "second same-name resolution does not multiply the delayed ability"
+        );
+        assert_eq!(g.object_view(second).zone, Zone::Exile);
+        // The delayed ability is independent of both the old card and its incarnation.
+        g.move_object(original, Zone::Hand);
+        begin_paradigm_main(&mut g, p.other(), Step::Main1);
+        assert!(g.state.stack.is_empty());
+        begin_paradigm_main(&mut g, p, Step::Main2);
+        assert!(g.state.stack.is_empty());
+        begin_paradigm_main(&mut g, p, Step::Main1);
+        until_choice(&mut g);
+        let unused = g.state.resolution_free_casts.as_ref().unwrap().remaining[0];
+        assert_eq!(g.object_view(unused.card).zone, Zone::Exile);
+        // One representative suspended private-owned root checks raw/index replay,
+        // stale revision and restore, instead of multiplying that cost per action.
+        if p == Player::P0 {
+            super::big_helpers::checked(&mut g, Action::FinishResolutionCasts);
+        } else {
+            act(&mut g, Action::FinishResolutionCasts);
+        }
+        settle(&mut g);
+        assert_eq!(g.object_view(unused.card).zone, Zone::Outside);
+        assert_eq!(g.observe(p.other()).paradigms.len(), 1);
+        begin_paradigm_main(&mut g, p, Step::Main1);
+        until_choice(&mut g);
+        let copy = g.state.resolution_free_casts.as_ref().unwrap().remaining[0];
+        let mana = g.state.players[p.index()].mana;
+        let casts = g.state.players[p.index()].spells_cast_this_turn;
+        act(
+            &mut g,
+            Action::CastExiledDuringResolution {
+                object: copy,
+                face: CastFace::Normal,
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, mana);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, casts + 1);
+        act(&mut g, Action::FinishResolutionCasts);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+        assert_eq!(g.observe(p).paradigms.len(), 1);
+        assert_eq!(g.object_view(copy.card).zone, Zone::Outside);
+    }
+}
+
+#[test]
+fn sos_countered_paradigm_never_registers_but_countered_copy_preserves_recurrence() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let original = put(&mut g, p, "Decorum Dissertation", Zone::Hand);
+    let negate = put(&mut g, p.other(), "Negate", Zone::Hand);
+    cast(&mut g, original, Some(Target::Player(p)));
+    act(&mut g, Action::Pass);
+    cast(&mut g, negate, Some(Target::Spell(original)));
+    settle(&mut g);
+    assert!(g.observe(p).paradigms.is_empty());
+    assert!(
+        !g.observe(p)
+            .resolved_spell_names
+            .iter()
+            .any(|row| row.name == "Decorum Dissertation")
+    );
+    assert_eq!(g.object_view(original).zone, Zone::Graveyard);
+    let second = put(&mut g, p, "Decorum Dissertation", Zone::Hand);
+    cast(&mut g, second, Some(Target::Player(p)));
+    settle(&mut g);
+    begin_paradigm_main(&mut g, p, Step::Main1);
+    until_choice(&mut g);
+    let copy = g.state.resolution_free_casts.as_ref().unwrap().remaining[0];
+    act(
+        &mut g,
+        Action::CastExiledDuringResolution {
+            object: copy,
+            face: CastFace::Normal,
+        },
+    );
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Player(p),
+        },
+    );
+    pay(&mut g);
+    act(&mut g, Action::FinishResolutionCasts);
+    let negate = put(&mut g, p.other(), "Negate", Zone::Hand);
+    act(&mut g, Action::Pass);
+    cast(&mut g, negate, Some(Target::Spell(copy.card)));
+    settle(&mut g);
+    assert_eq!(g.observe(p).paradigms.len(), 1);
+    begin_paradigm_main(&mut g, p, Step::Main1);
+    until_choice(&mut g);
+    assert_eq!(
+        g.state
+            .resolution_free_casts
+            .as_ref()
+            .unwrap()
+            .remaining
+            .len(),
+        1
+    );
+}
+
+#[test]
+fn sos_capstone_exiles_to_total_threshold_then_casts_only_exiled_spells_free() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let retained = put(&mut g, p, "Murder", Zone::Library);
+        let threshold = put(&mut g, p, "Murder", Zone::Library);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Library);
+        let land = put(&mut g, p, "Mountain", Zone::Library);
+        let spell = put(&mut g, p, "Improvisation Capstone", Zone::Hand);
+        cast(&mut g, spell, None);
+        until_choice(&mut g);
+        assert_eq!(g.object_view(retained).zone, Zone::Library);
+        for id in [threshold, bear, land] {
+            assert_eq!(g.object_view(id).zone, Zone::Exile);
+        }
+        reject(&mut g, Action::PlayLand { card: land });
+        let object = g.object_ref(bear);
+        let mana = g.state.players[p.index()].mana;
+        act(
+            &mut g,
+            Action::CastExiledDuringResolution {
+                object,
+                face: CastFace::Normal,
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, mana);
+        act(&mut g, Action::FinishResolutionCasts);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(threshold).zone, Zone::Exile);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert_eq!(g.observe(p).paradigms.len(), 1);
     }
 }

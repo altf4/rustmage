@@ -4,6 +4,7 @@ impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
         if step == Step::Main1 {
+            self.queue_paradigm_triggers();
             self.precombat_lore_counters();
         }
         if step == Step::End {

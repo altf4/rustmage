@@ -1,16 +1,16 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed Oracle behavior; official CR702.192 supplies the pinned XMage paradigm TODO.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::ExileUntilManaValueCastFree(4),
+            Instruction::Paradigm { ability: 0 },
+        ],
+    ),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::Reflexive,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CastParadigmCopy],
+    }],
     ..CardRules::EMPTY
 };

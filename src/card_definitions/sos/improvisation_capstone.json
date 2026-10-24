@@ -3,10 +3,17 @@
   "catalogue_id": 2153,
   "oracle_id": "fd4f0315-567a-4cc5-bc7e-88a9d2cee910",
   "facts_sha256": "c3dc010faa865d16f95f21b39f7daee3f78e1cf0defde41f9910bf295dd0ef09",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0f528a1f29d8c1a256c72bfa2c0721248965c3e144e89eb3620c3c7a4d93586a"
   },
-  "physical_metadata_sha256": "91e2ad1fc30d2be0e5e39269cdc86b25c2362066ecd6486d1d596e301f6a0b1e"
+  "physical_metadata_sha256": "91e2ad1fc30d2be0e5e39269cdc86b25c2362066ecd6486d1d596e301f6a0b1e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/ImprovisationCapstone.java",
+  "java_sha256": "c96f45a0682ca0398bfc6dc69654e50059670d11c6aeabfb39de322cc864fb02",
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#page=193"
+  ]
 }

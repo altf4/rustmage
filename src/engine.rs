@@ -1,3 +1,6 @@
+#[path = "engine_paradigm.rs"]
+mod paradigm;
+pub use paradigm::{ParadigmView, ResolvedSpellNameView};
 #[path = "engine_endgame.rs"]
 mod endgame;
 #[path = "engine_linked_choices.rs"]
@@ -1483,6 +1486,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    paradigm: Option<Box<paradigm::ParadigmState>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
     ending_turn: bool,
@@ -1861,6 +1865,8 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub paradigms: Vec<ParadigmView>,
+    pub resolved_spell_names: Vec<ResolvedSpellNameView>,
     pub library_piles: Option<LibraryPilesView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
@@ -2094,6 +2100,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                paradigm: None,
                 ending_turn: false,
                 mana_lots: None,
                 linked_choices: None,
@@ -3874,6 +3881,7 @@ impl Game {
                 self.cast_exiled_during_resolution(actor, object, face)
             }
             Action::FinishResolutionCasts => {
+                self.finish_paradigm_copy_offer();
                 self.state.resolution_free_casts = None;
                 self.run_program();
             }
@@ -5725,6 +5733,8 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            paradigms: self.paradigm_views(),
+            resolved_spell_names: self.resolved_spell_name_views(),
             library_piles: self.library_piles_view(viewer),
             keep_types: self.keep_types_view(),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
@@ -6341,6 +6351,7 @@ impl Game {
                         .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
                         .sum::<usize>()
             })
+            + paradigm::owned_bytes(&s.paradigm)
             + modal_history::owned_bytes(&s.modal_history)
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
             + s.resolution_free_casts.as_ref().map_or(0, |f| {

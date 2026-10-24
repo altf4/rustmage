@@ -709,6 +709,11 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    Paradigm {
+        ability: u16,
+    },
+    CastParadigmCopy,
+    ExileUntilManaValueCastFree(u16),
     CreateTokenChoice(&'static [Card]),
     PlayHideawayIfCoven,
     ExileHandCardCopy,
