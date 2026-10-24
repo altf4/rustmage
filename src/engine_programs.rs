@@ -1760,6 +1760,12 @@ impl Game {
                     }
                 }
                 Instruction::PrepareSource => self.prepare_permanent(item.object),
+                Instruction::ChooseLandCardName => {
+                    self.state.pending = Pending::LandCardName {
+                        player: item.controller,
+                    };
+                    return;
+                }
                 Instruction::Prepare { subject } => {
                     for id in self.keyword_subjects(&item, subject) {
                         self.prepare_permanent(self.object_ref(id));

@@ -3,10 +3,26 @@
   "catalogue_id": 3144,
   "oracle_id": "78a2972c-14f4-41f3-99f9-167948bdd73a",
   "facts_sha256": "bea98924a7d058ba657ea90674b5516394ede45d556cab7f909200b5391f1f5d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c3713a9e48661e74179c12920744ba98e781fd1918d8a4b9a93010aea94775ff"
   },
-  "physical_metadata_sha256": "343f642f3c43e818e749203a6ff7f19de829ee2b3d03de5cfb9dabd3f5651e42"
+  "physical_metadata_sha256": "343f642f3c43e818e749203a6ff7f19de829ee2b3d03de5cfb9dabd3f5651e42",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PetrifiedHamlet.java",
+  "java_sha256": "240bc55b8b6739f3ae563a39bcf18cc35e3bf7bdbbee80dd8eca74b830997b40",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseACardNameEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "33f32c237aec9329b59275757fadc7b1a4b63f898c44999e9169de81e30a3561"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    }
+  ]
 }

@@ -100,6 +100,24 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
+        StaticAbilityFragment::LandMana {
+            recipients,
+            production,
+        } => {
+            if !world.land_mana_applies(source, id, recipients) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: Vec::new(),
+                mana: vec![GrantedManaAbility {
+                    source,
+                    production,
+                    sacrifice: false,
+                }],
+            });
+        }
         StaticAbilityFragment::AttachmentTrigger(ability)
         | StaticAbilityFragment::AttachmentActivation(ability) => {
             if !world.attached(source, id) {
@@ -257,6 +275,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
+                        | StaticAbilityFragment::LandMana { .. }
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
                         | StaticAbilityFragment::DeathBaronLord

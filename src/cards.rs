@@ -2,8 +2,8 @@
 mod ability_layers;
 pub(crate) use ability_layers::{
     AbilityLayer, AnimationCreatureTypes, AnimationDuration, AnimationSpec,
-    AttachedCharacteristics, PermanentForm, StaticAbilityFragment, StaticAbilityGroup,
-    UntapRestriction,
+    AttachedCharacteristics, LandManaRecipients, PermanentForm, StaticAbilityFragment,
+    StaticAbilityGroup, UntapRestriction,
 };
 
 use crate::capacity::CapacityExt;
@@ -373,11 +373,15 @@ pub enum EntryChoiceValue {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EntryChoiceKind {
     CardNameAfterOpponentHand,
+    LandCardName,
     Color,
     CreatureType,
 }
 impl EntryChoiceKind {
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
+        if self == Self::LandCardName {
+            return matches!(value, EntryChoiceValue::CardName(name) if name.is_land());
+        }
         matches!(
             (self, value),
             (
@@ -778,6 +782,7 @@ pub(crate) enum Instruction {
     DamageTargetController(u16),
     ExileUntilManaValueCastFree(u16),
     PrepareSource,
+    ChooseLandCardName,
     Prepare {
         subject: Subject,
     },
@@ -2662,6 +2667,7 @@ pub(crate) enum ActivationGuard {
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
     ControlLandsAtLeast(u16),
+    HandSizeAtLeast(u16),
     LifeAboveStarting(u16),
 }
 impl ActivationGuard {
@@ -2671,6 +2677,7 @@ impl ActivationGuard {
             | Self::CastInstantSorceryThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
+            | Self::HandSizeAtLeast(_)
             | Self::LifeAboveStarting(_) => &[],
             Self::ControlSubtypeAny(types) => types,
         }

@@ -8,9 +8,10 @@ import re
 import subprocess
 
 if __package__:
-    from . import link_catalogue
+    from . import land_card_names, link_catalogue
     from .source_paths import xmage_source
 else:
+    import land_card_names
     import link_catalogue
     from source_paths import xmage_source
 
@@ -98,6 +99,7 @@ def main():
     parser.add_argument('--metadata-only', action='store_true',
                         help='check local metadata only; ordinary validation also verifies XMage blobs')
     args = parser.parse_args()
+    land_card_names.check(ROOT)
     metadata, records, version = link_catalogue.load()
     if [card['index'] for card in metadata['cards']] != list(range(len(records))):
         raise ValueError('catalogue IDs must be contiguous and stable')

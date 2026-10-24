@@ -2,6 +2,16 @@
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
+const PACKED_LANDS: &str = include_str!("../data/land-card-names.txt");
+static LANDS: OnceLock<Box<[CardName]>> = OnceLock::new();
+fn lands() -> &'static [CardName] {
+    LANDS.get_or_init(|| {
+        PACKED_LANDS
+            .lines()
+            .map(|name| CardName::from_name(name).expect("pinned selectable land name"))
+            .collect()
+    })
+}
 const PACKED_NAMES: &str = include_str!("../data/card-names.txt");
 const PACKED_INTERCHANGEABLE: &str = include_str!("../data/interchangeable-card-names.tsv");
 type NamePair = (&'static str, &'static str);
@@ -43,6 +53,12 @@ impl CardName {
     /// Rules equality, including interchangeable Oracle names (CR201.4g).
     pub fn matches(self, name: &str) -> bool {
         same_name(self.as_str(), name)
+    }
+    pub fn is_land(self) -> bool {
+        lands().binary_search_by_key(&self.0, |name| name.0).is_ok()
+    }
+    pub fn lands() -> impl Iterator<Item = Self> {
+        lands().iter().copied()
     }
     pub fn all() -> impl Iterator<Item = Self> {
         (0..names().len() as u32).map(Self)

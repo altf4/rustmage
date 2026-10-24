@@ -163,6 +163,27 @@ pub(super) trait CharacteristicWorld {
             game.state.attack_declared && self.attacking(source),
         )
     }
+    fn land_mana_applies(
+        &self,
+        source: ObjectRef,
+        id: CardId,
+        recipients: crate::cards::LandManaRecipients,
+    ) -> bool {
+        let provider = self.object(source.card);
+        let target = self.object(id);
+        provider.zone == Zone::Battlefield
+            && self.reference(source.card) == source
+            && target.zone == Zone::Battlefield
+            && self.kinds(id) & 2 != 0
+            && match recipients {
+                crate::cards::LandManaRecipients::YouControl => {
+                    provider.controller == target.controller
+                }
+                crate::cards::LandManaRecipients::SourceChosenName => {
+                    matches!(self.game().entry_value(source), Some(EntryChoiceValue::CardName(name)) if name.matches(self.name(id)))
+                }
+            }
+    }
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
         // Animation grants only keywords. It cannot remove a provider's printed
         // ability or change a mana grant, so only removal needs layer-six order.
@@ -190,6 +211,24 @@ pub(super) trait CharacteristicWorld {
                                 *fragment,
                                 crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(_)
                             ),
+                        });
+                    }
+                }
+            }
+        }
+        for &source in &self.game().state.static_sources {
+            for group in self.object(source).card.static_ability_groups() {
+                for fragment in group.fragments {
+                    if let crate::cards::StaticAbilityFragment::LandMana {
+                        recipients,
+                        production,
+                    } = *fragment
+                        && self.land_mana_applies(self.reference(source), id, recipients)
+                    {
+                        result.push(ability_order::GrantedManaAbility {
+                            source: self.reference(source),
+                            production,
+                            sacrifice: false,
                         });
                     }
                 }

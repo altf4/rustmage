@@ -2673,3 +2673,292 @@ fn sos_great_hall_queued_growth_and_animation_do_not_rebind_new_incarnations() {
         assert!(g.state.temporary_abilities.is_none());
     }
 }
+
+fn await_land_name(g: &mut Game) {
+    for _ in 0..50 {
+        g.prepare_triggers();
+        if matches!(g.state.pending, Pending::LandCardName { .. }) {
+            return;
+        }
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            g.legal_actions()
+                .into_iter()
+                .find(|a| !matches!(a, Action::Concede))
+                .unwrap()
+        };
+        checked(g, action);
+    }
+    panic!("land name did not resolve: {:?}", g.state.pending);
+}
+fn choose_land_name(g: &mut Game, name: &str) {
+    checked(
+        g,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::CardName(crate::CardName::from_name(name).unwrap()),
+        },
+    );
+}
+fn granted_land_mana(card: CardId, grantor: ObjectRef, production: [u32; 6]) -> Action {
+    Action::TapGrantedMana {
+        card,
+        grantor,
+        production,
+    }
+}
+fn activate_draw(g: &mut Game, card: CardId) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    checked(g, Action::PayCosts { payment: [0; 6] });
+}
+
+#[test]
+fn sos_hamlet_delayed_choice_global_lock_and_independent_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let own = named(&mut g, p, "Soulstone Sanctuary", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Soulstone Sanctuary", Zone::Battlefield);
+        let hamlet = named(&mut g, p, "Petrified Hamlet", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: hamlet });
+        let animation = Action::AnnounceActivate {
+            card: own,
+            ability: 1,
+            counter_payment: Counters::default(),
+        };
+        assert!(
+            g.legal_actions().contains(&animation),
+            "choice is an ordinary ETB trigger"
+        );
+        assert!(ability_world::CharacteristicWorld::granted_mana(&g, own).is_empty());
+        await_land_name(&mut g);
+        for viewer in [p, p.other()] {
+            let view = g.observe(viewer).entry_value.unwrap();
+            assert_eq!(view.kind, EntryChoiceKind::LandCardName);
+            assert!(view.opponent_hand.is_none());
+        }
+        for wrong in ["Bear Cub", "Bala Ged Recovery"] {
+            reject(
+                &mut g,
+                Action::ChooseEntryValue {
+                    value: EntryChoiceValue::CardName(crate::CardName::from_name(wrong).unwrap()),
+                },
+            );
+        }
+        for accepted in ["Gaea's Cradle", "Bala Ged Sanctuary", "Soulstone Sanctuary"] {
+            assert!(g.legal_actions().contains(&Action::ChooseEntryValue {
+                value: EntryChoiceValue::CardName(crate::CardName::from_name(accepted).unwrap())
+            }));
+        }
+        choose_land_name(&mut g, "Soulstone Sanctuary");
+        settle(&mut g);
+        for (controller, card) in [(p, own), (p.other(), enemy)] {
+            g.state.priority = controller;
+            reject(
+                &mut g,
+                Action::AnnounceActivate {
+                    card,
+                    ability: 1,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let mana = granted_land_mana(card, g.object_ref(hamlet), [0, 0, 0, 0, 0, 1]);
+            checked(&mut g, mana);
+        }
+        g.move_object(hamlet, Zone::Graveyard);
+        g.state.priority = p;
+        g.state.objects[own as usize].tapped = false;
+        assert!(g.legal_actions().contains(&animation));
+    }
+}
+
+#[test]
+fn sos_hamlet_old_trigger_choice_does_not_bind_reentered_source() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p, "Soulstone Sanctuary", Zone::Battlefield);
+        let hamlet = named(&mut g, p, "Petrified Hamlet", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: hamlet });
+        let old = g.object_ref(hamlet);
+        g.move_object(hamlet, Zone::Hand);
+        g.move_object(hamlet, Zone::Battlefield);
+        // Both queued ETB abilities remain mandatory. Resolve the newer one first
+        // and leave its source incarnation before the older choice resolves.
+        await_land_name(&mut g);
+        g.move_object(hamlet, Zone::Hand);
+        choose_land_name(&mut g, "Soulstone Sanctuary");
+        await_land_name(&mut g);
+        choose_land_name(&mut g, "Soulstone Sanctuary");
+        settle(&mut g);
+        assert!(g.entry_value(old).is_none());
+        assert!(ability_world::CharacteristicWorld::granted_mana(&g, land).is_empty());
+    }
+}
+
+#[test]
+fn sos_lute_grants_five_restricted_double_mana_choices_to_current_lands() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let lute = paid(&mut g, p, "Resonating Lute", None, &[]);
+        settle(&mut g);
+        let land = named(&mut g, p, "Forest", Zone::Battlefield);
+        let foreign = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+        let provider = g.object_ref(lute);
+        for color in 0..5 {
+            let mut production = [0; 6];
+            production[color] = 2;
+            assert!(
+                g.legal_actions()
+                    .contains(&granted_land_mana(land, provider, production))
+            );
+        }
+        reject(
+            &mut g,
+            granted_land_mana(land, provider, [1, 1, 0, 0, 0, 0]),
+        );
+        g.state.priority = p.other();
+        reject(
+            &mut g,
+            granted_land_mana(foreign, provider, [0, 0, 2, 0, 0, 0]),
+        );
+        g.state.priority = p;
+        g.state.players[p.index()].mana = [0; 6];
+        checked(
+            &mut g,
+            granted_land_mana(land, provider, [0, 0, 0, 0, 2, 0]),
+        );
+        g.move_object(lute, Zone::Graveyard);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Hand);
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: bear }),
+            "restriction persists after provider leaves"
+        );
+        let creature = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let growth = named(&mut g, p, "Giant Growth", Zone::Hand);
+        cast(&mut g, growth, None, &[Target::Card(creature)]);
+        settle(&mut g);
+        assert_eq!(g.stats(creature).power, 5);
+        reject(
+            &mut g,
+            granted_land_mana(land, provider, [0, 0, 0, 0, 2, 0]),
+        );
+    }
+}
+
+#[test]
+fn sos_lute_borrowed_funding_and_activation_hand_threshold() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let lute = paid(&mut g, p, "Resonating Lute", None, &[]);
+        settle(&mut g);
+        let land = named(&mut g, p, "Soulstone Sanctuary", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        let creature = named(&mut g, p, "Bear Cub", Zone::Hand);
+        let instant = named(&mut g, p, "Giant Growth", Zone::Hand);
+        let target = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: creature })
+        );
+        checked(&mut g, Action::AnnounceCast { card: instant });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        let grantor = g.object_ref(lute);
+        checked(&mut g, granted_land_mana(land, grantor, [0, 0, 0, 0, 2, 0]));
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        settle(&mut g);
+        let activation = Action::AnnounceActivate {
+            card: lute,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        while g.hand_count(p) < 6 {
+            named(&mut g, p, "Forest", Zone::Hand);
+        }
+        reject(&mut g, activation.clone());
+        named(&mut g, p, "Forest", Zone::Hand);
+        activate_draw(&mut g, lute);
+        // The hand condition applies to activation, not resolution.
+        let hand = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(id, o)| (o.zone == Zone::Hand && o.owner == p).then_some(id as CardId))
+            .unwrap();
+        g.move_object(hand, Zone::Graveyard);
+        let before = g.hand_count(p);
+        g.move_object(lute, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), before + 1);
+    }
+}
+
+#[test]
+fn sos_lute_land_type_loss_controller_change_and_new_provider_identity() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let lute = paid(&mut g, p, "Resonating Lute", None, &[]);
+        settle(&mut g);
+        let land = named(&mut g, p, "Soulstone Sanctuary", Zone::Battlefield);
+        let foreign = named(&mut g, p.other(), "Soulstone Sanctuary", Zone::Battlefield);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: land,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        let aura = paid(&mut g, p, "Witness Protection", None, &[Target::Card(land)]);
+        settle(&mut g);
+        let old = g.object_ref(lute);
+        reject(&mut g, granted_land_mana(land, old, [0, 0, 2, 0, 0, 0]));
+        g.move_object(aura, Zone::Graveyard);
+        assert!(
+            g.legal_actions()
+                .contains(&granted_land_mana(land, old, [0, 0, 2, 0, 0, 0]))
+        );
+        paid(
+            &mut g,
+            p,
+            "Harmless Offering",
+            None,
+            &[Target::Player(p.other()), Target::Card(lute)],
+        );
+        settle(&mut g);
+        reject(&mut g, granted_land_mana(land, old, [0, 0, 2, 0, 0, 0]));
+        g.state.priority = p.other();
+        checked(&mut g, granted_land_mana(foreign, old, [0, 0, 2, 0, 0, 0]));
+        g.move_object(lute, Zone::Hand);
+        g.move_object(lute, Zone::Battlefield);
+        g.state.priority = p;
+        reject(&mut g, granted_land_mana(land, old, [0, 0, 2, 0, 0, 0]));
+        let fresh = g.object_ref(lute);
+        assert_ne!(fresh, old);
+        checked(&mut g, granted_land_mana(land, fresh, [0, 0, 2, 0, 0, 0]));
+    }
+}

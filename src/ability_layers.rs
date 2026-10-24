@@ -98,6 +98,10 @@ pub(crate) enum StaticAbilityFragment {
     /// Grants an independent tap mana ability to the attached permanent.
     AttachmentMana(ManaProduction),
     AttachmentSacrificeMana(ManaProduction),
+    LandMana {
+        recipients: LandManaRecipients,
+        production: ManaProduction,
+    },
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
@@ -154,6 +158,11 @@ pub(crate) struct AttachedCharacteristics {
     pub creature_types: &'static [&'static str],
     pub colors: &'static [ChoiceColor],
     pub base: Option<(i128, i128)>,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum LandManaRecipients {
+    YouControl,
+    SourceChosenName,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum AnimationDuration {

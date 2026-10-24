@@ -301,6 +301,24 @@ impl<'g> FundingState<'g> {
     // Paying costs can remove a negative modifier or change a scaling count.
     // Current power is not an upper bound on later production. Real moves still
     // evaluate exact borrowed-world power; only pruning uses this loose ceiling.
+    fn potential_land_mana(&self) -> impl Iterator<Item = ManaProduction> + '_ {
+        self.game
+            .state
+            .static_sources
+            .iter()
+            .filter_map(|&id| {
+                let object = ability_world::CharacteristicWorld::object(self, id);
+                (object.zone == Zone::Battlefield).then_some(object.card)
+            })
+            .flat_map(|card| card.static_ability_groups())
+            .flat_map(|group| group.fragments)
+            .filter_map(|fragment| match *fragment {
+                crate::cards::StaticAbilityFragment::LandMana { production, .. } => {
+                    Some(production)
+                }
+                _ => None,
+            })
+    }
     fn power_upper_production(&self, production: ManaProduction, source: CardId) -> ManaProduction {
         match production.base() {
             ManaProduction::SourcePower { color } => {
@@ -370,7 +388,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -653,6 +671,20 @@ impl<'g> FundingState<'g> {
                 self.game.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::HandSizeAtLeast(minimum) => {
+                self.game
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, _)| {
+                        let object =
+                            ability_world::CharacteristicWorld::object(self, *id as CardId);
+                        object.zone == Zone::Hand && object.owner == actor
+                    })
+                    .count()
+                    >= usize::from(minimum)
+            }
             ActivationGuard::LifeAboveStarting(extra) => {
                 (if actor == self.actor {
                     self.life
@@ -718,21 +750,30 @@ impl<'g> FundingState<'g> {
                     || self.keywords(entry).contains(Keywords::HASTE))
             {
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, entry.id) {
-                    grant.production.visit(|production| {
-                        moves.push(FundingMove {
-                            resource,
-                            ability: None,
-                            grantor: Some(grant.source),
-                            borrowed: None,
-                            payment: [0; 6],
-                            counters: Counters::default(),
-                            production,
-                            quality: None,
-                            allocation: Vec::new(),
-                            external: None,
+                    let quality = match grant.production {
+                        ManaProduction::Tagged { quality, .. } => {
+                            Some(mana_lots::Quality::capture(self, entry.id, *quality))
+                        }
+                        _ => None,
+                    };
+                    grant
+                        .production
+                        .in_world(self, entry.id)
+                        .visit(|production| {
+                            moves.push(FundingMove {
+                                resource,
+                                ability: None,
+                                grantor: Some(grant.source),
+                                borrowed: None,
+                                payment: [0; 6],
+                                counters: Counters::default(),
+                                production,
+                                quality,
+                                allocation: Vec::new(),
+                                external: None,
+                            });
+                            false
                         });
-                        false
-                    });
                 }
             }
             if !ability_world::CharacteristicWorld::printed_abilities_available(self, entry.id) {
@@ -1157,6 +1198,17 @@ impl<'g> FundingState<'g> {
                     }
                 }
             }
+            if !object.tapped {
+                for production in self.potential_land_mana() {
+                    let mut maximum = 0;
+                    self.power_upper_production(production, resource.id)
+                        .visit(|mana| {
+                            maximum = maximum.max(mana.into_iter().map(u128::from).sum());
+                            false
+                        });
+                    total = total.saturating_add(maximum);
+                }
+            }
             for (_, ability, _) in self.mana_activations(resource.id) {
                 // Tapped objects cannot pay tap costs in this closed search.
                 if (!object.tapped || !ability.cost.tap) && ability.mana_production().is_some() {
@@ -1251,6 +1303,11 @@ impl<'g> FundingState<'g> {
                             }
                         }
                     }
+                }
+            }
+            if !object.tapped {
+                for production in self.potential_land_mana() {
+                    add(production, 1);
                 }
             }
             for (_, ability, _) in self.mana_activations(resource.id) {

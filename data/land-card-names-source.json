@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "as_of": "2026-10-24",
+  "source": "https://api.scryfall.com/cards/search?q=t%3Aland+game%3Apaper&unique=cards&order=name",
+  "facts_snapshot": "data/land-card-name-facts.json",
+  "facts_sha256": "2302b6fd1b01609fcc6d181299390183d508faa5fa63a9ebc766cfe2dc04511e",
+  "selectable_names_sha256": "885dcb75ced43678c01a69b231eb0e9fe91a13a643734882619486b396739ae8",
+  "interchangeable_names_sha256": "1ae09acb7ba69f6cea08dd643c98142e460b551aff16548a6f64fcc0420870e5",
+  "packed_sha256": "c82ae9370eea240218eb677f0500448b3222edb4df7806698e6df0fd65d41f6c",
+  "name_count": 1238,
+  "rule": "CR201.4a-g: use each named face's Oracle Land type; close over interchangeable names, then intersect the pinned selectable-name pool. Names outside Standard are eligible; digital-only and cosmetic names are excluded by that pool.",
+  "rules_source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+  "derivation": "python3 scripts/land_card_names.py (offline verification of frozen face facts and derived names)"
+}

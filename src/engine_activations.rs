@@ -79,6 +79,9 @@ impl Game {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::HandSizeAtLeast(minimum) => {
+                self.hand_count(actor) >= usize::from(minimum)
+            }
             ActivationGuard::LifeAboveStarting(extra) => {
                 self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)
             }
@@ -197,7 +200,7 @@ impl Game {
             return false;
         }
         for grant in ability_world::CharacteristicWorld::granted_mana(self, card) {
-            if grant.production.visit(|production| {
+            if grant.production.in_world(self, card).visit(|production| {
                 emit(Action::TapGrantedMana {
                     card,
                     grantor: grant.source,

@@ -1447,6 +1447,9 @@ enum Pending {
     EntryValue {
         player: Player,
     },
+    LandCardName {
+        player: Player,
+    },
     EntryLife {
         player: Player,
     },
@@ -2386,6 +2389,7 @@ impl Game {
             | Pending::EntryReplacement { player }
             | Pending::LinkedChoice { player }
             | Pending::EntryValue { player }
+            | Pending::LandCardName { player }
             | Pending::EntryLife { player }
             | Pending::AuraEntry { player }
             | Pending::TokenChoice { player, .. }
@@ -2829,7 +2833,7 @@ impl Game {
                     return true;
                 }
             }
-            Pending::EntryValue { .. } => {
+            Pending::EntryValue { .. } | Pending::LandCardName { .. } => {
                 if self.visit_entry_values(|value| emit(Action::ChooseEntryValue { value })) {
                     return true;
                 }
@@ -4187,14 +4191,21 @@ impl Game {
                 grantor,
                 production,
             } => {
-                let sacrifice = ability_world::CharacteristicWorld::granted_mana(self, card)
-                    .iter()
-                    .any(|g| g.source == grantor && g.sacrifice);
+                let grant = ability_world::CharacteristicWorld::granted_mana(self, card)
+                    .into_iter()
+                    .find(|g| {
+                        g.source == grantor
+                            && g.production
+                                .in_world(self, card)
+                                .visit(|mana| mana == production)
+                    })
+                    .expect("legal granted mana ability");
+                let quality = self.mana_quality(grant.production, card);
                 self.tap_objects(&[card]);
-                if sacrifice {
+                if grant.sacrifice {
                     self.sacrifice_batch(&[(actor, card)]);
                 }
-                self.add_mana(actor, production);
+                self.add_quality_mana(actor, production, quality);
                 self.state.passes = 0;
             }
             Action::TapMana { card } => {
@@ -6343,6 +6354,7 @@ impl Game {
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
+                Pending::LandCardName { .. } => "land_card_name",
                 Pending::EntryLife { .. } => "entry_life",
                 Pending::EntryReplacement { .. } => "entry_replacement",
                 Pending::AuraEntry { .. } => "aura_entry",
