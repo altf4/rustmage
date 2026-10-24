@@ -149,16 +149,17 @@ impl FundingState<'_> {
                             _ => false,
                         }
                 }) || (o.zone == Zone::Battlefield
-                    && self
-                        .game
-                        .state
-                        .death_exile_replacements
-                        .as_ref()
-                        .is_some_and(|rules| {
-                            rules.iter().any(|rule| {
-                                rule.object == *r && rule.expires_turn == self.game.state.turn
-                            })
-                        }));
+                    && (self.counter_count(r.card, CounterKind::Finality) > 0
+                        || self
+                            .game
+                            .state
+                            .death_exile_replacements
+                            .as_ref()
+                            .is_some_and(|rules| {
+                                rules.iter().any(|rule| {
+                                    rule.object == *r && rule.expires_turn == self.game.state.turn
+                                })
+                            })));
                 match (shuffle, exile) {
                     (true, true) => vec![Zone::Library, Zone::Exile],
                     (true, false) => vec![Zone::Library],

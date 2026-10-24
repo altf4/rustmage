@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Finality prerequisite plus one complete representative candidate; final combined release and two independent published-head reviews pending",
+  "source_base": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
+  "observation_schema": 141,
+  "previous_schema": 140,
+  "complete_candidate_cards": [
+    "Thunderbolts Conspiracy"
+  ],
+  "counter_kind_compatibility": {
+    "prior_ordinals_and_mixed_payment_order_preserved": true,
+    "appended": "Finality",
+    "ordinal": 29,
+    "hot_object_fields_added": 0
+  },
+  "shared_rules": [
+    "Any permanent with one or more Finality counters replaces battlefield-to-graveyard with exile independently of kinds and printed abilities; no keyword grant or additional persistent effect row",
+    "Existing controller-selected zone replacement planner chooses Finality exile versus self-shuffle, coalesces same-outcome exile replacements and retains owned transactional replay",
+    "Dies and creature-death history inspect actual destinations; exile still pays a sacrifice cost",
+    "Funding reads overlay counters and preserves the post-counter-payment/pre-sacrifice snapshot, including granted mana sacrifice and the ordinary fast-path boundary",
+    "Controlled-subtype death observer freezes Villain membership and controller before simultaneous departure, with exact owner-controlled return links",
+    "Hero return modification participates in pre-entry counter previews, committed ETB observations and persistent layer-four actual/speculative queries; source departure does not revoke it",
+    "Speculative entry timestamps register return modifications even on plain creatures with only a nonkeyword counter"
+  ],
+  "whole_card_obligations": {
+    "Thunderbolts Conspiracy": [
+      "Paid flash casting",
+      "Every controlled Villain permanent death; no creature-only or nontoken restriction",
+      "Exact original graveyard incarnation returns under owner control with a replaced Finality counter",
+      "Hero from entry, in addition to original types; persistent until exact incarnation leaves, obeying later type-changing effects",
+      "Duplicate return triggers cannot rebind; token and invalidated links cannot return"
+    ]
+  },
+  "rules_tests": {
+    "new_scenarios": 15,
+    "actual_scenarios": 11,
+    "speculative_scenarios": 4,
+    "both_seats": true,
+    "files": [
+      "src/engine_finality_tests.rs",
+      "src/engine_finality_funding_tests.rs"
+    ],
+    "coverage": [
+      "Paid Flash, Hour of Defeat, Corrupted Conviction, Omni-Cheese Pizza and Lotus Ring",
+      "Black Panther observes Hero on the returned entry event",
+      "Owner versus controller, source departure, simultaneous death, duplicate return links, token Villains and invalidated exact graveyard generation",
+      "Noncreature permanents, ability loss, multiple/partial/final counter removal, zone reset, entry doubling and Rest in Peace",
+      "Progenitus replacement choice belongs to current controller; illegal choice atomicity and checked raw/index owned branch/restore",
+      "Sparse counter COW/state_bytes, both public observations, snapshot/parent disposal and removal",
+      "Funding post-counter-payment counter counts, replacement alternatives, granted sacrifice fast path and persistent Hero entry overlay"
+    ]
+  },
+  "provenance": {
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "definitions": 5391,
+    "verified_source_blobs": 1097,
+    "full_frozen_oracle_and_card_java_read": true,
+    "read_only_three_card_design": "<cache>/rustmage-finality-design-20261024.json",
+    "read_only_design_sha256": "e47c935e4bc02eb84a7c6ca0d54d125b9317bf7f815ae431d8142263401f0ce7"
+  },
+  "full_trace_audit": {
+    "inherited": 2453,
+    "candidate": 2454,
+    "inherited_full_trace_matches_under140": 2453,
+    "inherited_journals_and_all_nonobservation_fields_unchanged": true,
+    "inherited_changes": [],
+    "removed": [],
+    "previous_baseline_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060",
+    "candidate_sha256": "eda427fe93c0574203b70eaced0102fe91fcaea934260ebc0b5ccc2ef2f69ad0",
+    "previous_schema_export_sha256": "27cdaaf3f27dd390adebc7c55a79044c4eb032e2eceb68ddc3e3dda52f59a28f",
+    "exports": "<cache>/rustmage-finality-traces-20261024.json and .previous-schema.json",
+    "new_rows": {
+      "Thunderbolts Conspiracy": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "9d78478b460edd3d",
+        "observations": "07d61cd82a0c80b9"
+      }
+    },
+    "recording_exit101": "Expected count2454 versus2453; ordinary assertions remain strict and no recording helper changed. Accepted only after all2453 full Trace structs matched under schema140, retaining all Power-up/history/keyword fields."
+  },
+  "validation": {
+    "focused_passed": 15,
+    "focused_test_seconds": 0.01,
+    "focused_resource_report": "<cache>/rustmage-build-reports/de05e6fc622c4ca6a3c1c3666f9f5bed.json",
+    "focused_guarded_seconds": 273.26116671500495,
+    "focused_peak_bytes": 2231590912,
+    "all_target_clippy_warnings_denied": true,
+    "clippy_resource_report": "<cache>/rustmage-build-reports/47ed2cadc66e4c2fa496ff74131211b7.json",
+    "clippy_guarded_seconds": 105.48844282102073,
+    "trace_resource_report": "<cache>/rustmage-build-reports/f48c6c2caf254c248f8bd6008cc3955f.json",
+    "fixed_sources_until_actual_terminal": true,
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "ordinary_full_native_and_release": "Integrator owns the final combined cohort; not duplicated on this parent head",
+    "post_test_changes": "Audited trace baseline and evidence JSON only; runtime/scenario sources unchanged after green checks"
+  },
+  "future_consumers_audited_but_gated": [
+    {
+      "name": "Grim Reaper, Lethal Legionnaire",
+      "full_oracle_java_helper_cost_read": true,
+      "existing": [
+        "SourceAttacks",
+        "MayPayMana",
+        "Reflexive with graveyard creature target after successful payment",
+        "EntryMove tapped/attacking/counter fields"
+      ],
+      "remaining": [
+        "Targeted graveyard return with effect counter",
+        "General attacking-entry defender choice including a different player/planeswalker/battle; not an attacks event"
+      ]
+    },
+    {
+      "name": "Winter Soldier, Icy Assassin",
+      "full_oracle_java_helper_cost_read": true,
+      "existing": [
+        "Vigilance and menace",
+        "Graveyard activation cost",
+        "EntryMove effect counter",
+        "Exact-ref attachment operation"
+      ],
+      "remaining": [
+        "Current Equipment attachment count in actual/speculative stat queries",
+        "Successful return exact-object continuation with Finality",
+        "Optional nontarget controlled Equipment choice and attachment after return"
+      ]
+    }
+  ],
+  "implementation_throughput": {
+    "scope": "Branch creation through one whole-card candidate, shared core,15focused tests, full inherited trace proof and Clippy; excludes earlier read-only audit, final reviews and integration acceptance",
+    "started_utc": "2026-10-24T21:11:58+00:00",
+    "through_utc": "2026-10-24T21:28:02.685298+00:00",
+    "elapsed_seconds": 964.685298,
+    "candidate_cards": 1,
+    "candidate_cards_per_hour": 3.7317869438495372
+  },
+  "simulation_throughput": "No standalone simulation benchmark; final combined release records its bounded workload. Focused test timing is not simulation throughput.",
+  "full_set_acceptance": "Pending for all281 MSH members; complete candidate flags do not certify whole-set gameplay",
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#122.1h",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#616.1",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#700.4"
+  ],
+  "cleanup": {
+    "report": "<cache>/rustmage-finality-cleanup-20261024.json",
+    "removed_bytes": 150870980,
+    "shared_libraries_preserved": 1,
+    "prior_work": "Prior audit/Plan/history/keyword branches and every required exact library path preserved"
+  }
+}

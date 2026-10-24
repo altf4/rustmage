@@ -23,7 +23,7 @@ const LAND_TYPES: [&str; 17] = [
     "Planet",
     "Urza's",
 ];
-const JOB_TYPES: [&str; 16] = [
+const JOB_TYPES: [&str; 17] = [
     "Artificer",
     "Bard",
     "Cleric",
@@ -40,8 +40,9 @@ const JOB_TYPES: [&str; 16] = [
     "Nightmare",
     "Golem",
     "Fractal",
+    "Hero",
 ];
-// Sixteen named grants and three projection flags use the view's existing padding.
+// Seventeen named grants and three projection flags use the view's existing padding.
 const CREATURE_OR_KINDRED: u16 = 1 | 128;
 const JOB_MASK: u32 = (1 << JOB_TYPES.len()) - 1;
 const SUPPRESS_PRINTED: u32 = 1 << JOB_TYPES.len();
@@ -399,6 +400,7 @@ impl Game {
             match m.return_modification.map(|(kind, _)| kind) {
                 Some(ReturnKind::Angel) => result.insert("Angel"),
                 Some(ReturnKind::Demon) => result.insert("Demon"),
+                Some(ReturnKind::HeroFinality) => result.insert("Hero"),
                 _ => {}
             }
         }

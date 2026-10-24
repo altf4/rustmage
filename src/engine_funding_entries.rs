@@ -855,10 +855,11 @@ impl FundingState<'_> {
     }
     fn entry_has_timestamp(m: &entries::EntryMove) -> bool {
         let card = m.before.card;
-        CounterAmounts::from(&m.counters)
-            .keyword_amounts()
-            .iter()
-            .any(|n| *n > 0)
+        m.return_modification.is_some()
+            || CounterAmounts::from(&m.counters)
+                .keyword_amounts()
+                .iter()
+                .any(|n| *n > 0)
             || card.base_stat_setter().is_some()
             || !card.live_static_effects().is_empty()
             || card.role().is_some()
@@ -953,6 +954,30 @@ impl FundingState<'_> {
                 CounterAmounts::from(&m.counters).keyword_amounts(),
                 Some(timestamp),
             );
+            if let Some((kind, origin)) = m.return_modification
+                && let Some((types, keywords)) = return_links::modification(kind)
+            {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .creature_types
+                    .push(subtypes::CreatureTypesEffectView {
+                        recipient: source,
+                        source: origin,
+                        types,
+                        additional: true,
+                        timestamp,
+                    });
+                if keywords != Keywords::NONE {
+                    p.roles.keyword_effects.push(KeywordEffectView {
+                        recipient: source,
+                        origin: KeywordEffectOrigin::Resolution { source: origin },
+                        keywords,
+                        rules: Keywords::NONE,
+                        timestamp,
+                        expires_turn: None,
+                    });
+                }
+            }
             if let Some(recipient) = m.attachment
                 && m.before.card.role().is_some()
             {
@@ -1201,15 +1226,19 @@ impl<'g> FundingState<'g> {
             && self.game.state.exile_links.is_empty()
             && self.game.state.zone_rules.is_none()
             && self.game.state.death_exile_replacements.is_none()
+            && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0
         {
             let mut next = self.clone();
-            next.apply(step);
+            next.apply(step, false);
             return emit(&next);
         }
         let source = &self.resources[step.resource];
         let reference = self.reference(source.id);
         let mut next = self.clone();
-        next.apply(step);
+        // Keep the post-payment counter snapshot until replacement planning.
+        // Paying away the final Finality counter must differ from sacrificing
+        // a permanent which still has one after the counter cost.
+        next.apply(step, true);
         let departed = source.object.zone == Zone::Battlefield
             && next.object(source.id).zone != Zone::Battlefield;
         let destination = next.object(source.id).zone;
@@ -1333,3 +1362,7 @@ mod counter_history_tests;
 #[cfg(test)]
 #[path = "engine_keyword_counter_funding_tests.rs"]
 mod keyword_counter_tests;
+
+#[cfg(test)]
+#[path = "engine_finality_funding_tests.rs"]
+mod finality_tests;
