@@ -7,7 +7,22 @@ use super::*;
 pub struct ExilePlayPermission {
     pub object: ObjectRef,
     pub player: Player,
-    pub expires_turn: u32,
+    pub expiry: ExilePlayExpiry,
+}
+/// Deadline boundaries refer to actual turns, never to skipped turn candidates.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum ExilePlayExpiry {
+    Turn(u32),
+    EndOfNextTurn,
+    StartOfNextTurn(Player),
+}
+impl ExilePlayExpiry {
+    pub(super) fn active(self, turn: u32) -> bool {
+        match self {
+            Self::Turn(deadline) => deadline >= turn,
+            _ => true,
+        }
+    }
 }
 impl Game {
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
@@ -21,7 +36,7 @@ impl Game {
         self.state.exile_permissions.iter().any(|p| {
             p.player == player
                 && p.object == self.object_ref(card)
-                && p.expires_turn >= self.state.turn
+                && p.expiry.active(self.state.turn)
         })
     }
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u16, next_turn: bool) {
@@ -65,15 +80,11 @@ impl Game {
         {
             return;
         }
-        let expires_turn = self
-            .state
-            .turn
-            .checked_add(if next_turn {
-                if self.state.active == player { 2 } else { 1 }
-            } else {
-                0
-            })
-            .capacity("exile permission deadline exhausted");
+        let expiry = if next_turn {
+            ExilePlayExpiry::EndOfNextTurn
+        } else {
+            ExilePlayExpiry::Turn(self.state.turn)
+        };
         let at = self
             .state
             .exile_permissions
@@ -83,7 +94,7 @@ impl Game {
             ExilePlayPermission {
                 object,
                 player,
-                expires_turn,
+                expiry,
             },
         );
     }

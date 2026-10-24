@@ -26,18 +26,11 @@ impl Game {
         self.state
             .hand_play_bans
             .as_ref()
-            .is_some_and(|bans| bans.iter().any(|&deadline| deadline >= self.state.turn))
+            .is_some_and(|bans| !bans.is_empty())
     }
     pub(super) fn resolve_memory_vessel(&mut self, item: &SpellView) {
-        // Sorcery-only activation fixes this as its controller's current turn.
-        // An inclusive deadline through the following turn ends before the
-        // activating player's next untap, rather than at that turn's cleanup.
+        // Until the activating player's next actual turn begins (CR614.10a).
         assert_eq!(item.controller, self.state.active);
-        let deadline = self
-            .state
-            .turn
-            .checked_add(1)
-            .capacity("memory vessel deadline exhausted");
         let mut ids = Vec::new();
         for player in [Player::P0, Player::P1] {
             ids.extend(
@@ -55,7 +48,7 @@ impl Game {
                 self.grant_exile_play_permission(event.before.owner, event.after, false);
                 for permission in &mut self.state.exile_permissions {
                     if permission.object == event.after && permission.player == event.before.owner {
-                        permission.expires_turn = deadline;
+                        permission.expiry = ExilePlayExpiry::StartOfNextTurn(item.controller);
                     }
                 }
             }
@@ -63,7 +56,7 @@ impl Game {
         self.state
             .hand_play_bans
             .get_or_insert_default()
-            .push(deadline);
+            .push(item.controller);
         self.finish_zone_events(&events, &[]);
     }
 }

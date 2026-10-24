@@ -938,6 +938,9 @@ pub(crate) enum Instruction {
     },
     DamageCannotBePreventedThisTurn,
     LoseHalfLife(PlayerSet),
+    FlipCoinsSkipTurns {
+        coins: u16,
+    },
     ChooseHalf {
         kind: EffectChoiceKind,
     },

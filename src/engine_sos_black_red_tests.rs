@@ -2331,3 +2331,257 @@ fn sos_rubble_can_fund_using_a_physical_card_sacrificed_by_an_earlier_mana_step(
         assert_eq!(g.state.players[p.other().index()].life, 16);
     }
 }
+
+fn activate_ral(g: &mut Game, source: CardId, ability: u16, targets: &[Target]) {
+    act(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    pay(g);
+}
+
+#[test]
+fn sos_ral_paid_entry_private_surveil_loyalty_lock_and_graveyard_limit() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Ral Zarek, Guest Lecturer", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Loyalty), 3);
+        let keep = put(&mut g, p, "Forest", Zone::Library);
+        let discard = put(&mut g, p, "Shock", Zone::Library);
+        activate_ral(&mut g, source, 0, &[]);
+        until_choice(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Loyalty), 4);
+        assert!(g.observe(p.other()).library_choice.is_none());
+        big_helpers::checked(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: discard,
+                destination: LibraryDestination::Graveyard,
+            },
+        );
+        act(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: keep,
+                destination: LibraryDestination::Top,
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].library.last(), Some(&keep));
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Ral Zarek, Guest Lecturer", Zone::Battlefield);
+        g.state.objects[source as usize].counters.loyalty = 3;
+        let own = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let large = put(&mut g, p, "Hill Giant", Zone::Graveyard);
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 2,
+                counter_payment: Counters::default(),
+            },
+        );
+        for invalid in [large, foreign] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(invalid),
+                },
+            );
+        }
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(own).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(source, CounterKind::Loyalty), 1);
+    }
+}
+
+#[test]
+fn sos_ral_any_number_players_discard_privately_in_apnap_order() {
+    for p in [Player::P0, Player::P1] {
+        for targets in [0, 1, 2] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Ral Zarek, Guest Lecturer", Zone::Battlefield);
+            g.state.objects[source as usize].counters.loyalty = 3;
+            let a = put(&mut g, p, "Forest", Zone::Hand);
+            let b = put(&mut g, p.other(), "Island", Zone::Hand);
+            let all = [Target::Player(p), Target::Player(p.other())];
+            activate_ral(&mut g, source, 1, &all[..targets]);
+            if targets > 0 {
+                until_choice(&mut g);
+                reject(&mut g, Action::Discard { card: b });
+                act(&mut g, Action::Discard { card: a });
+                if targets == 2 {
+                    act(&mut g, Action::Discard { card: b });
+                }
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(a).zone,
+                if targets > 0 {
+                    Zone::Graveyard
+                } else {
+                    Zone::Hand
+                }
+            );
+            assert_eq!(
+                g.object_view(b).zone,
+                if targets == 2 {
+                    Zone::Graveyard
+                } else {
+                    Zone::Hand
+                }
+            );
+            assert_eq!(g.counter_count(source, CounterKind::Loyalty), 2);
+        }
+    }
+}
+
+fn coin_heads(seed: u64) -> u64 {
+    let mut rng = Rng(seed);
+    (0..5).filter(|_| rng.below(2) == 1).count() as u64
+}
+
+#[test]
+fn sos_ral_coins_owned_replay_and_actual_turn_skips_omit_upkeep_and_turn_numbers() {
+    let zero = (0..1000).find(|&seed| coin_heads(seed) == 0).unwrap();
+    let five = (0..1000).find(|&seed| coin_heads(seed) == 5).unwrap();
+    for p in [Player::P0, Player::P1] {
+        for seed in [zero, five, 20261023] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Ral Zarek, Guest Lecturer", Zone::Battlefield);
+            g.state.objects[source as usize].counters.loyalty = 7;
+            put(&mut g, p.other(), "Phyrexian Arena", Zone::Battlefield);
+            g.state.rng = Rng(seed);
+            let heads = coin_heads(seed);
+            activate_ral(&mut g, source, 3, &[Target::Player(p.other())]);
+            assert_eq!(
+                g.object_view(source).zone,
+                Zone::Graveyard,
+                "loyalty cost removes the source before the ability resolves"
+            );
+            act(&mut g, Action::Pass);
+            big_helpers::checked(&mut g, Action::Pass);
+            assert_eq!(g.observe(p).players[p.other().index()].turns_to_skip, heads);
+            assert_eq!(
+                g.observe(p.other()).players[p.other().index()].turns_to_skip,
+                heads
+            );
+            for remaining in (0..heads).rev() {
+                let turn = g.state.turn;
+                g.finish_cleanup();
+                assert_eq!(g.state.active, p);
+                assert_eq!(g.state.turn, turn + 1);
+                assert_eq!(
+                    g.observe(p).players[p.other().index()].turns_to_skip,
+                    remaining
+                );
+                assert!(
+                    g.state.pending_triggers.is_empty(),
+                    "skipped upkeep never queues Arena"
+                );
+            }
+            g.finish_cleanup();
+            assert_eq!(g.state.active, p.other());
+            assert_eq!(
+                g.state.pending_triggers.len(),
+                1,
+                "the actual upkeep queues Arena"
+            );
+            assert!(g.state.turn_skips.is_none());
+        }
+    }
+}
+
+#[test]
+fn sos_actual_turn_skip_cycles_are_bulk_and_next_turn_exile_waits_for_grantee() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let card = put(&mut g, p.other(), "Bear Cub", Zone::Exile);
+        let object = g.object_ref(card);
+        g.grant_exile_play_permission(p.other(), object, true);
+        g.state.turn_skips = Some(Box::new([u64::MAX - 1; 2]));
+        g.state.turn_skips.as_mut().unwrap()[p.other().index()] += 1;
+        let turn = g.state.turn;
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p);
+        assert_eq!(g.state.turn, turn + 1);
+        assert!(g.can_play_exiled(p.other(), card));
+        assert!(g.state.exile_permissions[0].expiry == ExilePlayExpiry::EndOfNextTurn);
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p.other());
+        assert_eq!(
+            g.state.exile_permissions[0].expiry,
+            ExilePlayExpiry::Turn(g.state.turn)
+        );
+        assert!(g.can_play_exiled(p.other(), card));
+        g.finish_cleanup();
+        assert!(!g.can_play_exiled(p.other(), card));
+    }
+}
+
+#[test]
+fn sos_memory_vessel_waits_for_activator_actual_turn_across_skips_for_both_grantees() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let vessel = put(&mut g, p, "Memory Vessel", Zone::Battlefield);
+        activate_ral(&mut g, vessel, 0, &[]);
+        settle(&mut g);
+        assert!(g.hand_play_prohibited());
+        assert_eq!(g.state.exile_permissions.len(), 14);
+        assert!(
+            g.state
+                .exile_permissions
+                .iter()
+                .all(|v| v.expiry == ExilePlayExpiry::StartOfNextTurn(p))
+        );
+        let mut skips = [0; 2];
+        skips[p.index()] = 1;
+        g.state.turn_skips = Some(Box::new(skips));
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p.other());
+        assert!(g.hand_play_prohibited());
+        assert_eq!(g.state.exile_permissions.len(), 14);
+        g.finish_cleanup();
+        assert_eq!(
+            g.state.active,
+            p.other(),
+            "activator's next candidate turn is skipped"
+        );
+        assert!(g.hand_play_prohibited());
+        assert_eq!(g.state.exile_permissions.len(), 14);
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p);
+        assert!(!g.hand_play_prohibited());
+        assert!(g.state.exile_permissions.is_empty());
+    }
+}

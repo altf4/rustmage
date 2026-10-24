@@ -195,7 +195,7 @@ fn big_loot_counts_other_nonland_types_and_permission_survives_source() {
         assert!(
             permissions
                 .iter()
-                .all(|x| x.player == p && x.expires_turn == g.state.turn)
+                .all(|x| x.player == p && x.expiry == ExilePlayExpiry::Turn(g.state.turn))
         );
     }
 }

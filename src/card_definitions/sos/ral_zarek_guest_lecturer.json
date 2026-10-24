@@ -3,10 +3,13 @@
   "catalogue_id": 3357,
   "oracle_id": "0dc76b7f-6405-44a1-8c55-31fa480ff70b",
   "facts_sha256": "03ac04e8658304fd2e705af531fa92c638365b4c2bc6f0c8709ef02d99ac0f24",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "182cbcbfbfacb50924bb2244623da7a669be78d2287a8fd4c728d142d3ba8a26"
   },
-  "physical_metadata_sha256": "317a8c1fd0e8b1135832a56f7f811d01dc903d4a7920ccb07c0790c287bf6f98"
+  "physical_metadata_sha256": "317a8c1fd0e8b1135832a56f7f811d01dc903d4a7920ccb07c0790c287bf6f98",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RalZarekGuestLecturer.java",
+  "java_sha256": "d36272b8dd5763c3beb47132792461ccb164741f4ad2703b8f077640012f79ab"
 }

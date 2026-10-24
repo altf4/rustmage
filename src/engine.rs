@@ -1,3 +1,5 @@
+#[path = "engine_turn_skips.rs"]
+mod turn_skips;
 #[path = "engine_mana_announcements.rs"]
 mod mana_announcements;
 pub use mana_announcements::ManaAnnouncementView;
@@ -169,7 +171,7 @@ mod combat_restrictions;
 mod effect_choices;
 #[path = "engine_exile.rs"]
 mod exile;
-pub use exile::ExilePlayPermission;
+pub use exile::{ExilePlayPermission, ExilePlayExpiry};
 #[path = "engine_explore.rs"]
 mod explore;
 #[path = "engine_fight.rs"]
@@ -1499,6 +1501,7 @@ struct State {
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
     ending_turn: bool,
+    turn_skips: Option<Box<[u64; 2]>>,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
     controls: Option<Box<continuous_control::ControlState>>,
@@ -1562,7 +1565,7 @@ struct State {
         clippy::box_collection,
         reason = "Cold rule state keeps one pointer in games without this mechanic"
     )]
-    hand_play_bans: Option<Box<Vec<u32>>>,
+    hand_play_bans: Option<Box<Vec<Player>>>,
     #[allow(
         clippy::box_collection,
         reason = "Cold rule state keeps one pointer in games without this mechanic"
@@ -1717,6 +1720,7 @@ pub struct ZoneChange {
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub hexproof_until_end_turn: bool,
+    pub turns_to_skip: u64,
     /// Additional land plays granted until the current turn ends.
     pub extra_land_plays_remaining: u64,
     pub no_maximum_hand_size: bool,
@@ -2132,6 +2136,7 @@ impl Game {
             state: State {
                 paradigm: None,
                 ending_turn: false,
+                turn_skips: None,
                 mana_lots: None,
                 linked_choices: None,
                 zone_rules: None,
@@ -5363,8 +5368,14 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.state.exile_permissions.retain(|p| p.expiry != ExilePlayExpiry::StartOfNextTurn(self.state.active));
+        for permission in &mut self.state.exile_permissions {
+            if permission.expiry == ExilePlayExpiry::EndOfNextTurn && permission.player == self.state.active {
+                permission.expiry = ExilePlayExpiry::Turn(self.state.turn);
+            }
+        }
         if let Some(bans) = &mut self.state.hand_play_bans {
-            bans.retain(|&deadline| deadline >= self.state.turn);
+            bans.retain(|&owner| owner != self.state.active);
             if bans.is_empty() {
                 self.state.hand_play_bans = None;
             }
@@ -5553,7 +5564,7 @@ impl Game {
         self.state.saddled.clear();
         self.state
             .exile_permissions
-            .retain(|p| p.expires_turn > self.state.turn);
+            .retain(|p| !matches!(p.expiry, ExilePlayExpiry::Turn(turn) if turn <= self.state.turn));
         // Damage removal and expiration of until-end-of-turn effects are simultaneous.
         for obj in &mut self.state.objects {
             obj.damage = 0;
@@ -5585,7 +5596,7 @@ impl Game {
             return;
         }
         self.clear_step_mana(false, false);
-        self.state.active = self.state.active.other();
+        self.advance_to_actual_turn();
         self.state.turn = self
             .state
             .turn
@@ -6090,6 +6101,7 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
                 no_maximum_hand_size: self.no_maximum_hand_size(if i == 0 {
@@ -6480,6 +6492,7 @@ impl Game {
         std::mem::size_of::<State>()
             + self.mana_lot_bytes()
             + self.mana_announcement_bytes()
+            + s.turn_skips.as_ref().map_or(0, |_| std::mem::size_of::<[u64; 2]>())
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
             + self.control_bytes()
@@ -6543,7 +6556,7 @@ impl Game {
                     + links.len() * std::mem::size_of::<borrowed_activations::Link>()
             })
             + s.hand_play_bans.as_ref().map_or(0, |bans| {
-                std::mem::size_of::<Vec<u32>>() + bans.len() * std::mem::size_of::<u32>()
+                std::mem::size_of::<Vec<Player>>() + bans.len() * std::mem::size_of::<Player>()
             })
             + prepared::owned_bytes(&s.preparations)
             + s.adventures.as_ref().map_or(0, |p| p.bytes())

@@ -2484,6 +2484,9 @@ impl Game {
                 Instruction::ExileExcessPlay { next_turn } => {
                     self.exile_excess_play(&item, next_turn)
                 }
+                Instruction::FlipCoinsSkipTurns { coins } => {
+                    self.flip_coins_skip_turns(&item, coins)
+                }
                 Instruction::LoseHalfLife(players) => {
                     for player in self.program_players(players, &item) {
                         // CR107.1b: a negative calculated loss is zero.
