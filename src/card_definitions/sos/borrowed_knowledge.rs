@@ -1,16 +1,25 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Modal(&[
+        SpellMode {
+            text: "Discard your hand, then draw cards equal to the number of cards in target opponent's hand.",
+            targets: TargetPlan::Single(TargetSpec::one(TargetRule::Player {
+                opponent_only: true,
+            })),
+            program: &[
+                Instruction::DiscardHand(PlayerSet::Controller),
+                Instruction::DrawScaled(PlayerSet::Controller, AmountValue::TargetPlayerHandSize),
+            ],
+        },
+        SpellMode {
+            text: "Discard your hand, then draw cards equal to the number of cards discarded this way.",
+            targets: TargetPlan::NONE,
+            program: &[Instruction::DiscardAnyDraw {
+                players: PlayerSet::Controller,
+                bonus: 0,
+                required_all: true,
+            }],
+        },
+    ]),
     ..CardRules::EMPTY
 };

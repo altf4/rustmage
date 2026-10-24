@@ -3,10 +3,28 @@
   "catalogue_id": 508,
   "oracle_id": "0d6507b0-c986-49d1-aea3-77b2cf2a7433",
   "facts_sha256": "53425521909044bbce833e6953ca31a7a7d5d8dd56983b79acbae91ecd8a15e1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d634ac16fea9de1a6d5e394ff925a4cca88ff7d55866ceba6ce1e01f7325b246"
   },
-  "physical_metadata_sha256": "01c891210261652a7dba45ff3b099615ee62664ab1fc37caed763e7eb6ca2ca4"
+  "physical_metadata_sha256": "01c891210261652a7dba45ff3b099615ee62664ab1fc37caed763e7eb6ca2ca4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BorrowedKnowledge.java",
+  "java_sha256": "08d5cf9fd25adb45363942c6d5efa91cc4219b663dd8cc474231c54663a99fb6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardHandControllerEffect.java",
+      "sha256": "eb06f3b2c08e062ab3b8cdb8257c987c02ea8c42df4f9df0e167bb550a601982"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardHandDrawSameNumberSourceEffect.java",
+      "sha256": "3e833459914e3843d5568e937e0d14e718211e0beef9de60ff7e85ab4b8275bd"
+    }
+  ],
+  "rules_notes": [
+    "The second mode uses actual cards discarded, as printed in Oracle, rather than XMage's initial hand-size approximation. Replacement destinations still count actual discard events."
+  ]
 }

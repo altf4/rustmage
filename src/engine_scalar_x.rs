@@ -220,6 +220,17 @@ impl Game {
     }
     pub(super) fn item_amount(&self, value: AmountValue, item: &SpellView) -> u128 {
         match value {
+            AmountValue::TargetPlayerHandSize => item
+                .targets
+                .iter()
+                .find_map(|bound| {
+                    if let Target::Player(player) = bound.target {
+                        Some(self.hand_count(player) as u128)
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or(0),
             AmountValue::ManaSpent => u128::from(
                 self.item_cast_payment(item)
                     .into_iter()
