@@ -138,6 +138,31 @@ impl Game {
             return Vec::new();
         };
         let definition = a.item.source_card.activation(ability);
+        if a.power_up_costs.is_some() {
+            let fundable = |value: u32| {
+                let mut probe = a.clone();
+                probe.item.x = Some(value);
+                probe
+                    .cost_options()
+                    .any(|cost| self.announcement_cost_fundable(&probe, cost))
+            };
+            if !fundable(0) {
+                return Vec::new();
+            }
+            let (mut low, mut high) = (0u32, u32::MAX);
+            while low < high {
+                let mid = low + (high - low).div_ceil(2);
+                if fundable(mid) {
+                    low = mid;
+                } else {
+                    high = mid - 1;
+                }
+            }
+            return vec![XInterval {
+                minimum: 0,
+                maximum: low,
+            }];
+        }
         let base = a.cost.unwrap_or(ManaCost {
             colored: definition.cost.colored,
             generic: definition

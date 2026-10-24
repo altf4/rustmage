@@ -3439,6 +3439,24 @@ impl Card {
     pub(crate) fn chosen_entry_counters(self) -> Option<CounterKind> {
         authored::RULES[self.index()].extras.chosen_entry_counters
     }
+    pub(crate) fn power_up_abilities(self) -> &'static [u16] {
+        authored::RULES[self.index()].extras.power_up_abilities
+    }
+    pub(crate) fn power_up_additional_uses(self) -> u32 {
+        authored::RULES[self.index()]
+            .extras
+            .power_up_additional_uses
+    }
+    pub(crate) fn power_up_other_creature_reduction(self) -> u32 {
+        authored::RULES[self.index()]
+            .extras
+            .power_up_other_creature_reduction
+    }
+    pub(crate) fn power_up_mana_cost_alternatives(self) -> &'static [ManaCost] {
+        authored::RULES[self.index()]
+            .extras
+            .power_up_mana_cost_alternatives
+    }
     pub(crate) fn activation_counter_discount(self, ability: u16) -> Option<CounterKind> {
         authored::RULES[self.index()]
             .extras

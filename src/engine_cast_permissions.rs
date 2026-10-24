@@ -258,6 +258,7 @@ impl Game {
         }
         let a = Announcement {
             activation_discount: 0,
+            power_up_costs: None,
             free_hand_permission: None,
             miracle_cost: self.miracle_cost_for(&item),
             item,

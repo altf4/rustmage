@@ -198,13 +198,26 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
             view.schema = schema;
         }
     }
+    let mut observation_bytes = serde_json::to_string(&views).unwrap();
+    if schema_projection.is_some() {
+        // Recording-only projection of the two new ObjectView wire fields.
+        // Preserve every inherited field and byte order so old hashes still
+        // detect gameplay drift. Normal validation never takes this branch.
+        for field in [
+            ",\"entered_this_turn\":true",
+            ",\"entered_this_turn\":false",
+            ",\"power_up_uses\":[]",
+        ] {
+            observation_bytes = observation_bytes.replace(field, "");
+        }
+    }
     Trace {
         root: root.into(),
         status: status.into(),
         decisions: journal.len(),
         zone: format!("{:?}", g.object_view(id).zone),
         journal: digest(&serde_json::to_vec(&journal).unwrap()),
-        observations: digest(&serde_json::to_vec(&views).unwrap()),
+        observations: digest(observation_bytes.as_bytes()),
     }
 }
 
