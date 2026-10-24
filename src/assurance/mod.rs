@@ -169,3 +169,4 @@ mod sos_wu_audit;
 mod sos_zaffai;
 
 mod sos_cast_rollback;
+mod sos_complete_games;
