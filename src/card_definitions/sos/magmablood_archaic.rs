@@ -10,10 +10,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         )],
     }],
     triggers: &[TriggeredAbility {
-        condition: TriggerCondition::SpellCast {
-            relation: CastRelation::You,
-            filter: CastFilter::InstantSorcery,
-            ordinal: None,
+        condition: TriggerCondition::ManaSpent {
+            minimum: 0,
+            increment: false,
+            event: &TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: CastFilter::InstantSorcery,
+                ordinal: None,
+            },
         },
         targets: TargetPlan::NONE,
         program: &[Instruction::GrowCreaturesScaled {
