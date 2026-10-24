@@ -1,0 +1,176 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Seventeen complete directly authored candidate cards and cast-context prerequisite; full-set acceptance pending",
+  "source_base": "859fd820",
+  "prerequisite_commit": "fe1c1e8c",
+  "inherited_trace_count": 2387,
+  "inherited_full_trace_matches": 2387,
+  "inherited_changes": [],
+  "cast_context_consumer_audit": {
+    "instruction": "DamageScaled(CastSpellManaValue)",
+    "all_current_consumers": [
+      "Thor, God of Thunder"
+    ],
+    "previously_supported_consumers": [],
+    "intentional_change": "The newly admitted Thor retains its triggering spell mana value after discounts, countering and source departure; spell copies do not count as casts."
+  },
+  "previous_baseline_sha256": "3e8ac9f3352929aecc5f616cf1378a0fd28b70bac10a07e6c5eebd6d8d8021d3",
+  "candidate_trace_sha256": "fbb14e9d0e5dc4fcdd497cd079ff7ac94ad4480a8b61f9c6b08664e6f40582af",
+  "new_traces": {
+    "Ant-Man's Army": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 7,
+      "zone": "Battlefield",
+      "journal": "5c3870cd1c7a12c9",
+      "observations": "d580a63b8a7e92c5"
+    },
+    "Avengers Disassembled": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Graveyard",
+      "journal": "e50f7c8a89ff86f9",
+      "observations": "b9026bf94af7258d"
+    },
+    "Crossbones, Malicious Mercenary": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "9d78478b460edd3d",
+      "observations": "7448edd49d0b6610"
+    },
+    "Ghost, Spectral Saboteur": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Battlefield",
+      "journal": "ee0d9dcf1ddbd6b3",
+      "observations": "f2035ddfa020348e"
+    },
+    "HYDRA Troopers": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 6,
+      "zone": "Battlefield",
+      "journal": "c74d47fdf1bf30fc",
+      "observations": "ab66c0ed52767282"
+    },
+    "Hire a Crew": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Graveyard",
+      "journal": "543918deceb4be8c",
+      "observations": "b9eaa8135becfd53"
+    },
+    "Luke Cage, Power Man": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "1ee756735d2f017d",
+      "observations": "dc679486a08d36e6"
+    },
+    "M.O.D.O.K.": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "e8de1199f21a06d6",
+      "observations": "b1044776987fb528"
+    },
+    "Mister Fantastic, Reed Richards": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "b3f39d5b44da38ed",
+      "observations": "7d960d533513dffa"
+    },
+    "Quake, Agent of S.H.I.E.L.D.": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "3ad6d4893695dc9c",
+      "observations": "30625f328c7a11b2"
+    },
+    "Reptil, Dinomorpher": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "d96ad4ca883f316e",
+      "observations": "ee62ff575ff33e4b"
+    },
+    "The Masters of Evil": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "66d6fdb8728e9e03",
+      "observations": "e4808f08c4b1c710"
+    },
+    "Thor, God of Thunder": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 7,
+      "zone": "Battlefield",
+      "journal": "39b46fbe7d2a3760",
+      "observations": "c5a8fcfff0422629"
+    },
+    "Training Regimen": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "60609359dae9f3fd",
+      "observations": "4b89f6427e5c11e9"
+    },
+    "Truck Toss": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Graveyard",
+      "journal": "21675ed5e7f92349",
+      "observations": "b762b836e4034763"
+    },
+    "War Machine, Legacy of Iron": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Battlefield",
+      "journal": "d3bbb2e94f7fc3ab",
+      "observations": "c6b3afa369851d8c"
+    },
+    "Wiccan, Rising Magician": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "87c199e3b586e2a2",
+      "observations": "0c0f833fc16ad9e2"
+    }
+  },
+  "source_pin_check": {
+    "definitions": 5387,
+    "verified_blobs": 1003
+  },
+  "rules_evidence": "src/engine_msh_existing_tests.rs; paid actions, legality/privacy, transactional failures and owned raw/index branch/restore through existing checked-action helpers",
+  "set_game_acceptance": "pending; no full-set or all-Standard game/performance claim",
+  "focused_rules_tests": 21,
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+  ],
+  "implementation_measurement": {
+    "start_utc": "2026-10-24T17:43:55Z",
+    "candidate_verified_utc": "2026-10-24T18:30:01Z",
+    "elapsed_seconds": 2766,
+    "cards": 17,
+    "cards_per_hour": 22.13,
+    "scope": "Source review, direct authoring, rules tests, build queues and two independent Power-up review passes; candidate throughput, not merged acceptance or simulation performance"
+  }
+}

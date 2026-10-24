@@ -7249,3 +7249,7 @@ mod sos_green_colorless_tests;
 
 #[path = "engine_cast_rollback.rs"]
 mod cast_rollback;
+
+#[cfg(test)]
+#[path = "engine_msh_existing_tests.rs"]
+mod msh_existing_tests;

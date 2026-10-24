@@ -623,6 +623,14 @@
     "journal": "a5b6222da043b342",
     "observations": "46c33a41827937e1"
   },
+  "Ant-Man's Army": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "5c3870cd1c7a12c9",
+    "observations": "d580a63b8a7e92c5"
+  },
   "Anthem of Champions": {
     "root": "main",
     "status": "completed",
@@ -1038,6 +1046,14 @@
     "zone": "Battlefield",
     "journal": "4324aa4c9fd9325c",
     "observations": "e02dfbeb87f80742"
+  },
+  "Avengers Disassembled": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "e50f7c8a89ff86f9",
+    "observations": "b9026bf94af7258d"
   },
   "Avengers Hangar": {
     "root": "main",
@@ -3278,6 +3294,14 @@
     "zone": "Battlefield",
     "journal": "b86544257bfe4a7d",
     "observations": "7643da24b4fa0a6c"
+  },
+  "Crossbones, Malicious Mercenary": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9d78478b460edd3d",
+    "observations": "7448edd49d0b6610"
   },
   "Crossroads Watcher": {
     "root": "main",
@@ -6511,6 +6535,14 @@
     "journal": "c4b8f6d37ca7169e",
     "observations": "8527dd5309e738ee"
   },
+  "Ghost, Spectral Saboteur": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "ee0d9dcf1ddbd6b3",
+    "observations": "f2035ddfa020348e"
+  },
   "Giada, Font of Hope": {
     "root": "main",
     "status": "completed",
@@ -7295,6 +7327,14 @@
     "journal": "b43781f2834dd88f",
     "observations": "72a304cc229e8a28"
   },
+  "HYDRA Troopers": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "c74d47fdf1bf30fc",
+    "observations": "ab66c0ed52767282"
+  },
   "Halana and Alena, Partners": {
     "root": "main",
     "status": "completed",
@@ -7742,6 +7782,14 @@
     "zone": "Battlefield",
     "journal": "97f197e40a843eee",
     "observations": "e19e6c0b20b9e06c"
+  },
+  "Hire a Crew": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "543918deceb4be8c",
+    "observations": "b9eaa8135becfd53"
   },
   "Hoarding Dragon": {
     "root": "main",
@@ -9503,6 +9551,14 @@
     "journal": "f500b3118c2282cd",
     "observations": "63e23d0d6dcca9fd"
   },
+  "Luke Cage, Power Man": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1ee756735d2f017d",
+    "observations": "dc679486a08d36e6"
+  },
   "Lumaret's Favor": {
     "root": "main",
     "status": "completed",
@@ -9606,6 +9662,14 @@
     "zone": "Battlefield",
     "journal": "188395fba4eb3af0",
     "observations": "d7dfa731c7cd6344"
+  },
+  "M.O.D.O.K.": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e8de1199f21a06d6",
+    "observations": "b1044776987fb528"
   },
   "Maalfeld Twins": {
     "root": "main",
@@ -10462,6 +10526,14 @@
     "zone": "Graveyard",
     "journal": "36445be718334408",
     "observations": "3eb4301927048013"
+  },
+  "Mister Fantastic, Reed Richards": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b3f39d5b44da38ed",
+    "observations": "7d960d533513dffa"
   },
   "Mistmeadow Council": {
     "root": "main",
@@ -12351,6 +12423,14 @@
     "journal": "bdc89f9863097122",
     "observations": "8c63dbe58957283b"
   },
+  "Quake, Agent of S.H.I.E.L.D.": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3ad6d4893695dc9c",
+    "observations": "30625f328c7a11b2"
+  },
   "Quakestrider Ceratops": {
     "root": "main",
     "status": "completed",
@@ -12966,6 +13046,14 @@
     "zone": "Graveyard",
     "journal": "b3c7b7afbc4d3086",
     "observations": "c7396df28c0fddd8"
+  },
+  "Reptil, Dinomorpher": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "d96ad4ca883f316e",
+    "observations": "ee62ff575ff33e4b"
   },
   "Reputable Merchant": {
     "root": "main",
@@ -16663,6 +16751,14 @@
     "journal": "e583b1f11e6ad0ad",
     "observations": "e34b0489d9e386a4"
   },
+  "The Masters of Evil": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "66d6fdb8728e9e03",
+    "observations": "e4808f08c4b1c710"
+  },
   "The Sackville-Bagginses": {
     "root": "main",
     "status": "completed",
@@ -16806,6 +16902,14 @@
     "zone": "Battlefield",
     "journal": "98e8e4936ba0c01c",
     "observations": "188bb7cd8f6765d4"
+  },
+  "Thor, God of Thunder": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "39b46fbe7d2a3760",
+    "observations": "c5a8fcfff0422629"
   },
   "Thorin's Last Stand": {
     "root": "main",
@@ -17207,6 +17311,14 @@
     "journal": "ce93789b5fa64c9f",
     "observations": "1844e32dae6cabd7"
   },
+  "Training Regimen": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "60609359dae9f3fd",
+    "observations": "4b89f6427e5c11e9"
+  },
   "Tranquil Cove": {
     "root": "main",
     "status": "completed",
@@ -17358,6 +17470,14 @@
     "zone": "Battlefield",
     "journal": "f353431f3e959ade",
     "observations": "79c16978e7f980a8"
+  },
+  "Truck Toss": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "21675ed5e7f92349",
+    "observations": "b762b836e4034763"
   },
   "True Ancestry": {
     "root": "main",
@@ -18351,6 +18471,14 @@
     "journal": "b3f39d5b44da38ed",
     "observations": "adfe93c0998f8670"
   },
+  "War Machine, Legacy of Iron": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "d3bbb2e94f7fc3ab",
+    "observations": "c6b3afa369851d8c"
+  },
   "War Squeak": {
     "root": "main",
     "status": "completed",
@@ -18606,6 +18734,14 @@
     "zone": "Graveyard",
     "journal": "e97a6decbd99aefe",
     "observations": "b6d6342ff1f6fe82"
+  },
+  "Wiccan, Rising Magician": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "87c199e3b586e2a2",
+    "observations": "0c0f833fc16ad9e2"
   },
   "Wicked Visitor": {
     "root": "main",

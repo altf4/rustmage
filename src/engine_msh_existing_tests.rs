@@ -885,3 +885,191 @@ fn msh_thor_spell_copies_are_not_cast_and_do_not_emit_extra_damage_triggers() {
         );
     }
 }
+
+#[test]
+fn msh_avengers_disassembled_all_modes_optional_controller_search_and_sweep() {
+    for p in [Player::P0, Player::P1] {
+        for mode in [0, 1, 2] {
+            for controller in [p, p.other()] {
+                for search in [false, true] {
+                    let mut g = setup(p);
+                    let own = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+                    let enemy = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+                    let large = named(&mut g, p.other(), "Serra Angel", Zone::Battlefield);
+                    let land = named(&mut g, controller, "Forest", Zone::Battlefield);
+                    let basic = *g.state.players[controller.index()].library.last().unwrap();
+                    let spell = named(&mut g, p, "Avengers Disassembled", Zone::Hand);
+                    let targets = if mode == 0 {
+                        vec![]
+                    } else {
+                        vec![Target::Card(land)]
+                    };
+                    cast(&mut g, spell, Some(mode), &targets);
+                    if mode != 0 {
+                        until(&mut g, |g| {
+                            matches!(g.state.pending, Pending::EffectOptional { .. })
+                        });
+                        assert_eq!(g.actor(), Some(controller));
+                        checked(&mut g, Action::ChooseOptional { accept: search });
+                        if search {
+                            until(&mut g, |g| {
+                                matches!(g.state.pending, Pending::EffectSearch { .. })
+                            });
+                            assert!(g.observe(controller.other()).search_choice.is_none());
+                            checked(&mut g, Action::ChooseSearch { card: basic });
+                            checked(&mut g, Action::FinishSearch);
+                        }
+                    }
+                    settle(&mut g);
+                    assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+                    assert_eq!(
+                        g.object_view(land).zone,
+                        if mode == 0 {
+                            Zone::Battlefield
+                        } else {
+                            Zone::Graveyard
+                        }
+                    );
+                    for id in [own, enemy] {
+                        assert_eq!(
+                            g.object_view(id).zone,
+                            if mode == 1 {
+                                Zone::Battlefield
+                            } else {
+                                Zone::Graveyard
+                            }
+                        );
+                    }
+                    assert_eq!(g.object_view(large).damage, if mode == 1 { 0 } else { 3 });
+                    if mode != 0 && search {
+                        assert_eq!(g.object_view(basic).zone, Zone::Battlefield);
+                        assert!(g.object_view(basic).tapped);
+                        assert_eq!(g.object_view(basic).controller, controller);
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn msh_avengers_disassembled_indestructible_land_still_searches_but_invalid_target_counters_both_modes()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+        g.state.objects[land as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+        let spell = named(&mut g, p, "Avengers Disassembled", Zone::Hand);
+        cast(&mut g, spell, Some(1), &[Target::Card(land)]);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectOptional { .. })
+        });
+        assert_eq!(g.actor(), Some(p.other()));
+        assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectSearch { .. })
+        });
+        checked(&mut g, Action::FinishSearch);
+        settle(&mut g);
+        g.state.players[p.index()].mana = [30; 6];
+        let creature = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let spell = named(&mut g, p, "Avengers Disassembled", Zone::Hand);
+        cast(&mut g, spell, Some(2), &[Target::Card(land)]);
+        g.move_object(land, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(creature).damage, 0);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn msh_reptil_paid_repeatable_forms_keep_counters_and_combine_keywords_then_expire() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = paid(&mut g, p, "Reptil, Dinomorpher");
+        g.add_counter(source, CounterKind::PlusOne, 1);
+        for (slot, stats, keywords) in [
+            (
+                0,
+                Stats {
+                    power: 4,
+                    toughness: 6,
+                },
+                Keywords::REACH.union(Keywords::VIGILANCE),
+            ),
+            (
+                1,
+                Stats {
+                    power: 7,
+                    toughness: 7,
+                },
+                Keywords::REACH
+                    .union(Keywords::VIGILANCE)
+                    .union(Keywords::TRAMPLE),
+            ),
+            (
+                0,
+                Stats {
+                    power: 4,
+                    toughness: 6,
+                },
+                Keywords::REACH
+                    .union(Keywords::VIGILANCE)
+                    .union(Keywords::TRAMPLE),
+            ),
+        ] {
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: slot,
+                    counter_payment: Counters::default(),
+                },
+            );
+            until(&mut g, |g| g.state.announcing.is_none());
+            settle(&mut g);
+            assert_eq!(g.stats(source), stats);
+            assert!(g.keywords(source).contains(keywords));
+            assert!(g.has_subtype(source, "Dinosaur"));
+            assert!(g.has_subtype(source, "Hero"));
+            assert!(!g.has_subtype(source, "Human"));
+            assert_eq!(g.object_view(source).colors, 16);
+        }
+        next_turn(&mut g);
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 2,
+                toughness: 3
+            }
+        );
+        assert!(g.has_subtype(source, "Human"));
+        assert!(!g.has_subtype(source, "Dinosaur"));
+        assert!(!g.keywords(source).contains(Keywords::TRAMPLE));
+        assert!(!g.keywords(source).contains(Keywords::REACH));
+        g.state.priority = p;
+        g.state.players[p.index()].mana = [30; 6];
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        until(&mut g, |g| g.state.announcing.is_none());
+        g.move_object(source, Zone::Exile);
+        g.move_object(source, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(source),
+            Stats {
+                power: 1,
+                toughness: 2
+            }
+        );
+        assert!(!g.has_subtype(source, "Dinosaur"));
+    }
+}
