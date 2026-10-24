@@ -710,6 +710,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    CreateCopyTokenForPlayer { subject: Subject, amount: u16, player: PlayerSet },
+    PutPermanentCountersScaled { filters: &'static [BattlefieldFilter], kind: CounterKind, amount: AmountValue },
     Paradigm {
         ability: u16,
     },

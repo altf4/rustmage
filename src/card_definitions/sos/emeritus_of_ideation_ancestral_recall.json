@@ -3,10 +3,40 @@
   "catalogue_id": 1316,
   "oracle_id": "24a29be4-5bc2-469b-b2ce-2fb305c3facb",
   "facts_sha256": "2aeaff2858a20d487bb7a73e796353f56eac30c80e931788c889d3b1dbcd58cc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "68d70ef19d46410bd8ba7eacc1196b944abb3efe0426ec9f87ae7c009fa54d4f"
   },
-  "physical_metadata_sha256": "574566ceb3376c620f55d410fc27f4df01c3fa5dcc04f3a5b0d5e7101e6cc3d4"
+  "physical_metadata_sha256": "574566ceb3376c620f55d410fc27f4df01c3fa5dcc04f3a5b0d5e7101e6cc3d4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfIdeation.java",
+  "java_sha256": "9c2ffb5bc0a0dcd36fcf9088e2f58e754561c12c949c0dada3d3fae8fbaefa4a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+      "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ]
 }

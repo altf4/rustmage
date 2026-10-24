@@ -3,10 +3,30 @@
   "catalogue_id": 3082,
   "oracle_id": "e1ebb60e-fbf3-4f8f-a76f-d637ec59ffb0",
   "facts_sha256": "fffa754e68fafaad6c4052151bc02761a154ff50a16999a9a9209555d172055d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bce14ab70816b505cd441709a2f315d7b0c1a4abdf5a76e3a07640f40e843951"
   },
-  "physical_metadata_sha256": "60815484442c2fd282749743360afac3ee9fbf247586a8d9e0683206521eed14"
+  "physical_metadata_sha256": "60815484442c2fd282749743360afac3ee9fbf247586a8d9e0683206521eed14",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OwlinHistorian.java",
+  "java_sha256": "b518114cac880f459d5945b32c4aeaf78356a04e9492dec3ec812936598ec73a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CardsLeaveGraveyardTriggeredAbility.java",
+      "sha256": "9600c956500170fad83dd5e65083bbeb3aebbef5cbb9ef82d8ca989bdb70905b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ]
 }

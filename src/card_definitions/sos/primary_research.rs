@@ -1,16 +1,37 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed Oracle/XMage behavior; full printed obligations pinned in paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: one(TargetRule::Filtered {
+                base: &TargetRule::Object {
+                    zone: TargetZone::Graveyard,
+                    kinds: 0,
+                    relation: 0,
+                    other: false,
+                    nonland: true,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: 3,
+                },
+                predicate: &TargetPredicate::Permanent,
+            }),
+            program: &[Instruction::ReturnToBattlefield],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::AtStep {
+                step: TriggerStep::End,
+                relation: CastRelation::You,
+                guard: StepGuard::Expression {
+                    value: StatValue::CardLeftGraveyardThisTurn,
+                    minimum: Some(1),
+                    maximum: None,
+                },
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        },
+    ],
     ..CardRules::EMPTY
 };

@@ -3,10 +3,25 @@
   "catalogue_id": 1251,
   "oracle_id": "d88c3554-18db-4e5e-a979-2402990a0311",
   "facts_sha256": "81a0c010ef464eab74c010d1deb1538a00f79c567be9c1a97c0f80171c7d3beb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f496fa3d71a36dbf7d23970517f0fc3631e1ec53090dcc3d2327bdb245d4a00d"
   },
-  "physical_metadata_sha256": "c64d32432527ff6eb8ede1971c22fc8f66bbd46d668cfcf6b01e8820363a6e38"
+  "physical_metadata_sha256": "c64d32432527ff6eb8ede1971c22fc8f66bbd46d668cfcf6b01e8820363a6e38",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EchocastingSymposium.java",
+  "java_sha256": "241c74da0338c9c3a429e6d47ef11f65984b7362988acb28e13e6113847295cf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ParadigmAbility.java",
+      "sha256": "77be2914f9efdc0eaa28dd563c081ee4cf47492bceff853a5fec90b81e003521"
+    }
+  ]
 }

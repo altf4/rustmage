@@ -3,10 +3,30 @@
   "catalogue_id": 3233,
   "oracle_id": "51af3da5-0970-436e-baa6-3171889a40e0",
   "facts_sha256": "1109090924e28082b28274bc80f1d26519bf4acdb25e21fae275d4f32bf78c66",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4c9bc2c766e82c32a74f35baeb0d447b173fa53e115a08c10d939038a9ed35ba"
   },
-  "physical_metadata_sha256": "f87f98cb27ceb0bd74a94811a8778976bf1b995414faefb7dbc266f2d723e812"
+  "physical_metadata_sha256": "f87f98cb27ceb0bd74a94811a8778976bf1b995414faefb7dbc266f2d723e812",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PrimaryResearch.java",
+  "java_sha256": "e2e5bdf27df9c6e6d362015f9f695290b048c858f0f9a8bd26a17b119fb37e27",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CardLeftYourGraveyardThisTurnCondition.java",
+      "sha256": "a963ce47537be0b1abff78dcbb7fb89a5f53b80e026bd815fe697c72314175c3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

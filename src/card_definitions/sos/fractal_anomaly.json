@@ -3,10 +3,25 @@
   "catalogue_id": 1610,
   "oracle_id": "644379e7-782e-48e1-9b47-c4dc62e62d85",
   "facts_sha256": "cf5b96cd6a1027d448161cd9e7bfd2bf07f83d3f00d8d401f937c33e201628fc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0257e446e430ce3461ae97039fc433c48bf4ca7774f7cac25755c5c1e35a9811"
   },
-  "physical_metadata_sha256": "9666b725fbec59cbf4ae854099a5cf4e63527e229e3cade49e18ae1e270ed8b1"
+  "physical_metadata_sha256": "9666b725fbec59cbf4ae854099a5cf4e63527e229e3cade49e18ae1e270ed8b1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FractalAnomaly.java",
+  "java_sha256": "1245ac42e09352b64a47ae6534606d707df7876fa33d7926db000a91c63230b0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FractalToken.java",
+      "sha256": "a2fb727f70793c0f7f0df80d2aaf8dcb077477de6db48576aef59606b1c2248b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsDrawnThisTurnDynamicValue.java",
+      "sha256": "57ac3b7529b53309fdd1704e951fe94beda56014bd28293f3a8f9ee295787cc3"
+    }
+  ]
 }

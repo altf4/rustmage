@@ -508,3 +508,353 @@ fn sos_preparation_reexiled_copy_ceases_and_designation_is_not_copied() {
         assert_eq!(g.state.preparations.as_ref().unwrap().len(), rows);
     }
 }
+
+fn until_pending_choice(g: &mut Game) {
+    for _ in 0..24 {
+        if g.state.pending != Pending::Priority {
+            return;
+        }
+        act(g, Action::Pass);
+    }
+    panic!("missing resolution choice");
+}
+
+#[test]
+fn sos_professor_increment_rechecks_live_stats_and_counter_batches_draw_once() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let professor = put(&mut g, p, "Pensive Professor", Zone::Hand);
+        cast(&mut g, professor, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, professor), (0, 2));
+        let draw = put(&mut g, p, "Divination", Zone::Hand);
+        cast(&mut g, draw, None);
+        let growth = put(&mut g, p, "Giant Growth", Zone::Hand);
+        cast(&mut g, growth, Some(Target::Card(professor)));
+        settle(&mut g);
+        assert_eq!(g.counter_count(professor, CounterKind::PlusOne), 1);
+        assert_eq!(stats(&g, professor), (4, 6));
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 3);
+        g.finish_cleanup();
+        let prior = g.state.players[p.index()].cards_drawn_this_turn;
+        g.effect_counter(
+            professor,
+            CounterKind::PlusOne,
+            3,
+            replacements::ResumeMode::Pending,
+        );
+        big_helpers::settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, prior + 1);
+    }
+}
+
+#[test]
+fn sos_owlin_surveillance_and_one_trigger_per_graveyard_departure_batch() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Owlin Historian", Zone::Hand);
+        cast(&mut g, source, None);
+        until_pending_choice(&mut g);
+        let top = *g.state.players[p.index()].library.last().unwrap();
+        act(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: top,
+                destination: LibraryDestination::Graveyard,
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(top).zone, Zone::Graveyard);
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+        assert_eq!(stats(&g, source), (2, 3));
+        let a = put(&mut g, p, "Unsummon", Zone::Graveyard);
+        let b = put(&mut g, p, "Divination", Zone::Graveyard);
+        let enemy = put(&mut g, p.other(), "Divination", Zone::Graveyard);
+        let spell = put(&mut g, p, "Wisdom of Ages", Zone::Hand);
+        cast(&mut g, spell, None);
+        settle(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Hand);
+        assert_eq!(g.object_view(b).zone, Zone::Hand);
+        assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+        assert_eq!(stats(&g, source), (3, 4));
+        g.move_object(enemy, Zone::Exile);
+        big_helpers::settle(&mut g);
+        assert_eq!(stats(&g, source), (3, 4));
+        g.move_object(top, Zone::Exile);
+        big_helpers::settle(&mut g);
+        assert_eq!(stats(&g, source), (4, 5));
+        g.finish_cleanup();
+        assert_eq!(stats(&g, source), (2, 3));
+    }
+}
+
+#[test]
+fn sos_primary_research_limits_reanimation_and_end_step_history() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let valid = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let land = put(&mut g, p, "Forest", Zone::Graveyard);
+        let spellcard = put(&mut g, p, "Divination", Zone::Graveyard);
+        let costly = put(&mut g, p, "Serra Angel", Zone::Graveyard);
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+        let source = put(&mut g, p, "Primary Research", Zone::Hand);
+        cast(&mut g, source, None);
+        until_pending_choice(&mut g);
+        for target in [land, spellcard, costly, enemy] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+        }
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(valid),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(valid).zone, Zone::Battlefield);
+        let hand = g.hand_count(p);
+        g.begin_step(Step::End);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.hand_count(p), hand + 1);
+        g.finish_cleanup();
+        let hand = g.hand_count(p);
+        g.begin_step(Step::End);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.hand_count(p), hand);
+    }
+}
+
+#[test]
+fn sos_ideation_reprepares_only_after_exact_optional_eight_card_payment() {
+    for p in [Player::P0, Player::P1] {
+        for accept in [false, true] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Emeritus of Ideation", Zone::Hand);
+            cast(&mut g, source, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (5, 5));
+            assert!(g.keywords(source).contains(Keywords::FLYING));
+            let drawn = g.state.players[p.other().index()].cards_drawn_this_turn;
+            prepared_cast(&mut g, source, &[Target::Player(p.other())]);
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.other().index()].cards_drawn_this_turn,
+                drawn + 3
+            );
+            assert!(!g.object_view(source).prepared);
+            let grave: Vec<_> = (0..8)
+                .map(|_| put(&mut g, p, "Forest", Zone::Graveyard))
+                .collect();
+            let enemy = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+            g.state.objects[source as usize].summoning_sick = false;
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            act(&mut g, Action::Attack { card: source });
+            act(&mut g, Action::FinishAttackers);
+            until_pending_choice(&mut g);
+            let enemy_object = g.object_ref(enemy);
+            reject(
+                &mut g,
+                Action::Sacrifice {
+                    object: enemy_object,
+                },
+            );
+            if accept {
+                for &id in &grave {
+                    let object = g.object_ref(id);
+                    act(&mut g, Action::Sacrifice { object });
+                }
+            } else {
+                act(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(source).prepared, accept);
+            for id in grave {
+                assert_eq!(
+                    g.object_view(id).zone,
+                    if accept { Zone::Exile } else { Zone::Graveyard }
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_restoration_paradigm_returns_permanents_and_recurs_after_original_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let target = put(&mut g, p, "Serra Angel", Zone::Graveyard);
+        let spell = put(&mut g, p, "Restoration Seminar", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(target)));
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert_eq!(g.observe(p).paradigms.len(), 1);
+        g.move_object(spell, Zone::Hand);
+        g.move_object(target, Zone::Graveyard);
+        g.begin_step(Step::Main1);
+        until_pending_choice(&mut g);
+        let copy = g.state.resolution_free_casts.as_ref().unwrap().remaining[0];
+        act(
+            &mut g,
+            Action::CastExiledDuringResolution {
+                object: copy,
+                face: CastFace::Normal,
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        act(&mut g, Action::FinishResolutionCasts);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(copy.card).zone, Zone::Outside);
+        assert_eq!(g.observe(p).paradigms.len(), 1);
+    }
+}
+
+#[test]
+fn sos_fractal_anomaly_uses_actual_draw_history_and_only_new_tokens_get_counters() {
+    for p in [Player::P0, Player::P1] {
+        for draws in [0, 2] {
+            let mut g = scenario(p);
+            let old = put(&mut g, p, "@token/sos-fractal", Zone::Battlefield);
+            g.set_counters(old, Counters::of(CounterKind::PlusOne, 1));
+            if draws == 2 {
+                let draw = put(&mut g, p, "Divination", Zone::Hand);
+                cast(&mut g, draw, None);
+                settle(&mut g);
+            }
+            let spell = put(&mut g, p, "Fractal Anomaly", Zone::Hand);
+            cast(&mut g, spell, None);
+            big_helpers::settle(&mut g);
+            assert_eq!(g.counter_count(old, CounterKind::PlusOne), 1);
+            let made: Vec<_> = tokens(&g, p).into_iter().filter(|id| *id != old).collect();
+            assert_eq!(made.len(), usize::from(draws > 0));
+            if draws > 0 {
+                assert_eq!(g.counter_count(made[0], CounterKind::PlusOne), draws);
+                assert_eq!(stats(&g, made[0]), (2, 2));
+                assert_eq!(g.object_view(made[0]).colors, 2 | 16);
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_echocasting_target_player_owns_plain_copiable_token_and_partial_target_still_paradigms() {
+    for p in [Player::P0, Player::P1] {
+        for recipient in [p, p.other()] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let growth = put(&mut g, p, "Giant Growth", Zone::Hand);
+            cast(&mut g, growth, Some(Target::Card(source)));
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (5, 5));
+            let spell = put(&mut g, p, "Echocasting Symposium", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(recipient),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(source),
+                },
+            );
+            pay(&mut g);
+            big_helpers::settle(&mut g);
+            let copies = tokens(&g, recipient);
+            assert_eq!(copies.len(), 1);
+            assert_eq!(stats(&g, copies[0]), (2, 2));
+            assert_eq!(g.object_view(copies[0]).owner, recipient);
+            assert_eq!(g.object_view(copies[0]).name(), "Bear Cub");
+            assert_eq!(g.observe(p).paradigms.len(), 1);
+        }
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Echocasting Symposium", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        pay(&mut g);
+        g.move_object(source, Zone::Hand);
+        big_helpers::settle(&mut g);
+        assert!(tokens(&g, p).is_empty());
+        assert_eq!(g.observe(p).paradigms.len(), 1);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+    }
+}
+
+#[test]
+fn sos_jadzi_x_counts_all_own_fractals_and_two_x_symbols_are_paid() {
+    for p in [Player::P0, Player::P1] {
+        for x in [0, 2] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Jadzi, Steward of Fate", Zone::Hand);
+            cast(&mut g, source, None);
+            big_helpers::settle(&mut g);
+            assert_eq!(stats(&g, source), (2, 4));
+            assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
+            assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 2);
+            let old = put(&mut g, p, "@token/sos-fractal", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "@token/sos-fractal", Zone::Battlefield);
+            g.set_counters(old, Counters::of(CounterKind::PlusOne, 1));
+            g.set_counters(enemy, Counters::of(CounterKind::PlusOne, 1));
+            let copy = g
+                .state
+                .preparations
+                .as_ref()
+                .unwrap()
+                .iter()
+                .find(|r| r.permanent.card == source)
+                .unwrap()
+                .spell_copy
+                .card;
+            let mana: u32 = g.state.players[p.index()].mana.iter().sum();
+            act(&mut g, Action::AnnounceExile { card: copy });
+            act(&mut g, Action::ChooseX { value: x });
+            pay(&mut g);
+            assert_eq!(
+                mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+                1 + 2 * x
+            );
+            big_helpers::settle(&mut g);
+            assert_eq!(g.counter_count(old, CounterKind::PlusOne), 1 + u64::from(x));
+            assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 1);
+            let new: Vec<_> = tokens(&g, p).into_iter().filter(|id| *id != old).collect();
+            assert_eq!(new.len(), x as usize);
+            for id in new {
+                assert_eq!(g.counter_count(id, CounterKind::PlusOne), u64::from(x));
+            }
+            assert!(!g.object_view(source).prepared);
+        }
+    }
+}

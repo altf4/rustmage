@@ -1,6 +1,27 @@
 //! Non-targeted battlefield sets, frozen before simultaneous movement or damage.
 use super::*;
 impl Game {
+    pub(super) fn put_permanent_counters_scaled(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        kind: CounterKind,
+        amount: AmountValue,
+    ) {
+        let count = u64::try_from(self.item_amount(amount, item))
+            .capacity("group counter quantity exhausted");
+        let affected = self
+            .battlefield_group(item, filters)
+            .into_iter()
+            .map(|id| {
+                let mut counters = Counters::default();
+                counters.add(kind, count);
+                (self.object_ref(id), counters)
+            })
+            .collect();
+        self.effect_counters(affected, replacements::ResumeMode::Program);
+    }
+
     fn battlefield_filter_matches(
         &self,
         filter: BattlefieldFilter,

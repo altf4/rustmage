@@ -50,6 +50,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
+            | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }

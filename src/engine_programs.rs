@@ -1623,6 +1623,7 @@ impl Game {
                 Instruction::Fight { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
+                    | Instruction::CreateCopyTokenForPlayer { .. }
                     | Instruction::GainControl {
                         controller: PlayerSet::Targeted,
                         ..
@@ -2337,6 +2338,14 @@ impl Game {
                         recipe.exceptions = recipe.exceptions.union(CopyExceptions::ARTIFACT);
                         self.stage_temporary_copy_creation(&item, recipe);
                     }
+                }
+                Instruction::CreateCopyTokenForPlayer { subject, amount, player } => {
+                    if let Some(controller) = self.program_players(player, &item).next()
+                        && let Some(recipe) = self.recipe_for_subject(&item, subject)
+                    { self.stage_copy_creation(controller, recipe, u128::from(amount)); }
+                }
+                Instruction::PutPermanentCountersScaled { filters, kind, amount } => {
+                    self.put_permanent_counters_scaled(&item, filters, kind, amount);
                 }
                 Instruction::CreateCopyToken { subject, amount }
                 | Instruction::CreateCopyTokenWithExceptions {

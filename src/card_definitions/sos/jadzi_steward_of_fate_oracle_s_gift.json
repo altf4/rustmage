@@ -3,10 +3,30 @@
   "catalogue_id": 2256,
   "oracle_id": "c63b3511-d597-4c6e-9094-eabdeaa8a394",
   "facts_sha256": "f2ced6ba60cf3783c46f936a0bc8bceccd2d265938d0643ba7ffa45983301a1b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ae6c213deb9c25e8881934dbd11893383887fe585d45bd379746768421fcc984"
   },
-  "physical_metadata_sha256": "a997f6bce1db9bf74653e8132e109b34158c91f544c044f2d00448588396db58"
+  "physical_metadata_sha256": "a997f6bce1db9bf74653e8132e109b34158c91f544c044f2d00448588396db58",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JadziStewardOfFate.java",
+  "java_sha256": "70d2620f82ce66a42a295ef77b54fe47196106d1a32a07734c8e1b3aa29abe03",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    }
+  ]
 }
