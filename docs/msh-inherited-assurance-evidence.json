@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "Meaningful inherited84 MSH obligation assurance; no new admissions; full281 set acceptance remains open",
+  "scope": "Meaningful assurance for 84 inherited MSH cards; no new admissions; full 281-card set acceptance remains open",
   "base_revision": "bd8cdf35db047ea8a1787daee4006c963eb52196",
   "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "cards": [
@@ -3124,10 +3124,6 @@
     "byte_identical": true,
     "report": "<cache>/rustmage/msh-existing/inherited-trace-audit.json"
   },
-  "compiled_test_source": {
-    "path": "src/engine_msh_inherited_tests.rs",
-    "sha256": "5d3b7bd7c61bca93557ef2b64d7bb3d85461d68b57a06ce57fdb0606a6eb7597"
-  },
   "measured_assurance_work": {
     "start_utc": "2026-10-24T20:27:01Z",
     "verified_utc": "2026-10-24T20:53:05Z",
@@ -3141,5 +3137,14 @@
   "retained_shared_library": {
     "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
     "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+  },
+  "author_compiled_test_source": {
+    "path": "src/engine_msh_inherited_tests.rs",
+    "sha256": "5d3b7bd7c61bca93557ef2b64d7bb3d85461d68b57a06ce57fdb0606a6eb7597"
+  },
+  "current_combined_test_source": {
+    "path": "src/engine_msh_inherited_tests.rs",
+    "sha256": "64c0adf8a2ba653f204a81ecf8ed116e54c54ca234546987e8bc361895a11fe9",
+    "changes_from_author_head": "Formatting-only macro layout plus independent-review strengthening: foreign-Hero-only and own-non-Hero-only damage batches must leave The Thing counters unchanged. Final combined release verification recorded in PR #490."
   }
 }

@@ -699,9 +699,10 @@ fn msh_inherited_take_up_shield_counter_replacement_indestructible_lifelink_then
         assert_eq!(g.life(p.other()), 15);
         next_turn(&mut g);
         assert_eq!(g.counter_count(target, CounterKind::PlusOne), 2);
-        assert!(!g
-            .keywords(target)
-            .contains(Keywords::INDESTRUCTIBLE.union(Keywords::LIFELINK)));
+        assert!(
+            !g.keywords(target)
+                .contains(Keywords::INDESTRUCTIBLE.union(Keywords::LIFELINK))
+        );
     }
 }
 
@@ -1275,9 +1276,10 @@ fn msh_inherited_aura_speed_flash_haste_first_strike_expiry_and_frozen_all_untap
         cast(&mut g, speed, &[Target::Card(creature)]);
         settle(&mut g);
         assert_eq!(g.stats(creature).power, 4); // Super Speed also triggers prowess.
-        assert!(g
-            .keywords(creature)
-            .contains(Keywords::HASTE.union(Keywords::FIRST_STRIKE)));
+        assert!(
+            g.keywords(creature)
+                .contains(Keywords::HASTE.union(Keywords::FIRST_STRIKE))
+        );
         attackers(&mut g, p);
         checked(&mut g, Action::Attack { card: creature });
         checked(&mut g, Action::FinishAttackers);
@@ -2581,6 +2583,20 @@ fn msh_inherited_thing_noncombat_batch_filters_controller_and_counts_each_player
         let a = paid(&mut g, p, "Agent of Atlas");
         let b = named(&mut g, p, "Agent of Atlas", Zone::Battlefield);
         let foreign = named(&mut g, p.other(), "Agent of Atlas", Zone::Battlefield);
+        // Isolate controller and Hero restrictions before the mixed positive
+        // batch, whose one-or-more grouping cannot prove either exclusion.
+        let ordinary = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        for source in [foreign, ordinary] {
+            g.apply_damage_batch(&[DamageEvent {
+                source: g.damage_source(source),
+                target: Target::Player(p.other()),
+                amount: 1,
+                combat: false,
+                preventable: true,
+            }]);
+            settle(&mut g);
+            assert_eq!(g.counter_count(thing, CounterKind::PlusOne), 0);
+        }
         // Typed noncombat event fixture supplements actual declared-combat coverage.
         let events = [a, b, foreign].map(|id| DamageEvent {
             source: g.damage_source(id),

@@ -34,5 +34,11 @@
       "Absent Craw Wurm fixture replaced with supported Gigantosaurus."
     ]
   },
-  "remaining_validation": "Corrected focused/native run, exact inherited full-trace proof, Clippy, final published-head two independent nonauthor reviews and required full release validation pending."
+  "remaining_validation": "Final combined immutable-head release validation and two independent published-head reviews are tracked in PR #490.",
+  "corrected_combined_native": {
+    "passed_rules_tests": 669,
+    "only_failure": "Expected four new trace rows; every rules scenario passed, including all ten attacks-alone cases.",
+    "runtime_head": "ac5dda93f257aaeeecff7b888268764101134723",
+    "log": "<cache>/rustmage-msh-third-cohort-all-native-recording.log"
+  }
 }

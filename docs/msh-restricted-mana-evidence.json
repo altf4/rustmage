@@ -72,5 +72,10 @@
     "Villainous Hideout": "Existing generic subtype restriction plus own-Villain targeting and targeted connive APIs appear sufficient; expansion awaits prerequisite review/integration.",
     "Shang-Chi and Ronin": "Activation-haste, equip-purpose and attached-sacrifice prerequisites remain gated."
   },
-  "validation": "Final immutable-head full release validator and two independent nonauthor reviews pending; source/Oracle pins and linker verified. No full-set or all-pool performance claim."
+  "validation": "Final immutable-head full release validator and two independent nonauthor reviews pending; source/Oracle pins and linker verified. No full-set or all-pool performance claim.",
+  "independent_review_correction": {
+    "problem": "Speculative funding reread post-departure or new-incarnation source subtypes, while actual payment retained exact departure facts.",
+    "fix": "Sparse exact enclosing-source departure facts captured after cost counters/taps and before movement; simultaneous groups freeze all source facts before providers leave. Current and suspended real announcements supply existing departure LKI when a new funding world is constructed. Memo keys retain the saved facts; ordinary unrelated sacrifices do not allocate records.",
+    "tests": "Two new both-seat pure-{R} Shivan Dragon scenarios prove Hero/Citizen-at-departure feasibility and key differences, real source departure/blink funding/payment, exact source binding, owned branches and unchanged parent snapshots. Both passed the combined native run. Actual ward now uses a Hero source, distinguishing triggered costs from Hero-source activations."
+  }
 }
