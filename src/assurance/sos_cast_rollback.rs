@@ -167,6 +167,7 @@ fn sos_cast_rollback_irreversible_self_shuffle_retains_owner_library_and_cleans_
                 g.move_object(card, Zone::Graveyard);
                 assert_eq!(g.object_view(card).zone, Zone::Library);
                 let actual = g.object_view(card);
+                let actual_growth = g.state.objects[card as usize].growth;
                 let order = g.state.players[owner.index()].library.clone();
                 let rng = g.state.rng;
                 g.finish_cast_rollback(false);
@@ -177,7 +178,7 @@ fn sos_cast_rollback_irreversible_self_shuffle_retains_owner_library_and_cleans_
                 assert_eq!(g.state.players[owner.index()].library, order);
                 assert_eq!(g.state.rng, rng);
                 assert_eq!(g.counter_count(card, CounterKind::Page), 0);
-                assert_eq!(g.object_view(card).growth, actual.growth);
+                assert_eq!(g.state.objects[card as usize].growth, actual_growth);
                 assert!(!g.state.static_sources.contains(&card));
                 assert!(g.state.pending_triggers.is_empty());
             }

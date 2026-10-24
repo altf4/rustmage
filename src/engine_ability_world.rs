@@ -268,7 +268,7 @@ pub(super) trait CharacteristicWorld {
                 }
             }
         }
-        for &source in &self.game().state.static_sources {
+        for &source in self.static_sources() {
             for group in self.object(source).card.static_ability_groups() {
                 for fragment in group.fragments {
                     if let crate::cards::StaticAbilityFragment::LandMana {

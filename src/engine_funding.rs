@@ -363,9 +363,7 @@ impl<'g> FundingState<'g> {
     // Current power is not an upper bound on later production. Real moves still
     // evaluate exact borrowed-world power; only pruning uses this loose ceiling.
     fn potential_land_mana(&self) -> impl Iterator<Item = ManaProduction> + '_ {
-        self.game
-            .state
-            .static_sources
+        self.static_sources()
             .iter()
             .filter_map(|&id| {
                 let object = ability_world::CharacteristicWorld::object(self, id);
@@ -849,22 +847,25 @@ impl<'g> FundingState<'g> {
                         }
                         _ => None,
                     };
-                    grant.production.in_world(self, entry.id).visit(|production| {
-                        moves.push(FundingMove {
-                            resource,
-                            ability: None,
-                            grantor: Some(grant.source),
-                            borrowed: None,
-                            payment: [0; 6],
-                            counters: Counters::default(),
-                            production,
-                            quality,
-                            allocation: Vec::new(),
-                            external: None,
-                            frozen: None,
+                    grant
+                        .production
+                        .in_world(self, entry.id)
+                        .visit(|production| {
+                            moves.push(FundingMove {
+                                resource,
+                                ability: None,
+                                grantor: Some(grant.source),
+                                borrowed: None,
+                                payment: [0; 6],
+                                counters: Counters::default(),
+                                production,
+                                quality,
+                                allocation: Vec::new(),
+                                external: None,
+                                frozen: None,
+                            });
+                            false
                         });
-                        false
-                    });
                 }
             }
             if !ability_world::CharacteristicWorld::printed_abilities_available(self, entry.id) {
