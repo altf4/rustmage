@@ -24,7 +24,7 @@ pub struct MilledSelectionView {
     pub candidates: Vec<ObjectRef>,
 }
 impl Game {
-    fn public_milled_object(&self, object: ObjectRef) -> bool {
+    pub(super) fn public_milled_object(&self, object: ObjectRef) -> bool {
         self.state
             .objects
             .get(object.card as usize)
@@ -196,7 +196,7 @@ impl Game {
         self.move_milled_selection(choice.player, &selected, choice.spec.destination);
         self.run_program();
     }
-    fn move_milled_selection(
+    pub(super) fn move_milled_selection(
         &mut self,
         player: Player,
         selected: &[ObjectRef],

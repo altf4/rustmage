@@ -8,5 +8,34 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b3976da37a8b04f6f489037b7c26401e751d39f5a5137f4412628e1d4cea10d8"
   },
-  "physical_metadata_sha256": "65d96d68c58158c35bafa399039cdad602dea4d1b8a0b59e8c8d1ad79431cab7"
+  "physical_metadata_sha256": "65d96d68c58158c35bafa399039cdad602dea4d1b8a0b59e8c8d1ad79431cab7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RapidRescue.java",
+  "java_sha256": "5488d0370d081be0d3db7d97fd53613fad1b6a8e8fd1bf591fb17cb8418e24f3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterPermanentCard.java",
+      "sha256": "2af04f95edb47547b39271ca3c5024712fa9ba1728c5e2c7249d63fa8c411033"
+    }
+  ],
+  "rules_sources": [
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#701.17c"
+  ],
+  "remaining_obligations": []
 }
