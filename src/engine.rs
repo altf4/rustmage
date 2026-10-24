@@ -6442,11 +6442,11 @@ impl Game {
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<search::OptionalSearchSequence>())
                         + resolution
-                            .target_card_mana_values
+                            .target_card_facts
                             .as_ref()
                             .map_or(0, |values| {
-                                std::mem::size_of::<Vec<(u16, u64)>>()
-                                    + values.len() * std::mem::size_of::<(u16, u64)>()
+                                std::mem::size_of::<Vec<programs::TargetCardFacts>>()
+                                    + values.len() * std::mem::size_of::<programs::TargetCardFacts>()
                             })
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())

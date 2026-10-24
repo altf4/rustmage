@@ -1328,3 +1328,171 @@ fn sos_duel_tactics_damage_block_restriction_survives_ability_removal_flashback_
         assert!(!g.can_block_pair(target, attacker));
     }
 }
+
+fn gain_one_with_dissection(g: &mut Game, p: Player) {
+    let spell = put(g, p, "Dissection Practice", Zone::Hand);
+    act(g, Action::AnnounceCast { card: spell });
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Player(p.other()),
+        },
+    );
+    act(g, Action::FinishTargets);
+    act(g, Action::FinishTargets);
+    pay(g);
+    settle(g);
+}
+
+#[test]
+fn sos_foolish_fate_destroy_then_infusion_uses_target_controller_after_departure_or_failed_destroy()
+{
+    for p in [Player::P0, Player::P1] {
+        for (gained, indestructible, stolen) in [
+            (false, false, false),
+            (true, false, false),
+            (true, true, false),
+            (true, false, true),
+        ] {
+            let mut g = scenario(p);
+            let target = put(
+                &mut g,
+                p.other(),
+                "Bear Cub",
+                if stolen {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                },
+            );
+            if stolen {
+                copied_prepared_spell(&mut g, p, "Grave Researcher", &[Target::Card(target)]);
+                settle(&mut g);
+                assert_eq!(g.object_view(target).controller, p);
+            }
+            if gained {
+                gain_one_with_dissection(&mut g, p);
+            }
+            let life = [g.state.players[0].life, g.state.players[1].life];
+            let controller = g.object_view(target).controller;
+            let spell = put(&mut g, p, "Foolish Fate", Zone::Hand);
+            cast(&mut g, spell, Some(Target::Card(target)));
+            if indestructible {
+                let will = put(&mut g, p.other(), "Adamant Will", Zone::Hand);
+                act(&mut g, Action::Pass);
+                cast(&mut g, will, Some(Target::Card(target)));
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(target).zone,
+                if indestructible {
+                    Zone::Battlefield
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            for player in [p, p.other()] {
+                assert_eq!(
+                    g.state.players[player.index()].life,
+                    life[player.index()] - if gained && player == controller { 3 } else { 0 }
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_heated_argument_optional_own_grave_exile_damage_controller_and_no_fuel() {
+    for p in [Player::P0, Player::P1] {
+        for (has_fuel, pay_exile, stolen) in [
+            (true, true, false),
+            (true, false, false),
+            (false, false, false),
+            (true, true, true),
+        ] {
+            let mut g = scenario(p);
+            let target = put(
+                &mut g,
+                p.other(),
+                "Bear Cub",
+                if stolen {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                },
+            );
+            if stolen {
+                copied_prepared_spell(&mut g, p, "Grave Researcher", &[Target::Card(target)]);
+                settle(&mut g);
+            }
+            let fuel = has_fuel.then(|| put(&mut g, p, "Forest", Zone::Graveyard));
+            let foreign = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+            let controller = g.object_view(target).controller;
+            let life = [g.state.players[0].life, g.state.players[1].life];
+            let spell = put(&mut g, p, "Heated Argument", Zone::Hand);
+            cast(&mut g, spell, Some(Target::Card(target)));
+            if let Some(fuel) = fuel {
+                until_choice(&mut g);
+                assert_eq!(
+                    g.object_view(target).zone,
+                    Zone::Battlefield,
+                    "SBAs wait until the whole spell finishes"
+                );
+                assert_eq!(g.object_view(target).damage, 6);
+                let object = g.object_ref(foreign);
+                reject(&mut g, Action::Sacrifice { object });
+                if pay_exile {
+                    let object = g.object_ref(fuel);
+                    act(&mut g, Action::Sacrifice { object });
+                } else {
+                    act(&mut g, Action::DeclineEffectPayment);
+                }
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+            if let Some(fuel) = fuel {
+                assert_eq!(
+                    g.object_view(fuel).zone,
+                    if pay_exile {
+                        Zone::Exile
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+            }
+            for player in [p, p.other()] {
+                assert_eq!(
+                    g.state.players[player.index()].life,
+                    life[player.index()]
+                        - if pay_exile && player == controller {
+                            2
+                        } else {
+                            0
+                        }
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_foolish_and_heated_all_invalid_target_skip_life_loss_and_resolution_payment() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Foolish Fate", "Heated Argument"] {
+            let mut g = scenario(p);
+            gain_one_with_dissection(&mut g, p);
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+            let spell = put(&mut g, p, name, Zone::Hand);
+            let bounce = put(&mut g, p.other(), "Unsummon", Zone::Hand);
+            let life = [g.state.players[0].life, g.state.players[1].life];
+            cast(&mut g, spell, Some(Target::Card(target)));
+            act(&mut g, Action::Pass);
+            cast(&mut g, bounce, Some(Target::Card(target)));
+            settle(&mut g);
+            assert_eq!(g.object_view(target).zone, Zone::Hand);
+            assert_eq!(g.object_view(fuel).zone, Zone::Graveyard);
+            assert_eq!([g.state.players[0].life, g.state.players[1].life], life);
+        }
+    }
+}

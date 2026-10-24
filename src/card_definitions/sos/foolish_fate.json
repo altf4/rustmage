@@ -3,10 +3,13 @@
   "catalogue_id": 1584,
   "oracle_id": "9c51893f-9118-4d95-b88a-e264f4cbd7a8",
   "facts_sha256": "6e8dc4dbea481894b52cb0bafb333feb80563c13048af50faa18cbad8d2ecff9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7383e68e423af1e539ee533f148526f3ec22c01b7b1c33927b833389e2c69680"
   },
-  "physical_metadata_sha256": "4a3f329e814caa3590327788776e5c3344a1fc035cc77488204e8640f708cfc0"
+  "physical_metadata_sha256": "4a3f329e814caa3590327788776e5c3344a1fc035cc77488204e8640f708cfc0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FoolishFate.java",
+  "java_sha256": "0026c1f1e0bde11e7c4b543892c05401d414bf33b8a96d2a6bbddecb1e7c3a59"
 }

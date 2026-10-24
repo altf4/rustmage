@@ -718,10 +718,16 @@ pub(crate) enum Instruction {
     CastParadigmCopy,
     /// Lose the frozen mana value of the originally legal target card, after movement.
     LoseLifeTargetCardManaValue(PlayerSet),
+    LoseLifeTargetController(u16),
+    DamageTargetController(u16),
     ExileUntilManaValueCastFree(u16),
     PrepareSource,
-    Prepare { subject: Subject },
-    Unprepare { subject: Subject },
+    Prepare {
+        subject: Subject,
+    },
+    Unprepare {
+        subject: Subject,
+    },
     CreateTokenChoice(&'static [Card]),
     PlayHideawayIfCoven,
     ExileHandCardCopy,
@@ -1253,7 +1259,10 @@ pub(crate) enum Instruction {
     },
     /// Create a fixed token batch, then put scaled counters on those exact tokens.
     /// Copy every supported counter kind from this exact source/LKI to new tokens.
-    CreateTokensWithSourceCounters { token: Card, amount: u16 },
+    CreateTokensWithSourceCounters {
+        token: Card,
+        amount: u16,
+    },
     CreateTokensWithCounters {
         token: Card,
         amount: u16,
@@ -2756,7 +2765,9 @@ impl Card {
     }
     /// Stable catalogue lookup/serialization identity, distinct from a token copy's printed name.
     pub fn identity(self) -> &'static str {
-        if let Some(identity) = authored::rules(self).and_then(|rules| rules.extras.prepared_identity) {
+        if let Some(identity) =
+            authored::rules(self).and_then(|rules| rules.extras.prepared_identity)
+        {
             return identity;
         }
         generated::adventure_identity(self).unwrap_or_else(|| {

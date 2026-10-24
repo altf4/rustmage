@@ -3,9 +3,16 @@ use super::*;
 use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct TargetCardFacts {
+    pub group: u16,
+    pub controller: Player,
+    pub mana_value: u64,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
     #[allow(clippy::box_collection)]
-    pub target_card_mana_values: Option<Box<Vec<(u16, u64)>>>,
+    pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
@@ -1418,25 +1425,35 @@ impl Game {
             self.record_ability_resolution(&item);
         }
         assert!(self.state.resolving.is_none());
-        let target_card_mana_values = program
+        let target_card_facts = program
             .iter()
-            .any(|instruction| matches!(instruction, Instruction::LoseLifeTargetCardManaValue(_)))
+            .any(|instruction| {
+                matches!(
+                    instruction,
+                    Instruction::LoseLifeTargetCardManaValue(_)
+                        | Instruction::LoseLifeTargetController(_)
+                        | Instruction::DamageTargetController(_)
+                )
+            })
             .then(|| {
                 Box::new(
                     item.targets
                         .iter()
                         .filter_map(|bound| match bound.target {
-                            Target::Card(card) => Some((
-                                bound.group,
-                                self.state.objects[card as usize].card.fixed_mana_value(),
-                            )),
+                            Target::Card(card) => Some(TargetCardFacts {
+                                group: bound.group,
+                                controller: self.state.objects[card as usize].controller,
+                                mana_value: self.state.objects[card as usize]
+                                    .card
+                                    .fixed_mana_value(),
+                            }),
                             _ => None,
                         })
                         .collect(),
                 )
             });
         self.state.resolving = Some(Resolution {
-            target_card_mana_values,
+            target_card_facts,
             explore: None,
             evidence: None,
             connive: None,
@@ -2889,18 +2906,48 @@ impl Game {
                         self.gain_life(player, amount);
                     }
                 }
+                Instruction::LoseLifeTargetController(amount)
+                | Instruction::DamageTargetController(amount) => {
+                    let resolution = self.state.resolving.as_ref().unwrap();
+                    let players: Vec<_> =
+                        resolution
+                            .target_card_facts
+                            .as_ref()
+                            .map_or_else(Vec::new, |facts| {
+                                facts
+                                    .iter()
+                                    .filter(|facts| facts.group == resolution.target_group)
+                                    .map(|facts| facts.controller)
+                                    .collect()
+                            });
+                    if matches!(instruction, Instruction::LoseLifeTargetController(_)) {
+                        for player in players {
+                            self.lose_life(player, i128::from(amount));
+                        }
+                    } else {
+                        let source = self.program_damage_source(&item);
+                        let events: Vec<_> = players
+                            .into_iter()
+                            .map(|player| DamageEvent {
+                                source,
+                                target: Target::Player(player),
+                                amount: i128::from(amount),
+                                combat: false,
+                                preventable: true,
+                            })
+                            .collect();
+                        self.apply_damage_batch(&events);
+                    }
+                }
                 Instruction::LoseLifeTargetCardManaValue(set) => {
                     let resolution = self.state.resolving.as_ref().unwrap();
-                    let amount = resolution
-                        .target_card_mana_values
-                        .as_ref()
-                        .map_or(0, |values| {
-                            values
-                                .iter()
-                                .filter(|(group, _)| *group == resolution.target_group)
-                                .map(|(_, value)| i128::from(*value))
-                                .sum()
-                        });
+                    let amount = resolution.target_card_facts.as_ref().map_or(0, |values| {
+                        values
+                            .iter()
+                            .filter(|facts| facts.group == resolution.target_group)
+                            .map(|facts| i128::from(facts.mana_value))
+                            .sum()
+                    });
                     for player in self.program_players(set, &item) {
                         self.lose_life(player, amount);
                     }
