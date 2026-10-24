@@ -383,6 +383,7 @@ impl Game {
         Ok(())
     }
     pub(super) fn choose_zone_replacement(&mut self, effect: ZoneReplacementKind) {
+        let foreign_cast_choice = self.foreign_cast_choice_pending();
         let choice = self
             .state
             .zone_rules
@@ -427,6 +428,11 @@ impl Game {
             "complete zone replay prefix"
         );
         self.revision = revision;
+        // The saved action runs as its original actor. Retain the actual foreign
+        // replacement decision only after replay bookkeeping has been consumed.
+        if foreign_cast_choice {
+            self.mark_foreign_cast_choice();
+        }
     }
 }
 

@@ -89,6 +89,11 @@ impl Game {
         self.state.cast_rollback =
             Some(Box::new(CastRollback::new(self.state.clone(), actor, card)));
     }
+    pub(super) fn mark_foreign_cast_choice(&mut self) {
+        if let Some(r) = &mut self.state.cast_rollback {
+            r.foreign_choice = true;
+        }
+    }
     pub(super) fn foreign_cast_choice_pending(&self) -> bool {
         self.state
             .cast_rollback
@@ -101,7 +106,7 @@ impl Game {
                 return;
             };
             let current = std::mem::replace(&mut self.state, rollback.before);
-            self.preserve_irreversible_cast_library_changes(&current);
+            self.preserve_irreversible_cast_library_changes(&current, rollback.spell);
             // The proposal and its target/cost triggers disappear. The priority
             // holder or parent resolution's exact original choice is retained.
             if self.state.resolving.is_none() && self.state.pending == Pending::Priority {
@@ -136,12 +141,17 @@ impl Game {
             self.state.cast_rollback = None;
         }
     }
-    fn preserve_irreversible_cast_library_changes(&mut self, current: &State) {
+    fn preserve_irreversible_cast_library_changes(&mut self, current: &State, spell: CardId) {
         let changed = current
             .players
             .iter()
             .zip(&self.state.players)
-            .any(|(a, b)| a.library != b.library)
+            .any(|(a, b)| {
+                a.library
+                    .iter()
+                    .filter(|&&id| id != spell)
+                    .ne(b.library.iter().filter(|&&id| id != spell))
+            })
             || current.objects.iter().enumerate().any(|(id, o)| {
                 o.zone == Zone::Library
                     && self
@@ -203,8 +213,28 @@ impl Game {
                 self.set_copy_recipe(reference, recipe);
             }
         }
+        let restored_spell = self
+            .state
+            .players
+            .iter()
+            .enumerate()
+            .find_map(|(p, player)| {
+                player
+                    .library
+                    .iter()
+                    .position(|&id| id == spell)
+                    .map(|at| (p, at))
+            });
         for (player, now) in self.state.players.iter_mut().zip(&current.players) {
             player.library = now.library.clone();
+        }
+        // Library-to-stack casting can reverse even when a later shuffle cannot.
+        // Preserve the restored spell's original library position (currently top).
+        if let Some((p, at)) = restored_spell {
+            let library = &mut self.state.players[p].library;
+            if !library.contains(&spell) {
+                library.insert(at.min(library.len()), spell);
+            }
         }
         self.state.rng = current.rng;
         zone_replacements::preserve_irreversible_reveals(

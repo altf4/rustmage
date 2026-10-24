@@ -232,7 +232,7 @@ pub(super) trait CharacteristicWorld {
                     provider.controller == target.controller
                 }
                 crate::cards::LandManaRecipients::SourceChosenName => {
-                    matches!(self.game().entry_value(source), Some(EntryChoiceValue::CardName(name)) if name.matches(self.name(id)))
+                    matches!(self.entry_value(source), Some(EntryChoiceValue::CardName(name)) if name.matches(self.name(id)))
                 }
             }
     }

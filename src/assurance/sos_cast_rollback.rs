@@ -101,7 +101,7 @@ fn sos_cast_rollback_foreign_aura_can_strand_costs_and_returns_entire_proposal()
                 checked(&mut g, Action::PayCasualty { object });
                 finish(&mut g);
                 assert_eq!(g.object_view(prison).zone, Zone::Graveyard);
-                assert_eq!(g.object_view(aura).zone, Zone::Battlefield);
+                assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
                 assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
                 assert!(g.state.cast_rollback.is_none());
             }
@@ -182,6 +182,54 @@ fn sos_cast_rollback_irreversible_self_shuffle_retains_owner_library_and_cleans_
                 assert_eq!(g.state.objects[card as usize].growth, actual_growth);
                 assert!(!g.state.static_sources.contains(&card));
                 assert!(g.state.pending_triggers.is_empty());
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_cast_rollback_library_origin_reverses_while_a_cost_shuffle_is_retained() {
+    for p in [Player::P0, Player::P1] {
+        for shuffled in [false, true] {
+            let (mut g, _, _, _, _) = setup(p, true);
+            let spell = put(&mut g, p, "Bear Cub", Zone::Library);
+            let library = &mut g.state.players[p.index()].library;
+            library.retain(|&id| id != spell);
+            library.insert(0, spell);
+            let original = g.object_ref(spell);
+            let colossus = put(&mut g, p, "Darksteel Colossus", Zone::Battlefield);
+            g.prepare_cast_rollback(p, &Action::AnnounceCast { card: spell });
+            g.move_object(spell, Zone::Stack);
+            if shuffled {
+                g.move_object(colossus, Zone::Graveyard);
+            }
+            let rng = g.state.rng;
+            let mut retained = g.state.players[p.index()].library.to_vec();
+            retained.insert(0, spell);
+            g.finish_cast_rollback(false);
+            assert_eq!(g.object_ref(spell), original);
+            assert_eq!(g.object_view(spell).zone, Zone::Library);
+            assert_eq!(g.state.players[p.index()].library.as_slice(), retained);
+            assert_eq!(g.state.rng, rng);
+            assert_eq!(
+                g.object_view(colossus).zone,
+                if shuffled {
+                    Zone::Library
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            for (id, object) in g.state.objects.iter().enumerate() {
+                if object.zone == Zone::Library {
+                    assert_eq!(
+                        g.state.players[object.owner.index()]
+                            .library
+                            .iter()
+                            .filter(|&&card| card == id as CardId)
+                            .count(),
+                        1
+                    );
+                }
             }
         }
     }
