@@ -1,0 +1,11 @@
+{
+  "name": "@token/msh-robot-villain",
+  "catalogue_id": 5388,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "9c804835487059328190b1e5b5b819ea4c7317b115f640d413a545ad26292438",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/RobotVillainToken.java",
+  "java_sha256": "4dbe627f488fddd89667c25e0d331b433b9033bec51f88e199ce82d358e00bfc"
+}

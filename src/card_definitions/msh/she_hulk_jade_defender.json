@@ -3,10 +3,41 @@
   "catalogue_id": 3823,
   "oracle_id": "bbd0a2a4-f81b-4a6b-bc4d-d7e53dc51333",
   "facts_sha256": "e4c34e11c88c1dfb68a95cb7981cefd7817657242f3000bdce9a5e49a1d8fe78",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b8996838048001c3311f7486d30051ba9e04f9f7fef703c849edb6da6bb72eb5"
   },
-  "physical_metadata_sha256": "50eb960f2369aaba77e133a24277b6bf6c4dc646f891a4cbc475a2f43ac0afb2"
+  "physical_metadata_sha256": "50eb960f2369aaba77e133a24277b6bf6c4dc646f891a4cbc475a2f43ac0afb2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SheHulkJadeDefender.java",
+  "java_sha256": "35409a9aa49e1fef1d8f53687e1dc4ea66d53840a1d515b04a8b6ec7bc62342d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "remaining_obligations": []
 }

@@ -3,10 +3,36 @@
   "catalogue_id": 4788,
   "oracle_id": "0edaf433-4ded-4841-bc86-136780c0767f",
   "facts_sha256": "243260add64b3ea97b2d28f582c3e0a9efd3916c2e207964f18e5b85aad77d6c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fdf644ab6bc1e459c8f90c924f1a6919e915c01b434ed29e7db1424117d5b7b9"
   },
-  "physical_metadata_sha256": "de5c7294dfe3ba75e3a537ef881384d9e7941e41883c517a32c936aec66e6c10"
+  "physical_metadata_sha256": "de5c7294dfe3ba75e3a537ef881384d9e7941e41883c517a32c936aec66e6c10",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnlivingLegionnaire.java",
+  "java_sha256": "4f3c170135c44d1af96dc8f3d510ab2fa77ba6d56708ef4139c9d1df13e83dd3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    }
+  ],
+  "remaining_obligations": []
 }

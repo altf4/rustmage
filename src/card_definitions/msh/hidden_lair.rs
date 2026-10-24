@@ -1,16 +1,60 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the full pinned Oracle and XMage implementation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Land,
+    activated: &[
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            cycling: false,
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                colored: [0; 6],
+                generic: 0,
+                alternatives: &[],
+                additional: None,
+                mana_component: false,
+                tap: true,
+                sacrifice: false,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 0, 1,
+            ]))],
+            sorcery: false,
+            once_per_turn: false,
+        },
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::SourceEnteredOrControlsBasicLand,
+            cycling: false,
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                colored: [0; 6],
+                generic: 0,
+                alternatives: &[],
+                additional: None,
+                mana_component: false,
+                tap: true,
+                sacrifice: false,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::Choice {
+                mask: 6,
+                amount: 1,
+            })],
+            sorcery: false,
+            once_per_turn: false,
+        },
+    ],
     ..CardRules::EMPTY
 };

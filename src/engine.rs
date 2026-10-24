@@ -5633,12 +5633,14 @@ impl Game {
             self.continue_stack_keywords(before.reference, self.object_ref(id), destination);
         }
         let entered_with_counters = counters.has_any();
+        let entered_with_plus_one = counters.plus_one > 0;
         self.set_counters(id, counters);
         if destination == Zone::Battlefield {
             if entered_with_counters {
                 self.record_counter_placement(
                     self.object_ref(id),
                     self.state.objects[id as usize].controller,
+                    entered_with_plus_one,
                 );
             }
             let (owner, card) = entry_identity;
@@ -7354,3 +7356,15 @@ mod msh_existing_tests;
 #[cfg(test)]
 #[path = "engine_milled_recovery_tests.rs"]
 mod milled_recovery_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_power_up_cards_tests.rs"]
+mod msh_power_up_cards_tests;
+
+#[cfg(test)]
+#[path = "engine_counter_history_tests.rs"]
+mod counter_history_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_forms_tests.rs"]
+mod msh_forms_tests;

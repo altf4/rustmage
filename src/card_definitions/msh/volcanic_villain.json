@@ -3,10 +3,31 @@
   "catalogue_id": 4933,
   "oracle_id": "a257426d-70c9-4d58-bd8b-97ec38f6e133",
   "facts_sha256": "b973f1554f5444eb2fd0fdca5d4afda0b8210fe9eadd0df87e05d999974a23a7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "736b5873d1d1c8f8db72f8dca3f85af8d30173fdd3a8720e5b39c39fd917312c"
   },
-  "physical_metadata_sha256": "f355d76c4e2e678c2fca6c3697796f2b436808fae821796f2d8c52832c7965d6"
+  "physical_metadata_sha256": "f355d76c4e2e678c2fca6c3697796f2b436808fae821796f2d8c52832c7965d6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VolcanicVillain.java",
+  "java_sha256": "b181bba0c935fb745729282918e9e512cbc884c12a197cac13aea7c6da64952f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    }
+  ],
+  "remaining_obligations": []
 }

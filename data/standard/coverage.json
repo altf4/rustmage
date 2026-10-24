@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "74e78022fe2b170937c05119523ead8722032b10e84c57d7348895ef83cb26fd",
+  "catalogue_version": "15fb4e168abebbaa889d5d3c7e52a6d5975dce0acbd4b0974737840189a0bd65",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2417,
-  "implemented_total": 2423,
-  "token_definitions": 113,
+  "implemented_standard_cards": 2441,
+  "implemented_total": 2447,
+  "token_definitions": 116,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 112,
-      "gated": 161
+      "complete": 136,
+      "gated": 137
     },
     "one": {
       "total": 1,
@@ -469,8 +469,8 @@
     {
       "name": "Abomination, Terrifying Titan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/abomination_terrifying_titan.rs",
       "set": "msh"
     },
@@ -3085,8 +3085,8 @@
     {
       "name": "Beast, Erudite Aerialist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/beast_erudite_aerialist.rs",
       "set": "msh"
     },
@@ -4077,8 +4077,8 @@
     {
       "name": "Bold Biochemist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/bold_biochemist.rs",
       "set": "msh"
     },
@@ -4437,8 +4437,8 @@
     {
       "name": "Brave Brawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/brave_brawler.rs",
       "set": "msh"
     },
@@ -7933,8 +7933,8 @@
     {
       "name": "Dark Fortress",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/dark_fortress.rs",
       "set": "msh"
     },
@@ -13789,8 +13789,8 @@
     {
       "name": "Gathering Place",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/gathering_place.rs",
       "set": "msh"
     },
@@ -14373,8 +14373,8 @@
     {
       "name": "Gleaming Bastion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/gleaming_bastion.rs",
       "set": "msh"
     },
@@ -16277,8 +16277,8 @@
     {
       "name": "Hercules, Prince of Power",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hercules_prince_of_power.rs",
       "set": "msh"
     },
@@ -16429,8 +16429,8 @@
     {
       "name": "Hidden Lair",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hidden_lair.rs",
       "set": "msh"
     },
@@ -19301,8 +19301,8 @@
     {
       "name": "Knight of Wundagore",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/knight_of_wundagore.rs",
       "set": "msh"
     },
@@ -23773,8 +23773,8 @@
     {
       "name": "Ninja of the Hand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ninja_of_the_hand.rs",
       "set": "msh"
     },
@@ -24973,8 +24973,8 @@
     {
       "name": "Panther Pounce",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/panther_pounce.rs",
       "set": "msh"
     },
@@ -25333,8 +25333,8 @@
     {
       "name": "Pet Avengers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/pet_avengers.rs",
       "set": "msh"
     },
@@ -25781,8 +25781,8 @@
     {
       "name": "Political Triumph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/political_triumph.rs",
       "set": "msh"
     },
@@ -30557,8 +30557,8 @@
     {
       "name": "Serpent Specialist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/serpent_specialist.rs",
       "set": "msh"
     },
@@ -30789,8 +30789,8 @@
     {
       "name": "She-Hulk, Jade Defender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/she_hulk_jade_defender.rs",
       "set": "msh"
     },
@@ -34253,8 +34253,8 @@
     {
       "name": "Super Suit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_suit.rs",
       "set": "msh"
     },
@@ -34277,8 +34277,8 @@
     {
       "name": "Super-Skrull",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_skrull.rs",
       "set": "msh"
     },
@@ -37429,8 +37429,8 @@
     {
       "name": "Training Compound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/training_compound.rs",
       "set": "msh"
     },
@@ -38181,8 +38181,8 @@
     {
       "name": "Ultron Drone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ultron_drone.rs",
       "set": "msh"
     },
@@ -38509,8 +38509,8 @@
     {
       "name": "Unliving Legionnaire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/unliving_legionnaire.rs",
       "set": "msh"
     },
@@ -39581,8 +39581,8 @@
     {
       "name": "Viv Vision, Teen Synthezoid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/viv_vision_teen_synthezoid.rs",
       "set": "msh"
     },
@@ -39669,8 +39669,8 @@
     {
       "name": "Volcanic Villain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/volcanic_villain.rs",
       "set": "msh"
     },
@@ -40581,8 +40581,8 @@
     {
       "name": "White Tiger, Ava Ayala",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/white_tiger_ava_ayala.rs",
       "set": "msh"
     },

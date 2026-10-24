@@ -2478,6 +2478,10 @@ pub(crate) enum TriggerCondition {
     LifeLost {
         relation: CastRelation,
     },
+    /// The placing player controls this observer; the other creature may belong to either player.
+    OtherCreatureCounterPlacedByYou {
+        kind: CounterKind,
+    },
     OtherCreatureCountersAdded {
         kind: CounterKind,
         excluded_subtype: &'static str,
@@ -2710,6 +2714,7 @@ pub(crate) enum ActivationGuard {
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
     ControlLandsAtLeast(u16),
+    SourceEnteredOrControlsBasicLand,
     HandSizeAtLeast(u16),
     LifeAboveStarting(u16),
 }
@@ -2720,6 +2725,7 @@ impl ActivationGuard {
             | Self::CastInstantSorceryThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
+            | Self::SourceEnteredOrControlsBasicLand
             | Self::HandSizeAtLeast(_)
             | Self::LifeAboveStarting(_) => &[],
             Self::ControlSubtypeAny(types) => types,

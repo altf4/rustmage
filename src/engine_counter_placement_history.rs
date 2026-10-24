@@ -1,9 +1,16 @@
-//! Public counter-placement events for this turn; removals do not erase history.
+//! Public exact-object placement events for this turn; removals preserve history.
 use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CounterPlacementHistoryView {
     pub object: ObjectRef,
     pub placed_by: Player,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub plus_one: bool,
+}
+impl std::hash::Hash for CounterPlacementHistoryView {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        (self.object, self.placed_by.index(), self.plus_one).hash(state);
+    }
 }
 pub(super) type Rows = Option<SharedVec<CounterPlacementHistoryView>>;
 pub(super) fn owned_bytes(rows: &Rows) -> usize {
@@ -12,30 +19,54 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
             + r.len() * std::mem::size_of::<CounterPlacementHistoryView>()
     })
 }
-impl Game {
-    pub(super) fn record_counter_placement(&mut self, object: ObjectRef, placed_by: Player) {
-        let rows = self
-            .state
-            .counter_placement_history
-            .get_or_insert_with(SharedVec::default);
-        let row = CounterPlacementHistoryView { object, placed_by };
-        if !rows.contains(&row) {
-            rows.push(row);
+pub(super) fn record(rows: &mut Rows, object: ObjectRef, placed_by: Player, plus_one: bool) {
+    if let Some(index) = rows.as_ref().and_then(|r| {
+        r.iter()
+            .position(|row| row.object == object && row.placed_by == placed_by)
+    }) {
+        if plus_one && !rows.as_ref().unwrap()[index].plus_one {
+            rows.as_mut().unwrap()[index].plus_one = true;
         }
+        return;
+    }
+    rows.get_or_insert_default()
+        .push(CounterPlacementHistoryView {
+            object,
+            placed_by,
+            plus_one,
+        });
+}
+pub(super) fn any_placed(rows: &Rows, object: ObjectRef, player: Player) -> bool {
+    rows.as_ref().is_some_and(|r| {
+        r.iter()
+            .any(|row| row.object == object && row.placed_by == player)
+    })
+}
+pub(super) fn plus_one_placed(rows: &Rows, object: ObjectRef, player: Player) -> bool {
+    rows.as_ref().is_some_and(|r| {
+        r.iter()
+            .any(|row| row.object == object && row.placed_by == player && row.plus_one)
+    })
+}
+impl Game {
+    pub(super) fn record_counter_placement(
+        &mut self,
+        object: ObjectRef,
+        placed_by: Player,
+        plus_one: bool,
+    ) {
+        record(
+            &mut self.state.counter_placement_history,
+            object,
+            placed_by,
+            plus_one,
+        );
     }
     pub(super) fn put_counter_on_source_this_turn(
         &self,
         object: ObjectRef,
         player: Player,
     ) -> bool {
-        self.state
-            .counter_placement_history
-            .as_ref()
-            .is_some_and(|rows| {
-                rows.contains(&CounterPlacementHistoryView {
-                    object,
-                    placed_by: player,
-                })
-            })
+        any_placed(&self.state.counter_placement_history, object, player)
     }
 }

@@ -3,10 +3,79 @@
   "catalogue_id": 4653,
   "oracle_id": "99c70f4e-de8a-426d-99aa-17b2f87625ba",
   "facts_sha256": "b75a5b76540c873100eebe4239d12b221c099bca5a5723bfe1a77098b2c837de",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a821694b5f302ce821f54a2d014cc33f0504004598d0854880eaddb80d253971"
   },
-  "physical_metadata_sha256": "89cedbf1b2dc7a32a6625fc5ba7e619d1370d6227f4920348a354261d572d8b5"
+  "physical_metadata_sha256": "89cedbf1b2dc7a32a6625fc5ba7e619d1370d6227f4920348a354261d572d8b5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TrainingCompound.java",
+  "java_sha256": "ca435445f48a49d25bb66327503b9ede559b6a77e9052a3dc1ab5111a4dedaaf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceEnteredOrControlsBasicLandCondition.java",
+      "sha256": "b289ad4093628f2e9f7a66cb41eb472dfd9c5a21cdb5aa1aeee36690661357d8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceEnteredThisTurnCondition.java",
+      "sha256": "b9c22aae1f1981e0f78f0a779ad8490493d2fc1ee61ed52a0e71782a4f2a8612"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouControlABasicLandCondition.java",
+      "sha256": "9e2adfdf4ca20bb60b7390837d6d81f9a357830655f7e27d443a33dadef8022f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ActivateIfConditionManaAbility.java",
+      "sha256": "d5c9b973c6787cab3a8ba5a961f05651a55cfc971230b276ed619e23cc578132"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+      "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/ManaEffect.java",
+      "sha256": "9332af88b954f2fdab1b7fc0bc71ac41d534eeb5ba12dceb4bd924b08f8f88e3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+      "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledLandPermanent.java",
+      "sha256": "849ad46e024ce53b361821cabf62476783a69b3295eb16ea66d165d18c243ac7"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/rules",
+    "rules": "CR 205.4c, 302.6, 602.2b, 605.1a, 605.3; the colored mana restriction is checked when starting the activation. The entered-this-turn alternative belongs to the exact source incarnation and is independent of controller."
+  }
 }

@@ -37,6 +37,7 @@ pub(super) struct FundingState<'g> {
     other_life: i128,
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
+    counter_placement_history: counter_placement_history::Rows,
     convoke: bool,
     power_sensitive: bool,
     creatures_died: u64,
@@ -94,6 +95,13 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
         self.borrowed_uses.contains(&(source, slot))
     }
+    fn entered_this_turn(&self, source: ObjectRef) -> bool {
+        self.game.entered_this_turn(source)
+            || self
+                .entry_projection
+                .as_ref()
+                .is_some_and(|p| p.order.contains(&source))
+    }
     fn game(&self) -> &Game {
         self.game
     }
@@ -104,6 +112,9 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
             .map_or(&self.game.state.objects[id as usize], |resource| {
                 &resource.object
             })
+    }
+    fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
+        counter_placement_history::plus_one_placed(&self.counter_placement_history, object, player)
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
@@ -155,6 +166,7 @@ struct ResourceKey {
     zone: u8,
     tapped: bool,
     sick: bool,
+    entered: bool,
     counters: InitialCounters,
     used: u64,
     gained: Keywords,
@@ -182,6 +194,7 @@ struct FundingKey {
     // enclosing ability's source separately, even if its printed card matches.
     resources: Vec<ResourceKey>,
     named_counters: live_counters::Rows,
+    counter_placement_history: counter_placement_history::Rows,
 }
 
 fn payable<N: Copy + Into<u128>>(pool: [N; 6], required: Mana, generic: u32) -> bool {
@@ -447,7 +460,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -534,6 +547,7 @@ impl<'g> FundingState<'g> {
             other_life: game.state.players[goal.actor.other().index()].life,
             resources,
             named_counters: game.state.named_counters.clone(),
+            counter_placement_history: game.state.counter_placement_history.clone(),
         };
         result.set_cost_context(game.state.announcing.as_ref());
         if let Some(a) = game.state.announcing.as_ref()
@@ -671,7 +685,8 @@ impl<'g> FundingState<'g> {
                         self, target.id,
                     )),
             )
-            .union(ability_world::CharacteristicWorld::counter_subtype_keywords(self, target.id));
+            .union(ability_world::CharacteristicWorld::counter_subtype_keywords(self, target.id))
+            .union(ability_world::CharacteristicWorld::placement_history_keywords(self, target.id));
         if target.object.zone == Zone::Battlefield && self.kinds(target) & 1 != 0 {
             let reference = ObjectRef {
                 card: target.id,
@@ -764,12 +779,16 @@ impl<'g> FundingState<'g> {
         }
         keywords
     }
-    fn guard_available(&self, guard: ActivationGuard, actor: Player) -> bool {
+    fn guard_available(&self, guard: ActivationGuard, source: CardId, actor: Player) -> bool {
         match guard {
             ActivationGuard::CastInstantSorceryThisTurn => {
                 self.game.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::SourceEnteredOrControlsBasicLand => {
+                ability_world::CharacteristicWorld::entered_this_turn(self, self.reference(source))
+                    || ability_world::CharacteristicWorld::controls_basic_land(self, actor)
+            }
             ActivationGuard::HandSizeAtLeast(minimum) => {
                 self.game
                     .state
@@ -925,7 +944,7 @@ impl<'g> FundingState<'g> {
                     ready_object.used_abilities = 0;
                 }
                 if borrowed.is_some_and(|a| a.used && (ability.once_per_turn || ability.exhaust))
-                    || !self.guard_available(ability.guard, goal.actor)
+                    || !self.guard_available(ability.guard, entry.id, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         &ready_object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
@@ -1165,6 +1184,7 @@ impl<'g> FundingState<'g> {
         // Attachment edges distinguish otherwise interchangeable mana sources.
         let linked = self.game.state.borrowed_links.is_some()
             || self.named_counters.is_some()
+            || self.counter_placement_history.is_some()
             || self
                 .resources
                 .iter()
@@ -1193,6 +1213,13 @@ impl<'g> FundingState<'g> {
                 zone: r.object.zone as u8,
                 tapped: r.object.tapped,
                 sick: r.object.summoning_sick,
+                // Ordinary basic lands remain interchangeable. Only immutable
+                // guarded mana definitions need their entry history in this key;
+                // borrowed/virtual-entry worlds already retain exact identities.
+                entered: r.object.card.activations().iter().any(|ability| {
+                    ability.guard == ActivationGuard::SourceEnteredOrControlsBasicLand
+                        && ability.mana_production().is_some()
+                }) && self.entered_this_turn(self.reference(r.id)),
                 counters: r.object.counters,
                 used: r.object.used_abilities,
                 gained: r.object.gained_keywords,
@@ -1236,7 +1263,7 @@ impl<'g> FundingState<'g> {
                 r.kinds,
                 (r.protected, r.reserved),
                 r.zone,
-                r.tapped,
+                (r.tapped, r.entered),
                 r.sick,
                 [
                     r.counters.plus_one,
@@ -1273,6 +1300,7 @@ impl<'g> FundingState<'g> {
             life: self.life,
             resources,
             named_counters: self.named_counters.clone(),
+            counter_placement_history: self.counter_placement_history.clone(),
         }
     }
     /// Pure funding moves never create new resources, untap them, restore
@@ -1536,7 +1564,7 @@ impl<'g> FundingState<'g> {
                             && object.generation == source.generation
                             && *pending == index
                     })
-                    || !self.guard_available(ability.guard, goal.actor)
+                    || !self.guard_available(ability.guard, resource.id, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
@@ -2785,3 +2813,7 @@ impl Game {
 #[cfg(test)]
 #[path = "engine_restricted_mana_tests.rs"]
 mod restricted_mana_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_conditional_lands_funding_tests.rs"]
+mod msh_conditional_lands_tests;

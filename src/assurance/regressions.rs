@@ -196,6 +196,11 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
         view.catalogue = "";
         if let Some(schema) = schema_projection {
             view.schema = schema;
+            if schema < 139 {
+                for row in &mut view.counter_placement_history {
+                    row.plus_one = false;
+                }
+            }
         }
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();

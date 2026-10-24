@@ -5393,7 +5393,10 @@
     16,
     18,
     16,
-    2
+    2,
+    0,
+    16,
+    0
   ],
   "aliases": [
     [
@@ -6179,6 +6182,18 @@
     [
       "@token/msh-leviathan",
       5387
+    ],
+    [
+      "@token/msh-robot-villain",
+      5388
+    ],
+    [
+      "@token/msh-tiger-god",
+      5389
+    ],
+    [
+      "@token/msh-wall",
+      5390
     ],
     [
       "@token/ninja_2_1_blue",
@@ -28339,6 +28354,24 @@
       "name": "Leviathan Token",
       "subtypes": "Leviathan",
       "colors": 2
+    },
+    {
+      "factory_identity": "@token/msh-robot-villain",
+      "name": "Robot Villain Token",
+      "subtypes": "Robot Villain",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/msh-tiger-god",
+      "name": "The Tiger God",
+      "subtypes": "Cat God",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/msh-wall",
+      "name": "Wall Token",
+      "subtypes": "Wall",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -28700,7 +28733,9 @@
     "SosPestToken": 5348,
     "SosElementalToken": 5349,
     "SosSpiritToken": 5350,
-    "MshLeviathanToken": 5387
+    "MshLeviathanToken": 5387,
+    "MshRobotVillainToken": 5388,
+    "MshTigerGodToken": 5389
   },
   "helper_interface": [
     [
@@ -182234,6 +182269,89 @@
       "type_line": "Creature — Leviathan",
       "oracle_keywords": [
         "Hexproof"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5388,
+      "module": "card_5388",
+      "path": "synthetic/token_msh_robot_villain.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-robot-villain",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Robot Villain",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5389,
+      "module": "card_5389",
+      "path": "synthetic/token_msh_tiger_god.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-tiger-god",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Cat God",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5390,
+      "module": "card_5390",
+      "path": "synthetic/token_msh_wall.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-wall",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Wall",
+      "oracle_keywords": [
+        "Defender"
       ],
       "standard_legal": false,
       "legendary": false,

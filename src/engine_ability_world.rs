@@ -97,6 +97,36 @@ pub(super) trait CharacteristicWorld {
         self.object(id).is_token()
     }
 
+    fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
+        counter_placement_history::plus_one_placed(
+            &self.game().state.counter_placement_history,
+            object,
+            player,
+        )
+    }
+    fn placement_history_keywords(&self, id: CardId) -> Keywords {
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield
+            || !self.plus_one_placed_this_turn(self.reference(id), object.controller)
+        {
+            return Keywords::NONE;
+        }
+        object
+            .card
+            .static_ability_groups()
+            .iter()
+            .flat_map(|g| g.fragments)
+            .fold(Keywords::NONE, |keywords, fragment| {
+                if let crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(grant) =
+                    *fragment
+                {
+                    keywords.union(grant)
+                } else {
+                    keywords
+                }
+            })
+    }
+
     fn counter_subtype_keywords(&self, id: CardId) -> Keywords {
         let object = self.object(id);
         if object.zone != Zone::Battlefield || self.kinds(id) & 1 == 0 {
@@ -214,6 +244,20 @@ pub(super) trait CharacteristicWorld {
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
         )
+    }
+    fn entered_this_turn(&self, source: ObjectRef) -> bool {
+        self.game().entered_this_turn(source)
+    }
+    /// Basic is a supertype; a basic land type alone is insufficient.
+    /// Read this world so virtual departures and control changes take effect.
+    fn controls_basic_land(&self, player: Player) -> bool {
+        self.game().state.objects.iter().enumerate().any(|(id, _)| {
+            let object = self.object(id as CardId);
+            object.zone == Zone::Battlefield
+                && object.controller == player
+                && object.card.is_basic_land()
+                && self.kinds(id as CardId) & 2 != 0
+        })
     }
     fn land_mana_applies(
         &self,
