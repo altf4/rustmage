@@ -203,6 +203,12 @@ impl FundingState<'_> {
                         .generation
                         .checked_add(1)
                         .capacity("virtual generation exhausted");
+                    // Departure facts above retain the old face; the new object
+                    // outside stack/battlefield has only its physical front.
+                    let object = &mut n.resources[i].object;
+                    if !object.is_token() && !object.is_spell_copy() {
+                        object.card = object.card.front_face();
+                    }
                     n.resources[i].object.counters = InitialCounters::default();
                     n.resources[i].object.growth = Stats::default();
                     n.resources[i].object.attached_to = None;

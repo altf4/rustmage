@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "MSH",
-  "scope": "Shared modal-face/transform prerequisite and one complete physical representative; full281-card acceptance pending",
+  "scope": "Shared modal-face/transform prerequisite and one complete physical representative; full 281-card acceptance pending",
   "source_base": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
   "observation_schema": 141,
   "complete_cards": [
@@ -10,7 +10,7 @@
   "nonphysical_back_definition": {
     "5391": "Photon, Living Light"
   },
-  "stable_metadata": "All old IDs, aliases, colors and token/emblem recipes preserved. Canonical2832 gains explicit Oracle-verified front face and back pointer; one nonphysical back5391 appended. Physical serialization identity stays joined; rules name is the face name.",
+  "stable_metadata": "All old IDs, aliases, colors and token/emblem recipes preserved. Canonical 2832 gains explicit Oracle-verified front face and back pointer; one nonphysical back 5391 appended. Physical serialization identity stays joined; rules name is the face name.",
   "inherited_trace_count": 2453,
   "inherited_full_trace_matches": 2453,
   "inherited_changes": [],
@@ -18,7 +18,7 @@
   "baseline_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060",
   "candidate_sha256": "2460d346fefdc72d62137d18ba5bfadf063e5ca634fd056a1849735707453f9d",
   "prior140_projection_sha256": "90986660cbb257b83d6c6da9456662aadf6fbfd1be1dc42ca7d287f02a1216a5",
-  "projection_policy": "Recording-only prior140 projection changes observation version only for inherited roots; every Power-up, placement-history, keyword and existing wire field is retained. Ordinary trace assertions remain strict.",
+  "projection_policy": "Recording-only prior-140 projection changes observation version only for inherited roots; every Power-up, placement-history, keyword and existing wire field is retained. Ordinary trace assertions remain strict.",
   "new_traces": {
     "Monica Rambeau // Photon, Living Light": {
       "root": "main",
@@ -29,10 +29,10 @@
       "observations": "206d6ef467204cc2"
     }
   },
-  "focused_rules_tests": 13,
+  "focused_rules_tests": 14,
   "native_before_baseline_acceptance": {
     "passed": 682,
-    "only_failure": "Expected strict trace count2454 versus2453 before accepting the exact audited candidate"
+    "only_failure": "Expected strict trace count 2454 versus 2453 before accepting the exact audited candidate"
   },
   "clippy": "All targets with warnings denied passed",
   "source_pins": {
@@ -137,5 +137,45 @@
     "cards_per_hour": 2.4241957964279237,
     "scope": "Candidate implementation, focused rules tests, native recording, Clippy and exact inherited audit; excludes earlier read-only design/source audit, final strict rerun, integration/reviews/full release and full-set acceptance"
   },
-  "remaining_scope": "Final strict native rerun, two fresh independent nonauthor reviews and combined release integration. Other four MSH DFCs and Nick Fury remain gated; their distinct blockers are recorded in the read-only design handoff. No full-set or entire-pool simulation/performance claim."
+  "remaining_scope": "Two fresh independent nonauthor reviews of the final combined head and combined release integration. Other four MSH DFCs and Nick Fury remain gated; their distinct blockers are recorded in the read-only design handoff. No full-set or entire-pool simulation/performance claim.",
+  "strict_native_prior_head": {
+    "head": "a63e178f31447ba33bba8f13e57c24fac1df05c2",
+    "passed": 683,
+    "log": "/home/altf4/.cache/msh-faces-native-strict.log",
+    "scope": "Full native strict run before the review repair; refreshed repair has focused, strict trace and Clippy checks below."
+  },
+  "review_repair": {
+    "finding": "Private speculative additional-cost departures did not normalize a noncopy double-faced physical card to its front after capturing departure facts.",
+    "fix": "Normalize the departed cost resource after saving all simultaneous departure LKI and incrementing its incarnation, before recomputing postdeparture characteristics.",
+    "test": "engine::funding::msh_faces_funding_tests::msh_faces_cost_departures_restore_front_after_freezing_back_lki",
+    "coverage": "Both seats, paid Photon and Rest in Peace, ordinary graveyard departure, replacement exile and direct exile. Compare virtual and real incarnation, zone, card, rules name, mana value, colors, types, subtypes, counters, controller, power/toughness and face state. Saved payment source LKI remains Photon. Parent unchanged and owned restore/replay agrees.",
+    "focused": {
+      "passed": 14,
+      "log": "/home/altf4/.cache/msh-faces-review-fix-focused-1.log",
+      "resource_report": "/home/altf4/.cache/rustmage-build-reports/ac7cf98366ce49aa9bb758fd0e1f74e0.json"
+    },
+    "strict_trace": {
+      "passed": true,
+      "log": "/home/altf4/.cache/msh-faces-review-fix-trace.log",
+      "resource_report": "/home/altf4/.cache/rustmage-build-reports/d6b990aa93194cd8b41d5d5778f91b5c.json",
+      "current_export": "/home/altf4/.cache/msh-faces-review-fix-traces.json",
+      "prior140_projection": "/home/altf4/.cache/msh-faces-review-fix-traces.previous-schema.json",
+      "inherited_exact_full_trace_matches": 2453,
+      "inherited_journal_changes": [],
+      "current_export_matches_committed": true
+    },
+    "clippy": {
+      "passed": true,
+      "arguments": [
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "log": "/home/altf4/.cache/msh-faces-review-fix-clippy.log",
+      "resource_report": "/home/altf4/.cache/rustmage-build-reports/97f90411059143d48073758c9ef4d5e3.json"
+    },
+    "integration_note": "The separate finality prerequisite introduces a preserve-departure-counters funding path. Integration must also retain the old face until simultaneous cost departures capture LKI; the integration author owns that merge and combined regression.",
+    "validation_scope": "No redundant full native or release run on the refreshed parent head; combined integration will run full release validation."
+  }
 }

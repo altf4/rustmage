@@ -2895,3 +2895,7 @@ mod restricted_mana_tests;
 #[cfg(test)]
 #[path = "engine_msh_conditional_lands_funding_tests.rs"]
 mod msh_conditional_lands_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_faces_funding_tests.rs"]
+mod msh_faces_funding_tests;
