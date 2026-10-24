@@ -85,7 +85,7 @@
     "decisions": 5,
     "zone": "Battlefield",
     "journal": "1ac3501e048f59c2",
-    "observations": "59f27afa796b6629"
+    "observations": "802368606e5379fb"
   },
   "Abrade": {
     "root": "main",
@@ -1941,7 +1941,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
-    "observations": "13e336cb1484938b"
+    "observations": "cb01e4e6117a6c57"
   },
   "Boldwyr Aggressor": {
     "root": "main",
@@ -2125,7 +2125,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "ce93789b5fa64c9f",
-    "observations": "bf3caeef1acad559"
+    "observations": "02e593e1efbcb3ef"
   },
   "Brave-Kin Duo": {
     "root": "main",
@@ -3621,7 +3621,7 @@
     "decisions": 1,
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
-    "observations": "7830e31895c6640b"
+    "observations": "9bc524b580358419"
   },
   "Dark Knight's Greatsword": {
     "root": "main",
@@ -6517,7 +6517,7 @@
     "decisions": 1,
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
-    "observations": "dd35d35615726d93"
+    "observations": "63588934b436ed8d"
   },
   "Geist of Saint Thalia": {
     "root": "main",
@@ -6821,7 +6821,7 @@
     "decisions": 1,
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
-    "observations": "cf486b250c8029f3"
+    "observations": "f40fc553a160cc85"
   },
   "Gleaming Geardrake": {
     "root": "main",
@@ -7781,7 +7781,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "7c50116fb450cf1c",
-    "observations": "91bf41a6770ecc79"
+    "observations": "575dbf97611e3c23"
   },
   "Heritage Reclamation": {
     "root": "main",
@@ -7845,7 +7845,7 @@
     "decisions": 1,
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
-    "observations": "2b3674ef3e73dd3b"
+    "observations": "d533453ca8b08669"
   },
   "Hidetsugu's Second Rite": {
     "root": "main",
@@ -11293,7 +11293,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "4324aa4c9fd9325c",
-    "observations": "43e609cd9bc2abdb"
+    "observations": "62cae7bd23c9bb53"
   },
   "Ninja's Blades": {
     "root": "main",
@@ -11837,7 +11837,7 @@
     "decisions": 6,
     "zone": "Graveyard",
     "journal": "40ee08632655d942",
-    "observations": "53479b97d4268492"
+    "observations": "1418ade2d28496f2"
   },
   "Paradox Gardens": {
     "root": "main",
@@ -12029,7 +12029,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "60609359dae9f3fd",
-    "observations": "27cfea4081252e6b"
+    "observations": "64e2464d54ca3445"
   },
   "Petrified Hamlet": {
     "root": "main",
@@ -12214,6 +12214,14 @@
     "zone": "Battlefield",
     "journal": "0b09792e81574781",
     "observations": "7c09f5760321772a"
+  },
+  "Political Triumph": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "97f197e40a843eee",
+    "observations": "0546a86d4bcf578d"
   },
   "Pond Prophet": {
     "root": "main",
@@ -14493,7 +14501,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "d96ad4ca883f316e",
-    "observations": "20e12f5a5de9828b"
+    "observations": "6c0d79c064d8bdf9"
   },
   "Serpent's Pass": {
     "root": "main",
@@ -14597,7 +14605,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "60609359dae9f3fd",
-    "observations": "8146bdbaef22522b"
+    "observations": "7afe8a735ba6f4d5"
   },
   "Shefet Archfiend": {
     "root": "main",
@@ -16317,7 +16325,7 @@
     "decisions": 7,
     "zone": "Battlefield",
     "journal": "01b10efe7c28f699",
-    "observations": "4126dc7a81792235"
+    "observations": "a5e5257bf26ab05b"
   },
   "Super Villain Lockup": {
     "root": "main",
@@ -16333,7 +16341,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "723f29e096ef2f1d",
-    "observations": "eb77511142735a3d"
+    "observations": "8a66a8a88cd646c1"
   },
   "Suplex": {
     "root": "main",
@@ -17565,7 +17573,7 @@
     "decisions": 1,
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
-    "observations": "4b870d0a355c0ebb"
+    "observations": "c2530fe97aa3f635"
   },
   "Training Regimen": {
     "root": "main",
@@ -17909,7 +17917,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "903e360914c6c94c",
-    "observations": "f0883a6290555177"
+    "observations": "6581a73a87555065"
   },
   "Ultros, Obnoxious Octopus": {
     "root": "main",
@@ -18077,7 +18085,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "9d78478b460edd3d",
-    "observations": "0e5ae78197a375f9"
+    "observations": "94ec0d8f15b1ce7b"
   },
   "Unlucky Drop": {
     "root": "main",
@@ -18613,7 +18621,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "903e360914c6c94c",
-    "observations": "3b7602d36f9d814b"
+    "observations": "434540a8e7f532b9"
   },
   "Vivien Reid": {
     "root": "main",
@@ -18653,7 +18661,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
-    "observations": "03d7ac8782c60213"
+    "observations": "9a1f36af627e20a7"
   },
   "Volley Veteran": {
     "root": "main",
@@ -19021,7 +19029,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "100cb581dd613f1f",
-    "observations": "a6ce650fbc9c134f"
+    "observations": "d71ea09a53a618b9"
   },
   "White Widow, Free Agent": {
     "root": "main",

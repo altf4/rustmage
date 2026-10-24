@@ -42,6 +42,12 @@
       "borrowed_guard": "Passed both seats in the eight-case focused run.",
       "ordinary_basic_equivalence": "First fixture retained different preexisting summoning-sickness key flags after actual play; aligned those flags to isolate entry history. Final combined verification pending.",
       "log": "<cache>/rustmage-msh-conditional-lands-borrowed-final.log"
+    },
+    "final_key_and_all_eight_cases": {
+      "passed": true,
+      "log": "<cache>/rustmage-msh-next-cohort-native-recording.log",
+      "head": "70f99dedb184ef9b488a72df108263093fd039b9",
+      "scope": "All8 focused actual/funding cases passed inside569 passing rules tests; only expected golden upgrade failure."
     }
   },
   "initial_fixture_correction": "register_battlefield_sources records actual entry. Explicit older-land fixtures clear only entry history; no guard behavior defect was found in the first focused run.",

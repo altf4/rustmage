@@ -47,6 +47,17 @@ fn msh_political_triumph_paid_four_creatures_ordered_private_scry_and_whole_payo
         let plan = paid(&mut g, p, "Political Triumph");
         settle(&mut g);
         assert_eq!(g.counter_count(plan, CounterKind::Plan), 0);
+        // The entry trigger excludes opponent creatures and our noncreatures.
+        g.state.active = p.other();
+        g.state.priority = p.other();
+        let foreign = paid(&mut g, p.other(), "Bear Cub");
+        settle(&mut g);
+        assert_eq!(g.counter_count(plan, CounterKind::Plan), 0);
+        g.state.active = p;
+        g.state.priority = p;
+        let artifact = paid(&mut g, p, "Hedron Archive");
+        settle(&mut g);
+        assert_eq!(g.counter_count(plan, CounterKind::Plan), 0);
         let mut creatures = Vec::new();
         for n in 1..=4 {
             let hand = g.hand_count(p);
@@ -60,6 +71,8 @@ fn msh_political_triumph_paid_four_creatures_ordered_private_scry_and_whole_payo
                 assert_eq!(g.hand_count(p), hand + 1);
             }
         }
+        assert_eq!(g.counter_count(foreign, CounterKind::PlusOne), 0);
+        assert_eq!(g.counter_count(artifact, CounterKind::PlusOne), 0);
         for id in creatures {
             assert_eq!(g.counter_count(id, CounterKind::PlusOne), 1);
         }
