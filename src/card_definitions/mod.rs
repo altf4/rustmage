@@ -41,6 +41,19 @@ impl CardRules {
             !matches!(self.effect, Effect::Unsupported),
             "complete authored card lacks behavior"
         );
+        let mut power_up_index = 0;
+        while power_up_index < self.extras.power_up_abilities.len() {
+            let slot = self.extras.power_up_abilities[power_up_index] as usize;
+            assert!(
+                slot < self.activated.len(),
+                "Power-up slot lacks an activated ability"
+            );
+            assert!(
+                !self.activated[slot].exhaust,
+                "Power-up is distinct from Exhaust"
+            );
+            power_up_index += 1;
+        }
         // A printed mana component opens the mana-ability payment window.
         // Reject zero-mana template flags copied into newly authored paid abilities.
         let mut index = 0;
@@ -124,6 +137,13 @@ pub(super) struct CardExtras {
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
     /// Source-counter discounts for the specified nonmana activated slot.
+    /// Slots bearing the Power-up keyword, independently limited per exact object.
+    pub power_up_abilities: &'static [u16],
+    pub power_up_additional_uses: u32,
+    pub power_up_other_creature_reduction: u32,
+    /// Other equivalents of the printed mana cost, for hybrid reduction choices.
+    /// These are not alternative casting costs.
+    pub power_up_mana_cost_alternatives: &'static [ManaCost],
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
@@ -199,6 +219,10 @@ impl CardExtras {
         borrows_exiled_activations: false,
         zone_replacement: None,
         opening_hand_battlefield: false,
+        power_up_abilities: &[],
+        power_up_additional_uses: 0,
+        power_up_other_creature_reduction: 0,
+        power_up_mana_cost_alternatives: &[],
         activation_counter_discounts: &[],
         activation_put_counters: &[],
         fixed_entry_counters: &[],

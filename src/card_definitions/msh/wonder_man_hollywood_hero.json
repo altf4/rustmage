@@ -3,10 +3,30 @@
   "catalogue_id": 5107,
   "oracle_id": "e2c49754-711e-43b3-82f1-5376a4d99701",
   "facts_sha256": "5749e516276900a3ef2a47b25ef14a02fdc21310a73ab359df44aa7ef92fd13a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5360b84504326c5fb1f8f032132693e397d5c254595fa6de983c0f91380e5dca"
   },
-  "physical_metadata_sha256": "4d50e7d02ea3f188246e9060ce0af91f193cb9eed7658ba7a362293f4c7598e6"
+  "physical_metadata_sha256": "4d50e7d02ea3f188246e9060ce0af91f193cb9eed7658ba7a362293f4c7598e6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WonderManHollywoodHero.java",
+  "java_sha256": "8054d886e8fe9dbf140aa7be77b8910ec7df0bfab05c19375cf3e070976ce38d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "remaining_obligations": [],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#702.193"
+  ]
 }

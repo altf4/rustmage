@@ -21,6 +21,11 @@ impl Game {
         }
     }
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
+        let object = self.object_ref(id);
+        let entries = self.state.entered_this_turn.get_or_insert_default();
+        if !entries.contains(&object) {
+            entries.push(object);
+        }
         self.register_zone_rule_card(self.state.objects[id as usize].card);
         self.register_static_base_stats(id);
         self.register_live_static_source(id);

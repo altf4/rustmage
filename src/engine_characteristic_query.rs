@@ -808,6 +808,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             counters: self.counter_amounts(id).to_owned(),
             used_abilities: obj.used_abilities,
             exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
+            entered_this_turn: self.entered_this_turn(self.object_ref(id)),
+            power_up_uses: self.power_up_use_views(self.object_ref(id)),
             attached_to: obj.attached_to,
             modified: self.is_modified(id),
             attacking: self.state.attackers.iter().any(|a| a.card == id),

@@ -14,6 +14,7 @@ pub(super) struct Announcement {
     pub total_cost: Option<ManaCost>,
     /// Locked before mana abilities or any nonmana payment changes the source.
     pub activation_discount: u32,
+    pub power_up_costs: Option<Box<power_up::PowerUpCosts>>,
     pub free_hand_permission: Option<Box<ObjectRef>>,
     pub counter_payment: Counters,
     pub pay_window: bool,
@@ -180,9 +181,27 @@ impl Announcement {
                 })
         });
         options
-            .map(|mut cost| {
-                cost.generic = cost.generic.saturating_sub(self.activation_discount);
-                cost
+            .flat_map(move |cost| {
+                const ZERO: [ManaCost; 1] = [ManaCost {
+                    colored: [0; 6],
+                    generic: 0,
+                }];
+                self.power_up_costs
+                    .as_deref()
+                    .map_or(&ZERO[..], |r| r.reductions.as_slice())
+                    .iter()
+                    .filter_map(move |&reduction| {
+                        power_up::reduce(
+                            cost,
+                            reduction,
+                            self.activation_discount,
+                            if self.power_up_costs.is_some() {
+                                self.item.x.unwrap_or(0)
+                            } else {
+                                0
+                            },
+                        )
+                    })
             })
             .filter(|cost| {
                 self.item
@@ -259,13 +278,7 @@ impl Announcement {
                         !matches!(cast.method, CastMethod::Flashback | CastMethod::Warp)
                     }) && self.cost_options().count() > 1
                 }
-                StackKind::ActivatedAbility { ability } => !self
-                    .item
-                    .source_card
-                    .activation(ability)
-                    .cost
-                    .alternatives
-                    .is_empty(),
+                StackKind::ActivatedAbility { .. } => self.cost_options().count() > 1,
                 StackKind::TriggeredAbility { .. }
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::CasualtyCopy
@@ -1356,6 +1369,7 @@ impl Game {
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
             activation_discount: self.item_activation_discount(&item),
+            power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             miracle_cost: self.miracle_cost_for(&item),
             item,
@@ -1408,6 +1422,7 @@ impl Game {
         let casualty = self.casualty_declarations(&item);
         self.state.announcing = Some(Announcement {
             activation_discount: self.item_activation_discount(&item),
+            power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             miracle_cost: self.miracle_cost_for(&item),
             item,
