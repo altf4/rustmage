@@ -140,3 +140,9 @@ Power-up wire migrations can be audited with the recording-only
 removes only the new `ObjectView` entry-turn/use-history fields and retains
 all inherited fields and their serialization order. Ordinary validation still
 compares the full current traces strictly, even while recording audit output.
+
+Restricted-mana schema 140 audits retain all existing Power-up fields. Record an
+explicit prior-139 candidate when comparing with the second MSH cohort. A
+separate prior-138 export can compare the older inherited subset while projecting
+only the schema-139 counter-history addition. Power-up fields are removed only
+for explicitly requested versions below 138; ordinary validation is unprojected.

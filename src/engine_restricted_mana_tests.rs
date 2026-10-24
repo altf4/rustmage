@@ -1,6 +1,7 @@
 //! Restricted mana: exact purpose, live source facts, paid whole cards and owned replay.
 use super::super::assurance::big_helpers::{cast, checked, named, settle, setup};
 use super::*;
+use crate::ManaRetention;
 fn announce(card: CardId, ability: u16) -> Action {
     Action::AnnounceActivate {
         card,
@@ -20,7 +21,10 @@ fn mana(card: CardId, ability: u16, production: Mana) -> Action {
 fn reject(g: &mut Game, a: Action) {
     let s = g.snapshot();
     let r = g.revision();
-    assert_eq!(g.apply(g.actor().unwrap(), a), Err(Error::IllegalAction));
+    assert_eq!(
+        g.apply(g.actor().unwrap(), a.clone()),
+        Err(Error::IllegalAction)
+    );
     assert_eq!(g.snapshot(), s);
     assert_eq!(g.revision(), r);
 }
@@ -216,6 +220,8 @@ fn restricted_tower_nonhero_spell_and_ability_rejected_including_nested_conversi
         );
         let shock = named(&mut g, p, "Shock", Zone::Hand);
         reject(&mut g, Action::AnnounceCast { card: shock });
+        // Exclude Cave's separate ordinary colorless ability from the next probe.
+        g.state.objects[cave as usize].tapped = true;
         g.state.players[p.index()].mana[5] = 1;
         let boots = named(&mut g, p, "Swiftfoot Boots", Zone::Hand);
         reject(&mut g, Action::AnnounceCast { card: boots });
@@ -238,12 +244,15 @@ fn restricted_helper_nested_mana_funds_nonartifact_source_then_nonartifact_spell
             },
         );
         checked(&mut g, mana(h, 0, [0, 1, 0, 0, 0, 0]));
+        // A fully concrete mana cost uses the direct payment action inside
+        // the outer spell's mana window; guided nesting is for external costs.
         checked(
             &mut g,
-            Action::AnnounceMana {
+            Action::ActivateMana {
                 card: cave,
                 ability: 1,
                 counter_payment: Counters::default(),
+                payment: [0, 1, 0, 0, 0, 0],
                 production: [0, 0, 0, 1, 0, 0],
             },
         );
@@ -442,6 +451,9 @@ fn restricted_source_departure_lki_does_not_rebind_and_hero_source_need_not_be_c
         let item = g.state.stack.last().unwrap().clone();
         assert_eq!(g.object_view(source).zone, Zone::Graveyard);
         assert!(quality().eligible(g.purpose_for_item(&item)));
+        let mut triggered = item.clone();
+        triggered.kind = StackKind::TriggeredAbility { ability: 0 };
+        assert!(!quality().eligible(g.purpose_for_item(&triggered)));
         g.move_object(source, Zone::Battlefield);
         assert!(!g.has_subtype(source, "Hero"));
         assert!(quality().eligible(g.purpose_for_item(&item)));
@@ -518,5 +530,49 @@ fn restricted_tower_private_top_three_optional_revealed_hero_and_arbitrary_botto
                     .any(|o| o.id == one || o.id == two)
             );
         }
+    }
+}
+
+#[test]
+fn restricted_guided_nested_mana_keeps_outer_hero_purpose_and_private_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let t = tower(&mut g, p);
+        let hero = named(&mut g, p, "Reptil, Dinomorpher", Zone::Battlefield);
+        let rubble = named(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        g.state.objects[rubble as usize].summoning_sick = false;
+        let fuel = named(&mut g, p, "Forest", Zone::Graveyard);
+        let foreign = named(&mut g, p.other(), "Forest", Zone::Graveyard);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        checked(&mut g, mana(t, 1, [0, 1, 0, 0, 0, 0]));
+        checked(&mut g, announce(hero, 0));
+        checked(
+            &mut g,
+            Action::AnnounceMana {
+                card: rubble,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        assert_eq!(g.observe(p).suspended_mana_announcements.len(), 1);
+        assert!(g.observe(p).suspended_mana_announcements[0].cost.is_some());
+        assert!(
+            g.observe(p.other()).suspended_mana_announcements[0]
+                .cost
+                .is_none()
+        );
+        let bad = g.object_ref(foreign);
+        reject(&mut g, Action::ChooseAdditionalCost { object: bad });
+        let object = g.object_ref(fuel);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(fuel).zone, Zone::Exile);
+        assert_eq!(g.object_view(foreign).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(hero).power, 3);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.state.players[p.other().index()].life, 19);
+        assert!(g.state.mana_announcement_stack.is_none());
     }
 }
