@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8fbb3e2deedbc984827ccc0d0d6b4abd8dc01f5be06144eb980d3e2871139307",
+  "catalogue_version": "e623e98a3a16cf01b042e64f01e75567f9c868fdd09e76e694510ff5b84340ac",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2359,
-  "implemented_total": 2365,
+  "implemented_standard_cards": 2364,
+  "implemented_total": 2370,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 242,
-      "gated": 22
+      "complete": 247,
+      "gated": 17
     },
     "spm": {
       "total": 134,
@@ -15294,8 +15294,8 @@
     {
       "name": "Group Project",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/group_project.rs",
       "set": "sos"
     },
@@ -15814,8 +15814,8 @@
     {
       "name": "Harmonized Trio",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/harmonized_trio_brainstorm.rs",
       "set": "sos"
     },
@@ -21390,8 +21390,8 @@
     {
       "name": "Mana Sculpt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/mana_sculpt.rs",
       "set": "sos"
     },
@@ -31806,8 +31806,8 @@
     {
       "name": "Soaring Stoneglider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/soaring_stoneglider.rs",
       "set": "sos"
     },
@@ -37294,8 +37294,8 @@
     {
       "name": "Topiary Lecturer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/topiary_lecturer.rs",
       "set": "sos"
     },
