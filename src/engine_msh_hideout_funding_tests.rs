@@ -63,6 +63,11 @@ fn msh_hideout_funding_kindred_live_types_virtual_departure_and_owned_keys() {
         );
         types(&mut g, source, &["Kithkin"]);
         assert!(!g.can_fund(goal.clone()));
+        assert!(!g.legal_actions().contains(&Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default()
+        }));
         types(&mut g, source, &["Villain"]);
         checked(
             &mut g,

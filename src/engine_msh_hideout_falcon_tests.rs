@@ -214,7 +214,8 @@ fn msh_hideout_kindred_activation_departure_captures_villain_and_triggered_ward_
             mana_lots::Purpose::Activation(_)
         ));
         settle(&mut g);
-        assert_eq!(tokens(&g, p, "Elf Token").len(), 1);
+        // Sacrificed Kindred Elf regains its printed Elf subtype in the graveyard.
+        assert_eq!(tokens(&g, p, "Elf Token").len(), 2);
         let mut g = setup(p);
         let h = hideout(&mut g, p);
         let target = named(&mut g, p.other(), "Colorstorm Stallion", Zone::Battlefield);
