@@ -48,21 +48,23 @@ impl Game {
         object: ObjectRef,
     ) -> bool {
         self.state
-            .objects
-            .get(object.card as usize)
-            .is_some_and(|card| {
-                card.generation == object.generation
-                    && card.zone == Zone::Graveyard
-                    && card.owner == player
-                    && filter.matches(card.card)
-            })
+            .resolving
+            .as_ref()
+            .is_some_and(|resolution| resolution.milled.contains(&object))
+            && self.public_milled_object(object)
+            && self
+                .state
+                .objects
+                .get(object.card as usize)
+                .is_some_and(|card| card.owner == player && filter.matches(card.card))
     }
 
     pub(super) fn recover_milled(&mut self, object: Option<ObjectRef>) {
         // The legal-action visitor already checked membership, generation, zone,
         // ownership and quality. Declining consumes this choice, without targeting.
         if let Some(object) = object {
-            self.move_object(object.card, Zone::Hand);
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            self.move_milled_selection(player, &[object], MilledDestination::Hand);
         }
         self.run_program();
     }

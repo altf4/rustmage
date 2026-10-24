@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "scope": "Inherited Rapid Rescue recovery correctness prerequisite; no new card admissions; full-set acceptance remains open",
+  "base": "f44016ad81b11c73777d3d7c8558e4a9c0cbee92",
+  "oracle_obligations": [
+    "Mandatory mill two does as much as possible without drawing from an empty library.",
+    "Optional non-targeted permanent-card recovery finds only an exact milled card in its first public destination, including replacement exile.",
+    "Gain2 life follows recovery or decline and still happens with short/empty or no-eligible libraries."
+  ],
+  "shared_changes": [
+    "RecoverMilled reuses exact public-destination validation, checks captured batch membership, owner and quality, and rejects moved/reentered/hidden/non-milled objects.",
+    "Reuse existing Hand movement continuation for exact stack cleanup and public knowledge of the selected recovered card; unrelated hand/library identities remain hidden.",
+    "RecoveryChoiceView.milled contains only live exact public references; no wire fields/schema changes."
+  ],
+  "current_consumers": [
+    {
+      "name": "Something Worth Saving",
+      "complete": true
+    },
+    {
+      "name": "Rapid Rescue",
+      "complete": true
+    },
+    {
+      "name": "Midnight Tilling",
+      "complete": true
+    },
+    {
+      "name": "Bristlebud Farmer",
+      "complete": true
+    },
+    {
+      "name": "Scout the City",
+      "complete": true
+    },
+    {
+      "name": "Deadly Brew",
+      "complete": true,
+      "path": "Instruction::RecoverAnotherPermanent through engine_linked_choices::recover_another_permanent; exact graveyard references share Pending::RecoverMilled validation"
+    }
+  ],
+  "source_pin_check": {
+    "definitions": 5388,
+    "source_blobs": 1042,
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7"
+  },
+  "rules_source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#701.17c",
+  "focused_scenarios": 5,
+  "native_tests": 525,
+  "validation": {
+    "terminal": true,
+    "success": true,
+    "native_log": "<cache>/rustmage/msh-existing/milled-recovery-native-traces-final.log",
+    "resource_report": "<cache>/rustmage-build-reports/46af6078520e4ae1bc8a04e170a33389.json",
+    "test_execution_seconds": 3.96,
+    "guard_runtime_seconds": 98.368,
+    "cpu_seconds": 98.628,
+    "reported_memory_peak": "2G",
+    "full_release": "Root runs scripts/validate.py --release on final integrated published batch; no redundant standalone validator queued."
+  },
+  "trace_audit": {
+    "base": "f44016ad81b11c73777d3d7c8558e4a9c0cbee92",
+    "inherited_full_trace_count": 2421,
+    "inherited_full_trace_matches": 2421,
+    "changes": [],
+    "added": [],
+    "removed": [],
+    "baseline_equals_export": true,
+    "export_sha256": "b041d1127c50d52afca366943a56d8c17f39250ebf4785fd7e998435a59dfe2b"
+  },
+  "test_scope": [
+    "Both seats, paid Rest in Peace and Rapid Rescue; normal graveyard versus replacement exile, optional decline and gain timing.",
+    "Paid Dryad Militant produces mixed graveyard/exile first destinations; permanent eligible, instant rejected.",
+    "Zero/one/two-card libraries and no permanent cards still gain2 without empty-draw loss.",
+    "Foreign owner, not-milled card, out-of-range reference, old library reference and moved/reentered incarnation rejected transactionally.",
+    "Public mill results and recovered identity; unrelated hands and untouched libraries hidden; stale/hidden references absent from recovery choice.",
+    "Every paid/chosen action uses existing checked helper for wrong actor, raw/index owned branch, parent disposal, restore and stale revision."
+  ],
+  "measured_implementation": {
+    "start_utc": "2026-10-24T19:10:42+00:00",
+    "verified_utc": "2026-10-24T19:19:37.357306+00:00",
+    "elapsed_seconds": 535.357,
+    "inherited_cards_repaired": 1,
+    "new_admissions": 0,
+    "scope": "Source/rules review, generic recovery correction, five regressions, compile/fixture repair and full525 native+2421 trace verification; no simulation benchmark claim"
+  }
+}
