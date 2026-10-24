@@ -1184,3 +1184,67 @@ fn sos_scolding_optional_zero_target_and_target_reentry_failure() {
         assert_eq!(g.counter_count(target, CounterKind::Page), 0);
     }
 }
+
+#[test]
+fn sos_lumarets_favor_infusion_checks_life_at_resolution_and_may_retarget() {
+    for p in [Player::P0, Player::P1] {
+        for gained in [false, true] {
+            let mut g = setup(p);
+            let first = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let second = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            paid(&mut g, p, "Lumaret's Favor", None, &[Target::Card(first)]);
+            assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+            if gained {
+                g.gain_life(p, 1);
+            }
+            if gained {
+                for _ in 0..16 {
+                    g.prepare_triggers();
+                    if matches!(g.state.pending, Pending::Retarget { .. }) {
+                        break;
+                    }
+                    checked(&mut g, Action::Pass);
+                }
+                assert!(matches!(g.state.pending, Pending::Retarget { .. }));
+                checked(
+                    &mut g,
+                    Action::SetStackTarget {
+                        index: 0,
+                        target: Target::Card(second),
+                    },
+                );
+                checked(&mut g, Action::FinishStackTargets);
+            }
+            settle(&mut g);
+            assert_eq!((g.stats(first).power, g.stats(first).toughness), (4, 6));
+            assert_eq!(
+                (g.stats(second).power, g.stats(second).toughness),
+                if gained { (4, 6) } else { (2, 2) }
+            );
+            assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+            assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+        }
+    }
+}
+
+#[test]
+fn sos_lumarets_favor_source_copy_survives_countered_original_and_keeps_targets() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let target = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.gain_life(p, 1);
+        let original = paid(&mut g, p, "Lumaret's Favor", None, &[Target::Card(target)]);
+        let spell = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.card == original && s.kind == StackKind::Spell)
+            .unwrap()
+            .id;
+        g.counter_stack_item(spell, false);
+        settle(&mut g);
+        assert_eq!((g.stats(target).power, g.stats(target).toughness), (4, 6));
+        assert_eq!(g.object_view(original).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+    }
+}

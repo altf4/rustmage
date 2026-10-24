@@ -582,6 +582,7 @@ impl Game {
                     | TriggerCondition::GrantedAttacks
                     | TriggerCondition::AttachedBecomesUntapped
                     | TriggerCondition::SelfBecomesTapped
+                    | TriggerCondition::SelfCast
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::ManaSpentForSpell
                     | TriggerCondition::AtStep { .. } => false,
@@ -1036,6 +1037,19 @@ impl Game {
                     {
                         self.state.pending_triggers.last_mut().unwrap().cast_event =
                             cast_event.map(Box::new);
+                    }
+                }
+            }
+        }
+        // Source-cast abilities live on the actual stack spell, outside the
+        // battlefield observer index. Capture copies below before any priority.
+        if let Some(index) = stack {
+            let item = &self.state.stack[index];
+            if !item.is_copy {
+                let source = self.object_view(item.card);
+                for (ability, trigger) in source.card.triggers().iter().enumerate() {
+                    if trigger.condition.event() == TriggerCondition::SelfCast {
+                        self.queue_trigger(&source, ability);
                     }
                 }
             }

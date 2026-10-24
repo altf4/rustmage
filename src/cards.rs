@@ -2216,6 +2216,8 @@ pub(crate) enum ReturnKind {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// The physical source spell itself was cast; stack copies never dispatch it.
+    SelfCast,
     CardsLeaveGraveyard,
     ReturnDeath(ReturnDeathFilter),
     /// Delayed ability carried by a produced mana unit, independent of its source.
