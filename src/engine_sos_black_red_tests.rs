@@ -229,3 +229,84 @@ fn sos_mica_optional_artifact_payment_copy_retarget_and_ward() {
         }
     }
 }
+
+#[test]
+fn sos_artistic_process_modes_opponent_only_damage_and_temporary_haste() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            let mut g = scenario(p);
+            let friendly = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let opposing = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let spell = put(&mut g, p, "Artistic Process", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseMode { mode });
+            if mode == 0 {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(opposing),
+                    },
+                );
+            }
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.object_view(friendly).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(friendly).damage, 0);
+            if mode < 2 {
+                assert_eq!(g.object_view(opposing).zone, Zone::Graveyard);
+            } else {
+                let elemental = g
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .find_map(|(i, o)| {
+                        (o.zone == Zone::Battlefield && o.card == Card(5349)).then_some(i as CardId)
+                    })
+                    .unwrap();
+                assert_eq!(stats(&g, elemental), (3, 3));
+                assert_eq!(g.object_view(elemental).controller, p);
+                assert!(
+                    g.keywords(elemental)
+                        .contains(Keywords::FLYING.union(Keywords::HASTE))
+                );
+                g.finish_cleanup();
+                assert!(g.keywords(elemental).contains(Keywords::FLYING));
+                assert!(!g.keywords(elemental).contains(Keywords::HASTE));
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_send_pest_opponent_discard_and_attack_life_not_death_life() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let hidden = put(&mut g, p.other(), "Shock", Zone::Hand);
+        let spell = put(&mut g, p, "Send in the Pest", Zone::Hand);
+        cast(&mut g, spell, None);
+        until_choice(&mut g);
+        assert_eq!(g.actor(), Some(p.other()));
+        act(&mut g, Action::Discard { card: hidden });
+        settle(&mut g);
+        let pest = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find_map(|(i, o)| {
+                (o.zone == Zone::Battlefield && o.card == Card(5348)).then_some(i as CardId)
+            })
+            .unwrap();
+        assert_eq!(stats(&g, pest), (1, 1));
+        assert_eq!(g.object_view(pest).controller, p);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        g.state.objects[pest as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: pest });
+        act(&mut g, Action::FinishAttackers);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 21);
+    }
+}
