@@ -3,10 +3,35 @@
   "catalogue_id": 3875,
   "oracle_id": "66deb3f3-0314-427e-9cb8-6befa365ae94",
   "facts_sha256": "fab7504ce8f047991a9f2d244ba7c8b58a39e34cc12fd6fcf8aa8baa049aad3b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "701729dd26a3c9f6b2f1c02506cda36f2c88158e2bbb9855a087564e50665d89"
   },
-  "physical_metadata_sha256": "8ec69151461795da928a6b668e6925a6f2d7f4dc310a9bf9da9d0f1216110603"
+  "physical_metadata_sha256": "8ec69151461795da928a6b668e6925a6f2d7f4dc310a9bf9da9d0f1216110603",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SilverquillTheDisputant.java",
+  "java_sha256": "639c1512ce8f822ee3b3664b09668adb849dcd32404a63adc40842966eda8c93",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CasualtyAbility.java",
+      "sha256": "ecbf1546eec8ff4af7f2894c6057b468a4fd9eadd2fce5fae741d9a90ca625f3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledSpellsEffect.java",
+      "sha256": "fe96f9ccb2dbf72b35b14b2fa8c2e131e1e8e4e399b9cfd55ad6d4a198741227"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopySourceSpellEffect.java",
+      "sha256": "5bd130232d8dd64f8aa8049cf78c1f87a4d877c2ff4b02668e5b3c6b85e4bc95"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    }
+  ]
 }
