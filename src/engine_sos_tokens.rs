@@ -1,6 +1,27 @@
 //! Token creation completes before a distinct, replaceable counter-placement event.
 use super::*;
 impl Game {
+    pub(super) fn create_tokens_with_source_counters(
+        &mut self,
+        item: &SpellView,
+        token: Card,
+        amount: u16,
+    ) {
+        let mut counters = Counters::default();
+        for kind in CounterKind::ALL {
+            let count =
+                u64::try_from(self.item_amount(AmountValue::SourceCounterQuantity(kind), item))
+                    .capacity("source counter transfer quantity exhausted");
+            counters.add(kind, count);
+        }
+        self.stage_token_creation(
+            item.controller,
+            token,
+            u128::from(amount),
+            false,
+            replacements::TokenCompletion::CounterSet(Box::new(counters)),
+        );
+    }
     pub(super) fn create_tokens_with_counters(
         &mut self,
         item: &SpellView,
@@ -26,10 +47,9 @@ impl Game {
         &self,
         player: Player,
         created: &[ObjectRef],
-        kind: CounterKind,
-        amount: u64,
+        counters: &Counters,
     ) -> Vec<replacements::CounterPlacement> {
-        if amount == 0 {
+        if !counters.has_any() {
             return Vec::new();
         }
         created
@@ -50,7 +70,7 @@ impl Game {
                     controller: o.controller,
                     subtypes: self.granted_subtypes(object.card),
                     kind: self.current_kinds(object.card),
-                    amount: Counters::of(kind, amount),
+                    amount: counters.clone(),
                     effect: true,
                     entry_index: None,
                     private: false,

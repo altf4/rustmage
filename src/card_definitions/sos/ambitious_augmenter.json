@@ -3,10 +3,26 @@
   "catalogue_id": 144,
   "oracle_id": "d87f0e52-486e-49b4-9cf1-12e238857340",
   "facts_sha256": "a9122f5e8721abf22fd274b460a530abd9e6105166d946d84c01a9d72da8814b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b7fa6b42dc9e057f0b631e93b9a2eb11c8ebd653a782f7cc0b67de0e6e2e7eb8"
   },
-  "physical_metadata_sha256": "e0ee4f96bbde438dc81c02e3a7708ef426aad8f27f774fcb46339c33dad7d51b"
+  "physical_metadata_sha256": "e0ee4f96bbde438dc81c02e3a7708ef426aad8f27f774fcb46339c33dad7d51b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AmbitiousAugmenter.java",
+  "java_sha256": "a23d9f023b6697793be87e1e5637cc052de9d07ccae12e25ec4c6dbaaa70505b",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IncrementAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4d44b4a352b0c3056cc317e0647ceef6a13307e64c2a2563ad2986277f9ab09d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/FractalToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a2fb727f70793c0f7f0df80d2aaf8dcb077477de6db48576aef59606b1c2248b"
+    }
+  ]
 }

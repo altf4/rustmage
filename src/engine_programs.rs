@@ -495,7 +495,8 @@ impl Game {
             let yours = source.controller == entered.controller;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::InZone { .. }
+                    TriggerCondition::SelfDiesWithCounters
+                    | TriggerCondition::InZone { .. }
                     | TriggerCondition::ManaSpent { .. }
                     | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
@@ -729,6 +730,9 @@ impl Game {
             .filter(|event| event.granted)
             .map_or(source.card, |event| event.granting_card);
         let condition = definition.triggers()[index].condition;
+        if condition == TriggerCondition::SelfDiesWithCounters && !source.counters.has_any() {
+            return false;
+        }
         // Graveyard observers must not enable unqualified battlefield abilities.
         // Self-discard/cycling dispatch deliberately uses the destination object,
         // so those events remain valid there. An explicit origin always wins.
@@ -2335,6 +2339,9 @@ impl Game {
                 Instruction::ActivationX => (),
                 Instruction::DestroyCombatDamagedPlayersPermanents => {
                     self.destroy_combat_damaged_players_permanents(&item)
+                }
+                Instruction::CreateTokensWithSourceCounters { token, amount } => {
+                    self.create_tokens_with_source_counters(&item, token, amount);
                 }
                 Instruction::CreateTokensWithCounters {
                     token,

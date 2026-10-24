@@ -21,6 +21,13 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
     }
     for instruction in program {
         match *instruction {
+            Instruction::CreateTokensWithSourceCounters { .. } => {
+                for kind in CounterKind::ALL {
+                    if !kinds.contains(&kind) {
+                        kinds.push(kind);
+                    }
+                }
+            }
             Instruction::Modal(modes) | Instruction::ModalOnce(modes) => {
                 for mode in modes {
                     read_counter_kinds(mode.program, kinds);

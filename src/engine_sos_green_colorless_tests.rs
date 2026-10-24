@@ -481,3 +481,110 @@ fn sos_planar_engineering_sacrifices_available_lands_then_private_tapped_basic_s
         }
     }
 }
+
+#[test]
+fn sos_ambitious_augmenter_increment_threshold_and_historical_all_counter_transfer() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = paid(&mut g, p, "Ambitious Augmenter", None, &[]);
+        settle(&mut g);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        paid(
+            &mut g,
+            p,
+            "Oracle's Restoration",
+            None,
+            &[Target::Card(bear)],
+        );
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 0);
+        paid(&mut g, p, "Chelonian Tackle", None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 1);
+        g.add_counter(source, CounterKind::PlusOne, 1);
+        g.add_counter(source, CounterKind::Stun, 2);
+        g.add_counter(source, CounterKind::Page, 3);
+        g.add_counter(source, CounterKind::Soul, 4);
+        g.move_object(source, Zone::Graveyard);
+        g.move_object(source, Zone::Battlefield);
+        g.add_counter(source, CounterKind::PlusOne, 9);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        settle(&mut g);
+        let fractals = tokens(&g, p, Card::SosFractalToken);
+        assert_eq!(fractals.len(), 2);
+        for token in fractals {
+            for (kind, amount) in [
+                (CounterKind::PlusOne, 4),
+                (CounterKind::Stun, 4),
+                (CounterKind::Page, 6),
+                (CounterKind::Soul, 8),
+            ] {
+                assert_eq!(g.counter_count(token, kind), amount);
+            }
+            assert_eq!(g.counter_count(token, CounterKind::MinusOne), 0);
+        }
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 9);
+        let fresh = paid(&mut g, p, "Ambitious Augmenter", None, &[]);
+        settle(&mut g);
+        let before = tokens(&g, p, Card::SosFractalToken).len();
+        g.move_object(fresh, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(tokens(&g, p, Card::SosFractalToken).len(), before);
+    }
+}
+
+#[test]
+fn sos_germination_practicum_counters_only_own_creatures_then_recurs_after_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = paid(&mut g, p, "Germination Practicum", None, &[]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 2);
+        assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert_eq!(g.observe(p).paradigms.len(), 1);
+        g.move_object(spell, Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        g.state.active = p;
+        g.state.priority = p;
+        g.state.pending = Pending::Priority;
+        g.begin_step(Step::Main1);
+        g.prepare_triggers();
+        for _ in 0..20 {
+            if matches!(g.state.pending, Pending::ResolutionCasts { .. }) {
+                break;
+            }
+            let action = if g.state.pending == Pending::Priority {
+                Action::Pass
+            } else {
+                g.legal_actions()
+                    .into_iter()
+                    .find(|a| !matches!(a, Action::Concede))
+                    .unwrap()
+            };
+            checked(&mut g, action);
+        }
+        let copy = g.state.resolution_free_casts.as_ref().unwrap().remaining[0];
+        checked(
+            &mut g,
+            Action::CastExiledDuringResolution {
+                object: copy,
+                face: CastFace::Normal,
+            },
+        );
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        checked(&mut g, Action::FinishResolutionCasts);
+        settle(&mut g);
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 4);
+        assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.observe(p).paradigms.len(), 1);
+    }
+}

@@ -1243,6 +1243,8 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     /// Create a fixed token batch, then put scaled counters on those exact tokens.
+    /// Copy every supported counter kind from this exact source/LKI to new tokens.
+    CreateTokensWithSourceCounters { token: Card, amount: u16 },
     CreateTokensWithCounters {
         token: Card,
         amount: u16,
@@ -2299,6 +2301,8 @@ pub(crate) enum TriggerCondition {
     SelfBargained,
     SelfEvidence,
     EvidenceCollected,
+    /// Historical departure condition; queued only if the frozen source had counters.
+    SelfDiesWithCounters,
     SelfDies,
     SelfNontokenDies,
     SelfLeaves,
@@ -2398,6 +2402,7 @@ impl TriggerCondition {
     }
     pub(crate) fn event(self) -> Self {
         match self {
+            Self::SelfDiesWithCounters => Self::SelfDies,
             Self::InZone { event, .. }
             | Self::Granted(event)
             | Self::OncePerTurn(event)
