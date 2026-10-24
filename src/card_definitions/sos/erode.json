@@ -3,10 +3,25 @@
   "catalogue_id": 1360,
   "oracle_id": "2e467fab-e808-44d3-99bf-e3621baeb7cb",
   "facts_sha256": "3ac7bbfad2ec327b16913a2193c7ec02e0685d65ed1ade3c100f240842a7b3ec",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ab05a6dff8889284100ee251d52b544892462d3a3945ab7568bf5ce141efca91"
   },
-  "physical_metadata_sha256": "982a11d4c38628ec68cde732456f9c689f746dc0abda89135a16fe9cf1cf708e"
+  "physical_metadata_sha256": "982a11d4c38628ec68cde732456f9c689f746dc0abda89135a16fe9cf1cf708e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/Erode.java",
+  "java_sha256": "c3b78fa68cc62fcc2f1067fa95fc745e51e3f2e40709f2c0d18f2c375fafbec0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayTargetControllerEffect.java",
+      "sha256": "9926405e859380634a57206fa5c0fa5a182f5cb83fa5023a2126b1b134fd7ce2"
+    }
+  ]
 }

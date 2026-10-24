@@ -538,7 +538,8 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
-                    TriggerCondition::CardsLeaveGraveyard
+                    TriggerCondition::TokensEnterYou
+                    | TriggerCondition::CardsLeaveGraveyard
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::CreatureExploresCardYou { .. }
                     | TriggerCondition::Foraged
@@ -1461,6 +1462,8 @@ impl Game {
                 matches!(
                     instruction,
                     Instruction::LoseLifeTargetCardManaValue(_)
+                        | Instruction::MayTargetController { .. }
+                        | Instruction::SearchTargetController(_)
                         | Instruction::LoseLifeTargetController(_)
                         | Instruction::DamageTargetController(_)
                 )
@@ -2065,6 +2068,32 @@ impl Game {
                             .capacity("player poison counters exhausted");
                     }
                 }
+                Instruction::MayTargetController { skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    if let Some(player) = self.resolution_target_controller() {
+                        self.state.pending = Pending::EffectOptional { player, skip_to };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
+                Instruction::ExileAndGainLifeEqualPower => {
+                    for bound in &item.targets {
+                        if !self.same_target_object(*bound) {
+                            continue;
+                        }
+                        let Target::Card(id) = bound.target else {
+                            continue;
+                        };
+                        if !self.on_battlefield(id) {
+                            continue;
+                        }
+                        let controller = self.state.objects[id as usize].controller;
+                        let power = self.stats(id).power.max(0);
+                        self.move_object(id, Zone::Exile);
+                        self.gain_life(controller, power);
+                    }
+                }
                 Instruction::MayOpponent { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
@@ -2553,8 +2582,17 @@ impl Game {
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::Search(spec)
+                | Instruction::SearchTargetController(spec)
                 | Instruction::SearchRequired(spec)
                 | Instruction::SearchDifferentNames(spec) => {
+                    let player = if matches!(instruction, Instruction::SearchTargetController(_)) {
+                        let Some(player) = self.resolution_target_controller() else {
+                            continue;
+                        };
+                        player
+                    } else {
+                        item.controller
+                    };
                     let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
                         assert_eq!(
                             spec.filter,
@@ -2562,7 +2600,7 @@ impl Game {
                             "required searches must not require finding a hidden quality"
                         );
                         usize::from(spec.maximum)
-                            .min(self.state.players[item.controller.index()].library.len())
+                            .min(self.state.players[player.index()].library.len())
                             as u16
                     } else {
                         0
@@ -2578,9 +2616,7 @@ impl Game {
                             selected: Vec::new(),
                             battlefield: None,
                         }));
-                    self.state.pending = Pending::EffectSearch {
-                        player: item.controller,
-                    };
+                    self.state.pending = Pending::EffectSearch { player };
                     return;
                 }
                 Instruction::ExileTopChoosePlay { amount, next_turn } => {

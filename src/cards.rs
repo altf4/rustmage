@@ -1144,6 +1144,11 @@ pub(crate) enum Instruction {
     Surveil(u16),
     AnimateSource(AnimationSpec),
     Search(SearchSpec),
+    SearchTargetController(SearchSpec),
+    MayTargetController {
+        skip: usize,
+    },
+    ExileAndGainLifeEqualPower,
     /// Capture the destroyed land's controller, then offer both optional basic searches.
     DestroyLandAndSearch,
     /// Unqualified search: find the maximum, or every remaining card if fewer.
@@ -2170,7 +2175,9 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    CardExiledThisTurn,
     OpponentHasMoreCardsInHand,
+    OpponentControlsMoreCreatures,
     SourceReceivedCounterThisTurn,
     YourTurn,
     SourcePowerAtLeast(u16),
@@ -2420,6 +2427,7 @@ pub(crate) enum TriggerCondition {
     },
     OtherFilteredEntersYou(EntryPredicate),
     FilteredEntersYou(EntryPredicate),
+    TokensEnterYou,
     OtherCreatureEntersYou,
     CreatureEnters {
         relation: CastRelation,

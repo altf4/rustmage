@@ -1536,6 +1536,7 @@ struct State {
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
+    cards_exiled_this_turn: bool,
     creatures_died_this_turn: u64,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
@@ -1918,6 +1919,7 @@ pub struct Observation {
     /// Number of distinct declared attacker objects this turn, including departures.
     pub creatures_attacked_this_turn: usize,
     /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
+    pub cards_exiled_this_turn: bool,
     pub creatures_died_this_turn: u64,
     pub graveyard_entries_this_turn: Vec<ObjectRef>,
     pub catalogue: &'static str,
@@ -2142,6 +2144,7 @@ impl Game {
                 modal_history: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
+                cards_exiled_this_turn: false,
                 creatures_died_this_turn: 0,
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
@@ -5034,6 +5037,13 @@ impl Game {
                 evidence_collected: false,
             };
         }
+        if destination == Zone::Exile
+            && !before.is_token()
+            && !before.card.is_emblem()
+            && !self.state.objects[id as usize].is_spell_copy()
+        {
+            self.state.cards_exiled_this_turn = true;
+        }
         // CR400.8: re-exiling an exiled card creates a new incarnation even
         // though its zone stays exile. Clear exact links and permissions below.
         assert!(
@@ -5338,6 +5348,7 @@ impl Game {
         self.state.counter_placement_history = None;
         self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
+        self.state.cards_exiled_this_turn = false;
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
         for player in &mut self.state.players {
@@ -5949,6 +5960,7 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.damaged_players.clone()),
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
+            cards_exiled_this_turn: s.cards_exiled_this_turn,
             creatures_died_this_turn: s.creatures_died_this_turn,
             graveyard_entries_this_turn: s
                 .graveyard_entries

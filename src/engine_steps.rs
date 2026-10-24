@@ -123,6 +123,22 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::CardExiledThisTurn => return self.state.cards_exiled_this_turn,
+            StepGuard::OpponentControlsMoreCreatures => {
+                let count = |controller| {
+                    self.state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, o)| {
+                            o.zone == Zone::Battlefield
+                                && o.controller == controller
+                                && self.is_creature(*id as CardId)
+                        })
+                        .count()
+                };
+                return count(player.other()) > count(player);
+            }
             StepGuard::OpponentHasMoreCardsInHand => {
                 let count = |owner| {
                     self.hand_count(owner)

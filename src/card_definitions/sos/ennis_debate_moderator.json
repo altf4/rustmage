@@ -3,10 +3,35 @@
   "catalogue_id": 1342,
   "oracle_id": "97e1fcdf-04e8-40cf-b04a-8505d9b7cecc",
   "facts_sha256": "182ccb8858285512570ca44263f9a07b4094834c6024c0795a2d1e9baa2800c0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fcf911931b2849c7519fe51b656a9463ee95f49fb872358c5a1a4f619d2071c1"
   },
-  "physical_metadata_sha256": "dae2ae10574cde169d725db07a5d6ec35f3df50feb3d00ad9981841e884d8929"
+  "physical_metadata_sha256": "dae2ae10574cde169d725db07a5d6ec35f3df50feb3d00ad9981841e884d8929",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EnnisDebateModerator.java",
+  "java_sha256": "e1d163bf9b8555cc21923d8834e74a327359d9fa8719c9d3860a6760e304ba25",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileReturnBattlefieldNextEndStepTargetEffect.java",
+      "sha256": "e99352ec388fe5d84b253f86650b40687823087cf045653115c708eed09ef786"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/WasCardExiledThisTurnCondition.java",
+      "sha256": "134346b604f682d51ac52c36480f9e66804adcbced19360cb52b158c7c5abf2e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CardsExiledThisTurnWatcher.java",
+      "sha256": "f7b65c058c14c73af43705739bc99d5b6918cfbd23f387cec5b22ad407e19083"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

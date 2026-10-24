@@ -3,10 +3,40 @@
   "catalogue_id": 1317,
   "oracle_id": "e6c41473-2398-4888-9f0c-467dce7c39a4",
   "facts_sha256": "68379458ffe99650a4ffdc1345df06df2b3728b09c2689c4955f212a4e65b482",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0df1b6ef2e3b91a3ae55f6ede5c38e49e9d1275074b3a8d833d932795ac05f77"
   },
-  "physical_metadata_sha256": "9a11b02d3db37f7eb5084ac927ff4010c3bc60c7861ca23548ec15d24cdc7ebb"
+  "physical_metadata_sha256": "9a11b02d3db37f7eb5084ac927ff4010c3bc60c7861ca23548ec15d24cdc7ebb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfTruce.java",
+  "java_sha256": "bf156564affe27c1914d51c44076e742637428d8897f1ed7eeed1b68fc0ef435",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenTargetEffect.java",
+      "sha256": "899cbb24bb096977a1368027ba991506de15e4dcda39c6378a05daef65c295a7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Inkling11Token.java",
+      "sha256": "1bb1e98c95fca11b87c834af87d214aaf9e6a4aae864e45844b348dbffeab3b6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/OpponentControlsMoreCondition.java",
+      "sha256": "1851991ffc9adb3363d04f26a3532eac00d36f97b6aa6baa70bf1eaf53360ee3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    }
+  ]
 }

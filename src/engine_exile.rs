@@ -206,6 +206,26 @@ impl Game {
                 }
             })
         };
+        // One trigger per observing source for the entire simultaneous entry event.
+        let mut token_entered = [false; 2];
+        for event in events {
+            if event.moved && event.destination == Zone::Battlefield {
+                let entered = self.object_view(event.after.card);
+                if entered.is_token() && entered.kinds & entry_suppression == 0 {
+                    token_entered[entered.controller.index()] = true;
+                }
+            }
+        }
+        for source in &sources {
+            if source.zone != Zone::Battlefield || !token_entered[source.controller.index()] {
+                continue;
+            }
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::TokensEnterYou {
+                    self.queue_trigger(source, index);
+                }
+            }
+        }
         for event in events {
             // These zones are public in the supported rules subset (all exile
             // is face up). Preserve the exact new hand incarnation for both

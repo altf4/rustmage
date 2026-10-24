@@ -1311,3 +1311,318 @@ fn sos_antiquities_hand_and_flashback_apply_counters_to_all_own_spirits() {
         assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
     }
 }
+
+#[test]
+fn sos_erode_freezes_controller_optional_search_and_failed_destruction() {
+    for p in [Player::P0, Player::P1] {
+        for indestructible in [false, true] {
+            for accept in [false, true] {
+                let mut g = scenario(p);
+                let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+                g.state.objects[target as usize].controller = p.other();
+                if indestructible {
+                    g.state.objects[target as usize].gained_keywords = Keywords::INDESTRUCTIBLE;
+                }
+                let basic = put(&mut g, p.other(), "Island", Zone::Library);
+                let hidden = put(&mut g, p.other(), "Bear Cub", Zone::Library);
+                let spell = put(&mut g, p, "Erode", Zone::Hand);
+                big_helpers::cast(&mut g, spell, None, &[Target::Card(target)]);
+                until_pending_choice(&mut g);
+                assert_eq!(g.actor(), Some(p.other()));
+                assert_eq!(
+                    g.object_view(target).zone,
+                    if indestructible {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+                big_helpers::checked(&mut g, Action::ChooseOptional { accept });
+                if accept {
+                    assert!(g.observe(p).search_choice.is_none());
+                    assert!(
+                        g.observe(p)
+                            .objects
+                            .iter()
+                            .all(|o| o.id != basic && o.id != hidden)
+                    );
+                    reject(&mut g, Action::ChooseSearch { card: hidden });
+                    big_helpers::checked(&mut g, Action::ChooseSearch { card: basic });
+                    big_helpers::checked(&mut g, Action::FinishSearch);
+                }
+                big_helpers::settle(&mut g);
+                assert_eq!(
+                    g.object_view(basic).zone,
+                    if accept {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Library
+                    }
+                );
+                if accept {
+                    assert!(g.object_view(basic).tapped);
+                    assert_eq!(g.object_view(basic).controller, p.other());
+                }
+            }
+        }
+        let mut g = scenario(p);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Erode", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(target)));
+        g.move_object(target, Zone::Hand);
+        settle(&mut g);
+        assert_eq!(g.state.pending, Pending::Priority);
+    }
+}
+
+#[test]
+fn sos_truce_token_recipient_changes_live_condition_and_swords_uses_power_controller() {
+    for p in [Player::P0, Player::P1] {
+        for recipient in [p, p.other()] {
+            let mut g = scenario(p);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let source = put(&mut g, p, "Emeritus of Truce", Zone::Hand);
+            cast(&mut g, source, None);
+            until_pending_choice(&mut g);
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(recipient),
+                },
+            );
+            big_helpers::settle(&mut g);
+            assert_eq!(stats(&g, source), (3, 3));
+            let ink = tokens(&g, recipient);
+            assert_eq!(ink.len(), 1);
+            assert_eq!(stats(&g, ink[0]), (1, 1));
+            assert_eq!(g.object_view(ink[0]).colors, 1 | 4);
+            assert!(g.keywords(ink[0]).contains(Keywords::FLYING));
+            assert_eq!(g.object_view(source).prepared, recipient == p.other());
+            if recipient == p.other() {
+                g.set_counters(enemy, Counters::of(CounterKind::PlusOne, 2));
+                let life = g.state.players[p.other().index()].life;
+                prepared_cast(&mut g, source, &[Target::Card(enemy)]);
+                settle(&mut g);
+                assert_eq!(g.object_view(enemy).zone, Zone::Exile);
+                assert_eq!(g.state.players[p.other().index()].life, life + 4);
+                assert!(!g.object_view(source).prepared);
+            }
+        }
+    }
+}
+
+fn finish_direct_entries(g: &mut Game) {
+    for _ in 0..8 {
+        if g.state.replacements.is_some() {
+            g.advance_replacements(true);
+        }
+        if g.state.entry_batch.is_some() {
+            g.advance_entries();
+        }
+        if g.state.replacements.is_none() && g.state.entry_batch.is_none() {
+            return;
+        }
+    }
+    panic!("direct entry did not settle");
+}
+
+#[test]
+fn sos_spiritcall_batches_noncreature_tokens_and_observes_its_own_copy_entry() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Spiritcall Enthusiast", Zone::Battlefield);
+        g.create_tokens(p.other(), Card::SosSpiritToken, 2, false);
+        finish_direct_entries(&mut g);
+        assert!(g.state.pending_triggers.is_empty());
+        g.create_tokens(p, Card::SosSpiritToken, 2, false);
+        finish_direct_entries(&mut g);
+        assert_eq!(
+            g.state
+                .pending_triggers
+                .iter()
+                .filter(|t| t.card == source)
+                .count(),
+            1
+        );
+        g.create_tokens(
+            p,
+            Card::from_name("@token/b60f6cd3b44b22bd289fe4e2").unwrap(),
+            2,
+            false,
+        );
+        finish_direct_entries(&mut g);
+        assert_eq!(
+            g.state
+                .pending_triggers
+                .iter()
+                .filter(|t| t.card == source)
+                .count(),
+            2
+        );
+        big_helpers::settle(&mut g);
+        assert!(g.object_view(source).prepared);
+        let mut g = scenario(p);
+        put(&mut g, p, "Torpor Orb", Zone::Battlefield);
+        let source = put(&mut g, p, "Spiritcall Enthusiast", Zone::Battlefield);
+        g.create_tokens(p, Card::SosSpiritToken, 2, false);
+        finish_direct_entries(&mut g);
+        assert!(g.state.pending_triggers.is_empty());
+        g.create_tokens(
+            p,
+            Card::from_name("@token/b60f6cd3b44b22bd289fe4e2").unwrap(),
+            1,
+            false,
+        );
+        finish_direct_entries(&mut g);
+        assert_eq!(
+            g.state
+                .pending_triggers
+                .iter()
+                .filter(|t| t.card == source)
+                .count(),
+            1
+        );
+        let mut g = scenario(p);
+        let definition = Card::from_name("Spiritcall Enthusiast").unwrap();
+        g.create_copy_groups_inner(
+            p,
+            &[TokenGroupView {
+                token: definition,
+                amount: 1,
+                tapped: false,
+            }],
+            &[Some(CopyRecipe::new(definition))],
+            None,
+        );
+        finish_direct_entries(&mut g);
+        let source = tokens(&g, p)[0];
+        assert_eq!(
+            g.state
+                .pending_triggers
+                .iter()
+                .filter(|t| t.card == source)
+                .count(),
+            1
+        );
+        big_helpers::settle(&mut g);
+        assert!(g.object_view(source).prepared);
+    }
+}
+
+#[test]
+fn sos_scrollboost_requires_one_or_two_and_preserves_legal_partial_targets() {
+    for p in [Player::P0, Player::P1] {
+        for count in [1, 2] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Spiritcall Enthusiast", Zone::Battlefield);
+            g.prepare_permanent(g.object_ref(source));
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let copy = g.state.preparations.as_ref().unwrap()[0].spell_copy.card;
+            act(&mut g, Action::AnnounceExile { card: copy });
+            reject(&mut g, Action::FinishTargets);
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(source),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(source),
+                },
+            );
+            if count == 2 {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(enemy),
+                    },
+                );
+            } else {
+                act(&mut g, Action::FinishTargets);
+            }
+            pay(&mut g);
+            if count == 2 {
+                g.move_object(enemy, Zone::Hand);
+            }
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (5, 5));
+            g.finish_cleanup();
+            assert_eq!(stats(&g, source), (3, 3));
+        }
+    }
+}
+
+#[test]
+fn sos_ennis_delayed_blink_is_exact_owner_control_and_source_independent() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.state.objects[target as usize].controller = p;
+        let source = put(&mut g, p, "Ennis, Debate Moderator", Zone::Hand);
+        cast(&mut g, source, None);
+        until_pending_choice(&mut g);
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Exile);
+        assert!(g.observe(p).cards_exiled_this_turn);
+        g.move_object(source, Zone::Graveyard);
+        g.begin_step(Step::End);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(target).controller, p.other());
+    }
+}
+
+#[test]
+fn sos_ennis_history_excludes_tokens_and_copies_reexile_counts_and_cleanup_preserves() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Ennis, Debate Moderator", Zone::Battlefield);
+        let prepared = put(&mut g, p, "Encouraging Aviator", Zone::Battlefield);
+        g.prepare_permanent(g.object_ref(prepared));
+        assert!(!g.observe(p).cards_exiled_this_turn);
+        let copy = g.state.preparations.as_ref().unwrap()[0].spell_copy.card;
+        g.move_object(copy, Zone::Exile);
+        g.create_tokens(
+            p,
+            Card::from_name("@token/b60f6cd3b44b22bd289fe4e2").unwrap(),
+            1,
+            false,
+        );
+        finish_direct_entries(&mut g);
+        let token = tokens(&g, p)[0];
+        g.move_object(token, Zone::Exile);
+        assert!(!g.observe(p).cards_exiled_this_turn);
+        g.begin_step(Step::End);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 0);
+        let card = put(&mut g, p.other(), "Forest", Zone::Exile);
+        g.move_object(card, Zone::Exile);
+        assert!(g.observe(p).cards_exiled_this_turn);
+        g.begin_step(Step::End);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 1);
+        // A cleanup-induced SBA gives priority without starting the next turn.
+        g.set_counters(source, Counters::of(CounterKind::MinusOne, 3));
+        g.state.objects[source as usize].growth.toughness = 3;
+        let turn = g.state.turn;
+        g.finish_cleanup();
+        assert_eq!(g.state.turn, turn);
+        assert!(g.observe(p).cards_exiled_this_turn);
+        g.begin_turn();
+        assert!(!g.observe(p).cards_exiled_this_turn);
+    }
+}
