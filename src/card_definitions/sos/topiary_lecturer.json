@@ -3,10 +3,36 @@
   "catalogue_id": 4636,
   "oracle_id": "5f5fe039-4be4-42ae-9fa4-4392328aa665",
   "facts_sha256": "dda58017c88f3dbab67ba258bd41aec6a6d46be007f2fd35181ad45c8ba04670",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a78e371e878d4536cfd4ee34253a3ace0169b6d78523dac863a3a1d8e4ddb07d"
   },
-  "physical_metadata_sha256": "a7e121ee976103f41190d341d55aba2b1a8742e61547331fd392ae4bfd31ebf5"
+  "physical_metadata_sha256": "a7e121ee976103f41190d341d55aba2b1a8742e61547331fd392ae4bfd31ebf5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TopiaryLecturer.java",
+  "java_sha256": "5e2e503d159188d2c32a59c9bb56340b2f5b47c20b83309f9c985f8d8d137eff",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IncrementAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4d44b4a352b0c3056cc317e0647ceef6a13307e64c2a2563ad2986277f9ab09d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/DynamicManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b3d0b50f07f8a0d751bf30a6ecaca74c91fd98a7dd4e3228f71b7543a2d108da"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/DynamicManaEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e2767b7e03907de0266b757f49728816804d3a1376c423024119380c5797ce27"
+    }
+  ]
 }

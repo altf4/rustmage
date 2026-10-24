@@ -5,6 +5,11 @@ use super::*;
 use crate::cards::{LiveStatRecipients, LiveStaticEffect};
 
 pub(super) trait CharacteristicWorld {
+    fn power(&self, id: CardId) -> i128 {
+        characteristic_query::CharacteristicQuery::in_world(self)
+            .stats(id)
+            .power
+    }
     fn game(&self) -> &Game;
     fn object(&self, id: CardId) -> &Object;
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
@@ -280,6 +285,12 @@ impl ManaProduction {
     ) -> Self {
         match self {
             Self::Tagged { production, .. } => production.in_world(world, source),
+            Self::SourcePower { color } => {
+                let mut mana = [0; 6];
+                mana[usize::from(color)] = u32::try_from(world.power(source).max(0))
+                    .capacity("mana representation exhausted");
+                Self::Fixed(mana)
+            }
             Self::ChosenColor => {
                 let mut mana = [0; 6];
                 if let Some(EntryChoiceValue::Color(color)) =

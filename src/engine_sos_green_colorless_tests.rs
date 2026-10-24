@@ -1927,3 +1927,209 @@ fn sos_dawning_attack_target_own_instant_sorcery_and_rechecks_exact_incarnation(
         assert_eq!(g.object_view(target).zone, Zone::Graveyard);
     }
 }
+
+fn topiary_mana(card: CardId, amount: u32) -> Action {
+    Action::ActivateMana {
+        card,
+        ability: 0,
+        payment: [0; 6],
+        counter_payment: Counters::default(),
+        production: [0, 0, 0, 0, amount, 0],
+    }
+}
+
+#[test]
+fn sos_topiary_paid_increment_strict_threshold_growth_cleanup_and_nonpositive_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = paid(&mut g, p, "Topiary Lecturer", None, &[]);
+        settle(&mut g);
+        reject(&mut g, topiary_mana(source, 1));
+        g.state.objects[source as usize].summoning_sick = false;
+        paid(&mut g, p, "Bear Cub", None, &[]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 1);
+        paid(&mut g, p, "Bear Cub", None, &[]);
+        settle(&mut g);
+        assert_eq!(
+            g.counter_count(source, CounterKind::PlusOne),
+            1,
+            "equal mana is insufficient"
+        );
+        paid(&mut g, p, "Giant Growth", None, &[Target::Card(source)]);
+        settle(&mut g);
+        assert_eq!(g.stats(source).power, 5);
+        reject(&mut g, topiary_mana(source, 2));
+        let before = g.state.players[p.index()].mana[4];
+        checked(&mut g, topiary_mana(source, 5));
+        assert_eq!(g.state.players[p.index()].mana[4], before + 5);
+        g.finish_cleanup();
+        assert_eq!(g.stats(source).power, 2);
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Topiary Lecturer", Zone::Battlefield);
+        g.state.objects[source as usize].summoning_sick = false;
+        for growth in [-1, -4] {
+            g.state.objects[source as usize].tapped = false;
+            g.state.objects[source as usize].growth.power = growth;
+            let before = g.state.players[p.index()].mana;
+            checked(&mut g, topiary_mana(source, 0));
+            assert_eq!(g.state.players[p.index()].mana, before);
+            assert!(g.object_view(source).tapped);
+        }
+    }
+}
+
+#[test]
+fn sos_topiary_funding_rejects_mana_payment_that_loses_artifact_scaling_power() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Topiary Lecturer", Zone::Battlefield);
+        let arsenal = named(&mut g, p, "Machinist's Arsenal", Zone::Battlefield);
+        let pizza = named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        let target = g.object_ref(source);
+        assert!(g.attach_equipment(g.object_ref(arsenal), target));
+        g.state.objects[source as usize].summoning_sick = false;
+        assert_eq!(g.stats(source).power, 5);
+        let spell = named(&mut g, p, "Snarl Song", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        let pizza_first = Action::ActivateMana {
+            card: pizza,
+            ability: 0,
+            payment: [0, 0, 0, 0, 0, 1],
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 1, 0, 0],
+        };
+        reject(&mut g, pizza_first.clone());
+        checked(&mut g, topiary_mana(source, 5));
+        checked(&mut g, pizza_first);
+        assert_eq!(g.stats(source).power, 3);
+        assert_eq!(g.object_view(pizza).zone, Zone::Graveyard);
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        // Independently pay the same sacrifice before opening an announcement.
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Topiary Lecturer", Zone::Battlefield);
+        let arsenal = named(&mut g, p, "Machinist's Arsenal", Zone::Battlefield);
+        let pizza = named(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        assert!(g.attach_equipment(g.object_ref(arsenal), g.object_ref(source)));
+        g.state.objects[source as usize].summoning_sick = false;
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: pizza,
+                ability: 0,
+                payment: [0, 0, 0, 0, 0, 1],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        assert_eq!(g.stats(source).power, 3);
+        let spell = named(&mut g, p, "Snarl Song", Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: spell });
+    }
+}
+
+/// Tiny borrowed object overlay: it never clones a Game or changes the parent.
+struct PowerWorld<'a> {
+    game: &'a Game,
+    objects: Vec<(CardId, Object)>,
+    life: i128,
+}
+impl ability_world::CharacteristicWorld for PowerWorld<'_> {
+    fn game(&self) -> &Game {
+        self.game
+    }
+    fn object(&self, id: CardId) -> &Object {
+        self.objects
+            .iter()
+            .find(|(key, _)| *key == id)
+            .map_or(&self.game.state.objects[id as usize], |(_, o)| o)
+    }
+    fn life(&self, _: Player) -> i128 {
+        self.life
+    }
+    fn gained_life(&self, _: Player) -> bool {
+        false
+    }
+    fn attacking(&self, id: CardId) -> bool {
+        self.game.state.attackers.iter().any(|a| a.card == id)
+    }
+}
+
+#[test]
+fn sos_borrowed_power_ignores_departed_provider_indexes_and_reads_virtual_counters_life() {
+    use ability_world::CharacteristicWorld;
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Topiary Lecturer", Zone::Battlefield);
+        let lord = named(&mut g, p, "Elvish Archdruid", Zone::Battlefield);
+        let angel = named(&mut g, p, "Angel of Vitality", Zone::Battlefield);
+        g.state.players[p.index()].life = 30;
+        g.add_counter(source, CounterKind::PlusOne, 2);
+        assert_eq!(g.stats(source).power, 4);
+        assert_eq!(g.stats(angel).power, 4);
+        let snapshot = g.snapshot();
+        let mut gone = g.state.objects[lord as usize].clone();
+        gone.zone = Zone::Graveyard;
+        let mut creature = g.state.objects[source as usize].clone();
+        creature.counters.plus_one = 0;
+        creature.counters.minus_one = 1;
+        let world = PowerWorld {
+            game: &g,
+            objects: vec![(lord, gone), (source, creature)],
+            life: 20,
+        };
+        assert_eq!(
+            world.power(source),
+            0,
+            "removed lord must not survive its actual-world source index"
+        );
+        assert_eq!(
+            world.power(angel),
+            2,
+            "life thresholds use the virtual payer's life"
+        );
+        assert_eq!(g.snapshot(), snapshot);
+    }
+}
+
+#[test]
+fn sos_source_power_mana_of_animated_noncreature_reads_current_base_setter() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Soulstone Sanctuary", Zone::Battlefield);
+        let production = ManaProduction::SourcePower { color: 4 };
+        assert_eq!(
+            production.in_world(&g, source),
+            ManaProduction::Fixed([0; 6])
+        );
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        assert_eq!(g.stats(source).power, 3);
+        assert_eq!(
+            production.in_world(&g, source),
+            ManaProduction::Fixed([0, 0, 0, 0, 3, 0])
+        );
+    }
+}

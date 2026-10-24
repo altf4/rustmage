@@ -415,6 +415,9 @@ pub(crate) enum ManaProduction {
         quality: &'static ManaQuality,
     },
     ChosenColor,
+    SourcePower {
+        color: u8,
+    },
     MonocoloredPermanentColors,
     Fixed(Mana),
     CountSubtype {
@@ -446,7 +449,10 @@ impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
             Self::Tagged { production, .. } => production.visit(emit),
-            Self::ChosenColor | Self::MonocoloredPermanentColors | Self::CountSubtype { .. } => {
+            Self::ChosenColor
+            | Self::SourcePower { .. }
+            | Self::MonocoloredPermanentColors
+            | Self::CountSubtype { .. } => {
                 panic!("dynamic mana requires a characteristic world")
             }
             Self::Fixed(mana) => emit(mana),

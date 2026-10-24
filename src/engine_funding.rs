@@ -30,6 +30,7 @@ struct FundingState<'g> {
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
     convoke: bool,
+    power_sensitive: bool,
     sacrifice_group: Vec<ObjectRef>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
 }
@@ -289,6 +290,20 @@ fn activation_gain_upper<'a>(
 }
 
 impl<'g> FundingState<'g> {
+    // Paying costs can remove a negative modifier or change a scaling count.
+    // Current power is not an upper bound on later production. Real moves still
+    // evaluate exact borrowed-world power; only pruning uses this loose ceiling.
+    fn power_upper_production(&self, production: ManaProduction, source: CardId) -> ManaProduction {
+        match production.base() {
+            ManaProduction::SourcePower { color } => {
+                let mut mana = [0; 6];
+                mana[usize::from(color)] = u32::MAX;
+                ManaProduction::Fixed(mana)
+            }
+            _ => production.in_world(self, source),
+        }
+    }
+
     fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
     }
@@ -298,6 +313,7 @@ impl<'g> FundingState<'g> {
         // mana sources, so virtual sacrifices invalidate later guarded moves.
         let mut subtypes = Vec::new();
         let mut graveyard_mana_cost = false;
+        let mut power_sensitive = false;
         for (id, object) in game.state.objects.iter().enumerate() {
             if object.zone == Zone::Battlefield && object.controller == goal.actor {
                 let inherited = borrowed_activations::abilities(game, id as CardId);
@@ -308,6 +324,8 @@ impl<'g> FundingState<'g> {
                     .chain(inherited.into_iter().map(|a| a.rules()))
                 {
                     if let Some(production) = ability.mana_production() {
+                        power_sensitive |=
+                            matches!(production.base(), ManaProduction::SourcePower { .. });
                         graveyard_mana_cost |= ability
                             .cost
                             .additional
@@ -391,6 +409,7 @@ impl<'g> FundingState<'g> {
                 }),
             game,
             convoke,
+            power_sensitive,
             actor: goal.actor,
             life_gained: game
                 .state
@@ -961,13 +980,14 @@ impl<'g> FundingState<'g> {
                 // Unattached, unmodified basic lands remain interchangeable even
                 // when an unrelated Aura is present. Keep exact identities for
                 // attachment participants, nonbasics and named-counter worlds.
-                identity: (self
-                    .game
-                    .entry_value(ObjectRef {
-                        card: r.id,
-                        generation: r.object.generation,
-                    })
-                    .is_some()
+                identity: (self.power_sensitive
+                    || self
+                        .game
+                        .entry_value(ObjectRef {
+                            card: r.id,
+                            generation: r.object.generation,
+                        })
+                        .is_some()
                     || (linked
                         && (self.named_counters.is_some()
                             || !r.object.card.is_basic_land()
@@ -1057,7 +1077,7 @@ impl<'g> FundingState<'g> {
                                 ) | crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(production) = fragment
                                 {
                                     let mut maximum = 0;
-                                    production.visit(|mana| {
+                                    self.power_upper_production(*production, resource.id).visit(|mana| {
                                         maximum =
                                             maximum.max(mana.into_iter().map(u128::from).sum());
                                         false
@@ -1074,10 +1094,10 @@ impl<'g> FundingState<'g> {
                 if (!object.tapped || !ability.cost.tap) && ability.mana_production().is_some() {
                     total = total.saturating_add(activation_gain_upper(
                         ability,
-                        ability
-                            .mana_production()
-                            .unwrap()
-                            .in_world(self, resource.id),
+                        self.power_upper_production(
+                            ability.mana_production().unwrap(),
+                            resource.id,
+                        ),
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.life,
                     ));
@@ -1103,6 +1123,11 @@ impl<'g> FundingState<'g> {
                     // object (even in other zones) deliberately overestimates.
                     ManaProduction::MonocoloredPermanentColors => {
                         ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
+                    }
+                    ManaProduction::SourcePower { color } => {
+                        let mut mana = [0; 6];
+                        mana[usize::from(color)] = u32::MAX;
+                        ManaProduction::Fixed(mana)
                     }
                     ManaProduction::CountSubtype { color, .. } => {
                         let mut mana = [0; 6];

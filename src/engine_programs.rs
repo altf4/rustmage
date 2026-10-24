@@ -2589,6 +2589,7 @@ impl Game {
                         ManaProduction::ChosenColor
                         | ManaProduction::MonocoloredPermanentColors
                         | ManaProduction::CountSubtype { .. }
+                        | ManaProduction::SourcePower { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
                         ManaProduction::Fixed(mana) => {
                             self.add_quality_mana(item.controller, mana, quality)

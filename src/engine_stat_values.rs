@@ -354,16 +354,4 @@ impl Game {
                 .capacity("effect amount representation exhausted"),
         }
     }
-    pub(super) fn stat_expression_without_hand(
-        &self,
-        expr: StatExpr,
-        source: ObjectRef,
-        owner: Player,
-        departing: Option<CardId>,
-    ) -> i128 {
-        self.stat_value_without_hand(expr.value, source, owner, departing)
-            .checked_mul(expr.multiplier)
-            .and_then(|v| v.checked_add(expr.offset))
-            .capacity("stat expression exhausted")
-    }
 }

@@ -190,7 +190,7 @@ pub(super) fn modifier_bonus<W: CharacteristicWorld + ?Sized>(
             .capacity("chosen toughness exhausted"),
     }
 }
-impl super::characteristic_query::CharacteristicQuery<'_> {
+impl<W: CharacteristicWorld + ?Sized> super::characteristic_query::CharacteristicQuery<'_, W> {
     pub(super) fn chosen_bonus(&self, target: CardId) -> Stats {
         let mut result = Stats::default();
         let Some(rows) = self.state.entry_values.as_ref() else {
@@ -201,10 +201,10 @@ impl super::characteristic_query::CharacteristicQuery<'_> {
             if self.object_ref(source) != row.object {
                 continue;
             }
-            for group in self.state.objects[source as usize]
-                .card
-                .static_ability_groups()
-            {
+            if self.object(source).zone != Zone::Battlefield {
+                continue;
+            }
+            for group in self.object(source).card.static_ability_groups() {
                 for fragment in group.fragments {
                     if let crate::cards::StaticAbilityFragment::ChosenModifier(modifier)=*fragment
                         && self.continuous_fragment_available(source,|f| matches!(f,crate::cards::StaticAbilityFragment::ChosenModifier(m) if *m==modifier)) {

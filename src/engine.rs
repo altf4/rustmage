@@ -698,9 +698,6 @@ impl Object {
     fn keywords(&self) -> Keywords {
         self.card.keywords().union(self.gained_keywords)
     }
-    fn counter_delta(&self) -> i128 {
-        i128::from(self.counters.plus_one) - i128::from(self.counters.minus_one)
-    }
     fn untap(&mut self) {
         if self.tapped {
             if self.counters.stun > 0 {

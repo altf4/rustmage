@@ -134,12 +134,12 @@ impl Game {
         }
     }
     pub(super) fn forget_stack_graveyard_exile(&mut self, object: ObjectRef) {
-        if let Some(rules) = &mut self.state.zone_rules {
-            if rules.graveyard_exile_spells.contains(&object) {
-                rules
-                    .graveyard_exile_spells
-                    .retain(|reference| *reference != object);
-            }
+        if let Some(rules) = &mut self.state.zone_rules
+            && rules.graveyard_exile_spells.contains(&object)
+        {
+            rules
+                .graveyard_exile_spells
+                .retain(|reference| *reference != object);
         }
     }
     fn stack_graveyard_exile(&self, object: ObjectRef) -> bool {
