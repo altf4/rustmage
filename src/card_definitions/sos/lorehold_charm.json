@@ -3,10 +3,13 @@
   "catalogue_id": 2559,
   "oracle_id": "a5729f11-6cde-4830-b882-ab4c5251c1a9",
   "facts_sha256": "e8e6df97dc88a2e42a7f296e44a07e0a0f21ee5a308a603cc2026d4e4733e4e9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1c1a8facd83f5e16d2a00740ab693758a51ae8524eb7ce0092df798672e046aa"
   },
-  "physical_metadata_sha256": "69600414d4fb9656b20e2953b57121ece15f408bef69bc632786417b08d256a8"
+  "physical_metadata_sha256": "69600414d4fb9656b20e2953b57121ece15f408bef69bc632786417b08d256a8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LoreholdCharm.java",
+  "java_sha256": "f01bef8785f433a4876515f30ee4833dfcbf44c81895854ac338796f59c3602f"
 }
