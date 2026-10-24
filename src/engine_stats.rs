@@ -231,6 +231,7 @@ impl Game {
                 .cast_timing_grants()
                 .is_empty()
             || self.state.objects[id as usize].card.has_free_hand_cast()
+            || self.state.objects[id as usize].card.has_storm_grant()
             || self.state.objects[id as usize]
                 .card
                 .has_own_turn_free_hand_cast()

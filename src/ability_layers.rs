@@ -38,6 +38,9 @@ pub(crate) struct StaticAbilityGroup {
 )]
 pub(crate) enum StaticAbilityFragment {
     FreeHandCast,
+    GrantInstantSorceryStorm {
+        ability: u16,
+    },
     OwnTurnFreeHandInstantSorcery,
     HandMiracle {
         filter: CastFilter,

@@ -3,10 +3,49 @@
   "catalogue_id": 3241,
   "oracle_id": "258f5045-3aa7-4b95-a15f-3172577294a8",
   "facts_sha256": "1d9353358a61a2f4c11152952ae4431876a3cbabff9317d8d05afe471862579e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "df53197604ca70830560e1059e27b4dcb3f1e0d20282ba8ede9cb83337738cee"
   },
-  "physical_metadata_sha256": "9a312f1d56a55607048176f54d6c5651dad291fb32278b038209e8a388ef9ab5"
+  "physical_metadata_sha256": "9a312f1d56a55607048176f54d6c5651dad291fb32278b038209e8a388ef9ab5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PrismariTheInspiration.java",
+  "java_sha256": "fd8a944eccbcfe2db132abb686821b3515c06494663c9d9519df015053b4d5b5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StormAbility.java",
+      "sha256": "50780a61df4fcc4f08d1055021373554d896532c977990f209edf1dd3606c1fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledSpellsEffect.java",
+      "sha256": "fe96f9ccb2dbf72b35b14b2fa8c2e131e1e8e4e399b9cfd55ad6d4a198741227"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CastSpellLastTurnWatcher.java",
+      "sha256": "065a8c406c463e6b5a4fc410b932eb1784fd05f2964afc8e64c81664a518a7ce"
+    }
+  ],
+  "rules_notes": [
+    "Storm triggers are frozen abilities of the actual cast instant/sorcery, with its exact spell packet and granting-card provenance. The number counts all players' spells cast earlier this actual turn, including non-instant/sorcery spells and spells later countered; copies are not casts. The ability survives loss of its grantor or original spell.",
+    "Official release notes: https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes"
+  ]
 }

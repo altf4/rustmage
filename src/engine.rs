@@ -7,6 +7,8 @@ pub use mana_announcements::ManaAnnouncementView;
 mod cascade;
 #[path = "engine_miracle.rs"]
 mod miracle;
+#[path = "engine_storm.rs"]
+mod storm;
 pub use cascade::CascadeView;
 pub use miracle::MiracleChoiceView;
 #[path = "engine_paradigm.rs"]

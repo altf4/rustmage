@@ -1118,6 +1118,7 @@ impl Game {
         }
         if let Some(index) = stack {
             self.queue_hand_cascade(index);
+            self.queue_instant_sorcery_storm(index);
         }
         self.temporary_cast_triggers(caster, card, stack);
         self.capture_copy_cast(stack, first_trigger);
@@ -1831,7 +1832,7 @@ impl Game {
                 Instruction::CopyNextInstantSorcery { ability } => {
                     self.remember_next_spell_copy(&item, ability)
                 }
-                Instruction::CopyCastSpell { .. } => {
+                Instruction::CopyCastSpell { .. } | Instruction::CopyStormSpell => {
                     if self.copy_captured_spell(&item) {
                         return;
                     }

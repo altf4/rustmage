@@ -828,6 +828,7 @@ pub(crate) enum Instruction {
     CopyCastSpell {
         prior_spells: bool,
     },
+    CopyStormSpell,
     ChangeSingleStackTarget,
     GrantGraveyardCast(GraveyardCastKind),
     /// Permission for the exact public card(s) just milled by this resolution.
