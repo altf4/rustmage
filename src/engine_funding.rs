@@ -37,6 +37,7 @@ pub(super) struct FundingState<'g> {
     other_life: i128,
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
+    counter_placement_history: counter_placement_history::Rows,
     convoke: bool,
     power_sensitive: bool,
     creatures_died: u64,
@@ -111,6 +112,9 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
             .map_or(&self.game.state.objects[id as usize], |resource| {
                 &resource.object
             })
+    }
+    fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
+        counter_placement_history::plus_one_placed(&self.counter_placement_history, object, player)
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
@@ -190,6 +194,7 @@ struct FundingKey {
     // enclosing ability's source separately, even if its printed card matches.
     resources: Vec<ResourceKey>,
     named_counters: live_counters::Rows,
+    counter_placement_history: counter_placement_history::Rows,
 }
 
 fn payable<N: Copy + Into<u128>>(pool: [N; 6], required: Mana, generic: u32) -> bool {
@@ -455,7 +460,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -542,6 +547,7 @@ impl<'g> FundingState<'g> {
             other_life: game.state.players[goal.actor.other().index()].life,
             resources,
             named_counters: game.state.named_counters.clone(),
+            counter_placement_history: game.state.counter_placement_history.clone(),
         };
         result.set_cost_context(game.state.announcing.as_ref());
         if let Some(a) = game.state.announcing.as_ref()
@@ -679,7 +685,8 @@ impl<'g> FundingState<'g> {
                         self, target.id,
                     )),
             )
-            .union(ability_world::CharacteristicWorld::counter_subtype_keywords(self, target.id));
+            .union(ability_world::CharacteristicWorld::counter_subtype_keywords(self, target.id))
+            .union(ability_world::CharacteristicWorld::placement_history_keywords(self, target.id));
         if target.object.zone == Zone::Battlefield && self.kinds(target) & 1 != 0 {
             let reference = ObjectRef {
                 card: target.id,
@@ -1177,6 +1184,7 @@ impl<'g> FundingState<'g> {
         // Attachment edges distinguish otherwise interchangeable mana sources.
         let linked = self.game.state.borrowed_links.is_some()
             || self.named_counters.is_some()
+            || self.counter_placement_history.is_some()
             || self
                 .resources
                 .iter()
@@ -1292,6 +1300,7 @@ impl<'g> FundingState<'g> {
             life: self.life,
             resources,
             named_counters: self.named_counters.clone(),
+            counter_placement_history: self.counter_placement_history.clone(),
         }
     }
     /// Pure funding moves never create new resources, untap them, restore

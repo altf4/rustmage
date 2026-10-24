@@ -78,6 +78,8 @@ pub(crate) enum StaticAbilityFragment {
     RemoveAttachedAbilities,
     AttachedUntap(UntapRestriction),
     SelfUntap(UntapRestriction),
+    /// Uses exact-object +1/+1 placement history for the source's current controller.
+    SourcePlusOnePlacedKeywords(Keywords),
     SourceCounterKeywords {
         kind: CounterKind,
         minimum: u64,

@@ -3,10 +3,47 @@
   "catalogue_id": 360,
   "oracle_id": "191ba5f0-45f4-4b7f-910d-4bd4d2d28b33",
   "facts_sha256": "5f15dc64e2c1cd15521324dd1c798c51aaf52266a0d5ffb121719860adc883c0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "959b367d03a63601188a6a60ba5fcaf21aee90a20fb18063fdad6287f6e3c40f"
   },
-  "physical_metadata_sha256": "b60c3e09194d2bec1bc11aedf8c0b4414584048a0f0dd7fdc647b4259fb72340"
+  "physical_metadata_sha256": "b60c3e09194d2bec1bc11aedf8c0b4414584048a0f0dd7fdc647b4259fb72340",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BeastEruditeAerialist.java",
+  "java_sha256": "60c6d46fa8988628c76802f6542e4932a6425cb997bac02fba29fd642b767a49",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "remaining_obligations": [],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+  ],
+  "source_discrepancies": [
+    "The Java GAME-scoped watcher records a player without an exact source incarnation. Oracle requires counters put on this Beast this turn; Rust uses exact-object/player history and does not copy that broader watcher."
+  ]
 }

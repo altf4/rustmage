@@ -218,9 +218,11 @@ impl FundingState<'_> {
                     movement.before.tapped
                 }
             }
-            StepGuard::SourceReceivedCounterThisTurn => {
-                self.game.put_counter_on_source_this_turn(source, player)
-            }
+            StepGuard::SourceReceivedCounterThisTurn => counter_placement_history::any_placed(
+                &self.counter_placement_history,
+                source,
+                player,
+            ),
             StepGuard::SourcePowerAtLeast(n) => {
                 self.reference(source.card) == source
                     && self.object(source.card).zone == Zone::Battlefield
@@ -903,6 +905,14 @@ impl FundingState<'_> {
             };
             live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
             if m.destination == Zone::Battlefield {
+                if m.counters.has_any() {
+                    counter_placement_history::record(
+                        &mut next.counter_placement_history,
+                        source,
+                        m.controller,
+                        m.counters.plus_one > 0,
+                    );
+                }
                 let p = next.entry_projection.as_mut().unwrap();
                 if !p.static_sources.contains(&row.id) {
                     p.static_sources.push(row.id)
@@ -1298,3 +1308,7 @@ impl<'g> FundingState<'g> {
         found
     }
 }
+
+#[cfg(test)]
+#[path = "engine_counter_history_funding_tests.rs"]
+mod counter_history_tests;
