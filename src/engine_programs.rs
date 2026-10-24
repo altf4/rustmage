@@ -708,6 +708,7 @@ impl Game {
                     | TriggerCondition::GrantedAttacks
                     | TriggerCondition::AttachedBecomesUntapped
                     | TriggerCondition::SelfBecomesTapped
+                    | TriggerCondition::ControlledCreaturesBecomeTapped
                     | TriggerCondition::SelfCast
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::ManaSpentForSpell
@@ -1263,6 +1264,7 @@ impl Game {
             if object.zone == Zone::Battlefield && !object.tapped {
                 object.tapped = true;
                 self.tapped_triggers(id);
+                self.tapped_batch_triggers(&[id]);
             }
             return;
         }
@@ -1271,20 +1273,50 @@ impl Game {
             let object = &mut self.state.objects[id as usize];
             if object.zone == Zone::Battlefield && !object.tapped {
                 object.tapped = true;
-                if object.card.triggers().iter().any(|ability| {
-                    matches!(
-                        ability.condition.event(),
-                        TriggerCondition::SelfBecomesTapped
-                    )
-                }) {
+                if !self.state.tap_sources.is_empty()
+                    || object.card.triggers().iter().any(|ability| {
+                        matches!(
+                            ability.condition.event(),
+                            TriggerCondition::SelfBecomesTapped
+                        )
+                    })
+                {
                     changed.push(id);
                 }
             }
         }
         // Every observer sees the complete simultaneous tapped result. No queued
         // effect resolves until the surrounding action or instruction completes.
-        for id in changed {
+        for &id in &changed {
             self.tapped_triggers(id);
+        }
+        self.tapped_batch_triggers(&changed);
+    }
+
+    fn tapped_batch_triggers(&mut self, changed: &[CardId]) {
+        if changed.is_empty() || self.state.tap_sources.is_empty() {
+            return;
+        }
+        let sources: Vec<_> = self
+            .state
+            .tap_sources
+            .iter()
+            .copied()
+            .filter(|&id| self.on_battlefield(id))
+            .map(|id| self.object_view(id))
+            .collect();
+        for source in sources {
+            if !changed.iter().any(|&id| {
+                let object = &self.state.objects[id as usize];
+                object.controller == source.controller && self.object_kinds(id, object) & 1 != 0
+            }) {
+                continue;
+            }
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::ControlledCreaturesBecomeTapped {
+                    self.queue_trigger(&source, index);
+                }
+            }
         }
     }
 

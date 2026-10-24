@@ -3,10 +3,94 @@
   "catalogue_id": 3511,
   "oracle_id": "f91c860e-3feb-4a5a-b7ef-4e7d38d61c75",
   "facts_sha256": "f72a6c9e403fee0f616989b216c0da4515bbc79204ab333fcfd76c403585e97e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7e51855c3bf76f6e7f792c2ed161711be84272ede51bee36db3555524b478b2d"
   },
-  "physical_metadata_sha256": "55ba44c1ef8359975735335b745c1b1942c3abf344467a2bf9966cb13ca25e67"
+  "physical_metadata_sha256": "55ba44c1ef8359975735335b745c1b1942c3abf344467a2bf9966cb13ca25e67",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RewriteHistory.java",
+  "java_sha256": "22ca8ca5374c4fb36191874149cc55581fd7ec504db3256371f59a3b54b47b3e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedOneOrMoreTriggeredAbility.java",
+      "sha256": "a32ffd4da700a57a9d54a0a701a915784376cc9528aff15f4892e62efe475c28"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/BatchTriggeredAbility.java",
+      "sha256": "e2891aafe6a447fbb1347f9b0a52cf2b8f79bc566e7518933f12bd4ed503ad86"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/TappedBatchEvent.java",
+      "sha256": "fc2ab95e92dde4f8a627f73cac98de6caac6e7f6b4598a48eb3bc48d0b8d41bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/TappedEvent.java",
+      "sha256": "7fdcd2e4d88f40a81b34d5e7f4cec736edd641efd0e64a28e4683da5233af925"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PlanCounterThresholdTriggeredAbility.java",
+      "sha256": "9081361555320e1e265feafc3221203563702110e9af1527fcd8f8f307dd0317"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterInstantOrSorceryCard.java",
+      "sha256": "db9067aef3b3de09992c261f493c6a4bee2e08850f8b9eec9a8a05f92674abfc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+      "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/BatchEvent.java",
+      "sha256": "31e487f04d83fc372363d55b2641e021dee5d26ddd94047a8fa36ed180ac663c"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "rules": "The complete frozen Oracle and release notes require ordered draw then discard then a source plan counter, with recovery targets chosen only for the sacrifice-success reflexive packet. One-or-more taps observe a complete simultaneous group, not each tapped recipient. CR 603.2c and 603.10 use one occurrence and post-event characteristics; entry tapped is not becoming tapped. Convoke grouping is confirmed by the official Magic Online December 19, 2023 patch note: Deeproot Pilgrimage triggers only once when multiple creatures convoke one spell. The Rust ordered payment route therefore reserves contributors and commits the whole mana-cost tap group together; it cannot partially pay that mana cost around other clauses (CR 601.2h). No English parsing participates at runtime."
+  }
 }

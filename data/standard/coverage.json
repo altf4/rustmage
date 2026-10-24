@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9f67c067bf7a3caea5ee398101b9a6580880910ea447cc87ae541bc988841d5a",
+  "catalogue_version": "e78ec45af4cf4ae78d62b9540854bdc0e4f0fa5ba9dccfcebe5a22d4fa56a94b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2463,
-  "implemented_total": 2469,
+  "implemented_standard_cards": 2464,
+  "implemented_total": 2470,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 158,
-      "gated": 115
+      "complete": 159,
+      "gated": 114
     },
     "one": {
       "total": 1,
@@ -28293,8 +28293,8 @@
     {
       "name": "Rewrite History",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/rewrite_history.rs",
       "set": "msh"
     },

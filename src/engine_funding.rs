@@ -2384,6 +2384,13 @@ impl Game {
         }
         let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
         let (required, generic) = if let Some(frame) = &a.convoke {
+            if !frame
+                .selected
+                .iter()
+                .all(|s| self.convoke_eligible(a.item.controller, s.object))
+            {
+                return None;
+            }
             if a.cast_costs.is_some() {
                 let mut world = self.cast_cost_world(a);
                 world.mark_mana_clause_paid();
