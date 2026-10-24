@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4d4106d10b85425b9b26441ad9065fef0ba6550abe59933af9a066e4814a189d",
+  "catalogue_version": "0d44a0da3d4b53b1e126c53874aee902e5e20e26d767ba18144f9e43a26806a8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2370,
-  "implemented_total": 2376,
+  "implemented_standard_cards": 2371,
+  "implemented_total": 2377,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 253,
-      "gated": 11
+      "complete": 254,
+      "gated": 10
     },
     "spm": {
       "total": 134,
@@ -15126,8 +15126,8 @@
     {
       "name": "Great Hall of the Biblioplex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/great_hall_of_the_biblioplex.rs",
       "set": "sos"
     },
