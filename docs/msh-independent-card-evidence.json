@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Seventeen complete directly authored candidate cards and cast-context prerequisite; full-set acceptance pending",
+  "source_base": "19aec34c9523f8b834714ec0ba0725c652d44a3f",
+  "prerequisite_commit": "fe1c1e8c",
+  "inherited_trace_count": 2391,
+  "inherited_full_trace_matches": 2391,
+  "inherited_changes": [],
+  "cast_context_consumer_audit": {
+    "instruction": "DamageScaled(CastSpellManaValue)",
+    "all_current_consumers": [
+      "Thor, God of Thunder"
+    ],
+    "previously_supported_consumers": [],
+    "intentional_change": "The newly admitted Thor retains its triggering spell mana value after discounts, countering and source departure; spell copies do not count as casts."
+  },
+  "previous_baseline_sha256": "957d0c339e35d59dbc626f9aa257384b4790b7eb867eff611bdb34ced73cef5f",
+  "candidate_trace_sha256": "2795a622fd6f9e8765dfe651211175db5a600c16d639109a88f15beb1c62ae94",
+  "new_traces": {
+    "Ant-Man's Army": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 7,
+      "zone": "Battlefield",
+      "journal": "5c3870cd1c7a12c9",
+      "observations": "89636e87fdb9c49b"
+    },
+    "Avengers Disassembled": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Graveyard",
+      "journal": "e50f7c8a89ff86f9",
+      "observations": "88b295cb418dbe31"
+    },
+    "Crossbones, Malicious Mercenary": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "9d78478b460edd3d",
+      "observations": "cc0f72c84b54165a"
+    },
+    "Ghost, Spectral Saboteur": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Battlefield",
+      "journal": "ee0d9dcf1ddbd6b3",
+      "observations": "abd0a154f425deb8"
+    },
+    "HYDRA Troopers": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 6,
+      "zone": "Battlefield",
+      "journal": "c74d47fdf1bf30fc",
+      "observations": "0c5fc78fc48952de"
+    },
+    "Hire a Crew": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Graveyard",
+      "journal": "543918deceb4be8c",
+      "observations": "d3a0b88c2e0ddcb1"
+    },
+    "Luke Cage, Power Man": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "1ee756735d2f017d",
+      "observations": "039ca6a71521db8c"
+    },
+    "M.O.D.O.K.": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "e8de1199f21a06d6",
+      "observations": "5e94ef4e155cbfc8"
+    },
+    "Mister Fantastic, Reed Richards": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "b3f39d5b44da38ed",
+      "observations": "7eb88421003124cc"
+    },
+    "Quake, Agent of S.H.I.E.L.D.": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "3ad6d4893695dc9c",
+      "observations": "f73d6c332d0a4498"
+    },
+    "Reptil, Dinomorpher": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "d96ad4ca883f316e",
+      "observations": "a7015965742da98b"
+    },
+    "The Masters of Evil": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "66d6fdb8728e9e03",
+      "observations": "880f79e417b140d6"
+    },
+    "Thor, God of Thunder": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 7,
+      "zone": "Battlefield",
+      "journal": "39b46fbe7d2a3760",
+      "observations": "da38e68bc3e095c9"
+    },
+    "Training Regimen": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "60609359dae9f3fd",
+      "observations": "23dba765f894731f"
+    },
+    "Truck Toss": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Graveyard",
+      "journal": "21675ed5e7f92349",
+      "observations": "82721e25aa390239"
+    },
+    "War Machine, Legacy of Iron": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 5,
+      "zone": "Battlefield",
+      "journal": "d3bbb2e94f7fc3ab",
+      "observations": "a6463cf518d89510"
+    },
+    "Wiccan, Rising Magician": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "87c199e3b586e2a2",
+      "observations": "4c5f63f1cfd822a0"
+    }
+  },
+  "source_pin_check": {
+    "definitions": 5387,
+    "verified_blobs": 1012
+  },
+  "rules_evidence": "src/engine_msh_existing_tests.rs; paid actions, legality/privacy, transactional failures and owned raw/index branch/restore through existing checked-action helpers",
+  "set_game_acceptance": "pending; no full-set or all-Standard game/performance claim",
+  "focused_rules_tests": 24,
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+  ],
+  "implementation_measurement": {
+    "start_utc": "2026-10-24T17:43:55Z",
+    "candidate_verified_utc": "2026-10-24T18:59:03.688173+00:00",
+    "elapsed_seconds": 4508.688,
+    "cards": 17,
+    "cards_per_hour": 13.57,
+    "scope": "17-card corrected candidate, complete source review/direct authoring, paid rules tests, shared mechanics and two rounds of review corrections, main integration, build queues and independent sibling PR reviews; not merged/full-set acceptance or simulation throughput",
+    "initial_candidate_measurement": {
+      "start_utc": "2026-10-24T17:43:55Z",
+      "candidate_verified_utc": "2026-10-24T18:30:01Z",
+      "elapsed_seconds": 2766,
+      "cards": 17,
+      "cards_per_hour": 22.13,
+      "scope": "Source review, direct authoring, rules tests, build queues and two independent Power-up review passes; candidate throughput, not merged acceptance or simulation performance"
+    }
+  },
+  "integrated_trace_count": 2408,
+  "connive_controller_lki": {
+    "corrective_commit": "d4f09fcf",
+    "rule": "Live exact source controller; departed source uses last battlefield controller, and reentry never receives old connive counters.",
+    "new_consumer": "M.O.D.O.K.",
+    "inherited_consumers": [
+      "A.I.M. Scientists",
+      "Red Room Recruit",
+      "Kang, Temporal Tyrant",
+      "Madame Masque",
+      "Doc Ock's Henchmen",
+      "Prowler, Clawed Thief"
+    ],
+    "regression": "Both seats, paid activation and life cost; change control, then live/departed/departed-and-reentered cases; private draw/discard plus owned raw/index action branching and restore.",
+    "counter_placement": "Explicit conniver controller flows through immediate fast/replacement counter placement and deferred discard-to-battlefield completion; both seats with/without Doubling Season and Wilt-Leaf Liege verify public history attributes only the new controller."
+  },
+  "pre_integration_validation": {
+    "head": "1a3d652852f7b090416c4b8e4f6a391aeb4352fd",
+    "report": "<cache>/rustmage-validation-gz3rjwls/report/result.json",
+    "native_tests": 472,
+    "success": true,
+    "simulation": "10 limited-catalogue native smoke games; 4941 decisions; 183367 decisions/s; clone133.62ns/restore132.68ns. No set-game acceptance claim."
+  },
+  "integrated_native_tests": {
+    "passed": 485,
+    "focused_own_tests": 24,
+    "focused_with_teamwork": 34,
+    "inherited_full_trace_matches": 2391,
+    "candidate_trace_count": 2408,
+    "trace_baseline_equals_export": true,
+    "log": "<cache>/rustmage/msh-existing/final-corrected-native-traces.log",
+    "resource_report": "<cache>/rustmage-build-reports/6dcdede577d640a79399d65e9be33e3a.json"
+  },
+  "reptil_card_types": {
+    "typed_instruction": "ChangeSourceCreatureForm(AnimationSpec)",
+    "shared_rule": "Explicit animation type mode preserves existing card types; no creature subtypes granted to a noncreature/nonkindred; previous true animations remain unchanged.",
+    "wire": "AnimationView preserve_card_types serializes only when true; inherited animation bytes unchanged. Final root integration uses schema138; this main137-based candidate documents the actual wire extension.",
+    "regression": "Both seats and both forms: actual paid activation, High Fae Trickster permits paid Moon response, Moon resolves before form; remains colorless land; after Moon leaves form applies until cleanup; cleanup removes form."
+  },
+  "required_release_validation": "Root runs scripts/validate.py --release on final combined published head; this corrected batch has485native+34focused green and pre-integration full release success. No redundant standalone validator after corrections."
+}

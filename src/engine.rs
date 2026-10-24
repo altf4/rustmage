@@ -163,6 +163,9 @@ mod target_costs;
 pub use additional_costs::AdditionalCostView;
 #[path = "engine_activations.rs"]
 mod activations;
+#[path = "engine_power_up.rs"]
+mod power_up;
+pub use power_up::PowerUpUseView;
 #[path = "engine_connive.rs"]
 mod connive;
 #[path = "engine_convoke.rs"]
@@ -1617,6 +1620,8 @@ struct State {
     counter_placement_history: counter_placement_history::Rows,
     cast_entry_counters: cast_entry_counters::Rows,
     entry_values: entry_choices::Rows,
+    entered_this_turn: Option<SharedVec<ObjectRef>>,
+    power_up_uses: power_up::Rows,
     copy_recipes: copies::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
     nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
@@ -1761,6 +1766,8 @@ pub struct ObjectView {
     pub used_abilities: u64,
     /// Exhaust uses persist across turns for this exact permanent incarnation.
     pub exhausted_abilities: u64,
+    pub entered_this_turn: bool,
+    pub power_up_uses: Vec<PowerUpUseView>,
     pub attached_to: Option<ObjectRef>,
     pub modified: bool,
     pub attacking: bool,
@@ -2265,6 +2272,8 @@ impl Game {
                 counter_placement_history: None,
                 cast_entry_counters: None,
                 entry_values: None,
+                entered_this_turn: None,
+                power_up_uses: None,
                 copy_recipes: None,
                 graveyard_entries: None,
                 nightmare_cull: None,
@@ -5424,6 +5433,7 @@ impl Game {
             self.state.damage_sources.retain(|&source| source != id);
         }
         self.forget_borrowed_source(before.reference);
+        self.forget_power_up_object(before.reference);
         self.forget_stack_graveyard_exile(before.reference);
         self.forget_cast_entry_counters(before.reference);
         self.capture_source_counter_departure(&before);
@@ -5716,6 +5726,7 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.state.entered_this_turn = None;
         self.state
             .exile_permissions
             .retain(|p| p.expiry != ExilePlayExpiry::StartOfNextTurn(self.state.active));
@@ -6941,6 +6952,10 @@ impl Game {
             + counter_placement_history::owned_bytes(&s.counter_placement_history)
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
+            + power_up::owned_bytes(&s.power_up_uses)
+            + s.entered_this_turn.as_ref().map_or(0, |r| {
+                std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+            })
             + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + copies::owned_bytes(&s.copy_recipes)
@@ -6974,6 +6989,10 @@ impl Game {
                 std::mem::size_of::<Vec<GraveyardTypeUse>>()
                     + rows.len() * std::mem::size_of::<GraveyardTypeUse>()
             })
+            + s.announcing
+                .as_ref()
+                .and_then(|a| a.power_up_costs.as_ref())
+                .map_or(0, |r| r.bytes())
             + s.announcing.as_ref().map_or(0, |a| {
                 a.counter_payment.owned_bytes()
                     + a.free_hand_permission
@@ -7311,3 +7330,15 @@ mod sos_green_colorless_tests;
 
 #[path = "engine_cast_rollback.rs"]
 mod cast_rollback;
+
+#[cfg(test)]
+#[path = "engine_power_up_tests.rs"]
+mod power_up_tests;
+
+#[cfg(test)]
+#[path = "engine_plan_threshold_tests.rs"]
+mod plan_threshold_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_existing_tests.rs"]
+mod msh_existing_tests;

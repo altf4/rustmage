@@ -47,7 +47,7 @@ impl Game {
                     {
                         self.state.objects[item.card as usize].controller
                     } else {
-                        item.controller
+                        item.source_facts.controller
                     },
                 }]
             }
@@ -151,6 +151,7 @@ impl Game {
                     context.after = Some(discard_events::DiscardAfter::ConniveCounters(
                         current.object,
                         u64::from(nonlands),
+                        current.controller,
                     ));
                     self.state
                         .resolving
@@ -165,10 +166,11 @@ impl Game {
                 if self.on_battlefield(current.object.card)
                     && self.object_ref(current.object.card) == current.object
                 {
-                    self.effect_counter(
+                    self.effect_counter_by(
                         current.object.card,
                         CounterKind::PlusOne,
                         u64::from(nonlands),
+                        current.controller,
                         replacements::ResumeMode::Program,
                     );
                 }

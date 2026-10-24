@@ -245,7 +245,13 @@ impl Game {
             if ability.cost.loyalty.is_some() && loyalty_used {
                 continue;
             }
-            if descriptor.used && (ability.once_per_turn || ability.exhaust) {
+            if !self.power_up_available(
+                descriptor.source,
+                descriptor.definition,
+                descriptor.ability,
+                Some(descriptor.slot),
+            ) || descriptor.used && (ability.once_per_turn || ability.exhaust)
+            {
                 continue;
             }
             if ability
@@ -280,30 +286,26 @@ impl Game {
                 ability.cost,
                 self.counter_amounts(card),
                 |counter_payment| {
-                    let fundable = ability.cost.mana_options().any(|cost| {
-                        self.activation_can_fund(
-                            FundingGoal {
-                                actor,
-                                required: cost.colored,
-                                generic: cost.generic.saturating_sub(
-                                    self.activation_generic_discount(
-                                        card,
-                                        descriptor.definition,
+                    let fundable = self
+                        .activation_mana_costs(card, descriptor.definition, descriptor.ability, 0)
+                        .any(|cost| {
+                            self.activation_can_fund(
+                                FundingGoal {
+                                    actor,
+                                    required: cost.colored,
+                                    generic: cost.generic,
+                                    reserve: None,
+                                    source: Some((
+                                        descriptor.source,
                                         descriptor.ability,
-                                    ),
-                                ),
-                                reserve: None,
-                                source: Some((
-                                    descriptor.source,
-                                    descriptor.ability,
-                                    counter_payment.clone(),
-                                    descriptor.definition,
-                                    Some(descriptor.slot),
-                                )),
-                            },
-                            ability.cost.additional,
-                        )
-                    });
+                                        counter_payment.clone(),
+                                        descriptor.definition,
+                                        Some(descriptor.slot),
+                                    )),
+                                },
+                                ability.cost.additional,
+                            )
+                        });
                     let modes = match ability.program.first() {
                         Some(Instruction::Modal(modes)) => Some(*modes),
                         _ => None,

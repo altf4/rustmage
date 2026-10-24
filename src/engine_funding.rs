@@ -2191,18 +2191,25 @@ impl Game {
             }
             StackKind::ActivatedAbility { ability } => {
                 let cost = announcement.item.source_card.activation(ability).cost;
+                let power_up = announcement.power_up_costs.as_ref().map(|_| {
+                    announcement.cost.unwrap_or_else(|| {
+                        announcement.cost_options().next().expect("activation cost")
+                    })
+                });
                 FundingGoal {
                     reserve: self.announcement_reserve(announcement),
                     actor: announcement.item.controller,
-                    required: announcement.cost.map_or(cost.colored, |c| c.colored),
-                    generic: announcement
-                        .cost
+                    required: power_up
+                        .or(announcement.cost)
+                        .map_or(cost.colored, |c| c.colored),
+                    generic: power_up
+                        .or(announcement.cost)
                         .map_or(
                             cost.generic
                                 .saturating_sub(announcement.activation_discount),
                             |c| c.generic,
                         )
-                        .checked_add(if announcement.has_x_cost() {
+                        .checked_add(if announcement.has_x_cost() && power_up.is_none() {
                             announcement.item.x.unwrap_or(0)
                         } else {
                             0

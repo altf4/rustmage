@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "6aa6b5bd2d14e0444746777de606e8de1e9984f2c4557817c0762740b159b0bb",
+  "catalogue_version": "6245a1711e154da4fea1d60391ea5a8a6edca8d05499ea9f0c14680e87f52e36",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2385,
-  "implemented_total": 2391,
-  "token_definitions": 112,
+  "implemented_standard_cards": 2415,
+  "implemented_total": 2421,
+  "token_definitions": 113,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 80,
-      "gated": 193
+      "complete": 110,
+      "gated": 163
     },
     "one": {
       "total": 1,
@@ -749,8 +749,8 @@
     {
       "name": "Aerial Doombot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/aerial_doombot.rs",
       "set": "msh"
     },
@@ -1597,8 +1597,8 @@
     {
       "name": "Ant-Man's Army",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ant_man_s_army.rs",
       "set": "msh"
     },
@@ -2237,8 +2237,8 @@
     {
       "name": "Atlantis Attacks",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/atlantis_attacks.rs",
       "set": "msh"
     },
@@ -2469,8 +2469,8 @@
     {
       "name": "Avengers Disassembled",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/avengers_disassembled.rs",
       "set": "msh"
     },
@@ -7341,8 +7341,8 @@
     {
       "name": "Crossbones, Malicious Mercenary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/crossbones_malicious_mercenary.rs",
       "set": "msh"
     },
@@ -8237,8 +8237,8 @@
     {
       "name": "Death to Our Enemies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/death_to_our_enemies.rs",
       "set": "msh"
     },
@@ -10125,8 +10125,8 @@
     {
       "name": "Earth's Mightiest Heroes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/earth_s_mightiest_heroes.rs",
       "set": "msh"
     },
@@ -14069,8 +14069,8 @@
     {
       "name": "Ghost, Spectral Saboteur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ghost_spectral_saboteur.rs",
       "set": "msh"
     },
@@ -14597,8 +14597,8 @@
     {
       "name": "Go Nuts!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/go_nuts.rs",
       "set": "msh"
     },
@@ -15573,8 +15573,8 @@
     {
       "name": "HULK SMASH!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hulk_smash.rs",
       "set": "msh"
     },
@@ -15597,8 +15597,8 @@
     {
       "name": "HYDRA Troopers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hydra_troopers.rs",
       "set": "msh"
     },
@@ -16165,8 +16165,8 @@
     {
       "name": "Helicarrier Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/helicarrier_strike.rs",
       "set": "msh"
     },
@@ -16581,8 +16581,8 @@
     {
       "name": "Hire a Crew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hire_a_crew.rs",
       "set": "msh"
     },
@@ -16941,8 +16941,8 @@
     {
       "name": "Hulk, Gamma Goliath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hulk_gamma_goliath.rs",
       "set": "msh"
     },
@@ -20797,8 +20797,8 @@
     {
       "name": "Luke Cage, Power Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/luke_cage_power_man.rs",
       "set": "msh"
     },
@@ -20973,8 +20973,8 @@
     {
       "name": "M.O.D.O.K.",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/m_o_d_o_k.rs",
       "set": "msh"
     },
@@ -22541,8 +22541,8 @@
     {
       "name": "Mister Fantastic, Reed Richards",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/mister_fantastic_reed_richards.rs",
       "set": "msh"
     },
@@ -23245,8 +23245,8 @@
     {
       "name": "Murdock's Crusade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/murdock_s_crusade.rs",
       "set": "msh"
     },
@@ -26613,8 +26613,8 @@
     {
       "name": "Quake, Agent of S.H.I.E.L.D.",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/quake_agent_of_s_h_i_e_l_d.rs",
       "set": "msh"
     },
@@ -27909,8 +27909,8 @@
     {
       "name": "Reptil, Dinomorpher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/reptil_dinomorpher.rs",
       "set": "msh"
     },
@@ -27933,8 +27933,8 @@
     {
       "name": "Repulsor Blast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/repulsor_blast.rs",
       "set": "msh"
     },
@@ -35989,8 +35989,8 @@
     {
       "name": "The Masters of Evil",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_masters_of_evil.rs",
       "set": "msh"
     },
@@ -36509,8 +36509,8 @@
     {
       "name": "Thor, God of Thunder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/thor_god_of_thunder.rs",
       "set": "msh"
     },
@@ -37261,8 +37261,8 @@
     {
       "name": "Too Evil to Stay Dead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/too_evil_to_stay_dead.rs",
       "set": "msh"
     },
@@ -37437,8 +37437,8 @@
     {
       "name": "Training Regimen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/training_regimen.rs",
       "set": "msh"
     },
@@ -37733,8 +37733,8 @@
     {
       "name": "Truck Toss",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/truck_toss.rs",
       "set": "msh"
     },
@@ -39981,8 +39981,8 @@
     {
       "name": "War Machine, Legacy of Iron",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/war_machine_legacy_of_iron.rs",
       "set": "msh"
     },
@@ -40357,8 +40357,8 @@
     {
       "name": "We Say Thee Nay!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/we_say_thee_nay.rs",
       "set": "msh"
     },
@@ -40605,8 +40605,8 @@
     {
       "name": "Wiccan, Rising Magician",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/wiccan_rising_magician.rs",
       "set": "msh"
     },
@@ -41061,8 +41061,8 @@
     {
       "name": "Wonder Man, Hollywood Hero",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/wonder_man_hollywood_hero.rs",
       "set": "msh"
     },

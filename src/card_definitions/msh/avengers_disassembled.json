@@ -3,10 +3,30 @@
   "catalogue_id": 283,
   "oracle_id": "34493cf5-7586-48ef-806d-57273b2ab034",
   "facts_sha256": "464e268fc245124f85d9fb6eaae6df0604bc60d981900ad8c104194a140f99dd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7595725188a342cc7614ae6eb52cc18273c145a11856cbc72c95890d986848d7"
   },
-  "physical_metadata_sha256": "8084a59990b22e066b67f339b3ca25eb36f45b70df2097bd29fdcda2618f0d4a"
+  "physical_metadata_sha256": "8084a59990b22e066b67f339b3ca25eb36f45b70df2097bd29fdcda2618f0d4a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AvengersDisassembled.java",
+  "java_sha256": "fc9fce7dcf3d69bd7e1012be10276348e1ae548d229e8bdc8a75569aef51b4ac",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayTargetControllerEffect.java",
+      "sha256": "9926405e859380634a57206fa5c0fa5a182f5cb83fa5023a2126b1b134fd7ce2"
+    }
+  ]
 }

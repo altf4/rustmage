@@ -18,11 +18,14 @@ impl Game {
         definition: Card,
         ability: u16,
     ) -> u32 {
-        definition
-            .activation_counter_discount(ability)
-            .map_or(0, |kind| {
-                u32::try_from(self.counter_count(source, kind)).unwrap_or(u32::MAX)
-            })
+        self.power_up_generic_discount(source, definition, ability)
+            .saturating_add(
+                definition
+                    .activation_counter_discount(ability)
+                    .map_or(0, |kind| {
+                        u32::try_from(self.counter_count(source, kind)).unwrap_or(u32::MAX)
+                    }),
+            )
     }
     pub(super) fn item_activation_discount(&self, item: &SpellView) -> u32 {
         match item.kind {
@@ -123,6 +126,12 @@ impl Game {
             && self.printed_abilities_available(card)
             && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
             && self.activation_guard_available(ability.guard, actor)
+            && self.power_up_available(
+                self.object_ref(card),
+                self.state.objects[card as usize].card,
+                index as u16,
+                None,
+            )
             && Self::object_activation_available_with_kinds(
                 &self.state.objects[card as usize],
                 self.counter_amounts(card),
@@ -257,30 +266,25 @@ impl Game {
                 self.counter_amounts(card),
                 |counter_payment| {
                     let fundable = || {
-                        ability.cost.mana_options().any(|cost| {
-                            self.activation_can_fund(
-                                FundingGoal {
-                                    reserve: None,
-                                    actor,
-                                    required: cost.colored,
-                                    generic: cost.generic.saturating_sub(
-                                        self.activation_generic_discount(
-                                            card,
-                                            object.card,
+                        self.activation_mana_costs(card, object.card, index as u16, 0)
+                            .any(|cost| {
+                                self.activation_can_fund(
+                                    FundingGoal {
+                                        reserve: None,
+                                        actor,
+                                        required: cost.colored,
+                                        generic: cost.generic,
+                                        source: Some((
+                                            self.object_ref(card),
                                             index as u16,
-                                        ),
-                                    ),
-                                    source: Some((
-                                        self.object_ref(card),
-                                        index as u16,
-                                        counter_payment.clone(),
-                                        object.card,
-                                        None,
-                                    )),
-                                },
-                                ability.cost.additional,
-                            )
-                        })
+                                            counter_payment.clone(),
+                                            object.card,
+                                            None,
+                                        )),
+                                    },
+                                    ability.cost.additional,
+                                )
+                            })
                     };
                     let modes = match ability.program.first() {
                         Some(Instruction::Modal(modes)) => Some(*modes),
@@ -326,16 +330,11 @@ impl Game {
                     }
                     let mut done = false;
                     let mut seen = std::collections::HashSet::new();
-                    for cost in ability.cost.mana_options() {
+                    for cost in self.activation_mana_costs(card, object.card, index as u16, 0) {
                         payments(
                             self.state.players[actor.index()].mana,
                             cost.colored,
-                            cost.generic
-                                .saturating_sub(self.activation_generic_discount(
-                                    card,
-                                    object.card,
-                                    index as u16,
-                                )),
+                            cost.generic,
                             |payment| {
                                 if done
                                     || (!ability.cost.alternatives.is_empty()
@@ -538,6 +537,7 @@ impl Game {
         } else {
             object.used_abilities |= 1u64 << ability;
         }
+        self.record_power_up_use(item, ability);
         self.pay_counters(item.card, &counter_payment);
         let object = &mut self.state.objects[item.card as usize];
         if let Some(change) = cost.loyalty {

@@ -177,3 +177,6 @@ mod sos_mana_rollback;
 
 #[path = "../engine_teamwork_tests.rs"]
 mod teamwork_tests;
+
+#[path = "../engine_msh_teamwork_cards_tests.rs"]
+mod msh_teamwork_cards;

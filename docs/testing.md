@@ -129,7 +129,14 @@ review evidence for a changed card rule.
 
 For a wire-schema migration, the same explicit recording command may additionally set
 `RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA` to the former version. It writes a
-separate `.previous-schema.json` candidate with only the observation version projected
+separate `.previous-schema.json` candidate with the requested observation version projected
 back. Compare all inherited full traces with the committed baseline before accepting
 wire-only fingerprint changes. The recording run still asserts the ordinary current
 baseline and fails on drift; this option does not weaken normal validation.
+
+Power-up wire migrations can be audited with the recording-only
+`RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=137` option alongside
+`RUSTMAGE_RECORD_CARD_TRACES=<cache>/candidate.json`. The previous-wire export
+removes only the new `ObjectView` entry-turn/use-history fields and retains
+all inherited fields and their serialization order. Ordinary validation still
+compares the full current traces strictly, even while recording audit output.

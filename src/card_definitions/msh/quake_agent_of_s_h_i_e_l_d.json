@@ -3,10 +3,25 @@
   "catalogue_id": 3301,
   "oracle_id": "3966c94b-e597-4b3f-a4f5-001d52fff9fe",
   "facts_sha256": "1e855e31361e25109b0d198aad1e971a63037e5f82e0d4f3308bf4e5a85d26ba",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2616b29f820e38ab72d5a4831680c52b17c1c9c9d96aee224a722268becedbf6"
   },
-  "physical_metadata_sha256": "7ee370c884a9a7eaa20caa37f5419da8ed228dfb567e27cfc8857807e77554a7"
+  "physical_metadata_sha256": "7ee370c884a9a7eaa20caa37f5419da8ed228dfb567e27cfc8857807e77554a7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuakeAgentOfSHIELD.java",
+  "java_sha256": "2bcd4cc06c5cf1ec847f143b69d3e86059725e7eab224e42c8229119476e98fc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    }
+  ]
 }

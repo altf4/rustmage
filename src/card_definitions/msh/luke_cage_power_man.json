@@ -3,10 +3,35 @@
   "catalogue_id": 2574,
   "oracle_id": "c95d1558-09a4-4dbc-b08a-fe21b47bc5d2",
   "facts_sha256": "713e2043e78d8878ed321a1726edd0a2647b6b3b75cb3b743d19497e8e70c405",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bbb4048823aa1d2b114a1159a1d9cb8ef27921b479498880a53ac05dfa3b065a"
   },
-  "physical_metadata_sha256": "4e67b29e00acb2be740ab98df2fd5063e7cb0ffdef2875b691cce49de58a0ed3"
+  "physical_metadata_sha256": "4e67b29e00acb2be740ab98df2fd5063e7cb0ffdef2875b691cce49de58a0ed3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LukeCagePowerMan.java",
+  "java_sha256": "324efaa2d9c386d0257caac7ad829ca0e75b4c75a46d725961013de2ff9103ad",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAloneSourceTriggeredAbility.java",
+      "sha256": "4eb76c925bae9299b847218ba9616ed865cd9eff2afd741b6de7eb9146c8bb42"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    }
+  ]
 }

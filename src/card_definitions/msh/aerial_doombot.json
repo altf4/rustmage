@@ -3,10 +3,30 @@
   "catalogue_id": 68,
   "oracle_id": "f24efc60-fdac-4a5d-bcbc-784ec5ae6d96",
   "facts_sha256": "8a89aa88efda58fabd27abcee4839ef1a47b35e1d63fb652699e1a24f00c1f49",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ba7d3a6a3e4d855d519844e601dfc7776d1752377843ba8f5531a64add46f44e"
   },
-  "physical_metadata_sha256": "34655bcec05d89279f71218be469713be8487cda8efe767874c01de785541848"
+  "physical_metadata_sha256": "34655bcec05d89279f71218be469713be8487cda8efe767874c01de785541848",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AerialDoombot.java",
+  "java_sha256": "57a0e07044b50b842b79f2f1bc65a22aaa7dbac9ddfeed4324d389989444bfe4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "remaining_obligations": [],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#702.193"
+  ]
 }

@@ -204,6 +204,25 @@ impl Game {
             return;
         }
         self.record_counter_placement(object, placed_by);
+        if self.state.objects[object.card as usize].card.triggers().iter().any(|a| {
+            matches!(a.condition.event(), TriggerCondition::CounterThresholdCrossed { kind: expected, .. } if expected == kind)
+        }) {
+            let after = self.counter_count(object.card, kind);
+            let before = after.checked_sub(amount).expect("committed placement amount");
+            let source = self.object_view(object.card);
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::CounterThresholdCrossed {
+                    kind: expected,
+                    threshold,
+                } = ability.condition.event()
+                    && kind == expected
+                    && before < threshold
+                    && threshold <= after
+                {
+                    self.queue_trigger(&source, index);
+                }
+            }
+        }
         self.queue_state_counter_triggers();
         if !self.state.counter_sources.is_empty() {
             let recipient = self.object_view(object.card);
@@ -560,6 +579,7 @@ impl Game {
                     | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::StateCounterAtLeast { .. }
+                    | TriggerCondition::CounterThresholdCrossed { .. }
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
@@ -1085,6 +1105,9 @@ impl Game {
                                 matches!(
                                     instruction,
                                     Instruction::GainLifeScaled(_, AmountValue::SpellColors)
+                                        | Instruction::DamageScaled(
+                                            AmountValue::CastSpellManaValue
+                                        )
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
@@ -2662,6 +2685,14 @@ impl Game {
                     }
                 }
                 Instruction::SacrificeSource => self.sacrifice_exact_source(&item),
+                Instruction::SacrificeSourceReflexive { ability } => {
+                    if self.try_sacrifice_exact_source(&item) {
+                        // Departure refreshes the saved packet's LKI, including
+                        // keywords gained after the historical threshold event.
+                        let sacrificed = self.state.resolving.as_ref().unwrap().item.clone();
+                        self.queue_reflexive(&sacrificed, ability, None);
+                    }
+                }
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
                 Instruction::ExileOtherNightmares => self.exile_other_nightmares(item.controller),
                 Instruction::DamageDivided { .. } => self.damage_divided(&item),
@@ -2797,6 +2828,11 @@ impl Game {
                     }
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::ChangeSourceCreatureForm(spec) => self.change_source_form(
+                    &item,
+                    spec,
+                    characteristic_layers::AnimationTypeMode::PreserveCardTypes,
+                ),
                 Instruction::SetCreatureForm {
                     types,
                     colors,
