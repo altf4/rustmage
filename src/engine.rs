@@ -7519,3 +7519,7 @@ mod msh_punch_zola_tests;
 #[cfg(test)]
 #[path = "engine_msh_tap_batch_tests.rs"]
 mod msh_tap_batch_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_sixth_combined_tests.rs"]
+mod msh_sixth_combined_tests;
