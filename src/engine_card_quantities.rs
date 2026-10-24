@@ -56,6 +56,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::LoseLifeScaled(_, value)
             | Instruction::DrainLifeScaled(value)
             | Instruction::DamageScaled(value)
+            | Instruction::AddColorlessScaled(value)
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }

@@ -1543,6 +1543,7 @@ struct State {
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
     #[allow(clippy::box_collection)]
     delayed_artifact_copies: Option<Box<Vec<SpellView>>>,
+    delayed_main_mana: Option<Box<Vec<SpellView>>>,
     modal_history: modal_history::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
@@ -1935,6 +1936,7 @@ pub struct Observation {
     pub convoke_choice: Option<ConvokeChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_artifact_copies: Vec<SpellView>,
+    pub delayed_main_mana: Vec<SpellView>,
     pub delayed_returns: Vec<DelayedReturnView>,
     /// Exact public exile objects awaiting immediate return after departure events.
     pub immediate_blink_return: Option<Vec<ReturnLinkView>>,
@@ -2172,6 +2174,7 @@ impl Game {
                 nightmare_cull: None,
                 stack_copy_data: None,
                 delayed_artifact_copies: None,
+                delayed_main_mana: None,
                 modal_history: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
@@ -2841,7 +2844,8 @@ impl Game {
                             EffectChoiceKind::Sacrifice
                             | EffectChoiceKind::ExileGreatestManaValue
                             | EffectChoiceKind::ExileGraveyard
-                            | EffectChoiceKind::TapPermanents(_) => Action::Sacrifice { object },
+                            | EffectChoiceKind::TapPermanents(_)
+                            | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
                         };
@@ -3177,6 +3181,20 @@ impl Game {
                     }
                     let flashback =
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
+                    if flashback && obj.card.flashback_additional().is_some() {
+                        if self.permitted_cast_available(
+                            actor,
+                            card,
+                            CastMethod::Flashback,
+                            CastFace::Normal,
+                            sorcery,
+                            false,
+                        ) && emit(Action::AnnounceFlashback { card })
+                        {
+                            return true;
+                        }
+                        continue;
+                    }
                     let exile = obj.zone == Zone::Exile && self.can_play_exiled(actor, card);
                     let library = self.can_cast_library_top(actor, card);
                     let graveyard_land = obj.card.is_land()
@@ -5999,6 +6017,12 @@ impl Game {
                 .map_or_else(Vec::new, |rows| {
                     rows.iter().map(|r| r.view.clone()).collect()
                 }),
+            delayed_main_mana: self
+                .state
+                .delayed_main_mana
+                .as_deref()
+                .cloned()
+                .unwrap_or_default(),
             delayed_artifact_copies: self
                 .state
                 .delayed_artifact_copies
@@ -6598,6 +6622,13 @@ impl Game {
             + copy_characteristics::cull_bytes(&s.nightmare_cull)
             + stack_copies::owned_bytes(&s.stack_copy_data)
             + s.delayed_artifact_copies.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<SpellView>>()
+                    + rows
+                        .iter()
+                        .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
+                        .sum::<usize>()
+            })
+            + s.delayed_main_mana.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<SpellView>>()
                     + rows
                         .iter()

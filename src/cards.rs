@@ -605,6 +605,8 @@ pub enum EffectChoiceKind {
     SacrificeDifferentNames(u16),
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
+    ExileGraveyardCards(u16),
+    HandToTop,
     RemoveCreatureCounters(u16),
     UntapLands {
         maximum: u16,
@@ -885,6 +887,10 @@ pub(crate) enum Instruction {
         skip: usize,
     },
     CounterThenDrawIfDiscounted,
+    CounterAndDelayManaIfSubtype {
+        subtype: &'static str,
+        ability: u16,
+    },
     /// Countering may fail; the spell's captured current controller still creates tokens.
     CounterAndCreateForController {
         token: Card,
@@ -1162,6 +1168,7 @@ pub(crate) enum Instruction {
         recipient: u16,
     },
     AddMana(ManaProduction),
+    AddColorlessScaled(AmountValue),
     AddManaScaled {
         color: ChoiceColor,
         amount: AmountValue,
@@ -2988,6 +2995,28 @@ impl Card {
     }
     pub fn plot_cost(self) -> Option<ManaCost> {
         generated::plot_cost(self)
+    }
+    pub(crate) fn mana_additional_alternative(self) -> Option<ManaCost> {
+        let r = authored::rules(self)?;
+        if !r.extras.mana_alternative_replaces_additional {
+            return None;
+        }
+        let alternative = *r.extras.cost_alternatives.first()?;
+        let (colored, generic) = self.cost();
+        Some(ManaCost {
+            colored: std::array::from_fn(|i| {
+                alternative.colored[i]
+                    .checked_sub(colored[i])
+                    .expect("additional mana branch")
+            }),
+            generic: alternative
+                .generic
+                .checked_sub(generic)
+                .expect("additional generic branch"),
+        })
+    }
+    pub(crate) fn flashback_additional(self) -> Option<AdditionalCost> {
+        authored::rules(self).and_then(|r| r.extras.flashback_additional)
     }
     pub(crate) fn additional_cost(self) -> Option<AdditionalCost> {
         generated::additional_cost(self)

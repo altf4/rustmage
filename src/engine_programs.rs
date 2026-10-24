@@ -1852,6 +1852,37 @@ impl Game {
                         }
                     }
                 }
+                Instruction::CounterAndDelayManaIfSubtype { subtype, ability } => {
+                    for bound in &item.targets {
+                        let Some((id, event)) = self
+                            .bound_stack_item(bound)
+                            .map(|victim| (victim.id, victim.actual_cast_event()))
+                        else {
+                            continue;
+                        };
+                        // The payment belongs to the legal target even when countering is prohibited.
+                        self.counter_stack_item(id, false);
+                        if self.state.objects.iter().enumerate().any(|(id, o)| {
+                            o.zone == Zone::Battlefield
+                                && o.controller == item.controller
+                                && self.has_subtype(id as CardId, subtype)
+                        }) {
+                            let mut delayed = item.clone();
+                            delayed.id = self.next_stack_id();
+                            delayed.kind = StackKind::TriggeredAbility { ability };
+                            delayed.targets.clear();
+                            delayed.mode = None;
+                            delayed.cast = None;
+                            delayed.is_copy = false;
+                            delayed.cast_event = event.map(Box::new);
+                            delayed.related_stack = None;
+                            self.state
+                                .delayed_main_mana
+                                .get_or_insert_default()
+                                .push(delayed);
+                        }
+                    }
+                }
                 Instruction::CounterThenDrawIfDiscounted => {
                     for bound in &item.targets {
                         if let Some(victim) = self.bound_stack_item(bound) {
@@ -2573,6 +2604,11 @@ impl Game {
                         recipient,
                         matches!(instruction, Instruction::Fight { .. }),
                     );
+                }
+                Instruction::AddColorlessScaled(amount) => {
+                    let amount = u32::try_from(self.item_amount(amount, &item))
+                        .capacity("mana representation exhausted");
+                    self.add_mana(item.controller, [0, 0, 0, 0, 0, amount]);
                 }
                 Instruction::AddManaScaled { color, amount } => {
                     let amount = u32::try_from(self.item_amount(amount, &item))

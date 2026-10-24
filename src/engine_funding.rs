@@ -32,6 +32,7 @@ struct FundingState<'g> {
     convoke: bool,
     power_sensitive: bool,
     sacrifice_group: Vec<ObjectRef>,
+    cost_group: Option<(AdditionalCost, Vec<ObjectRef>)>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
@@ -385,6 +386,22 @@ impl<'g> FundingState<'g> {
             })
             .collect();
         Self {
+            cost_group: game
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| !a.additional_paid)
+                .and_then(|a| {
+                    let spec = a.additional_cost()?;
+                    if !matches!(
+                        spec.kind,
+                        EffectChoiceKind::TapPermanents(_)
+                            | EffectChoiceKind::ExileGraveyardCards(_)
+                    ) {
+                        return None;
+                    }
+                    Some((spec, a.additional_group.as_ref()?.to_vec()))
+                }),
             sacrifice_group: game
                 .state
                 .announcing
@@ -433,7 +450,24 @@ impl<'g> FundingState<'g> {
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.resources.iter().find(|s| s.id == r.card));
-        self.sacrifice_group.iter().all(|r| {
+        self.cost_group.as_ref().is_none_or(|(spec, group)| {
+            group.iter().all(|r| {
+                let o = ability_world::CharacteristicWorld::object(self, r.card);
+                o.generation == r.generation
+                    && Game::additional_object_matches(
+                        *spec,
+                        goal.actor,
+                        o,
+                        ability_world::CharacteristicWorld::kinds(self, r.card),
+                        self.keywords(&Resource {
+                            id: r.card,
+                            attacking: self.game.state.attackers.iter().any(|a| a.card == r.card),
+                            object: o.clone(),
+                        }),
+                        ability_world::CharacteristicWorld::subtypes(self, r.card),
+                    )
+            })
+        }) && self.sacrifice_group.iter().all(|r| {
             let o = ability_world::CharacteristicWorld::object(self, r.card);
             o.zone == Zone::Battlefield
                 && o.generation == r.generation
@@ -441,17 +475,24 @@ impl<'g> FundingState<'g> {
                 && o.is_token()
                 && ability_world::CharacteristicWorld::kinds(self, r.card) & 16 != 0
         }) && self.game.state.announcing.as_ref().is_none_or(|a| {
-            a.additional_group.as_ref().is_none_or(|group| {
-                group.iter().all(|r| {
-                    let o = ability_world::CharacteristicWorld::object(self, r.card);
-                    o.zone == Zone::Battlefield
-                        && o.generation == r.generation
-                        && (a.additional_cost().is_some_and(|s| {
-                            matches!(s.kind, EffectChoiceKind::SacrificeDifferentNames(_))
-                        }) || !o.tapped)
-                        && o.controller == goal.actor
+            a.additional_group
+                .as_ref()
+                .filter(|_| {
+                    a.additional_cost().is_some_and(|s| {
+                        matches!(s.kind, EffectChoiceKind::SacrificeDifferentNames(_))
+                    })
                 })
-            })
+                .is_none_or(|group| {
+                    group.iter().all(|r| {
+                        let o = ability_world::CharacteristicWorld::object(self, r.card);
+                        o.zone == Zone::Battlefield
+                            && o.generation == r.generation
+                            && (a.additional_cost().is_some_and(|s| {
+                                matches!(s.kind, EffectChoiceKind::SacrificeDifferentNames(_))
+                            }) || !o.tapped)
+                            && o.controller == goal.actor
+                    })
+                })
         }) && reserve_obligations(
             goal,
             reserve.map(|r| &r.object),
@@ -965,7 +1006,10 @@ impl<'g> FundingState<'g> {
                     || self
                         .sacrifice_group
                         .iter()
-                        .any(|reference| reference.card == r.id),
+                        .any(|reference| reference.card == r.id)
+                    || self.cost_group.as_ref().is_some_and(|(_, group)| {
+                        group.iter().any(|reference| reference.card == r.id)
+                    }),
                 zone: r.object.zone as u8,
                 tapped: r.object.tapped,
                 sick: r.object.summoning_sick,
@@ -1499,6 +1543,18 @@ impl<'g> FundingState<'g> {
     }
 }
 impl Game {
+    pub(super) fn can_fund_cost_group(
+        &self,
+        goal: FundingGoal,
+        purpose: mana_lots::Purpose,
+        spec: AdditionalCost,
+        group: &[ObjectRef],
+    ) -> bool {
+        let mut state = FundingState::from_game(self, &goal);
+        state.purpose = purpose;
+        state.cost_group = Some((spec, group.to_vec()));
+        state.reachable(&goal, &mut HashSet::new())
+    }
     pub(super) fn can_fund_sacrifice_group(
         &self,
         goal: FundingGoal,
@@ -1677,6 +1733,26 @@ impl Game {
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         if a.item
             .cast
+            .is_some_and(|c| c.method == CastMethod::Flashback)
+            && let Some(spec) = a.item.source_card.flashback_additional()
+        {
+            let cost = self.reduced_spell_cost(a.item.controller, a.item.card, cost);
+            return self.group_cost_fundable(
+                FundingGoal {
+                    actor: a.item.controller,
+                    required: cost.colored,
+                    generic: cost.generic,
+                    reserve: None,
+                    source: None,
+                },
+                self.purpose_for_item(&a.item),
+                spec,
+                a.item.object,
+                &[],
+            );
+        }
+        if a.item
+            .cast
             .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
         {
             let cost = self.reduced_spell_cost(a.item.controller, a.item.card, cost);
@@ -1696,7 +1772,9 @@ impl Game {
             );
         }
         if a.item.kind == StackKind::Spell
-            && a.item.cast.is_some_and(|c| c.method == CastMethod::Free)
+            && a.item
+                .cast
+                .is_some_and(|c| matches!(c.method, CastMethod::Free | CastMethod::Plot))
         {
             let definition = a.item.source_card;
             let mut total = Self::with_kicker_cost(
@@ -1717,6 +1795,24 @@ impl Game {
                 ))
                 .unwrap_or(u32::MAX),
             );
+            if definition.mana_additional_alternative().is_some()
+                && cost
+                    != (ManaCost {
+                        colored: [0; 6],
+                        generic: 0,
+                    })
+            {
+                return self.can_fund_for(
+                    FundingGoal {
+                        actor: a.item.controller,
+                        required: total.colored,
+                        generic: total.generic,
+                        reserve: None,
+                        source: None,
+                    },
+                    self.purpose_for_item(&a.item),
+                );
+            }
             return self.spell_can_fund_total_for_definition(
                 a.item.controller,
                 a.item.card,

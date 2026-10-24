@@ -68,6 +68,7 @@ impl Game {
         let hand_choice = matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandPermanent { .. }
@@ -83,6 +84,7 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandPermanent { .. }
@@ -538,6 +540,25 @@ impl Game {
                 return true;
             }
         }
+        if choice.kind == EffectChoiceKind::HandToTop {
+            let choice = self
+                .state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .choice
+                .take()
+                .unwrap();
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let ids: Vec<_> = choice.selected[player.index()]
+                .iter()
+                .map(|r| r.card)
+                .collect();
+            self.forget_library_top(player);
+            let events = self.move_objects_raw(&ids, Zone::Library);
+            self.finish_zone_events(&events, &[]);
+            return false;
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::HandExileCopy
@@ -762,6 +783,7 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandPermanent { .. }

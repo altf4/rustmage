@@ -33,6 +33,14 @@ pub(super) struct Announcement {
 
 impl Announcement {
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
+        if self
+            .item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::Flashback)
+            && let Some(spec) = self.item.source_card.flashback_additional()
+        {
+            return Some(spec);
+        }
         match self.item.kind {
             StackKind::Spell
                 if self
@@ -51,15 +59,26 @@ impl Announcement {
                 Some(bargain::COST)
             }
             StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| c.method == CastMethod::Normal)
-                    && self.cost.is_some_and(|cost| {
+                if self.item.cast.is_some_and(|c| match c.method {
+                    CastMethod::Normal => self.cost.is_some_and(|cost| {
                         self.item
                             .source_card
                             .mana_alternative_replaces_additional(cost)
-                    }) =>
+                    }),
+                    CastMethod::Free | CastMethod::Plot => {
+                        self.cost.is_some_and(|cost| {
+                            cost != (ManaCost {
+                                colored: [0; 6],
+                                generic: 0,
+                            })
+                        }) && self
+                            .item
+                            .source_card
+                            .mana_additional_alternative()
+                            .is_some()
+                    }
+                    _ => false,
+                }) =>
             {
                 None
             }
@@ -117,6 +136,11 @@ impl Announcement {
                 unreachable!("triggered ability has no activation cost")
             }
         };
+        let extra = self
+            .item
+            .cast
+            .filter(|c| matches!(c.method, CastMethod::Free | CastMethod::Plot))
+            .and_then(|_| self.item.source_card.mana_additional_alternative());
         options
             .filter(|cost| {
                 self.item
@@ -143,6 +167,16 @@ impl Announcement {
                     &self.item,
                 )
             })
+            .chain(extra.and_then(|cost| {
+                Game::with_tiered_mana(
+                    Game::with_flash_surcharge(
+                        cost,
+                        self.item.source_card,
+                        self.item.cast.is_some_and(|c| c.flash_surcharge),
+                    ),
+                    &self.item,
+                )
+            }))
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -180,14 +214,8 @@ impl Announcement {
             && match self.item.kind {
                 StackKind::Spell => {
                     self.item.cast.is_none_or(|cast| {
-                        !matches!(
-                            cast.method,
-                            CastMethod::Flashback
-                                | CastMethod::Plot
-                                | CastMethod::Warp
-                                | CastMethod::Free
-                        )
-                    }) && self.item.source_card.has_hybrid_cost()
+                        !matches!(cast.method, CastMethod::Flashback | CastMethod::Warp)
+                    }) && self.cost_options().count() > 1
                 }
                 StackKind::ActivatedAbility { ability } => !self
                     .item
