@@ -840,6 +840,10 @@ pub(crate) enum Instruction {
         token: Card,
         subject: Subject,
     },
+    /// Excludes this cast, but includes an original spell when resolving an uncast copy.
+    IfAnotherInstantSorceryCast {
+        skip: usize,
+    },
     IfManaSpent {
         minimum: Option<u64>,
         maximum: Option<u64>,

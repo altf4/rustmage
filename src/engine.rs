@@ -749,6 +749,8 @@ pub enum CastFace {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// Player who cast this exact spell; stack control changes do not alter history.
+    pub caster: Player,
     /// A non-targeted promise, declared before targets; absent until chosen.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<GiftDeclaration>,

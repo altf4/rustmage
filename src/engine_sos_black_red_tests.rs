@@ -1338,8 +1338,9 @@ fn gain_one_with_dissection(g: &mut Game, p: Player) {
             target: Target::Player(p.other()),
         },
     );
-    act(g, Action::FinishTargets);
-    act(g, Action::FinishTargets);
+    while g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
     pay(g);
     settle(g);
 }
@@ -1494,5 +1495,125 @@ fn sos_foolish_and_heated_all_invalid_target_skip_life_loss_and_resolution_payme
             assert_eq!(g.object_view(fuel).zone, Zone::Graveyard);
             assert_eq!([g.state.players[0].life, g.state.players[1].life], life);
         }
+    }
+}
+
+fn announce_burrog(g: &mut Game, spell: CardId, source: CardId, target: Option<CardId>) {
+    act(g, Action::AnnounceCast { card: spell });
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(source),
+        },
+    );
+    if let Some(target) = target {
+        act(
+            g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+    } else if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    pay(g);
+}
+
+#[test]
+fn sos_burrog_first_cast_optional_damage_then_second_cast_of_same_physical_card() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let sphinx = put(&mut g, p, "Sphinx of Forgotten Lore", Zone::Battlefield);
+        let source = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let target = put(&mut g, p.other(), "Dragonlord's Servant", Zone::Battlefield);
+        let spell = put(&mut g, p, "Burrog Barrage", Zone::Hand);
+        announce_burrog(&mut g, spell, source, Some(target));
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (2, 2));
+        assert_eq!(g.object_view(target).damage, 2);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: sphinx });
+        act(&mut g, Action::FinishAttackers);
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(spell),
+            },
+        );
+        settle(&mut g);
+        assert!(g.has_graveyard_cast(p, spell, GraveyardCastKind::Flashback));
+        act(
+            &mut g,
+            Action::AnnounceGrantedFlashback {
+                card: spell,
+                flash_surcharge: false,
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(source),
+            },
+        );
+        act(&mut g, Action::FinishTargets);
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            stats(&g, source),
+            (3, 2),
+            "the first cast of this physical card is another spell"
+        );
+        assert_eq!(
+            g.object_view(target).damage,
+            2,
+            "second cast declined its optional target"
+        );
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        g.finish_cleanup();
+        assert_eq!(stats(&g, source), (2, 2));
+    }
+}
+
+#[test]
+fn sos_burrog_uncast_copy_counts_original_and_controller_change_preserves_caster() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Mica, Reader of Ruins", Zone::Battlefield);
+        let artifact = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        let source = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Burrog Barrage", Zone::Hand);
+        announce_burrog(&mut g, spell, source, None);
+        until_choice(&mut g);
+        let object = g.object_ref(artifact);
+        act(&mut g, Action::Sacrifice { object });
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].instant_sorcery_cast_this_turn, 1);
+        assert_eq!(
+            stats(&g, source),
+            (3, 2),
+            "only the uncast copy counts the original as another spell"
+        );
+
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Burrog Barrage", Zone::Hand);
+        announce_burrog(&mut g, spell, source, None);
+        // Model a spell-control effect: its existing targets remain valid relative
+        // to its new controller, and that player's history must not exclude this cast.
+        g.state.objects[source as usize].controller = p.other();
+        g.state.stack.last_mut().unwrap().controller = p.other();
+        g.state.players[p.other().index()].instant_sorcery_cast_this_turn = 1;
+        assert_eq!(g.state.stack.last().unwrap().cast.unwrap().caster, p);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (3, 2));
     }
 }

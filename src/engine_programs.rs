@@ -1766,6 +1766,15 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::IfAnotherInstantSorceryCast { skip } => {
+                    let own_cast = !item.is_copy
+                        && item.cast.is_some_and(|cast| cast.caster == item.controller);
+                    if self.state.players[item.controller.index()].instant_sorcery_cast_this_turn
+                        <= u64::from(own_cast)
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfManaSpent {
                     minimum,
                     maximum,

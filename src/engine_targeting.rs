@@ -1158,6 +1158,7 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
+                caster: actor,
                 gift: None,
                 physical_card: None,
                 face: CastFace::Normal,
