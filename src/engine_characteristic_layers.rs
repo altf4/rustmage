@@ -305,6 +305,30 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
     changes
 }
 impl Game {
+    pub(super) fn animate_source_if_noncreature(
+        &mut self,
+        item: &SpellView,
+        spec: AnimationSpec,
+        ability: u16,
+    ) {
+        if !self.on_battlefield(item.card)
+            || self.object_ref(item.card) != item.object
+            || self.is_creature(item.card)
+        {
+            return;
+        }
+        self.animate_source(item, spec);
+        let timestamp = self
+            .state
+            .roles
+            .as_ref()
+            .unwrap()
+            .animations
+            .last()
+            .unwrap()
+            .timestamp;
+        self.grant_source_permanent_trigger(item, ability, timestamp);
+    }
     pub(super) fn animate_source(&mut self, item: &SpellView, spec: AnimationSpec) {
         if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
             return;

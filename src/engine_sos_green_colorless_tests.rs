@@ -2479,3 +2479,197 @@ fn sos_page_no_spell_reveals_whole_library_and_empty_library_does_not_draw() {
         }
     }
 }
+
+fn animate_hall(g: &mut Game, hall: CardId) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: hall,
+            ability: 2,
+            counter_payment: Counters::default(),
+        },
+    );
+    let pay = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PayCosts { .. }))
+        .unwrap();
+    checked(g, pay);
+    settle(g);
+}
+
+#[test]
+fn sos_great_hall_land_play_colorless_and_paid_life_restricted_all_color_mana() {
+    for p in [Player::P0, Player::P1] {
+        for color in 0..5 {
+            let mut g = setup(p);
+            let hall = named(&mut g, p, "Great Hall of the Biblioplex", Zone::Hand);
+            checked(&mut g, Action::PlayLand { card: hall });
+            settle(&mut g);
+            assert!(!g.object_view(hall).tapped);
+            checked(
+                &mut g,
+                Action::ActivateMana {
+                    card: hall,
+                    ability: 0,
+                    payment: [0; 6],
+                    counter_payment: Counters::default(),
+                    production: [0, 0, 0, 0, 0, 1],
+                },
+            );
+            g.state.objects[hall as usize].tapped = false;
+            g.state.players[p.index()].mana = [0; 6];
+            let life = g.state.players[p.index()].life;
+            let mut production = [0; 6];
+            production[color] = 1;
+            checked(
+                &mut g,
+                Action::ActivateMana {
+                    card: hall,
+                    ability: 1,
+                    payment: [0; 6],
+                    counter_payment: Counters::default(),
+                    production,
+                },
+            );
+            assert_eq!(g.state.players[p.index()].life, life - 1);
+            assert_eq!(
+                g.mana_lots(p)[0].quality.restriction,
+                ManaRestrictionView::InstantSorcery
+            );
+            if color == 4 {
+                let elves = named(&mut g, p, "Llanowar Elves", Zone::Hand);
+                reject(&mut g, Action::AnnounceCast { card: elves });
+                let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+                paid(&mut g, p, "Giant Growth", None, &[Target::Card(bear)]);
+                settle(&mut g);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                assert!(
+                    g.state.temporary_abilities.is_none(),
+                    "unanimated Hall has no cast trigger"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_great_hall_conditional_animation_persists_and_repeated_activation_does_not_stack_grants() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let hall = named(&mut g, p, "Great Hall of the Biblioplex", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: hall });
+        animate_hall(&mut g, hall);
+        let view = g.object_view(hall);
+        assert_eq!(view.kinds & 3, 3);
+        assert!(g.has_subtype(hall, "Wizard"));
+        assert_eq!((view.power, view.toughness), (2, 4));
+        reject(
+            &mut g,
+            Action::ActivateMana {
+                card: hall,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        animate_hall(&mut g, hall);
+        assert_eq!(g.state.temporary_abilities.as_ref().unwrap().len(), 1);
+        let bear = paid(&mut g, p, "Bear Cub", None, &[]);
+        settle(&mut g);
+        assert_eq!(g.stats(hall).power, 2);
+        paid(&mut g, p, "Giant Growth", None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!((g.stats(hall).power, g.stats(hall).toughness), (3, 4));
+        g.finish_cleanup();
+        assert_eq!((g.stats(hall).power, g.stats(hall).toughness), (2, 4));
+        assert!(g.is_creature(hall));
+        assert_eq!(g.state.temporary_abilities.as_ref().unwrap().len(), 1);
+    }
+}
+
+#[test]
+fn sos_great_hall_granted_cast_trigger_tracks_new_controller_and_ability_removal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let hall = named(&mut g, p, "Great Hall of the Biblioplex", Zone::Battlefield);
+        animate_hall(&mut g, hall);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let aura = paid(&mut g, p, "Witness Protection", None, &[Target::Card(hall)]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(hall).power,
+            1,
+            "enchantment casts do not trigger the granted instant/sorcery ability"
+        );
+        paid(&mut g, p, "Giant Growth", None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(hall).power,
+            1,
+            "older granted ability is unavailable under the Aura"
+        );
+        g.move_object(aura, Zone::Graveyard);
+        assert_eq!(g.stats(hall).power, 2);
+        paid(
+            &mut g,
+            p,
+            "Harmless Offering",
+            None,
+            &[Target::Player(p.other()), Target::Card(hall)],
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(hall).controller, p.other());
+        assert_eq!(g.stats(hall).power, 3);
+        g.state.priority = p.other();
+        paid(
+            &mut g,
+            p.other(),
+            "Giant Growth",
+            None,
+            &[Target::Card(bear)],
+        );
+        settle(&mut g);
+        assert_eq!(g.stats(hall).power, 4);
+        paid(&mut g, p, "Giant Growth", None, &[Target::Card(bear)]);
+        settle(&mut g);
+        assert_eq!(g.stats(hall).power, 4);
+    }
+}
+
+#[test]
+fn sos_great_hall_queued_growth_and_animation_do_not_rebind_new_incarnations() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let hall = named(&mut g, p, "Great Hall of the Biblioplex", Zone::Battlefield);
+        animate_hall(&mut g, hall);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        paid(&mut g, p, "Giant Growth", None, &[Target::Card(bear)]);
+        g.move_object(hall, Zone::Hand);
+        g.move_object(hall, Zone::Battlefield);
+        settle(&mut g);
+        assert!(!g.is_creature(hall));
+        assert_eq!(g.stats(hall).power, 0);
+        assert!(g.state.temporary_abilities.is_none());
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: hall,
+                ability: 2,
+                counter_payment: Counters::default(),
+            },
+        );
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        g.move_object(hall, Zone::Hand);
+        g.move_object(hall, Zone::Battlefield);
+        settle(&mut g);
+        assert!(!g.is_creature(hall));
+        assert!(g.state.temporary_abilities.is_none());
+    }
+}

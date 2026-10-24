@@ -3,10 +3,21 @@
   "catalogue_id": 1865,
   "oracle_id": "a8c70dab-1e27-4a9c-bd2d-910d5720d02d",
   "facts_sha256": "0c5070e42b7d8b77d067ec2ef17b2516b3930e52984df2606a2ac3df658bfe8a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cb32559c91dbf5863e5cf8b7501280ff2e999d866a090b89dd42cb4edad1ef29"
   },
-  "physical_metadata_sha256": "64da32d2c1fae59e3c2772a35a5c5da816d4404742a3ad8145990c1cb516e7f0"
+  "physical_metadata_sha256": "64da32d2c1fae59e3c2772a35a5c5da816d4404742a3ad8145990c1cb516e7f0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreatHallOfTheBiblioplex.java",
+  "java_sha256": "85019878fdbd12af6e1f58ab01ca39ece777995d8f1864a7e09dfb498651c246",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e4f35026b08e3f86b0822d43ed5b03cf2458e1b2ed5829627dd5c617cd5d597a"
+    }
+  ]
 }

@@ -1193,6 +1193,10 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: AmountValue,
     },
+    AnimateSourceIfNoncreature {
+        spec: AnimationSpec,
+        ability: u16,
+    },
     Search(SearchSpec),
     SearchTargetController(SearchSpec),
     MayTargetController {

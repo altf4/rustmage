@@ -893,7 +893,7 @@ impl Game {
     }
 
     /// CR115.9b: inspect the current expected zone/incarnation; never use target LKI.
-    fn cast_filter_matches_value(
+    pub(super) fn cast_filter_matches_value(
         &self,
         spell_owner: Option<Player>,
         filter: CastFilter,
@@ -1114,6 +1114,7 @@ impl Game {
         if let Some(index) = stack {
             self.queue_hand_cascade(index);
         }
+        self.temporary_cast_triggers(caster, card, stack);
         self.capture_copy_cast(stack, first_trigger);
         if let Some(index) = stack {
             self.capture_mana_copies(index);
@@ -2704,6 +2705,9 @@ impl Game {
                 } => self.set_creature_form(&item, types, colors, base),
                 Instruction::MoveCountersFromSource { kind, amount } => {
                     self.move_counters_from_source(&item, kind, amount)
+                }
+                Instruction::AnimateSourceIfNoncreature { spec, ability } => {
+                    self.animate_source_if_noncreature(&item, spec, ability)
                 }
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::Search(spec)

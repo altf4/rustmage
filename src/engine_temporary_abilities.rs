@@ -14,6 +14,115 @@ pub struct TemporaryAbilityView {
     pub timestamp: u64,
 }
 impl Game {
+    pub(super) fn grant_source_permanent_trigger(
+        &mut self,
+        item: &SpellView,
+        ability: u16,
+        timestamp: u64,
+    ) {
+        let granting_card = item.trigger_definition();
+        assert!(
+            granting_card.triggers()[usize::from(ability)]
+                .condition
+                .is_granted()
+        );
+        self.state
+            .temporary_abilities
+            .get_or_insert_with(|| Box::new(Vec::new()))
+            .push(TemporaryAbilityView {
+                recipient: item.object,
+                grantor: item.object,
+                granting_card,
+                ability,
+                grantor_controller: item.controller,
+                expires_turn: self.state.turn,
+                permanent: true,
+                timestamp,
+            });
+    }
+    /// Each stored grant identifies one ability. Scanning its definition's whole
+    /// trigger array would duplicate independent grants from the same card.
+    pub(super) fn temporary_cast_triggers(
+        &mut self,
+        caster: Player,
+        card: Card,
+        stack: Option<usize>,
+    ) {
+        let Some(rows) = self.state.temporary_abilities.as_ref() else {
+            return;
+        };
+        let rows = rows.to_vec();
+        let event = stack.and_then(|index| {
+            let item = &self.state.stack[index];
+            item.cast.map(|cast| CastPaymentEvent {
+                mana_value: item.mana_value(),
+                stack_id: item.id,
+                object: item.object,
+                card: item.source_card,
+                controller: item.controller,
+                payment: cast.payment,
+            })
+        });
+        for grant in rows {
+            if !(grant.permanent || grant.expires_turn == self.state.turn)
+                || !self.on_battlefield(grant.recipient.card)
+                || self.object_ref(grant.recipient.card) != grant.recipient
+            {
+                continue;
+            }
+            let ability = grant.granting_card.triggers()[usize::from(grant.ability)];
+            let TriggerCondition::SpellCast {
+                relation,
+                filter,
+                ordinal,
+            } = ability.condition.event()
+            else {
+                continue;
+            };
+            let source = self.object_view(grant.recipient.card);
+            let related = match relation {
+                CastRelation::You => source.controller == caster,
+                CastRelation::Opponent => source.controller != caster,
+                CastRelation::Any => true,
+            };
+            if !related
+                || !source.grant_available(
+                    grant.grantor,
+                    grant.granting_card,
+                    grant.ability,
+                    Some(grant.timestamp),
+                )
+                || ordinal
+                    .is_some_and(|n| n != self.state.players[caster.index()].spells_cast_this_turn)
+                || !self.cast_payment_condition(ability.condition, source.reference, event.as_ref())
+                || (ability.condition.requires_opponents_turn()
+                    && self.state.active == source.controller)
+                || !self.cast_filter_matches_value(
+                    filter,
+                    card,
+                    event.map_or_else(|| card.fixed_mana_value(), |e| e.mana_value),
+                    caster,
+                    &source,
+                    stack.map_or(&[][..], |i| self.state.stack[i].targets.as_slice()),
+                )
+            {
+                continue;
+            }
+            let context = Box::new(AttachmentTriggerView {
+                grantor: grant.grantor,
+                granting_card: grant.granting_card,
+                recipient: grant.recipient,
+                defender: None,
+                granted: true,
+            });
+            if self.queue_trigger_from(&source, usize::from(grant.ability), Some(context)) {
+                let chosen_x = stack.and_then(|i| self.state.stack[i].x);
+                let item = self.state.pending_triggers.last_mut().unwrap();
+                item.x = chosen_x;
+                item.cast_event = event.map(Box::new);
+            }
+        }
+    }
     pub(super) fn grant_temporary_ability(&mut self, item: &SpellView, ability: u16) {
         let ids = item
             .targets
