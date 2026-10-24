@@ -1,0 +1,8 @@
+{
+  "name": "Lightning Bolt",
+  "catalogue_id": 5358,
+  "oracle_id": "5963eef1-1022-42b1-8a0c-fc9850bfc2a3",
+  "facts_sha256": "f8de71e785c3c58db6fe80fb91a549b9040782e03d9fd4a8ef8d4f3563f1dfd5",
+  "complete": false,
+  "physical_metadata_sha256": "ed76eff3b34c52ed58db3dcba062c3bc883f07028bde791a3c8791106cce7a1a"
+}

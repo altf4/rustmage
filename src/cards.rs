@@ -2717,6 +2717,9 @@ impl Card {
     }
     /// Stable catalogue lookup/serialization identity, distinct from a token copy's printed name.
     pub fn identity(self) -> &'static str {
+        if let Some(identity) = authored::rules(self).and_then(|rules| rules.extras.prepared_identity) {
+            return identity;
+        }
         generated::adventure_identity(self).unwrap_or_else(|| {
             self.token_info()
                 .map_or(self.name(), |token| token.factory_identity)
@@ -2781,6 +2784,12 @@ impl Card {
         generated::adventure_spell(self)
     }
     /// Physical parent of an internal Adventure spell definition.
+    pub(crate) fn prepared_spell(self) -> Option<Card> {
+        authored::rules(self).and_then(|rules| rules.extras.prepared_spell)
+    }
+    pub(crate) fn enters_prepared(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.enters_prepared)
+    }
     pub fn adventure_parent(self) -> Option<Card> {
         generated::adventure_parent(self)
     }

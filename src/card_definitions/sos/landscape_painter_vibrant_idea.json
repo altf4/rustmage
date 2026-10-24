@@ -1,5 +1,5 @@
 {
-  "name": "Landscape Painter // Vibrant Idea",
+  "name": "Landscape Painter",
   "catalogue_id": 2444,
   "oracle_id": "5ba7abbc-f6e8-40c2-800b-11efd10cca5b",
   "facts_sha256": "a66399792302d6243a4f536dbc7792f82a81ae6be7482e8bff953f1ccc32af8c",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ef2df4e5c50c333609b37e98f2c9777d484106afa2efcc83a96dfbc0e5229602"
   },
-  "physical_metadata_sha256": "e3c94d035177710eeb8fb41a99923d7d79b8dc002c860d7810cd53985de8eddc"
+  "physical_metadata_sha256": "134a45ef29e7217920e234595d49ab66091bb158fcd172de64d5eac987eef669"
 }

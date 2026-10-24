@@ -113,6 +113,9 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub prepared_spell: Option<Card>,
+    pub enters_prepared: bool,
+    pub prepared_identity: Option<&'static str>,
     pub borrows_exiled_activations: bool,
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
@@ -180,6 +183,9 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        prepared_spell: None,
+        enters_prepared: false,
+        prepared_identity: None,
         borrows_exiled_activations: false,
         zone_replacement: None,
         opening_hand_battlefield: false,

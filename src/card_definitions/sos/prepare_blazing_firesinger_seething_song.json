@@ -1,0 +1,8 @@
+{
+  "name": "Seething Song",
+  "catalogue_id": 5353,
+  "oracle_id": "1bf505a7-292e-4642-83b6-8ff41ebe5d51",
+  "facts_sha256": "d5785b263432ea8395bc4be38dc27f4cbb01c653a7c9ad8a5095add9c429f0dc",
+  "complete": false,
+  "physical_metadata_sha256": "a5d2d5e074a88d6e70a8f4d63a4434d9e6f8f5aa0744541268a406ce09fb1fac"
+}

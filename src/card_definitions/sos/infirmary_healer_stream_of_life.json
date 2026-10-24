@@ -1,5 +1,5 @@
 {
-  "name": "Infirmary Healer // Stream of Life",
+  "name": "Infirmary Healer",
   "catalogue_id": 2164,
   "oracle_id": "4cbbdebc-b807-4d7b-92dd-312637d2a5de",
   "facts_sha256": "97db546eb810cf7a6063ee121d0b043d890df37937837e79424a78e3e572cc96",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "860c2c191dd1e2d97316d56491f4c56c38738a7ff21c23ed3f31abac8213ff99"
   },
-  "physical_metadata_sha256": "a29b21fe7c3207111da5420c89d2b46deef9a87391d3e24c2d68062e19bb071e"
+  "physical_metadata_sha256": "bde69617afe427d6ad359f8729a20fa1c77f19e6a2e50aea5cccec2d25c0597c"
 }

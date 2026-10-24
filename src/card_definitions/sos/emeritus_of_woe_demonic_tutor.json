@@ -1,5 +1,5 @@
 {
-  "name": "Emeritus of Woe // Demonic Tutor",
+  "name": "Emeritus of Woe",
   "catalogue_id": 1318,
   "oracle_id": "93056597-b964-421f-be2f-e92abef1c2a4",
   "facts_sha256": "8a03def70f795a37d883a7a49ca88e6559100c7851dd4b74e40baab7fa8d3b41",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db266cfc733c9e43bf1d36867aaa009a2d3f9ba346d2ff35b1c462a1faf01b38"
   },
-  "physical_metadata_sha256": "0d2f4889a5df2b08daa06b791650f01ef800f9d8188b75c7c33a963e57be9cca"
+  "physical_metadata_sha256": "10c8aee4e23e9d1329c4b74ef412154d599343aa0999048276f739958792eda5"
 }

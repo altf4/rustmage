@@ -1,5 +1,5 @@
 {
-  "name": "Quill-Blade Laureate // Twofold Intent",
+  "name": "Quill-Blade Laureate",
   "catalogue_id": 3316,
   "oracle_id": "bd9d3a70-faed-4bc6-97d8-1601b36cdb21",
   "facts_sha256": "9c1df39ffb284ab9e11a31a1f6b9cb521e6e3185dc54a8dcbef23353686e4139",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7474efb83d173e73283b646773483603cab6cc174be123b80fde6b71625203a9"
   },
-  "physical_metadata_sha256": "cffc2c717cfaf90d5d29972a14699bb3bccf8b4436cab0b19affb7fb9b789e93"
+  "physical_metadata_sha256": "24525d74ddeb820cf652d393fe5f28c628d1984ff332af7e6253d948565c16d5"
 }

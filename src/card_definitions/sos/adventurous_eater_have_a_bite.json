@@ -1,5 +1,5 @@
 {
-  "name": "Adventurous Eater // Have a Bite",
+  "name": "Adventurous Eater",
   "catalogue_id": 65,
   "oracle_id": "02125db4-4507-467a-ac0c-406de2c7d533",
   "facts_sha256": "11a71ccce40c272e46d49d89976431fc99674261bada93865a446f69e6137053",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2946e5c7a660d6f1f4c4977de80ae9b15cee6d98c34adfb02c85cea105045cc6"
   },
-  "physical_metadata_sha256": "e0934c8fc2289add7c28e818f3c1d3d67e4a48eccf4b03ec680744cd13e61b7c"
+  "physical_metadata_sha256": "a56530807e13eeeac832466b994f26493f27fde0207866227e5bf443843dbd40"
 }

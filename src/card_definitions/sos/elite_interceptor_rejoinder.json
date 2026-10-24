@@ -1,5 +1,5 @@
 {
-  "name": "Elite Interceptor // Rejoinder",
+  "name": "Elite Interceptor",
   "catalogue_id": 1288,
   "oracle_id": "d97de156-5a6d-4dc6-953e-d4bad63cbad2",
   "facts_sha256": "6a85d2d453fb7275cdc016e59c1ee2e660dfc7eda7596abd3e573a5e66f88a7c",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "88f6305840a0f3710dfef92a93f885818da7a19fab11e8f12a952168afd628f5"
   },
-  "physical_metadata_sha256": "d139bfb45e00a5ccb7c38e91c8bc058ff5566afb2e9cf29087e7e813ea794637"
+  "physical_metadata_sha256": "46de87412bda473c15618006d8703136d15cec1fc8390d6da0d54a6353ac1841"
 }

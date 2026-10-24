@@ -1,5 +1,5 @@
 {
-  "name": "Grave Researcher // Reanimate",
+  "name": "Grave Researcher",
   "catalogue_id": 1853,
   "oracle_id": "6cb8b8c4-0674-4f14-9d89-010969fbb80e",
   "facts_sha256": "ad64ca4d3ddc926dfea17bf81f9969688e5b9fa42aa25347420163a3f932e3af",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c5e5cc6c40374c170fe94200a0f700eed57c8752aa05f10937ea702ad89b5ed7"
   },
-  "physical_metadata_sha256": "4b939aacff25da703a11ab208587b8e693a0a6a2d158d443d0ad3e6185dd30d5"
+  "physical_metadata_sha256": "eca925d91d9bfd2941070f43a502bea63e0c3ad73e6776b1c7113525a1eb3007"
 }

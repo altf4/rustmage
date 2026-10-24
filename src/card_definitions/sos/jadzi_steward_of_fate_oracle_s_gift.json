@@ -1,5 +1,5 @@
 {
-  "name": "Jadzi, Steward of Fate // Oracle's Gift",
+  "name": "Jadzi, Steward of Fate",
   "catalogue_id": 2256,
   "oracle_id": "c63b3511-d597-4c6e-9094-eabdeaa8a394",
   "facts_sha256": "f2ced6ba60cf3783c46f936a0bc8bceccd2d265938d0643ba7ffa45983301a1b",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ae6c213deb9c25e8881934dbd11893383887fe585d45bd379746768421fcc984"
   },
-  "physical_metadata_sha256": "577bb13335ef0f49b92857d232ea672270aa2e67e1acc0989b481a5912510aa5"
+  "physical_metadata_sha256": "a997f6bce1db9bf74653e8132e109b34158c91f544c044f2d00448588396db58"
 }

@@ -1,5 +1,5 @@
 {
-  "name": "Maelstrom Artisan // Rocket Volley",
+  "name": "Maelstrom Artisan",
   "catalogue_id": 2610,
   "oracle_id": "03931270-504a-4b0b-af3f-918bf124ea07",
   "facts_sha256": "5b47d88e84c07022239b58990a5855bbacd336375cc4fb5b980ab4c962322b73",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f9c8e191eaab0c2592b1e3f0533af4917b0ad8789c7e133ab2fda2d3b19c9709"
   },
-  "physical_metadata_sha256": "7b27dac9757d950318a236d4dc033cd6e02bf886f69837f7fe8a590fec9ca556"
+  "physical_metadata_sha256": "93f6c9e09bae601b44d150accc86136ec16f5d41dc263b8151396155514c4936"
 }

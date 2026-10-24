@@ -1,0 +1,8 @@
+{
+  "name": "Ancestral Recall",
+  "catalogue_id": 5359,
+  "oracle_id": "24a29be4-5bc2-469b-b2ce-2fb305c3facb",
+  "facts_sha256": "2aeaff2858a20d487bb7a73e796353f56eac30c80e931788c889d3b1dbcd58cc",
+  "complete": false,
+  "physical_metadata_sha256": "d3aceb40ec58909d8dd2fb1f60ebc65c5cc609d904f130adc4f83466c92d44a7"
+}

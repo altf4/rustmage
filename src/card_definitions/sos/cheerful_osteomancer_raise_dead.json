@@ -1,5 +1,5 @@
 {
-  "name": "Cheerful Osteomancer // Raise Dead",
+  "name": "Cheerful Osteomancer",
   "catalogue_id": 732,
   "oracle_id": "fd01229f-1c4c-4ad1-bc6f-4023f24d8c71",
   "facts_sha256": "065cf8b0132200b9f3cc96bcbc8662640f59c7a3c846da46e5f034aefc1f82f1",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "39ba85ea9356e3bbf272b1a5e31e507b5cc0782ea2565a4d7fbaeb6f6be5d89a"
   },
-  "physical_metadata_sha256": "f13090574d6c53153c49bab8d4695401e5f75a9a4602f89370f0af8b28f2e6f6"
+  "physical_metadata_sha256": "7a5ea1e12e6d0ddbf8c56e5ebb6fda2b2ea45a16a1c2f0c731831f767d373a4f"
 }

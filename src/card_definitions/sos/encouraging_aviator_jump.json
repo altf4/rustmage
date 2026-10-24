@@ -1,5 +1,5 @@
 {
-  "name": "Encouraging Aviator // Jump",
+  "name": "Encouraging Aviator",
   "catalogue_id": 1326,
   "oracle_id": "d6accaed-ff35-4324-b31b-35e6837bc079",
   "facts_sha256": "81069928574e186ea2c42d2f9c29964914aabfc9e3fa470d0d029731762dd417",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3d7279b6afd289e58a785eaf50d3531dfa99cdfa5c0031431d35ba0073e5c86f"
   },
-  "physical_metadata_sha256": "6bba1c53efcf1432518bc3f51eeb35b7e56a87cd874298ba022379106bb6aaea"
+  "physical_metadata_sha256": "9d7f8687c564d5ac794aa67291dec99c6a7375c23f626c27a7969acb79bcf174"
 }

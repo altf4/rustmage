@@ -1,0 +1,8 @@
+{
+  "name": "Regrowth",
+  "catalogue_id": 5357,
+  "oracle_id": "e5152e8d-9f55-493d-a0fc-753cc72ee299",
+  "facts_sha256": "85e797bbfb9ca42a496ff910862faf5c0a5a16a116c7f3459cab72ff0caa8dd9",
+  "complete": false,
+  "physical_metadata_sha256": "2bdcd5e8e36c3ee1995ccb96fb9df6918e92e5ebbb961960e271fd4942d954c1"
+}

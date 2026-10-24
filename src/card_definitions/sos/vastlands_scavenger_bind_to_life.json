@@ -1,5 +1,5 @@
 {
-  "name": "Vastlands Scavenger // Bind to Life",
+  "name": "Vastlands Scavenger",
   "catalogue_id": 4851,
   "oracle_id": "3a97bc8d-bd81-468e-9277-eba4fac11ee0",
   "facts_sha256": "fa2b9394907f20a4c145a2e404f3c2de104c3be0e4e5a985c76c5a02faf5504a",
@@ -8,5 +8,5 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3a4a5963b5fd6d1a477ad625c97145c2a89b9219d6a3e630548199ea42246e10"
   },
-  "physical_metadata_sha256": "53c342127a1ad4426c025b813dc71b811d85d612e54ef83f9a15aa32ff3bd64d"
+  "physical_metadata_sha256": "1ea437a57d586b954469a17c2c7acbba3473b7a66c849196b9d0b554ef408d83"
 }
