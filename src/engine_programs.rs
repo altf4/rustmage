@@ -231,7 +231,6 @@ impl Game {
                 .counter_sources
                 .iter()
                 .copied()
-                .filter(|&id| id != object.card)
                 .map(|id| self.object_view(id))
                 .collect();
             for source in observers {
@@ -242,14 +241,32 @@ impl Game {
                             excluded_subtype,
                         } => {
                             expected == kind
+                                && source.reference != object
                                 && recipient.controller == source.controller
                                 && recipient.is_creature()
                                 && !recipient.has_subtype(excluded_subtype)
                         }
                         TriggerCondition::OtherCreatureCounterPlacedByYou { kind: expected } => {
                             expected == kind
+                                && source.reference != object
                                 && placed_by == source.controller
                                 && recipient.is_creature()
+                        }
+                        TriggerCondition::CounterPlacedByYou {
+                            kind: expected,
+                            filter,
+                        } => {
+                            expected == kind
+                                && placed_by == source.controller
+                                && Self::count_object_matches(
+                                    filter,
+                                    source.reference,
+                                    source.controller,
+                                    object.card,
+                                    &self.state.objects[object.card as usize],
+                                    &|id| self.granted_subtypes(id),
+                                    &|id, o| self.object_kinds(id, o),
+                                )
                         }
                         _ => false,
                     };
@@ -607,6 +624,7 @@ impl Game {
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
+                    | TriggerCondition::CounterPlacedByYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfFirstAttack

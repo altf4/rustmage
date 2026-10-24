@@ -2520,6 +2520,11 @@ pub(crate) enum TriggerCondition {
     OtherCreatureCounterPlacedByYou {
         kind: CounterKind,
     },
+    /// One event per battlefield recipient; the placing player controls this observer.
+    CounterPlacedByYou {
+        kind: CounterKind,
+        filter: CountFilter,
+    },
     OtherCreatureCountersAdded {
         kind: CounterKind,
         excluded_subtype: &'static str,

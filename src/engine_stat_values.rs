@@ -2,7 +2,7 @@
 use super::*;
 
 impl Game {
-    fn count_object_matches(
+    pub(super) fn count_object_matches(
         filter: CountFilter,
         source: ObjectRef,
         owner: Player,

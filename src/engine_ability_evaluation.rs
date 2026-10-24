@@ -135,6 +135,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             Keywords::DEATHTOUCH
         }
+        StaticAbilityFragment::PlusOnePlacedKeywords { filter, keywords } => {
+            if !world.placement_history_recipient(source, filter, id) {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::SourcePlusOnePlacedKeywords(keywords) => {
             if id != source.card || !world.plus_one_placed_this_turn(source, provider.controller) {
                 return None;
@@ -275,6 +281,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 matches!(
                     f,
                     StaticAbilityFragment::SourcePlusOnePlacedKeywords(..)
+                        | StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                         | StaticAbilityFragment::SourceCounterKeywords { .. }
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)

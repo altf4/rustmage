@@ -104,6 +104,24 @@ pub(super) trait CharacteristicWorld {
             player,
         )
     }
+    fn placement_history_recipient(
+        &self,
+        source: ObjectRef,
+        filter: CountFilter,
+        id: CardId,
+    ) -> bool {
+        let controller = self.object(source.card).controller;
+        self.plus_one_placed_this_turn(self.reference(id), controller)
+            && Game::count_object_matches(
+                filter,
+                source,
+                controller,
+                id,
+                self.object(id),
+                &|id| self.subtypes(id),
+                &|id, _| self.kinds(id),
+            )
+    }
     fn placement_history_keywords(&self, id: CardId) -> Keywords {
         let object = self.object(id);
         if object.zone != Zone::Battlefield

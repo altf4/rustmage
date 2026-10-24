@@ -671,6 +671,14 @@
     "journal": "5c3870cd1c7a12c9",
     "observations": "426d1b95dec307ab"
   },
+  "Ant-Man, Colony Commander": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1cba658877741a8e",
+    "observations": "472581c02d6d2868"
+  },
   "Anthem of Champions": {
     "root": "main",
     "status": "completed",
@@ -8974,6 +8982,14 @@
     "zone": "Battlefield",
     "journal": "c4b8f6d37ca7169e",
     "observations": "f2d47983f7e88173"
+  },
+  "Kid Loki": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "77fe8ec276f5ddde",
+    "observations": "f588860331ff46c6"
   },
   "Killian's Confidence": {
     "root": "main",

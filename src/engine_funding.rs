@@ -465,7 +465,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -733,6 +733,17 @@ impl<'g> FundingState<'g> {
                 for group in source.object.card.static_ability_groups() {
                     for fragment in group.fragments {
                         match *fragment {
+                            crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords {
+                                filter,
+                                keywords: grant,
+                            } if self.placement_history_recipient(
+                                self.reference(source.id),
+                                filter,
+                                target.id,
+                            ) =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
                             crate::cards::StaticAbilityFragment::DeathBaronLord
                                 if ability_world::CharacteristicWorld::death_baron_applies(
                                     self,
@@ -2892,3 +2903,7 @@ mod restricted_mana_tests;
 #[cfg(test)]
 #[path = "engine_msh_conditional_lands_funding_tests.rs"]
 mod msh_conditional_lands_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_placement_funding_tests.rs"]
+mod msh_placement_tests;

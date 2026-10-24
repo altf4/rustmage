@@ -43,6 +43,7 @@ impl Game {
                 a.condition.event(),
                 TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
+                    | TriggerCondition::CounterPlacedByYou { .. }
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
@@ -180,6 +181,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
+                            | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
                     )
                 })

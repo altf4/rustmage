@@ -494,6 +494,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
                     match *fragment {
+                        StaticAbilityFragment::PlusOnePlacedKeywords {
+                            filter,
+                            keywords: grant,
+                        } if CharacteristicWorld::placement_history_recipient(
+                            self,
+                            self.object_ref(source),
+                            filter,
+                            id,
+                        ) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::DeathBaronLord
                             if ability_world::CharacteristicWorld::death_baron_applies(
                                 self,
