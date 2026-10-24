@@ -233,7 +233,8 @@ impl Game {
         if let Some((p, distance_from_top)) = restored_spell {
             let library = &mut self.state.players[p].library;
             if !library.contains(&spell) {
-                library.insert(library.len().saturating_sub(distance_from_top), spell);
+                let at = library.len().saturating_sub(distance_from_top);
+                library.insert(at, spell);
             }
         }
         self.state.rng = current.rng;

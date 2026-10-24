@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d0b10e9727cd47d4187b14724a27db4d925b0e42f0382df1aae07afd96495474",
+  "catalogue_version": "5f8fc3870930fbac1ce6d8740185a52c8a829986600844c8843d2c6f5f829372",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2380,
-  "implemented_total": 2386,
+  "implemented_standard_cards": 2381,
+  "implemented_total": 2387,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,7 @@
     },
     "sos": {
       "total": 264,
-      "complete": 263,
-      "gated": 1
+      "complete": 264
     },
     "spm": {
       "total": 134,
@@ -31206,8 +31205,8 @@
     {
       "name": "Silverquill, the Disputant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/silverquill_the_disputant.rs",
       "set": "sos"
     },
