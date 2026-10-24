@@ -459,3 +459,52 @@ fn sos_prepared_ward_counter_decline_and_attack_reprepare() {
         assert!(!g.object_view(source).prepared);
     }
 }
+
+#[test]
+fn sos_preparation_reexiled_copy_ceases_and_designation_is_not_copied() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Landscape Painter", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        let row = g.state.preparations.as_ref().unwrap()[0];
+        g.move_object(row.spell_copy.card, Zone::Exile);
+        g.state_based_actions();
+        assert_eq!(g.object_view(row.spell_copy.card).zone, Zone::Outside);
+        assert!(g.object_view(source).prepared);
+        assert!(!g.can_cast_prepared(p, row.spell_copy.card));
+        let source = put(&mut g, p, "Encouraging Aviator", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        g.prepare_permanent(g.object_ref(source));
+        let definition = g.state.objects[source as usize].card;
+        g.create_copy_groups_inner(
+            p,
+            &[TokenGroupView {
+                token: definition,
+                amount: 1,
+                tapped: false,
+            }],
+            &[Some(CopyRecipe::new(definition))],
+            None,
+        );
+        g.advance_entries();
+        let copied = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| o.zone == Zone::Battlefield && o.is_copy_token() && o.card == definition)
+            .map(|(id, _)| id as CardId)
+            .unwrap();
+        assert!(g.object_view(source).prepared);
+        assert!(!g.object_view(copied).prepared);
+        g.prepare_permanent(g.object_ref(copied));
+        assert!(g.object_view(copied).prepared);
+        let before = g.snapshot();
+        let rows = g.state.preparations.as_ref().unwrap().len();
+        g.prepare_permanent(g.object_ref(copied));
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.state.preparations.as_ref().unwrap().len(), rows);
+    }
+}
