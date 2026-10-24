@@ -2872,6 +2872,20 @@ impl Game {
                     self.start_optional_resolution_payment(&item, cost, skip);
                     return;
                 }
+                Instruction::MayPayManaAlternatives { costs, skip } => {
+                    let (&cost, alternatives) =
+                        costs.split_first().expect("nonempty payment choices");
+                    self.start_optional_resolution_payment(&item, cost, skip);
+                    self.state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .mana_payment
+                        .as_mut()
+                        .unwrap()
+                        .alternatives = alternatives;
+                    return;
+                }
                 Instruction::Endure { amount, token } => {
                     if amount != 0 {
                         if self.on_battlefield(item.card)

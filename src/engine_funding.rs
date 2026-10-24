@@ -2177,6 +2177,34 @@ impl Game {
         {
             return false;
         }
+        for cost in std::iter::once(request.cost).chain(request.alternatives.iter().copied()) {
+            let goal = FundingGoal {
+                reserve: None,
+                actor: request.payer,
+                required: cost.colored,
+                generic: cost.generic,
+                source: None,
+            };
+            let state = FundingState::from_game(self, &goal);
+            let mut done = false;
+            funding_payments(
+                mana_lots::available(state.mana, &state.lots, state.purpose),
+                goal.required,
+                goal.generic,
+                |payment| {
+                    if !done {
+                        done = emit(Action::PayResolutionMana {
+                            payment: concrete_payment(payment),
+                        });
+                    }
+                },
+            );
+            if done {
+                return true;
+            }
+        }
+        // A payment request grants a mana-ability window even if it is declined.
+        // Emit the shared window once regardless of the number of hybrid choices.
         let goal = FundingGoal {
             reserve: None,
             actor: request.payer,
@@ -2185,24 +2213,6 @@ impl Game {
             source: None,
         };
         let state = FundingState::from_game(self, &goal);
-        let mut done = false;
-        funding_payments(
-            mana_lots::available(state.mana, &state.lots, state.purpose),
-            goal.required,
-            goal.generic,
-            |payment| {
-                if !done {
-                    done = emit(Action::PayResolutionMana {
-                        payment: concrete_payment(payment),
-                    });
-                }
-            },
-        );
-        if done {
-            return true;
-        }
-        // A payment request grants a mana-ability window even if the player
-        // eventually declines or cannot assemble the whole payment.
         for step in state.moves(&goal) {
             if emit(state.action(&step)) {
                 return true;

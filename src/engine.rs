@@ -5143,13 +5143,9 @@ impl Game {
             before.zone != destination || destination == Zone::Exile,
             "same-zone moves are ordering operations except re-exile"
         );
-        if before.zone == Zone::Graveyard
-            && before.card.triggers().iter().any(|a| {
-                a.condition.origin() == Some(TargetZone::Graveyard)
-                    && matches!(a.condition.event(), TriggerCondition::AtStep { .. })
-            })
-        {
+        if before.zone == Zone::Graveyard {
             self.state.step_sources.retain(|&source| source != id);
+            self.state.damage_sources.retain(|&source| source != id);
         }
         self.forget_borrowed_source(before.reference);
         self.forget_stack_graveyard_exile(before.reference);
@@ -6360,6 +6356,7 @@ impl Game {
                 .map(|p| resolution_mana::ResolutionPaymentView {
                     payer: p.payer,
                     cost: p.cost,
+                    alternatives: p.alternatives.to_vec(),
                     life: p.life,
                     victim: p.victim,
                     exile: p.exile,

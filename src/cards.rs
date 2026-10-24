@@ -934,6 +934,10 @@ pub(crate) enum Instruction {
         cost: ManaCost,
         skip: usize,
     },
+    MayPayManaAlternatives {
+        costs: &'static [ManaCost],
+        skip: usize,
+    },
     Endure {
         amount: u16,
         token: Card,

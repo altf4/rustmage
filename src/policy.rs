@@ -16,17 +16,23 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         let request = observation.resolution_payment.as_ref().unwrap();
         let pool = observation.players[actor.index()].mana;
         let deficit = |pool: crate::Mana| {
-            let colored: u64 = pool
-                .iter()
-                .zip(request.cost.colored)
-                .map(|(&pool, need)| u64::from(need.saturating_sub(pool)))
-                .sum();
-            let spare: u64 = pool
-                .iter()
-                .zip(request.cost.colored)
-                .map(|(&pool, need)| u64::from(pool.saturating_sub(need)))
-                .sum();
-            colored + u64::from(request.cost.generic).saturating_sub(spare)
+            std::iter::once(request.cost)
+                .chain(request.alternatives.iter().copied())
+                .map(|cost| {
+                    let colored: u64 = pool
+                        .iter()
+                        .zip(cost.colored)
+                        .map(|(&pool, need)| u64::from(need.saturating_sub(pool)))
+                        .sum();
+                    let spare: u64 = pool
+                        .iter()
+                        .zip(cost.colored)
+                        .map(|(&pool, need)| u64::from(pool.saturating_sub(need)))
+                        .sum();
+                    colored + u64::from(cost.generic).saturating_sub(spare)
+                })
+                .min()
+                .expect("resolution cost")
         };
         let after = std::array::from_fn(|i| pool[i] - payment[i] + production[i]);
         if deficit(after) < deficit(pool) {

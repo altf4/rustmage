@@ -4,18 +4,20 @@
 use super::*;
 
 impl Game {
-    // Reuse the existing owned step index; no new arena field or empty buffer.
+    // Reuse sparse event indexes for explicit graveyard observers.
     pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
-        if self.state.objects[id as usize]
-            .card
-            .triggers()
-            .iter()
-            .any(|ability| {
-                ability.condition.origin() == Some(TargetZone::Graveyard)
-                    && matches!(ability.condition.event(), TriggerCondition::AtStep { .. })
-            })
-        {
+        let triggers = self.state.objects[id as usize].card.triggers();
+        if triggers.iter().any(|a| {
+            a.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(a.condition.event(), TriggerCondition::AtStep { .. })
+        }) {
             self.state.step_sources.push(id);
+        }
+        if triggers.iter().any(|a| {
+            a.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(a.condition.event(), TriggerCondition::PlayerDamaged { .. })
+        }) {
+            self.state.damage_sources.push(id);
         }
     }
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {

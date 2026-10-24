@@ -151,8 +151,10 @@ mod sos_multicolor_next;
 mod sos_discard_followon;
 mod sos_exile_search;
 mod sos_hand_attack;
+mod sos_moment;
 mod sos_multicolor_more;
 mod sos_nita;
 mod sos_review_regressions;
 mod sos_white_blue_final;
-mod sos_moment;
+
+mod sos_killian;
