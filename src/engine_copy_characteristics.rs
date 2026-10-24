@@ -71,12 +71,19 @@ impl Game {
         }
     }
     pub(super) fn sacrifice_exact_source(&mut self, item: &SpellView) {
-        if self.on_battlefield(item.card)
-            && self.object_ref(item.card) == item.object
-            && self.state.objects[item.card as usize].controller == item.controller
+        self.try_sacrifice_exact_source(item);
+    }
+    pub(super) fn try_sacrifice_exact_source(&mut self, item: &SpellView) -> bool {
+        if !self.on_battlefield(item.card)
+            || self.object_ref(item.card) != item.object
+            || self.state.objects[item.card as usize].controller != item.controller
         {
-            self.sacrifice_batch(&[(item.controller, item.card)]);
+            return false;
         }
+        self.sacrifice_batch(&[(item.controller, item.card)]);
+        // A replacement destination (for example exile) still completes the
+        // sacrifice. A prevented movement must not create its reflexive payoff.
+        self.object_ref(item.card) != item.object
     }
 }
 

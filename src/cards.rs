@@ -977,6 +977,10 @@ pub(crate) enum Instruction {
     },
     SacrificeDelayedTokens,
     SacrificeSource,
+    /// Queue a separate trigger only after successfully sacrificing this exact source.
+    SacrificeSourceReflexive {
+        ability: u16,
+    },
     ExileAndCopyNightmare,
     ExileOtherNightmares,
     DamageDivided {
@@ -1847,10 +1851,12 @@ pub enum CounterKind {
     Stash,
     Charge,
     Growth,
+    Plan,
+    Invasion,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 16] = [
+    pub const ALL: [Self; 18] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1867,6 +1873,8 @@ impl CounterKind {
         Self::Stash,
         Self::Charge,
         Self::Growth,
+        Self::Plan,
+        Self::Invasion,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1882,6 +1890,8 @@ impl CounterKind {
                 | Self::Stash
                 | Self::Charge
                 | Self::Growth
+                | Self::Plan
+                | Self::Invasion
         )
     }
 }
@@ -2444,6 +2454,11 @@ pub(crate) enum TriggerCondition {
     AttachedDealtCombatDamage,
     ControlledCreatureCombatDamageOwnTurn,
     DamagedCreatureDies,
+    /// Historical placement event: before < threshold <= after. Never a live recheck.
+    CounterThresholdCrossed {
+        kind: CounterKind,
+        threshold: u64,
+    },
     StateCounterAtLeast {
         kind: CounterKind,
         minimum: u64,

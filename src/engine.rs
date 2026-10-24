@@ -7334,3 +7334,7 @@ mod cast_rollback;
 #[cfg(test)]
 #[path = "engine_power_up_tests.rs"]
 mod power_up_tests;
+
+#[cfg(test)]
+#[path = "engine_plan_threshold_tests.rs"]
+mod plan_threshold_tests;

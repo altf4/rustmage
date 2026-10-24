@@ -1,16 +1,44 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the complete pinned Oracle and XMage Plan implementation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: CastFilter::Noncreature,
+                ordinal: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::CreateTokens {
+                    token: Card(5302),
+                    amount: 1,
+                    tapped: true,
+                },
+                Instruction::PutCounters {
+                    subject: Subject::Source,
+                    kind: CounterKind::Plan,
+                    amount: 1,
+                },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::CounterThresholdCrossed {
+                kind: CounterKind::Plan,
+                threshold: 4,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::SacrificeSourceReflexive { ability: 2 }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Any,
+                min: 1,
+                max: 2,
+            }),
+            program: &[Instruction::DamageDivided { total: 7 }],
+        },
+    ],
     ..CardRules::EMPTY
 };
