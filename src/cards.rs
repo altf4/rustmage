@@ -756,6 +756,7 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    OfferMiracleCast(ManaCost),
     Cascade,
     CreateCopyTokenForPlayer {
         subject: Subject,

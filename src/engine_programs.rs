@@ -1638,6 +1638,9 @@ impl Game {
     }
 
     pub(super) fn run_program(&mut self) {
+        if self.miracle_choice_pending() {
+            return;
+        }
         // Casting during an effect suspends its owned program, including through
         // additional-cost entry and replacement continuations.
         if let Some(free) = &self.state.resolution_free_casts {
@@ -1649,6 +1652,9 @@ impl Game {
             return;
         }
         loop {
+            if self.miracle_choice_pending() {
+                return;
+            }
             self.finish_cascade();
             if self.advance_replacements(false) {
                 return;
@@ -1742,6 +1748,11 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::OfferMiracleCast(cost) => {
+                    if self.offer_miracle_cast(&item, cost) {
+                        return;
+                    }
+                }
                 Instruction::Cascade => {
                     if self.start_cascade(&item) {
                         return;
@@ -2039,7 +2050,9 @@ impl Game {
                         .map(|(id, _)| id as CardId)
                         .collect();
                     self.draw_many(item.controller, ids.len() as u128);
-                    self.grant_keyword_effects(&ids, item.object, Keywords::INDESTRUCTIBLE);
+                    if !self.defer_draw_protection(ids.clone(), item.object) {
+                        self.grant_keyword_effects(&ids, item.object, Keywords::INDESTRUCTIBLE);
+                    }
                 }
                 Instruction::ShuffleTargetIntoLibrary => self.shuffle_target_into_library(&item),
                 Instruction::MultiplyTargetStats { factor } => {

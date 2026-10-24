@@ -7,7 +7,8 @@ impl Card {
             g.fragments.iter().any(|f| {
                 matches!(
                     f,
-                    StaticAbilityFragment::CascadeFromHand { .. }
+                    StaticAbilityFragment::HandMiracle { .. }
+                        | StaticAbilityFragment::CascadeFromHand { .. }
                         | StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
                         | StaticAbilityFragment::SpendAnyManaForCreatures
@@ -257,6 +258,7 @@ impl Game {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
+    pub alternative_cost: Option<ManaCost>,
     pub maximum_mana_value: Option<u64>,
     pub origin: Zone,
     pub exile_on_graveyard: bool,
@@ -280,6 +282,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Graveyard,
             exile_on_graveyard: true,
@@ -305,6 +308,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
             exile_on_graveyard: false,
@@ -365,7 +369,11 @@ impl Game {
                 }) && self.permitted_cast_available(
                     player,
                     object.card,
-                    CastMethod::Free,
+                    if free.alternative_cost.is_some() {
+                        CastMethod::Miracle
+                    } else {
+                        CastMethod::Free
+                    },
                     face,
                     true,
                     false,
@@ -383,6 +391,12 @@ impl Game {
         object: ObjectRef,
         face: CastFace,
     ) {
+        let alternative_cost = self
+            .state
+            .resolution_free_casts
+            .as_ref()
+            .unwrap()
+            .alternative_cost;
         let exile_on_graveyard = self
             .state
             .resolution_free_casts
@@ -398,7 +412,11 @@ impl Game {
         self.reveal_hideaway_object(object);
         let mut item = self.cast_item(player, object.card, [0; 6]);
         self.set_cast_face(&mut item, face);
-        item.cast.as_mut().unwrap().method = CastMethod::Free;
+        item.cast.as_mut().unwrap().method = if alternative_cost.is_some() {
+            CastMethod::Miracle
+        } else {
+            CastMethod::Free
+        };
         item.cast.as_mut().unwrap().exile_on_graveyard = exile_on_graveyard;
         if item.source_card.x_symbols() > 0 {
             item.x = Some(0);

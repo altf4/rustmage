@@ -141,6 +141,7 @@ impl Game {
             .get_or_insert_with(Default::default)
             .ephemeral = Some(object);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
             exile_on_graveyard: false,
@@ -183,6 +184,7 @@ impl Game {
             }
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
             exile_on_graveyard: false,

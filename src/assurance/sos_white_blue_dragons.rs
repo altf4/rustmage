@@ -296,3 +296,275 @@ fn sos_dragon_cascade_chained_casts_keep_both_cleanup_continuations_owned() {
         assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 3);
     }
 }
+
+fn first_draw(g: &mut Game) {
+    for _ in 0..32 {
+        if matches!(g.state.pending, Pending::MiracleReveal { .. }) {
+            return;
+        }
+        big_helpers::checked(g, Action::Pass);
+    }
+    panic!("no first-draw decision {:?}", g.state.pending);
+}
+fn lorehold(g: &mut Game, p: Player) -> CardId {
+    let dragon = put(g, p, "Lorehold, the Historian", Zone::Hand);
+    big_helpers::cast(g, dragon, None, &[]);
+    big_helpers::settle(g);
+    assert_eq!(stats(g, dragon), (5, 5));
+    assert!(
+        g.keywords(dragon)
+            .contains(Keywords::FLYING.union(Keywords::HASTE))
+    );
+    dragon
+}
+fn draw_spell(g: &mut Game, p: Player, name: &str) {
+    let spell = put(g, p, name, Zone::Hand);
+    big_helpers::cast(g, spell, None, &[]);
+    first_draw(g);
+}
+fn reveal_offer(g: &mut Game) {
+    big_helpers::checked(g, Action::RevealMiracle);
+    offer(g);
+    let w = g.state.resolution_free_casts.as_ref().unwrap();
+    assert_eq!(w.origin, Zone::Hand);
+    assert_eq!(
+        w.alternative_cost,
+        Some(ManaCost {
+            colored: [0; 6],
+            generic: 2
+        })
+    );
+}
+#[test]
+fn sos_dragon_miracle_first_draw_private_pause_finishes_draws_then_paid_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut left = scenario(p);
+        lorehold(&mut left, p);
+        let land = put(&mut left, p, "Forest", Zone::Library);
+        let spell = put(&mut left, p, "Group Project", Zone::Library);
+        let mut right = left.clone();
+        let n = right.state.players[p.index()].library.len();
+        right.state.players[p.index()].library.swap(n - 1, n - 2);
+        draw_spell(&mut left, p, "Divination");
+        draw_spell(&mut right, p, "Divination");
+        assert_eq!(left.state.players[p.index()].cards_drawn_this_turn, 1);
+        assert_eq!(right.state.players[p.index()].cards_drawn_this_turn, 1);
+        assert_eq!(
+            serde_json::to_value(left.observe(p.other())).unwrap(),
+            serde_json::to_value(right.observe(p.other())).unwrap()
+        );
+        assert!(left.observe(p.other()).miracle.is_none());
+        assert_eq!(left.observe(p).miracle.unwrap().object.card, spell);
+        assert!(left.observe(p).miracle.unwrap().can_reveal);
+        assert_eq!(right.observe(p).miracle.unwrap().object.card, land);
+        assert!(!right.observe(p).miracle.unwrap().can_reveal);
+        reject(&mut right, Action::RevealMiracle);
+        big_helpers::checked(&mut right, Action::DeclineMiracle);
+        assert_eq!(right.state.players[p.index()].cards_drawn_this_turn, 2);
+        assert!(right.observe(p).miracle.is_none());
+        assert_eq!(right.object_view(spell).zone, Zone::Hand);
+        big_helpers::settle(&mut right);
+        reveal_offer(&mut left);
+        assert_eq!(left.state.players[p.index()].cards_drawn_this_turn, 2);
+        assert!(left.state.known_hand.contains(&left.object_ref(spell)));
+        left.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        let object = free_card(&mut left, CastFace::Normal);
+        assert_eq!(object.card, spell);
+        pay(&mut left);
+        let cast = left.state.stack.last().unwrap().cast.unwrap();
+        assert_eq!(cast.method, CastMethod::Miracle);
+        assert_eq!(cast.origin, Zone::Hand);
+        assert_eq!(cast.mana_spent(), 2);
+        big_helpers::checked(&mut left, Action::FinishResolutionCasts);
+        big_helpers::settle(&mut left);
+        assert!(
+            left.state
+                .objects
+                .iter()
+                .any(|o| o.zone == Zone::Battlefield && o.is_token())
+        );
+    }
+}
+#[test]
+fn sos_dragon_miracle_source_departure_exact_hand_and_optional_window() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let dragon = lorehold(&mut g, p);
+        let spell = put(&mut g, p, "Group Project", Zone::Library);
+        draw_spell(&mut g, p, "Divination");
+        big_helpers::checked(&mut g, Action::RevealMiracle);
+        let bounce = put(&mut g, p, "Unsummon", Zone::Hand);
+        big_helpers::cast(&mut g, bounce, None, &[Target::Card(dragon)]);
+        offer(&mut g);
+        assert_eq!(g.object_view(dragon).zone, Zone::Hand);
+        assert_eq!(
+            g.state.resolution_free_casts.as_ref().unwrap().remaining[0],
+            g.object_ref(spell)
+        );
+        big_helpers::checked(&mut g, Action::FinishResolutionCasts);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Hand);
+        assert!(
+            !g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::CastExiledDuringResolution { .. }))
+        );
+
+        let mut g = scenario(p);
+        lorehold(&mut g, p);
+        let spell = put(&mut g, p, "Group Project", Zone::Library);
+        draw_spell(&mut g, p, "Chart a Course");
+        big_helpers::checked(&mut g, Action::RevealMiracle);
+        assert!(matches!(g.state.pending, Pending::EffectDiscard { .. }));
+        big_helpers::checked(&mut g, Action::Discard { card: spell });
+        big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert!(g.state.resolution_free_casts.is_none());
+    }
+}
+#[test]
+fn sos_dragon_lorehold_optional_opponent_upkeep_discard_miracle_sorcery() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        lorehold(&mut g, p);
+        g.begin_step(Step::Upkeep);
+        g.prepare_triggers();
+        assert!(g.state.stack.is_empty());
+        let discard = put(&mut g, p, "Forest", Zone::Hand);
+        g.state.active = p.other();
+        g.begin_step(Step::Upkeep);
+        g.give_priority();
+        for _ in 0..16 {
+            if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+                break;
+            }
+            big_helpers::checked(&mut g, Action::Pass);
+        }
+        let mut decline = g.clone();
+        big_helpers::checked(&mut decline, Action::DeclineEffectPayment);
+        big_helpers::settle(&mut decline);
+        assert_eq!(decline.state.players[p.index()].cards_drawn_this_turn, 0);
+        let enemy = put(&mut g, p.other(), "Forest", Zone::Hand);
+        let spell = put(&mut g, p, "Group Project", Zone::Library);
+        reject(&mut g, Action::Discard { card: enemy });
+        big_helpers::checked(&mut g, Action::Discard { card: discard });
+        assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
+        reveal_offer(&mut g);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        free_card(&mut g, CastFace::Normal);
+        pay(&mut g);
+        assert_eq!(g.state.active, p.other());
+        assert_eq!(g.object_view(spell).zone, Zone::Stack);
+        big_helpers::checked(&mut g, Action::FinishResolutionCasts);
+        big_helpers::settle(&mut g);
+    }
+}
+#[test]
+fn sos_dragon_miracle_mandatory_additional_cost_or_mana_alternative() {
+    for p in [Player::P0, Player::P1] {
+        for mana in [false, true] {
+            let mut g = scenario(p);
+            lorehold(&mut g, p);
+            let sacrifice = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let spell = put(&mut g, p, "Eaten Alive", Zone::Library);
+            draw_spell(&mut g, p, "Divination");
+            reveal_offer(&mut g);
+            g.state.players[p.index()].mana = if mana {
+                [0, 0, 1, 0, 0, 5]
+            } else {
+                [0, 0, 0, 0, 0, 2]
+            };
+            free_card(&mut g, CastFace::Normal);
+            if mana {
+                big_helpers::checked(&mut g, Action::ChooseSpellCost { cost: 1 });
+            } else {
+                big_helpers::checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+            }
+            big_helpers::checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            if !mana {
+                choose_extra(&mut g, sacrifice);
+            }
+            pay(&mut g);
+            assert_eq!(g.state.stack.last().unwrap().card, spell);
+            big_helpers::checked(&mut g, Action::FinishResolutionCasts);
+            big_helpers::settle(&mut g);
+            assert_eq!(g.object_view(target).zone, Zone::Exile);
+            assert_eq!(
+                g.object_view(sacrifice).zone,
+                if mana {
+                    Zone::Battlefield
+                } else {
+                    Zone::Graveyard
+                }
+            );
+        }
+    }
+}
+#[test]
+fn sos_dragon_miracle_x_zero_targets_and_natural_draw_step() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        lorehold(&mut g, p);
+        let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Fractalize", Zone::Library);
+        g.state.step = Step::Upkeep;
+        g.state.priority = p;
+        g.state.passes = 0;
+        first_draw(&mut g);
+        reveal_offer(&mut g);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        free_card(&mut g, CastFace::Normal);
+        assert_eq!(g.state.announcing.as_ref().unwrap().item.x, Some(0));
+        big_helpers::checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        big_helpers::checked(&mut g, Action::FinishResolutionCasts);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(stats(&g, target), (1, 1));
+    }
+}
+
+#[test]
+fn sos_dragon_miracle_ability_loss_first_draw_only_and_observed_policy() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let dragon = lorehold(&mut g, p);
+        let aura = put(&mut g, p, "Witness Protection", Zone::Hand);
+        big_helpers::cast(&mut g, aura, None, &[Target::Card(dragon)]);
+        big_helpers::settle(&mut g);
+        put(&mut g, p, "Group Project", Zone::Library);
+        let draw = put(&mut g, p, "Divination", Zone::Hand);
+        big_helpers::cast(&mut g, draw, None, &[]);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
+        assert!(g.observe(p).miracle.is_none());
+
+        let mut g = scenario(p);
+        lorehold(&mut g, p);
+        put(&mut g, p, "Group Project", Zone::Library);
+        draw_spell(&mut g, p, "Divination");
+        let actions = g.legal_actions();
+        let selected = crate::policy::smoke_index(&g, &actions);
+        assert_eq!(actions[selected], Action::RevealMiracle);
+        big_helpers::checked(&mut g, Action::DeclineMiracle);
+        big_helpers::settle(&mut g);
+        let second = put(&mut g, p, "Group Project", Zone::Library);
+        let draw = put(&mut g, p, "Divination", Zone::Hand);
+        big_helpers::cast(&mut g, draw, None, &[]);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 4);
+        assert_eq!(g.object_view(second).zone, Zone::Hand);
+        assert!(g.observe(p).miracle.is_none());
+    }
+}

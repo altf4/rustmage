@@ -3,12 +3,7 @@ use super::*;
 
 impl Game {
     pub(super) fn draw_many(&mut self, player: Player, amount: u128) {
-        // Empty draws only set the existing failed-draw flag. No admitted card
-        // replaces draws or triggers on failed draws; cap the redundant attempts.
-        let attempts = amount.min(self.state.players[player.index()].library.len() as u128 + 1);
-        for _ in 0..attempts {
-            self.draw(player);
-        }
+        self.draw_many_interruptible(player, amount);
     }
 
     pub(super) fn is_modified(&self, id: CardId) -> bool {

@@ -5,7 +5,10 @@ mod turn_skips;
 pub use mana_announcements::ManaAnnouncementView;
 #[path = "engine_cascade.rs"]
 mod cascade;
+#[path = "engine_miracle.rs"]
+mod miracle;
 pub use cascade::CascadeView;
+pub use miracle::MiracleChoiceView;
 #[path = "engine_paradigm.rs"]
 mod paradigm;
 pub use paradigm::{ParadigmView, ResolvedSpellNameView};
@@ -401,6 +404,8 @@ define_actions! {
     ChooseForageRoute { route: ForageRoute },
     ChooseForage { object: ObjectRef },
     DeclineForage,
+    RevealMiracle,
+    DeclineMiracle,
     AnnounceCounterGraveyard { card: CardId },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
@@ -749,6 +754,7 @@ pub enum CastMethod {
     Free,
     GrantedFlashback,
     Flashback,
+    Miracle,
     Plot,
     Warp,
 }
@@ -1297,6 +1303,9 @@ enum Pending {
     LinkedChoice {
         player: Player,
     },
+    MiracleReveal {
+        player: Player,
+    },
     ResolutionCasts {
         player: Player,
     },
@@ -1590,6 +1599,7 @@ struct State {
     graveyard_cast_permissions: cast_permissions::Rows,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
+    miracle: Option<Box<miracle::MiracleState>>,
     preparations: prepared::Rows,
     adventures: Option<Box<adventure::AdventureState>>,
     plot: Option<Box<plot::PlotState>>,
@@ -1977,6 +1987,7 @@ pub struct Observation {
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
     pub resolution_free_casts: Option<ResolutionFreeCasts>,
     pub cascade: Option<CascadeView>,
+    pub miracle: Option<MiracleChoiceView>,
     pub adventures: Vec<AdventurePermission>,
     pub spell_characteristics: Vec<SpellCharacteristicsView>,
     pub plotted_cards: Vec<PlottedCard>,
@@ -2213,6 +2224,7 @@ impl Game {
                 graveyard_cast_permissions: None,
                 graveyard_type_uses: None,
                 resolution_free_casts: None,
+                miracle: None,
                 temporary_abilities: None,
                 suspected: None,
                 death_exile_replacements: None,
@@ -2307,7 +2319,8 @@ impl Game {
             | Pending::Mulligan(p)
             | Pending::Bottom { player: p, .. } => Some(p),
             Pending::Priority => Some(self.state.priority),
-            Pending::ResolutionCasts { player }
+            Pending::MiracleReveal { player }
+            | Pending::ResolutionCasts { player }
             | Pending::ZoneReplacement { player }
             | Pending::ManaLotSpend { player }
             | Pending::Replacement { player }
@@ -2441,6 +2454,7 @@ impl Game {
             // still have representable derived values. Ordinary resolutions have
             // already checked battlefield stats in the SBA pass.
             if (self.state.resolving.is_some()
+                || self.miracle_choice_pending()
                 || self.plot_payment().is_some()
                 || self.state.announcing.is_some()
                 || self.state.entry_batch.is_some())
@@ -2565,6 +2579,9 @@ impl Game {
             // Resolution is atomic with respect to SBAs and priority, even when
             // a program is suspended for an optional effect or discard choice.
             loop {
+                if self.miracle_choice_pending() {
+                    break;
+                }
                 if self.advance_replacements(true) {
                     break;
                 }
@@ -2978,6 +2995,18 @@ impl Game {
                             return true;
                         }
                     }
+                }
+            }
+            Pending::MiracleReveal { player } => {
+                if self
+                    .miracle_choice_view(player)
+                    .is_some_and(|v| v.can_reveal)
+                    && emit(Action::RevealMiracle)
+                {
+                    return true;
+                }
+                if emit(Action::DeclineMiracle) {
+                    return true;
                 }
             }
             Pending::ResolutionCasts { player } => {
@@ -4048,6 +4077,8 @@ impl Game {
                     }
                 }
             }
+            Action::RevealMiracle => self.choose_miracle_reveal(true),
+            Action::DeclineMiracle => self.choose_miracle_reveal(false),
             Action::CastExiledDuringResolution { object, face } => {
                 self.cast_exiled_during_resolution(actor, object, face)
             }
@@ -4802,6 +4833,7 @@ impl Game {
             Some(id) => {
                 self.move_object(id, Zone::Hand);
                 self.card_drawn(p);
+                self.offer_miracle_reveal(p, id);
             }
             None => self.state.players[p.index()].attempted_empty_draw = true,
         }
@@ -5484,6 +5516,9 @@ impl Game {
     }
 
     fn give_priority(&mut self) {
+        if self.miracle_choice_pending() {
+            return;
+        }
         self.state.pending = Pending::Priority;
         self.state.priority = self.state.active;
         self.state.passes = 0;
@@ -6169,6 +6204,7 @@ impl Game {
             turn: s.turn,
             step: s.step,
             decision: match s.pending {
+                Pending::MiracleReveal { .. } => "miracle_reveal",
                 Pending::ResolutionCasts { .. } => "resolution_casts",
                 Pending::ManaLotSpend { .. } => "mana_lot_spend",
                 Pending::ZoneReplacement { .. } => "zone_replacement",
@@ -6313,6 +6349,7 @@ impl Game {
                 .resolving
                 .as_ref()
                 .and_then(|r| r.cascade.as_deref().cloned()),
+            miracle: self.miracle_choice_view(viewer),
             resolution_free_casts: s.resolution_free_casts.as_deref().cloned(),
             graveyard_type_uses: s
                 .graveyard_type_uses
@@ -6749,6 +6786,7 @@ impl Game {
             + s.hand_play_bans.as_ref().map_or(0, |bans| {
                 std::mem::size_of::<Vec<Player>>() + bans.len() * std::mem::size_of::<Player>()
             })
+            + miracle::owned_bytes(&s.miracle)
             + prepared::owned_bytes(&s.preparations)
             + s.adventures.as_ref().map_or(0, |p| p.bytes())
             + s.plot.as_ref().map_or(0, |p| p.bytes())

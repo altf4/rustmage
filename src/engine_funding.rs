@@ -1780,9 +1780,12 @@ impl Game {
             );
         }
         if a.item.kind == StackKind::Spell
-            && a.item
-                .cast
-                .is_some_and(|c| matches!(c.method, CastMethod::Free | CastMethod::Plot))
+            && a.item.cast.is_some_and(|c| {
+                matches!(
+                    c.method,
+                    CastMethod::Free | CastMethod::Plot | CastMethod::Miracle
+                )
+            })
         {
             let definition = a.item.source_card;
             let mut total = Self::with_kicker_cost(
@@ -1804,11 +1807,7 @@ impl Game {
                 .unwrap_or(u32::MAX),
             );
             if definition.mana_additional_alternative().is_some()
-                && cost
-                    != (ManaCost {
-                        colored: [0; 6],
-                        generic: 0,
-                    })
+                && Some(cost) != a.fixed_alternative_cost()
             {
                 return self.can_fund_for(
                     FundingGoal {

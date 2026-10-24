@@ -346,6 +346,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::PlayGraveyardPermanent { .. } => 79,
             Action::CastExiledDuringResolution { .. } => 81,
             Action::FinishResolutionCasts => -1,
+            Action::RevealMiracle => 82,
+            Action::DeclineMiracle => -1,
             Action::BeginCast { .. } => 80,
             // Once a complete target set is legal, commit it instead of
             // revisiting optional edits (which may otherwise oscillate).

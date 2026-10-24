@@ -3,6 +3,7 @@ use super::*;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
+    pub miracle_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
     pub plan: TargetPlan,
@@ -35,6 +36,16 @@ pub(super) struct Announcement {
 }
 
 impl Announcement {
+    pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
+        self.item.cast.and_then(|c| match c.method {
+            CastMethod::Miracle => self.miracle_cost,
+            CastMethod::Free | CastMethod::Plot => Some(ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            }),
+            _ => None,
+        })
+    }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
         if self
             .item
@@ -68,17 +79,14 @@ impl Announcement {
                             .source_card
                             .mana_alternative_replaces_additional(cost)
                     }),
-                    CastMethod::Free | CastMethod::Plot => {
-                        self.cost.is_some_and(|cost| {
-                            cost != (ManaCost {
-                                colored: [0; 6],
-                                generic: 0,
-                            })
-                        }) && self
-                            .item
-                            .source_card
-                            .mana_additional_alternative()
-                            .is_some()
+                    CastMethod::Free | CastMethod::Plot | CastMethod::Miracle => {
+                        self.fixed_alternative_cost()
+                            .is_some_and(|base| self.cost.is_some_and(|cost| cost != base))
+                            && self
+                                .item
+                                .source_card
+                                .mana_additional_alternative()
+                                .is_some()
                     }
                     _ => false,
                 }) =>
@@ -99,6 +107,14 @@ impl Announcement {
 
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
         let options = match self.item.kind {
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Miracle) =>
+            {
+                std::iter::once(self.miracle_cost.expect("miracle cost")).chain([].iter().copied())
+            }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
                 std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
                     .chain([].iter().copied())
@@ -139,11 +155,22 @@ impl Announcement {
                 unreachable!("triggered ability has no activation cost")
             }
         };
-        let extra = self
-            .item
-            .cast
-            .filter(|c| matches!(c.method, CastMethod::Free | CastMethod::Plot))
-            .and_then(|_| self.item.source_card.mana_additional_alternative());
+        let extra = self.fixed_alternative_cost().and_then(|base| {
+            self.item
+                .source_card
+                .mana_additional_alternative()
+                .map(|extra| ManaCost {
+                    colored: std::array::from_fn(|i| {
+                        base.colored[i]
+                            .checked_add(extra.colored[i])
+                            .capacity("additional mana cost exhausted")
+                    }),
+                    generic: base
+                        .generic
+                        .checked_add(extra.generic)
+                        .capacity("additional mana cost exhausted"),
+                })
+        });
         options
             .map(|mut cost| {
                 cost.generic = cost.generic.saturating_sub(self.activation_discount);
@@ -1310,6 +1337,7 @@ impl Game {
         self.state.announcing = Some(Announcement {
             activation_discount: self.item_activation_discount(&item),
             free_hand_permission: None,
+            miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -1358,6 +1386,7 @@ impl Game {
         self.state.announcing = Some(Announcement {
             activation_discount: self.item_activation_discount(&item),
             free_hand_permission: None,
+            miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan,

@@ -226,7 +226,10 @@ impl Game {
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = method;
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
-        if matches!(method, CastMethod::Free | CastMethod::Flashback) && definition.x_symbols() > 0
+        if matches!(
+            method,
+            CastMethod::Free | CastMethod::Flashback | CastMethod::Miracle
+        ) && definition.x_symbols() > 0
         {
             item.x = Some(0);
         }
@@ -245,13 +248,18 @@ impl Game {
         {
             return false;
         }
-        if definition.x_symbols() > 0 && !matches!(method, CastMethod::Free | CastMethod::Flashback)
+        if definition.x_symbols() > 0
+            && !matches!(
+                method,
+                CastMethod::Free | CastMethod::Flashback | CastMethod::Miracle
+            )
         {
             return !self.scalar_x_intervals(actor, card).is_empty();
         }
         let a = Announcement {
             activation_discount: 0,
             free_hand_permission: None,
+            miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan: TargetPlan::Single(TargetSpec::NONE),
