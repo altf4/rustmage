@@ -3,9 +3,36 @@
   "catalogue_id": 5381,
   "oracle_id": "df5e4100-8c83-42d6-af96-1a1ec84a9210",
   "facts_sha256": "bc26fc88d761a730626197ba0a66f7c5bb76302ba25420723e6cde6ecabf8346",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "3971a5471f0a03ac7643f0dc69496b0a5235d02899986f9924a4b51ff312ca55",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SpellbookSeeker.java",
-  "java_sha256": "0dc6106bb51e789bec5ee074783e5c2bd5cc70e36d4b25bef99ae5ca865e5fa5"
+  "java_sha256": "0dc6106bb51e789bec5ee074783e5c2bd5cc70e36d4b25bef99ae5ca865e5fa5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PreparedSpellCopy.java",
+      "sha256": "47b70902962be18fa763cc8854b371c9a36072815ae3dc5c67319bde72667c95"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PrepareCastFromExileEffect.java",
+      "sha256": "eb168f4ab3cd6050efc559050e9d40e8a212c6d7e7713f864602380c28fcc39f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    }
+  ]
 }

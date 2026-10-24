@@ -20,6 +20,9 @@ mod copies;
 mod stack_copies;
 #[path = "engine_card_copies.rs"]
 mod card_copies;
+#[path = "engine_prepared.rs"]
+mod prepared;
+pub use prepared::PreparationView;
 pub use copies::CopyRecipe;
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
@@ -1563,6 +1566,7 @@ struct State {
     graveyard_cast_permissions: cast_permissions::Rows,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
+    preparations: prepared::Rows,
     adventures: Option<Box<adventure::AdventureState>>,
     plot: Option<Box<plot::PlotState>>,
     warp: Option<Box<warp::WarpState>>,
@@ -1622,6 +1626,7 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    pub prepared: bool,
     /// Frozen effective nonkeyword abilities only while a removal effect exists.
     /// None is the allocation-free complete printed/default-grant case.
     pub abilities: Option<Box<AbilityAvailabilityView>>,
@@ -1867,6 +1872,7 @@ pub struct LegalActionSpace {
 pub struct Observation {
     pub paradigms: Vec<ParadigmView>,
     pub resolved_spell_names: Vec<ResolvedSpellNameView>,
+    pub preparations: Vec<PreparationView>,
     pub library_piles: Option<LibraryPilesView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
@@ -2149,6 +2155,7 @@ impl Game {
                 suspected: None,
                 death_exile_replacements: None,
                 roles: None,
+                preparations: None,
                 adventures: None,
                 plot: None,
                 warp: None,
@@ -4965,6 +4972,7 @@ impl Game {
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
+            self.forget_prepared(before.reference);
             self.clear_suspected_reference(before.reference);
             self.forget_graveyard_type_source(before.reference);
         }
@@ -5735,6 +5743,7 @@ impl Game {
         Observation {
             paradigms: self.paradigm_views(),
             resolved_spell_names: self.resolved_spell_name_views(),
+            preparations: s.preparations.as_ref().map_or_else(Vec::new, |rows| rows.to_vec()),
             library_piles: self.library_piles_view(viewer),
             keep_types: self.keep_types_view(),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
@@ -6378,6 +6387,7 @@ impl Game {
             + s.hand_play_bans.as_ref().map_or(0, |bans| {
                 std::mem::size_of::<Vec<u32>>() + bans.len() * std::mem::size_of::<u32>()
             })
+            + prepared::owned_bytes(&s.preparations)
             + s.adventures.as_ref().map_or(0, |p| p.bytes())
             + s.plot.as_ref().map_or(0, |p| p.bytes())
             + s.crew.as_ref().map_or(0, |c| c.bytes())

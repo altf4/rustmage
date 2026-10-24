@@ -11,7 +11,8 @@ pub struct ExilePlayPermission {
 }
 impl Game {
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
-        if self.can_play_foreign_stash(player, card)
+        if self.can_cast_prepared(player, card)
+            || self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
             || self.can_cast_warped(player, card)
         {
@@ -155,6 +156,14 @@ impl Game {
         death_sources: &[ObjectView],
     ) {
         self.graveyard_departure_triggers(events, death_sources);
+        for event in events {
+            if event.moved && event.destination == Zone::Battlefield
+                && self.copiable_recipe(event.after).definition.enters_prepared()
+                && self.printed_abilities_available(event.after.card)
+            {
+                self.prepare_permanent(event.after);
+            }
+        }
         // No zone changes occur while observers are queued. Freeze their
         // post-event views once instead of rescanning the arena per newcomer.
         let sources: Vec<_> = if events

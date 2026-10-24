@@ -660,6 +660,7 @@ impl CharacteristicQuery<'_> {
             self.layered_stats_without_hand(id, None)
         };
         ObjectView {
+            prepared: self.is_prepared(self.object_ref(id)),
             abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),
             colors: CharacteristicWorld::colors(self, id),

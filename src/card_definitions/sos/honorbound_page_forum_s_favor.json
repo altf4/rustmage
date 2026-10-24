@@ -3,10 +3,45 @@
   "catalogue_id": 2066,
   "oracle_id": "66ee56b9-aca8-4efa-b9b5-50717e0784a7",
   "facts_sha256": "e4f4dcd60051c5b382dd5b92c3e5940a7ccd285888fdf1fd430575e3f7ecc76c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a1594e6bff3deb1c8fc46756ebdb280f3a73010c188d50f6ad3bb7ce35347569"
   },
-  "physical_metadata_sha256": "efe21163d20bd111cdef0dfc07df4cf3ead00c48be5003b1462d3a66ef5d9ac4"
+  "physical_metadata_sha256": "efe21163d20bd111cdef0dfc07df4cf3ead00c48be5003b1462d3a66ef5d9ac4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HonorboundPage.java",
+  "java_sha256": "4ea30b9ec6360f6e7f110bd32a2fe580b2d84a339ae94384d21bbcc7b4866a1b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PreparedSpellCopy.java",
+      "sha256": "47b70902962be18fa763cc8854b371c9a36072815ae3dc5c67319bde72667c95"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PrepareCastFromExileEffect.java",
+      "sha256": "eb168f4ab3cd6050efc559050e9d40e8a212c6d7e7713f864602380c28fcc39f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

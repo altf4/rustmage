@@ -851,6 +851,9 @@ impl Game {
     pub(super) fn push_stack_item(&mut self, item: SpellView) {
         let cast = (item.kind == StackKind::Spell && item.cast.is_some() && !item.is_copy)
             .then_some((item.controller, item.source_card));
+        if cast.is_some() {
+            self.complete_prepared_cast(item.object);
+        }
         self.state.stack.push(item);
         let Some((caster, card)) = cast else { return };
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));
@@ -1614,6 +1617,17 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::PrepareSource => self.prepare_permanent(item.object),
+                Instruction::Prepare { subject } => {
+                    for id in self.keyword_subjects(&item, subject) {
+                        self.prepare_permanent(self.object_ref(id));
+                    }
+                }
+                Instruction::Unprepare { subject } => {
+                    for id in self.keyword_subjects(&item, subject) {
+                        self.forget_prepared(self.object_ref(id));
+                    }
+                }
                 Instruction::PartitionLibraryPiles(maximum) => {
                     self.start_library_piles(item.controller, maximum);
                     return;

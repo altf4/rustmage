@@ -225,3 +225,237 @@ fn sos_card_copy_normal_paid_cast_counts_and_ceases_without_physical_recovery() 
         );
     }
 }
+
+#[test]
+fn sos_preparation_public_copy_paid_cast_transaction_and_exact_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Landscape Painter", Zone::Hand);
+        let mana: u32 = g.state.players[p.index()].mana.iter().sum();
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(
+            mana - g.state.players[p.index()].mana.iter().sum::<u32>(),
+            2
+        );
+        assert_eq!(stats(&g, source), (2, 1));
+        assert!(g.object_view(source).prepared);
+        let row = g.state.preparations.as_ref().unwrap()[0];
+        let copy = row.spell_copy.card;
+        assert_eq!(g.object_view(copy).name(), "Vibrant Idea");
+        assert_eq!(g.object_view(copy).zone, Zone::Exile);
+        assert_eq!(g.object_view(copy).card.info().mana_cost, "{4}{U}");
+        for viewer in [p, p.other()] {
+            let observation = g.observe(viewer);
+            assert!(
+                observation
+                    .objects
+                    .iter()
+                    .any(|o| o.reference == row.spell_copy)
+            );
+            assert_eq!(observation.preparations, vec![row]);
+        }
+        g.prepare_permanent(g.object_ref(source));
+        assert_eq!(g.state.preparations.as_ref().unwrap().len(), 1);
+        big_helpers::checked(&mut g, Action::AnnounceExile { card: copy });
+        assert!(g.object_view(source).prepared);
+        reject(&mut g, Action::PayCosts { payment: [0; 6] });
+        assert!(g.object_view(source).prepared);
+        let hand = g.hand_count(p);
+        let payment = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        big_helpers::checked(&mut g, payment);
+        assert!(!g.object_view(source).prepared);
+        assert!(g.state.preparations.is_none());
+        assert_eq!(
+            g.state.stack.last().unwrap().source_card.name(),
+            "Vibrant Idea"
+        );
+        assert_eq!(
+            g.state
+                .stack
+                .last()
+                .unwrap()
+                .cast
+                .unwrap()
+                .payment
+                .iter()
+                .sum::<u32>(),
+            5
+        );
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), hand + 2);
+        assert_eq!(g.object_view(copy).zone, Zone::Outside);
+        g.move_object(source, Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        let second = g.state.preparations.as_ref().unwrap()[0];
+        assert_ne!(second.permanent, row.permanent);
+        assert_ne!(second.spell_copy, row.spell_copy);
+        g.move_object(source, Zone::Exile);
+        assert!(g.state.preparations.is_none());
+        assert_eq!(g.object_view(second.spell_copy.card).zone, Zone::Outside);
+    }
+}
+
+#[test]
+fn sos_preparation_survives_ability_type_and_controller_changes() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Landscape Painter", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        let copy = g.state.preparations.as_ref().unwrap()[0].spell_copy.card;
+        let aura = put(&mut g, p, "Imprisoned in the Moon", Zone::Hand);
+        cast(&mut g, aura, Some(Target::Card(source)));
+        settle(&mut g);
+        assert!(!g.is_creature(source));
+        assert!(!g.printed_abilities_available(source));
+        assert!(g.object_view(source).prepared);
+        assert!(g.can_cast_prepared(p, copy));
+        let source_owner = g.state.objects[source as usize].owner;
+        g.record_control(g.object_ref(source), p.other(), None);
+        assert_eq!(g.state.objects[source as usize].owner, source_owner);
+        assert_eq!(g.state.objects[copy as usize].owner, p);
+        assert!(!g.can_cast_prepared(p, copy));
+        assert!(g.can_cast_prepared(p.other(), copy));
+        g.state.active = p.other();
+        g.state.priority = p.other();
+        g.state.players[p.other().index()].mana = [8; 6];
+        let hand = g.hand_count(p.other());
+        act(&mut g, Action::AnnounceExile { card: copy });
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p.other()), hand + 2);
+        assert!(!g.object_view(source).prepared);
+    }
+}
+
+fn prepared_cast(g: &mut Game, source: CardId, targets: &[Target]) -> CardId {
+    let row = g
+        .state
+        .preparations
+        .as_ref()
+        .unwrap()
+        .iter()
+        .find(|r| r.permanent == g.object_ref(source))
+        .copied()
+        .unwrap();
+    let id = row.spell_copy.card;
+    act(g, Action::AnnounceExile { card: id });
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    pay(g);
+    id
+}
+
+#[test]
+fn sos_prepared_whole_card_bodies_and_inset_effects() {
+    for p in [Player::P0, Player::P1] {
+        for (name, power, toughness, keyword, bonus_keyword) in [
+            (
+                "Honorbound Page",
+                3,
+                3,
+                Keywords::FIRST_STRIKE,
+                Keywords::FLYING,
+            ),
+            (
+                "Quill-Blade Laureate",
+                1,
+                1,
+                Keywords::DOUBLE_STRIKE,
+                Keywords::DOUBLE_STRIKE,
+            ),
+        ] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, name, Zone::Hand);
+            cast(&mut g, source, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (power, toughness));
+            assert!(g.keywords(source).contains(keyword));
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            prepared_cast(&mut g, source, &[Target::Card(target)]);
+            settle(&mut g);
+            assert_eq!(stats(&g, target), (3, 2));
+            assert!(g.keywords(target).contains(bonus_keyword));
+            g.finish_cleanup();
+            assert_eq!(stats(&g, target), (2, 2));
+            assert!(!g.keywords(target).contains(bonus_keyword));
+        }
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Campus Composer", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (3, 4));
+        prepared_cast(&mut g, source, &[]);
+        settle(&mut g);
+        let made = tokens(&g, p);
+        assert_eq!(made.len(), 1);
+        assert_eq!(stats(&g, made[0]), (3, 3));
+        assert_eq!(g.object_view(made[0]).colors, 2 | 8);
+        assert!(g.keywords(made[0]).contains(Keywords::FLYING));
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Spellbook Seeker", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (3, 3));
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+        let draws = g.state.players[p.index()].cards_drawn_this_turn;
+        prepared_cast(&mut g, source, &[]);
+        big_helpers::settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, draws + 2);
+        assert_eq!(g.hand_count(p), 0);
+        assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 2);
+    }
+}
+
+#[test]
+fn sos_prepared_ward_counter_decline_and_attack_reprepare() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Campus Composer", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        g.state.priority = p.other();
+        let bounce = put(&mut g, p.other(), "Unsummon", Zone::Hand);
+        cast(&mut g, bounce, Some(Target::Card(source)));
+        for _ in 0..16 {
+            if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        assert!(matches!(g.state.pending, Pending::ResolutionMana { .. }));
+        act(&mut g, Action::DeclineResolutionMana);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(bounce).zone, Zone::Graveyard);
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Encouraging Aviator", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (2, 3));
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+        assert!(!g.object_view(source).prepared);
+        g.state.objects[source as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        act(&mut g, Action::Attack { card: source });
+        act(&mut g, Action::FinishAttackers);
+        settle(&mut g);
+        assert!(g.object_view(source).prepared);
+        let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        prepared_cast(&mut g, source, &[Target::Card(target)]);
+        settle(&mut g);
+        assert!(g.keywords(target).contains(Keywords::FLYING));
+        assert!(!g.object_view(source).prepared);
+    }
+}

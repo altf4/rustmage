@@ -717,6 +717,9 @@ pub(crate) enum Instruction {
     /// Lose the frozen mana value of the originally legal target card, after movement.
     LoseLifeTargetCardManaValue(PlayerSet),
     ExileUntilManaValueCastFree(u16),
+    PrepareSource,
+    Prepare { subject: Subject },
+    Unprepare { subject: Subject },
     CreateTokenChoice(&'static [Card]),
     PlayHideawayIfCoven,
     ExileHandCardCopy,

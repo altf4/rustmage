@@ -59,7 +59,8 @@ impl Game {
                 batch.ceased.push(id);
             }
             if object.copy_kind == CopyKind::Card
-                && !matches!(object.zone, Zone::Exile | Zone::Stack | Zone::Outside)
+                && !matches!(object.zone, Zone::Stack | Zone::Outside)
+                && !(object.zone == Zone::Exile && self.keeps_card_copy(self.object_ref(id)))
             {
                 batch.ceased.push(id);
                 continue;
