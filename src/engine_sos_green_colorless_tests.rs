@@ -624,3 +624,275 @@ fn sos_comforting_counsel_counts_gain_events_live_threshold_control_and_reentry(
         assert_eq!(g.stats(enemy).power, 2);
     }
 }
+
+fn prep_copy(g: &Game, source: CardId) -> CardId {
+    g.state
+        .preparations
+        .as_ref()
+        .unwrap()
+        .iter()
+        .find(|row| row.permanent == g.object_ref(source))
+        .unwrap()
+        .spell_copy
+        .card
+}
+fn paid_prep(g: &mut Game, source: CardId, x: Option<u32>, targets: &[Target]) -> CardId {
+    let copy = prep_copy(g, source);
+    checked(g, Action::AnnounceExile { card: copy });
+    if let Some(value) = x {
+        checked(g, Action::ChooseX { value });
+    }
+    for &target in targets {
+        checked(g, Action::ChooseTarget { target });
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        checked(g, Action::FinishTargets);
+    }
+    let pay = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a, Action::PayCosts { .. }))
+        .unwrap();
+    checked(g, pay);
+    assert!(!g.object_view(source).prepared);
+    copy
+}
+fn until_pending(g: &mut Game, stop: impl Fn(&Pending) -> bool) {
+    for _ in 0..60 {
+        if stop(&g.state.pending) {
+            return;
+        }
+        let action = if g.state.pending == Pending::Priority {
+            Action::Pass
+        } else {
+            g.legal_actions()
+                .into_iter()
+                .find(|a| !matches!(a, Action::Concede))
+                .unwrap()
+        };
+        checked(g, action);
+    }
+    panic!("missing pending {:?}", g.state.pending);
+}
+
+#[test]
+fn sos_infirmary_healer_paid_prepared_x_life_and_exile_copy_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        for recipient in [p, p.other()] {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "Infirmary Healer", None, &[]);
+            settle(&mut g);
+            assert_eq!((g.stats(source).power, g.stats(source).toughness), (2, 3));
+            assert!(g.object_view(source).prepared);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 4, 0];
+            let life = g.state.players[recipient.index()].life;
+            let copy = paid_prep(&mut g, source, Some(3), &[Target::Player(recipient)]);
+            settle(&mut g);
+            assert_eq!(g.state.players[recipient.index()].life, life + 3);
+            assert_eq!(g.object_view(copy).zone, Zone::Outside);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}
+
+#[test]
+fn sos_emeritus_regrowth_and_attack_reprepare_rechecks_eight_lands() {
+    for p in [Player::P0, Player::P1] {
+        for (lands, lose_land) in [(7, false), (8, false), (8, true)] {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "Emeritus of Abundance", None, &[]);
+            settle(&mut g);
+            assert_eq!((g.stats(source).power, g.stats(source).toughness), (3, 4));
+            assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+            let old = named(&mut g, p, "Forest", Zone::Graveyard);
+            paid_prep(&mut g, source, None, &[Target::Card(old)]);
+            settle(&mut g);
+            assert_eq!(g.object_view(old).zone, Zone::Hand);
+            let land_ids = (0..lands)
+                .map(|_| named(&mut g, p, "Forest", Zone::Battlefield))
+                .collect::<Vec<_>>();
+            g.state.objects[source as usize].summoning_sick = false;
+            g.state.step = Step::Attackers;
+            g.state.pending = Pending::Attackers;
+            checked(&mut g, Action::Attack { card: source });
+            checked(&mut g, Action::FinishAttackers);
+            if lose_land {
+                g.move_object(land_ids[0], Zone::Graveyard);
+            }
+            settle(&mut g);
+            assert!(!g.object_view(source).tapped);
+            assert_eq!(g.object_view(source).prepared, lands == 8 && !lose_land);
+        }
+    }
+}
+
+#[test]
+fn sos_studious_first_year_search_basic_tapped_or_fail_to_find() {
+    for p in [Player::P0, Player::P1] {
+        for find in [false, true] {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "Studious First-Year", None, &[]);
+            settle(&mut g);
+            assert_eq!((g.stats(source).power, g.stats(source).toughness), (1, 1));
+            let land = named(&mut g, p, "Island", Zone::Library);
+            let bad = named(&mut g, p, "Bear Cub", Zone::Library);
+            paid_prep(&mut g, source, None, &[]);
+            until_pending(&mut g, |pending| {
+                matches!(pending, Pending::EffectSearch { .. })
+            });
+            assert!(g.observe(p.other()).search_choice.is_none());
+            reject(&mut g, Action::ChooseSearch { card: bad });
+            if find {
+                checked(&mut g, Action::ChooseSearch { card: land });
+            }
+            checked(&mut g, Action::FinishSearch);
+            settle(&mut g);
+            assert_eq!(g.on_battlefield(land), find);
+            assert_eq!(g.object_view(land).tapped, find);
+        }
+    }
+}
+
+#[test]
+fn sos_vastlands_scavenger_exact_milled_creature_mandatory_and_source_independent() {
+    for p in [Player::P0, Player::P1] {
+        for have_creatures in [false, true] {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "Vastlands Scavenger", None, &[]);
+            settle(&mut g);
+            assert_eq!((g.stats(source).power, g.stats(source).toughness), (4, 4));
+            assert!(g.keywords(source).contains(Keywords::DEATHTOUCH));
+            let old = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+            let first = if have_creatures {
+                Some(named(&mut g, p, "Serra Angel", Zone::Library))
+            } else {
+                None
+            };
+            if have_creatures {
+                named(&mut g, p, "Bear Cub", Zone::Library);
+            }
+            let count = g.state.players[p.index()].library.len();
+            paid_prep(&mut g, source, None, &[]);
+            g.move_object(source, Zone::Graveyard);
+            if let Some(first) = first {
+                until_pending(&mut g, |pending| {
+                    matches!(pending, Pending::MilledSelection { .. })
+                });
+                assert!(g.observe(p.other()).milled_choice.is_none());
+                let old = g.object_ref(old);
+                reject(&mut g, Action::SelectMilled { object: old });
+                reject(&mut g, Action::FinishMilledSelection);
+                let first = g.object_ref(first);
+                checked(&mut g, Action::SelectMilled { object: first });
+                assert!(!matches!(g.state.pending, Pending::MilledSelection { .. }));
+                settle(&mut g);
+                assert!(g.on_battlefield(first.card));
+            } else {
+                settle(&mut g);
+            }
+            assert_eq!(g.state.players[p.index()].library.len(), count - 7);
+            assert_eq!(g.object_view(old).zone, Zone::Graveyard);
+        }
+    }
+}
+
+#[test]
+fn sos_skycoach_waypoint_mana_paid_prepare_and_noop_on_ordinary_creature() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let waypoint = named(&mut g, p, "Skycoach Waypoint", Zone::Battlefield);
+        let mana = g.state.players[p.index()].mana[5];
+        let tap = g
+            .legal_actions()
+            .into_iter()
+            .find(
+                |a| matches!(a, Action::ActivateMana { card, ability: 0, .. } if *card == waypoint),
+            )
+            .unwrap();
+        checked(&mut g, tap);
+        assert_eq!(g.state.players[p.index()].mana[5], mana + 1);
+        assert!(g.object_view(waypoint).tapped);
+        g.state.objects[waypoint as usize].tapped = false;
+        let healer = paid(&mut g, p, "Infirmary Healer", None, &[]);
+        settle(&mut g);
+        paid_prep(&mut g, healer, Some(0), &[Target::Player(p)]);
+        settle(&mut g);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: waypoint,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(healer),
+            },
+        );
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        g.move_object(waypoint, Zone::Graveyard);
+        settle(&mut g);
+        assert!(g.object_view(healer).prepared);
+        let ordinary = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let next = named(&mut g, p, "Skycoach Waypoint", Zone::Battlefield);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: next,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(ordinary),
+            },
+        );
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        assert!(!g.object_view(ordinary).prepared);
+    }
+}
+
+#[test]
+fn sos_biblioplex_tomekeeper_optional_entry_modes_prepare_unprepare_and_departed_source() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, "Infirmary Healer", None, &[]);
+            settle(&mut g);
+            if mode == 1 {
+                paid_prep(&mut g, source, Some(0), &[Target::Player(p)]);
+                settle(&mut g);
+            }
+            let tome = paid(&mut g, p, "Biblioplex Tomekeeper", None, &[]);
+            until_pending(&mut g, |pending| matches!(pending, Pending::Modes { .. }));
+            assert_eq!((g.stats(tome).power, g.stats(tome).toughness), (3, 4));
+            g.move_object(tome, Zone::Graveyard);
+            checked(&mut g, Action::ChooseMode { mode });
+            if mode != 0 {
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(source),
+                    },
+                );
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(source).prepared, mode != 2);
+        }
+    }
+}

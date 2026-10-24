@@ -3,10 +3,24 @@
   "catalogue_id": 3900,
   "oracle_id": "2ac2b815-2d72-48e6-b43a-18884a74bf95",
   "facts_sha256": "48a5473cf7d3bbc639950212ebc86f11fb33480051ac347825d01578bb623eb6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "128c855976b69d121f73db884823a5477e78d90e5f0294eee516d842df8f19e6"
   },
-  "physical_metadata_sha256": "8161fa1277ee5d7edce897c0d4b166ddf335d0d8800817b0ac8f2e903e02996c"
+  "physical_metadata_sha256": "8161fa1277ee5d7edce897c0d4b166ddf335d0d8800817b0ac8f2e903e02996c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SkycoachWaypoint.java",
+  "java_sha256": "065df49668a6e05ce8ef475d2e68b7f74986f7f23d20976dbbda4946d30086a2",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e633f01d35efd5b302570c57216efb4ed71cd895c88dab0987908dbb95a3846e"
+    }
+  ],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes"
+  ]
 }

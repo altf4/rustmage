@@ -3,10 +3,34 @@
   "catalogue_id": 4851,
   "oracle_id": "3a97bc8d-bd81-468e-9277-eba4fac11ee0",
   "facts_sha256": "fa2b9394907f20a4c145a2e404f3c2de104c3be0e4e5a985c76c5a02faf5504a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3a4a5963b5fd6d1a477ad625c97145c2a89b9219d6a3e630548199ea42246e10"
   },
-  "physical_metadata_sha256": "1ea437a57d586b954469a17c2c7acbba3473b7a66c849196b9d0b554ef408d83"
+  "physical_metadata_sha256": "1ea437a57d586b954469a17c2c7acbba3473b7a66c849196b9d0b554ef408d83",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VastlandsScavenger.java",
+  "java_sha256": "edc03bfeb293b4c21db109c522ca2c0381c91b83da06f5624f583b91234c30c9",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    }
+  ],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes"
+  ]
 }

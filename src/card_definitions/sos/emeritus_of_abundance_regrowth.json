@@ -3,10 +3,34 @@
   "catalogue_id": 1314,
   "oracle_id": "e5152e8d-9f55-493d-a0fc-753cc72ee299",
   "facts_sha256": "85e797bbfb9ca42a496ff910862faf5c0a5a16a116c7f3459cab72ff0caa8dd9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "874ab7af1ae36fefbb6152808c4c412043b981de2797fa26ff9015da178ab610"
   },
-  "physical_metadata_sha256": "91ead1fabe38ebfb22d779999ada94a0e61f87e6f7499b1e7289a40918608dae"
+  "physical_metadata_sha256": "91ead1fabe38ebfb22d779999ada94a0e61f87e6f7499b1e7289a40918608dae",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfAbundance.java",
+  "java_sha256": "ab77f34adf0208e7333f7c411d46ee29d600077ebac5f38c837b098baaa58c27",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    }
+  ],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes"
+  ]
 }
