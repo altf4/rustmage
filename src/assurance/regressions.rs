@@ -60,7 +60,7 @@ fn fixture() -> Game {
     }
     g
 }
-fn trace(card: Card) -> Trace {
+fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
     let mut g = fixture();
     let id = put(&mut g, Player::P0, card.identity(), Zone::Hand);
     let opening = if card.is_land() {
@@ -193,6 +193,22 @@ fn trace(card: Card) -> Trace {
     let mut views = [g.observe(Player::P0), g.observe(Player::P1)];
     for view in &mut views {
         view.catalogue = "";
+        if let Some(schema) = schema_projection {
+            view.schema = schema;
+        }
+    }
+    let mut observation_bytes = serde_json::to_string(&views).unwrap();
+    if schema_projection.is_some_and(|schema| schema < 137) {
+        // Recording-only projection of the two new ObjectView wire fields.
+        // Preserve every inherited field and byte order so old hashes still
+        // detect gameplay drift. Normal validation never takes this branch.
+        for field in [
+            ",\"entered_this_turn\":true",
+            ",\"entered_this_turn\":false",
+            ",\"power_up_uses\":[]",
+        ] {
+            observation_bytes = observation_bytes.replace(field, "");
+        }
     }
     Trace {
         root: root.into(),
@@ -200,7 +216,7 @@ fn trace(card: Card) -> Trace {
         decisions: journal.len(),
         zone: format!("{:?}", g.object_view(id).zone),
         journal: digest(&serde_json::to_vec(&journal).unwrap()),
-        observations: digest(&serde_json::to_vec(&views).unwrap()),
+        observations: digest(observation_bytes.as_bytes()),
     }
 }
 
@@ -216,7 +232,7 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
         .map(|row| {
             let name = row["name"].as_str().unwrap();
             let card = Card::from_name(name).unwrap();
-            (name.into(), trace(card))
+            (name.into(), trace(card, None))
         })
         .collect();
     // Recording is explicit, outside ordinary validation, and still compares
@@ -225,7 +241,30 @@ fn supported_cards_retain_bounded_cast_and_entry_traces() {
         let path = std::path::PathBuf::from(output);
         let cache = std::path::PathBuf::from(std::env::var("HOME").unwrap()).join(".cache");
         assert!(path.starts_with(cache), "record traces under ~/.cache");
-        std::fs::write(path, serde_json::to_string_pretty(&actual).unwrap() + "\n").unwrap();
+        std::fs::write(&path, serde_json::to_string_pretty(&actual).unwrap() + "\n").unwrap();
+        // Audit a wire-only version migration without accepting any baseline
+        // drift: the ordinary assertions below still run and fail on changes.
+        if let Ok(schema) = std::env::var("RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA") {
+            let schema: u32 = schema.parse().expect("numeric prior observation schema");
+            let previous: BTreeMap<String, Trace> = coverage["cards"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .filter(|row| row["implemented"] == true)
+                .map(|row| {
+                    let name = row["name"].as_str().unwrap();
+                    (
+                        name.into(),
+                        trace(Card::from_name(name).unwrap(), Some(schema)),
+                    )
+                })
+                .collect();
+            std::fs::write(
+                path.with_extension("previous-schema.json"),
+                serde_json::to_string_pretty(&previous).unwrap() + "\n",
+            )
+            .unwrap();
+        }
     }
     let expected: BTreeMap<String, Trace> =
         serde_json::from_str(include_str!("card_traces.json")).unwrap();

@@ -126,3 +126,10 @@ candidate to `src/assurance/card_traces.json`. Ordinary validation never updates
 baselines. Set `CARGO_TARGET_DIR` under `~/.cache` when doing local development
 builds, and keep logs/reports there. Refreshing fingerprints alone is insufficient
 review evidence for a changed card rule.
+
+Power-up wire migrations can be audited with the recording-only
+`RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=136` option alongside
+`RUSTMAGE_RECORD_CARD_TRACES=<cache>/candidate.json`. The previous-wire export
+removes only the new `ObjectView` entry-turn/use-history fields and retains
+all inherited fields and their serialization order. Ordinary validation still
+compares the full current traces strictly, even while recording audit output.

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Power-up prerequisite and three complete representative consumers; full-set acceptance pending",
+  "source_base": "859fd820",
+  "behavior_head_before_trace_update": "f5c11b6ca66903ebe15804fad2308832483f6757",
+  "previous_observation_schema": 136,
+  "observation_schema": 137,
+  "inherited_trace_count": 2387,
+  "inherited_previous_wire_full_trace_matches": 2387,
+  "inherited_journals_unchanged": true,
+  "wire_projection": "Recording-only audit sets schema 136 and removes only new ObjectView entered_this_turn and empty power_up_uses fields, preserving inherited field order and values; ordinary validation is unchanged.",
+  "new_traces": {
+    "Aerial Doombot": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "77fe8ec276f5ddde",
+      "observations": "e637727620da8441"
+    },
+    "Hulk, Gamma Goliath": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "73004802e791defc",
+      "observations": "8dcf0c8acb42227d"
+    },
+    "Wonder Man, Hollywood Hero": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "ae39e8c9c29226fe",
+      "observations": "018ebe25aaf9ff13"
+    }
+  },
+  "focused_rules_tests": 8,
+  "validation": "Final immutable-head release results are recorded in PR #480 and external durable reports.",
+  "copy_lifecycle_blocker": "In-place permanent copying and separately acquired identical ability instances remain gated for Taskmaster and Absorbing Man; intrinsic abilities, fresh copy tokens and distinct borrowed slots are covered.",
+  "set_game_acceptance": "pending; no full-set game claim"
+}
