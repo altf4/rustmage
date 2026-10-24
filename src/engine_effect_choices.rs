@@ -70,6 +70,7 @@ impl Game {
             EffectChoiceKind::Discard
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         );
         let entitled_player = if hand_choice { o.owner } else { o.controller };
@@ -84,11 +85,16 @@ impl Game {
             EffectChoiceKind::Discard
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) {
             return o.zone == Zone::Hand
                 && match choice.kind {
                     EffectChoiceKind::HandCreature => o.card.is_creature(),
+                    EffectChoiceKind::HandPermanent { maximum, .. } => {
+                        o.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
+                            && o.card.fixed_mana_value() <= u64::from(maximum)
+                    }
                     EffectChoiceKind::HandExileCopy => o.card.is_creature() || o.card.is_artifact(),
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
                     _ => true,
@@ -246,6 +252,24 @@ impl Game {
         self.start_effect_choice_inner(
             item,
             EffectChoiceKind::HandCreature,
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            Some(0),
+            false,
+            None,
+        )
+    }
+    pub(super) fn start_hand_permanent(
+        &mut self,
+        item: &SpellView,
+        maximum: AmountValue,
+        tapped: bool,
+    ) -> bool {
+        let maximum = u32::try_from(self.item_amount(maximum, item)).unwrap_or(u32::MAX);
+        self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::HandPermanent { maximum, tapped },
             PlayerSet::Controller,
             evidence::cost(0).filter,
             1,
@@ -444,6 +468,7 @@ impl Game {
                     kind,
                     EffectChoiceKind::HandExileCopy
                         | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
                 )
                 && available < usize::from(amount)
@@ -458,6 +483,7 @@ impl Game {
                 kind,
                 EffectChoiceKind::HandExileCopy
                     | EffectChoiceKind::HandCreature
+                    | EffectChoiceKind::HandPermanent { .. }
                     | EffectChoiceKind::HandLand { .. }
             ) {
                 u32::from(amount)
@@ -516,6 +542,7 @@ impl Game {
             choice.kind,
             EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
@@ -540,7 +567,11 @@ impl Game {
             }
             let enchantment = choice.kind == EffectChoiceKind::HandCreature
                 && self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
-            let forced_tapped = matches!(choice.kind, EffectChoiceKind::HandLand { tapped: true });
+            let forced_tapped = matches!(
+                choice.kind,
+                EffectChoiceKind::HandLand { tapped: true }
+                    | EffectChoiceKind::HandPermanent { tapped: true, .. }
+            );
             if enchantment && choice.hand_defender.is_none() {
                 if self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield
@@ -733,6 +764,7 @@ impl Game {
             EffectChoiceKind::Discard
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) && viewer != actor
         {

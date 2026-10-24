@@ -601,6 +601,10 @@ pub enum EffectChoiceKind {
         maximum: u16,
     },
     HandCreature,
+    HandPermanent {
+        maximum: u32,
+        tapped: bool,
+    },
     HandExileCopy,
     HandLand {
         tapped: bool,
@@ -891,6 +895,10 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     PutHandCreature,
+    PutHandPermanent {
+        maximum: AmountValue,
+        tapped: bool,
+    },
     PutHandLand {
         tapped: bool,
     },
@@ -1230,6 +1238,10 @@ pub(crate) enum Instruction {
     },
     SacrificeAbilitySource,
     ExileSourceGainLifeIfMoved(u16),
+    GrantCreatureAbility {
+        filter: CreatureFilter,
+        ability: u16,
+    },
     GrantUntilEndTurn {
         ability: u16,
     },

@@ -384,6 +384,7 @@ define_actions! {
     ChooseMobilizeDefender { defender: CombatDefender },
     ChooseToken { token: Card },
     PutHandCreature { object: ObjectRef },
+    PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
     FinishLandSelection,
@@ -2816,6 +2817,7 @@ impl Game {
                             choice.kind,
                             EffectChoiceKind::HandExileCopy
                                 | EffectChoiceKind::HandCreature
+                                | EffectChoiceKind::HandPermanent { .. }
                                 | EffectChoiceKind::HandLand { .. }
                         ) {
                             Action::DeclineHandEntry
@@ -2832,6 +2834,9 @@ impl Game {
                         let action = match choice.kind {
                             EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
                                 Action::PutHandCreature { object }
+                            }
+                            EffectChoiceKind::HandPermanent { .. } => {
+                                Action::PutHandPermanent { object }
                             }
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::LandCards { .. }
@@ -4520,6 +4525,7 @@ impl Game {
                 self.run_program();
             }
             Action::PutHandCreature { object }
+            | Action::PutHandPermanent { object }
             | Action::PutHandLand { object }
             | Action::SelectLand { object } => self.choose_effect_object(actor, object),
             Action::FinishLandSelection => {

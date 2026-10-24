@@ -15,6 +15,26 @@ pub struct TemporaryAbilityView {
 }
 impl Game {
     pub(super) fn grant_temporary_ability(&mut self, item: &SpellView, ability: u16) {
+        let ids = item
+            .targets
+            .iter()
+            .filter(|&&bound| self.same_target_object(bound))
+            .filter_map(|bound| {
+                if let Target::Card(id) = bound.target {
+                    self.on_battlefield(id).then_some(id)
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>();
+        self.grant_temporary_ability_to(item, ability, &ids);
+    }
+    pub(super) fn grant_temporary_ability_to(
+        &mut self,
+        item: &SpellView,
+        ability: u16,
+        ids: &[CardId],
+    ) {
         let granting_card = item.trigger_definition();
         assert!(
             granting_card.triggers()[usize::from(ability)]
@@ -22,16 +42,7 @@ impl Game {
                 .is_granted()
         );
         let timestamp = self.next_role_timestamp();
-        for bound in &item.targets {
-            if !self.same_target_object(*bound) {
-                continue;
-            }
-            let Target::Card(id) = bound.target else {
-                continue;
-            };
-            if !self.on_battlefield(id) {
-                continue;
-            }
+        for &id in ids {
             let grant = TemporaryAbilityView {
                 recipient: self.object_ref(id),
                 grantor: item.object,
@@ -46,6 +57,53 @@ impl Game {
                 .temporary_abilities
                 .get_or_insert_with(|| Box::new(Vec::new()))
                 .push(grant);
+        }
+    }
+    pub(super) fn temporary_attack_triggers(&mut self, actor: Player) {
+        let grants = self
+            .state
+            .temporary_abilities
+            .as_deref()
+            .into_iter()
+            .flatten()
+            .copied()
+            .filter(|grant| {
+                (grant.permanent || grant.expires_turn == self.state.turn)
+                    && self.on_battlefield(grant.recipient.card)
+                    && self.object_ref(grant.recipient.card) == grant.recipient
+                    && self.state.objects[grant.recipient.card as usize].controller == actor
+                    && self
+                        .state
+                        .attackers
+                        .iter()
+                        .any(|a| a.card == grant.recipient.card)
+                    && grant.granting_card.triggers()[usize::from(grant.ability)]
+                        .condition
+                        .event()
+                        == TriggerCondition::SelfAttacks
+            })
+            .collect::<Vec<_>>();
+        for grant in grants {
+            let source = self.object_view(grant.recipient.card);
+            if !source.grant_available(
+                grant.grantor,
+                grant.granting_card,
+                grant.ability,
+                Some(grant.timestamp),
+            ) {
+                continue;
+            }
+            self.queue_trigger_from(
+                &source,
+                usize::from(grant.ability),
+                Some(Box::new(AttachmentTriggerView {
+                    grantor: grant.grantor,
+                    granting_card: grant.granting_card,
+                    recipient: grant.recipient,
+                    defender: Some(actor.other()),
+                    granted: true,
+                })),
+            );
         }
     }
     pub(super) fn temporary_departure_triggers(&mut self, event: &ZoneChange) {

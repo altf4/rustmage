@@ -371,6 +371,7 @@ impl Game {
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandExileCopy
             | EffectChoiceKind::HandCreature
+            | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::CollectEvidence(_)

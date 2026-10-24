@@ -152,3 +152,4 @@ mod sos_discard_followon;
 mod sos_exile_search;
 mod sos_multicolor_more;
 mod sos_review_regressions;
+mod sos_hand_attack;

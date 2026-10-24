@@ -1133,6 +1133,7 @@ impl Game {
     /// One event per completed declaration, irrespective of whether its observer attacked.
     pub(super) fn declaration_triggers(&mut self, actor: Player) {
         self.attachment_attack_triggers(actor);
+        self.temporary_attack_triggers(actor);
         let sources: Vec<_> = self
             .state
             .attack_sources
@@ -2880,6 +2881,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::PutHandPermanent { maximum, tapped } => {
+                    if self.start_hand_permanent(&item, maximum, tapped) {
+                        return;
+                    }
+                }
                 Instruction::PutHandCreature => {
                     if self.start_hand_creature(&item) {
                         return;
@@ -3335,6 +3341,17 @@ impl Game {
                             self.gain_life(item.controller, i128::from(life));
                         }
                     }
+                }
+                Instruction::GrantCreatureAbility { filter, ability } => {
+                    let ids = (0..self.state.objects.len())
+                        .map(|id| id as CardId)
+                        .filter(|&id| {
+                            self.on_battlefield(id)
+                                && self.is_creature(id)
+                                && self.creature_matches(filter, item.controller, item.object, id)
+                        })
+                        .collect::<Vec<_>>();
+                    self.grant_temporary_ability_to(&item, ability, &ids);
                 }
                 Instruction::GrantUntilEndTurn { ability } => {
                     self.grant_temporary_ability(&item, ability)
