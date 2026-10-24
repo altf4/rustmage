@@ -7475,3 +7475,7 @@ mod resolution_alternative_cost_tests;
 #[cfg(test)]
 #[path = "engine_msh_fifth_combined_tests.rs"]
 mod msh_fifth_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_hideout_falcon_tests.rs"]
+mod msh_hideout_falcon_tests;

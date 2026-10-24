@@ -5503,6 +5503,14 @@
     "journal": "01b10efe7c28f699",
     "observations": "e90a6c8460aea93c"
   },
+  "Falcon, Winged Wonder": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "e76150aa06e3b272",
+    "observations": "5d4642fa28aa75ca"
+  },
   "Family Reunion": {
     "root": "main",
     "status": "completed",
@@ -18662,6 +18670,14 @@
     "zone": "Battlefield",
     "journal": "102964ed359ebf91",
     "observations": "982f6770e6b4e3e2"
+  },
+  "Villainous Hideout": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "7b6e3a38f647f5db"
   },
   "Vincent's Limit Break": {
     "root": "main",
