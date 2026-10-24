@@ -1,0 +1,883 @@
+{
+  "schema": 1,
+  "set": "SOS",
+  "scope": "The 28 mono-white/mono-blue physical SOS cards already admitted at d5cd65c1, excluding later authored candidates",
+  "admission_base": "d5cd65c1e905ff00377f0e158742a58a3d5c5415",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "test_module": "src/assurance/sos_wu_audit.rs",
+  "verification": "Both seats, paid legal actions, illegal action atomicity, owned raw/index branching and restore via big_helpers::checked. Not an independent review or full-set gameplay acceptance.",
+  "helpers": {
+    "WardAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    "FlyingAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    "VigilanceAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    "HexproofAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    "LifelinkAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    "FirstStrikeAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    "Inkling11Token": {
+      "path": "Mage/src/main/java/mage/game/permanent/token/Inkling11Token.java",
+      "sha256": "1bb1e98c95fca11b87c834af87d214aaf9e6a4aae864e45844b348dbffeab3b6"
+    },
+    "Elemental33BlueRedToken": {
+      "path": "Mage/src/main/java/mage/game/permanent/token/Elemental33BlueRedToken.java",
+      "sha256": "27f7b2b3ce77e2d7eea2f80d3af70afef48a8ed59dd61cb36eadd8f7459088f4"
+    },
+    "CreateTokenEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    "CounterUnlessPaysEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    "GainAbilitySourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    "HexproofBaseAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofBaseAbility.java",
+      "sha256": "eb33a62a2d3a0cfd4fffee6d99691000ed3d9cadd4937b41d0b53c4e5abacdea"
+    },
+    "ReparteeAbility": {
+      "path": "Mage/src/main/java/mage/abilities/abilityword/ReparteeAbility.java",
+      "sha256": "da66e3be816abbc0e9f6ffa1d5d5475ea18346311290872735e8f03027b0c574"
+    },
+    "TargetsPermanentPredicate": {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/TargetsPermanentPredicate.java",
+      "sha256": "6a52724f6a33c15df7f3951dc83aeb026acc8c20a5ccc6a031b11e18b08ea096"
+    },
+    "OpusAbility": {
+      "path": "Mage/src/main/java/mage/abilities/abilityword/OpusAbility.java",
+      "sha256": "2fdef128f01b7c2f3ad1ffc3f9817cf19d505266fe4ee3006ccf7138ceb2a1c4"
+    },
+    "IncrementAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IncrementAbility.java",
+      "sha256": "4d44b4a352b0c3056cc317e0647ceef6a13307e64c2a2563ad2986277f9ab09d"
+    },
+    "SourceTargetsPermanentCondition": {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
+      "sha256": "e9588b28dba4b7d15dd3a9119f75b3b6b3837213fc8004750b4d6d5bca294852"
+    },
+    "SpellCostReductionSourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    "LookLibraryAndPickControllerEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    "PutOnTopOrBottomLibraryTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+      "sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+    },
+    "SurveilEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    "FlashbackAbility": {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    "ExileSourceFromGraveCost": {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    "ReturnSourceFromGraveyardToHandEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    },
+    "SacrificeSourceCost": {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    "DrawCardSourceControllerEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    "DrawDiscardControllerEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    "TapTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    "ReturnToHandTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    "CounterTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    "DestroyTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    "AddCountersTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    "AddCountersSourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    "AddCountersAllEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    "BoostTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    "BoostSourceEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    "GainAbilityTargetEffect": {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  },
+  "cards": [
+    {
+      "oracle_id": "bf7ec320-64bb-46ca-aac0-ca3d4224b69e",
+      "name": "Ajani's Response",
+      "facts_sha256": "3dc43018bb56c9be5085ebfc544a4541e23e86efc6da59ffc50f65b47e0cf79d",
+      "definition": "src/card_definitions/sos/ajani_s_response.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AjanisResponse.java",
+          "sha256": "287add9b31bf70d2575db0a0a0e3288f4c4a09020d58d80635a83db1751d42c4"
+        }
+      ],
+      "helpers": [
+        "DestroyTargetEffect",
+        "SourceTargetsPermanentCondition",
+        "SpellCostReductionSourceEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_conditional_costs_lock_target_and_actual_payment"
+      ],
+      "obligations": [
+        "This spell costs {3} less to cast if it targets a tapped creature.",
+        "Destroy target creature."
+      ],
+      "blockers": [],
+      "definition_sha256": "4e87b89208753488d293f72b00a2b84014dff5747b104db20bdc59d81e10d3b2"
+    },
+    {
+      "oracle_id": "295f8b8d-102a-47af-93c2-f8182c5f11ca",
+      "name": "Ascendant Dustspeaker",
+      "facts_sha256": "6e5ee7a112d81f259f17a332e74ee80223791e84f4bbfbe44206d728ce30b6c7",
+      "definition": "src/card_definitions/sos/ascendant_dustspeaker.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/a/AscendantDustspeaker.java",
+          "sha256": "473dfa8897449e0248271cc26e51b48db4df1977dcaaefa0a988e843fd5452d3"
+        }
+      ],
+      "helpers": [
+        "AddCountersTargetEffect",
+        "FlyingAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_dustspeaker_other_controlled_entry_and_optional_any_graveyard"
+      ],
+      "obligations": [
+        "Flying",
+        "When this creature enters, put a +1/+1 counter on another target creature you control.",
+        "At the beginning of combat on your turn, exile up to one target card from a graveyard."
+      ],
+      "blockers": [],
+      "definition_sha256": "9c5c5943224693a90b06daf8a0ca6fd5334d818be12584009d09d159a2e78db6"
+    },
+    {
+      "oracle_id": "6b633e58-ea1b-4ed0-addb-6dfd93645ae4",
+      "name": "Banishing Betrayal",
+      "facts_sha256": "1577f5370e421c758ccef8a62cbaecc5578a2897c881337676b21f95bd2fae01",
+      "definition": "src/card_definitions/sos/banishing_betrayal.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/b/BanishingBetrayal.java",
+          "sha256": "412506f064109758ca5580b65589aa11d9f23e6ed6098c398da67c4df4bc405e"
+        }
+      ],
+      "helpers": [
+        "ReturnToHandTargetEffect",
+        "SurveilEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_targeted_protection_growth_destruction_and_fizzle"
+      ],
+      "obligations": [
+        "Return target nonland permanent to its owner's hand. Surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+      ],
+      "blockers": [],
+      "definition_sha256": "c0848fe4c854372fa648d03b15f506be569e06b53ba8c3e0bf6ae161f31a4990"
+    },
+    {
+      "oracle_id": "873694c0-c100-4d24-a74f-1ab26442dd18",
+      "name": "Brush Off",
+      "facts_sha256": "5e6f91f9f590dfdc4fe09317dd6a426449fbfc027ed06942f651c3201b5c25b5",
+      "definition": "src/card_definitions/sos/brush_off.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/b/BrushOff.java",
+          "sha256": "2f9cdc915148ef30d435bf3006b0eeb78a9910c2f4a48136532f6092a9d0aeed"
+        }
+      ],
+      "helpers": [
+        "CounterTargetEffect",
+        "SpellCostReductionSourceEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_conditional_costs_lock_target_and_actual_payment"
+      ],
+      "obligations": [
+        "This spell costs {1}{U} less to cast if it targets an instant or sorcery spell.",
+        "Counter target spell."
+      ],
+      "blockers": [],
+      "definition_sha256": "016fef5b1bb107a4bcad8d5027665c7de220d4b7fb4e5fac717e01bc50b93bbf"
+    },
+    {
+      "oracle_id": "9c055ef0-1164-4a9f-80de-23405423aed5",
+      "name": "Chase Inspiration",
+      "facts_sha256": "83153eedbc3d87c4577cba5ce10d0c7942210ab5f3612f17c9fc9db7fcd85728",
+      "definition": "src/card_definitions/sos/chase_inspiration.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/c/ChaseInspiration.java",
+          "sha256": "aab9fd6103048a0e4791649bb9383da79339f697d3ce52f5903ec53079f7d4c2"
+        }
+      ],
+      "helpers": [
+        "BoostTargetEffect",
+        "GainAbilityTargetEffect",
+        "HexproofAbility",
+        "HexproofBaseAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_targeted_protection_growth_destruction_and_fizzle"
+      ],
+      "obligations": [
+        "Target creature you control gets +0/+3 and gains hexproof until end of turn. (It can't be the target of spells or abilities your opponents control.)"
+      ],
+      "blockers": [],
+      "definition_sha256": "d8bafdb8c11becbe751c03c11c846b9a304d5f41eb30ac71591c4f000d846b1f"
+    },
+    {
+      "oracle_id": "416c70ab-f136-43e0-b5d5-9af8d4211c01",
+      "name": "Deluge Virtuoso",
+      "facts_sha256": "9b1c371721ca2b2b51158c5714809b65b6b96e6bf899b0999662b74de58b6d01",
+      "definition": "src/card_definitions/sos/deluge_virtuoso.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/d/DelugeVirtuoso.java",
+          "sha256": "4565f958ac5316df3fd33cc6cde429cd7e9fec20e462fdcf25c9559637d85725"
+        }
+      ],
+      "helpers": [
+        "AddCountersTargetEffect",
+        "BoostSourceEffect",
+        "OpusAbility",
+        "TapTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_opus_frozen_actual_spend_and_deluge_entry_stun"
+      ],
+      "obligations": [
+        "When this creature enters, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+        "Opus \u2014 Whenever you cast an instant or sorcery spell, this creature gets +1/+1 until end of turn. If five or more mana was spent to cast that spell, this creature gets +2/+2 until end of turn instead."
+      ],
+      "blockers": [],
+      "definition_sha256": "271214807b860422d32371faa26d837c9adfd454d1b2618e255252f99eae0498"
+    },
+    {
+      "oracle_id": "96742ebc-10a6-49e6-812a-631e5a60847d",
+      "name": "Dig Site Inventory",
+      "facts_sha256": "df84178ca0fccb241a909ba0c2b5c93bcde2ba56f0a43190054345d745332046",
+      "definition": "src/card_definitions/sos/dig_site_inventory.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/d/DigSiteInventory.java",
+          "sha256": "e92188e55fc81e132b77038a92f5841097260e2e6c679bc4ef14e93049bee0c2"
+        }
+      ],
+      "helpers": [
+        "AddCountersTargetEffect",
+        "FlashbackAbility",
+        "GainAbilityTargetEffect",
+        "VigilanceAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_inventory_flashback_and_acolyte_sacrifice_cost"
+      ],
+      "obligations": [
+        "Put a +1/+1 counter on target creature you control. It gains vigilance until end of turn.",
+        "Flashback {W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+      ],
+      "blockers": [],
+      "definition_sha256": "abbcf796c56f1b664c25d5a61857226fb371b08c354fb6f9b31b5be03aaa7103"
+    },
+    {
+      "oracle_id": "070aa6c7-4741-47de-b68a-629aa4201ac0",
+      "name": "Eager Glyphmage",
+      "facts_sha256": "6a8166ccb71b13b10e35222a8ba86349435b2f631554a840282507f3511cec45",
+      "definition": "src/card_definitions/sos/eager_glyphmage.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/e/EagerGlyphmage.java",
+          "sha256": "1bf4cc3f737fb49626f8eb3e943332a6e8ede75747bdd6916034573277096483"
+        }
+      ],
+      "helpers": [
+        "CreateTokenEffect",
+        "FlyingAbility",
+        "Inkling11Token"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_tokens_surveillance_and_tabulator_live_increment"
+      ],
+      "obligations": [
+        "When this creature enters, create a 1/1 white and black Inkling creature token with flying."
+      ],
+      "blockers": [],
+      "definition_sha256": "52b5939a0d35d2a7ef9cb76dd58d4d2a4faed195fad32284b1d2f57cc9f8a83e"
+    },
+    {
+      "oracle_id": "46665089-aa3d-44c3-964d-6638dfbb5782",
+      "name": "Essence Scatter",
+      "facts_sha256": "28bb2f54b198ab5dbb42863bc8b49a62bfa0b5d0be9ba33ef80f6328960af85e",
+      "definition": "src/card_definitions/sos/essence_scatter.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/e/EssenceScatter.java",
+          "sha256": "c580f034a0865ac624f72eb3695f28bc7e0140a09e931a8b792c282a76385207"
+        }
+      ],
+      "helpers": [
+        "CounterTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_quick_study_two_draws_and_essence_scatter_creatures_only"
+      ],
+      "obligations": [
+        "Counter target creature spell."
+      ],
+      "blockers": [],
+      "definition_sha256": "33d17e53230bd7be5941be0da9233485d6845d9128b4606531437d630fa3115f"
+    },
+    {
+      "oracle_id": "d32c9439-4c97-412b-83cc-6d9acb48be3c",
+      "name": "Exhibition Tidecaller",
+      "facts_sha256": "f3a6312567ee63bd7ccef1c67ce0fd59d9e200bc72c0b0a1c75b451bf0dbdbcf",
+      "definition": "src/card_definitions/sos/exhibition_tidecaller.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/e/ExhibitionTidecaller.java",
+          "sha256": "d83a052779e609565f7471869b07be7accff8a5e9f5af9921dfcda86e07dac95"
+        }
+      ],
+      "helpers": [
+        "OpusAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_opus_frozen_actual_spend_and_deluge_entry_stun"
+      ],
+      "obligations": [
+        "Opus \u2014 Whenever you cast an instant or sorcery spell, target player mills three cards. If five or more mana was spent to cast that spell, that player mills ten cards instead."
+      ],
+      "blockers": [],
+      "definition_sha256": "f5ecd72bf126435eee97d19caafad9b30c052be9ee8cb7c6a2130978fb10e5ec"
+    },
+    {
+      "oracle_id": "e7194bca-0cf4-4a86-8b84-d2f9219a08b3",
+      "name": "Flow State",
+      "facts_sha256": "15c1702ff55cb67899eaa8255d0830fec7a839be52d4f022f44111fd428e6bb6",
+      "definition": "src/card_definitions/sos/flow_state.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/f/FlowState.java",
+          "sha256": "3c6cf6a78b717af8971c22b425373b490efeb746c720ac1f0842e3ac663d0322"
+        }
+      ],
+      "helpers": [
+        "LookLibraryAndPickControllerEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_flow_state_private_one_or_two_and_ordered_bottom"
+      ],
+      "obligations": [
+        "Look at the top three cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order. If there is an instant card and a sorcery card in your graveyard, instead put two of them into your hand and the rest on the bottom of your library in any order."
+      ],
+      "blockers": [],
+      "definition_sha256": "3a0b15c6f3928bd4c2acdde2575c951b2bc1c78e71d8de909956dcb870ef81f8"
+    },
+    {
+      "oracle_id": "40e0665d-57b8-4c19-9fb8-b3155d7bbb94",
+      "name": "Graduation Day",
+      "facts_sha256": "fa2f7dec06295d26f1ef209e3ff8acde5a9bcbd2770bbd4958c7284d7f161dcb",
+      "definition": "src/card_definitions/sos/graduation_day.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/g/GraduationDay.java",
+          "sha256": "3db612b1e3028752ab46161b0d233b46eea5cf1dc45716a9e9c10a1f930b6933"
+        }
+      ],
+      "helpers": [
+        "AddCountersTargetEffect",
+        "ReparteeAbility",
+        "TargetsPermanentPredicate"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_repartee_all_consumers_trigger_once_on_cast_not_resolution"
+      ],
+      "obligations": [
+        "Repartee \u2014 Whenever you cast an instant or sorcery spell that targets a creature, put a +1/+1 counter on target creature you control."
+      ],
+      "blockers": [],
+      "definition_sha256": "a272b883f7405938947313262e5710fd7140f7e5ba9d3bf84c44b4ca20d5ccc8"
+    },
+    {
+      "oracle_id": "d2a372d8-3eb2-4ba4-a75f-7951654de383",
+      "name": "Informed Inkwright",
+      "facts_sha256": "1f27161013ad2afcd74c14e19b6fe095a0b273e1a005699584b230aa099ca79d",
+      "definition": "src/card_definitions/sos/informed_inkwright.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/i/InformedInkwright.java",
+          "sha256": "994c19c85f8926710708f44e6f7b3b4aa03f3d7e6b8932fcb766a6748b89130e"
+        }
+      ],
+      "helpers": [
+        "CreateTokenEffect",
+        "FlyingAbility",
+        "Inkling11Token",
+        "ReparteeAbility",
+        "TargetsPermanentPredicate",
+        "VigilanceAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_repartee_all_consumers_trigger_once_on_cast_not_resolution"
+      ],
+      "obligations": [
+        "Vigilance",
+        "Repartee \u2014 Whenever you cast an instant or sorcery spell that targets a creature, create a 1/1 white and black Inkling creature token with flying."
+      ],
+      "blockers": [],
+      "definition_sha256": "9e5cfe9155a58b540e8c37bbed5a234f5a3d7673f00ffc0befdf413db52dbae9"
+    },
+    {
+      "oracle_id": "4993651f-f161-4007-b485-a0c66a02f91b",
+      "name": "Inkshape Demonstrator",
+      "facts_sha256": "d3bcea89231a8bce6f91e31f3b823af0edb440f9f835956ad195bc6eefeda2d8",
+      "definition": "src/card_definitions/sos/inkshape_demonstrator.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/i/InkshapeDemonstrator.java",
+          "sha256": "6710dd4e484f11f11e170bad3935a17700369d75b3c1e3ae58574faff01c6613"
+        }
+      ],
+      "helpers": [
+        "BoostSourceEffect",
+        "CounterUnlessPaysEffect",
+        "GainAbilitySourceEffect",
+        "LifelinkAbility",
+        "ReparteeAbility",
+        "TargetsPermanentPredicate",
+        "WardAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_inkshape_ward_two_paid_or_declined_opposing_spell",
+        "sos_audit_wu_repartee_all_consumers_trigger_once_on_cast_not_resolution"
+      ],
+      "obligations": [
+        "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)",
+        "Repartee \u2014 Whenever you cast an instant or sorcery spell that targets a creature, this creature gets +1/+0 and gains lifelink until end of turn."
+      ],
+      "blockers": [],
+      "definition_sha256": "dabdf5604315a5298c31cfa5d0c3de89c121045b369ce495322d6bd21ea0d291"
+    },
+    {
+      "oracle_id": "47bbadcf-11c6-4a4d-9575-1eb8284a174c",
+      "name": "Interjection",
+      "facts_sha256": "687c00228ae1f9effb9ea5c40d28ca4ab252aa53d5a44398bde97447bee0d269",
+      "definition": "src/card_definitions/sos/interjection.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/i/Interjection.java",
+          "sha256": "4e576650012119d4ee58075337dab6df6a7ba770cfe50002fddc33a849464182"
+        }
+      ],
+      "helpers": [
+        "BoostTargetEffect",
+        "FirstStrikeAbility",
+        "GainAbilityTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_repartee_all_consumers_trigger_once_on_cast_not_resolution",
+        "sos_audit_wu_targeted_protection_growth_destruction_and_fizzle"
+      ],
+      "obligations": [
+        "Target creature gets +2/+2 and gains first strike until end of turn."
+      ],
+      "blockers": [],
+      "definition_sha256": "dbebc0039fb22d74f0069ac75fed3ca43c6b774075416db342d5ffe5dcc4a45c"
+    },
+    {
+      "oracle_id": "31f3d37f-e613-427f-b34c-cc87611ea078",
+      "name": "Muse Seeker",
+      "facts_sha256": "6c9a9002d86b941cea15a4ab92d03816c7bfddd2e70ffa32f561d0d9d16f9d15",
+      "definition": "src/card_definitions/sos/muse_seeker.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MuseSeeker.java",
+          "sha256": "293945810718fff65edc17c72b6c8fb20c59cddd2f9dc01dbf72842b1367e7d0"
+        }
+      ],
+      "helpers": [
+        "DrawCardSourceControllerEffect",
+        "DrawDiscardControllerEffect",
+        "OpusAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_opus_frozen_actual_spend_and_deluge_entry_stun"
+      ],
+      "obligations": [
+        "Opus \u2014 Whenever you cast an instant or sorcery spell, draw a card. Then discard a card unless five or more mana was spent to cast that spell."
+      ],
+      "blockers": [],
+      "definition_sha256": "344175a8145b3197ce06df55dced1f7267b6bca4aed8e66848d3a36f195e1085"
+    },
+    {
+      "oracle_id": "62421084-96e6-40dd-8d34-7c8c1091d4a4",
+      "name": "Muse's Encouragement",
+      "facts_sha256": "dab050e3a55164ed6efd031a82774a9de094fc242d54c94171d6f4f98138ceef",
+      "definition": "src/card_definitions/sos/muse_s_encouragement.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/m/MusesEncouragement.java",
+          "sha256": "c0d0bc1a03b8ba86f39598a349bb9db02cea6b5f0fc78c7ea2f5f9e78cc832c2"
+        }
+      ],
+      "helpers": [
+        "CreateTokenEffect",
+        "Elemental33BlueRedToken",
+        "FlyingAbility",
+        "SurveilEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_tokens_surveillance_and_tabulator_live_increment"
+      ],
+      "obligations": [
+        "Create a 3/3 blue and red Elemental creature token with flying.",
+        "Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)"
+      ],
+      "blockers": [],
+      "definition_sha256": "ee1d431c8b24281e18c8f12238ce54c1109bfa3cfb92b46fd8f3262a84b18c34"
+    },
+    {
+      "oracle_id": "cf56a5b4-48fa-4d53-a4b9-14afe079c1d3",
+      "name": "Orysa, Tide Choreographer",
+      "facts_sha256": "bee3ef5c11dccad1ac0f8009a81be1a4646cf21f305528055fb8370595619871",
+      "definition": "src/card_definitions/sos/orysa_tide_choreographer.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/o/OrysaTideChoreographer.java",
+          "sha256": "8e29f2f8b5280d3cd29fed9b1fdbf9034c80cc848179aa7318c791d09a9e58f4"
+        }
+      ],
+      "helpers": [
+        "DrawCardSourceControllerEffect",
+        "SpellCostReductionSourceEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_conditional_costs_lock_target_and_actual_payment"
+      ],
+      "obligations": [
+        "This spell costs {3} less to cast if creatures you control have total toughness 10 or greater.",
+        "When Orysa enters, draw two cards."
+      ],
+      "blockers": [],
+      "definition_sha256": "41a35b1999e520d19d9f3615f87fe09d25c5bd21844cb3bc98f06bd98e182b75"
+    },
+    {
+      "oracle_id": "6f8fa68e-e961-4ae1-b27d-22d87e90f26b",
+      "name": "Procrastinate",
+      "facts_sha256": "bc828feb9dc9c73938d60a1d1292a9ec19530bf583d76e53158ecc5ba230722a",
+      "definition": "src/card_definitions/sos/procrastinate.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/p/Procrastinate.java",
+          "sha256": "03b67f74383895b3fe73fba04e0a7ce330bb216a4e633bd454f119778c0e61ee"
+        }
+      ],
+      "helpers": [
+        "AddCountersTargetEffect",
+        "TapTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_procrastinate_x_zero_and_twice_stun_actual_untap"
+      ],
+      "obligations": [
+        "Tap target creature. Put twice X stun counters on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)"
+      ],
+      "blockers": [],
+      "definition_sha256": "ae4ba06824f38a3d2b6157e4f4f346f87afb3b5493b4785bd95b3c936e8a93cf"
+    },
+    {
+      "oracle_id": "7bff8d4a-1c7d-48b8-b3e3-737dd6f01823",
+      "name": "Quick Study",
+      "facts_sha256": "9df8e914e98c95f4e0164c1903454ec49c336a596d723c1200af59637b7a0924",
+      "definition": "src/card_definitions/sos/quick_study.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/q/QuickStudy.java",
+          "sha256": "5e12ad1c2670c63f8f01c6b1e450a795b3f6d7c317533af99e1709e536883bd3"
+        }
+      ],
+      "helpers": [
+        "DrawCardSourceControllerEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_quick_study_two_draws_and_essence_scatter_creatures_only"
+      ],
+      "obligations": [
+        "Draw two cards."
+      ],
+      "blockers": [],
+      "definition_sha256": "aaa9ac9fd52b01e1dd5110b4d89d2f92a408c36ef2fbbe6291ebb352c29714df"
+    },
+    {
+      "oracle_id": "e30ccf07-0969-4e81-ba43-c50a2ff9c040",
+      "name": "Rehearsed Debater",
+      "facts_sha256": "efad0da37b4c5fc59d2376f6224135d9c039413c02e0627f5c500d2c1db87d90",
+      "definition": "src/card_definitions/sos/rehearsed_debater.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/r/RehearsedDebater.java",
+          "sha256": "636a10199259c913b22d68cbf877527d8c781859e4ae419110ec84891c14c478"
+        }
+      ],
+      "helpers": [
+        "BoostSourceEffect",
+        "ReparteeAbility",
+        "TargetsPermanentPredicate",
+        "VigilanceAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_repartee_all_consumers_trigger_once_on_cast_not_resolution"
+      ],
+      "obligations": [
+        "Vigilance",
+        "Repartee \u2014 Whenever you cast an instant or sorcery spell that targets a creature, this creature gets +1/+1 until end of turn."
+      ],
+      "blockers": [],
+      "definition_sha256": "8f7a694e70de9b39fc86c7b5be7b0334b3e5f931940f28e388b0998bf0ab88e1"
+    },
+    {
+      "oracle_id": "7578a192-82e5-43ff-8dee-225f313c484a",
+      "name": "Run Behind",
+      "facts_sha256": "457d71391a4d875bcc53d03f53a46aa3b0518ead0dbb9e7c5417dc7f900d7bed",
+      "definition": "src/card_definitions/sos/run_behind.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/r/RunBehind.java",
+          "sha256": "797076c5083eafdffa339e0f6b01b8fc3bf4fed708f74e04b6e61e24e0d294f1"
+        }
+      ],
+      "helpers": [
+        "PutOnTopOrBottomLibraryTargetEffect",
+        "SourceTargetsPermanentCondition",
+        "SpellCostReductionSourceEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_run_behind_attacking_discount_owner_top_or_bottom"
+      ],
+      "obligations": [
+        "This spell costs {1} less to cast if it targets an attacking creature.",
+        "Target creature's owner puts it on their choice of the top or bottom of their library."
+      ],
+      "blockers": [],
+      "definition_sha256": "fbfe0e0e4caed237144bdbb2fe675c5d57f8d8eadf2493c6c3ae418eae22ce02"
+    },
+    {
+      "oracle_id": "57f58d52-0014-4cac-94fc-668063cc147a",
+      "name": "Shattered Acolyte",
+      "facts_sha256": "d5a078f2a0be9f6f4c8768f9278622f57bc25e1949355cefb76b7181abbb1330",
+      "definition": "src/card_definitions/sos/shattered_acolyte.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/ShatteredAcolyte.java",
+          "sha256": "ba41245990f7728197d31cde2a779a856091514eda4b187765909046887ee6cb"
+        }
+      ],
+      "helpers": [
+        "DestroyTargetEffect",
+        "LifelinkAbility",
+        "SacrificeSourceCost"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_inventory_flashback_and_acolyte_sacrifice_cost"
+      ],
+      "obligations": [
+        "Lifelink",
+        "{1}, Sacrifice this creature: Destroy target artifact or enchantment."
+      ],
+      "blockers": [],
+      "definition_sha256": "a04ee020081b08943ac7a2b39364c666d4ce8db9228cc29c035a11337a74e9e3"
+    },
+    {
+      "oracle_id": "00e94b75-ad31-4e1f-b3be-eed7cd3e4d76",
+      "name": "Stand Up for Yourself",
+      "facts_sha256": "1428a67931c1557bab53326d09c7dbff1b3935f37bc9470583e4540bb38178e7",
+      "definition": "src/card_definitions/sos/stand_up_for_yourself.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/StandUpForYourself.java",
+          "sha256": "2442441b3d4a191a12de01f0ed2317162ee07dfd66fd82e16fa68c3482bd0354"
+        }
+      ],
+      "helpers": [
+        "DestroyTargetEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_targeted_protection_growth_destruction_and_fizzle"
+      ],
+      "obligations": [
+        "Destroy target creature with power 3 or greater."
+      ],
+      "blockers": [],
+      "definition_sha256": "5f9cadd1fe34f2e43ea47c29388a169ab63fd72d18bc64df89ee908e036512fe"
+    },
+    {
+      "oracle_id": "7244d04a-bb9c-4fbe-a346-4a3f45709da7",
+      "name": "Stirring Hopesinger",
+      "facts_sha256": "dedfaa25c42a13df0e083dbc022af35a32549a9e7217e07de8ae28f860e0b7bc",
+      "definition": "src/card_definitions/sos/stirring_hopesinger.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/StirringHopesinger.java",
+          "sha256": "2ae56e39f64cad9ede9f443b4a19bb279881c18a2b12761829c5dcfdfbc55727"
+        }
+      ],
+      "helpers": [
+        "AddCountersAllEffect",
+        "FlyingAbility",
+        "LifelinkAbility",
+        "ReparteeAbility",
+        "TargetsPermanentPredicate"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_repartee_all_consumers_trigger_once_on_cast_not_resolution"
+      ],
+      "obligations": [
+        "Flying, lifelink",
+        "Repartee \u2014 Whenever you cast an instant or sorcery spell that targets a creature, put a +1/+1 counter on each creature you control."
+      ],
+      "blockers": [],
+      "definition_sha256": "6bf7adcd6993c5062e771f1a11e36cbfc7e43c3e09052e4ee276952ebb00bde6"
+    },
+    {
+      "oracle_id": "dbb1690a-f6f5-459c-9d7f-cb6541fb6688",
+      "name": "Stone Docent",
+      "facts_sha256": "fabb3bec6c19e971d95d5d2d040ed148b08b0c752a0efd76aa9895ea3ce12b9e",
+      "definition": "src/card_definitions/sos/stone_docent.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/StoneDocent.java",
+          "sha256": "70fe468648fc7727d0e7930914304b6de6c730fc5006d3b7ce1b6f0b39b94281"
+        }
+      ],
+      "helpers": [
+        "ExileSourceFromGraveCost",
+        "SurveilEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_graveyard_activations_paid_own_sorcery_only"
+      ],
+      "obligations": [
+        "{W}, Exile this card from your graveyard: You gain 2 life. Surveil 1. Activate only as a sorcery. (Look at the top card of your library. You may put it into your graveyard.)"
+      ],
+      "blockers": [],
+      "definition_sha256": "8de6a1a0d89332f53ab9f68be25e7d977491549dbbb335b2c43c123d4ccbaef7"
+    },
+    {
+      "oracle_id": "697b14c6-fe6a-4880-9cf2-b6602a52ca0b",
+      "name": "Summoned Dromedary",
+      "facts_sha256": "c4f9e662bbad88c75e65517a1b1f9c7546b70efd249bd7e1bd86795123777891",
+      "definition": "src/card_definitions/sos/summoned_dromedary.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/s/SummonedDromedary.java",
+          "sha256": "44b5060ea8f6ff4f6b68bf54c64a74b64bc353a7485cd21a38065b0d76ff16f2"
+        }
+      ],
+      "helpers": [
+        "ReturnSourceFromGraveyardToHandEffect",
+        "VigilanceAbility"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_graveyard_activations_paid_own_sorcery_only"
+      ],
+      "obligations": [
+        "Vigilance",
+        "{1}{W}: Return this card from your graveyard to your hand. Activate only as a sorcery."
+      ],
+      "blockers": [],
+      "definition_sha256": "1542e1c6967c509383c2490f91a2f0ee8704bf3fa6310911e1c1e681848c3528"
+    },
+    {
+      "oracle_id": "ebb40a50-cfbc-4ec1-9c54-26a1bc2e7a6e",
+      "name": "Textbook Tabulator",
+      "facts_sha256": "8429f5e629e4032b83b84133c2bcfabe1c0411134cf10b62c307e38e3d9998f0",
+      "definition": "src/card_definitions/sos/textbook_tabulator.rs",
+      "xmage_classes": [
+        {
+          "path": "Mage.Sets/src/mage/cards/t/TextbookTabulator.java",
+          "sha256": "712b3783f6810f2a929b3d1496f008a15a7809931f7a5b4de7df54e5d54eb845"
+        }
+      ],
+      "helpers": [
+        "AddCountersSourceEffect",
+        "IncrementAbility",
+        "SurveilEffect"
+      ],
+      "native_scenarios": [
+        "sos_audit_wu_tokens_surveillance_and_tabulator_live_increment"
+      ],
+      "obligations": [
+        "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)",
+        "When this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)"
+      ],
+      "blockers": [],
+      "definition_sha256": "b59f02431937d2a7576012c42936b4571759edf9d5f26decf0a504abb780c073"
+    }
+  ],
+  "test_module_sha256": "5cead717a174e99359a3f172247878fb208b5b025aef0c92bd3492fd841af9b7",
+  "native_run": {
+    "report": "f59fa885e3c8417a8f7e0dad19d7c144",
+    "passed": 325,
+    "test_seconds": 1.47,
+    "excluded": "supported_cards_retain_bounded_cast_and_entry_traces: expected stale generated baseline for candidate cards/schema136; integration owns refresh"
+  }
+}
