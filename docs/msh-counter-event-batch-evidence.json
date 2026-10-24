@@ -23,7 +23,7 @@
   ],
   "oracle_discrepancy": {
     "pinned_xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-    "detail": "The complete InvisibleWomanSueStorm class observes recipient-specific COUNTERS_ADDED. CardImpl.addCounters emits that event for each object, and TriggeredAbilities independently queues every such matching event. Oracle one-or-more other Heroes wording requires one trigger for a simultaneous multi-recipient placement. Rust follows frozen Oracle and CR603.2c/122.6/603.10 instead of importing this recipient dispatch. GameImpl copies each trigger occurrence with a fresh ID; GameState appends it independently."
+    "detail": "The complete InvisibleWomanSueStorm class observes recipient-specific COUNTERS_ADDED. CardImpl.addCounters emits that event for each object, and TriggeredAbilities independently queues every such matching event. Oracle one-or-more other Heroes wording requires one trigger for a simultaneous multi-recipient placement. Rust follows frozen Oracle and CR 603.2c/122.6/603.10 instead of importing this recipient dispatch. GameImpl copies each trigger occurrence with a fresh ID; GameState appends it independently."
   },
   "rules_sources": [
     "data/standard/cards.json",
@@ -57,7 +57,7 @@
       "Checked actions compare owned raw/index clones after parent disposal, rejected actions and restore"
     ]
   },
-  "status": "Ten focused and 77 counter scenarios pass; all 2461 inherited full traces match directly at unchanged schema141, only the completed Invisible Woman row accepted. Final parent Clippy, two independent final published-head reviews and full integrated release validation pending.",
+  "status": "Ten focused and 77 counter scenarios, source/provenance, format and all-target Clippy pass. All 2,461 inherited full traces match directly at unchanged schema 141; only the completed Invisible Woman row is accepted. Two independent final published-head reviews and full integrated release validation remain pending.",
   "recording_runtime_head": "1801b795477a531580f468550e3208fcd58e6a23",
   "validation": {
     "source_provenance": {
@@ -125,6 +125,25 @@
       "cargo_jobs": 1,
       "test_threads": 1,
       "expected_recording_exit": "101 for the single new admission count; all full inherited structs separately compared exactly before baseline acceptance"
+    },
+    "clippy": {
+      "report": "<cache>/rustmage-build-reports/aaa9f8ab56764ad7896c8a9467847d5c.json",
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 35.83201471099164,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1758855168,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
     }
   },
   "trace_proof": {
@@ -148,5 +167,6 @@
     },
     "baseline_sha256": "4bca89bf9e430e607a3ba7600fb039574567382f5ab87bc7d3596eeb361fc1bc",
     "recorded_sha256": "f44d60b02d9beb3a1dae009d5ea6d91c50f3b57e31d5a2ba09eebbe111ca3371"
-  }
+  },
+  "through_utc": "2026-10-24T22:42:30.396825+00:00"
 }
