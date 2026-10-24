@@ -222,6 +222,9 @@ mod modal_history;
 #[path = "engine_msh_faces_tests.rs"]
 mod msh_faces_tests;
 #[cfg(test)]
+#[path = "engine_msh_jennifer_tests.rs"]
+mod msh_jennifer_tests;
+#[cfg(test)]
 #[path = "engine_msh_king_tests.rs"]
 mod msh_king_tests;
 #[cfg(test)]
@@ -914,6 +917,8 @@ pub struct SpellView {
     pub source_tapped: bool,
     pub source_attachment: Option<ObjectRef>,
     pub damage_event: Option<DamageTriggerView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub damage_received: Option<Box<DamageReceivedView>>,
     pub creature_combat_event: Option<Box<CreatureCombatEventView>>,
     pub discard_event: Option<DiscardTriggerView>,
     pub draw_event: Option<DrawTriggerView>,
@@ -1015,6 +1020,10 @@ impl SpellView {
                 .return_link
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<ReturnLinkView>())
+            + self
+                .damage_received
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<DamageReceivedView>())
             + self
                 .creature_combat_event
                 .as_ref()
@@ -1231,6 +1240,13 @@ pub struct StackLink {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CreatureCombatEventView {
     pub dealer: ObjectRef,
+    pub amount: u128,
+}
+
+/// Frozen actual damage to one exact creature; its recipient is not a target.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct DamageReceivedView {
+    pub recipient: ObjectRef,
     pub amount: u128,
 }
 
@@ -6174,6 +6190,7 @@ impl Game {
         }
         self.record_combat_and_excess_damage(events);
         self.creature_damage_events(events);
+        self.creature_received_damage_triggers(events);
         self.player_damage_triggers(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
         gains

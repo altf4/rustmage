@@ -30,6 +30,7 @@ impl Game {
                         TriggerCondition::SpellCast { .. }
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::PlayerDamaged { .. }
+                            | TriggerCondition::CreatureDamaged { .. }
                     )
             }) {
                 out.push((giver.clone(), None));

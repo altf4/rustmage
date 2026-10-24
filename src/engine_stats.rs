@@ -104,6 +104,7 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn

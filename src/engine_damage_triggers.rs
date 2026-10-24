@@ -192,6 +192,69 @@ impl Game {
         }
     }
 
+    /// Observe the completed damage event before state-based actions. In
+    /// particular, post-event continuous effects qualify both observer and victim.
+    pub(super) fn creature_received_damage_triggers(&mut self, events: &[DamageEvent]) {
+        if !self.state.damage_sources.iter().any(|&id| {
+            self.state.objects[id as usize]
+                .card
+                .triggers()
+                .iter()
+                .any(|ability| {
+                    matches!(
+                        ability.condition.event(),
+                        TriggerCondition::CreatureDamaged { .. }
+                    )
+                })
+        }) {
+            return;
+        }
+        let mut hits = std::collections::BTreeMap::new();
+        for event in events {
+            let Target::Card(id) = event.target else {
+                continue;
+            };
+            if event.amount <= 0 || !self.on_battlefield(id) || !self.is_creature(id) {
+                continue;
+            }
+            let amount = hits.entry(self.object_ref(id)).or_insert(0u128);
+            *amount = amount
+                .checked_add(u128::try_from(event.amount).expect("positive damage"))
+                .capacity("damage-received amount exhausted");
+        }
+        if hits.is_empty() {
+            return;
+        }
+        let sources = self.indexed_trigger_sources(&self.state.damage_sources);
+        for (source, grant) in sources {
+            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
+                let TriggerCondition::CreatureDamaged { relation } = ability.condition.event()
+                else {
+                    continue;
+                };
+                for (&recipient, &amount) in &hits {
+                    let controller = self.state.objects[recipient.card as usize].controller;
+                    if !match relation {
+                        CastRelation::You => controller == source.controller,
+                        CastRelation::Opponent => controller != source.controller,
+                        CastRelation::Any => true,
+                    } {
+                        continue;
+                    }
+                    if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .damage_received =
+                            Some(Box::new(DamageReceivedView { recipient, amount }));
+                    }
+                }
+            }
+        }
+    }
+
     fn queue_damage_trigger(
         &mut self,
         source: &ObjectView,

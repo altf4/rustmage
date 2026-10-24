@@ -117,6 +117,7 @@ impl Game {
                 source_facts: d.facts,
                 related_stack: None,
                 damage_event: None,
+                damage_received: None,
                 creature_combat_event: None,
                 discard_event: None,
                 draw_event: None,

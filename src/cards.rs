@@ -1623,6 +1623,7 @@ pub(crate) enum AmountValue {
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
     )]
     DamageEventAmount,
+    DamageReceivedAmount,
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
@@ -2560,6 +2561,10 @@ pub(crate) enum TriggerCondition {
     StateCounterAtLeast {
         kind: CounterKind,
         minimum: u64,
+    },
+    /// One occurrence per damaged creature in a simultaneous actual damage batch.
+    CreatureDamaged {
+        relation: CastRelation,
     },
     PlayerDamaged {
         subject: DamageSubject,
