@@ -82,6 +82,14 @@ impl Game {
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
         }
+        if let EffectChoiceKind::SacrificeOrDiscard { nonland } = choice.kind
+            && o.zone == Zone::Hand
+        {
+            return o.owner == player
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object)
+                && (!nonland || !o.card.is_land());
+        }
         let hand_choice = matches!(
             choice.kind,
             EffectChoiceKind::Discard
@@ -464,6 +472,10 @@ impl Game {
         greatest: bool,
         discard_mana_value_life: Option<Player>,
     ) -> bool {
+        if matches!(kind, EffectChoiceKind::SacrificeOrDiscard { .. }) {
+            assert_eq!(amount, 1, "one alternative resolution cost");
+            assert_eq!(players, PlayerSet::Controller, "captured resolution payer");
+        }
         let pc = self.state.resolving.as_ref().unwrap().pc;
         let mut choice = EffectChoice {
             discard_draw: None,
@@ -524,7 +536,8 @@ impl Game {
             if let Some(skip_to) = choice.skip_to
                 && !matches!(
                     kind,
-                    EffectChoiceKind::HandExileCopy
+                    EffectChoiceKind::SacrificeOrDiscard { .. }
+                        | EffectChoiceKind::HandExileCopy
                         | EffectChoiceKind::HandCreature
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
@@ -534,12 +547,13 @@ impl Game {
                 self.state.resolving.as_mut().unwrap().pc = skip_to;
                 return false;
             }
-            // Optional private hand placement always presents the same actor/phase,
+            // Optional private choices always present the same actor/phase,
             // even with no eligible card. The player can decline without revealing
             // whether their hidden hand contains a creature or land.
             choice.required[player.index()] = if matches!(
                 kind,
-                EffectChoiceKind::HandExileCopy
+                EffectChoiceKind::SacrificeOrDiscard { .. }
+                    | EffectChoiceKind::HandExileCopy
                     | EffectChoiceKind::HandCreature
                     | EffectChoiceKind::HandPermanent { .. }
                     | EffectChoiceKind::HandLand { .. }
@@ -724,6 +738,17 @@ impl Game {
             } else {
                 self.tap_objects(&ids);
             }
+        } else if matches!(choice.kind, EffectChoiceKind::SacrificeOrDiscard { .. }) {
+            // The resolving packet captures the payer/cause. A legal chosen cost
+            // is paid even if its zone-change destination is replaced.
+            let payer = self.state.resolving.as_ref().unwrap().item.controller;
+            let reference = choice.selected[payer.index()][0];
+            assert_eq!(self.object_ref(reference.card), reference);
+            if self.state.objects[reference.card as usize].zone == Zone::Hand {
+                self.discard_batch_caused(&[reference.card], None, Some(payer));
+            } else {
+                self.sacrifice_batch(&[(payer, reference.card)]);
+            }
         } else if choice.kind == EffectChoiceKind::Discard {
             let ids: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()
@@ -848,6 +873,7 @@ impl Game {
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
+                | EffectChoiceKind::SacrificeOrDiscard { .. }
                 | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
