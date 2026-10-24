@@ -511,14 +511,16 @@ impl Game {
         let mut suspect_results = Vec::new();
         let mut life_results = Vec::new();
         for (movement, counters) in moves {
-            let mut event = self.transition_object_under_control(
+            let rules = self.freeze_zone_rules(&movement.before, movement.destination, None);
+            let plan = self.plan_zone_move(&movement.before, movement.destination, rules);
+            let mut event = self.commit_planned_zone_move(
                 movement.before,
-                movement.destination,
+                plan,
                 movement.tapped,
                 counters,
                 Some(movement.controller),
+                graveyard_observers.clone(),
             );
-            event.graveyard_observers = graveyard_observers.clone();
             if event.moved
                 && event.destination == Zone::Battlefield
                 && let Some(value) = movement.choice

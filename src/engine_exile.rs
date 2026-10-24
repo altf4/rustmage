@@ -228,11 +228,9 @@ impl Game {
             if event.moved && event.destination == Zone::Battlefield {
                 // Entering with counters is a placement event on every entry path,
                 // including raw returns and tokens, exactly once after the whole batch.
-                let placed_by = self
-                    .state
-                    .resolving
-                    .as_ref()
-                    .map_or(event.before.controller, |r| r.item.controller);
+                let placed_by = event
+                    .entry_counter_player
+                    .expect("battlefield entry controller");
                 let counters = self.counter_amounts(event.after.card).to_owned();
                 for kind in CounterKind::ALL {
                     self.self_counters_added(event.after, kind, counters.get(kind), placed_by);

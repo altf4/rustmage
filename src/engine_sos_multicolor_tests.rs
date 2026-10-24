@@ -837,3 +837,69 @@ fn sos_colorstorm_ward_is_exactly_one_mana() {
         }
     }
 }
+
+#[test]
+fn sos_foreign_blink_entry_counters_belong_only_to_returning_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Kykar, Zephyr Awakener", Zone::Battlefield);
+        let trudge = put(&mut g, p.other(), "Slumbering Trudge", Zone::Battlefield);
+        let reference = g.object_ref(trudge);
+        g.change_controller(reference, p);
+        let spell = put(&mut g, p, "Quick Study", Zone::Hand);
+        cast(&mut g, spell, None);
+        for _ in 0..16 {
+            if g.legal_actions().contains(&Action::ChooseMode { mode: 0 }) {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        checked(&mut g, Action::ChooseMode { mode: 0 });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(trudge),
+            },
+        );
+        super::big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(trudge).zone, Zone::Exile);
+        g.begin_step(Step::End);
+        super::big_helpers::settle(&mut g);
+        assert_eq!(g.object_view(trudge).controller, p.other());
+        assert_eq!(g.counter_count(trudge, CounterKind::Stun), 3);
+        let returned = g.object_ref(trudge);
+        assert!(g.put_counter_on_source_this_turn(returned, p.other()));
+        assert!(!g.put_counter_on_source_this_turn(returned, p));
+        assert_eq!(
+            g.observe(p).counter_placement_history,
+            g.observe(p.other()).counter_placement_history
+        );
+    }
+}
+#[test]
+fn sos_foreign_death_return_cannot_enable_tender_for_old_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Valkyrie's Call", Zone::Battlefield);
+        let tender = put(&mut g, p.other(), "Fractal Tender", Zone::Battlefield);
+        let reference = g.object_ref(tender);
+        g.change_controller(reference, p);
+        g.move_object(tender, Zone::Graveyard);
+        super::big_helpers::settle(&mut g);
+        let returned = g.object_ref(tender);
+        assert_eq!(g.object_view(tender).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(tender).controller, p.other());
+        assert_eq!(g.counter_count(tender, CounterKind::PlusOne), 1);
+        assert!(g.put_counter_on_source_this_turn(returned, p.other()));
+        assert!(!g.put_counter_on_source_this_turn(returned, p));
+        g.change_controller(returned, p);
+        g.begin_step(Step::End);
+        super::big_helpers::settle(&mut g);
+        assert!(
+            !g.state
+                .objects
+                .iter()
+                .any(|o| o.zone == Zone::Battlefield && o.card == Card::SosFractalToken)
+        );
+    }
+}

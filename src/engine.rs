@@ -1684,6 +1684,8 @@ impl ObjectView {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    /// CR122.6a: intrinsic entry counters are put on by the incoming controller.
+    pub(super) entry_counter_player: Option<Player>,
     pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
@@ -4737,9 +4739,14 @@ impl Game {
         let events = planned
             .into_iter()
             .map(|(before, plan, tapped, counters)| {
-                let mut event = self.commit_planned_zone_move(before, plan, tapped, counters, None);
-                event.graveyard_observers = graveyard_observers.clone();
-                event
+                self.commit_planned_zone_move(
+                    before,
+                    plan,
+                    tapped,
+                    counters,
+                    None,
+                    graveyard_observers.clone(),
+                )
             })
             .collect();
         self.refresh_controllers();
@@ -4872,7 +4879,19 @@ impl Game {
     ) -> ZoneChange {
         let rules = self.freeze_zone_rules(&before, destination, None);
         let plan = self.plan_zone_move(&before, destination, rules);
-        self.commit_planned_zone_move(before, plan, tapped, counters, entry_controller)
+        let graveyard_observers = if before.zone == Zone::Graveyard {
+            self.freeze_graveyard_observers()
+        } else {
+            None
+        };
+        self.commit_planned_zone_move(
+            before,
+            plan,
+            tapped,
+            counters,
+            entry_controller,
+            graveyard_observers,
+        )
     }
 
     fn commit_planned_zone_move(
@@ -4882,12 +4901,8 @@ impl Game {
         tapped: bool,
         counters: Counters,
         entry_controller: Option<Player>,
+        graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     ) -> ZoneChange {
-        let graveyard_observers = if before.zone == Zone::Graveyard {
-            self.freeze_graveyard_observers()
-        } else {
-            None
-        };
         let id = before.id;
         self.capture_mana_copy_source_departure(&before);
         if before.zone == Zone::Stack {
@@ -4907,6 +4922,7 @@ impl Game {
                 .capacity("object generation exhausted");
             self.state.free_tokens.push(id);
             return ZoneChange {
+                entry_counter_player: None,
                 graveyard_observers: None,
                 was_cast: false,
                 gift: None,
@@ -4942,6 +4958,7 @@ impl Game {
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
+                entry_counter_player: None,
                 graveyard_observers: None,
                 was_cast: false,
                 gift: None,
@@ -4960,6 +4977,7 @@ impl Game {
         if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
+                entry_counter_player: None,
                 graveyard_observers: None,
                 was_cast: false,
                 gift: None,
@@ -5199,6 +5217,7 @@ impl Game {
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         ZoneChange {
+            entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
             graveyard_observers,
             was_cast: false,
             gift: None,
