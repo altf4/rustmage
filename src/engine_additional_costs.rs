@@ -228,6 +228,9 @@ impl Game {
     }
     pub(super) fn additional_choice_available(&self, object: ObjectRef) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
+        if !self.mana_parent_fundable(Some(object), None) {
+            return false;
+        }
         let Some(spec) = a.additional_cost() else {
             return false;
         };

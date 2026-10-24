@@ -2047,3 +2047,287 @@ fn sos_tablet_milled_spell_play_and_both_mana_abilities_respect_restrictions() {
         assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
     }
 }
+
+fn announce_rubble_mana(g: &mut Game, source: CardId) {
+    act(
+        g,
+        Action::AnnounceMana {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 1, 0, 0],
+        },
+    );
+}
+
+#[test]
+fn sos_rubble_optional_entry_and_immediate_mana_reflexive_survives_departure() {
+    for p in [Player::P0, Player::P1] {
+        for discard in [false, true] {
+            let mut g = scenario(p);
+            let fuel = put(&mut g, p, "Forest", Zone::Hand);
+            let source = put(&mut g, p, "Rubble Rouser", Zone::Hand);
+            cast(&mut g, source, None);
+            until_choice(&mut g);
+            if discard {
+                act(&mut g, Action::Discard { card: fuel });
+            } else {
+                act(&mut g, Action::DeclineEffectPayment);
+            }
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (1, 4));
+            assert_eq!(
+                g.state.players[p.index()].cards_drawn_this_turn,
+                u64::from(discard)
+            );
+            reject(
+                &mut g,
+                Action::AnnounceMana {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                    production: [0, 0, 0, 1, 0, 0],
+                },
+            );
+            g.state.objects[source as usize].summoning_sick = false;
+            let fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+            let foreign = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+            g.state.players[p.index()].mana = [0; 6];
+            announce_rubble_mana(&mut g, source);
+            let object = g.object_ref(foreign);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+            let object = g.object_ref(fuel);
+            act(&mut g, Action::ChooseAdditionalCost { object });
+            pay(&mut g);
+            assert_eq!(g.state.players[p.index()].mana[3], 1);
+            assert_eq!(g.object_view(fuel).zone, Zone::Exile);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                20,
+                "reflexive damage has not resolved with the mana ability"
+            );
+            assert_eq!(g.state.stack.len(), 1);
+            let murder = put(&mut g, p.other(), "Murder", Zone::Hand);
+            act(&mut g, Action::Pass);
+            cast(&mut g, murder, Some(Target::Card(source)));
+            settle(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(g.state.players[p.other().index()].life, 19);
+        }
+    }
+}
+
+#[test]
+fn sos_rubble_nested_payment_preserves_private_parent_and_queues_only_committed_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        let fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+        let foreign = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        let before = g.snapshot();
+        for _ in 0..2 {
+            assert!(
+                g.legal_actions()
+                    .contains(&Action::AnnounceCast { card: spell })
+            );
+        }
+        assert_eq!(
+            g.snapshot(),
+            before,
+            "funding search must not commit exile or reflexive triggers"
+        );
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        let parent = g.state.announcing.as_ref().unwrap().item.clone();
+        big_helpers::checked(
+            &mut g,
+            Action::AnnounceMana {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        let own = g.observe(p).suspended_mana_announcements;
+        let other = g.observe(p.other()).suspended_mana_announcements;
+        assert_eq!(own.len(), 1);
+        assert_eq!(own[0].item, parent);
+        assert!(own[0].cost.is_some());
+        assert!(other[0].item.targets.is_empty());
+        assert!(other[0].cost.is_none() && other[0].counters.is_none());
+        let object = g.object_ref(foreign);
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        let object = g.object_ref(fuel);
+        big_helpers::checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        assert!(g.state.mana_announcement_stack.is_none());
+        assert_eq!(g.state.announcing.as_ref().unwrap().item, parent);
+        assert_eq!(g.state.pending, Pending::PayCosts { player: p });
+        assert_eq!(g.state.pending_triggers.len(), 1);
+        assert!(g.state.stack.is_empty());
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.other().index()].life, 19);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
+    }
+}
+
+#[test]
+fn sos_rubble_virtual_exile_fuel_is_consumed_once_and_token_graves_are_not_fuel() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let a = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        let b = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        let fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+        let spell = put(&mut g, p, "Lightning Strike", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        let second = put(&mut g, p, "Island", Zone::Graveyard);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        for (source, fuel) in [(a, fuel), (b, second)] {
+            announce_rubble_mana(&mut g, source);
+            let object = g.object_ref(fuel);
+            act(&mut g, Action::ChooseAdditionalCost { object });
+            pay(&mut g);
+        }
+        pay(&mut g);
+        while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut g, |a| matches!(a, Action::PutTrigger { .. }));
+        }
+        settle(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 15);
+        assert_eq!(g.object_view(fuel).zone, Zone::Exile);
+        assert_eq!(g.object_view(second).zone, Zone::Exile);
+
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        put(&mut g, p, "@token/sos-pest", Zone::Graveyard);
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        reject(
+            &mut g,
+            Action::AnnounceMana {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+    }
+}
+
+#[test]
+fn sos_rubble_nested_payment_preserves_outer_graveyard_source_and_reserved_cost() {
+    for p in [Player::P0, Player::P1] {
+        for exile_source in [false, true] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+            let professor = put(&mut g, p, "Postmortem Professor", Zone::Graveyard);
+            let reserved = put(&mut g, p, "Shock", Zone::Graveyard);
+            let fuel = put(&mut g, p, "Forest", Zone::Graveyard);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: professor,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let object = g.object_ref(reserved);
+            act(&mut g, Action::ChooseAdditionalCost { object });
+            announce_rubble_mana(&mut g, source);
+            for invalid in [reserved] {
+                let object = g.object_ref(invalid);
+                reject(&mut g, Action::ChooseAdditionalCost { object });
+            }
+            let object = g.object_ref(if exile_source { professor } else { fuel });
+            act(&mut g, Action::ChooseAdditionalCost { object });
+            pay(&mut g);
+            assert_eq!(g.state.announcing.as_ref().unwrap().item.card, professor);
+            assert_eq!(g.object_view(reserved).zone, Zone::Graveyard);
+            assert_eq!(
+                g.object_view(professor).zone,
+                if exile_source {
+                    Zone::Exile
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(professor).zone,
+                if exile_source {
+                    Zone::Exile
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(g.object_view(reserved).zone, Zone::Exile);
+            assert_eq!(
+                g.object_view(fuel).zone,
+                if exile_source {
+                    Zone::Graveyard
+                } else {
+                    Zone::Exile
+                }
+            );
+            assert_eq!(g.state.players[p.other().index()].life, 19);
+        }
+    }
+}
+
+#[test]
+fn sos_rubble_can_fund_using_a_physical_card_sacrificed_by_an_earlier_mana_step() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Rubble Rouser", Zone::Battlefield);
+        let pizza = put(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+        let spell = put(&mut g, p, "Lightning Strike", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        act(
+            &mut g,
+            Action::ActivateMana {
+                card: pizza,
+                ability: 0,
+                payment: [0, 0, 0, 0, 0, 1],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        assert_eq!(g.object_view(pizza).zone, Zone::Graveyard);
+        announce_rubble_mana(&mut g, source);
+        let object = g.object_ref(pizza);
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(pizza).zone, Zone::Exile);
+        assert_eq!(g.state.players[p.other().index()].life, 16);
+    }
+}

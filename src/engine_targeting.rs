@@ -1296,6 +1296,7 @@ impl Game {
         production: Option<Mana>,
     ) {
         if production.is_some() {
+            self.suspend_mana_announcement();
             self.capture_announced_mana_quality(&item);
         }
         let plan = self.target_spec(&item);
@@ -1483,6 +1484,10 @@ impl Game {
         };
         if let Some(production) = announcement.production {
             self.add_announced_mana(&announcement.item, production);
+            self.committed_mana_reflexive(&announcement.item);
+            if self.restore_mana_announcement() {
+                return;
+            }
         } else {
             self.push_stack_item(announcement.item);
         }

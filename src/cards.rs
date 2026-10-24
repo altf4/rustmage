@@ -2604,7 +2604,11 @@ impl ActivatedAbility {
             return None;
         }
         match self.program {
-            [Instruction::AddMana(production)] if !self.targets.has_targets() => Some(*production),
+            [Instruction::AddMana(production)]
+            | [
+                Instruction::AddMana(production),
+                Instruction::Reflexive { .. },
+            ] if !self.targets.has_targets() => Some(*production),
             _ => None,
         }
     }

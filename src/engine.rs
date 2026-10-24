@@ -1,3 +1,6 @@
+#[path = "engine_mana_announcements.rs"]
+mod mana_announcements;
+pub use mana_announcements::ManaAnnouncementView;
 #[path = "engine_paradigm.rs"]
 mod paradigm;
 pub use paradigm::{ParadigmView, ResolvedSpellNameView};
@@ -1595,6 +1598,8 @@ struct State {
     stack: Vec<SpellView>,
     resolving: Option<Resolution>,
     announcing: Option<Announcement>,
+    #[allow(clippy::box_collection, reason = "Cold nested mana frames keep ordinary states sparse")]
+    mana_announcement_stack: Option<Box<Vec<mana_announcements::ManaAnnouncement>>>,
     pending_triggers: Vec<SpellView>,
     ordering_triggers: Vec<SpellView>,
     next_stack_id: u64,
@@ -1970,6 +1975,7 @@ pub struct Observation {
     pub group_move_count: Option<u64>,
     pub optional_search_sequence: Option<OptionalSearchSequence>,
     pub announcing: Option<SpellView>,
+    pub suspended_mana_announcements: Vec<ManaAnnouncementView>,
     pub announcing_payment: Option<PendingPaymentView>,
     pub mana_choices: Vec<Mana>,
     pub mode_choices: Vec<ModeChoiceView>,
@@ -2204,6 +2210,7 @@ impl Game {
                 stack: Vec::new(),
                 resolving: None,
                 announcing: None,
+                mana_announcement_stack: None,
                 pending_triggers: Vec::new(),
                 ordering_triggers: Vec::new(),
                 next_stack_id: 0,
@@ -2501,6 +2508,7 @@ impl Game {
             let legal = if let Action::PayCosts { payment } = &action {
                 self.mana_payment_domain()
                     .is_some_and(|d| d.contains(*payment))
+                    && self.mana_parent_fundable(self.state.announcing.as_ref().and_then(|a| a.additional), Some(*payment))
             } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
@@ -4141,6 +4149,7 @@ impl Game {
                     .map(|quality| quality.with_definition(item.source_card));
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
+                self.committed_mana_reflexive(&item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
             Action::AnnounceActivate {
@@ -4218,6 +4227,7 @@ impl Game {
                 let quality = self.mana_quality(definition, card);
                 self.pay_activation(&mut item, payment, counter_payment);
                 self.add_quality_mana(actor, production, quality);
+                self.committed_mana_reflexive(&item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
             Action::ChooseManaLotSpend { .. } => unreachable!("allocation handled transactionally"),
@@ -5160,6 +5170,7 @@ impl Game {
                 .chain(&mut self.state.ordering_triggers)
                 .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
                 .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
+                .chain(self.state.mana_announcement_stack.iter_mut().flat_map(|v| v.iter_mut()).map(|f| &mut f.announcement.item))
             {
                 if item.needs_target_controller_lki()
                     && item
@@ -6229,6 +6240,7 @@ impl Game {
                 .resolving
                 .as_ref()
                 .and_then(|resolution| resolution.moved_count),
+            suspended_mana_announcements: self.mana_announcement_views(viewer),
             announcing: s.announcing.as_ref().map(|announcement| {
                 let mut item = announcement.item.clone();
                 if !owns_choice {
@@ -6467,6 +6479,7 @@ impl Game {
         let s = &self.state;
         std::mem::size_of::<State>()
             + self.mana_lot_bytes()
+            + self.mana_announcement_bytes()
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
             + self.control_bytes()
