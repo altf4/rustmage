@@ -1,7 +1,7 @@
-#[path = "engine_turn_skips.rs"]
-mod turn_skips;
 #[path = "engine_mana_announcements.rs"]
 mod mana_announcements;
+#[path = "engine_turn_skips.rs"]
+mod turn_skips;
 pub use mana_announcements::ManaAnnouncementView;
 #[path = "engine_paradigm.rs"]
 mod paradigm;
@@ -173,7 +173,7 @@ mod effect_choices;
 mod exile;
 #[path = "engine_target_exile_play.rs"]
 mod target_exile_play;
-pub use exile::{ExilePlayPermission, ExilePlayExpiry};
+pub use exile::{ExilePlayExpiry, ExilePlayPermission};
 #[path = "engine_explore.rs"]
 mod explore;
 #[path = "engine_fight.rs"]
@@ -1604,7 +1604,10 @@ struct State {
     stack: Vec<SpellView>,
     resolving: Option<Resolution>,
     announcing: Option<Announcement>,
-    #[allow(clippy::box_collection, reason = "Cold nested mana frames keep ordinary states sparse")]
+    #[allow(
+        clippy::box_collection,
+        reason = "Cold nested mana frames keep ordinary states sparse"
+    )]
     mana_announcement_stack: Option<Box<Vec<mana_announcements::ManaAnnouncement>>>,
     pending_triggers: Vec<SpellView>,
     ordering_triggers: Vec<SpellView>,
@@ -2525,7 +2528,10 @@ impl Game {
             let legal = if let Action::PayCosts { payment } = &action {
                 self.mana_payment_domain()
                     .is_some_and(|d| d.contains(*payment))
-                    && self.mana_parent_fundable(self.state.announcing.as_ref().and_then(|a| a.additional), Some(*payment))
+                    && self.mana_parent_fundable(
+                        self.state.announcing.as_ref().and_then(|a| a.additional),
+                        Some(*payment),
+                    )
             } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
@@ -5199,7 +5205,13 @@ impl Game {
                 .chain(&mut self.state.ordering_triggers)
                 .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
                 .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
-                .chain(self.state.mana_announcement_stack.iter_mut().flat_map(|v| v.iter_mut()).map(|f| &mut f.announcement.item))
+                .chain(
+                    self.state
+                        .mana_announcement_stack
+                        .iter_mut()
+                        .flat_map(|v| v.iter_mut())
+                        .map(|f| &mut f.announcement.item),
+                )
             {
                 if item.needs_target_controller_lki()
                     && item
@@ -5392,9 +5404,13 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
-        self.state.exile_permissions.retain(|p| p.expiry != ExilePlayExpiry::StartOfNextTurn(self.state.active));
+        self.state
+            .exile_permissions
+            .retain(|p| p.expiry != ExilePlayExpiry::StartOfNextTurn(self.state.active));
         for permission in &mut self.state.exile_permissions {
-            if permission.expiry == ExilePlayExpiry::EndOfNextTurn && permission.player == self.state.active {
+            if permission.expiry == ExilePlayExpiry::EndOfNextTurn
+                && permission.player == self.state.active
+            {
                 permission.expiry = ExilePlayExpiry::Turn(self.state.turn);
             }
         }
@@ -5586,9 +5602,9 @@ impl Game {
         }
         let expired_vehicles = self.expire_vehicle_animation();
         self.state.saddled.clear();
-        self.state
-            .exile_permissions
-            .retain(|p| !matches!(p.expiry, ExilePlayExpiry::Turn(turn) if turn <= self.state.turn));
+        self.state.exile_permissions.retain(
+            |p| !matches!(p.expiry, ExilePlayExpiry::Turn(turn) if turn <= self.state.turn),
+        );
         // Damage removal and expiration of until-end-of-turn effects are simultaneous.
         for obj in &mut self.state.objects {
             obj.damage = 0;
@@ -6533,7 +6549,9 @@ impl Game {
         std::mem::size_of::<State>()
             + self.mana_lot_bytes()
             + self.mana_announcement_bytes()
-            + s.turn_skips.as_ref().map_or(0, |_| std::mem::size_of::<[u64; 2]>())
+            + s.turn_skips
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<[u64; 2]>())
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
             + self.control_bytes()

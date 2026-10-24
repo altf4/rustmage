@@ -148,7 +148,7 @@ mod sos_white_blue;
 mod sos_milled_play;
 mod sos_multicolor_next;
 
+mod sos_discard_followon;
+mod sos_exile_search;
 mod sos_multicolor_more;
 mod sos_review_regressions;
-mod sos_exile_search;
-mod sos_discard_followon;

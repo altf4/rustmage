@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5edffc415d7eea31cd6d3786fa2ad37059b94a8259e7dbc43538fa66cd093204",
+  "catalogue_version": "fa42bae0b600fc258203bd588a7901a2c2186f52f0a36377d3a412bf8fe06781",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2345,
-  "implemented_total": 2351,
+  "implemented_standard_cards": 2352,
+  "implemented_total": 2358,
   "token_definitions": 112,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -152,8 +152,8 @@
     },
     "sos": {
       "total": 264,
-      "complete": 228,
-      "gated": 36
+      "complete": 235,
+      "gated": 29
     },
     "spm": {
       "total": 134,
@@ -4270,8 +4270,8 @@
     {
       "name": "Borrowed Knowledge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/borrowed_knowledge.rs",
       "set": "sos"
     },
@@ -6638,8 +6638,8 @@
     {
       "name": "Colossus of the Blood Age",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/colossus_of_the_blood_age.rs",
       "set": "sos"
     },
@@ -8854,8 +8854,8 @@
     {
       "name": "Dina's Guidance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/dina_s_guidance.rs",
       "set": "sos"
     },
@@ -25926,8 +25926,8 @@
     {
       "name": "Practiced Scrollsmith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/practiced_scrollsmith.rs",
       "set": "sos"
     },
@@ -27062,8 +27062,8 @@
     {
       "name": "Ral Zarek, Guest Lecturer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/ral_zarek_guest_lecturer.rs",
       "set": "sos"
     },
@@ -29054,8 +29054,8 @@
     {
       "name": "Rubble Rouser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/rubble_rouser.rs",
       "set": "sos"
     },
@@ -34422,8 +34422,8 @@
     {
       "name": "Suspend Aggression",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/sos/suspend_aggression.rs",
       "set": "sos"
     },
