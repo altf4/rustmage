@@ -896,3 +896,68 @@ fn sos_biblioplex_tomekeeper_optional_entry_modes_prepare_unprepare_and_departed
         }
     }
 }
+
+#[test]
+fn sos_slumbering_trudge_x_entry_counters_tapped_threshold_and_stun_untaps() {
+    for p in [Player::P0, Player::P1] {
+        for x in [0, 1, 2, 3, 5] {
+            let mut g = setup(p);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, x + 1, 0];
+            let source = named(&mut g, p, "Slumbering Trudge", Zone::Hand);
+            checked(&mut g, Action::AnnounceCast { card: source });
+            checked(&mut g, Action::ChooseX { value: x });
+            let pay = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, pay);
+            settle(&mut g);
+            let counters = 3u32.saturating_sub(x);
+            assert_eq!((g.stats(source).power, g.stats(source).toughness), (6, 6));
+            assert_eq!(
+                g.counter_count(source, CounterKind::Stun),
+                u64::from(counters)
+            );
+            assert_eq!(g.object_view(source).tapped, x <= 2);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            for remaining in (0..counters).rev() {
+                g.untap_objects(&[source], untap_rules::UntapCause::Effect);
+                assert!(g.object_view(source).tapped);
+                assert_eq!(
+                    g.counter_count(source, CounterKind::Stun),
+                    u64::from(remaining)
+                );
+            }
+            g.untap_objects(&[source], untap_rules::UntapCause::Effect);
+            assert!(!g.object_view(source).tapped);
+        }
+    }
+}
+
+#[test]
+fn sos_slumbering_trudge_counter_replacement_and_reanimation_uses_x_zero() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Doubling Season", Zone::Battlefield);
+        let source = named(&mut g, p, "Slumbering Trudge", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 2, 0];
+        checked(&mut g, Action::AnnounceCast { card: source });
+        checked(&mut g, Action::ChooseX { value: 1 });
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Stun), 4);
+        assert!(g.object_view(source).tapped);
+        g.move_object(source, Zone::Graveyard);
+        g.state.players[p.index()].mana = [30; 6];
+        paid(&mut g, p, "Zombify", None, &[Target::Card(source)]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::Stun), 6);
+        assert!(g.object_view(source).tapped);
+    }
+}

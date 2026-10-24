@@ -4773,7 +4773,7 @@ impl Game {
                         && self.current_kinds(id as CardId) & 64 != 0
                 })
             }
-            EntryTapped::Always => true,
+            EntryTapped::Always | EntryTapped::ChosenXAtMost(_) => true,
             EntryTapped::OpponentsTurn => controller != self.state.active,
             EntryTapped::UnlessLowLife => self.state.players.iter().all(|p| p.life > 13),
             EntryTapped::UnlessBasic => !self.state.objects.iter().enumerate().any(|(id, o)| {

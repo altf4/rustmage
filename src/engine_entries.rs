@@ -238,13 +238,19 @@ impl Game {
             if movement.destination != Zone::Battlefield {
                 continue;
             }
+            let intrinsic_tapped = match movement.before.card.entry_tapped() {
+                EntryTapped::ChosenXAtMost(maximum) => movement.x <= maximum,
+                _ => self.self_entry_requires_tapped(movement.before.id, movement.controller),
+            };
             let mut effects = self.entry_tap_effects(movement);
             if effects.is_empty() {
-                movement.tapped |= self.enters_tapped_for(movement.before.id, movement.controller);
+                movement.tapped |= intrinsic_tapped
+                    || self
+                        .opponent_entry_requires_tapped(movement.before.card, movement.controller);
             } else {
                 // The incoming event retains instruction-level tapped entry;
                 // intrinsic/global tapped replacements have not yet applied.
-                if self.self_entry_requires_tapped(movement.before.id, movement.controller) {
+                if intrinsic_tapped {
                     effects.push(EntryTapEffect {
                         source: movement.before.reference,
                         intrinsic: true,
@@ -279,6 +285,7 @@ impl Game {
                 movement.destination,
                 movement.cast_payment,
                 movement.controller,
+                movement.x,
             );
             if movement.destination == Zone::Battlefield && movement.cast_origin.is_some() {
                 for &(kind, amount) in movement.before.card.cast_entry_counters() {
@@ -378,7 +385,9 @@ impl Game {
     }
     pub(super) fn has_entry_counter_replacements(&self, card: Card) -> bool {
         self.has_subtype_entry_counter_provider()
-            || (card.enters_counters().total() > 0 || !card.entry_counter_rules().is_empty())
+            || (card.enters_counters().total() > 0
+                || !card.entry_counter_rules().is_empty()
+                || card.x_complement_entry_counters().is_some())
                 && (card
                     .replacement_effects()
                     .iter()
@@ -392,7 +401,7 @@ impl Game {
                     }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
-        self.pre_entry_counters_with_payment(before, destination, None, before.controller)
+        self.pre_entry_counters_with_payment(before, destination, None, before.controller, 0)
     }
     fn pre_entry_counters_with_payment(
         &self,
@@ -400,11 +409,15 @@ impl Game {
         destination: Zone,
         payment: Option<Mana>,
         controller: Player,
+        x: u32,
     ) -> Counters {
         if destination != Zone::Battlefield {
             return Counters::default();
         }
         let mut counters = before.card.enters_counters();
+        if let Some((kind, maximum)) = before.card.x_complement_entry_counters() {
+            counters.add(kind, u64::from(maximum.saturating_sub(x)));
+        }
         for rule in before.card.entry_counter_rules() {
             if self.step_guard(rule.guard, controller, before.reference, before.tapped) {
                 let amount = match rule.amount {

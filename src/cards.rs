@@ -2650,6 +2650,7 @@ pub(crate) enum EntryTapped {
     UnlessLowLife,
     UnlessPlaneswalker,
     PayLife(u32),
+    ChosenXAtMost(u32),
 }
 
 #[derive(Debug)]
@@ -2822,6 +2823,9 @@ impl Card {
     /// Physical parent of an internal Adventure spell definition.
     pub(crate) fn prepared_spell(self) -> Option<Card> {
         authored::rules(self).and_then(|rules| rules.extras.prepared_spell)
+    }
+    pub(crate) fn x_complement_entry_counters(self) -> Option<(CounterKind, u32)> {
+        authored::rules(self).and_then(|rules| rules.extras.x_complement_entry_counters)
     }
     pub(crate) fn enters_prepared(self) -> bool {
         authored::rules(self).is_some_and(|rules| rules.extras.enters_prepared)
