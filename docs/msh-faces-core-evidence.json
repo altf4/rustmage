@@ -141,7 +141,7 @@
   "strict_native_prior_head": {
     "head": "a63e178f31447ba33bba8f13e57c24fac1df05c2",
     "passed": 683,
-    "log": "/home/altf4/.cache/msh-faces-native-strict.log",
+    "log": "<cache>/msh-faces-native-strict.log",
     "scope": "Full native strict run before the review repair; refreshed repair has focused, strict trace and Clippy checks below."
   },
   "review_repair": {
@@ -151,15 +151,15 @@
     "coverage": "Both seats, paid Photon and Rest in Peace, ordinary graveyard departure, replacement exile and direct exile. Compare virtual and real incarnation, zone, card, rules name, mana value, colors, types, subtypes, counters, controller, power/toughness and face state. Saved payment source LKI remains Photon. Parent unchanged and owned restore/replay agrees.",
     "focused": {
       "passed": 14,
-      "log": "/home/altf4/.cache/msh-faces-review-fix-focused-1.log",
-      "resource_report": "/home/altf4/.cache/rustmage-build-reports/ac7cf98366ce49aa9bb758fd0e1f74e0.json"
+      "log": "<cache>/msh-faces-review-fix-focused-1.log",
+      "resource_report": "<cache>/rustmage-build-reports/ac7cf98366ce49aa9bb758fd0e1f74e0.json"
     },
     "strict_trace": {
       "passed": true,
-      "log": "/home/altf4/.cache/msh-faces-review-fix-trace.log",
-      "resource_report": "/home/altf4/.cache/rustmage-build-reports/d6b990aa93194cd8b41d5d5778f91b5c.json",
-      "current_export": "/home/altf4/.cache/msh-faces-review-fix-traces.json",
-      "prior140_projection": "/home/altf4/.cache/msh-faces-review-fix-traces.previous-schema.json",
+      "log": "<cache>/msh-faces-review-fix-trace.log",
+      "resource_report": "<cache>/rustmage-build-reports/d6b990aa93194cd8b41d5d5778f91b5c.json",
+      "current_export": "<cache>/msh-faces-review-fix-traces.json",
+      "prior140_projection": "<cache>/msh-faces-review-fix-traces.previous-schema.json",
       "inherited_exact_full_trace_matches": 2453,
       "inherited_journal_changes": [],
       "current_export_matches_committed": true
@@ -172,8 +172,8 @@
         "-D",
         "warnings"
       ],
-      "log": "/home/altf4/.cache/msh-faces-review-fix-clippy.log",
-      "resource_report": "/home/altf4/.cache/rustmage-build-reports/97f90411059143d48073758c9ef4d5e3.json"
+      "log": "<cache>/msh-faces-review-fix-clippy.log",
+      "resource_report": "<cache>/rustmage-build-reports/97f90411059143d48073758c9ef4d5e3.json"
     },
     "integration_note": "The separate finality prerequisite introduces a preserve-departure-counters funding path. Integration must also retain the old face until simultaneous cost departures capture LKI; the integration author owns that merge and combined regression.",
     "validation_scope": "No redundant full native or release run on the refreshed parent head; combined integration will run full release validation."
