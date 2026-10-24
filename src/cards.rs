@@ -1081,6 +1081,10 @@ pub(crate) enum Instruction {
         recipient: u16,
     },
     AddMana(ManaProduction),
+    AddManaScaled {
+        color: ChoiceColor,
+        amount: AmountValue,
+    },
     AddCombatRed(u16),
     AddCombatRedScaled(AmountValue),
     Scry(u16),
@@ -1445,6 +1449,10 @@ pub(crate) enum StatValue {
         color: ChoiceColor,
     },
     Count(CountFilter),
+    NamedCount {
+        filter: CountFilter,
+        name: &'static str,
+    },
     GreatestManaValue(CountFilter),
     DistinctNames(CountFilter),
     DistinctManaValues(CountFilter),
@@ -2270,6 +2278,10 @@ pub(crate) enum TriggerCondition {
     Sacrificed {
         filter: SacrificeFilter,
         own_turn: bool,
+    },
+    CreatureDiesWithMaximumStat {
+        relation: CastRelation,
+        maximum: i32,
     },
     CreatureDiesFiltered {
         filter: CreatureFilter,

@@ -111,6 +111,7 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::CreatureDiesWithMaximumStat { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::FoodsSacrificed

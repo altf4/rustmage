@@ -233,6 +233,12 @@ impl Game {
                 })
                 .count_ones()
                 as i128,
+            StatValue::NamedCount { filter, name } => objects()
+                .filter(|&(id, o)| {
+                    Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
+                        && crate::card_names::same_name(names(id), name)
+                })
+                .count() as i128,
             StatValue::Count(filter) => i128::try_from(
                 objects()
                     .filter(|&(id, o)| {

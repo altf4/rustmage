@@ -3,10 +3,13 @@
   "catalogue_id": 2621,
   "oracle_id": "c6a5adc8-ee57-421e-8235-0b3160f44568",
   "facts_sha256": "79eb8007e4019e1ce6bb0b963c52d7781a7ea80c8c7583586bf1b341029f7922",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "44cc8537d7ce8960271fb891064060cef83cd72f026dff481375490c68b8e103"
   },
-  "physical_metadata_sha256": "37f5655c3476741d11025e85c6d1026d2266aebf5b7a1d0748ad85b6da93bf17"
+  "physical_metadata_sha256": "37f5655c3476741d11025e85c6d1026d2266aebf5b7a1d0748ad85b6da93bf17",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MagmabloodArchaic.java",
+  "java_sha256": "3ef289aebeffd1cf7faf9e8dcc0a0c0cedee0ec07d38679225a13fd0df70dc0b"
 }

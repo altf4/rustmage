@@ -914,3 +914,224 @@ fn sos_researcher_surveillance_precedes_threshold_and_shadelock_own_main1_only()
         assert!(g.is_prepared(g.object_ref(source)));
     }
 }
+
+#[test]
+fn sos_ancestral_anger_counts_only_own_named_grave_cards_on_resolution_and_fizzles_draw() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        put(&mut g, p, "Ancestral Anger", Zone::Graveyard);
+        put(&mut g, p.other(), "Ancestral Anger", Zone::Graveyard);
+        put(&mut g, p, "Shock", Zone::Graveyard);
+        let hand = g.hand_count(p);
+        for (cast_count, expected) in [(1, 4), (2, 7)] {
+            let spell = put(&mut g, p, "Ancestral Anger", Zone::Hand);
+            cast(&mut g, spell, Some(Target::Card(bear)));
+            settle(&mut g);
+            assert_eq!(stats(&g, bear), (expected, 2));
+            assert_eq!(g.hand_count(p), hand + cast_count);
+            assert!(g.keywords(bear).contains(Keywords::TRAMPLE));
+        }
+        g.finish_cleanup();
+        assert_eq!(stats(&g, bear), (2, 2));
+        assert!(!g.keywords(bear).contains(Keywords::TRAMPLE));
+        let spell = put(&mut g, p, "Ancestral Anger", Zone::Hand);
+        let bounce = put(&mut g, p.other(), "Unsummon", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(bear)));
+        act(&mut g, Action::Pass);
+        cast(&mut g, bounce, Some(Target::Card(bear)));
+        let library = g.state.players[p.index()].library.len();
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), library);
+    }
+}
+
+#[test]
+fn sos_arnyn_frozen_power_or_toughness_death_and_self_departure() {
+    for p in [Player::P0, Player::P1] {
+        for (name, owner, qualifies) in [
+            ("Staunch Shieldmate", p, true),
+            ("Goblin Piker", p, true),
+            ("Bear Cub", p, false),
+            ("Staunch Shieldmate", p.other(), false),
+        ] {
+            let mut g = scenario(p);
+            let arnyn = put(&mut g, p, "Arnyn, Deathbloom Botanist", Zone::Battlefield);
+            assert!(g.keywords(arnyn).contains(Keywords::DEATHTOUCH));
+            let victim = put(&mut g, owner, name, Zone::Battlefield);
+            let murder = put(&mut g, p, "Murder", Zone::Hand);
+            cast(&mut g, murder, Some(Target::Card(victim)));
+            if qualifies {
+                until_choice(&mut g);
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p),
+                    },
+                );
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    },
+                );
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                if qualifies { 22 } else { 20 }
+            );
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if qualifies { 18 } else { 20 }
+            );
+        }
+        let mut g = scenario(p);
+        let arnyn = put(&mut g, p, "Arnyn, Deathbloom Botanist", Zone::Battlefield);
+        let shrink = put(&mut g, p, "Fleeting Distraction", Zone::Hand);
+        cast(&mut g, shrink, Some(Target::Card(arnyn)));
+        settle(&mut g);
+        assert_eq!(stats(&g, arnyn), (1, 2));
+        let murder = put(&mut g, p, "Murder", Zone::Hand);
+        cast(&mut g, murder, Some(Target::Card(arnyn)));
+        until_choice(&mut g);
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(arnyn).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].life, 22);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+
+#[test]
+fn sos_magmablood_all_twobrid_payments_colorless_entry_and_cast_color_snapshot() {
+    for p in [Player::P0, Player::P1] {
+        for (cost, payment, counters) in [
+            (0, [1, 1, 1, 1, 1, 1], 5),
+            (0, [0, 0, 0, 0, 0, 6], 0),
+            (1, [1, 1, 1, 1, 1, 0], 5),
+            (2, [1, 1, 0, 2, 0, 0], 3),
+            (3, [0, 0, 0, 3, 0, 0], 1),
+        ] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Magmablood Archaic", Zone::Hand);
+            assert_eq!(g.state.objects[source as usize].card.fixed_mana_value(), 6);
+            act(&mut g, Action::AnnounceCast { card: source });
+            act(&mut g, Action::ChooseSpellCost { cost });
+            act(&mut g, Action::PayCosts { payment });
+            settle(&mut g);
+            assert_eq!(g.counter_count(source, CounterKind::PlusOne), counters);
+            assert_eq!(
+                stats(&g, source),
+                (2 + i128::from(counters), 2 + i128::from(counters))
+            );
+            assert!(
+                g.keywords(source)
+                    .contains(Keywords::REACH.union(Keywords::TRAMPLE))
+            );
+        }
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Magmablood Archaic", Zone::Graveyard);
+        copied_prepared_spell(&mut g, p, "Grave Researcher", &[Target::Card(source)]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 0);
+        assert_eq!(g.state.players[p.index()].life, 14);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Divination", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(
+            &mut g,
+            Action::PayCosts {
+                payment: [1, 1, 1, 0, 0, 0],
+            },
+        );
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (5, 2));
+        assert_eq!(stats(&g, bear), (5, 2));
+        assert_eq!(stats(&g, enemy), (2, 2));
+        let late = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        assert_eq!(stats(&g, late), (2, 2));
+        g.finish_cleanup();
+        assert_eq!(stats(&g, source), (2, 2));
+        assert_eq!(stats(&g, bear), (2, 2));
+    }
+}
+
+#[test]
+fn sos_maestro_counts_before_live_power_mana_uses_payment_and_departure_lki() {
+    for p in [Player::P0, Player::P1] {
+        for bounce in [false, true] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Molten-Core Maestro", Zone::Battlefield);
+            let bear = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let spell = put(&mut g, p, "Artistic Process", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseMode { mode: 0 });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bear),
+                },
+            );
+            pay(&mut g);
+            let red = g.state.players[p.index()].mana[3];
+            if bounce {
+                let unsummon = put(&mut g, p.other(), "Unsummon", Zone::Hand);
+                act(&mut g, Action::Pass);
+                cast(&mut g, unsummon, Some(Target::Card(source)));
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.players[p.index()].mana[3],
+                red + if bounce { 2 } else { 3 }
+            );
+            assert_eq!(
+                g.object_view(source).zone,
+                if bounce {
+                    Zone::Hand
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(
+                g.counter_count(source, CounterKind::PlusOne),
+                if bounce { 0 } else { 1 }
+            );
+        }
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Molten-Core Maestro", Zone::Battlefield);
+        put(&mut g, p, "Omniscience", Zone::Battlefield);
+        let spell = put(&mut g, p, "Artistic Process", Zone::Hand);
+        let bear = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let mana = g.state.players[p.index()].mana;
+        act(
+            &mut g,
+            Action::AnnounceFree {
+                card: spell,
+                face: CastFace::Normal,
+                flash_surcharge: false,
+            },
+        );
+        act(&mut g, Action::ChooseMode { mode: 0 });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 1);
+        assert_eq!(
+            g.state.players[p.index()].mana,
+            mana,
+            "high mana value alone is not five mana spent"
+        );
+    }
+}

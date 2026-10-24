@@ -416,6 +416,20 @@ impl Game {
                                 && f.subtype
                                     .is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
+                        TriggerCondition::CreatureDiesWithMaximumStat { relation, maximum } => {
+                            event.before.is_creature()
+                                && (event.before.power <= i128::from(maximum)
+                                    || event.before.toughness <= i128::from(maximum))
+                                && match relation {
+                                    CastRelation::You => {
+                                        source.controller == event.before.controller
+                                    }
+                                    CastRelation::Opponent => {
+                                        source.controller != event.before.controller
+                                    }
+                                    CastRelation::Any => true,
+                                }
+                        }
                         TriggerCondition::CreatureDiesFiltered { filter }
                         | TriggerCondition::CreatureDiesAttackState { filter, .. } => {
                             event.before.is_creature()
@@ -541,6 +555,7 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::CreatureDiesWithMaximumStat { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }
@@ -2376,6 +2391,13 @@ impl Game {
                         recipient,
                         matches!(instruction, Instruction::Fight { .. }),
                     );
+                }
+                Instruction::AddManaScaled { color, amount } => {
+                    let amount = u32::try_from(self.item_amount(amount, &item))
+                        .capacity("mana representation exhausted");
+                    let mut mana = [0; 6];
+                    mana[color.index()] = amount;
+                    self.add_mana(item.controller, mana);
                 }
                 Instruction::AddMana(production) => {
                     let quality = self
