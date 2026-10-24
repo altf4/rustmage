@@ -134,14 +134,14 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter_map(|(id, o)| {
-                (o.zone == Zone::Graveyard
+            .filter(|(_, o)| {
+                o.zone == Zone::Graveyard
                     && o.owner == item.controller
                     && !o.is_token()
                     && o.card.kind_mask() & kinds != 0
-                    && u128::from(o.card.fixed_mana_value()) == value)
-                    .then(|| self.entry_move(id as CardId, Zone::Battlefield, false))
+                    && u128::from(o.card.fixed_mana_value()) == value
             })
+            .map(|(id, _)| self.entry_move(id as CardId, Zone::Battlefield, false))
             .collect();
         self.stage_entries(moves, None);
     }
