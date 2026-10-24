@@ -268,7 +268,7 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
 struct Tracker {
     seen_packets: BTreeSet<u64>,
     seen_events: BTreeSet<String>,
-    prepared_ids: BTreeSet<CardId>,
+    prepared_copies: BTreeSet<ObjectRef>,
     copy_causes: BTreeMap<u64, &'static str>,
     cards: BTreeSet<String>,
     witnesses: BTreeMap<String, u64>,
@@ -295,7 +295,7 @@ impl Tracker {
     }
     fn inspect(&mut self, before: &Observation, after: &Observation, action: &Action) {
         for row in &after.preparations {
-            self.prepared_ids.insert(row.spell_copy.card);
+            self.prepared_copies.insert(row.spell_copy);
             self.hit("prepared_created", format!("{:?}", row.spell_copy));
         }
         for row in &after.paradigms {
@@ -308,9 +308,9 @@ impl Tracker {
             let cause = after
                 .resolving
                 .as_ref()
-                .and_then(Self::cause)
-                .or_else(|| before.resolving.as_ref().and_then(Self::cause))
-                .or_else(|| before.stack.last().and_then(Self::cause));
+                .or(before.resolving.as_ref())
+                .or_else(|| before.stack.last())
+                .and_then(Self::cause);
             if let Some(cause) = cause {
                 self.copy_causes.insert(copy.item.id, cause);
             }
@@ -318,8 +318,8 @@ impl Tracker {
         let immediate_cause = before
             .resolving
             .as_ref()
-            .and_then(Self::cause)
-            .or_else(|| before.stack.last().and_then(Self::cause));
+            .or_else(|| before.stack.last())
+            .and_then(Self::cause);
         for s in after.stack.iter().chain(after.resolving.iter()) {
             if !self.seen_packets.insert(s.id) {
                 continue;
@@ -352,7 +352,12 @@ impl Tracker {
                             self.hit("miracle_opponent_turn", s.id.to_string());
                         }
                     }
-                    if cast.origin == Zone::Exile && self.prepared_ids.contains(&s.card) {
+                    if cast.origin == Zone::Exile
+                        && self.prepared_copies.iter().any(|copy| {
+                            copy.card == s.object.card
+                                && copy.generation.checked_add(1) == Some(s.object.generation)
+                        })
+                    {
                         self.hit("prepared_spell_cast", s.id.to_string());
                     }
                     if cast.origin == Zone::Exile && before.cascade.is_some() {
