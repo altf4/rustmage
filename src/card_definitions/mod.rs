@@ -113,6 +113,9 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub prepared_spell: Option<Card>,
+    pub enters_prepared: bool,
+    pub prepared_identity: Option<&'static str>,
     pub borrows_exiled_activations: bool,
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
@@ -153,6 +156,7 @@ pub(super) struct CardExtras {
     pub bargain_reduction: Option<u32>,
     pub x_symbols: u8,
     pub x_entry_counters: bool,
+    pub x_complement_entry_counters: Option<(CounterKind, u32)>,
     pub kicker_cost: Option<ManaCost>,
     pub gift: Option<GiftSpec>,
     pub kicked_entry_counters: u16,
@@ -180,6 +184,9 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        prepared_spell: None,
+        enters_prepared: false,
+        prepared_identity: None,
         borrows_exiled_activations: false,
         zone_replacement: None,
         opening_hand_battlefield: false,
@@ -222,6 +229,7 @@ impl CardExtras {
         bargain_reduction: None,
         x_symbols: 0,
         x_entry_counters: false,
+        x_complement_entry_counters: None,
         kicker_cost: None,
         gift: None,
         kicked_entry_counters: 0,

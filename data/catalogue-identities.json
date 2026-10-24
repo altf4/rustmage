@@ -5352,7 +5352,47 @@
     8,
     4,
     0,
-    0
+    0,
+    18,
+    20,
+    10,
+    9,
+    0,
+    4,
+    8,
+    2,
+    4,
+    1,
+    16,
+    8,
+    2,
+    1,
+    4,
+    2,
+    8,
+    4,
+    2,
+    1,
+    16,
+    2,
+    1,
+    9,
+    2,
+    4,
+    0,
+    8,
+    8,
+    1,
+    10,
+    4,
+    4,
+    2,
+    2,
+    1,
+    8,
+    16,
+    18,
+    16
   ],
   "aliases": [
     [
@@ -5578,6 +5618,150 @@
     [
       "@omen/ff812a78-3fe7-47bc-9984-1c2380cff5b1",
       5235
+    ],
+    [
+      "@prepare/abigale_poet_laureate_heroic_stanza",
+      5351
+    ],
+    [
+      "@prepare/adventurous_eater_have_a_bite",
+      5352
+    ],
+    [
+      "@prepare/blazing_firesinger_seething_song",
+      5353
+    ],
+    [
+      "@prepare/campus_composer_aqueous_aria",
+      5354
+    ],
+    [
+      "@prepare/cheerful_osteomancer_raise_dead",
+      5355
+    ],
+    [
+      "@prepare/elite_interceptor_rejoinder",
+      5356
+    ],
+    [
+      "@prepare/emeritus_of_abundance_regrowth",
+      5357
+    ],
+    [
+      "@prepare/emeritus_of_conflict_lightning_bolt",
+      5358
+    ],
+    [
+      "@prepare/emeritus_of_ideation_ancestral_recall",
+      5359
+    ],
+    [
+      "@prepare/emeritus_of_truce_swords_to_plowshares",
+      5360
+    ],
+    [
+      "@prepare/emeritus_of_woe_demonic_tutor",
+      5361
+    ],
+    [
+      "@prepare/encouraging_aviator_jump",
+      5362
+    ],
+    [
+      "@prepare/goblin_glasswright_craft_with_pride",
+      5363
+    ],
+    [
+      "@prepare/grave_researcher_reanimate",
+      5364
+    ],
+    [
+      "@prepare/harmonized_trio_brainstorm",
+      5365
+    ],
+    [
+      "@prepare/honorbound_page_forum_s_favor",
+      5366
+    ],
+    [
+      "@prepare/infirmary_healer_stream_of_life",
+      5367
+    ],
+    [
+      "@prepare/jadzi_steward_of_fate_oracle_s_gift",
+      5368
+    ],
+    [
+      "@prepare/joined_researchers_secret_rendezvous",
+      5369
+    ],
+    [
+      "@prepare/kirol_history_buff_pack_a_punch",
+      5370
+    ],
+    [
+      "@prepare/landscape_painter_vibrant_idea",
+      5371
+    ],
+    [
+      "@prepare/leech_collector_bloodletting",
+      5372
+    ],
+    [
+      "@prepare/lluwen_exchange_student_pest_friend",
+      5373
+    ],
+    [
+      "@prepare/maelstrom_artisan_rocket_volley",
+      5374
+    ],
+    [
+      "@prepare/pigment_wrangler_striking_palette",
+      5375
+    ],
+    [
+      "@prepare/quill_blade_laureate_twofold_intent",
+      5376
+    ],
+    [
+      "@prepare/sanar_unfinished_genius_wild_idea",
+      5377
+    ],
+    [
+      "@prepare/scathing_shadelock_venomous_words",
+      5378
+    ],
+    [
+      "@prepare/scheming_silvertongue_sign_in_blood",
+      5379
+    ],
+    [
+      "@prepare/skycoach_conductor_all_aboard",
+      5380
+    ],
+    [
+      "@prepare/spellbook_seeker_careful_study",
+      5381
+    ],
+    [
+      "@prepare/spiritcall_enthusiast_scrollboost",
+      5382
+    ],
+    [
+      "@prepare/strife_scholar_awaken_the_ages",
+      5383
+    ],
+    [
+      "@prepare/studious_first_year_rampant_growth",
+      5384
+    ],
+    [
+      "@prepare/tam_observant_sequencer_deep_sight",
+      5385
+    ],
+    [
+      "@prepare/vastlands_scavenger_bind_to_life",
+      5386
     ],
     [
       "@token/057eeb57ac5a20383dae8cde",
@@ -6008,6 +6192,22 @@
       5334
     ],
     [
+      "@token/sos-elemental",
+      5349
+    ],
+    [
+      "@token/sos-fractal",
+      5347
+    ],
+    [
+      "@token/sos-pest",
+      5348
+    ],
+    [
+      "@token/sos-spirit",
+      5350
+    ],
+    [
       "@token/spirit_1_1_white_flying",
       5342
     ],
@@ -6082,6 +6282,10 @@
     [
       "Abigale, Eloquent First-Year",
       31
+    ],
+    [
+      "Abigale, Poet Laureate",
+      32
     ],
     [
       "Abigale, Poet Laureate // Heroic Stanza",
@@ -6218,6 +6422,10 @@
     [
       "Adventuring Gear",
       64
+    ],
+    [
+      "Adventurous Eater",
+      65
     ],
     [
       "Adventurous Eater // Have a Bite",
@@ -6484,6 +6692,10 @@
       130
     ],
     [
+      "All Aboard",
+      5380
+    ],
+    [
       "All-Fates Scroll",
       131
     ],
@@ -6586,6 +6798,10 @@
     [
       "Ancestral Anger",
       156
+    ],
+    [
+      "Ancestral Recall",
+      5359
     ],
     [
       "Ancestral Reminiscence",
@@ -6742,6 +6958,10 @@
     [
       "Aquatic Alchemist // Bubble Up",
       194
+    ],
+    [
+      "Aqueous Aria",
+      5354
     ],
     [
       "Aquitect's Defenses",
@@ -7114,6 +7334,10 @@
     [
       "Avishkar Raceway",
       287
+    ],
+    [
+      "Awaken the Ages",
+      5383
     ],
     [
       "Awaken the Honored Dead",
@@ -7664,6 +7888,10 @@
       413
     ],
     [
+      "Bind to Life",
+      5386
+    ],
+    [
       "Binding Negotiation",
       414
     ],
@@ -7780,6 +8008,10 @@
       442
     ],
     [
+      "Blazing Firesinger",
+      443
+    ],
+    [
       "Blazing Firesinger // Seething Song",
       443
     ],
@@ -7838,6 +8070,10 @@
     [
       "Bloodletter of Aclazotz",
       457
+    ],
+    [
+      "Bloodletting",
+      5372
     ],
     [
       "Bloodline Bidding",
@@ -8106,6 +8342,10 @@
     [
       "Braided Net // Braided Quipu",
       521
+    ],
+    [
+      "Brainstorm",
+      5365
     ],
     [
       "Bramble Familiar",
@@ -8536,6 +8776,10 @@
       626
     ],
     [
+      "Campus Composer",
+      627
+    ],
+    [
       "Campus Composer // Aqueous Aria",
       627
     ],
@@ -8634,6 +8878,10 @@
     [
       "Careening Mine Cart",
       651
+    ],
+    [
+      "Careful Study",
+      5381
     ],
     [
       "Caretaker's Talent",
@@ -8958,6 +9206,10 @@
     [
       "Cheeky House-Mouse // Squeak By",
       731
+    ],
+    [
+      "Cheerful Osteomancer",
+      732
     ],
     [
       "Cheerful Osteomancer // Raise Dead",
@@ -9568,6 +9820,10 @@
       876
     ],
     [
+      "Craft with Pride",
+      5363
+    ],
+    [
       "Craftwork Crusher",
       877
     ],
@@ -10144,6 +10400,10 @@
       1019
     ],
     [
+      "Deep Sight",
+      5385
+    ],
+    [
       "Deep-Cavern Bat",
       1020
     ],
@@ -10234,6 +10494,10 @@
     [
       "Demonic Ruckus",
       1042
+    ],
+    [
+      "Demonic Tutor",
+      5361
     ],
     [
       "Denzilore Fatehold",
@@ -11248,6 +11512,10 @@
       1287
     ],
     [
+      "Elite Interceptor",
+      1288
+    ],
+    [
       "Elite Interceptor // Rejoinder",
       1288
     ],
@@ -11352,20 +11620,40 @@
       1313
     ],
     [
+      "Emeritus of Abundance",
+      1314
+    ],
+    [
       "Emeritus of Abundance // Regrowth",
       1314
+    ],
+    [
+      "Emeritus of Conflict",
+      1315
     ],
     [
       "Emeritus of Conflict // Lightning Bolt",
       1315
     ],
     [
+      "Emeritus of Ideation",
+      1316
+    ],
+    [
       "Emeritus of Ideation // Ancestral Recall",
       1316
     ],
     [
+      "Emeritus of Truce",
+      1317
+    ],
+    [
       "Emeritus of Truce // Swords to Plowshares",
       1317
+    ],
+    [
+      "Emeritus of Woe",
+      1318
     ],
     [
       "Emeritus of Woe // Demonic Tutor",
@@ -11398,6 +11686,10 @@
     [
       "Enchanted River's Grasp",
       1325
+    ],
+    [
+      "Encouraging Aviator",
+      1326
     ],
     [
       "Encouraging Aviator // Jump",
@@ -12552,6 +12844,10 @@
       1605
     ],
     [
+      "Forum's Favor",
+      5366
+    ],
+    [
       "Foul Roads",
       1606
     ],
@@ -13380,6 +13676,10 @@
       1802
     ],
     [
+      "Goblin Glasswright",
+      1803
+    ],
+    [
       "Goblin Glasswright // Craft with Pride",
       1803
     ],
@@ -13590,6 +13890,10 @@
     [
       "Gravblade Heavy",
       1852
+    ],
+    [
+      "Grave Researcher",
+      1853
     ],
     [
       "Grave Researcher // Reanimate",
@@ -13992,6 +14296,10 @@
       1950
     ],
     [
+      "Harmonized Trio",
+      1951
+    ],
+    [
       "Harmonized Trio // Brainstorm",
       1951
     ],
@@ -14050,6 +14358,10 @@
     [
       "Hauntwoods Shrieker",
       1965
+    ],
+    [
+      "Have a Bite",
+      5352
     ],
     [
       "Hawkeye's Bow",
@@ -14268,6 +14580,10 @@
       2019
     ],
     [
+      "Heroic Stanza",
+      5351
+    ],
+    [
       "Hex Magic",
       2020
     ],
@@ -14458,6 +14774,10 @@
     [
       "Honor",
       2065
+    ],
+    [
+      "Honorbound Page",
+      2066
     ],
     [
       "Honorbound Page // Forum's Favor",
@@ -14856,6 +15176,10 @@
       2163
     ],
     [
+      "Infirmary Healer",
+      2164
+    ],
+    [
       "Infirmary Healer // Stream of Life",
       2164
     ],
@@ -15236,6 +15560,10 @@
       2255
     ],
     [
+      "Jadzi, Steward of Fate",
+      2256
+    ],
+    [
       "Jadzi, Steward of Fate // Oracle's Gift",
       2256
     ],
@@ -15352,6 +15680,10 @@
       2284
     ],
     [
+      "Joined Researchers",
+      2285
+    ],
+    [
       "Joined Researchers // Secret Rendezvous",
       2285
     ],
@@ -15398,6 +15730,10 @@
     [
       "Jumbo Cactuar",
       2296
+    ],
+    [
+      "Jump",
+      5362
     ],
     [
       "Jump Scare",
@@ -15690,6 +16026,10 @@
     [
       "Kirol, Attentive First-Year",
       2369
+    ],
+    [
+      "Kirol, History Buff",
+      2370
     ],
     [
       "Kirol, History Buff // Pack a Punch",
@@ -15988,6 +16328,10 @@
       2443
     ],
     [
+      "Landscape Painter",
+      2444
+    ],
+    [
       "Landscape Painter // Vibrant Idea",
       2444
     ],
@@ -16082,6 +16426,10 @@
     [
       "Lecturing Scornmage",
       2467
+    ],
+    [
+      "Leech Collector",
+      2468
     ],
     [
       "Leech Collector // Bloodletting",
@@ -16330,6 +16678,10 @@
     [
       "Llanowar Elves",
       8
+    ],
+    [
+      "Lluwen, Exchange Student",
+      2528
     ],
     [
       "Lluwen, Exchange Student // Pest Friend",
@@ -16658,6 +17010,10 @@
     [
       "Madame Web, Clairvoyant",
       2609
+    ],
+    [
+      "Maelstrom Artisan",
+      2610
     ],
     [
       "Maelstrom Artisan // Rocket Volley",
@@ -18372,6 +18728,10 @@
       3029
     ],
     [
+      "Oracle's Gift",
+      5368
+    ],
+    [
       "Oracle's Restoration",
       3030
     ],
@@ -18600,6 +18960,10 @@
       3086
     ],
     [
+      "Pack a Punch",
+      5370
+    ],
+    [
       "Pactdoll Terror",
       3087
     ],
@@ -18800,6 +19164,10 @@
       3136
     ],
     [
+      "Pest Friend",
+      5373
+    ],
+    [
       "Pest Mascot",
       3137
     ],
@@ -18902,6 +19270,10 @@
     [
       "Piggy Bank",
       3159
+    ],
+    [
+      "Pigment Wrangler",
+      3160
     ],
     [
       "Pigment Wrangler // Striking Palette",
@@ -19548,6 +19920,10 @@
       3315
     ],
     [
+      "Quill-Blade Laureate",
+      3316
+    ],
+    [
       "Quill-Blade Laureate // Twofold Intent",
       3316
     ],
@@ -19680,6 +20056,10 @@
       3348
     ],
     [
+      "Raise Dead",
+      5355
+    ],
+    [
       "Raise the Past",
       3349
     ],
@@ -19746,6 +20126,10 @@
     [
       "Rampaging Spiketail",
       3365
+    ],
+    [
+      "Rampant Growth",
+      5384
     ],
     [
       "Rampart Hunter",
@@ -19948,6 +20332,10 @@
       3413
     ],
     [
+      "Reanimate",
+      5364
+    ],
+    [
       "Reaping Willow",
       3414
     ],
@@ -20080,12 +20468,20 @@
       3446
     ],
     [
+      "Regrowth",
+      5357
+    ],
+    [
       "Rehearsed Debater",
       3447
     ],
     [
       "Reigning Victor",
       3448
+    ],
+    [
+      "Rejoinder",
+      5356
     ],
     [
       "Release the Dogs",
@@ -20576,6 +20972,10 @@
       3567
     ],
     [
+      "Rocket Volley",
+      5374
+    ],
+    [
       "Rocket-Powered Goblin Glider",
       3568
     ],
@@ -21000,6 +21400,10 @@
       3670
     ],
     [
+      "Sanar, Unfinished Genius",
+      3671
+    ],
+    [
       "Sanar, Unfinished Genius // Wild Idea",
       3671
     ],
@@ -21188,6 +21592,10 @@
       3715
     ],
     [
+      "Scathing Shadelock",
+      3716
+    ],
+    [
       "Scathing Shadelock // Venomous Words",
       3716
     ],
@@ -21210,6 +21618,10 @@
     [
       "Scene of the Crime",
       3720
+    ],
+    [
+      "Scheming Silvertongue",
+      3721
     ],
     [
       "Scheming Silvertongue // Sign in Blood",
@@ -21296,6 +21708,10 @@
       3741
     ],
     [
+      "Scrollboost",
+      5382
+    ],
+    [
       "Scrounge for Eternity",
       3742
     ],
@@ -21372,6 +21788,10 @@
       3760
     ],
     [
+      "Secret Rendezvous",
+      5369
+    ],
+    [
       "Secret Tunnel",
       3761
     ],
@@ -21410,6 +21830,10 @@
     [
       "Seeker's Folly",
       3769
+    ],
+    [
+      "Seething Song",
+      5353
     ],
     [
       "Seifer Almasy",
@@ -21800,6 +22224,10 @@
       3864
     ],
     [
+      "Sign in Blood",
+      5379
+    ],
+    [
       "Signaling Roar",
       5225
     ],
@@ -21946,6 +22374,10 @@
     [
       "Skybox Ferry",
       3898
+    ],
+    [
+      "Skycoach Conductor",
+      3899
     ],
     [
       "Skycoach Conductor // All Aboard",
@@ -22392,6 +22824,10 @@
       4007
     ],
     [
+      "Spellbook Seeker",
+      4008
+    ],
+    [
       "Spellbook Seeker // Careful Study",
       4008
     ],
@@ -22590,6 +23026,10 @@
     [
       "Spirit Water Revival",
       4056
+    ],
+    [
+      "Spiritcall Enthusiast",
+      4057
     ],
     [
       "Spiritcall Enthusiast // Scrollboost",
@@ -23120,6 +23560,10 @@
       4184
     ],
     [
+      "Stream of Life",
+      5367
+    ],
+    [
       "Strength of Will",
       4185
     ],
@@ -23128,8 +23572,16 @@
       4186
     ],
     [
+      "Strife Scholar",
+      4187
+    ],
+    [
       "Strife Scholar // Awaken the Ages",
       4187
+    ],
+    [
+      "Striking Palette",
+      5375
     ],
     [
       "Strix Lookout",
@@ -23162,6 +23614,10 @@
     [
       "Stuck in Summoner's Sanctum",
       4195
+    ],
+    [
+      "Studious First-Year",
+      4196
     ],
     [
       "Studious First-Year // Rampant Growth",
@@ -23572,6 +24028,10 @@
       4296
     ],
     [
+      "Swords to Plowshares",
+      5360
+    ],
+    [
       "Swordsman, Sharp Scoundrel",
       4297
     ],
@@ -23702,6 +24162,10 @@
     [
       "Tam, Mindful First-Year",
       4328
+    ],
+    [
+      "Tam, Observant Sequencer",
+      4329
     ],
     [
       "Tam, Observant Sequencer // Deep Sight",
@@ -25352,6 +25816,10 @@
       4731
     ],
     [
+      "Twofold Intent",
+      5376
+    ],
+    [
       "Ty Lee, Artful Acrobat",
       4732
     ],
@@ -25832,6 +26300,10 @@
       4850
     ],
     [
+      "Vastlands Scavenger",
+      4851
+    ],
+    [
       "Vastlands Scavenger // Bind to Life",
       4851
     ],
@@ -25920,6 +26392,10 @@
       4871
     ],
     [
+      "Venomous Words",
+      5378
+    ],
+    [
       "Venomsac Lagac",
       4872
     ],
@@ -25970,6 +26446,10 @@
     [
       "Vibrant Cityscape",
       4884
+    ],
+    [
+      "Vibrant Idea",
+      5371
     ],
     [
       "Vibrant Outburst",
@@ -26666,6 +27146,10 @@
     [
       "Wild Hypothesis",
       5057
+    ],
+    [
+      "Wild Idea",
+      5377
     ],
     [
       "Wild Pack Squad",
@@ -27820,6 +28304,30 @@
       "name": "Blood Token",
       "subtypes": "Blood",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/sos-fractal",
+      "name": "Fractal Token",
+      "subtypes": "Fractal",
+      "colors": 18
+    },
+    {
+      "factory_identity": "@token/sos-pest",
+      "name": "Pest Token",
+      "subtypes": "Pest",
+      "colors": 20
+    },
+    {
+      "factory_identity": "@token/sos-elemental",
+      "name": "Elemental Token",
+      "subtypes": "Elemental",
+      "colors": 10
+    },
+    {
+      "factory_identity": "@token/sos-spirit",
+      "name": "Spirit Token",
+      "subtypes": "Spirit",
+      "colors": 9
     }
   ],
   "emblems": [
@@ -28176,7 +28684,11 @@
     "Counterspell": 13,
     "DrakeToken": 5339,
     "KaitoNinjaToken": 5340,
-    "KaitoEmblem": 5341
+    "KaitoEmblem": 5341,
+    "SosFractalToken": 5347,
+    "SosPestToken": 5348,
+    "SosElementalToken": 5349,
+    "SosSpiritToken": 5350
   },
   "helper_interface": [
     [
@@ -29306,11 +29818,11 @@
       "path": "sos/abigale_poet_laureate_heroic_stanza.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Abigale, Poet Laureate // Heroic Stanza",
+      "name": "Abigale, Poet Laureate",
       "oracle_id": "2f5f46ed-b8aa-4864-bd20-17281d4632bf",
       "facts_sha256": "d577d4c8670f8c1936351024f84619536ce3bb5d2b2c4bf2b7127b8f107f4d34",
-      "mana_cost": "{1}{W}{B} // {1}{W/B}",
-      "type_line": "Legendary Creature — Bird Bard // Sorcery",
+      "mana_cost": "{1}{W}{B}",
+      "type_line": "Legendary Creature — Bird Bard",
       "oracle_keywords": [
         "Flying",
         "Prepared"
@@ -29321,14 +29833,14 @@
       "basic": false,
       "mana_color": null,
       "colored": [
+        1,
         0,
-        0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 33,
@@ -30238,11 +30750,11 @@
       "path": "sos/adventurous_eater_have_a_bite.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Adventurous Eater // Have a Bite",
+      "name": "Adventurous Eater",
       "oracle_id": "02125db4-4507-467a-ac0c-406de2c7d533",
       "facts_sha256": "11a71ccce40c272e46d49d89976431fc99674261bada93865a446f69e6137053",
-      "mana_cost": "{2}{B} // {B}",
-      "type_line": "Creature — Human Warlock // Sorcery",
+      "mana_cost": "{2}{B}",
+      "type_line": "Creature — Human Warlock",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -30254,12 +30766,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 66,
@@ -41008,11 +41520,11 @@
       "path": "sos/blazing_firesinger_seething_song.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Blazing Firesinger // Seething Song",
+      "name": "Blazing Firesinger",
       "oracle_id": "1bf505a7-292e-4642-83b6-8ff41ebe5d51",
       "facts_sha256": "d5785b263432ea8395bc4be38dc27f4cbb01c653a7c9ad8a5095add9c429f0dc",
-      "mana_cost": "{2}{R} // {2}{R}",
-      "type_line": "Creature — Dwarf Bard // Instant",
+      "mana_cost": "{2}{R}",
+      "type_line": "Creature — Dwarf Bard",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -41025,11 +41537,11 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 444,
@@ -46244,11 +46756,11 @@
       "path": "sos/campus_composer_aqueous_aria.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Campus Composer // Aqueous Aria",
+      "name": "Campus Composer",
       "oracle_id": "9b3155c1-c662-4ff1-80e2-4064e6233dc5",
       "facts_sha256": "7065f71f12f7a2907c934bbc7ea2ef6468332f97f9e2431a8f310e57999e2b0f",
-      "mana_cost": "{3}{U} // {4}{U}",
-      "type_line": "Creature — Merfolk Bard // Sorcery",
+      "mana_cost": "{3}{U}",
+      "type_line": "Creature — Merfolk Bard",
       "oracle_keywords": [
         "Prepared",
         "Ward"
@@ -46260,13 +46772,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 628,
@@ -49266,11 +49778,11 @@
       "path": "sos/cheerful_osteomancer_raise_dead.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Cheerful Osteomancer // Raise Dead",
+      "name": "Cheerful Osteomancer",
       "oracle_id": "fd01229f-1c4c-4ad1-bc6f-4023f24d8c71",
       "facts_sha256": "065cf8b0132200b9f3cc96bcbc8662640f59c7a3c846da46e5f034aefc1f82f1",
-      "mana_cost": "{3}{B} // {B}",
-      "type_line": "Creature — Orc Warlock // Sorcery",
+      "mana_cost": "{3}{B}",
+      "type_line": "Creature — Orc Warlock",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -49282,12 +49794,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 733,
@@ -65099,11 +65611,11 @@
       "path": "sos/elite_interceptor_rejoinder.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Elite Interceptor // Rejoinder",
+      "name": "Elite Interceptor",
       "oracle_id": "d97de156-5a6d-4dc6-953e-d4bad63cbad2",
       "facts_sha256": "6a85d2d453fb7275cdc016e59c1ee2e660dfc7eda7596abd3e573a5e66f88a7c",
-      "mana_cost": "{W} // {1}{W}",
-      "type_line": "Creature — Human Wizard // Sorcery",
+      "mana_cost": "{W}",
+      "type_line": "Creature — Human Wizard",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -65113,7 +65625,7 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
@@ -65824,11 +66336,11 @@
       "path": "sos/emeritus_of_abundance_regrowth.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Emeritus of Abundance // Regrowth",
+      "name": "Emeritus of Abundance",
       "oracle_id": "e5152e8d-9f55-493d-a0fc-753cc72ee299",
       "facts_sha256": "85e797bbfb9ca42a496ff910862faf5c0a5a16a116c7f3459cab72ff0caa8dd9",
-      "mana_cost": "{2}{G} // {1}{G}",
-      "type_line": "Creature — Elf Druid // Sorcery",
+      "mana_cost": "{2}{G}",
+      "type_line": "Creature — Elf Druid",
       "oracle_keywords": [
         "Vigilance",
         "Prepared"
@@ -65843,10 +66355,10 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 1315,
@@ -65854,11 +66366,11 @@
       "path": "sos/emeritus_of_conflict_lightning_bolt.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Emeritus of Conflict // Lightning Bolt",
+      "name": "Emeritus of Conflict",
       "oracle_id": "5963eef1-1022-42b1-8a0c-fc9850bfc2a3",
       "facts_sha256": "f8de71e785c3c58db6fe80fb91a549b9040782e03d9fd4a8ef8d4f3563f1dfd5",
-      "mana_cost": "{1}{R} // {R}",
-      "type_line": "Creature — Human Wizard // Instant",
+      "mana_cost": "{1}{R}",
+      "type_line": "Creature — Human Wizard",
       "oracle_keywords": [
         "First strike",
         "Prepared"
@@ -65872,11 +66384,11 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 1316,
@@ -65884,11 +66396,11 @@
       "path": "sos/emeritus_of_ideation_ancestral_recall.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Emeritus of Ideation // Ancestral Recall",
+      "name": "Emeritus of Ideation",
       "oracle_id": "24a29be4-5bc2-469b-b2ce-2fb305c3facb",
       "facts_sha256": "2aeaff2858a20d487bb7a73e796353f56eac30c80e931788c889d3b1dbcd58cc",
-      "mana_cost": "{3}{U}{U} // {U}",
-      "type_line": "Creature — Human Wizard // Instant",
+      "mana_cost": "{3}{U}{U}",
+      "type_line": "Creature — Human Wizard",
       "oracle_keywords": [
         "Flying",
         "Prepared",
@@ -65901,13 +66413,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        2,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 1317,
@@ -65915,11 +66427,11 @@
       "path": "sos/emeritus_of_truce_swords_to_plowshares.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Emeritus of Truce // Swords to Plowshares",
+      "name": "Emeritus of Truce",
       "oracle_id": "e6c41473-2398-4888-9f0c-467dce7c39a4",
       "facts_sha256": "68379458ffe99650a4ffdc1345df06df2b3728b09c2689c4955f212a4e65b482",
-      "mana_cost": "{1}{W}{W} // {W}",
-      "type_line": "Creature — Cat Cleric // Instant",
+      "mana_cost": "{1}{W}{W}",
+      "type_line": "Creature — Cat Cleric",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -65929,14 +66441,14 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        2,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 1318,
@@ -65944,11 +66456,11 @@
       "path": "sos/emeritus_of_woe_demonic_tutor.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Emeritus of Woe // Demonic Tutor",
+      "name": "Emeritus of Woe",
       "oracle_id": "93056597-b964-421f-be2f-e92abef1c2a4",
       "facts_sha256": "8a03def70f795a37d883a7a49ca88e6559100c7851dd4b74e40baab7fa8d3b41",
-      "mana_cost": "{3}{B} // {1}{B}",
-      "type_line": "Creature — Vampire Warlock // Sorcery",
+      "mana_cost": "{3}{B}",
+      "type_line": "Creature — Vampire Warlock",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -65960,12 +66472,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 1319,
@@ -66176,11 +66688,11 @@
       "path": "sos/encouraging_aviator_jump.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Encouraging Aviator // Jump",
+      "name": "Encouraging Aviator",
       "oracle_id": "d6accaed-ff35-4324-b31b-35e6837bc079",
       "facts_sha256": "81069928574e186ea2c42d2f9c29964914aabfc9e3fa470d0d029731762dd417",
-      "mana_cost": "{2}{U} // {U}",
-      "type_line": "Creature — Bird Wizard // Instant",
+      "mana_cost": "{2}{U}",
+      "type_line": "Creature — Bird Wizard",
       "oracle_keywords": [
         "Flying",
         "Prepared"
@@ -66192,13 +66704,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 1327,
@@ -79718,11 +80230,11 @@
       "path": "sos/goblin_glasswright_craft_with_pride.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Goblin Glasswright // Craft with Pride",
+      "name": "Goblin Glasswright",
       "oracle_id": "23c3de07-8aa2-48e9-848c-50b5a40bd133",
       "facts_sha256": "6bb85e89af095c5d16b3e649b165ac4f1bc9b57bc0e71acd27f9e44ed2c2d688",
-      "mana_cost": "{1}{R} // {R}",
-      "type_line": "Creature — Goblin Sorcerer // Sorcery",
+      "mana_cost": "{1}{R}",
+      "type_line": "Creature — Goblin Sorcerer",
       "oracle_keywords": [
         "Treasure",
         "Prepared"
@@ -79736,11 +80248,11 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 1804,
@@ -81132,11 +81644,11 @@
       "path": "sos/grave_researcher_reanimate.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Grave Researcher // Reanimate",
+      "name": "Grave Researcher",
       "oracle_id": "6cb8b8c4-0674-4f14-9d89-010969fbb80e",
       "facts_sha256": "ad64ca4d3ddc926dfea17bf81f9969688e5b9fa42aa25347420163a3f932e3af",
-      "mana_cost": "{2}{B} // {B}",
-      "type_line": "Creature — Troll Warlock // Sorcery",
+      "mana_cost": "{2}{B}",
+      "type_line": "Creature — Troll Warlock",
       "oracle_keywords": [
         "Surveil",
         "Prepared"
@@ -81149,12 +81661,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 1854,
@@ -83926,11 +84438,11 @@
       "path": "sos/harmonized_trio_brainstorm.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Harmonized Trio // Brainstorm",
+      "name": "Harmonized Trio",
       "oracle_id": "f6036065-7196-44d4-8a27-2199f0e1a03c",
       "facts_sha256": "6b6048438e852a1034b6fe5b80b8b66535a54842d171b8bf043c7bb20a5689a1",
-      "mana_cost": "{U} // {U}",
-      "type_line": "Creature — Merfolk Bard Wizard // Instant",
+      "mana_cost": "{U}",
+      "type_line": "Creature — Merfolk Bard Wizard",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -83941,7 +84453,7 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
@@ -87188,11 +87700,11 @@
       "path": "sos/honorbound_page_forum_s_favor.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Honorbound Page // Forum's Favor",
+      "name": "Honorbound Page",
       "oracle_id": "66ee56b9-aca8-4efa-b9b5-50717e0784a7",
       "facts_sha256": "e4f4dcd60051c5b382dd5b92c3e5940a7ccd285888fdf1fd430575e3f7ecc76c",
-      "mana_cost": "{3}{W} // {W}",
-      "type_line": "Creature — Cat Cleric // Sorcery",
+      "mana_cost": "{3}{W}",
+      "type_line": "Creature — Cat Cleric",
       "oracle_keywords": [
         "First strike",
         "Prepared"
@@ -87203,14 +87715,14 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 2067,
@@ -89988,11 +90500,11 @@
       "path": "sos/infirmary_healer_stream_of_life.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Infirmary Healer // Stream of Life",
+      "name": "Infirmary Healer",
       "oracle_id": "4cbbdebc-b807-4d7b-92dd-312637d2a5de",
       "facts_sha256": "97db546eb810cf7a6063ee121d0b043d890df37937837e79424a78e3e572cc96",
-      "mana_cost": "{1}{G} // {X}{G}",
-      "type_line": "Creature — Cat Cleric // Sorcery",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature — Cat Cleric",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -90006,10 +90518,10 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 2165,
@@ -92610,11 +93122,11 @@
       "path": "sos/jadzi_steward_of_fate_oracle_s_gift.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Jadzi, Steward of Fate // Oracle's Gift",
+      "name": "Jadzi, Steward of Fate",
       "oracle_id": "c63b3511-d597-4c6e-9094-eabdeaa8a394",
       "facts_sha256": "f2ced6ba60cf3783c46f936a0bc8bceccd2d265938d0643ba7ffa45983301a1b",
-      "mana_cost": "{2}{U} // {X}{X}{U}",
-      "type_line": "Legendary Creature — Human Wizard // Sorcery",
+      "mana_cost": "{2}{U}",
+      "type_line": "Legendary Creature — Human Wizard",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -92625,13 +93137,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 2257,
@@ -93439,11 +93951,11 @@
       "path": "sos/joined_researchers_secret_rendezvous.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Joined Researchers // Secret Rendezvous",
+      "name": "Joined Researchers",
       "oracle_id": "ec744a2d-4a33-4807-bce0-d95cd5277b1f",
       "facts_sha256": "4b17732eb929fa7878162757d10967486c10f5b6d595aa1e0050c42135d906cb",
-      "mana_cost": "{1}{W} // {1}{W}{W}",
-      "type_line": "Creature — Human Cleric Wizard // Sorcery",
+      "mana_cost": "{1}{W}",
+      "type_line": "Creature — Human Cleric Wizard",
       "oracle_keywords": [
         "First strike",
         "Prepared"
@@ -93454,14 +93966,14 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 2286,
@@ -95859,11 +96371,11 @@
       "path": "sos/kirol_history_buff_pack_a_punch.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Kirol, History Buff // Pack a Punch",
+      "name": "Kirol, History Buff",
       "oracle_id": "df1c0d06-2109-4297-9271-8a003fc892bc",
       "facts_sha256": "a7ec270956ece201f4d0a74856dd039207fcc7c1ccf8848e8909ed11a96041b2",
-      "mana_cost": "{R}{W} // {1}{R}{W}",
-      "type_line": "Legendary Creature — Vampire Cleric // Sorcery",
+      "mana_cost": "{R}{W}",
+      "type_line": "Legendary Creature — Vampire Cleric",
       "oracle_keywords": [
         "Prepared",
         "Mill"
@@ -95874,10 +96386,10 @@
       "basic": false,
       "mana_color": null,
       "colored": [
+        1,
         0,
         0,
-        0,
-        0,
+        1,
         0,
         0
       ],
@@ -98005,11 +98517,11 @@
       "path": "sos/landscape_painter_vibrant_idea.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Landscape Painter // Vibrant Idea",
+      "name": "Landscape Painter",
       "oracle_id": "5ba7abbc-f6e8-40c2-800b-11efd10cca5b",
       "facts_sha256": "a66399792302d6243a4f536dbc7792f82a81ae6be7482e8bff953f1ccc32af8c",
-      "mana_cost": "{1}{U} // {4}{U}",
-      "type_line": "Creature — Merfolk Wizard // Sorcery",
+      "mana_cost": "{1}{U}",
+      "type_line": "Creature — Merfolk Wizard",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -98020,13 +98532,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 2445,
@@ -98692,11 +99204,11 @@
       "path": "sos/leech_collector_bloodletting.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Leech Collector // Bloodletting",
+      "name": "Leech Collector",
       "oracle_id": "84bb960c-c34e-4979-8c0f-893c85cee27d",
       "facts_sha256": "17d6c7b71b11dddb1045e22c9e0d5917438163e38915a13f4cebee81534e05de",
-      "mana_cost": "{1}{B} // {B}",
-      "type_line": "Creature — Human Warlock // Sorcery",
+      "mana_cost": "{1}{B}",
+      "type_line": "Creature — Human Warlock",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -98708,12 +99220,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 2469,
@@ -100396,11 +100908,11 @@
       "path": "sos/lluwen_exchange_student_pest_friend.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Lluwen, Exchange Student // Pest Friend",
+      "name": "Lluwen, Exchange Student",
       "oracle_id": "cb125cd4-c7c2-415d-b802-bdcfc2454403",
       "facts_sha256": "d8da86800e5616e45f23bbafd85c6c2d0384ffa24226cae8ba866b92cc42a621",
-      "mana_cost": "{2}{B}{G} // {B/G}",
-      "type_line": "Legendary Creature — Elf Druid // Sorcery",
+      "mana_cost": "{2}{B}{G}",
+      "type_line": "Legendary Creature — Elf Druid",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -100412,12 +100924,12 @@
       "colored": [
         0,
         0,
+        1,
         0,
-        0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 2529,
@@ -102745,11 +103257,11 @@
       "path": "sos/maelstrom_artisan_rocket_volley.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Maelstrom Artisan // Rocket Volley",
+      "name": "Maelstrom Artisan",
       "oracle_id": "03931270-504a-4b0b-af3f-918bf124ea07",
       "facts_sha256": "5b47d88e84c07022239b58990a5855bbacd336375cc4fb5b980ab4c962322b73",
-      "mana_cost": "{1}{R}{R} // {1}{R}",
-      "type_line": "Creature — Minotaur Sorcerer // Sorcery",
+      "mana_cost": "{1}{R}{R}",
+      "type_line": "Creature — Minotaur Sorcerer",
       "oracle_keywords": [
         "Haste",
         "Prepared"
@@ -102763,11 +103275,11 @@
         0,
         0,
         0,
-        0,
+        2,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 2611,
@@ -118390,11 +118902,11 @@
       "path": "sos/pigment_wrangler_striking_palette.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Pigment Wrangler // Striking Palette",
+      "name": "Pigment Wrangler",
       "oracle_id": "c008d60a-ee06-4411-b8e7-c2df13616105",
       "facts_sha256": "5a1094609e15b28bd4a5f4b0f82a1372d7b437cdf726ad1c03f350855ba5686c",
-      "mana_cost": "{4}{R} // {R}",
-      "type_line": "Creature — Orc Sorcerer // Sorcery",
+      "mana_cost": "{4}{R}",
+      "type_line": "Creature — Orc Sorcerer",
       "oracle_keywords": [
         "Flying",
         "Prepared"
@@ -118408,11 +118920,11 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 4
     },
     {
       "index": 3161,
@@ -122822,11 +123334,11 @@
       "path": "sos/quill_blade_laureate_twofold_intent.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Quill-Blade Laureate // Twofold Intent",
+      "name": "Quill-Blade Laureate",
       "oracle_id": "bd9d3a70-faed-4bc6-97d8-1601b36cdb21",
       "facts_sha256": "9c1df39ffb284ab9e11a31a1f6b9cb521e6e3185dc54a8dcbef23353686e4139",
-      "mana_cost": "{1}{W} // {1}{W}",
-      "type_line": "Creature — Human Cleric // Sorcery",
+      "mana_cost": "{1}{W}",
+      "type_line": "Creature — Human Cleric",
       "oracle_keywords": [
         "Prepared",
         "Double strike"
@@ -122837,14 +123349,14 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 3317,
@@ -132925,11 +133437,11 @@
       "path": "sos/sanar_unfinished_genius_wild_idea.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Sanar, Unfinished Genius // Wild Idea",
+      "name": "Sanar, Unfinished Genius",
       "oracle_id": "a8c44bd9-6470-47d7-934f-77c76a44a984",
       "facts_sha256": "0204f5fe1ab77f44ce6d6cc1894b3b3c647483ed8341ba2b8c2dbb0f87b6452d",
-      "mana_cost": "{U}{R} // {3}{U}{R}",
-      "type_line": "Legendary Creature — Goblin Sorcerer // Sorcery",
+      "mana_cost": "{U}{R}",
+      "type_line": "Legendary Creature — Goblin Sorcerer",
       "oracle_keywords": [
         "Treasure",
         "Prepared"
@@ -132941,9 +133453,9 @@
       "mana_color": null,
       "colored": [
         0,
+        1,
         0,
-        0,
-        0,
+        1,
         0,
         0
       ],
@@ -134216,11 +134728,11 @@
       "path": "sos/scathing_shadelock_venomous_words.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Scathing Shadelock // Venomous Words",
+      "name": "Scathing Shadelock",
       "oracle_id": "2796c3d9-9e56-40f2-8398-7a131c4657ff",
       "facts_sha256": "f83ce263612082c7e3108b9e69749645c0b5d7a52b1cd71e61926a207c71d1df",
-      "mana_cost": "{4}{B} // {B}",
-      "type_line": "Creature — Snake Warlock // Sorcery",
+      "mana_cost": "{4}{B}",
+      "type_line": "Creature — Snake Warlock",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -134232,12 +134744,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 4
     },
     {
       "index": 3717,
@@ -134359,11 +134871,11 @@
       "path": "sos/scheming_silvertongue_sign_in_blood.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Scheming Silvertongue // Sign in Blood",
+      "name": "Scheming Silvertongue",
       "oracle_id": "44443716-8356-40cd-a879-35264b29108c",
       "facts_sha256": "f65f8d3a9d927807dcfe865eb21b36b8653b26a4199f9934bf98947f2e17d746",
-      "mana_cost": "{1}{B} // {B}{B}",
-      "type_line": "Creature — Vampire Warlock // Sorcery",
+      "mana_cost": "{1}{B}",
+      "type_line": "Creature — Vampire Warlock",
       "oracle_keywords": [
         "Flying",
         "Lifelink",
@@ -134377,12 +134889,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 3722,
@@ -139445,11 +139957,11 @@
       "path": "sos/skycoach_conductor_all_aboard.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Skycoach Conductor // All Aboard",
+      "name": "Skycoach Conductor",
       "oracle_id": "788d3cfa-7706-4728-9c48-cf7bc963d002",
       "facts_sha256": "bf5e12253e973cedd8a17df278354920eb57b7d8152cdf9a3370d281b9f86b13",
-      "mana_cost": "{2}{U} // {U}",
-      "type_line": "Creature — Bird Pilot // Instant",
+      "mana_cost": "{2}{U}",
+      "type_line": "Creature — Bird Pilot",
       "oracle_keywords": [
         "Flying",
         "Vigilance",
@@ -139463,13 +139975,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 3900,
@@ -140385,7 +140897,7 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
       "generic": 0
@@ -142554,11 +143066,11 @@
       "path": "sos/spellbook_seeker_careful_study.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Spellbook Seeker // Careful Study",
+      "name": "Spellbook Seeker",
       "oracle_id": "df5e4100-8c83-42d6-af96-1a1ec84a9210",
       "facts_sha256": "bc26fc88d761a730626197ba0a66f7c5bb76302ba25420723e6cde6ecabf8346",
-      "mana_cost": "{3}{U} // {U}",
-      "type_line": "Creature — Bird Wizard // Sorcery",
+      "mana_cost": "{3}{U}",
+      "type_line": "Creature — Bird Wizard",
       "oracle_keywords": [
         "Flying",
         "Prepared"
@@ -142570,13 +143082,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 4009,
@@ -143975,11 +144487,11 @@
       "path": "sos/spiritcall_enthusiast_scrollboost.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Spiritcall Enthusiast // Scrollboost",
+      "name": "Spiritcall Enthusiast",
       "oracle_id": "c77ddcac-ce54-4348-bde2-5d9caf3d5b04",
       "facts_sha256": "418d5b39536af52c997ff3e1bebe5a8e2258e3f594b5598ae6fba031df8d1768",
-      "mana_cost": "{2}{W} // {1}{W}",
-      "type_line": "Creature — Cat Cleric // Sorcery",
+      "mana_cost": "{2}{W}",
+      "type_line": "Creature — Cat Cleric",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -143989,14 +144501,14 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 4058,
@@ -147699,11 +148211,11 @@
       "path": "sos/strife_scholar_awaken_the_ages.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Strife Scholar // Awaken the Ages",
+      "name": "Strife Scholar",
       "oracle_id": "e85c6bd2-db15-4052-88c0-3ae25414f0ca",
       "facts_sha256": "63af9fc20c864b8f4c85891f9210f40db8c405cef089d54526024cffce4be499",
-      "mana_cost": "{2}{R} // {5}{R}",
-      "type_line": "Creature — Orc Sorcerer // Sorcery",
+      "mana_cost": "{2}{R}",
+      "type_line": "Creature — Orc Sorcerer",
       "oracle_keywords": [
         "Prepared",
         "Ward"
@@ -147717,11 +148229,11 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 4188,
@@ -147959,11 +148471,11 @@
       "path": "sos/studious_first_year_rampant_growth.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Studious First-Year // Rampant Growth",
+      "name": "Studious First-Year",
       "oracle_id": "58b0c737-0a84-4f9a-b3b7-300c5de43874",
       "facts_sha256": "253b51ff169d02b699f9cdcc33570238341047f53e0d65cdc992a18671d4c4c4",
-      "mana_cost": "{G} // {1}{G}",
-      "type_line": "Creature — Bear Wizard // Sorcery",
+      "mana_cost": "{G}",
+      "type_line": "Creature — Bear Wizard",
       "oracle_keywords": [
         "Prepared"
       ],
@@ -147977,7 +148489,7 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
       "generic": 0
@@ -151738,11 +152250,11 @@
       "path": "sos/tam_observant_sequencer_deep_sight.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Tam, Observant Sequencer // Deep Sight",
+      "name": "Tam, Observant Sequencer",
       "oracle_id": "702e871d-90d8-4468-8f69-5ae42af2c9d3",
       "facts_sha256": "90b876b052ad4362f1460b2d6356ffe4773de386e566fe15d2b1d0c507e7cdef",
-      "mana_cost": "{2}{G}{U} // {G}{U}",
-      "type_line": "Legendary Creature — Gorgon Wizard // Sorcery",
+      "mana_cost": "{2}{G}{U}",
+      "type_line": "Legendary Creature — Gorgon Wizard",
       "oracle_keywords": [
         "Prepared",
         "Landfall"
@@ -151754,13 +152266,13 @@
       "mana_color": null,
       "colored": [
         0,
+        1,
         0,
         0,
-        0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 4330,
@@ -166657,11 +167169,11 @@
       "path": "sos/vastlands_scavenger_bind_to_life.rs",
       "set": "sos",
       "category": "physical",
-      "name": "Vastlands Scavenger // Bind to Life",
+      "name": "Vastlands Scavenger",
       "oracle_id": "3a97bc8d-bd81-468e-9277-eba4fac11ee0",
       "facts_sha256": "fa2b9394907f20a4c145a2e404f3c2de104c3be0e4e5a985c76c5a02faf5504a",
-      "mana_cost": "{1}{G}{G} // {4}{G}",
-      "type_line": "Creature — Bear Druid // Instant",
+      "mana_cost": "{1}{G}{G}",
+      "type_line": "Creature — Bear Druid",
       "oracle_keywords": [
         "Prepared",
         "Mill",
@@ -166677,10 +167189,10 @@
         0,
         0,
         0,
-        0,
+        2,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 4852,
@@ -172557,7 +173069,7 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
       "generic": 0
@@ -180614,6 +181126,1088 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5347,
+      "module": "card_5347",
+      "path": "synthetic/token_sos_fractal.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/sos-fractal",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Fractal",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5348,
+      "module": "card_5348",
+      "path": "synthetic/token_sos_pest.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/sos-pest",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Pest",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5349,
+      "module": "card_5349",
+      "path": "synthetic/token_sos_elemental.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/sos-elemental",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Elemental",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5350,
+      "module": "card_5350",
+      "path": "synthetic/token_sos_spirit.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/sos-spirit",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Spirit",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5351,
+      "module": "card_5351",
+      "path": "sos/prepare_abigale_poet_laureate_heroic_stanza.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Heroic Stanza",
+      "oracle_id": "2f5f46ed-b8aa-4864-bd20-17281d4632bf",
+      "facts_sha256": "d577d4c8670f8c1936351024f84619536ce3bb5d2b2c4bf2b7127b8f107f4d34",
+      "mana_cost": "{1}{W/B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5352,
+      "module": "card_5352",
+      "path": "sos/prepare_adventurous_eater_have_a_bite.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Have a Bite",
+      "oracle_id": "02125db4-4507-467a-ac0c-406de2c7d533",
+      "facts_sha256": "11a71ccce40c272e46d49d89976431fc99674261bada93865a446f69e6137053",
+      "mana_cost": "{B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5353,
+      "module": "card_5353",
+      "path": "sos/prepare_blazing_firesinger_seething_song.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Seething Song",
+      "oracle_id": "1bf505a7-292e-4642-83b6-8ff41ebe5d51",
+      "facts_sha256": "d5785b263432ea8395bc4be38dc27f4cbb01c653a7c9ad8a5095add9c429f0dc",
+      "mana_cost": "{2}{R}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5354,
+      "module": "card_5354",
+      "path": "sos/prepare_campus_composer_aqueous_aria.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Aqueous Aria",
+      "oracle_id": "9b3155c1-c662-4ff1-80e2-4064e6233dc5",
+      "facts_sha256": "7065f71f12f7a2907c934bbc7ea2ef6468332f97f9e2431a8f310e57999e2b0f",
+      "mana_cost": "{4}{U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5355,
+      "module": "card_5355",
+      "path": "sos/prepare_cheerful_osteomancer_raise_dead.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Raise Dead",
+      "oracle_id": "fd01229f-1c4c-4ad1-bc6f-4023f24d8c71",
+      "facts_sha256": "065cf8b0132200b9f3cc96bcbc8662640f59c7a3c846da46e5f034aefc1f82f1",
+      "mana_cost": "{B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5356,
+      "module": "card_5356",
+      "path": "sos/prepare_elite_interceptor_rejoinder.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Rejoinder",
+      "oracle_id": "d97de156-5a6d-4dc6-953e-d4bad63cbad2",
+      "facts_sha256": "6a85d2d453fb7275cdc016e59c1ee2e660dfc7eda7596abd3e573a5e66f88a7c",
+      "mana_cost": "{1}{W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5357,
+      "module": "card_5357",
+      "path": "sos/prepare_emeritus_of_abundance_regrowth.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Regrowth",
+      "oracle_id": "e5152e8d-9f55-493d-a0fc-753cc72ee299",
+      "facts_sha256": "85e797bbfb9ca42a496ff910862faf5c0a5a16a116c7f3459cab72ff0caa8dd9",
+      "mana_cost": "{1}{G}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5358,
+      "module": "card_5358",
+      "path": "sos/prepare_emeritus_of_conflict_lightning_bolt.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Lightning Bolt",
+      "oracle_id": "5963eef1-1022-42b1-8a0c-fc9850bfc2a3",
+      "facts_sha256": "f8de71e785c3c58db6fe80fb91a549b9040782e03d9fd4a8ef8d4f3563f1dfd5",
+      "mana_cost": "{R}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5359,
+      "module": "card_5359",
+      "path": "sos/prepare_emeritus_of_ideation_ancestral_recall.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Ancestral Recall",
+      "oracle_id": "24a29be4-5bc2-469b-b2ce-2fb305c3facb",
+      "facts_sha256": "2aeaff2858a20d487bb7a73e796353f56eac30c80e931788c889d3b1dbcd58cc",
+      "mana_cost": "{U}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5360,
+      "module": "card_5360",
+      "path": "sos/prepare_emeritus_of_truce_swords_to_plowshares.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Swords to Plowshares",
+      "oracle_id": "e6c41473-2398-4888-9f0c-467dce7c39a4",
+      "facts_sha256": "68379458ffe99650a4ffdc1345df06df2b3728b09c2689c4955f212a4e65b482",
+      "mana_cost": "{W}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5361,
+      "module": "card_5361",
+      "path": "sos/prepare_emeritus_of_woe_demonic_tutor.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Demonic Tutor",
+      "oracle_id": "93056597-b964-421f-be2f-e92abef1c2a4",
+      "facts_sha256": "8a03def70f795a37d883a7a49ca88e6559100c7851dd4b74e40baab7fa8d3b41",
+      "mana_cost": "{1}{B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5362,
+      "module": "card_5362",
+      "path": "sos/prepare_encouraging_aviator_jump.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Jump",
+      "oracle_id": "d6accaed-ff35-4324-b31b-35e6837bc079",
+      "facts_sha256": "81069928574e186ea2c42d2f9c29964914aabfc9e3fa470d0d029731762dd417",
+      "mana_cost": "{U}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5363,
+      "module": "card_5363",
+      "path": "sos/prepare_goblin_glasswright_craft_with_pride.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Craft with Pride",
+      "oracle_id": "23c3de07-8aa2-48e9-848c-50b5a40bd133",
+      "facts_sha256": "6bb85e89af095c5d16b3e649b165ac4f1bc9b57bc0e71acd27f9e44ed2c2d688",
+      "mana_cost": "{R}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5364,
+      "module": "card_5364",
+      "path": "sos/prepare_grave_researcher_reanimate.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Reanimate",
+      "oracle_id": "6cb8b8c4-0674-4f14-9d89-010969fbb80e",
+      "facts_sha256": "ad64ca4d3ddc926dfea17bf81f9969688e5b9fa42aa25347420163a3f932e3af",
+      "mana_cost": "{B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5365,
+      "module": "card_5365",
+      "path": "sos/prepare_harmonized_trio_brainstorm.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Brainstorm",
+      "oracle_id": "f6036065-7196-44d4-8a27-2199f0e1a03c",
+      "facts_sha256": "6b6048438e852a1034b6fe5b80b8b66535a54842d171b8bf043c7bb20a5689a1",
+      "mana_cost": "{U}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5366,
+      "module": "card_5366",
+      "path": "sos/prepare_honorbound_page_forum_s_favor.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Forum's Favor",
+      "oracle_id": "66ee56b9-aca8-4efa-b9b5-50717e0784a7",
+      "facts_sha256": "e4f4dcd60051c5b382dd5b92c3e5940a7ccd285888fdf1fd430575e3f7ecc76c",
+      "mana_cost": "{W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5367,
+      "module": "card_5367",
+      "path": "sos/prepare_infirmary_healer_stream_of_life.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Stream of Life",
+      "oracle_id": "4cbbdebc-b807-4d7b-92dd-312637d2a5de",
+      "facts_sha256": "97db546eb810cf7a6063ee121d0b043d890df37937837e79424a78e3e572cc96",
+      "mana_cost": "{X}{G}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5368,
+      "module": "card_5368",
+      "path": "sos/prepare_jadzi_steward_of_fate_oracle_s_gift.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Oracle's Gift",
+      "oracle_id": "c63b3511-d597-4c6e-9094-eabdeaa8a394",
+      "facts_sha256": "f2ced6ba60cf3783c46f936a0bc8bceccd2d265938d0643ba7ffa45983301a1b",
+      "mana_cost": "{X}{X}{U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5369,
+      "module": "card_5369",
+      "path": "sos/prepare_joined_researchers_secret_rendezvous.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Secret Rendezvous",
+      "oracle_id": "ec744a2d-4a33-4807-bce0-d95cd5277b1f",
+      "facts_sha256": "4b17732eb929fa7878162757d10967486c10f5b6d595aa1e0050c42135d906cb",
+      "mana_cost": "{1}{W}{W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5370,
+      "module": "card_5370",
+      "path": "sos/prepare_kirol_history_buff_pack_a_punch.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Pack a Punch",
+      "oracle_id": "df1c0d06-2109-4297-9271-8a003fc892bc",
+      "facts_sha256": "a7ec270956ece201f4d0a74856dd039207fcc7c1ccf8848e8909ed11a96041b2",
+      "mana_cost": "{1}{R}{W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5371,
+      "module": "card_5371",
+      "path": "sos/prepare_landscape_painter_vibrant_idea.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Vibrant Idea",
+      "oracle_id": "5ba7abbc-f6e8-40c2-800b-11efd10cca5b",
+      "facts_sha256": "a66399792302d6243a4f536dbc7792f82a81ae6be7482e8bff953f1ccc32af8c",
+      "mana_cost": "{4}{U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5372,
+      "module": "card_5372",
+      "path": "sos/prepare_leech_collector_bloodletting.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Bloodletting",
+      "oracle_id": "84bb960c-c34e-4979-8c0f-893c85cee27d",
+      "facts_sha256": "17d6c7b71b11dddb1045e22c9e0d5917438163e38915a13f4cebee81534e05de",
+      "mana_cost": "{B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5373,
+      "module": "card_5373",
+      "path": "sos/prepare_lluwen_exchange_student_pest_friend.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Pest Friend",
+      "oracle_id": "cb125cd4-c7c2-415d-b802-bdcfc2454403",
+      "facts_sha256": "d8da86800e5616e45f23bbafd85c6c2d0384ffa24226cae8ba866b92cc42a621",
+      "mana_cost": "{B/G}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5374,
+      "module": "card_5374",
+      "path": "sos/prepare_maelstrom_artisan_rocket_volley.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Rocket Volley",
+      "oracle_id": "03931270-504a-4b0b-af3f-918bf124ea07",
+      "facts_sha256": "5b47d88e84c07022239b58990a5855bbacd336375cc4fb5b980ab4c962322b73",
+      "mana_cost": "{1}{R}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5375,
+      "module": "card_5375",
+      "path": "sos/prepare_pigment_wrangler_striking_palette.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Striking Palette",
+      "oracle_id": "c008d60a-ee06-4411-b8e7-c2df13616105",
+      "facts_sha256": "5a1094609e15b28bd4a5f4b0f82a1372d7b437cdf726ad1c03f350855ba5686c",
+      "mana_cost": "{R}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5376,
+      "module": "card_5376",
+      "path": "sos/prepare_quill_blade_laureate_twofold_intent.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Twofold Intent",
+      "oracle_id": "bd9d3a70-faed-4bc6-97d8-1601b36cdb21",
+      "facts_sha256": "9c1df39ffb284ab9e11a31a1f6b9cb521e6e3185dc54a8dcbef23353686e4139",
+      "mana_cost": "{1}{W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5377,
+      "module": "card_5377",
+      "path": "sos/prepare_sanar_unfinished_genius_wild_idea.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Wild Idea",
+      "oracle_id": "a8c44bd9-6470-47d7-934f-77c76a44a984",
+      "facts_sha256": "0204f5fe1ab77f44ce6d6cc1894b3b3c647483ed8341ba2b8c2dbb0f87b6452d",
+      "mana_cost": "{3}{U}{R}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5378,
+      "module": "card_5378",
+      "path": "sos/prepare_scathing_shadelock_venomous_words.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Venomous Words",
+      "oracle_id": "2796c3d9-9e56-40f2-8398-7a131c4657ff",
+      "facts_sha256": "f83ce263612082c7e3108b9e69749645c0b5d7a52b1cd71e61926a207c71d1df",
+      "mana_cost": "{B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5379,
+      "module": "card_5379",
+      "path": "sos/prepare_scheming_silvertongue_sign_in_blood.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Sign in Blood",
+      "oracle_id": "44443716-8356-40cd-a879-35264b29108c",
+      "facts_sha256": "f65f8d3a9d927807dcfe865eb21b36b8653b26a4199f9934bf98947f2e17d746",
+      "mana_cost": "{B}{B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        2,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5380,
+      "module": "card_5380",
+      "path": "sos/prepare_skycoach_conductor_all_aboard.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "All Aboard",
+      "oracle_id": "788d3cfa-7706-4728-9c48-cf7bc963d002",
+      "facts_sha256": "bf5e12253e973cedd8a17df278354920eb57b7d8152cdf9a3370d281b9f86b13",
+      "mana_cost": "{U}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5381,
+      "module": "card_5381",
+      "path": "sos/prepare_spellbook_seeker_careful_study.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Careful Study",
+      "oracle_id": "df5e4100-8c83-42d6-af96-1a1ec84a9210",
+      "facts_sha256": "bc26fc88d761a730626197ba0a66f7c5bb76302ba25420723e6cde6ecabf8346",
+      "mana_cost": "{U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5382,
+      "module": "card_5382",
+      "path": "sos/prepare_spiritcall_enthusiast_scrollboost.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Scrollboost",
+      "oracle_id": "c77ddcac-ce54-4348-bde2-5d9caf3d5b04",
+      "facts_sha256": "418d5b39536af52c997ff3e1bebe5a8e2258e3f594b5598ae6fba031df8d1768",
+      "mana_cost": "{1}{W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5383,
+      "module": "card_5383",
+      "path": "sos/prepare_strife_scholar_awaken_the_ages.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Awaken the Ages",
+      "oracle_id": "e85c6bd2-db15-4052-88c0-3ae25414f0ca",
+      "facts_sha256": "63af9fc20c864b8f4c85891f9210f40db8c405cef089d54526024cffce4be499",
+      "mana_cost": "{5}{R}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 5
+    },
+    {
+      "index": 5384,
+      "module": "card_5384",
+      "path": "sos/prepare_studious_first_year_rampant_growth.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Rampant Growth",
+      "oracle_id": "58b0c737-0a84-4f9a-b3b7-300c5de43874",
+      "facts_sha256": "253b51ff169d02b699f9cdcc33570238341047f53e0d65cdc992a18671d4c4c4",
+      "mana_cost": "{1}{G}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5385,
+      "module": "card_5385",
+      "path": "sos/prepare_tam_observant_sequencer_deep_sight.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Deep Sight",
+      "oracle_id": "702e871d-90d8-4468-8f69-5ae42af2c9d3",
+      "facts_sha256": "90b876b052ad4362f1460b2d6356ffe4773de386e566fe15d2b1d0c507e7cdef",
+      "mana_cost": "{G}{U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5386,
+      "module": "card_5386",
+      "path": "sos/prepare_vastlands_scavenger_bind_to_life.rs",
+      "set": "sos",
+      "category": "prepare",
+      "name": "Bind to Life",
+      "oracle_id": "3a97bc8d-bd81-468e-9277-eba4fac11ee0",
+      "facts_sha256": "fa2b9394907f20a4c145a2e404f3c2de104c3be0e4e5a985c76c5a02faf5504a",
+      "mana_cost": "{4}{G}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 4
     }
   ]
 }

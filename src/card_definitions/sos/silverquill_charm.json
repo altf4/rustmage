@@ -3,10 +3,13 @@
   "catalogue_id": 3874,
   "oracle_id": "d985b12e-2731-4ccf-9f51-90218b20b42a",
   "facts_sha256": "ab0b040a4d91a784da31afa11e0a913da0271c56ccbab37256d20cad93da2f27",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f80d78adcee96b82b69c003b466a04ac867e9dd40cf14c2554edadf79f9782d1"
   },
-  "physical_metadata_sha256": "844995cdd7727cb8fb9a04294ac82e0602330d4041459bf658e6fda3080c965f"
+  "physical_metadata_sha256": "844995cdd7727cb8fb9a04294ac82e0602330d4041459bf658e6fda3080c965f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SilverquillCharm.java",
+  "java_sha256": "ecf5644cdd7a3fdab680b49aefb8424e95cbf43cd36a17b2c0eca94d64bed1b0"
 }

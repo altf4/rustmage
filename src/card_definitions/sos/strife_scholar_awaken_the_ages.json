@@ -1,12 +1,15 @@
 {
-  "name": "Strife Scholar // Awaken the Ages",
+  "name": "Strife Scholar",
   "catalogue_id": 4187,
   "oracle_id": "e85c6bd2-db15-4052-88c0-3ae25414f0ca",
   "facts_sha256": "63af9fc20c864b8f4c85891f9210f40db8c405cef089d54526024cffce4be499",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ba3cd467238e290b114a8b39069d3728036a6911ca906470165f9aa2458fc7b1"
   },
-  "physical_metadata_sha256": "3d701b6ba1db3afd00bcc1314a09bbbf70140220fce902f8bd3f53fde4ec908c"
+  "physical_metadata_sha256": "e7b4e9a4fbfd174ca26a758d7aed8c9debb88640e58efd708e7e6675c2309470",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StrifeScholar.java",
+  "java_sha256": "9265dcd17ca8d2b158bc4d3965dc51f468a2e9bbb7023a4932c02d5481dabae4"
 }

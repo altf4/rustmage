@@ -1119,6 +1119,7 @@ impl Game {
         );
         self.finish_zone_events(std::slice::from_ref(&event), &[]);
         let object = event.after;
+        self.advance_prepared_copy(event.before.reference, event.after);
         if outcome.haste {
             self.grant_stack_keywords(object, Keywords::HASTE);
         }
@@ -1157,6 +1158,7 @@ impl Game {
             x: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
+                caster: actor,
                 gift: None,
                 physical_card: None,
                 face: CastFace::Normal,

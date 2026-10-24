@@ -3,7 +3,16 @@ use super::*;
 use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct TargetCardFacts {
+    pub group: u16,
+    pub controller: Player,
+    pub mana_value: u64,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    #[allow(clippy::box_collection)]
+    pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
@@ -190,6 +199,7 @@ impl Game {
         {
             return;
         }
+        self.record_counter_placement(object, placed_by);
         self.queue_state_counter_triggers();
         if !self.state.counter_sources.is_empty() {
             let recipient = self.object_view(object.card);
@@ -414,6 +424,20 @@ impl Game {
                                 && f.subtype
                                     .is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
+                        TriggerCondition::CreatureDiesWithMaximumStat { relation, maximum } => {
+                            event.before.is_creature()
+                                && (event.before.power <= i128::from(maximum)
+                                    || event.before.toughness <= i128::from(maximum))
+                                && match relation {
+                                    CastRelation::You => {
+                                        source.controller == event.before.controller
+                                    }
+                                    CastRelation::Opponent => {
+                                        source.controller != event.before.controller
+                                    }
+                                    CastRelation::Any => true,
+                                }
+                        }
                         TriggerCondition::CreatureDiesFiltered { filter }
                         | TriggerCondition::CreatureDiesAttackState { filter, .. } => {
                             event.before.is_creature()
@@ -493,7 +517,8 @@ impl Game {
             let yours = source.controller == entered.controller;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::InZone { .. }
+                    TriggerCondition::SelfDiesWithCounters
+                    | TriggerCondition::InZone { .. }
                     | TriggerCondition::ManaSpent { .. }
                     | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
@@ -513,7 +538,8 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
-                    TriggerCondition::CreatureExploresYou
+                    TriggerCondition::CardsLeaveGraveyard
+                    | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::CreatureExploresCardYou { .. }
                     | TriggerCondition::Foraged
                     | TriggerCondition::FoodsSacrificed
@@ -537,6 +563,7 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
+                    | TriggerCondition::CreatureDiesWithMaximumStat { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }
@@ -726,6 +753,9 @@ impl Game {
             .filter(|event| event.granted)
             .map_or(source.card, |event| event.granting_card);
         let condition = definition.triggers()[index].condition;
+        if condition == TriggerCondition::SelfDiesWithCounters && !source.counters.has_any() {
+            return false;
+        }
         // Graveyard observers must not enable unqualified battlefield abilities.
         // Self-discard/cycling dispatch deliberately uses the destination object,
         // so those events remain valid there. An explicit origin always wins.
@@ -844,6 +874,9 @@ impl Game {
     pub(super) fn push_stack_item(&mut self, item: SpellView) {
         let cast = (item.kind == StackKind::Spell && item.cast.is_some() && !item.is_copy)
             .then_some((item.controller, item.source_card));
+        if cast.is_some() {
+            self.complete_prepared_cast(item.object);
+        }
         self.state.stack.push(item);
         let Some((caster, card)) = cast else { return };
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));
@@ -1317,6 +1350,7 @@ impl Game {
             }
             StackKind::Spell => match item.source_card.effect() {
                 Effect::Aura(_) => {
+                    self.record_resolved_spell_name(&item);
                     let target = item.targets[0].object.unwrap();
                     let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
                     movement.attachment = Some(target);
@@ -1332,6 +1366,7 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
+                    self.record_resolved_spell_name(&item);
                     if item.cast.is_some_and(|c| {
                         c.offspring == Some(true)
                             || c.kicker == Some(true)
@@ -1391,7 +1426,35 @@ impl Game {
             self.record_ability_resolution(&item);
         }
         assert!(self.state.resolving.is_none());
+        let target_card_facts = program
+            .iter()
+            .any(|instruction| {
+                matches!(
+                    instruction,
+                    Instruction::LoseLifeTargetCardManaValue(_)
+                        | Instruction::LoseLifeTargetController(_)
+                        | Instruction::DamageTargetController(_)
+                )
+            })
+            .then(|| {
+                Box::new(
+                    item.targets
+                        .iter()
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(card) => Some(TargetCardFacts {
+                                group: bound.group,
+                                controller: self.state.objects[card as usize].controller,
+                                mana_value: self.state.objects[card as usize]
+                                    .card
+                                    .fixed_mana_value(),
+                            }),
+                            _ => None,
+                        })
+                        .collect(),
+                )
+            });
         self.state.resolving = Some(Resolution {
+            target_card_facts,
             explore: None,
             evidence: None,
             connive: None,
@@ -1555,6 +1618,7 @@ impl Game {
             let Some(instruction) = resolution.program.get(resolution.pc).copied() else {
                 self.abandon_linked_choices();
                 let item = self.state.resolving.take().unwrap().item;
+                self.record_resolved_spell_name(&item);
                 if item.kind == StackKind::Spell
                     && self.state.objects[item.card as usize].zone == Zone::Stack
                 {
@@ -1577,6 +1641,7 @@ impl Game {
                 Instruction::Fight { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
+                    | Instruction::CreateCopyTokenForPlayer { .. }
                     | Instruction::GainControl {
                         controller: PlayerSet::Targeted,
                         ..
@@ -1586,6 +1651,17 @@ impl Game {
                     .retain(|bound| bound.group == resolution.target_group);
             }
             match instruction {
+                Instruction::PrepareSource => self.prepare_permanent(item.object),
+                Instruction::Prepare { subject } => {
+                    for id in self.keyword_subjects(&item, subject) {
+                        self.prepare_permanent(self.object_ref(id));
+                    }
+                }
+                Instruction::Unprepare { subject } => {
+                    for id in self.keyword_subjects(&item, subject) {
+                        self.forget_prepared(self.object_ref(id));
+                    }
+                }
                 Instruction::PartitionLibraryPiles(maximum) => {
                     self.start_library_piles(item.controller, maximum);
                     return;
@@ -1687,6 +1763,15 @@ impl Game {
                 }
                 Instruction::IfGift { promised, skip } => {
                     if item.gift_context().is_some() != promised {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::IfAnotherInstantSorceryCast { skip } => {
+                    let own_cast = !item.is_copy
+                        && item.cast.is_some_and(|cast| cast.caster == item.controller);
+                    if self.state.players[item.controller.index()].instant_sorcery_cast_this_turn
+                        <= u64::from(own_cast)
+                    {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
@@ -2281,6 +2366,24 @@ impl Game {
                         self.stage_temporary_copy_creation(&item, recipe);
                     }
                 }
+                Instruction::CreateCopyTokenForPlayer {
+                    subject,
+                    amount,
+                    player,
+                } => {
+                    if let Some(controller) = self.program_players(player, &item).next()
+                        && let Some(recipe) = self.recipe_for_subject(&item, subject)
+                    {
+                        self.stage_copy_creation(controller, recipe, u128::from(amount));
+                    }
+                }
+                Instruction::PutPermanentCountersScaled {
+                    filters,
+                    kind,
+                    amount,
+                } => {
+                    self.put_permanent_counters_scaled(&item, filters, kind, amount);
+                }
                 Instruction::CreateCopyToken { subject, amount }
                 | Instruction::CreateCopyTokenWithExceptions {
                     subject, amount, ..
@@ -2312,6 +2415,35 @@ impl Game {
                 Instruction::DestroyCombatDamagedPlayersPermanents => {
                     self.destroy_combat_damaged_players_permanents(&item)
                 }
+                Instruction::PutSourceCountersOnTargets => {
+                    let mut counters = Counters::default();
+                    for kind in CounterKind::ALL {
+                        counters.add(
+                            kind,
+                            u64::try_from(
+                                self.item_amount(AmountValue::SourceCounterQuantity(kind), &item),
+                            )
+                            .capacity("counter transfer quantity exhausted"),
+                        );
+                    }
+                    let changes = self
+                        .keyword_subjects(&item, Subject::Targets)
+                        .into_iter()
+                        .map(|id| (self.object_ref(id), counters.clone()))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
+                Instruction::CreateTokensWithSourceCounters { token, amount } => {
+                    self.create_tokens_with_source_counters(&item, token, amount);
+                }
+                Instruction::CreateTokensWithCounters {
+                    token,
+                    amount,
+                    kind,
+                    counters,
+                } => {
+                    self.create_tokens_with_counters(&item, token, amount, kind, counters);
+                }
                 Instruction::SelectGroup(group) => {
                     self.state.resolving.as_mut().unwrap().target_group = group;
                 }
@@ -2323,6 +2455,13 @@ impl Game {
                         recipient,
                         matches!(instruction, Instruction::Fight { .. }),
                     );
+                }
+                Instruction::AddManaScaled { color, amount } => {
+                    let amount = u32::try_from(self.item_amount(amount, &item))
+                        .capacity("mana representation exhausted");
+                    let mut mana = [0; 6];
+                    mana[color.index()] = amount;
+                    self.add_mana(item.controller, mana);
                 }
                 Instruction::AddMana(production) => {
                     let quality = self
@@ -2443,6 +2582,15 @@ impl Game {
                 }
                 Instruction::NoMaximumHandSize => {
                     self.state.players[item.controller.index()].no_maximum_hand_size = true;
+                }
+                Instruction::Paradigm { ability } => self.resolve_paradigm(&item, ability),
+                Instruction::ExileUntilManaValueCastFree(minimum) => {
+                    self.exile_until_mana_value_cast_free(item.controller, minimum);
+                    return;
+                }
+                Instruction::CastParadigmCopy => {
+                    self.cast_paradigm_copy(&item);
+                    return;
                 }
                 Instruction::ExileResolvingSpell => {
                     if item.kind == StackKind::Spell
@@ -2794,6 +2942,52 @@ impl Game {
                     let players: Vec<_> = self.program_players(set, &item).collect();
                     for player in players {
                         self.gain_life(player, amount);
+                    }
+                }
+                Instruction::LoseLifeTargetController(amount)
+                | Instruction::DamageTargetController(amount) => {
+                    let resolution = self.state.resolving.as_ref().unwrap();
+                    let players: Vec<_> =
+                        resolution
+                            .target_card_facts
+                            .as_ref()
+                            .map_or_else(Vec::new, |facts| {
+                                facts
+                                    .iter()
+                                    .filter(|facts| facts.group == resolution.target_group)
+                                    .map(|facts| facts.controller)
+                                    .collect()
+                            });
+                    if matches!(instruction, Instruction::LoseLifeTargetController(_)) {
+                        for player in players {
+                            self.lose_life(player, i128::from(amount));
+                        }
+                    } else {
+                        let source = self.program_damage_source(&item);
+                        let events: Vec<_> = players
+                            .into_iter()
+                            .map(|player| DamageEvent {
+                                source,
+                                target: Target::Player(player),
+                                amount: i128::from(amount),
+                                combat: false,
+                                preventable: true,
+                            })
+                            .collect();
+                        self.apply_damage_batch(&events);
+                    }
+                }
+                Instruction::LoseLifeTargetCardManaValue(set) => {
+                    let resolution = self.state.resolving.as_ref().unwrap();
+                    let amount = resolution.target_card_facts.as_ref().map_or(0, |values| {
+                        values
+                            .iter()
+                            .filter(|facts| facts.group == resolution.target_group)
+                            .map(|facts| i128::from(facts.mana_value))
+                            .sum()
+                    });
+                    for player in self.program_players(set, &item) {
+                        self.lose_life(player, amount);
                     }
                 }
                 Instruction::LoseLifeScaled(set, value) => {
@@ -3345,6 +3539,23 @@ impl Game {
                                 let mut movement = self.entry_move(id, Zone::Battlefield, false);
                                 movement.controller = item.controller;
                                 movement.role_after = Some((token, item.controller));
+                                Some(movement)
+                            }
+                            _ => None,
+                        })
+                        .collect();
+                    self.stage_entries(moves, None);
+                }
+                Instruction::ReturnToBattlefieldUnderControl => {
+                    let moves = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|&bound| self.same_target_object(bound))
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(id) => {
+                                let mut movement = self.entry_move(id, Zone::Battlefield, false);
+                                movement.controller = item.controller;
                                 Some(movement)
                             }
                             _ => None,

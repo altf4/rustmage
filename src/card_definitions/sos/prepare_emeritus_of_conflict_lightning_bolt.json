@@ -1,0 +1,11 @@
+{
+  "name": "Lightning Bolt",
+  "catalogue_id": 5358,
+  "oracle_id": "5963eef1-1022-42b1-8a0c-fc9850bfc2a3",
+  "facts_sha256": "f8de71e785c3c58db6fe80fb91a549b9040782e03d9fd4a8ef8d4f3563f1dfd5",
+  "complete": true,
+  "physical_metadata_sha256": "ed76eff3b34c52ed58db3dcba062c3bc883f07028bde791a3c8791106cce7a1a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfConflict.java",
+  "java_sha256": "f751e0114c15b72b2b101480d7e9e1c55e4d5690c7fc46903fe95ec642cb4ff6"
+}

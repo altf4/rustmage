@@ -3,10 +3,13 @@
   "catalogue_id": 293,
   "oracle_id": "70e10cb9-ae27-4dba-9a0d-34a78f924774",
   "facts_sha256": "a66ef3f7bd11c3d085ade8e51c3f4ac63bb3a402828392e2fb8525e8a62ae3fb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "25fc0211b9c9d38f577ca7c4e9a4a1bc91c7c5a4a61c09789a5100254c2cc4b7"
   },
-  "physical_metadata_sha256": "a5fb42b34ef5512ad66d9c106faf2c23721f8ecfec649197eb78a0d727fdca4b"
+  "physical_metadata_sha256": "a5fb42b34ef5512ad66d9c106faf2c23721f8ecfec649197eb78a0d727fdca4b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AzizaMageTowerCaptain.java",
+  "java_sha256": "dffaa4040894b7ca5fcf690f7cffddbbec47835743b443c44767102dfde67575"
 }

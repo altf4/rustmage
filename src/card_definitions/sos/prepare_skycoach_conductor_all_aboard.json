@@ -1,0 +1,11 @@
+{
+  "name": "All Aboard",
+  "catalogue_id": 5380,
+  "oracle_id": "788d3cfa-7706-4728-9c48-cf7bc963d002",
+  "facts_sha256": "bf5e12253e973cedd8a17df278354920eb57b7d8152cdf9a3370d281b9f86b13",
+  "complete": false,
+  "physical_metadata_sha256": "a73c5ce4ce8bf578e519943462d53210efcf3c602ffdd9833328c68f7d9ad1f5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SkycoachConductor.java",
+  "java_sha256": "4e351a1244e9923f92d0cbea00cbbfa46c3039b1fffc449aca730e193fe3f51e"
+}

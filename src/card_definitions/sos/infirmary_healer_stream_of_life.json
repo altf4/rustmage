@@ -1,12 +1,36 @@
 {
-  "name": "Infirmary Healer // Stream of Life",
+  "name": "Infirmary Healer",
   "catalogue_id": 2164,
   "oracle_id": "4cbbdebc-b807-4d7b-92dd-312637d2a5de",
   "facts_sha256": "97db546eb810cf7a6063ee121d0b043d890df37937837e79424a78e3e572cc96",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "860c2c191dd1e2d97316d56491f4c56c38738a7ff21c23ed3f31abac8213ff99"
   },
-  "physical_metadata_sha256": "a29b21fe7c3207111da5420c89d2b46deef9a87391d3e24c2d68062e19bb071e"
+  "physical_metadata_sha256": "bde69617afe427d6ad359f8729a20fa1c77f19e6a2e50aea5cccec2d25c0597c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InfirmaryHealer.java",
+  "java_sha256": "406c7e3d2359759c78935d7dd5ced20e1fe3b9bf0765942a2d4c6edbc8866be0",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    }
+  ],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes"
+  ]
 }

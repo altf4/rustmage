@@ -1,12 +1,15 @@
 {
-  "name": "Blazing Firesinger // Seething Song",
+  "name": "Blazing Firesinger",
   "catalogue_id": 443,
   "oracle_id": "1bf505a7-292e-4642-83b6-8ff41ebe5d51",
   "facts_sha256": "d5785b263432ea8395bc4be38dc27f4cbb01c653a7c9ad8a5095add9c429f0dc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f24e1e2a90bc986b4d799b413d85c6db0495748673e306e054180a48e6d1eb3d"
   },
-  "physical_metadata_sha256": "6b1b76d1a8d2ab19ac0883e6e4313874aba3420dd9d635b22a004214586fb505"
+  "physical_metadata_sha256": "180c3f7057c14179a0e2b40da263e4dbc3facce39078ca12ae94d56afe115736",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BlazingFiresinger.java",
+  "java_sha256": "a808c82a6c7bbffdb3a5dbebd6ea8e0590072f3920ba064001dff16176ffdd1c"
 }

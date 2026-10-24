@@ -68,6 +68,11 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    Counters {
+        kind: CounterKind,
+        amount: u64,
+    },
+    CounterSet(Box<Counters>),
     TemporaryCopy(Box<SpellView>),
     Keywords {
         source: ObjectRef,
@@ -153,6 +158,9 @@ impl ReplacementState {
                 + b.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                 + match &b.completion {
+                    TokenCompletion::CounterSet(counters) => {
+                        std::mem::size_of::<Counters>() + counters.owned_bytes()
+                    }
                     TokenCompletion::TemporaryCopy(item)
                     | TokenCompletion::Reflexive { item, .. } => {
                         std::mem::size_of::<SpellView>() + item.owned_bytes()
@@ -1014,6 +1022,8 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::JobAttach(_)
+                                        | TokenCompletion::Counters { .. }
+                                        | TokenCompletion::CounterSet(_)
                                         | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
                                 );
@@ -1045,6 +1055,29 @@ impl Game {
                                         capture,
                                     ),
                                 };
+                                let counters = match &batch.completion {
+                                    TokenCompletion::Counters { kind, amount } => {
+                                        Some(Counters::of(*kind, *amount))
+                                    }
+                                    TokenCompletion::CounterSet(counters) => {
+                                        Some(counters.as_ref().clone())
+                                    }
+                                    _ => None,
+                                };
+                                if let Some(counters) = counters {
+                                    let placements = self.created_token_counter_placements(
+                                        batch.player,
+                                        &created,
+                                        &counters,
+                                    );
+                                    if !placements.is_empty() {
+                                        state.work.push_front(Work::Counters(CounterBatch {
+                                            placements,
+                                            next: 0,
+                                            used: Vec::new(),
+                                        }));
+                                    }
+                                }
                                 if let TokenCompletion::Keywords { source, keywords } =
                                     batch.completion
                                 {

@@ -1,16 +1,38 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the complete pinned Oracle and XMage implementation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 2),
     keywords: Keywords::MENACE,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::MENACE)],
+    }],
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: CastFilter::Targeted {
+                    filter: &CastFilter::InstantSorcery,
+                    target: CastTarget::Creature(CastRelation::Any),
+                },
+                ordinal: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SelfDiesWithCounters,
+            targets: TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Creature,
+                min: 0,
+                max: 1,
+            }),
+            program: &[Instruction::PutSourceCountersOnTargets],
+        },
+    ],
     ..CardRules::EMPTY
 };

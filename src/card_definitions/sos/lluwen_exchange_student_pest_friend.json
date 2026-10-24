@@ -1,12 +1,15 @@
 {
-  "name": "Lluwen, Exchange Student // Pest Friend",
+  "name": "Lluwen, Exchange Student",
   "catalogue_id": 2528,
   "oracle_id": "cb125cd4-c7c2-415d-b802-bdcfc2454403",
   "facts_sha256": "d8da86800e5616e45f23bbafd85c6c2d0384ffa24226cae8ba866b92cc42a621",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0dcb65cf0009bf9f39ddceba11a8293fa84d49c15b63f6bf4322b9447061a41f"
   },
-  "physical_metadata_sha256": "6dac541549a97458fa7506c5cb8165a174d1e30c5df336958ff1a569586fa733"
+  "physical_metadata_sha256": "9c6a299bb12f6f28910f97977abbbdb0f4789e70d58bfa6e688f3e9b392bc445",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LluwenExchangeStudent.java",
+  "java_sha256": "17c85e501b5422a7ea10e98a22923419b5c79c805c5004c13e2e5f3500dbbff8"
 }

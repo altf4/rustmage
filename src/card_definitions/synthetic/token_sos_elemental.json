@@ -1,0 +1,11 @@
+{
+  "name": "@token/sos-elemental",
+  "catalogue_id": 5349,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "413cdc34285fdda46bbf04e3af20a69e1a1d83865438dfc5fa506a587d73de21",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Elemental33BlueRedToken.java",
+  "java_sha256": "27f7b2b3ce77e2d7eea2f80d3af70afef48a8ed59dd61cb36eadd8f7459088f4"
+}

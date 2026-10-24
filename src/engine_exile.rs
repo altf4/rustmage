@@ -11,7 +11,8 @@ pub struct ExilePlayPermission {
 }
 impl Game {
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
-        if self.can_play_foreign_stash(player, card)
+        if self.can_cast_prepared(player, card)
+            || self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
             || self.can_cast_warped(player, card)
         {
@@ -154,6 +155,19 @@ impl Game {
         events: &[ZoneChange],
         death_sources: &[ObjectView],
     ) {
+        self.graveyard_departure_triggers(events, death_sources);
+        for event in events {
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && self
+                    .copiable_recipe(event.after)
+                    .definition
+                    .enters_prepared()
+                && self.printed_abilities_available(event.after.card)
+            {
+                self.prepare_permanent(event.after);
+            }
+        }
         // No zone changes occur while observers are queued. Freeze their
         // post-event views once instead of rescanning the arena per newcomer.
         let sources: Vec<_> = if events
@@ -214,11 +228,9 @@ impl Game {
             if event.moved && event.destination == Zone::Battlefield {
                 // Entering with counters is a placement event on every entry path,
                 // including raw returns and tokens, exactly once after the whole batch.
-                let placed_by = self
-                    .state
-                    .resolving
-                    .as_ref()
-                    .map_or(event.before.controller, |r| r.item.controller);
+                let placed_by = event
+                    .entry_counter_player
+                    .expect("battlefield entry controller");
                 let counters = self.counter_amounts(event.after.card).to_owned();
                 for kind in CounterKind::ALL {
                     self.self_counters_added(event.after, kind, counters.get(kind), placed_by);

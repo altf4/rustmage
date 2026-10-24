@@ -3,10 +3,18 @@
   "catalogue_id": 1717,
   "oracle_id": "c8d22139-7b25-4bb1-b0d9-d4c622401edf",
   "facts_sha256": "cdc94ff765e683b7f29a89639fa2cdbc81a77d34d88e2e0b7a9883b7aa23065e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "194db427c9e498b69e4605c02a6161fb888b500d0f06422dc76e70404cf0fedf"
   },
-  "physical_metadata_sha256": "2bd8c012606bb05e9b7d5feacfaa8f0a25a28ac00610d6be2497abee10eda524"
+  "physical_metadata_sha256": "2bd8c012606bb05e9b7d5feacfaa8f0a25a28ac00610d6be2497abee10eda524",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GerminationPracticum.java",
+  "java_sha256": "d780797d5c00f5a2f7edc1488ef026beaf2cb4ef5c4ddfe5f1eca6a418893668",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#page=193"
+  ]
 }

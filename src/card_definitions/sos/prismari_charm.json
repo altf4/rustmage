@@ -3,10 +3,13 @@
   "catalogue_id": 3240,
   "oracle_id": "c3c25a2c-f71c-4cb7-9117-0bcda9248bfd",
   "facts_sha256": "6aedab9645447a21ec8783630112240f9c2bc13b7f5734103b6ccf7b059f4c4b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cbbd368a87978d8919b0b9481eab6eab6743883946d6d0cbff6ca7be302f4a2c"
   },
-  "physical_metadata_sha256": "5f9d426ef263c3b659f02d3ce101eb688955608c644258225063271c639616ed"
+  "physical_metadata_sha256": "5f9d426ef263c3b659f02d3ce101eb688955608c644258225063271c639616ed",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PrismariCharm.java",
+  "java_sha256": "b61bef7e6412770946e38b8cca8e19a3a3958f21c602df82e6881a81777f4e0e"
 }

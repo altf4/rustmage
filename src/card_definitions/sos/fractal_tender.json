@@ -3,10 +3,24 @@
   "catalogue_id": 1612,
   "oracle_id": "cb45860a-1937-4803-b6d8-331a35be39fd",
   "facts_sha256": "b16a10da44559c453140fd996d29b869a61dca86e19e5b876786ce05207ae3d0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6f2c8b20f1033efe57993e0f3f5a67a561873bbe78cb956348dda363ec592953"
   },
-  "physical_metadata_sha256": "3296746443d190fd53525c3f102c11a37e0590e57b7a0d3a7a65dfa289e23031"
+  "physical_metadata_sha256": "3296746443d190fd53525c3f102c11a37e0590e57b7a0d3a7a65dfa289e23031",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FractalTender.java",
+  "java_sha256": "c40150e80aa26b528cd8511fe347522c8ee8d930f7c6387b4fbf9522f3f15f39",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "java_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IncrementAbility.java",
+      "sha256": "4d44b4a352b0c3056cc317e0647ceef6a13307e64c2a2563ad2986277f9ab09d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ]
 }

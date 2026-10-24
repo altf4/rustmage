@@ -1,12 +1,15 @@
 {
-  "name": "Kirol, History Buff // Pack a Punch",
+  "name": "Kirol, History Buff",
   "catalogue_id": 2370,
   "oracle_id": "df1c0d06-2109-4297-9271-8a003fc892bc",
   "facts_sha256": "a7ec270956ece201f4d0a74856dd039207fcc7c1ccf8848e8909ed11a96041b2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "34a3d2349d417e35de9ffc032b737eef08a2dc306e5dda50a8cf324d4c4f6248"
   },
-  "physical_metadata_sha256": "eaf124d35dc6a5bd7a96774f3e4552b22095055d18b24763d27e275ff7ab0b23"
+  "physical_metadata_sha256": "fb1433ecc735d0be605e57d07f5f395a9c92abc00530d1d52f288b2e20574b5a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KirolHistoryBuff.java",
+  "java_sha256": "c9a91eadf69c6de4a7c61f4518d5e1847a97de5de09dea243b382a255ad266cb"
 }

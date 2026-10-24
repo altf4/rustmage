@@ -122,6 +122,9 @@ impl Game {
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
             }
+            StatValue::CardLeftGraveyardThisTurn => {
+                i128::from(self.state.players[owner.index()].card_left_graveyard_this_turn)
+            }
             StatValue::CardsDrawnThisTurn => {
                 i128::from(self.state.players[owner.index()].cards_drawn_this_turn)
             }
@@ -201,6 +204,7 @@ impl Game {
             StatValue::SpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].spells_cast_this_turn)
             }
+            StatValue::CreaturesDiedThisTurn => i128::from(self.state.creatures_died_this_turn),
             StatValue::LifeGainOccurredThisTurn => {
                 i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)
             }
@@ -229,6 +233,12 @@ impl Game {
                 })
                 .count_ones()
                 as i128,
+            StatValue::NamedCount { filter, name } => objects()
+                .filter(|&(id, o)| {
+                    Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
+                        && crate::card_names::same_name(names(id), name)
+                })
+                .count() as i128,
             StatValue::Count(filter) => i128::try_from(
                 objects()
                     .filter(|&(id, o)| {

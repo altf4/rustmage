@@ -1,12 +1,47 @@
 {
-  "name": "Quill-Blade Laureate // Twofold Intent",
+  "name": "Quill-Blade Laureate",
   "catalogue_id": 3316,
   "oracle_id": "bd9d3a70-faed-4bc6-97d8-1601b36cdb21",
   "facts_sha256": "9c1df39ffb284ab9e11a31a1f6b9cb521e6e3185dc54a8dcbef23353686e4139",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7474efb83d173e73283b646773483603cab6cc174be123b80fde6b71625203a9"
   },
-  "physical_metadata_sha256": "cffc2c717cfaf90d5d29972a14699bb3bccf8b4436cab0b19affb7fb9b789e93"
+  "physical_metadata_sha256": "24525d74ddeb820cf652d393fe5f28c628d1984ff332af7e6253d948565c16d5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuillBladeLaureate.java",
+  "java_sha256": "4f4f3a7650a1b3d080fbafa0ea8804f9efc019939721a1ae7577004f3ce7c265",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/BecomePreparedSourceEffect.java",
+      "sha256": "6faec06230a63f61f0f7adcff5ad1c40693ad1146c1de32d8ea4ab4df21ec1bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PreparedSpellCopy.java",
+      "sha256": "47b70902962be18fa763cc8854b371c9a36072815ae3dc5c67319bde72667c95"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PrepareCastFromExileEffect.java",
+      "sha256": "eb168f4ab3cd6050efc559050e9d40e8a212c6d7e7713f864602380c28fcc39f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

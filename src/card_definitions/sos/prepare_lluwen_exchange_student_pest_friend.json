@@ -1,0 +1,11 @@
+{
+  "name": "Pest Friend",
+  "catalogue_id": 5373,
+  "oracle_id": "cb125cd4-c7c2-415d-b802-bdcfc2454403",
+  "facts_sha256": "d8da86800e5616e45f23bbafd85c6c2d0384ffa24226cae8ba866b92cc42a621",
+  "complete": true,
+  "physical_metadata_sha256": "b854aec762307cb08285663dbc736d790194484035c25a021a99e166120a2866",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LluwenExchangeStudent.java",
+  "java_sha256": "17c85e501b5422a7ea10e98a22923419b5c79c805c5004c13e2e5f3500dbbff8"
+}

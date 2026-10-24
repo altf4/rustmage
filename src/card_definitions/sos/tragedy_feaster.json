@@ -3,10 +3,13 @@
   "catalogue_id": 4649,
   "oracle_id": "0c4277ec-aa12-41f5-8896-c83cfc754d6e",
   "facts_sha256": "a72acea0f978c2cb6304f11d0db17e43d97194df37e63bcd1945c0462e216f80",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5724c3a43f9cc9ec2fb9db72bdd172a5d2c90902ed483b721f1df3dbd26b348e"
   },
-  "physical_metadata_sha256": "41900b8aa668298321ac1bac9bdfb63532c52c9ee28f0aaa9f10fb687ed40b32"
+  "physical_metadata_sha256": "41900b8aa668298321ac1bac9bdfb63532c52c9ee28f0aaa9f10fb687ed40b32",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TragedyFeaster.java",
+  "java_sha256": "0a14ec4076dc4a396e08aba8346e51f1056856700d12f6b2fc468b6075991113"
 }

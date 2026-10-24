@@ -1,0 +1,11 @@
+{
+  "name": "@token/sos-pest",
+  "catalogue_id": 5348,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "61a92b8f5d1f897b9a7062423c419db02d831e883ea694867550ba6681d00be0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/PestBlackGreenAttacksToken.java",
+  "java_sha256": "0cdb5914d3465bf0d521947ac537b2e6e8e285651290573ff303fee519f86be3"
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Ancestral Recall",
+  "catalogue_id": 5359,
+  "oracle_id": "24a29be4-5bc2-469b-b2ce-2fb305c3facb",
+  "facts_sha256": "2aeaff2858a20d487bb7a73e796353f56eac30c80e931788c889d3b1dbcd58cc",
+  "complete": true,
+  "physical_metadata_sha256": "d3aceb40ec58909d8dd2fb1f60ebc65c5cc609d904f130adc4f83466c92d44a7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfIdeation.java",
+  "java_sha256": "9c2ffb5bc0a0dcd36fcf9088e2f58e754561c12c949c0dada3d3fae8fbaefa4a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    }
+  ]
+}

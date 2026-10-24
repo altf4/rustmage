@@ -3,10 +3,13 @@
   "catalogue_id": 1611,
   "oracle_id": "cca3f3e8-15a7-4ad8-893a-d3570178a800",
   "facts_sha256": "4eff0556c892f15b7ae4020c32465156313a11d2809880760d373b204a8d2704",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dc20c33b1eb36183ad3fcc0afd44a2e0a6682f2554cab38659e07ca3667d8d4c"
   },
-  "physical_metadata_sha256": "3bd8ee7c78097e48b28da0123be48544afc8537fd1c4ad0c6b32a93b5d5fd0b1"
+  "physical_metadata_sha256": "3bd8ee7c78097e48b28da0123be48544afc8537fd1c4ad0c6b32a93b5d5fd0b1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FractalMascot.java",
+  "java_sha256": "806907d9e6406e8b5a35cbe4d8838dccba9cd97a9a8abce4307166c009dbb051"
 }

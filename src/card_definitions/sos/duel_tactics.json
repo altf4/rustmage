@@ -3,10 +3,13 @@
   "catalogue_id": 1200,
   "oracle_id": "262c5ac9-af41-42d1-a53a-8a671eedd5a6",
   "facts_sha256": "aee10b5a88c946def1e278d5817e1d4169a3ab69e40a43781ee3540c32dc4f54",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cc482371f1c51bf2871ca3908c6b05b0e70ec698095bba839ca191b5a41df116"
   },
-  "physical_metadata_sha256": "7df57475962111fda928d8899708290677d4c81c2d902db5e65399c09f3d6eee"
+  "physical_metadata_sha256": "7df57475962111fda928d8899708290677d4c81c2d902db5e65399c09f3d6eee",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DuelTactics.java",
+  "java_sha256": "304b63b5f87bcb8b6463c9356669bc90e7f34f6b9b846d37eb8c8f0a5fb2b862"
 }

@@ -1,0 +1,11 @@
+{
+  "name": "Rocket Volley",
+  "catalogue_id": 5374,
+  "oracle_id": "03931270-504a-4b0b-af3f-918bf124ea07",
+  "facts_sha256": "5b47d88e84c07022239b58990a5855bbacd336375cc4fb5b980ab4c962322b73",
+  "complete": true,
+  "physical_metadata_sha256": "9b1348823ab730e5096723b3babd49188ef9690cb340e0c09977698b12208b63",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MaelstromArtisan.java",
+  "java_sha256": "1d9a063a4a9fc00f60ccf6571c32bafc0f050d7984b2104b97f273c1ea98f6e5"
+}

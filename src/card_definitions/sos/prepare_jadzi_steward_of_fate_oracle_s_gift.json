@@ -1,0 +1,23 @@
+{
+  "name": "Oracle's Gift",
+  "catalogue_id": 5368,
+  "oracle_id": "c63b3511-d597-4c6e-9094-eabdeaa8a394",
+  "facts_sha256": "f2ced6ba60cf3783c46f936a0bc8bceccd2d265938d0643ba7ffa45983301a1b",
+  "complete": true,
+  "physical_metadata_sha256": "c184f3061609cc642aba284da6a54479d8083eda230b8eade9efb64167b7ee42",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JadziStewardOfFate.java",
+  "java_sha256": "70d2620f82ce66a42a295ef77b54fe47196106d1a32a07734c8e1b3aa29abe03",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    }
+  ]
+}

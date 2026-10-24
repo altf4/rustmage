@@ -3,10 +3,25 @@
   "catalogue_id": 3214,
   "oracle_id": "99678cc9-59c8-4358-b847-8c38ffb4a050",
   "facts_sha256": "4c477c6ccc02282890beb5d807df6949980e115f36b5db71664fe45739d8880d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "12a95799b89ec0265adc2bccb53eb161abd149a0a2740ce45848f36f8fd1099e"
   },
-  "physical_metadata_sha256": "c2060f36c3dc3ceb1adfa2e02b66e17f011fc0525369b09072956ede05f2da1b"
+  "physical_metadata_sha256": "c2060f36c3dc3ceb1adfa2e02b66e17f011fc0525369b09072956ede05f2da1b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PracticedOffense.java",
+  "java_sha256": "d90c5256b816077012d0bcba9ef0e300d4ffd368024ac022ff2116aa3b067ba3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainsChoiceOfAbilitiesEffect.java",
+      "sha256": "aa49281058acd322aa947ca2930690fe936281953eab784b9585954f44893553"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    }
+  ]
 }

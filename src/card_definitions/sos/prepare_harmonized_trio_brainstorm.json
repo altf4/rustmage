@@ -1,0 +1,11 @@
+{
+  "name": "Brainstorm",
+  "catalogue_id": 5365,
+  "oracle_id": "f6036065-7196-44d4-8a27-2199f0e1a03c",
+  "facts_sha256": "6b6048438e852a1034b6fe5b80b8b66535a54842d171b8bf043c7bb20a5689a1",
+  "complete": false,
+  "physical_metadata_sha256": "c177c181ed28722b1b9bc1454c12e88fe5d464f000ac3817eb5b43aa447e8d81",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HarmonizedTrio.java",
+  "java_sha256": "043690dbaba9dd0616259d992b24bc54c64c7992db15d96eb3d73285f44b4e2c"
+}

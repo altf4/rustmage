@@ -1,0 +1,11 @@
+{
+  "name": "Striking Palette",
+  "catalogue_id": 5375,
+  "oracle_id": "c008d60a-ee06-4411-b8e7-c2df13616105",
+  "facts_sha256": "5a1094609e15b28bd4a5f4b0f82a1372d7b437cdf726ad1c03f350855ba5686c",
+  "complete": true,
+  "physical_metadata_sha256": "657af48e6ed80da38cd65cb366bcaa29ff45c22be46ee61ee5d142fb32787bca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PigmentWrangler.java",
+  "java_sha256": "7e37289f1e80800b9c3aecaa284b75050f736060f40809d239810c5d7731a0c9"
+}

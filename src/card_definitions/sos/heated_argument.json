@@ -3,10 +3,13 @@
   "catalogue_id": 1985,
   "oracle_id": "329f6434-8f1b-4a10-8feb-2a9dc5f2712b",
   "facts_sha256": "8fb80517157d86b842ff023c340063e60ac50d1c0c033396d1922bffb779a79d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3584458733245b2e798d1cb95f12ba8bf6fd69bbb952e8ff4bb7e1b591c7427d"
   },
-  "physical_metadata_sha256": "53c39ad1114cecb3d4ea4b5cb16e19250b3b3377c284a0bc14c75db40fd4d077"
+  "physical_metadata_sha256": "53c39ad1114cecb3d4ea4b5cb16e19250b3b3377c284a0bc14c75db40fd4d077",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HeatedArgument.java",
+  "java_sha256": "2957590dd18b7511e2995b77662f89f88625006c524b2451c2dde612eddf1f41"
 }

@@ -1,12 +1,15 @@
 {
-  "name": "Goblin Glasswright // Craft with Pride",
+  "name": "Goblin Glasswright",
   "catalogue_id": 1803,
   "oracle_id": "23c3de07-8aa2-48e9-848c-50b5a40bd133",
   "facts_sha256": "6bb85e89af095c5d16b3e649b165ac4f1bc9b57bc0e71acd27f9e44ed2c2d688",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "32d0e2e35b0ee6dc6f2e80b1161e23132d1199e037fd9b7ce5e05ad2ec49636c"
   },
-  "physical_metadata_sha256": "903556f36a0f1153d4d2b4febca139c807a8e19bcb1754061be63a11e91a4c4f"
+  "physical_metadata_sha256": "3513bf192794ab1be12e5d43298d6d294c399a4c99e46580a2942ae72e3c11d3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GoblinGlasswright.java",
+  "java_sha256": "a250b4c61c61254ad1f17d90e3cc9feaf32119e076a0e0cc928cfe4885552b68"
 }

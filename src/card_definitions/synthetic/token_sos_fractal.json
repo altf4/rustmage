@@ -1,0 +1,11 @@
+{
+  "name": "@token/sos-fractal",
+  "catalogue_id": 5347,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "31c2bd47d60a01c25f09d22ca6435ac45cc73507046019bd2fb83422a5321a1c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/FractalToken.java",
+  "java_sha256": "a2fb727f70793c0f7f0df80d2aaf8dcb077477de6db48576aef59606b1c2248b"
+}

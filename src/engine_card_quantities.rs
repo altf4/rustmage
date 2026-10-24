@@ -21,6 +21,14 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
     }
     for instruction in program {
         match *instruction {
+            Instruction::CreateTokensWithSourceCounters { .. }
+            | Instruction::PutSourceCountersOnTargets => {
+                for kind in CounterKind::ALL {
+                    if !kinds.contains(&kind) {
+                        kinds.push(kind);
+                    }
+                }
+            }
             Instruction::Modal(modes) | Instruction::ModalOnce(modes) => {
                 for mode in modes {
                     read_counter_kinds(mode.program, kinds);
@@ -43,9 +51,13 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
+            | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }
-            | Instruction::CreateTokensScaled { amount: value, .. } => amount(value, kinds),
+            | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateTokensWithCounters {
+                counters: value, ..
+            } => amount(value, kinds),
             _ => (),
         }
     }

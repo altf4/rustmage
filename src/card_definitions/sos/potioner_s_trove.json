@@ -3,10 +3,14 @@
   "catalogue_id": 3211,
   "oracle_id": "d604c75e-9d81-49de-80bc-08f4ef3ee975",
   "facts_sha256": "b150efd73aa56bb84a597b37f23b7f514583dd70840a955791cff8620a9766d6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b9401d107a60ba5f4731d3f8e4d0b27aa0c4c1e511c319aac7259177fb5c7d4e"
   },
-  "physical_metadata_sha256": "8c50a737a6d14f0865e3a53b8326569c3866f99c99a6404d7b11f2828a0c70ec"
+  "physical_metadata_sha256": "8c50a737a6d14f0865e3a53b8326569c3866f99c99a6404d7b11f2828a0c70ec",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PotionersTrove.java",
+  "java_sha256": "1528370f12586e0bd290e0d30ef43f12c335bb6628f34b16a6fada02fb2a1425",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs."
 }

@@ -1,0 +1,11 @@
+{
+  "name": "Reanimate",
+  "catalogue_id": 5364,
+  "oracle_id": "6cb8b8c4-0674-4f14-9d89-010969fbb80e",
+  "facts_sha256": "ad64ca4d3ddc926dfea17bf81f9969688e5b9fa42aa25347420163a3f932e3af",
+  "complete": true,
+  "physical_metadata_sha256": "db76bc94a3ae112161c593aecc18c04ffdd5aaac3d0bff87315769cef2cc1efc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GraveResearcher.java",
+  "java_sha256": "c32afe62ea7af99c8d178ad416de2c827e9051e4edc6ead29e6ab4547315515f"
+}

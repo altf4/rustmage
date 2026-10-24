@@ -3,10 +3,25 @@
   "catalogue_id": 3494,
   "oracle_id": "fd0a27a9-7d7e-4a16-9dd0-0715e6c97b36",
   "facts_sha256": "c30832e412af98a6ac11f420a2228d7e7b0d5254bfc9e01a212e8ad1bab72025",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "16acaa3cea3de71cfd0f567b75f3c926f243da823c2c57cafb977164d38136bc"
   },
-  "physical_metadata_sha256": "07c2a87b414a71060e10909fed4c1e23672b1b02d0e3796eb54c681fc2e8ba3d"
+  "physical_metadata_sha256": "07c2a87b414a71060e10909fed4c1e23672b1b02d0e3796eb54c681fc2e8ba3d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RestorationSeminar.java",
+  "java_sha256": "4fb1e4411d11f43059e55112c8f02b95edd7aca28c706dae4d5d4d3a7d2fd6c4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ParadigmAbility.java",
+      "sha256": "77be2914f9efdc0eaa28dd563c081ee4cf47492bceff853a5fec90b81e003521"
+    }
+  ]
 }

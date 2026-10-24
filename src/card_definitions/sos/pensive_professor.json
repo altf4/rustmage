@@ -3,10 +3,30 @@
   "catalogue_id": 3124,
   "oracle_id": "4b8736e2-fc41-4a25-bb6c-7351afc40981",
   "facts_sha256": "c6111292ce9a7493fcb340344d6c9a2181915e6ff058176ed3aa78bbf93ccb60",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9c25148a442a84585a0f3b92d9b2edf5c8f4a04712bc0e73a5fe6776aa9ee92a"
   },
-  "physical_metadata_sha256": "6b19fbe88718a8ea83e92735406c3600d3022f3740237002e0003120585ba997"
+  "physical_metadata_sha256": "6b19fbe88718a8ea83e92735406c3600d3022f3740237002e0003120585ba997",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PensiveProfessor.java",
+  "java_sha256": "5ee35d2426e85067a540c1151e6ac7210c5b594c514028b4eedf40577aef666b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IncrementAbility.java",
+      "sha256": "4d44b4a352b0c3056cc317e0647ceef6a13307e64c2a2563ad2986277f9ab09d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/OneOrMoreCountersAddedTriggeredAbility.java",
+      "sha256": "9e91b178b6105c21f8c93c39730c2f674f939e8d2594e906ae174e5e53d4dbcc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

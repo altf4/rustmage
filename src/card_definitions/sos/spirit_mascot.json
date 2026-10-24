@@ -3,10 +3,13 @@
   "catalogue_id": 4055,
   "oracle_id": "34c572b2-dccf-43d9-a9c4-846653ad22da",
   "facts_sha256": "d85bf6de14f0177d23e3ff82ee45e8fa0b3ada24f0bdea8f568e1070898e9194",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d21ca76217a61a63e0fd539959460db8779aa4a7e71262ce8ed117e2ab16ea9f"
   },
-  "physical_metadata_sha256": "4c864f7233a7b4cac86be619968a7aa7eba6beff51f123aa9c131d8ef71fa603"
+  "physical_metadata_sha256": "4c864f7233a7b4cac86be619968a7aa7eba6beff51f123aa9c131d8ef71fa603",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiritMascot.java",
+  "java_sha256": "1e34a152bf6e23f7ef9db9c15840d5a68da0bb41e5f0fc40cb521738ea536ba9"
 }

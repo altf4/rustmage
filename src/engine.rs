@@ -1,3 +1,6 @@
+#[path = "engine_paradigm.rs"]
+mod paradigm;
+pub use paradigm::{ParadigmView, ResolvedSpellNameView};
 #[path = "engine_endgame.rs"]
 mod endgame;
 #[path = "engine_linked_choices.rs"]
@@ -11,11 +14,16 @@ mod mana_lots;
 pub use mana_lots::{
     ManaCopySource, ManaLotSpendRange, ManaLotView, ManaRestrictionView, ManaSpellBonusView,
 };
+#[path = "engine_card_copies.rs"]
+mod card_copies;
 #[path = "engine_copies.rs"]
 mod copies;
+#[path = "engine_prepared.rs"]
+mod prepared;
 #[path = "engine_stack_copies.rs"]
 mod stack_copies;
 pub use copies::CopyRecipe;
+pub use prepared::PreparationView;
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
 pub use crate::cards::CopyExceptions;
@@ -202,12 +210,15 @@ pub use live_static_stats::LiveStaticSourceView;
 #[path = "engine_search.rs"]
 mod search;
 pub use explore::{ExploreChoiceView, ExploreEventView, ExplorerView, RevealedLibraryCard};
+#[path = "engine_sos_tokens.rs"]
+mod sos_tokens;
 #[path = "engine_stat_values.rs"]
 mod stat_values;
 #[path = "engine_stats.rs"]
 mod stats;
 #[path = "engine_steps.rs"]
 mod steps;
+
 #[path = "engine_tokens.rs"]
 mod tokens;
 use crate::rng::Rng;
@@ -638,6 +649,7 @@ enum CopyKind {
     None,
     Token,
     Spell,
+    Card,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -669,7 +681,7 @@ impl Object {
         self.copy_kind == CopyKind::Token
     }
     fn is_spell_copy(&self) -> bool {
-        self.copy_kind == CopyKind::Spell
+        matches!(self.copy_kind, CopyKind::Spell | CopyKind::Card)
     }
     fn is_token(&self) -> bool {
         self.is_copy_token() || self.card.is_token()
@@ -702,6 +714,7 @@ struct PlayerState {
     instant_sorcery_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
+    card_left_graveyard_this_turn: bool,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
     life_lost_this_turn: u128,
@@ -736,6 +749,8 @@ pub enum CastFace {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
+    /// Player who cast this exact spell; stack control changes do not alter history.
+    pub caster: Player,
     /// A non-targeted promise, declared before targets; absent until chosen.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gift: Option<GiftDeclaration>,
@@ -1476,6 +1491,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    paradigm: Option<Box<paradigm::ParadigmState>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
     ending_turn: bool,
@@ -1507,6 +1523,7 @@ struct State {
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
+    counter_placement_history: counter_placement_history::Rows,
     entry_values: entry_choices::Rows,
     copy_recipes: copies::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
@@ -1552,6 +1569,7 @@ struct State {
     graveyard_cast_permissions: cast_permissions::Rows,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
+    preparations: prepared::Rows,
     adventures: Option<Box<adventure::AdventureState>>,
     plot: Option<Box<plot::PlotState>>,
     warp: Option<Box<warp::WarpState>>,
@@ -1611,6 +1629,7 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    pub prepared: bool,
     /// Frozen effective nonkeyword abilities only while a removal effect exists.
     /// None is the allocation-free complete printed/default-grant case.
     pub abilities: Option<Box<AbilityAvailabilityView>>,
@@ -1665,6 +1684,9 @@ impl ObjectView {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    /// CR122.6a: intrinsic entry counters are put on by the incoming controller.
+    pub(super) entry_counter_player: Option<Player>,
+    pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
     pub before: ObjectView,
@@ -1693,6 +1715,7 @@ pub struct PlayerView {
     pub spells_cast_this_turn: u64,
     pub cards_drawn_this_turn: u64,
     pub cards_discarded_this_turn: u64,
+    pub card_left_graveyard_this_turn: bool,
     pub life_gain_events_this_turn: u64,
     pub life_gained_this_turn: u128,
     pub life_lost_this_turn: u128,
@@ -1852,12 +1875,16 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    pub paradigms: Vec<ParadigmView>,
+    pub resolved_spell_names: Vec<ResolvedSpellNameView>,
+    pub preparations: Vec<PreparationView>,
     pub library_piles: Option<LibraryPilesView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
     pub mana_lots: Vec<ManaLotView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
+    pub counter_placement_history: Vec<CounterPlacementHistoryView>,
     pub additional_combats: u64,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
@@ -2040,6 +2067,7 @@ impl Game {
             instant_sorcery_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
+            card_left_graveyard_this_turn: false,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
@@ -2084,6 +2112,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                paradigm: None,
                 ending_turn: false,
                 mana_lots: None,
                 linked_choices: None,
@@ -2096,6 +2125,7 @@ impl Game {
                 named_counters: None,
                 combat_rules: None,
                 creature_damage_history: None,
+                counter_placement_history: None,
                 entry_values: None,
                 copy_recipes: None,
                 graveyard_entries: None,
@@ -2132,6 +2162,7 @@ impl Game {
                 suspected: None,
                 death_exile_replacements: None,
                 roles: None,
+                preparations: None,
                 adventures: None,
                 plot: None,
                 warp: None,
@@ -2757,7 +2788,9 @@ impl Game {
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
                             EffectChoiceKind::LandCards { .. }
                             | EffectChoiceKind::UntapLands { .. } => Action::SelectLand { object },
-                            EffectChoiceKind::Sacrifice => Action::Sacrifice { object },
+                            EffectChoiceKind::Sacrifice
+                            | EffectChoiceKind::ExileGraveyard
+                            | EffectChoiceKind::TapPermanents(_) => Action::Sacrifice { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             _ => unreachable!("forage has its own choice"),
                         };
@@ -3864,6 +3897,7 @@ impl Game {
                 self.cast_exiled_during_resolution(actor, object, face)
             }
             Action::FinishResolutionCasts => {
+                self.finish_paradigm_copy_offer();
                 self.state.resolution_free_casts = None;
                 self.run_program();
             }
@@ -4649,6 +4683,14 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        let graveyard_observers = if ids
+            .iter()
+            .any(|&id| self.state.objects[id as usize].zone == Zone::Graveyard)
+        {
+            self.freeze_graveyard_observers()
+        } else {
+            None
+        };
         if destination == Zone::Battlefield {
             let count = ids
                 .iter()
@@ -4697,7 +4739,14 @@ impl Game {
         let events = planned
             .into_iter()
             .map(|(before, plan, tapped, counters)| {
-                self.commit_planned_zone_move(before, plan, tapped, counters, None)
+                self.commit_planned_zone_move(
+                    before,
+                    plan,
+                    tapped,
+                    counters,
+                    None,
+                    graveyard_observers.clone(),
+                )
             })
             .collect();
         self.refresh_controllers();
@@ -4745,7 +4794,7 @@ impl Game {
                         && self.current_kinds(id as CardId) & 64 != 0
                 })
             }
-            EntryTapped::Always => true,
+            EntryTapped::Always | EntryTapped::ChosenXAtMost(_) => true,
             EntryTapped::OpponentsTurn => controller != self.state.active,
             EntryTapped::UnlessLowLife => self.state.players.iter().all(|p| p.life > 13),
             EntryTapped::UnlessBasic => !self.state.objects.iter().enumerate().any(|(id, o)| {
@@ -4830,7 +4879,19 @@ impl Game {
     ) -> ZoneChange {
         let rules = self.freeze_zone_rules(&before, destination, None);
         let plan = self.plan_zone_move(&before, destination, rules);
-        self.commit_planned_zone_move(before, plan, tapped, counters, entry_controller)
+        let graveyard_observers = if before.zone == Zone::Graveyard {
+            self.freeze_graveyard_observers()
+        } else {
+            None
+        };
+        self.commit_planned_zone_move(
+            before,
+            plan,
+            tapped,
+            counters,
+            entry_controller,
+            graveyard_observers,
+        )
     }
 
     fn commit_planned_zone_move(
@@ -4840,6 +4901,7 @@ impl Game {
         tapped: bool,
         counters: Counters,
         entry_controller: Option<Player>,
+        graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     ) -> ZoneChange {
         let id = before.id;
         self.capture_mana_copy_source_departure(&before);
@@ -4860,6 +4922,8 @@ impl Game {
                 .capacity("object generation exhausted");
             self.state.free_tokens.push(id);
             return ZoneChange {
+                entry_counter_player: None,
+                graveyard_observers: None,
                 was_cast: false,
                 gift: None,
                 after: self.object_ref(id),
@@ -4875,14 +4939,27 @@ impl Game {
             };
         }
         let destination = plan.destination;
+        if before.zone == Zone::Graveyard
+            && destination != Zone::Graveyard
+            && !before.is_token()
+            && !before.card.is_emblem()
+            && !self.state.objects[id as usize].is_spell_copy()
+        {
+            self.state.players[before.owner.index()].card_left_graveyard_this_turn = true;
+        }
         // Outside is an internal staging zone for newly allocated tokens. A
         // ceased token is on the free list and cannot move again (CR111.8).
         let fresh_token = before.zone == Zone::Outside && !self.state.free_tokens.contains(&id);
-        if (self.state.objects[id as usize].is_spell_copy() && before.zone != Zone::Stack)
+        if (self.state.objects[id as usize].copy_kind == CopyKind::Spell
+            && before.zone != Zone::Stack)
+            || (self.state.objects[id as usize].copy_kind == CopyKind::Card
+                && before.zone == Zone::Outside)
             || before.card.is_emblem()
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
+                entry_counter_player: None,
+                graveyard_observers: None,
                 was_cast: false,
                 gift: None,
                 after: before.reference,
@@ -4900,6 +4977,8 @@ impl Game {
         if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
+                entry_counter_player: None,
+                graveyard_observers: None,
                 was_cast: false,
                 gift: None,
                 after: before.reference,
@@ -4932,6 +5011,7 @@ impl Game {
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
+            self.forget_prepared(before.reference);
             self.clear_suspected_reference(before.reference);
             self.forget_graveyard_type_source(before.reference);
         }
@@ -5111,8 +5191,15 @@ impl Game {
         if before.zone == Zone::Stack {
             self.continue_stack_keywords(before.reference, self.object_ref(id), destination);
         }
+        let entered_with_counters = counters.has_any();
         self.set_counters(id, counters);
         if destination == Zone::Battlefield {
+            if entered_with_counters {
+                self.record_counter_placement(
+                    self.object_ref(id),
+                    self.state.objects[id as usize].controller,
+                );
+            }
             let (owner, card) = entry_identity;
             self.record_nonland_entry(owner, card);
             self.register_battlefield_sources(id);
@@ -5130,6 +5217,8 @@ impl Game {
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         ZoneChange {
+            entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
+            graveyard_observers,
             was_cast: false,
             gift: None,
             before,
@@ -5203,6 +5292,7 @@ impl Game {
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.creature_damage_history = None;
+        self.state.counter_placement_history = None;
         self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
         self.state.creatures_died_this_turn = 0;
@@ -5213,6 +5303,7 @@ impl Game {
             player.instant_sorcery_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
+            player.card_left_graveyard_this_turn = false;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
@@ -5698,6 +5789,12 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            paradigms: self.paradigm_views(),
+            resolved_spell_names: self.resolved_spell_name_views(),
+            preparations: s
+                .preparations
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             library_piles: self.library_piles_view(viewer),
             keep_types: self.keep_types_view(),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
@@ -5786,6 +5883,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.animations.clone()),
+            counter_placement_history: s
+                .counter_placement_history
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             creature_damage_history: s
                 .creature_damage_history
                 .as_ref()
@@ -5903,6 +6004,7 @@ impl Game {
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
+                card_left_graveyard_this_turn: s.players[i].card_left_graveyard_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
                 life_gained_this_turn: s.players[i].life_gained_this_turn,
                 life_lost_this_turn: s.players[i].life_lost_this_turn,
@@ -6296,6 +6398,7 @@ impl Game {
             + 2 * std::mem::size_of::<Vec<CardId>>()
             + s.objects.len() * std::mem::size_of::<Object>()
             + s.linked_choices.as_ref().map_or(0, |c| c.bytes())
+            + counter_placement_history::owned_bytes(&s.counter_placement_history)
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
             + s.pending.owned_bytes()
@@ -6313,6 +6416,7 @@ impl Game {
                         .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
                         .sum::<usize>()
             })
+            + paradigm::owned_bytes(&s.paradigm)
             + modal_history::owned_bytes(&s.modal_history)
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
             + s.resolution_free_casts.as_ref().map_or(0, |f| {
@@ -6339,6 +6443,7 @@ impl Game {
             + s.hand_play_bans.as_ref().map_or(0, |bans| {
                 std::mem::size_of::<Vec<u32>>() + bans.len() * std::mem::size_of::<u32>()
             })
+            + prepared::owned_bytes(&s.preparations)
             + s.adventures.as_ref().map_or(0, |p| p.bytes())
             + s.plot.as_ref().map_or(0, |p| p.bytes())
             + s.crew.as_ref().map_or(0, |c| c.bytes())
@@ -6392,6 +6497,10 @@ impl Game {
                             .optional_searches
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<search::OptionalSearchSequence>())
+                        + resolution.target_card_facts.as_ref().map_or(0, |values| {
+                            std::mem::size_of::<Vec<programs::TargetCardFacts>>()
+                                + values.len() * std::mem::size_of::<programs::TargetCardFacts>()
+                        })
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
@@ -6586,6 +6695,9 @@ impl Game {
 #[path = "engine_card_quantities.rs"]
 mod card_quantities;
 pub use card_quantities::SourceCounterQuantityView;
+#[path = "engine_counter_placement_history.rs"]
+mod counter_placement_history;
+pub use counter_placement_history::CounterPlacementHistoryView;
 
 pub use search::OptionalSearchSequence;
 #[path = "engine_event_counter_core.rs"]
@@ -6623,3 +6735,9 @@ mod territory_forge_tests;
 #[cfg(test)]
 #[path = "engine_big_inherited_tests.rs"]
 mod big_inherited_tests;
+
+#[path = "engine_sos_graveyard.rs"]
+mod sos_graveyard;
+#[cfg(test)]
+#[path = "engine_sos_green_colorless_tests.rs"]
+mod sos_green_colorless_tests;

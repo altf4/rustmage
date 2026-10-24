@@ -1,0 +1,11 @@
+{
+  "name": "Swords to Plowshares",
+  "catalogue_id": 5360,
+  "oracle_id": "e6c41473-2398-4888-9f0c-467dce7c39a4",
+  "facts_sha256": "68379458ffe99650a4ffdc1345df06df2b3728b09c2689c4955f212a4e65b482",
+  "complete": false,
+  "physical_metadata_sha256": "471364cd5b105771301d4a97daca1d09867c6d80436c40851daf78b72cd5da98",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmeritusOfTruce.java",
+  "java_sha256": "bf156564affe27c1914d51c44076e742637428d8897f1ed7eeed1b68fc0ef435"
+}

@@ -212,6 +212,8 @@ impl Game {
                 self.record_nonland_entry(controller, token);
                 self.register_battlefield_sources(id);
                 events.push(ZoneChange {
+                    entry_counter_player: Some(controller),
+                    graveyard_observers: None,
                     was_cast: false,
                     gift: None,
                     before,
