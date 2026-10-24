@@ -3712,3 +3712,55 @@ fn sos_silverquill_returned_aura_attachment_uses_projected_layers() {
         assert_eq!(g.object_view(other).zone, Zone::Graveyard);
     }
 }
+
+#[test]
+fn sos_silverquill_control_aura_must_be_sacrificed_after_its_stolen_casualty_victim() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let silver = put(&mut g, p, "Silverquill, the Disputant", Zone::Battlefield);
+        g.state.objects[silver as usize].growth.power = -4;
+        let stolen = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let confiscate = put(&mut g, p, "Confiscate", Zone::Hand);
+        cast(&mut g, confiscate, Some(Target::Card(stolen)));
+        settle(&mut g);
+        assert_eq!(g.object_view(stolen).controller, p);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        let sacrifice = Some(g.object_ref(confiscate));
+        act(&mut g, Action::ChooseBargain { sacrifice });
+        act(&mut g, Action::ChooseCasualty { pay: true });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        let additional = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|r| r.clause == CastCostClause::Additional)
+            .unwrap() as u16;
+        reject(&mut g, Action::ChooseCastCost { clause: additional });
+        choose_cast_clause(&mut g, CastCostClause::Casualty(0));
+        let object = g.object_ref(stolen);
+        super::big_helpers::checked(&mut g, Action::PayCasualty { object });
+        assert_eq!(g.object_view(stolen).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(stolen).owner, p.other());
+        choose_cast_clause(&mut g, CastCostClause::Additional);
+        until_choice(&mut g);
+        act(&mut g, Action::FinishStackTargets);
+        settle(&mut g);
+        assert_eq!(g.object_view(confiscate).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 2);
+    }
+}

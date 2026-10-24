@@ -212,7 +212,13 @@ impl FundingState<'_> {
             }
             worlds = next;
         }
-        worlds.iter().any(|w| w.visit_linked_returns(emit))
+        worlds.iter_mut().any(|world| {
+            // All departures in the cost happen simultaneously. Recompute layer
+            // two once afterward, before linked returns or the next cost can use
+            // a creature whose former control effect has just left.
+            world.refresh_control_projection();
+            world.visit_linked_returns(emit)
+        })
     }
     pub(super) fn set_cost_counter_prefix(&mut self, selected: &[(ObjectRef, CounterKind)]) {
         if let Some(c) = &mut self.cast_costs {
