@@ -214,8 +214,14 @@ mod roles;
 #[path = "engine_sba.rs"]
 mod sba;
 pub use roles::{RoleGroupView, RoleTimestampView};
+#[path = "engine_faces.rs"]
+mod faces;
 #[path = "engine_modal_history.rs"]
 mod modal_history;
+#[cfg(test)]
+#[path = "engine_msh_faces_tests.rs"]
+mod msh_faces_tests;
+pub use faces::FaceView;
 pub use modal_history::ModalHistoryView;
 #[path = "engine_ability_evaluation.rs"]
 mod ability_evaluation;
@@ -515,6 +521,7 @@ define_actions! {
     AnnounceWarp { card: CardId },
     AnnounceAdventure { card: CardId },
     AnnounceOmen { card: CardId },
+    AnnounceBack { card: CardId },
     AnnouncePlot { card: CardId },
     PayPlot { payment: Mana },
     AnnouncePlotted { card: CardId },
@@ -791,6 +798,7 @@ pub enum CastFace {
     Normal,
     Adventure,
     Omen,
+    Back,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
@@ -893,6 +901,8 @@ pub struct SpellView {
     pub evidence_collected: bool,
     pub id: u64,
     pub kind: StackKind,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_transform: Option<u64>,
     pub source_card: Card,
     pub source_keywords: Keywords,
     pub source_tapped: bool,
@@ -1636,6 +1646,7 @@ struct State {
     )]
     delayed_main_mana: Option<Box<Vec<SpellView>>>,
     modal_history: modal_history::Rows,
+    face_changes: faces::Rows,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     cards_exiled_this_turn: bool,
@@ -1770,6 +1781,8 @@ pub struct ObjectView {
     pub exhausted_abilities: u64,
     pub entered_this_turn: bool,
     pub power_up_uses: Vec<PowerUpUseView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub face: Option<faces::FaceView>,
     pub attached_to: Option<ObjectRef>,
     pub modified: bool,
     pub attacking: bool,
@@ -2172,9 +2185,15 @@ impl Game {
                 }
             }
             for &card in deck {
-                if card.is_token() || card.is_emblem() || card.inset_parent().is_some() {
+                if card.is_token()
+                    || card.is_emblem()
+                    || card.inset_parent().is_some()
+                    || card.face_parent().is_some()
+                {
                     return Err(Error::InvalidDeck(
-                        if card.inset_parent().is_some() {
+                        if card.face_parent().is_some() {
+                            "back face definitions cannot be submitted in decks"
+                        } else if card.inset_parent().is_some() {
                             "inset spell definitions cannot be submitted in decks"
                         } else if card.is_emblem() {
                             "emblems cannot be submitted in decks"
@@ -2283,6 +2302,7 @@ impl Game {
                 delayed_artifact_copies: None,
                 delayed_main_mana: None,
                 modal_history: None,
+                face_changes: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
                 cards_exiled_this_turn: false,
@@ -3277,6 +3297,12 @@ impl Game {
                     {
                         return true;
                     }
+                    if obj.card.back_face().is_some()
+                        && self.back_cast_available(actor, card, sorcery)
+                        && emit(Action::AnnounceBack { card })
+                    {
+                        return true;
+                    }
                     if let Some(definition) = obj.card.omen_spell()
                         && self.alternate_cast_available(actor, card, sorcery, definition)
                         && emit(Action::AnnounceOmen { card })
@@ -3285,7 +3311,12 @@ impl Game {
                     }
                     if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
                         if free_hand_cast && obj.zone == Zone::Hand {
-                            for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen] {
+                            for face in [
+                                CastFace::Normal,
+                                CastFace::Adventure,
+                                CastFace::Omen,
+                                CastFace::Back,
+                            ] {
                                 for flash_surcharge in [false, true] {
                                     if self.permitted_cast_available(
                                         actor,
@@ -3305,11 +3336,17 @@ impl Game {
                             }
                         }
                         if obj.zone == Zone::Hand && !limited_hand_casts.is_empty() {
-                            for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen] {
+                            for face in [
+                                CastFace::Normal,
+                                CastFace::Adventure,
+                                CastFace::Omen,
+                                CastFace::Back,
+                            ] {
                                 let definition = match face {
                                     CastFace::Normal => Some(obj.card),
                                     CastFace::Adventure => obj.card.adventure_spell(),
                                     CastFace::Omen => obj.card.omen_spell(),
+                                    CastFace::Back => obj.card.back_face(),
                                 };
                                 if !definition.is_some_and(|d| {
                                     crate::cards::CastFilter::InstantSorcery.matches(d)
@@ -4386,6 +4423,11 @@ impl Game {
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceBack { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, CastFace::Back);
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnounceAdventure { card } | Action::AnnounceOmen { card } => {
                 let omen = matches!(action, Action::AnnounceOmen { .. });
                 let physical = self.state.objects[card as usize].card;
@@ -5436,6 +5478,7 @@ impl Game {
         }
         self.forget_borrowed_source(before.reference);
         self.forget_power_up_object(before.reference);
+        self.forget_face_change(before.reference);
         if let Some(state) = &mut self.state.roles {
             state.keyword_effects.retain(|row| {
                 row.recipient != before.reference
@@ -5603,6 +5646,13 @@ impl Game {
         if before.zone == Zone::Stack && destination == Zone::Battlefield && obj.is_spell_copy() {
             obj.copy_kind = CopyKind::Token;
         }
+        obj.card = if destination == Zone::Battlefield && before.zone == Zone::Stack {
+            before.card
+        } else if !obj.is_token() && !obj.is_spell_copy() {
+            obj.card.front_face()
+        } else {
+            obj.card
+        };
         obj.zone = destination;
         // Only stack and battlefield objects have independent control.
         obj.controller = if matches!(destination, Zone::Battlefield | Zone::Stack) {
@@ -6995,6 +7045,7 @@ impl Game {
                         .sum::<usize>()
             })
             + paradigm::owned_bytes(&s.paradigm)
+            + faces::owned_bytes(&s.face_changes)
             + modal_history::owned_bytes(&s.modal_history)
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
             + s.resolution_free_casts.as_ref().map_or(0, |f| {
@@ -7382,3 +7433,23 @@ mod keyword_counter_tests;
 #[cfg(test)]
 #[path = "engine_msh_inherited_tests.rs"]
 mod msh_inherited_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_placement_tests.rs"]
+mod msh_placement_tests;
+
+#[cfg(test)]
+#[path = "engine_finality_tests.rs"]
+mod finality_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_four_existing_tests.rs"]
+mod msh_four_existing_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_combined_tests.rs"]
+mod msh_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_coulson_tests.rs"]
+mod msh_coulson_tests;

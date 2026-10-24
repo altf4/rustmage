@@ -465,7 +465,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -733,6 +733,17 @@ impl<'g> FundingState<'g> {
                 for group in source.object.card.static_ability_groups() {
                     for fragment in group.fragments {
                         match *fragment {
+                            crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords {
+                                filter,
+                                keywords: grant,
+                            } if self.placement_history_recipient(
+                                self.reference(source.id),
+                                filter,
+                                target.id,
+                            ) =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
                             crate::cards::StaticAbilityFragment::DeathBaronLord
                                 if ability_world::CharacteristicWorld::death_baron_applies(
                                     self,
@@ -1129,7 +1140,7 @@ impl<'g> FundingState<'g> {
         self.payment_departures
             .sort_by_key(|(object, _)| (object.card, object.generation));
     }
-    fn apply(&mut self, step: &FundingMove) {
+    fn apply(&mut self, step: &FundingMove, preserve_departure_counters: bool) {
         for (lot, allocation) in self.lots.iter_mut().zip(&step.allocation) {
             for (held, paid) in lot.amounts.iter_mut().zip(allocation) {
                 *held -= u128::from(*paid);
@@ -1209,8 +1220,15 @@ impl<'g> FundingState<'g> {
             let reference = self.reference(id);
             let object = &mut self.resources[step.resource].object;
             object.zone = destination;
-            object.counters = InitialCounters::default();
-            live_counters::set(&mut self.named_counters, reference, None);
+            if !preserve_departure_counters {
+                // The slow path still needs the old face for replacement planning.
+                // Normalize only when this step commits the virtual departure.
+                if !object.is_token() && !object.is_spell_copy() {
+                    object.card = object.card.front_face();
+                }
+                object.counters = InitialCounters::default();
+                live_counters::set(&mut self.named_counters, reference, None);
+            }
         }
         if let Some(external) = step.external {
             self.remember_payment_departure(self.resources[external].id);
@@ -2892,3 +2910,11 @@ mod restricted_mana_tests;
 #[cfg(test)]
 #[path = "engine_msh_conditional_lands_funding_tests.rs"]
 mod msh_conditional_lands_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_placement_funding_tests.rs"]
+mod msh_placement_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_faces_funding_tests.rs"]
+mod msh_faces_funding_tests;

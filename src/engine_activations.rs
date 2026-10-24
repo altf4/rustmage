@@ -469,6 +469,12 @@ impl Game {
             cast: None,
             id: self.next_stack_id(),
             kind: StackKind::ActivatedAbility { ability },
+            source_transform: self.state.objects[card as usize]
+                .card
+                .activations()
+                .get(usize::from(ability))
+                .is_some_and(|ability| ability.program.contains(&Instruction::TransformSource))
+                .then(|| self.transform_serial(self.object_ref(card))),
             source_card: self.state.objects[card as usize].card,
             source_keywords: self.keywords(card),
             source_tapped: self.state.objects[card as usize].tapped,

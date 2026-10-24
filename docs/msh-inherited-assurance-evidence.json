@@ -142,7 +142,15 @@
           "status": "passing creature Hero/controller/replacement scenarios; noncreature Kindred-Hero semantics remain latent and pending"
         }
       ],
-      "whole_card_acceptance": "pending latent noncreature Hero permanent semantics; creature-only reachable behavior has passing meaningful scenarios"
+      "whole_card_acceptance": "pending latent noncreature Hero permanent semantics; creature-only reachable behavior has passing meaningful scenarios",
+      "later_resolution": {
+        "scope": "Subsequent combined MSH cohort; original PR490 compiled-test receipt remains historical",
+        "repair_evidence": "docs/msh-coulson-kindred-evidence.json",
+        "tests": "src/engine_msh_coulson_tests.rs",
+        "published_parent": "https://github.com/altf4/rustmage/pull/497",
+        "semantic_gap": "Noncreature Hero recipient restriction corrected with CountFilter and one simultaneous counter batch",
+        "final_combined_reviews_and_validation": "pending"
+      }
     },
     {
       "name": "Agent of Atlas",

@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Shared modal-face/transform prerequisite and one complete physical representative; full 281-card acceptance pending",
+  "source_base": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
+  "observation_schema": 141,
+  "complete_cards": [
+    "Monica Rambeau // Photon, Living Light"
+  ],
+  "nonphysical_back_definition": {
+    "5391": "Photon, Living Light"
+  },
+  "stable_metadata": "All old IDs, aliases, colors and token/emblem recipes preserved. Canonical 2832 gains explicit Oracle-verified front face and back pointer; one nonphysical back 5391 appended. Physical serialization identity stays joined; rules name is the face name.",
+  "inherited_trace_count": 2453,
+  "inherited_full_trace_matches": 2453,
+  "inherited_changes": [],
+  "inherited_journal_changes": [],
+  "baseline_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060",
+  "candidate_sha256": "2460d346fefdc72d62137d18ba5bfadf063e5ca634fd056a1849735707453f9d",
+  "prior140_projection_sha256": "90986660cbb257b83d6c6da9456662aadf6fbfd1be1dc42ca7d287f02a1216a5",
+  "projection_policy": "Recording-only prior-140 projection changes observation version only for inherited roots; every Power-up, placement-history, keyword and existing wire field is retained. Ordinary trace assertions remain strict.",
+  "new_traces": {
+    "Monica Rambeau // Photon, Living Light": {
+      "root": "main",
+      "status": "completed",
+      "decisions": 4,
+      "zone": "Battlefield",
+      "journal": "3ad6d4893695dc9c",
+      "observations": "206d6ef467204cc2"
+    }
+  },
+  "focused_rules_tests": 14,
+  "native_before_baseline_acceptance": {
+    "passed": 682,
+    "only_failure": "Expected strict trace count 2454 versus 2453 before accepting the exact audited candidate"
+  },
+  "clippy": "All targets with warnings denied passed",
+  "source_pins": {
+    "definitions": 5392,
+    "verified_blobs": 1100
+  },
+  "rules_authority": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt"
+  ],
+  "rules_evidence": "src/engine_msh_faces_tests.rs: paid front/back costs and traits; sorcery timing; physical identity and nondeckable back; all selected-face permission paths; Hero-restricted mana; same-object transform preserving counters, keyword counters, damage, growth and Equipment; stale serial/reentry; queued front prowess and back future triggers; ability removal; countered/back bounce plus private fresh hand; copied spells with both faces and endstep sacrifice; Fractal, artifact and haste/sacrifice exceptions; foreign-controlled copies; raw/index owned replay, parent disposal, restore and illegal-action atomicity",
+  "copy_interaction_inventory": [
+    {
+      "name": "Applied Geometry",
+      "definition": "src/card_definitions/sos/applied_geometry.rs",
+      "sha256": "a2554d37bc57e7de47779c2661e0f9147285f18a50dd1f093969b76d23362b41"
+    },
+    {
+      "name": "Chandra, Flameshaper",
+      "definition": "src/card_definitions/fdn/chandra_flameshaper.rs",
+      "sha256": "ec5b5ff3e43f39eccbd38f6b814c61cdabfc4cb84c847583aeb309c3778db6f5"
+    },
+    {
+      "name": "Choreographed Sparks",
+      "definition": "src/card_definitions/sos/choreographed_sparks.rs",
+      "sha256": "cb812cfe938439ed52c70487159c2ab7884e8f8d543f0a6a6dd9c514be6bdecc"
+    },
+    {
+      "name": "Colorstorm Stallion",
+      "definition": "src/card_definitions/sos/colorstorm_stallion.rs",
+      "sha256": "cc14aaabfb7c848926595446992a09bc82e8a19f545f2be6a34d02f7315a0d54"
+    },
+    {
+      "name": "Echocasting Symposium",
+      "definition": "src/card_definitions/sos/echocasting_symposium.rs",
+      "sha256": "3f407934ad860601448cf79c84fed54d8e7658bcc79d61de7c9a3f62420fe6a5"
+    },
+    {
+      "name": "Electroduplicate",
+      "definition": "src/card_definitions/fdn/electroduplicate.rs",
+      "sha256": "7380e737783313b9cddf60da90b1f253ee445cd9e8b1c141c51831d98c8ff6a9"
+    },
+    {
+      "name": "Esoteric Duplicator",
+      "definition": "src/card_definitions/big/esoteric_duplicator.rs",
+      "sha256": "9f6da5e2490509bf6a62a38efdf38d3fc347c41eaeacf74c61771c9ab8cb3e06"
+    },
+    {
+      "name": "Extravagant Replication",
+      "definition": "src/card_definitions/fdn/extravagant_replication.rs",
+      "sha256": "a472b54bcceffc813e14f996ac55e4ee369af1c0ceec3e346cfe924b34a65df7"
+    },
+    {
+      "name": "Homunculus Horde",
+      "definition": "src/card_definitions/fdn/homunculus_horde.rs",
+      "sha256": "f2fcd1623c0ac4d53be8377b01856b102ba072294aa8d79697ee868e647f2933"
+    },
+    {
+      "name": "Molten Duplication",
+      "definition": "src/card_definitions/big/molten_duplication.rs",
+      "sha256": "4d737ccc18cbc4523daa80dd26c5075ef1bb37e93f940f978f19adfd7fa3f4dd"
+    },
+    {
+      "name": "Oltec Matterweaver",
+      "definition": "src/card_definitions/big/oltec_matterweaver.rs",
+      "sha256": "981d66dfb97e06cf22d2e0042934b99b35d87c3e0a1529edace48f3cc9a20e4f"
+    },
+    {
+      "name": "Rite of Replication",
+      "definition": "src/card_definitions/soc/rite_of_replication.rs",
+      "sha256": "2e9e29d16ca851b611380f651f5b9b8f88c082e6955857963902d6a1fb0f8f17"
+    },
+    {
+      "name": "Self-Reflection",
+      "definition": "src/card_definitions/fdn/self_reflection.rs",
+      "sha256": "312e63abdc54090123cf95218c56dd9bb703f7d41763f43d398359d67e1c21e9"
+    },
+    {
+      "name": "Vaultborn Tyrant",
+      "definition": "src/card_definitions/big/vaultborn_tyrant.rs",
+      "sha256": "9170d1dc7f629d2e0f1188c12f8ea79c3733b00c410e2351514d3b11d5aa9dad"
+    },
+    {
+      "name": "Worldwalker Helm",
+      "definition": "src/card_definitions/big/worldwalker_helm.rs",
+      "sha256": "f9e311782aa97c21d874af62369f55b21f32f2f348a9433adc11f6703b2d283e"
+    }
+  ],
+  "copy_semantics": "Immutable face pair plus current CopyRecipe.definition and existing exceptions supplies both faces for copied double-faced tokens and permanent-spell copies (CR707.8a/707.10g); transformation switches definition while retaining exceptions. No new copying graph or arbitrary in-place copy admission.",
+  "shared_engine_changes": [
+    "Selected Back face in existing normal/free/permission casting and funding pathways",
+    "Sparse exact-object transform serial, captured at stack commitment; copied packets keep captured serial",
+    "Intrinsic provider refresh without entry/zone events; recipient effects/control/counters/combat/attachments preserved",
+    "Front-face restoration after real and speculative departures, after departure facts are captured",
+    "Explicit Oracle-checked immutable front/back metadata; no text parser or runtime source reading"
+  ],
+  "implementation_throughput": {
+    "start": "2026-10-24T21:11:29+00:00",
+    "end": "2026-10-24T21:36:14.028563+00:00",
+    "elapsed_seconds": 1485.028563,
+    "complete_candidate_physical_cards": 1,
+    "cards_per_hour": 2.4241957964279237,
+    "scope": "Candidate implementation, focused rules tests, native recording, Clippy and exact inherited audit; excludes earlier read-only design/source audit, final strict rerun, integration/reviews/full release and full-set acceptance"
+  },
+  "remaining_scope": "Two fresh independent nonauthor reviews of the final combined head and combined release integration. Other four MSH DFCs and Nick Fury remain gated; their distinct blockers are recorded in the read-only design handoff. No full-set or entire-pool simulation/performance claim.",
+  "strict_native_prior_head": {
+    "head": "a63e178f31447ba33bba8f13e57c24fac1df05c2",
+    "passed": 683,
+    "log": "<cache>/msh-faces-native-strict.log",
+    "scope": "Full native strict run before the review repair; refreshed repair has focused, strict trace and Clippy checks below."
+  },
+  "review_repair": {
+    "finding": "Private speculative additional-cost departures did not normalize a noncopy double-faced physical card to its front after capturing departure facts.",
+    "fix": "Normalize the departed cost resource after saving all simultaneous departure LKI and incrementing its incarnation, before recomputing postdeparture characteristics.",
+    "test": "engine::funding::msh_faces_funding_tests::msh_faces_cost_departures_restore_front_after_freezing_back_lki",
+    "coverage": "Both seats, paid Photon and Rest in Peace, ordinary graveyard departure, replacement exile and direct exile. Compare virtual and real incarnation, zone, card, rules name, mana value, colors, types, subtypes, counters, controller, power/toughness and face state. Saved payment source LKI remains Photon. Parent unchanged and owned restore/replay agrees.",
+    "focused": {
+      "passed": 14,
+      "log": "<cache>/msh-faces-review-fix-focused-1.log",
+      "resource_report": "<cache>/rustmage-build-reports/ac7cf98366ce49aa9bb758fd0e1f74e0.json"
+    },
+    "strict_trace": {
+      "passed": true,
+      "log": "<cache>/msh-faces-review-fix-trace.log",
+      "resource_report": "<cache>/rustmage-build-reports/d6b990aa93194cd8b41d5d5778f91b5c.json",
+      "current_export": "<cache>/msh-faces-review-fix-traces.json",
+      "prior140_projection": "<cache>/msh-faces-review-fix-traces.previous-schema.json",
+      "inherited_exact_full_trace_matches": 2453,
+      "inherited_journal_changes": [],
+      "current_export_matches_committed": true
+    },
+    "clippy": {
+      "passed": true,
+      "arguments": [
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "log": "<cache>/msh-faces-review-fix-clippy.log",
+      "resource_report": "<cache>/rustmage-build-reports/97f90411059143d48073758c9ef4d5e3.json"
+    },
+    "integration_note": "The separate finality prerequisite introduces a preserve-departure-counters funding path. Integration must also retain the old face until simultaneous cost departures capture LKI; the integration author owns that merge and combined regression.",
+    "validation_scope": "No redundant full native or release run on the refreshed parent head; combined integration will run full release validation."
+  }
+}

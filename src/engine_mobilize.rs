@@ -248,6 +248,7 @@ impl Game {
                 source_keywords: b.keywords,
                 source_tapped: b.tapped,
                 source_attachment: b.attachment,
+                source_transform: None,
                 source_facts: b.facts,
                 related_stack: None,
                 damage_event: None,

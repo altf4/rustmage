@@ -157,6 +157,15 @@ impl Game {
                     row.timestamp = timestamp;
                 }
             }
+            // Return modifications are resolution-created effects on the
+            // entering incarnation, not abilities of their historical source.
+            // Only deferred rows acquire the entry timestamp: later provider
+            // retimestamps must preserve an ordinary resolution grant's time.
+            for row in &mut r.creature_types {
+                if row.recipient == source && row.timestamp == 0 {
+                    row.timestamp = timestamp;
+                }
+            }
             for v in &mut r.ability_timestamps {
                 if v.source == source {
                     v.timestamp = timestamp;

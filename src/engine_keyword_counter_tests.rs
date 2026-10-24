@@ -102,7 +102,7 @@ fn target(g: &mut Game, id: CardId) {
 #[test]
 fn keyword_counters_all_eleven_append_stably_and_obey_loss_refresh_partial_and_final_removal() {
     assert_eq!(CounterKind::Invasion as usize, 17);
-    assert_eq!(CounterKind::ALL.len(), 29);
+    assert_eq!(CounterKind::ALL.len(), 30);
     for p in [Player::P0, Player::P1] {
         for (kind, keyword) in [
             (CounterKind::Haste, Keywords::HASTE),

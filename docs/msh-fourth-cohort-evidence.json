@@ -1,0 +1,274 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Eight whole-card candidates and the final inherited Coulson semantic repair; final published-head reviews and full release validation pending at publication",
+  "base_main": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
+  "recording_runtime_head": "a83492142ac068a2ae71ba9d32712063ac11f6e0",
+  "membership": {
+    "frozen_oracle_identities": 281,
+    "frozen_printings": 448,
+    "merged_admission_flags_at_base": 150,
+    "new_whole_card_candidates": 8,
+    "combined_admission_flags": 158,
+    "remaining_gated": 123,
+    "acceptance": "Pending entire-pool obligations, interactions, legal MSH-only complete games and performance"
+  },
+  "complete_candidate_cards": [
+    "Ant-Man, Colony Commander",
+    "Call Damage Control",
+    "Human Torch, Johnny Storm",
+    "Kid Loki",
+    "Killmonger, Scourge of Wakanda",
+    "Monica Rambeau // Photon, Living Light",
+    "Rick Jones, Destined Sidekick",
+    "Thunderbolts Conspiracy"
+  ],
+  "inherited_repair": {
+    "card": "Agent Phil Coulson",
+    "delta": 0,
+    "prior_assurance": "83 of the 84 inherited admissions had source-complete clause evidence; the noncreature Hero restriction was the remaining latent semantic gap",
+    "resolution": "Generic permanent-wide CountFilter and ordinary simultaneous counter placement; six paid both-seat new scenarios supplement the inherited vigilance/replacement scenario",
+    "historical_receipt": "docs/msh-inherited-assurance-evidence.json",
+    "new_evidence": "docs/msh-coulson-kindred-evidence.json"
+  },
+  "parents": [
+    {
+      "scope": "placement",
+      "pull_request": "https://github.com/altf4/rustmage/pull/496",
+      "head": "577d2a2b008e001fd81da02ca57f32e53c55d72e",
+      "evidence": "docs/msh-placement-observer-evidence.json"
+    },
+    {
+      "scope": "existing mechanics",
+      "pull_request": "https://github.com/altf4/rustmage/pull/494",
+      "head": "0484aac31e4940d7b640d5aeb87cd3ca3ff5bf36",
+      "evidence": "docs/msh-four-existing-evidence.json"
+    },
+    {
+      "scope": "finality",
+      "pull_request": "https://github.com/altf4/rustmage/pull/493",
+      "head": "de688de0e510031a05dc5904b91e063d0c952a23",
+      "evidence": "docs/msh-finality-counter-evidence.json"
+    },
+    {
+      "scope": "double-faced cards",
+      "pull_request": "https://github.com/altf4/rustmage/pull/495",
+      "head": "f22acf20375c62ec03ce75b338bdee8e2eba9a73",
+      "evidence": "docs/msh-faces-core-evidence.json"
+    },
+    {
+      "scope": "Coulson repair",
+      "pull_request": "https://github.com/altf4/rustmage/pull/497",
+      "head": "7bc95864714d4525688c1a39d2831da45be6ffbe",
+      "evidence": "docs/msh-coulson-kindred-evidence.json"
+    }
+  ],
+  "shared_rules": [
+    "Exact placing-player and recipient-filter counter observers, preserving prior self exclusions and once-per-exact-source turn allowances",
+    "Current recipient +1/+1 placement-history keyword grants in actual/speculative fast paths and layer-six chronology",
+    "All validated target groups deduplicated into one simultaneous return for Call Damage Control",
+    "Finality death replacement independent of printed abilities and post-counter-payment funding snapshots",
+    "Owner-controlled exact linked Villain returns with Hero present from entry; subtype effects use assigned entry timestamps in actual/speculative worlds",
+    "Physical modal face casting with selected costs/timing/characteristics, identity-preserving transformation, serial safeguards, front restoration and double-faced copy handling"
+  ],
+  "integration_repairs": {
+    "deferred_face_normalization": "Keep back-face characteristics and post-payment counters until the slow replacement planner freezes departure facts; normalize at actual virtual departure commit",
+    "both_seat_funding_regression": "Paid Photon plus Lotus Ring, real granted mana sacrifice with and without Finality, independent intermediate world and actual destination/front characteristics",
+    "both_seat_actual_interaction": "Paid Photon noncreature-cast counter batches compose with Ant-Man once-per-turn, Kid Loki history/second draw, Insect entry timing and Coulson Hero selection",
+    "test_sources": {
+      "src/engine_msh_combined_tests.rs": "e2db268cbec15ac78cbbd2281b80906e9fe7f70b5e80b8efc7d86f176f7a998f",
+      "src/engine_msh_combined_funding_tests.rs": "ee7b8144f673c505a4b47d915946ff187d8133df5e857ced1e623a6c61a79b09"
+    }
+  },
+  "rules_scenarios": {
+    "new_total": 71,
+    "placement": 14,
+    "four_cards": 17,
+    "finality": 18,
+    "faces": 14,
+    "coulson": 6,
+    "combined": 2,
+    "expected_total_including_base670": 741,
+    "status_at_publication": "Parent focused/native checks and both combined tests pass; final ordinary full release suite pending"
+  },
+  "wire_and_identity": {
+    "schema": 141,
+    "prior_schema": 140,
+    "schema_changes": "Actual face/transform observation data and Finality counter vocabulary; private placement/return selection adds no wire fields",
+    "definitions": 5392,
+    "java_source_blobs_verified": 1112,
+    "new_nonphysical_back_id": 5391,
+    "physical_front_oracle_identity_preserved": true,
+    "new_token_recipes": 0,
+    "existing_token_recipes": 116,
+    "prior_ids_aliases_and_recipes_preserved": true,
+    "no_runtime_language_compiler": true
+  },
+  "trace_proof": {
+    "main_inherited": 2453,
+    "candidate": 2461,
+    "parent_full_trace_checks": [
+      {
+        "parent": "main",
+        "head": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
+        "rows": 2453,
+        "comparison_schema": 140,
+        "all_full_trace_structs_match": true,
+        "changed": [],
+        "removed": [],
+        "parent_baseline_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060"
+      },
+      {
+        "parent": "placement",
+        "head": "577d2a2b008e001fd81da02ca57f32e53c55d72e",
+        "rows": 2455,
+        "comparison_schema": 140,
+        "all_full_trace_structs_match": true,
+        "changed": [],
+        "removed": [],
+        "parent_baseline_sha256": "d12c0204a647199228b16b75d611693dd0b759ffbf221cff966b6d7c081bb074"
+      },
+      {
+        "parent": "four_cards",
+        "head": "0484aac31e4940d7b640d5aeb87cd3ca3ff5bf36",
+        "rows": 2457,
+        "comparison_schema": 140,
+        "all_full_trace_structs_match": true,
+        "changed": [],
+        "removed": [],
+        "parent_baseline_sha256": "8596c874a6e1c60aeeb9ed4d38e063a0fedc8a503b60b3e18fcb0c7e282b2fa8"
+      },
+      {
+        "parent": "coulson",
+        "head": "7bc95864714d4525688c1a39d2831da45be6ffbe",
+        "rows": 2453,
+        "comparison_schema": 140,
+        "all_full_trace_structs_match": true,
+        "changed": [],
+        "removed": [],
+        "parent_baseline_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060"
+      },
+      {
+        "parent": "finality",
+        "head": "de688de0e510031a05dc5904b91e063d0c952a23",
+        "rows": 2454,
+        "comparison_schema": 141,
+        "all_full_trace_structs_match": true,
+        "changed": [],
+        "removed": [],
+        "parent_baseline_sha256": "eda427fe93c0574203b70eaced0102fe91fcaea934260ebc0b5ccc2ef2f69ad0"
+      },
+      {
+        "parent": "faces",
+        "head": "f22acf20375c62ec03ce75b338bdee8e2eba9a73",
+        "rows": 2454,
+        "comparison_schema": 141,
+        "all_full_trace_structs_match": true,
+        "changed": [],
+        "removed": [],
+        "parent_baseline_sha256": "2460d346fefdc72d62137d18ba5bfadf063e5ca634fd056a1849735707453f9d"
+      }
+    ],
+    "added": [
+      "Ant-Man, Colony Commander",
+      "Call Damage Control",
+      "Human Torch, Johnny Storm",
+      "Kid Loki",
+      "Killmonger, Scourge of Wakanda",
+      "Monica Rambeau // Photon, Living Light",
+      "Rick Jones, Destined Sidekick",
+      "Thunderbolts Conspiracy"
+    ],
+    "removed": [],
+    "normal_sha256": "4bca89bf9e430e607a3ba7600fb039574567382f5ab87bc7d3596eeb361fc1bc",
+    "previous140_sha256": "9899468d167379fcd4686deb10c1f8c8b6881a3d4483ff7547052d08ce9dcbb2",
+    "new_rows": {
+      "Ant-Man, Colony Commander": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "1cba658877741a8e",
+        "observations": "c3052a77f3a73f2e"
+      },
+      "Call Damage Control": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 5,
+        "zone": "Graveyard",
+        "journal": "9d37fd6925470aea",
+        "observations": "93b4a9d329eb1b01"
+      },
+      "Human Torch, Johnny Storm": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "543918deceb4be8c",
+        "observations": "e646b7665c86e667"
+      },
+      "Kid Loki": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "77fe8ec276f5ddde",
+        "observations": "c56cf53332d842d0"
+      },
+      "Killmonger, Scourge of Wakanda": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Battlefield",
+        "journal": "13164334f35897ee",
+        "observations": "c0299a94b1825aa2"
+      },
+      "Monica Rambeau // Photon, Living Light": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "3ad6d4893695dc9c",
+        "observations": "206d6ef467204cc2"
+      },
+      "Rick Jones, Destined Sidekick": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "d96ad4ca883f316e",
+        "observations": "89ec151d19e48fe4"
+      },
+      "Thunderbolts Conspiracy": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "9d78478b460edd3d",
+        "observations": "07d61cd82a0c80b9"
+      }
+    }
+  },
+  "validation_at_publication": {
+    "fixed_inputs_until_consumers_terminal": true,
+    "combined_focused_report": "<cache>/rustmage-build-reports/0ae33de72aac430c8695596af34fc6a1.json",
+    "combined_focused_passed": 2,
+    "combined_recording_report": "<cache>/rustmage-build-reports/ddfee70314f64b78b311e616fe386c93.json",
+    "recording_exit101": "Expected cardinality 2461 versus temporary merged baseline 2460; no recording helper changed. Every full inherited/parent struct is independently exact at its corresponding schema before accepting the combined baseline.",
+    "trace_audit": "<cache>/rustmage-msh-fourth-cohort-trace-audit.json",
+    "full_release": "Pending; result will be recorded in the final PR without changing validated source inputs.",
+    "two_independent_nonauthor_published_head_reviews": "Pending; preparatory source reviews are not approvals.",
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0
+  },
+  "remaining_blockers": [
+    "123 gated members retain every unimplemented printed obligation; admission flags alone are not full-set acceptance",
+    "Four other DFC identities and Nick Fury need their complete individual effects and entry continuations",
+    "Grim Reaper attacking entry/defender choice and Winter Soldier attachment/count continuations remain gated",
+    "Shield, improvise, sneak, harness, pregame entry, controlled-player turn, source-duration copy/control, additional event batches, choice-cost unions, variable modes/targets, counter actions, mana extensions and multizone continuations remain required"
+  ],
+  "through_utc": "2026-10-24T22:02:30.465692+00:00",
+  "simulation_performance": "No new simulation measurement yet; the final required release validator records a bounded Freeform smoke workload, never full-set or all-Standard acceptance."
+}

@@ -149,16 +149,17 @@ impl FundingState<'_> {
                             _ => false,
                         }
                 }) || (o.zone == Zone::Battlefield
-                    && self
-                        .game
-                        .state
-                        .death_exile_replacements
-                        .as_ref()
-                        .is_some_and(|rules| {
-                            rules.iter().any(|rule| {
-                                rule.object == *r && rule.expires_turn == self.game.state.turn
-                            })
-                        }));
+                    && (self.counter_count(r.card, CounterKind::Finality) > 0
+                        || self
+                            .game
+                            .state
+                            .death_exile_replacements
+                            .as_ref()
+                            .is_some_and(|rules| {
+                                rules.iter().any(|rule| {
+                                    rule.object == *r && rule.expires_turn == self.game.state.turn
+                                })
+                            })));
                 match (shuffle, exile) {
                     (true, true) => vec![Zone::Library, Zone::Exile],
                     (true, false) => vec![Zone::Library],
@@ -203,6 +204,12 @@ impl FundingState<'_> {
                         .generation
                         .checked_add(1)
                         .capacity("virtual generation exhausted");
+                    // Departure facts above retain the old face; the new object
+                    // outside stack/battlefield has only its physical front.
+                    let object = &mut n.resources[i].object;
+                    if !object.is_token() && !object.is_spell_copy() {
+                        object.card = object.card.front_face();
+                    }
                     n.resources[i].object.counters = InitialCounters::default();
                     n.resources[i].object.growth = Stats::default();
                     n.resources[i].object.attached_to = None;

@@ -354,12 +354,18 @@ impl Game {
             if casting_prohibited {
                 continue;
             }
-            for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen] {
+            for face in [
+                CastFace::Normal,
+                CastFace::Adventure,
+                CastFace::Omen,
+                CastFace::Back,
+            ] {
                 let physical = self.state.objects[object.card as usize].card;
                 let definition = match face {
                     CastFace::Normal => Some(physical),
                     CastFace::Adventure => physical.adventure_spell(),
                     CastFace::Omen => physical.omen_spell(),
+                    CastFace::Back => physical.back_face(),
                 };
                 if definition.is_some_and(|card| {
                     !card.is_land()

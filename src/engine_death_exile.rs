@@ -40,15 +40,16 @@ impl Game {
     pub(super) fn death_exile_destination(&self, before: &ObjectView, requested: Zone) -> Zone {
         if before.zone == Zone::Battlefield
             && requested == Zone::Graveyard
-            && self
-                .state
-                .death_exile_replacements
-                .as_ref()
-                .is_some_and(|rules| {
-                    rules.iter().any(|rule| {
-                        rule.object == before.reference && rule.expires_turn == self.state.turn
-                    })
-                })
+            && (before.counters.get(CounterKind::Finality) > 0
+                || self
+                    .state
+                    .death_exile_replacements
+                    .as_ref()
+                    .is_some_and(|rules| {
+                        rules.iter().any(|rule| {
+                            rule.object == before.reference && rule.expires_turn == self.state.turn
+                        })
+                    }))
         {
             // Every currently admitted rule has the same mandatory destination.
             // Applying one makes all other would-die rules inapplicable; source

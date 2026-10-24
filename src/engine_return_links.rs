@@ -22,6 +22,14 @@ pub(super) struct DelayedReturn {
     pub view: DelayedReturnView,
     pub item: SpellView,
 }
+pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str], Keywords)> {
+    match kind {
+        ReturnKind::Demon => Some((&["Demon"], Keywords::NONE)),
+        ReturnKind::Angel => Some((&["Angel"], Keywords::FLYING)),
+        ReturnKind::HeroFinality => Some((&["Hero"], Keywords::NONE)),
+        ReturnKind::Revival => None,
+    }
+}
 impl Game {
     pub(super) fn return_death_matches(
         &self,
@@ -40,6 +48,9 @@ impl Game {
                 before.is_creature()
                     && source.reference == before.reference
                     && before.counters.get(CounterKind::Revival) > 0
+            }
+            ReturnDeathFilter::ControlledSubtype(subtype) => {
+                before.controller == source.controller && before.has_subtype(subtype)
             }
             ReturnDeathFilter::ControlledNontokenNonAngel => {
                 before.is_creature()
@@ -184,6 +195,10 @@ impl Game {
                 link.controller = item.controller;
                 self.register_delayed_return(item, link);
             }
+            ReturnKind::HeroFinality => {
+                link.counter = Some((CounterKind::Finality, 1));
+                self.stage_linked_return(&link, Some((kind, item.object)));
+            }
             ReturnKind::Demon | ReturnKind::Angel => {
                 link.counter = Some((
                     CounterKind::PlusOne,
@@ -239,10 +254,8 @@ impl Game {
         kind: ReturnKind,
         source: ObjectRef,
     ) {
-        let (types, keywords): (&'static [&'static str], _) = match kind {
-            ReturnKind::Demon => (&["Demon"], Keywords::NONE),
-            ReturnKind::Angel => (&["Angel"], Keywords::FLYING),
-            ReturnKind::Revival => return,
+        let Some((types, keywords)) = modification(kind) else {
+            return;
         };
         let timestamp = self.next_role_timestamp();
         let state = self.state.roles.as_mut().unwrap();

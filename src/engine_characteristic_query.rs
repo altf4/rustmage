@@ -494,6 +494,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
                     match *fragment {
+                        StaticAbilityFragment::PlusOnePlacedKeywords {
+                            filter,
+                            keywords: grant,
+                        } if CharacteristicWorld::placement_history_recipient(
+                            self,
+                            self.object_ref(source),
+                            filter,
+                            id,
+                        ) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::DeathBaronLord
                             if ability_world::CharacteristicWorld::death_baron_applies(
                                 self,
@@ -816,6 +828,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
             entered_this_turn: self.entered_this_turn(self.object_ref(id)),
             power_up_uses: self.power_up_use_views(self.object_ref(id)),
+            face: self
+                .game
+                .face_view_for(self.object_ref(id), definition, obj.zone),
             attached_to: obj.attached_to,
             modified: self.is_modified(id),
             attacking: self.state.attackers.iter().any(|a| a.card == id),

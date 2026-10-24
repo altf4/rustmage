@@ -26,6 +26,9 @@ impl Game {
         if !entries.contains(&object) {
             entries.push(object);
         }
+        self.register_battlefield_providers(id);
+    }
+    pub(super) fn register_battlefield_providers(&mut self, id: CardId) {
         self.register_zone_rule_card(self.state.objects[id as usize].card);
         self.register_static_base_stats(id);
         self.register_live_static_source(id);
@@ -43,6 +46,7 @@ impl Game {
                 a.condition.event(),
                 TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
+                    | TriggerCondition::CounterPlacedByYou { .. }
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
@@ -180,6 +184,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
+                            | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
                     )
                 })

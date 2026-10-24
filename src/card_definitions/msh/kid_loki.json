@@ -3,10 +3,47 @@
   "catalogue_id": 2349,
   "oracle_id": "19ef0329-08de-4835-8079-2e791e19f3a6",
   "facts_sha256": "008de003c61e632f968b98f547916306c7baf2d949bcb917fa7a1b1df6c3ec58",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "64d9a34ec51fab491797fe6ec7f6f603bde950d8312b299caa6319be7ea898af"
   },
-  "physical_metadata_sha256": "13d5602155de8ba07da29c99805233cefc66b0eb85df96cec87082838bbc729b"
+  "physical_metadata_sha256": "13d5602155de8ba07da29c99805233cefc66b0eb85df96cec87082838bbc729b",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "19ef0329-08de-4835-8079-2e791e19f3a6",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/b/BeastEruditeAerialist.java",
+      "sha256": "60c6d46fa8988628c76802f6542e4932a6425cb997bac02fba29fd642b767a49"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+      "sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofBaseAbility.java",
+      "sha256": "eb33a62a2d3a0cfd4fffee6d99691000ed3d9cadd4937b41d0b53c4e5abacdea"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "rules": "Kid Loki full printed body and both official rulings: history predates its entry/control, and first draw need not occur while controlled. Current controlled creature recipients, exact object +1/+1 placement history by source controller, ordinary layer-six chronology and exact second draw each turn; CR122, 603, 613."
+  }
 }

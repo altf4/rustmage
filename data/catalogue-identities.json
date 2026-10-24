@@ -5396,7 +5396,8 @@
     2,
     0,
     16,
-    0
+    0,
+    9
   ],
   "aliases": [
     [
@@ -17944,6 +17945,10 @@
       2831
     ],
     [
+      "Monica Rambeau",
+      2832
+    ],
+    [
       "Monica Rambeau // Photon, Living Light",
       2832
     ],
@@ -19250,6 +19255,10 @@
     [
       "Photon Blast Barrage",
       3150
+    ],
+    [
+      "Photon, Living Light",
+      5391
     ],
     [
       "Phyrexian Arena",
@@ -28735,7 +28744,8 @@
     "SosSpiritToken": 5350,
     "MshLeviathanToken": 5387,
     "MshRobotVillainToken": 5388,
-    "MshTigerGodToken": 5389
+    "MshTigerGodToken": 5389,
+    "MshPhotonLivingLight": 5391
   },
   "helper_interface": [
     [
@@ -109635,7 +109645,26 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Monica Rambeau",
+        "mana_cost": "{2}{W}",
+        "type_line": "Legendary Creature — Human Hero",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Flying",
+          "Prowess"
+        ]
+      },
+      "back_face": 5391
     },
     {
       "index": 2833,
@@ -182367,6 +182396,38 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5391,
+      "module": "card_5391",
+      "path": "msh/photon_living_light.rs",
+      "set": "msh",
+      "category": "back_face",
+      "name": "Photon, Living Light",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "{2}{R}{W}{W}",
+      "type_line": "Legendary Creature — Elemental Hero",
+      "oracle_keywords": [
+        "Flying",
+        "Hexproof",
+        "Prowess"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        2,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2,
+      "face_parent": 2832
     }
   ]
 }

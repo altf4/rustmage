@@ -177,6 +177,7 @@ impl Game {
         let definition = match face {
             CastFace::Adventure => physical.adventure_spell(),
             CastFace::Omen => physical.omen_spell(),
+            CastFace::Back => physical.back_face(),
             CastFace::Normal => unreachable!(),
         }
         .expect("validated spell face");
@@ -207,6 +208,7 @@ impl Game {
             CastFace::Normal => Some(object.card),
             CastFace::Adventure => object.card.adventure_spell(),
             CastFace::Omen => object.card.omen_spell(),
+            CastFace::Back => object.card.back_face(),
         }) else {
             return false;
         };

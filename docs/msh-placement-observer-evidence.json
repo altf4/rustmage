@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Counter placement observer prerequisite plus two whole-card candidates; final combined release and independent reviews pending",
+  "source_base": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
+  "observation_schema": 140,
+  "complete_candidate_cards": [
+    "Ant-Man, Colony Commander",
+    "Kid Loki"
+  ],
+  "shared_rules": [
+    "Placing-player observer with generic earlier-layer recipient filter and exact source/recipient identity; existing other-creature observers retain explicit self exclusion",
+    "History-qualified layer-six keyword grants to matching current recipients, including prior placement before source entry, counter removal, controller changes, blanking, and actual/speculative worlds",
+    "Register group-grant providers in both the chronology and fast static-source index; no new owned game fields or observation fields"
+  ],
+  "rules_tests": {
+    "new_scenarios": 14,
+    "actual_scenarios": 12,
+    "speculative_scenarios": 2,
+    "both_seats": true,
+    "files": [
+      "src/engine_msh_placement_tests.rs",
+      "src/engine_msh_placement_funding_tests.rs"
+    ],
+    "coverage": [
+      "Paid full Kid Loki and Ant-Man casts, second draw, optional attack payment before separate reflexive targets, existing exact Insect token recipe",
+      "Self, own, opposing and noncreature recipients; exact placing player; first/third/opponent draws; zero/wrong counter kinds",
+      "Once-per-turn across control changes, source departure and blink, replacement-doubled counters/tokens and simultaneous global placement",
+      "Target illegality atomicity, hidden draws, source/recipient ability loss, continuous filters, expiry, old queued source refs",
+      "Actual checked actions compare raw/index owned branches, parent disposal, snapshots, wrong actor and stale revisions; speculative history overlay and keys stay independent",
+      "Paid Mossborn Hydra and Heroes' Bane entry counters qualify both history and the counter observer, with subsequent same-turn entry not retriggering the allowance"
+    ]
+  },
+  "provenance": {
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "full_frozen_oracle_and_relevant_java_read": true,
+    "Kid Loki": "No pinned XMage class; authenticated inventory absence plus official release notes and audited comparable helper classes",
+    "token_recipe": "Existing Card 5249, @token/3512fba4bfa3f3fcf0f1eb9a; green 1/1 Insect without abilities",
+    "additional_full_cost_review": {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+      "complete_class_read": true
+    }
+  },
+  "full_set_acceptance": "Pending for all 281 MSH members; admission count 150 merged, two whole-card candidates here. Inherited Coulson semantic repair is in separate work.",
+  "full_trace_audit": {
+    "inherited": 2453,
+    "candidate": 2455,
+    "inherited_full_traces_equal": 2453,
+    "changed": [],
+    "removed": [],
+    "added": [
+      "Ant-Man, Colony Commander",
+      "Kid Loki"
+    ],
+    "old_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060",
+    "new_sha256": "d12c0204a647199228b16b75d611693dd0b759ffbf221cff966b6d7c081bb074",
+    "new_rows": {
+      "Ant-Man, Colony Commander": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "1cba658877741a8e",
+        "observations": "472581c02d6d2868"
+      },
+      "Kid Loki": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "77fe8ec276f5ddde",
+        "observations": "f588860331ff46c6"
+      }
+    },
+    "recording_exit101": "Expected 2455 versus 2453 count failure; all 2453 full structs independently match, only Ant-Man and Kid Loki added. No recording helper modified."
+  },
+  "validation": {
+    "focused": {
+      "resource_report": "<cache>/rustmage-build-reports/6e738c3957644795a1dc7f507769fc4b.json",
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "placement_",
+        "--target-dir",
+        "<cache>/rustmage-msh-placement-target"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 279.7364040859975,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2230755328,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "new_scenarios_passed": 14,
+      "matching_existing_and_new_scenarios_passed": 34
+    },
+    "clippy": {
+      "resource_report": "<cache>/rustmage-build-reports/2059f071707f4892b86e90f84f27b916.json",
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--target-dir",
+        "<cache>/rustmage-msh-placement-target",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 135.51869179698406,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1722462208,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "trace_recording": {
+      "resource_report": "<cache>/rustmage-build-reports/97b759c659d04123871f165126f27b66.json",
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "supported_cards_retain_bounded_cast_and_entry_traces",
+        "--target-dir",
+        "<cache>/rustmage-msh-placement-target",
+        "--",
+        "--nocapture"
+      ],
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 38.34043965901947,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 37339136,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "ordinary_full_release": "Integrator owns the final combined cohort; not duplicated on this parent."
+  },
+  "source_hashes": {
+    "src/engine_msh_placement_tests.rs": "2bc45d41d7bcc05ab726de5a8849a7929936e342dfe42ee9298ea2d660fdded0",
+    "src/engine_msh_placement_funding_tests.rs": "f91c9e6b2cb0d1b5bcb720ad355bee9421649e93d2ed2cef2333216f8d7c95a5"
+  },
+  "through_utc": "2026-10-24T21:45:33.901390+00:00"
+}

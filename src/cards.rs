@@ -1022,6 +1022,7 @@ pub(crate) enum Instruction {
         required_all: bool,
     },
     AdditionalCombat,
+    TransformSource,
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.
     ActivationX,
@@ -1378,6 +1379,8 @@ pub(crate) enum Instruction {
     ExileUntilSourceLeaves,
     ExileGraveyard(PlayerSet),
     ReturnToHand,
+    /// Move all legal target groups together, deduplicating exact incarnations.
+    ReturnAllTargetsToHand,
     /// Capture a legal graveyard target's subtype, return it, then draw for a match.
     ReturnToHandDrawForSubtype(&'static str),
     BottomLibrary,
@@ -1397,6 +1400,12 @@ pub(crate) enum Instruction {
     Destroy,
     Tap,
     Untap,
+    /// One simultaneous placement on battlefield permanents matching the count predicate.
+    PutFilteredCounters {
+        filter: CountFilter,
+        kind: CounterKind,
+        amount: u16,
+    },
     PutCreatureCounters {
         filter: CreatureFilter,
         kind: CounterKind,
@@ -1875,10 +1884,11 @@ pub enum CounterKind {
     Reach,
     Trample,
     Vigilance,
+    Finality,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 29] = [
+    pub const ALL: [Self; 30] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -1908,6 +1918,7 @@ impl CounterKind {
         Self::Reach,
         Self::Trample,
         Self::Vigilance,
+        Self::Finality,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -1936,6 +1947,7 @@ impl CounterKind {
                 | Self::Reach
                 | Self::Trample
                 | Self::Vigilance
+                | Self::Finality
         )
     }
 }
@@ -2425,12 +2437,14 @@ pub(crate) enum ReturnDeathFilter {
     SourceNonDemon,
     SourceRevival,
     ControlledNontokenNonAngel,
+    ControlledSubtype(&'static str),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReturnKind {
     Demon,
     Angel,
     Revival,
+    HeroFinality,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2519,6 +2533,11 @@ pub(crate) enum TriggerCondition {
     /// The placing player controls this observer; the other creature may belong to either player.
     OtherCreatureCounterPlacedByYou {
         kind: CounterKind,
+    },
+    /// One event per battlefield recipient; the placing player controls this observer.
+    CounterPlacedByYou {
+        kind: CounterKind,
+        filter: CountFilter,
     },
     OtherCreatureCountersAdded {
         kind: CounterKind,
@@ -3035,6 +3054,9 @@ impl Card {
     }
     /// Stable catalogue lookup/serialization identity, distinct from a token copy's printed name.
     pub fn identity(self) -> &'static str {
+        if let Some(identity) = generated::physical_identity(self) {
+            return identity;
+        }
         if let Some(identity) =
             authored::rules(self).and_then(|rules| rules.extras.prepared_identity)
         {
@@ -3100,6 +3122,18 @@ impl Card {
         generated::vehicle_stats(self).map(|s| (s.power, s.toughness))
     }
     /// Immutable inset spell definition; never a second physical deck card.
+    pub fn back_face(self) -> Option<Card> {
+        generated::back_face(self)
+    }
+    pub fn face_parent(self) -> Option<Card> {
+        generated::face_parent(self)
+    }
+    pub fn front_face(self) -> Card {
+        self.face_parent().unwrap_or(self)
+    }
+    pub(crate) fn other_face(self) -> Option<Card> {
+        self.back_face().or_else(|| self.face_parent())
+    }
     pub fn adventure_spell(self) -> Option<Card> {
         generated::adventure_spell(self)
     }

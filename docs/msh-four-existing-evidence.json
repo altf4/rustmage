@@ -1,0 +1,261 @@
+{
+  "schema": 1,
+  "scope": "Four whole-card candidates with rules evidence; not whole-set acceptance",
+  "base_revision": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "set_membership": 281,
+  "baseline_admitted": 150,
+  "candidate_admitted": 154,
+  "new_whole_card_candidates": 4,
+  "printed_obligation_count": 11,
+  "independent_final_head_reviews": "required before integration; coordinated by integrator",
+  "cards": [
+    {
+      "name": "Call Damage Control",
+      "definition": "src/card_definitions/msh/call_damage_control.rs",
+      "provenance": "src/card_definitions/msh/call_damage_control.json",
+      "oracle_id": "49a32f34-01a9-4f25-bf38-b4d46ca67b2d",
+      "facts_sha256": "c864732cd824d5ea5b4dbcbaa89033e248c64b37bf1037bf1d2cefc7977bff78",
+      "source": "Mage.Sets/src/mage/cards/c/CallDamageControl.java",
+      "source_sha256": "697c766475ebd795eff4abb19d8129979c8be8a5133a874a594722e4f5baf739",
+      "printed_obligations": [
+        {
+          "oracle": "Choose up to two. Return those cards from your graveyard to your hand.",
+          "native_scenarios": [
+            "msh_four_call_all_eleven_paid_modes_exact_own_graveyard_targets_and_known_hand",
+            "msh_four_call_same_artifact_creature_may_be_target_of_both_groups_returns_once",
+            "msh_four_call_partial_illegality_exact_incarnations_and_both_invalid",
+            "msh_four_call_one_simultaneous_movement_triggers_one_or_more_observer_once"
+          ]
+        },
+        {
+          "oracle": "\u2022 Target artifact card.",
+          "native_scenarios": [
+            "msh_four_call_all_eleven_paid_modes_exact_own_graveyard_targets_and_known_hand",
+            "msh_four_call_same_artifact_creature_may_be_target_of_both_groups_returns_once",
+            "msh_four_call_partial_illegality_exact_incarnations_and_both_invalid",
+            "msh_four_call_one_simultaneous_movement_triggers_one_or_more_observer_once"
+          ]
+        },
+        {
+          "oracle": "\u2022 Target creature card.",
+          "native_scenarios": [
+            "msh_four_call_all_eleven_paid_modes_exact_own_graveyard_targets_and_known_hand",
+            "msh_four_call_same_artifact_creature_may_be_target_of_both_groups_returns_once",
+            "msh_four_call_partial_illegality_exact_incarnations_and_both_invalid",
+            "msh_four_call_one_simultaneous_movement_triggers_one_or_more_observer_once"
+          ]
+        },
+        {
+          "oracle": "\u2022 Target enchantment card.",
+          "native_scenarios": [
+            "msh_four_call_all_eleven_paid_modes_exact_own_graveyard_targets_and_known_hand",
+            "msh_four_call_same_artifact_creature_may_be_target_of_both_groups_returns_once",
+            "msh_four_call_partial_illegality_exact_incarnations_and_both_invalid",
+            "msh_four_call_one_simultaneous_movement_triggers_one_or_more_observer_once"
+          ]
+        },
+        {
+          "oracle": "\u2022 Target land card.",
+          "native_scenarios": [
+            "msh_four_call_all_eleven_paid_modes_exact_own_graveyard_targets_and_known_hand",
+            "msh_four_call_same_artifact_creature_may_be_target_of_both_groups_returns_once",
+            "msh_four_call_partial_illegality_exact_incarnations_and_both_invalid",
+            "msh_four_call_one_simultaneous_movement_triggers_one_or_more_observer_once"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Human Torch, Johnny Storm",
+      "definition": "src/card_definitions/msh/human_torch_johnny_storm.rs",
+      "provenance": "src/card_definitions/msh/human_torch_johnny_storm.json",
+      "oracle_id": "5b6f2770-e774-4a77-801f-a3fda093c3dd",
+      "facts_sha256": "9a1a8beb6d64b9a61b23c032db1cd070aa0c97188a746a095c8ce1c30483ddd1",
+      "source": "Mage.Sets/src/mage/cards/h/HumanTorchJohnnyStorm.java",
+      "source_sha256": "ba2fb39e2b154833a7de8ecd37b3c07e94b33b2720f9b4a04339306411d6dd90",
+      "printed_obligations": [
+        {
+          "oracle": "Flying",
+          "native_scenarios": [
+            "msh_four_torch_each_card_draw_intervening_if_at_event_and_resolution"
+          ]
+        },
+        {
+          "oracle": "Whenever you draw a card, if you control another Hero, Human Torch deals 1 damage to target opponent.",
+          "native_scenarios": [
+            "msh_four_torch_each_card_draw_intervening_if_at_event_and_resolution",
+            "msh_four_torch_guard_rechecks_lost_other_hero_and_excludes_opponent_heroes",
+            "msh_four_torch_paid_blink_new_incarnation_is_other_for_old_queued_trigger",
+            "msh_four_torch_queued_ability_keeps_old_controller_after_transfer_and_departure"
+          ]
+        },
+        {
+          "oracle": "Power-up \u2014 {6}{R}: Put three +1/+1 counters on Human Torch. (Activate each power-up ability only once. Reduce the cost by his mana cost if he entered this turn.)",
+          "native_scenarios": [
+            "msh_four_torch_power_up_discount_once_reentry_full_cost_and_counter_replacement"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Killmonger, Scourge of Wakanda",
+      "definition": "src/card_definitions/msh/killmonger_scourge_of_wakanda.rs",
+      "provenance": "src/card_definitions/msh/killmonger_scourge_of_wakanda.json",
+      "oracle_id": "1c3ba54a-a8ef-4838-b3aa-cb6df827a619",
+      "facts_sha256": "ff2823648a8a8f78e75e422b52bb55d8bc92712c1318d2b6043163045aa4a2ee",
+      "source": "Mage.Sets/src/mage/cards/k/KillmongerScourgeOfWakanda.java",
+      "source_sha256": "1189837cad05907e419f56296235670426dcb1831feaa427c83b4b7c23118981",
+      "printed_obligations": [
+        {
+          "oracle": "When Killmonger enters, you may sacrifice another creature. When you do, destroy target nonland permanent an opponent controls.",
+          "native_scenarios": [
+            "msh_four_killmonger_paid_optional_sacrifice_then_separate_opponent_nonland_target",
+            "msh_four_killmonger_sacrifice_replaced_by_exile_and_source_departure_still_reflexive",
+            "msh_four_killmonger_reflexive_target_stale_or_changed_controller_does_not_destroy",
+            "msh_four_killmonger_sacrifices_actual_creature_token_without_counting_it_as_card"
+          ]
+        },
+        {
+          "oracle": "As long as there are two or more creature cards in your graveyard, Killmonger gets +2/+1.",
+          "native_scenarios": [
+            "msh_four_killmonger_live_graveyard_threshold_controller_and_ability_loss"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Rick Jones, Destined Sidekick",
+      "definition": "src/card_definitions/msh/rick_jones_destined_sidekick.rs",
+      "provenance": "src/card_definitions/msh/rick_jones_destined_sidekick.json",
+      "oracle_id": "4bccfa67-0c6f-42a1-b8d4-0842a8230d1e",
+      "facts_sha256": "06c22b7f26b60a5633a3ba1da0115b58be9df4ac6ad9d7a5aefe93a5a7e6bffe",
+      "source": "Mage.Sets/src/mage/cards/r/RickJonesDestinedSidekick.java",
+      "source_sha256": "6d931f600bdd76a26e62b3b17262a7878c259340d26c30f0bfc9f8b5f70c3762",
+      "printed_obligations": [
+        {
+          "oracle": "{3}, {T}: Mill four cards. You may put a Hero or enchantment card from among those cards into your hand. (To mill four cards, put the top four cards of your library into your graveyard.)",
+          "native_scenarios": [
+            "msh_four_rick_paid_tap_cost_sickness_and_hero_or_enchantment_public_recovery",
+            "msh_four_rick_optional_short_library_and_frozen_controller_after_source_departure",
+            "msh_four_rick_wrong_owner_nonbatch_moved_hidden_and_stale_members_rejected"
+          ]
+        }
+      ]
+    }
+  ],
+  "new_shared_rule": {
+    "instruction": "Instruction::ReturnAllTargetsToHand",
+    "implementation": [
+      "src/cards.rs",
+      "src/engine_programs.rs"
+    ],
+    "behavior": "Retain independently revalidated bound targets across all groups, deduplicate their exact ObjectRefs, and use one central simultaneous movement transaction. Existing ReturnToHand behavior is unchanged.",
+    "current_consumers": [
+      "Call Damage Control, six two-category modes"
+    ],
+    "xmage_difference": "Pinned Java gives each selected target category a separate return effect. Oracle has a single return-those-cards instruction: returning two distinct cards must produce one graveyard departure batch, demonstrated by the existing Spirit Mascot one-or-more trigger.",
+    "rules_reference": "https://magic.wizards.com/en/rules",
+    "wire_schema_change": false
+  },
+  "important_interactions": {
+    "killmonger": "Optional non-targeted sacrifice first, separate reflexive target afterward; source departure, replaced sacrifice, own/opponent/nonland restrictions, stale or changed-control targets, creature tokens, live graveyard threshold under control transfer and ability loss.",
+    "rick": "Actual tap and mana payment, summoning sickness, four/short/empty libraries, Hero-or-enchantment disjunction, Rest in Peace first-public-destination exile recovery, optional decline, frozen controller after source change/departure, exact membership/generation/ownership and hidden-object rejection.",
+    "torch": "Each individual card draw, intervening-if at event and resolution, opponent targets, source departure and changed control, paid Daydream blink with High Fae Trickster permission; reentered Torch is another Hero for an old queued packet. Power-up entry discount, full later cost, once-per-incarnation use and counter replacement.",
+    "call": "All eleven combinations including zero, mandatory own-graveyard category targets, artifact-creature occupying both groups, exact incarnation binding and partial/all target illegality, known returned hand cards with unrelated hand/library privacy, one observer trigger for two simultaneous returns."
+  },
+  "test_method": {
+    "module": "src/engine_msh_four_existing_tests.rs",
+    "scenario_count": 17,
+    "both_seats": true,
+    "paid_actions": true,
+    "checked_helper": "src/assurance/big_helpers.rs::checked",
+    "owned_replay": "Every checked action tests wrong-actor atomicity, a child branch after disposing its parent, indexed-vs-raw equality, restore and stale revision rejection. Explicit reject helper verifies illegal-action snapshot and revision atomicity.",
+    "fixture_boundaries": "Some adversarial source departure, controller transfer, stale-incarnation and hidden-destination transitions are direct scenario fixture mutations between real paid actions. Paid Daydream/High Fae Trickster and Harmless Offering separately exercise real blink/control paths."
+  },
+  "native": {
+    "report": "<cache>/rustmage/msh-existing/four-native-3.json",
+    "log": "<cache>/rustmage/msh-existing/four-native-3.log",
+    "success": true,
+    "terminal": true,
+    "rules_tests": 687,
+    "execution_seconds": 9.739483500015922,
+    "compile_seconds": 99.31373850401724,
+    "guard_report": "<cache>/rustmage-build-reports/c36299294c334052b30725fd96e94745.json",
+    "guard_seconds": 139.59718500601593,
+    "memory_peak_bytes": 2235703296,
+    "memory_max_bytes": 6442450944,
+    "oom_kills": 0,
+    "active_processes": []
+  },
+  "ordinary_full_trace_proof": {
+    "base_revision": "c2c64768184f07fad8141c39f0029b9ce5c76d3d",
+    "inherited_count": 2453,
+    "candidate_count": 2457,
+    "inherited_full_struct_changes": [],
+    "projection": null,
+    "additions": [
+      "Call Damage Control",
+      "Human Torch, Johnny Storm",
+      "Killmonger, Scourge of Wakanda",
+      "Rick Jones, Destined Sidekick"
+    ],
+    "base_sha256": "40afdb30fb353b0e0815533cffc7c1d09306241891c2e4cf05e4db02d37c1060",
+    "candidate_sha256": "8596c874a6e1c60aeeb9ed4d38e063a0fedc8a503b60b3e18fcb0c7e282b2fa8"
+  },
+  "source_pin_validation": {
+    "definitions": 5391,
+    "source_blobs": 1099,
+    "java_verified": true,
+    "catalogue_version": "eb235f9801d9a07f6cb43002ecb3974e680637b6fd2bbb1dd2ca8b2db9802e8e"
+  },
+  "clippy": {
+    "status": "passed",
+    "command": "python3 scripts/resource_guard.py -- cargo clippy --all-targets -- -D warnings",
+    "log": "<cache>/rustmage/msh-existing/four-clippy.log",
+    "resource_report": "<cache>/rustmage-build-reports/9cbb1624b4a44bf7b5ebaec365b2c343.json",
+    "terminal": true,
+    "exit_code": 0,
+    "guard_seconds": 170.77868756605312,
+    "memory_peak_bytes": 1725427712,
+    "memory_max_bytes": 6442450944,
+    "oom_kills": 0
+  },
+  "limitations": [
+    "Full release validation and two final published-head independent nonauthor reviews remain integration requirements.",
+    "All 281-card complete gameplay, full games and performance acceptance remain open.",
+    "No simulation benchmark was run in this card batch.",
+    "The inherited Agent Phil Coulson noncreature Kindred-Hero narrowing remains tracked separately; this batch does not change it.",
+    "Arnim Zola needs an activation-time own-graveyard creature-count guard; Doctor Doom needs artifact-AND-creature counting rather than an OR kind mask, plus an audited Doombot recipe. Those cards and other audited missing-core candidates remain gated."
+  ],
+  "retained_libraries": [
+    {
+      "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+      "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    {
+      "path": "<cache>/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+      "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    }
+  ],
+  "throughput": {
+    "interval_start_utc": "2026-10-24T21:11:49+00:00",
+    "interval_end_utc": "2026-10-24T21:33:26.027652+00:00",
+    "elapsed_seconds": 1297.027652,
+    "complete_card_candidates": 4,
+    "candidates_per_hour": 11.102,
+    "scope": "Branch creation through authored definitions, source audit, native and Clippy validation, including shared-slot waiting; preceding read-only candidate triage is excluded. Candidates require independent final-head reviews and integration.",
+    "simulation_benchmark": "not run; no full-set or all-Standard performance claim"
+  },
+  "authoritative_notes": [
+    {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "scope": "Human Torch intervening-if checks and Killmonger separate reflexive targeting; Call Damage Control has no card-specific exception in these notes."
+    }
+  ],
+  "format_and_link_consistency": {
+    "rustfmt_changed_sources": "passed",
+    "link_catalogue_check": "passed",
+    "diff_check": "passed"
+  }
+}

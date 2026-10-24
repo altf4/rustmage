@@ -231,7 +231,6 @@ impl Game {
                 .counter_sources
                 .iter()
                 .copied()
-                .filter(|&id| id != object.card)
                 .map(|id| self.object_view(id))
                 .collect();
             for source in observers {
@@ -242,14 +241,32 @@ impl Game {
                             excluded_subtype,
                         } => {
                             expected == kind
+                                && source.reference != object
                                 && recipient.controller == source.controller
                                 && recipient.is_creature()
                                 && !recipient.has_subtype(excluded_subtype)
                         }
                         TriggerCondition::OtherCreatureCounterPlacedByYou { kind: expected } => {
                             expected == kind
+                                && source.reference != object
                                 && placed_by == source.controller
                                 && recipient.is_creature()
+                        }
+                        TriggerCondition::CounterPlacedByYou {
+                            kind: expected,
+                            filter,
+                        } => {
+                            expected == kind
+                                && placed_by == source.controller
+                                && Self::count_object_matches(
+                                    filter,
+                                    source.reference,
+                                    source.controller,
+                                    object.card,
+                                    &self.state.objects[object.card as usize],
+                                    &|id| self.granted_subtypes(id),
+                                    &|id, o| self.object_kinds(id, o),
+                                )
                         }
                         _ => false,
                     };
@@ -607,6 +624,7 @@ impl Game {
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
+                    | TriggerCondition::CounterPlacedByYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfFirstAttack
@@ -884,6 +902,7 @@ impl Game {
             kind: StackKind::TriggeredAbility {
                 ability: u16::try_from(index).expect("ability index"),
             },
+            source_transform: None,
             source_card: source.card,
             source_keywords: source.keywords,
             source_tapped: source.tapped,
@@ -913,7 +932,8 @@ impl Game {
 
     /// A spell becomes cast only after every declaration and cost is complete.
     /// Completed insertion paths share this hook; abilities never count as casts.
-    pub(super) fn push_stack_item(&mut self, item: SpellView) {
+    pub(super) fn push_stack_item(&mut self, mut item: SpellView) {
+        self.capture_transform_stack_serial(&mut item);
         let cast = (item.kind == StackKind::Spell && item.cast.is_some() && !item.is_copy)
             .then_some((item.controller, item.source_card));
         if cast.is_some() {
@@ -1497,6 +1517,9 @@ impl Game {
                     return;
                 }
                 Effect::Creature(..) | Effect::Permanent => {
+                    if item.source_card.other_face().is_some() {
+                        self.state.objects[item.card as usize].card = item.source_card;
+                    }
                     self.record_resolved_spell_name(&item);
                     if item.cast.is_some_and(|c| {
                         c.offspring == Some(true)
@@ -1805,6 +1828,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
@@ -2766,6 +2790,7 @@ impl Game {
                     self.state.damage_prevention_prohibited = true;
                 }
                 Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::ActivationX => (),
                 Instruction::DestroyCombatDamagedPlayersPermanents => {
@@ -3730,6 +3755,36 @@ impl Game {
                         );
                     }
                 }
+                Instruction::PutFilteredCounters {
+                    filter,
+                    kind,
+                    amount,
+                } => {
+                    let affected = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, object)| {
+                            Self::count_object_matches(
+                                filter,
+                                item.object,
+                                item.controller,
+                                *id as CardId,
+                                object,
+                                &|id| self.granted_subtypes(id),
+                                &|id, object| self.object_kinds(id, object),
+                            )
+                        })
+                        .map(|(id, _)| {
+                            (
+                                self.object_ref(id as CardId),
+                                Counters::of(kind, u64::from(amount)),
+                            )
+                        })
+                        .collect();
+                    self.effect_counters(affected, replacements::ResumeMode::Program);
+                }
                 Instruction::PutCreatureCounters {
                     filter,
                     kind,
@@ -4025,6 +4080,20 @@ impl Game {
                         })
                         .collect();
                     self.stage_entries(moves, None);
+                }
+                Instruction::ReturnAllTargetsToHand => {
+                    // One printed movement shared by multiple targeting clauses.
+                    // Preserve their independently validated bindings while moving
+                    // an object chosen in multiple groups only once (CR115.3).
+                    let mut targets: Vec<BoundTarget> = Vec::new();
+                    for bound in &item.targets {
+                        if bound.object.is_some()
+                            && !targets.iter().any(|prior| prior.object == bound.object)
+                        {
+                            targets.push(*bound);
+                        }
+                    }
+                    self.move_target_batch(&targets, Zone::Hand);
                 }
                 Instruction::ReturnToHandDrawForSubtype(subtype) => {
                     // Capture the legal target before changing its incarnation.

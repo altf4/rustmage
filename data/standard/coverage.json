@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fa004680d365f1899c0b1f480c9d719992297ad015599abd7c278481fd841320",
+  "catalogue_version": "d0c884c0be53e6d351ae3341ce0ea0de6004983ce1e36d99f11584af5aa305e7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2447,
-  "implemented_total": 2453,
+  "implemented_standard_cards": 2455,
+  "implemented_total": 2461,
   "token_definitions": 116,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 142,
-      "gated": 131
+      "complete": 150,
+      "gated": 123
     },
     "one": {
       "total": 1,
@@ -1605,8 +1605,8 @@
     {
       "name": "Ant-Man, Colony Commander",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ant_man_colony_commander.rs",
       "set": "msh"
     },
@@ -5157,8 +5157,8 @@
     {
       "name": "Call Damage Control",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/call_damage_control.rs",
       "set": "msh"
     },
@@ -16981,8 +16981,8 @@
     {
       "name": "Human Torch, Johnny Storm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/human_torch_johnny_storm.rs",
       "set": "msh"
     },
@@ -18997,8 +18997,8 @@
     {
       "name": "Kid Loki",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/kid_loki.rs",
       "set": "msh"
     },
@@ -19021,8 +19021,8 @@
     {
       "name": "Killmonger, Scourge of Wakanda",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/killmonger_scourge_of_wakanda.rs",
       "set": "msh"
     },
@@ -22861,8 +22861,8 @@
     {
       "name": "Monica Rambeau // Photon, Living Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/monica_rambeau_photon_living_light.rs",
       "set": "msh"
     },
@@ -28341,8 +28341,8 @@
     {
       "name": "Rick Jones, Destined Sidekick",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/rick_jones_destined_sidekick.rs",
       "set": "msh"
     },
@@ -36861,8 +36861,8 @@
     {
       "name": "Thunderbolts Conspiracy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/thunderbolts_conspiracy.rs",
       "set": "msh"
     },
