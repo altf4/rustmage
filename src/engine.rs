@@ -7249,3 +7249,7 @@ mod sos_green_colorless_tests;
 
 #[path = "engine_cast_rollback.rs"]
 mod cast_rollback;
+
+#[cfg(test)]
+#[path = "engine_plan_threshold_tests.rs"]
+mod plan_threshold_tests;
