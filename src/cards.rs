@@ -1233,6 +1233,13 @@ pub(crate) enum Instruction {
         amount: AmountValue,
         tapped: bool,
     },
+    /// Create a fixed token batch, then put scaled counters on those exact tokens.
+    CreateTokensWithCounters {
+        token: Card,
+        amount: u16,
+        kind: CounterKind,
+        counters: AmountValue,
+    },
     CreateTokens {
         token: Card,
         amount: u16,

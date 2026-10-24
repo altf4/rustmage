@@ -3,10 +3,14 @@
   "catalogue_id": 3030,
   "oracle_id": "00e75a6b-699e-4824-86e5-66d45245cd9b",
   "facts_sha256": "e560c1aafd1c2e37eec7b590070e44f0bdc5483f6aeff45e6ac586e6f351cf91",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3399309d36f457dfb3e88163ded35e556fed4a03737ad416fcf4e81ee9d14c91"
   },
-  "physical_metadata_sha256": "46031aaec22c456344f1af24ef2d71c183cfe726cb9f2f0cb24ba8088b2a45e0"
+  "physical_metadata_sha256": "46031aaec22c456344f1af24ef2d71c183cfe726cb9f2f0cb24ba8088b2a45e0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OraclesRestoration.java",
+  "java_sha256": "60fcca07770d8ed9eac6b283ea0b79a6f17b7fe56b1d16e23da4fbe965907369",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs."
 }

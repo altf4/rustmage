@@ -3,10 +3,21 @@
   "catalogue_id": 3942,
   "oracle_id": "3b6fb13b-f126-4697-90a1-64b14ffcecd6",
   "facts_sha256": "fa6d49094579d7b71b1c2fe4185122fc39ad2548ca77eaf3bff2b8e37297da70",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f206a20df3a44df6b0f35fb46561b6054e710e4815551a0cde0ff5ae14379688"
   },
-  "physical_metadata_sha256": "c052a57a7de957a2cd92d231feb0e9e0bc389e9765afbb4c1ff412ed1d9837f1"
+  "physical_metadata_sha256": "c052a57a7de957a2cd92d231feb0e9e0bc389e9765afbb4c1ff412ed1d9837f1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SnarlSong.java",
+  "java_sha256": "683b8d5bd2a927685c86f10271be4900dcfc2a01abbf718442f484441b9a42b6",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/FractalToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a2fb727f70793c0f7f0df80d2aaf8dcb077477de6db48576aef59606b1c2248b"
+    }
+  ]
 }

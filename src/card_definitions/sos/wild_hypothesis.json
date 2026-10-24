@@ -3,10 +3,21 @@
   "catalogue_id": 5057,
   "oracle_id": "2e56507d-af77-47c8-a29a-410cf14cfe20",
   "facts_sha256": "2c94fe389655944178aee65ec6773dbe19b680b1d8dfd3b7f51182b9848fd41d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bec532853d0581e8d5d365d18d40239b7cf5a87e0e142ebc4947934ed617dc6e"
   },
-  "physical_metadata_sha256": "ebf23fedc7d36f9ff2d9c466f061c2e0879e56ce09051e9d6365ea3945a05e4a"
+  "physical_metadata_sha256": "26fe3deec156739fb940630d72ea813089201a9e5bf300af6781fd9b26f39d7e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WildHypothesis.java",
+  "java_sha256": "fc5b9d84442fc2eef731b48e0cf88d69dc394bfe5b9ac7d05fe501921f8dd0e5",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/FractalToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a2fb727f70793c0f7f0df80d2aaf8dcb077477de6db48576aef59606b1c2248b"
+    }
+  ]
 }

@@ -3,10 +3,21 @@
   "catalogue_id": 57,
   "oracle_id": "ce1a6c1f-6b4e-4d19-b256-48d073b359b7",
   "facts_sha256": "6cd57f635eb4b362a0496afb98f684828ede0b47516784e26a060aee6c9e6247",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "110ec40e21738cb406e753acb8ddbe3e61ff2832033a4982c908d4d37f83c8cf"
   },
-  "physical_metadata_sha256": "7604afbd4dbd1ba852973a8432618c6f74b35ff8e5c2b120e9e02cfd81da147e"
+  "physical_metadata_sha256": "7604afbd4dbd1ba852973a8432618c6f74b35ff8e5c2b120e9e02cfd81da147e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AdditiveEvolution.java",
+  "java_sha256": "7a3e984c174d9d915ee7a82bc750921187f5197cfe7e0cdffb2e2c4d6420859d",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/FractalToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a2fb727f70793c0f7f0df80d2aaf8dcb077477de6db48576aef59606b1c2248b"
+    }
+  ]
 }

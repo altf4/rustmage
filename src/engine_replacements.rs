@@ -68,6 +68,10 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    Counters {
+        kind: CounterKind,
+        amount: u64,
+    },
     TemporaryCopy(Box<SpellView>),
     Keywords {
         source: ObjectRef,
@@ -1014,6 +1018,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::JobAttach(_)
+                                        | TokenCompletion::Counters { .. }
                                         | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
                                 );
@@ -1045,6 +1050,22 @@ impl Game {
                                         capture,
                                     ),
                                 };
+                                if let TokenCompletion::Counters { kind, amount } = batch.completion
+                                {
+                                    let placements = self.created_token_counter_placements(
+                                        batch.player,
+                                        &created,
+                                        kind,
+                                        amount,
+                                    );
+                                    if !placements.is_empty() {
+                                        state.work.push_front(Work::Counters(CounterBatch {
+                                            placements,
+                                            next: 0,
+                                            used: Vec::new(),
+                                        }));
+                                    }
+                                }
                                 if let TokenCompletion::Keywords { source, keywords } =
                                     batch.completion
                                 {

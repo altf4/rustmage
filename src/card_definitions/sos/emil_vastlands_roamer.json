@@ -3,10 +3,21 @@
   "catalogue_id": 1320,
   "oracle_id": "9f800ebc-d6e4-4bfc-bebe-8baad51efa19",
   "facts_sha256": "a819296a009e460034a4feb4f8f41854061da89169ef6aa5a7863fb637c22dc9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "644b8279e04807149c00992f5b5a16c197cb105649f82d77c6b486e3692ce5f9"
   },
-  "physical_metadata_sha256": "94424881f8e71550be9dcacce49fcbd4afc3f0c284624b877028279ddb853322"
+  "physical_metadata_sha256": "94424881f8e71550be9dcacce49fcbd4afc3f0c284624b877028279ddb853322",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmilVastlandsRoamer.java",
+  "java_sha256": "ed83927977fbbb4b1306c06778055178564411ebd842a90d54fb00a1a5421b17",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/FractalToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a2fb727f70793c0f7f0df80d2aaf8dcb077477de6db48576aef59606b1c2248b"
+    }
+  ]
 }

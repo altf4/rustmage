@@ -2313,6 +2313,14 @@ impl Game {
                 Instruction::DestroyCombatDamagedPlayersPermanents => {
                     self.destroy_combat_damaged_players_permanents(&item)
                 }
+                Instruction::CreateTokensWithCounters {
+                    token,
+                    amount,
+                    kind,
+                    counters,
+                } => {
+                    self.create_tokens_with_counters(&item, token, amount, kind, counters);
+                }
                 Instruction::SelectGroup(group) => {
                     self.state.resolving.as_mut().unwrap().target_group = group;
                 }

@@ -208,6 +208,9 @@ mod stat_values;
 mod stats;
 #[path = "engine_steps.rs"]
 mod steps;
+#[path = "engine_sos_tokens.rs"]
+mod sos_tokens;
+
 #[path = "engine_tokens.rs"]
 mod tokens;
 use crate::rng::Rng;
@@ -6637,3 +6640,6 @@ mod big_inherited_tests;
 
 #[path = "engine_sos_graveyard.rs"]
 mod sos_graveyard;
+#[cfg(test)]
+#[path = "engine_sos_green_colorless_tests.rs"]
+mod sos_green_colorless_tests;

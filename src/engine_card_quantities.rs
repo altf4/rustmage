@@ -45,7 +45,10 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }
-            | Instruction::CreateTokensScaled { amount: value, .. } => amount(value, kinds),
+            | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateTokensWithCounters {
+                counters: value, ..
+            } => amount(value, kinds),
             _ => (),
         }
     }

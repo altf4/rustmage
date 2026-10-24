@@ -2,6 +2,10 @@
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 1),
     keywords: Keywords::NONE,
-    triggers: &[TriggeredAbility { condition: TriggerCondition::SelfAttacks, targets: TargetPlan::NONE, program: &[Instruction::GainLife(PlayerSet::Controller, 1)] }],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfAttacks,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+    }],
     ..CardRules::EMPTY
 };
