@@ -120,6 +120,11 @@ pub(crate) enum TargetGroupConstraint {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetRule {
+    ManaValueAtMost {
+        base: &'static TargetRule,
+        amount: AmountValue,
+        maximum: Option<u64>,
+    },
     Grouped {
         base: &'static TargetRule,
         constraint: TargetGroupConstraint,
@@ -1316,6 +1321,10 @@ pub(crate) enum Instruction {
     },
     Draw(PlayerSet, u16),
     DrawScaled(PlayerSet, AmountValue),
+    DrawThenDiscardIfDrew {
+        amount: AmountValue,
+        discard: u16,
+    },
     Discard(PlayerSet, u16),
     /// Optional resolution choice; its accepted branch records an exact ability use.
     MayOncePerTurn {

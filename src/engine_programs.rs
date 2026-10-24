@@ -658,6 +658,10 @@ impl Game {
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
+                    if same {
+                        self.state.pending_triggers.last_mut().unwrap().cast_event =
+                            event.cast_event.clone();
+                    }
                     self.bind_stat_subject(event.after, source.card.triggers()[index].program);
                     if same && source.card.x_symbols() > 0 {
                         self.state.pending_triggers.last_mut().unwrap().x = Some(event.x);
@@ -1374,8 +1378,9 @@ impl Game {
                     let target = item.targets[0].object.unwrap();
                     let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
                     movement.attachment = Some(target);
-                    movement.cast_payment = item.cast.map(|c| c.payment);
-                    movement.cast_origin = item.cast.map(|c| c.origin);
+                    movement.cast_event = item.actual_cast_event().map(Box::new);
+                    movement.cast_payment = item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
+                    movement.cast_origin = item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
                     movement.gift = item.gift_context().map(Box::new);
                     movement.warp_controller = item
                         .cast
@@ -1412,8 +1417,11 @@ impl Game {
                             .cast
                             .filter(|c| c.method == CastMethod::Warp)
                             .map(|_| item.controller);
-                        movement.cast_payment = item.cast.map(|c| c.payment);
-                        movement.cast_origin = item.cast.map(|c| c.origin);
+                        movement.cast_event = item.actual_cast_event().map(Box::new);
+                        movement.cast_payment =
+                            item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
+                        movement.cast_origin =
+                            item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
                         movement.offspring_paid =
                             item.cast.is_some_and(|c| c.offspring == Some(true));
                         movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
@@ -1425,7 +1433,8 @@ impl Game {
                         self.stage_entries(vec![movement], None);
                     } else {
                         let mut event = self.move_object_raw(item.card, Zone::Battlefield);
-                        event.was_cast = item.cast.is_some();
+                        event.cast_event = item.actual_cast_event().map(Box::new);
+                        event.was_cast = item.cast.is_some() && !item.is_copy;
                         self.finish_zone_events(std::slice::from_ref(&event), &[]);
                     }
                     self.give_priority();
@@ -2911,6 +2920,15 @@ impl Game {
                         .collect();
                     let events = self.move_objects_raw(&ids, Zone::Exile);
                     self.finish_zone_events(&events, &[]);
+                }
+                Instruction::DrawThenDiscardIfDrew { amount, discard } => {
+                    let player = item.controller;
+                    let before = self.state.players[player.index()].cards_drawn_this_turn;
+                    self.draw_many(player, self.item_amount(amount, &item));
+                    if self.state.players[player.index()].cards_drawn_this_turn > before {
+                        self.state.resolving.as_mut().unwrap().discards[player.index()] =
+                            usize::from(discard);
+                    }
                 }
                 Instruction::Draw(set, _) | Instruction::DrawScaled(set, _) => {
                     let amount = match instruction {

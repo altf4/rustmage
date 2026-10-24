@@ -1686,6 +1686,7 @@ impl ObjectView {
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZoneChange {
+    pub(super) cast_event: Option<Box<CastPaymentEvent>>,
     /// CR122.6a: intrinsic entry counters are put on by the incoming controller.
     pub(super) entry_counter_player: Option<Player>,
     pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
@@ -4959,6 +4960,7 @@ impl Game {
                 .capacity("object generation exhausted");
             self.state.free_tokens.push(id);
             return ZoneChange {
+                cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
                 was_cast: false,
@@ -4995,6 +4997,7 @@ impl Game {
             || (before.is_token() && before.zone != Zone::Battlefield && !fresh_token)
         {
             return ZoneChange {
+                cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
                 was_cast: false,
@@ -5014,6 +5017,7 @@ impl Game {
         if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
             self.reveal_and_shuffle_zone_card(&before);
             return ZoneChange {
+                cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
                 was_cast: false,
@@ -5255,6 +5259,7 @@ impl Game {
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         ZoneChange {
+            cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
             graveyard_observers,
             was_cast: false,

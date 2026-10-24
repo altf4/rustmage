@@ -84,6 +84,21 @@ pub struct CastPaymentEvent {
     pub controller: Player,
     pub payment: Mana,
 }
+impl SpellView {
+    /// Mana spent is a fact of an actual cast, never inherited by a spell copy.
+    pub(super) fn actual_cast_event(&self) -> Option<CastPaymentEvent> {
+        self.cast
+            .filter(|_| !self.is_copy)
+            .map(|cast| CastPaymentEvent {
+                mana_value: self.mana_value(),
+                stack_id: self.id,
+                object: self.object,
+                card: self.source_card,
+                controller: cast.caster,
+                payment: cast.payment,
+            })
+    }
+}
 impl Game {
     pub(super) fn item_cast_payment(&self, item: &SpellView) -> Mana {
         item.cast_event

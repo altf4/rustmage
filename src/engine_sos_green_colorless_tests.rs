@@ -1248,3 +1248,163 @@ fn sos_lumarets_favor_source_copy_survives_countered_original_and_keeps_targets(
         assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 1);
     }
 }
+
+fn until_optional(g: &mut Game) {
+    for _ in 0..30 {
+        g.prepare_triggers();
+        if matches!(g.state.pending, Pending::EffectOptional { .. }) {
+            return;
+        }
+        checked(g, Action::Pass);
+    }
+    panic!("missing optional effect {:?}", g.state.pending);
+}
+
+#[test]
+fn sos_transcendent_converge_optional_actual_draw_count_and_departed_source() {
+    for p in [Player::P0, Player::P1] {
+        for accept in [false, true] {
+            for (payment, colors) in [
+                ([0, 0, 0, 0, 0, 7], 0),
+                ([0, 0, 0, 0, 7, 0], 1),
+                ([1, 1, 1, 1, 1, 2], 5),
+            ] {
+                let mut g = setup(p);
+                g.state.players[p.index()].mana = payment;
+                let before = g.state.players[p.index()].cards_drawn_this_turn;
+                let source = paid(&mut g, p, "Transcendent Archaic", None, &[]);
+                until_optional(&mut g);
+                assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+                g.move_object(source, Zone::Graveyard);
+                checked(&mut g, Action::ChooseOptional { accept });
+                settle(&mut g);
+                let drawn = if accept { colors } else { 0 };
+                assert_eq!(
+                    g.state.players[p.index()].cards_drawn_this_turn,
+                    before + drawn
+                );
+                assert_eq!(g.hand_count(p), drawn.saturating_sub(2) as usize);
+                assert_eq!(
+                    g.state.players[p.index()].cards_discarded_this_turn,
+                    drawn.min(2)
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn sos_converge_reanimation_zero_and_cast_event_caster_copy_distinction() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let source = named(&mut g, p, "Transcendent Archaic", Zone::Graveyard);
+        paid(&mut g, p, "Zombify", None, &[Target::Card(source)]);
+        until_optional(&mut g);
+        checked(&mut g, Action::ChooseOptional { accept: true });
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+        assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 0);
+        g.state.players[p.index()].mana = [1, 1, 1, 1, 1, 2];
+        paid(&mut g, p, "Transcendent Archaic", None, &[]);
+        let mut item = g.state.stack.last().unwrap().clone();
+        item.controller = p.other();
+        let event = item.actual_cast_event().unwrap();
+        assert_eq!(event.controller, p);
+        assert_eq!(event.payment, [1, 1, 1, 1, 1, 2]);
+        item.is_copy = true;
+        assert!(item.actual_cast_event().is_none());
+    }
+}
+
+#[test]
+fn sos_sundering_converge_target_ceiling_nonland_opponent_and_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        for (payment, legal_name, illegal_name) in [
+            ([0, 0, 0, 0, 0, 6], "Mox Jasper", "Bear Cub"),
+            ([0, 0, 0, 0, 6, 0], "Ambitious Augmenter", "Bear Cub"),
+            ([1, 1, 1, 0, 0, 3], "Bear Cub", "Transcendent Archaic"),
+        ] {
+            let mut g = setup(p);
+            let legal = named(&mut g, p.other(), legal_name, Zone::Battlefield);
+            let illegal = named(&mut g, p.other(), illegal_name, Zone::Battlefield);
+            let own = named(&mut g, p, legal_name, Zone::Battlefield);
+            let land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+            g.state.players[p.index()].mana = payment;
+            let source = paid(&mut g, p, "Sundering Archaic", None, &[]);
+            for _ in 0..20 {
+                g.prepare_triggers();
+                if matches!(g.state.pending, Pending::Targets { .. }) {
+                    break;
+                }
+                checked(&mut g, Action::Pass);
+            }
+            assert!(matches!(g.state.pending, Pending::Targets { .. }));
+            for target in [illegal, own, land] {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(legal),
+                },
+            );
+            if g.state.announcing.is_some() {
+                checked(&mut g, Action::PayCosts { payment: [0; 6] });
+            }
+            g.move_object(source, Zone::Graveyard);
+            settle(&mut g);
+            assert_eq!(g.object_view(legal).zone, Zone::Exile);
+            assert!(g.on_battlefield(illegal));
+        }
+    }
+}
+
+#[test]
+fn sos_sundering_paid_graveyard_bottom_uses_owner_and_rejects_new_incarnation() {
+    for p in [Player::P0, Player::P1] {
+        for leaves in [false, true] {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Sundering Archaic", Zone::Battlefield);
+            let target = named(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            let payment = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, payment);
+            g.move_object(source, Zone::Graveyard);
+            if leaves {
+                g.move_object(target, Zone::Hand);
+                g.move_object(target, Zone::Graveyard);
+            }
+            settle(&mut g);
+            if leaves {
+                assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+            } else {
+                assert_eq!(
+                    g.state.players[p.other().index()].library.first(),
+                    Some(&target)
+                );
+            }
+        }
+    }
+}

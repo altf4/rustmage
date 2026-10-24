@@ -3,10 +3,24 @@
   "catalogue_id": 4238,
   "oracle_id": "b095526e-94a4-416b-83de-d6271804ccf3",
   "facts_sha256": "24dcf5b8f98b3ef3d87dccd97aa41d0346f0df1945d1f064aea4585fa75620ca",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a033b13e8f5a7bb50126766b2efa809b6948cad7fb64ff2be2e8c1e4727c8f64"
   },
-  "physical_metadata_sha256": "6bf5910d32ee72c5e1e22ae7ffbf692dbd2c844309bb6b34282e634033ae65f9"
+  "physical_metadata_sha256": "6bf5910d32ee72c5e1e22ae7ffbf692dbd2c844309bb6b34282e634033ae65f9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SunderingArchaic.java",
+  "java_sha256": "de72fa91aeb322644879b3b4ffac53d807c64ae765c3d56a412d7fbbeaa64f27",
+  "implementation": "Complete direct typed definition; paid interactions and owned replay in engine_sos_green_colorless_tests.rs.",
+  "java_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsOfManaSpentToCastCount.java",
+      "sha256": "92b55d92985654d437785d464387ae3c981b4a2542a0f9780c8710b3b7819f8b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    }
+  ]
 }
