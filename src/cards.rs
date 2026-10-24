@@ -2073,6 +2073,7 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    YourTurn,
     SourcePowerAtLeast(u16),
     SourceToughnessAtMost(u16),
     Outlaw,

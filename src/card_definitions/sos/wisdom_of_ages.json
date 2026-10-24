@@ -3,10 +3,30 @@
   "catalogue_id": 5089,
   "oracle_id": "d9722ec3-aa5e-4c69-8ff0-cef1b1839fa4",
   "facts_sha256": "c957a73598d4778ef119d548fc97ace4a7148b0e9e16efc946dd9524b521610e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8ffd1eb579c994c7d8e0cf479773eff623e70e733b2523c9f8ea19ac1338c759"
   },
-  "physical_metadata_sha256": "b16bdf0026732963985d1891cb45041b0165fc9146366da526b2a5d7505e1d31"
+  "physical_metadata_sha256": "b16bdf0026732963985d1891cb45041b0165fc9146366da526b2a5d7505e1d31",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WisdomOfAges.java",
+  "java_sha256": "4037b22e1977370154a50804c7e6580a4e189045c652c66d53e5c765839c901c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandFromGraveyardAllEffect.java",
+      "sha256": "c72806abbd99c4bf77d0a3906b8ca57b1f517787e4e94ca4e436fad1e0eb834c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/MaximumHandSizeControllerEffect.java",
+      "sha256": "2ff5efca68eea0f1ed6e2f4d8365a2f7356727abd8f3485aaf07a91e6c4ed2c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSpellEffect.java",
+      "sha256": "a7e5f14c36dc0938ad32916c58ae5c50971810fbdb26b8a69f4bfcfdd243b78c"
+    }
+  ]
 }
