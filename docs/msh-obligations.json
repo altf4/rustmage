@@ -1,7 +1,9 @@
 {
   "schema": 1,
   "set": "MSH",
-  "audit_kind": "whole-set obligation inventory and shared-mechanic triage; not set acceptance",
+  "audit_kind": "Historical whole-set obligation inventory and shared-mechanic triage at the pinned initial baseline; not current progress or set acceptance",
+  "preservation_note": "Historical obligation inventory at the explicitly pinned initial baseline. Mechanics statuses and baseline admission counts below are historical, not current coverage or acceptance. Retained unmodified card/paragraph/source inventory from the original audit; current progress is tracked by issue #478 and set_status.",
+  "preserved_inventory_sha256": "3d8fb43630fe97d3ec8a731911581e42b13f9d94036d52b043b98c0eb20efa23",
   "rustmage_baseline_revision": "859fd82069fdb077c3f4f08a7bcd69e74d26305b",
   "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "full_membership_count": 281,
@@ -14068,7 +14070,5 @@
         "Flying depends on this exact Beast incarnation having counters placed by its current controller this turn, even if those counters later removed. Track counter placer and source incarnation, not broad Game-scope player flag from Java."
       ]
     }
-  ],
-  "preservation_note": "Historical obligation inventory at the explicitly pinned initial baseline. Mechanics statuses and baseline admission counts below are historical, not current coverage or acceptance. Retained unmodified card/paragraph/source inventory from the original audit; current progress is tracked by issue #478 and set_status.",
-  "preserved_inventory_sha256": "3d8fb43630fe97d3ec8a731911581e42b13f9d94036d52b043b98c0eb20efa23"
+  ]
 }

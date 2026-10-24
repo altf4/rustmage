@@ -2400,12 +2400,6 @@ impl Game {
                 if !world.cost_completion() {
                     return None;
                 }
-            } else if !frame
-                .selected
-                .iter()
-                .all(|s| self.convoke_eligible(a.item.controller, s.object))
-            {
-                return None;
             }
             cast_origins::payment_requirements(
                 self,
