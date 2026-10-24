@@ -113,3 +113,97 @@ fn sos_evidence_funding_nested_rubble_preserves_selected_exact_evidence() {
         }
     }
 }
+
+#[test]
+fn sos_evidence_funding_returned_courtyard_uses_projected_chosen_type_quality() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        // A bounded live-state fixture: the Reliquary has an exact linked land
+        // (previously animated while exiled), is animated itself, and can receive
+        // equipment. All subsequent return, entry and mana decisions are paid.
+        let prison = put(&mut g, p, "Dusk Rose Reliquary", Zone::Battlefield);
+        let land = put(&mut g, p, "Secluded Courtyard", Zone::Exile);
+        g.state.exile_links.push(ExileLink {
+            source: g.object_ref(prison),
+            exiled: g.object_ref(land),
+            return_zone: Zone::Battlefield,
+        });
+        let ring = put(&mut g, p, "Lotus Ring", Zone::Battlefield);
+        let mut animation = g.activation_item(ring, 0);
+        animation.card = prison;
+        animation.object = g.object_ref(prison);
+        g.animate_source(
+            &animation,
+            crate::cards::AnimationSpec {
+                artifact: true,
+                creature_types: crate::cards::AnimationCreatureTypes::Named(&["Golem"]),
+                base: Some((2, 2)),
+                keywords: Keywords::NONE,
+                duration: crate::cards::AnimationDuration::Permanent,
+            },
+        );
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: ring,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(prison),
+            },
+        );
+        pay_checked(&mut g);
+        finish(&mut g);
+        let spell = put(&mut g, p, "Fractal Tender", Zone::Hand);
+        let instant_sorcery = put(&mut g, p, "Prismari Charm", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        // Three mana of a single color from the Ring cannot pay both colors.
+        // The projected new Courtyard must supply the other creature-spell color.
+        reject(
+            &mut g,
+            Action::AnnounceCast {
+                card: instant_sorcery,
+            },
+        );
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        let grantor = g.object_ref(ring);
+        checked(
+            &mut g,
+            Action::TapGrantedMana {
+                card: prison,
+                grantor,
+                production: [0, 3, 0, 0, 0, 0],
+            },
+        );
+        let elf = crate::cards::CreatureType::from_name("Elf").unwrap();
+        checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: EntryChoiceValue::CreatureType(elf),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: land,
+                ability: 1,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        pay_checked(&mut g);
+        finish(&mut g);
+        assert_eq!(g.object_view(prison).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+        assert_eq!(
+            g.entry_value(g.object_ref(land)),
+            Some(EntryChoiceValue::CreatureType(elf))
+        );
+    }
+}

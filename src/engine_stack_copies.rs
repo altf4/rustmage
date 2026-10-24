@@ -244,7 +244,9 @@ impl Game {
     }
     fn allocate_spell_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
         assert_eq!(template.kind, StackKind::Spell);
-        let (card, generation) = if let Some(id) = self.state.free_tokens.pop() {
+        let (card, generation) = if let Some(slot) = self.replay_frozen_mana_copy_slot() {
+            slot
+        } else if let Some(id) = self.state.free_tokens.pop() {
             (id, self.state.objects[id as usize].generation)
         } else {
             (
@@ -252,6 +254,7 @@ impl Game {
                 0,
             )
         };
+        self.record_cast_mana_allocation(card, generation);
         let object = Object {
             card: template.source_card,
             copy_kind: CopyKind::Spell,

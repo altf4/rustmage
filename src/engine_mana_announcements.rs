@@ -21,7 +21,10 @@ impl Game {
         let Some(announcement) = self.state.announcing.take() else {
             return;
         };
-        assert!(matches!(self.state.pending, Pending::PayCosts { .. }));
+        assert!(matches!(
+            self.state.pending,
+            Pending::PayCosts { .. } | Pending::Evidence { .. }
+        ));
         let quality = self
             .state
             .mana_lots

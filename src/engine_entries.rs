@@ -238,6 +238,9 @@ impl Game {
         discard_context: Option<discard_events::DiscardContext>,
         temporary_copy: Option<Box<SpellView>>,
     ) {
+        if self.replay_frozen_mana_entries() {
+            return;
+        }
         assert!(
             self.state.entry_batch.is_none(),
             "one entry transaction at a time"
@@ -469,7 +472,7 @@ impl Game {
         }
         counters
     }
-    fn commit_entries(&mut self, batch: EntryBatch) {
+    pub(super) fn commit_entries(&mut self, mut batch: EntryBatch) {
         for movement in &batch.moves {
             if movement.skipped
                 && movement.before.zone == Zone::Outside
@@ -484,6 +487,9 @@ impl Game {
             assert!(!self.entry_needs_timestamp_choice(&batch));
             timestamp_order = self.entry_timestamp_indices(&batch);
         }
+        batch.timestamp_order = timestamp_order.clone();
+        batch.timestamps_ready = true;
+        self.record_cast_mana_entries(&batch);
         let timestamp_cards: Vec<_> = timestamp_order
             .iter()
             .map(|&i| batch.moves[i].before.id)
@@ -825,6 +831,7 @@ impl Game {
         movement.tapped |= !pay;
         batch.next += 1;
         if pay {
+            self.record_cast_mana_entry_life(player, cost);
             self.lose_life(player, i128::from(cost));
         }
     }

@@ -1510,6 +1510,7 @@ impl Game {
             return;
         }
         let mut announcement = self.state.announcing.take().unwrap();
+        self.capture_announced_cast_mana(&announcement);
         if announcement.cast_costs.is_none()
             && let Some(frame) = announcement.convoke.take()
         {

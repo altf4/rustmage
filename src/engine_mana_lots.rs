@@ -99,7 +99,7 @@ impl Quality {
                     ManaRestrictionView::SpellSubtype(subtype)
                 }
                 ManaRestriction::ChosenCreatureSpellOrActivation => {
-                    match world.game().entry_value(world.reference(source)) {
+                    match world.entry_value(world.reference(source)) {
                         Some(EntryChoiceValue::CreatureType(kind)) => {
                             ManaRestrictionView::CreatureSpellOrActivation(kind)
                         }
@@ -440,6 +440,7 @@ impl Game {
         self.add_quality_mana(item.controller, mana, quality);
     }
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
+        self.record_cast_mana_production(actor, mana, quality);
         self.add_mana(actor, mana);
         if let Some(quality) = quality
             && quality != Quality::ORDINARY
@@ -706,6 +707,7 @@ impl Game {
                 selected
             }
         };
+        self.record_cast_mana_spent_lots(&lots, &selected);
         let mut outcome = SpendOutcome::default();
         let state = self.state.mana_lots.as_mut().unwrap();
         let mut ordinary_payment = payment;

@@ -6,15 +6,19 @@ impl Game {
     /// Normal announcements of this public object count as casting spells.
     pub(super) fn allocate_card_copy(&mut self, definition: Card, controller: Player) -> ObjectRef {
         assert!(crate::cards::CastFilter::InstantSorcery.matches(definition));
-        let (id, generation) = self.state.free_tokens.pop().map_or_else(
-            || {
-                (
-                    CardId::try_from(self.state.objects.len()).capacity("object slots exhausted"),
-                    0,
-                )
-            },
-            |id| (id, self.state.objects[id as usize].generation),
-        );
+        let (id, generation) = self.replay_frozen_mana_copy_slot().unwrap_or_else(|| {
+            self.state.free_tokens.pop().map_or_else(
+                || {
+                    (
+                        CardId::try_from(self.state.objects.len())
+                            .capacity("object slots exhausted"),
+                        0,
+                    )
+                },
+                |id| (id, self.state.objects[id as usize].generation),
+            )
+        });
+        self.record_cast_mana_allocation(id, generation);
         let object = Object {
             card: definition,
             copy_kind: CopyKind::Card,

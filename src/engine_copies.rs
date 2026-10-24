@@ -139,7 +139,9 @@ impl Game {
         for (group, recipe) in groups.iter().zip(recipes) {
             assert!(recipe.is_some() || group.token.is_token());
             for _ in 0..group.amount {
-                let (id, generation) = if let Some(id) = self.state.free_tokens.pop() {
+                let (id, generation) = if let Some(slot) = self.replay_frozen_mana_copy_slot() {
+                    slot
+                } else if let Some(id) = self.state.free_tokens.pop() {
                     let old = &self.state.objects[id as usize];
                     assert!((old.is_token() || old.is_spell_copy()) && old.zone == Zone::Outside);
                     (id, old.generation)
@@ -150,6 +152,7 @@ impl Game {
                         0,
                     )
                 };
+                self.record_cast_mana_allocation(id, generation);
                 let object = Object {
                     card: group.token,
                     copy_kind: if recipe.is_some() {

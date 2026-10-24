@@ -233,6 +233,19 @@ impl Game {
         requested: Zone,
         rules: FrozenRules,
     ) -> Plan {
+        if let Some(plan) = self.replay_frozen_mana_zone_plan(before.reference, requested) {
+            return plan;
+        }
+        let plan = self.plan_zone_move_unrecorded(before, requested, rules);
+        self.record_cast_mana_zone_plan(before, plan);
+        plan
+    }
+    fn plan_zone_move_unrecorded(
+        &mut self,
+        before: &ObjectView,
+        requested: Zone,
+        rules: FrozenRules,
+    ) -> Plan {
         // A stack copy ceases without a physical card event or replacement choice.
         if before.zone == Zone::Stack
             && requested != Zone::Battlefield
