@@ -7,5 +7,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
     }],
+    deck_limit: None,
     ..CardRules::EMPTY
 };
