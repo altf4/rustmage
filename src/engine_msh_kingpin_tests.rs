@@ -403,6 +403,14 @@ fn msh_kingpin_extort_cannot_spend_restricted_equipment_mana() {
                 production: [2, 0, 0, 0, 0, 0],
             },
         );
+        while g.state.announcing.is_some() {
+            let a = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, a);
+        }
         let c = named(&mut g, p, "Mox Jasper", Zone::Hand);
         cast(&mut g, c, None, &[]);
         until(&mut g, |g| {
@@ -564,5 +572,83 @@ fn msh_kingpin_time_stop_expires_paid_rule_at_real_cleanup() {
         assert_eq!(g.combat_assignment_amount(k), 1);
         assert_eq!(g.state.active, p.other());
         assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+#[test]
+fn msh_kingpin_real_land_payment_requires_printed_white_black_and_generic() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let k = seed(&mut g, p, KING, Zone::Hand);
+        let mut lands = Vec::new();
+        for _ in 0..3 {
+            lands.push(named(&mut g, p, "Forest", Zone::Battlefield));
+        }
+        reject(&mut g, Action::AnnounceCast { card: k });
+        let w = named(&mut g, p, "Plains", Zone::Battlefield);
+        let b = named(&mut g, p, "Swamp", Zone::Battlefield);
+        let before = g.snapshot();
+        let views = [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap());
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: k })
+        );
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(
+            [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap()),
+            views
+        );
+        checked(&mut g, Action::AnnounceCast { card: k });
+        for card in [w, b, lands[0]] {
+            checked(&mut g, Action::TapMana { card });
+        }
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [1, 0, 1, 0, 1, 0],
+            },
+        );
+        settle(&mut g);
+        assert_eq!(
+            g.stats(k),
+            Stats {
+                power: 1,
+                toughness: 5
+            }
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.state.players[p.index()].life, 20);
+    }
+}
+#[test]
+fn msh_kingpin_extort_disappears_with_ability_removal_and_restores_after_aura_dies() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let k = paid(&mut g, p, KING, &[]);
+        let witness = paid(&mut g, p, "Witness Protection", &[Target::Card(k)]);
+        let c = named(&mut g, p, "Mox Jasper", Zone::Hand);
+        cast(&mut g, c, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        assert!(g.state.pending_triggers.is_empty());
+        paid(&mut g, p, "Disenchant", &[Target::Card(witness)]);
+        extort(&mut g, p, [1, 0, 0, 0, 0, 0]);
+        pay(&mut g, [1, 0, 0, 0, 0, 0]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 21);
+        assert_eq!(g.state.players[p.other().index()].life, 19);
+    }
+}
+#[test]
+fn msh_kingpin_extort_gains_life_before_terminal_state_based_loss() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        paid(&mut g, p, KING, &[]);
+        g.state.players[p.other().index()].life = 1;
+        extort(&mut g, p, [0, 0, 1, 0, 0, 0]);
+        pay(&mut g, [0, 0, 1, 0, 0, 0]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 21);
+        assert_eq!(g.state.players[p.other().index()].life, 0);
+        assert_eq!(g.outcome(), Some(Outcome::Winner(p)));
     }
 }
