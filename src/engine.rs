@@ -7873,3 +7873,7 @@ mod msh_copy_identity_regression_tests;
 #[cfg(test)]
 #[path = "engine_msh_hand_entry_core_tests.rs"]
 mod msh_hand_entry_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_origin_nick_cards_tests.rs"]
+mod msh_origin_nick_cards_tests;
