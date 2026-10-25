@@ -1,0 +1,345 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T05:04:34.986590+00:00",
+  "scope": "Two paid both-seat cross-mechanic scenario groups. No runtime, card, provenance, metadata, token, ID, schema or trace-baseline change. No new card admissions.",
+  "base": "edb82bf7bc8d16a90380f3c2be9eb4bf3c8db018",
+  "validated_test_source_head": "8a3711cbbb6abeae7afd994101157228ca7e48aa",
+  "branch": "codex/msh-eleventh-combined",
+  "delivery": "Source branch only for root final draft PR #516. No child PR or main merge. Final aggregate release validation and two fresh nonauthor reviews remain root-owned.",
+  "source_pins": [
+    {
+      "name": "Arc Reactor",
+      "definition": "src/card_definitions/msh/arc_reactor.rs",
+      "definition_sha256": "99c41ffa0a30756cf5b8b8e87ec92ea72c51fdf641d0263b9a955edb7aa52d5c",
+      "paired_provenance": "src/card_definitions/msh/arc_reactor.json",
+      "paired_provenance_sha256": "859b07211675b9f8ef19cc00fba1fa3812022da9dbb57e841493974d6f7f1c2e",
+      "oracle_id": "55f7b005-31ea-4865-a8f3-460d15bed795",
+      "facts_sha256": "575bc86c583030420434419df1bb1c6294e6097369239c5a2913d74b19e88130",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/a/ArcReactor.java",
+      "java_sha256": "70264154e4c2f7d30b044f5c14e88c9bd31f890e14a1651e9e21a2c35286c02a"
+    },
+    {
+      "name": "Ironheart, Clever Champion",
+      "definition": "src/card_definitions/msh/ironheart_clever_champion.rs",
+      "definition_sha256": "ae3d30559df2ea9e41acb3c714a2f27a17daef3228e07c40fb41c1c150657773",
+      "paired_provenance": "src/card_definitions/msh/ironheart_clever_champion.json",
+      "paired_provenance_sha256": "3a9b1f79cef766f3e2fa7387fc8c85869d821dfc90208fed739cea870026f989",
+      "oracle_id": "df3d5b86-7b75-4df9-8985-7159cde12261",
+      "facts_sha256": "480ed6c3652fcf0ba55341b46df73ab5330500363a95e2ef3125745bc61496d5",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/i/IronheartCleverChampion.java",
+      "java_sha256": "29a654bbd604682b1fd095da6bfd4b5e594d764b75ba1dad0853aa14720f4cc3"
+    },
+    {
+      "name": "Heroic Feast",
+      "definition": "src/card_definitions/msh/heroic_feast.rs",
+      "definition_sha256": "3739be606a0ae5fca4c954378e117066983f9649ea0d740a096d8334ca56d8d2",
+      "paired_provenance": "src/card_definitions/msh/heroic_feast.json",
+      "paired_provenance_sha256": "64b88f78fad3466196126367db0d82e6a1bda2dc5f2c796b0939d79969a489a2",
+      "oracle_id": "31cae00a-3a74-4a59-80b0-a656f524e878",
+      "facts_sha256": "053fa0a8b901fe99051009de8227d48e64c0820f24939321f2438d9a358152f0",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/h/HeroicFeast.java",
+      "java_sha256": "f4eb75bfc33d2c5a47fea9268417013c5baa53d76103bd1d4115e7dcc94d616f"
+    },
+    {
+      "name": "Iron Lad, Diverging Destiny",
+      "definition": "src/card_definitions/msh/iron_lad_diverging_destiny.rs",
+      "definition_sha256": "b415865848060bd8280a5ec5b6d147d2c2cd4a67a8952ed50e6bb5ad60df117f",
+      "paired_provenance": "src/card_definitions/msh/iron_lad_diverging_destiny.json",
+      "paired_provenance_sha256": "f61e57a4b8a43c1a3059d5fedb22895bc03df40fb10b2e266515f2cea192f1e6",
+      "oracle_id": "3e715032-0d21-441b-b2d4-c91084728718",
+      "facts_sha256": "119df31d253cbb1a8792bb1a0098df3325b61cd5a9f52cb2115124133f75e3dc",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/i/IronLadDivergingDestiny.java",
+      "java_sha256": "fe1b4a7c50e0f73239351800a1a39e6f70f1006eda8cbeb30cfd5823f4669e67"
+    },
+    {
+      "name": "Daredevil, Man Without Fear",
+      "definition": "src/card_definitions/msh/daredevil_man_without_fear.rs",
+      "definition_sha256": "a67a14ae4de6ecbcd74b90cf6287a14d4f8c62166c5a653b39b013361b76a68a",
+      "paired_provenance": "src/card_definitions/msh/daredevil_man_without_fear.json",
+      "paired_provenance_sha256": "1eb1890f8af20fbed68a8be8804938a1e8d88a3eb8593d2471de6c2d2e3bd0da",
+      "oracle_id": "88aadf60-91f9-4932-a2bc-63365a139d36",
+      "facts_sha256": "87d420b2c6472b141da54661eeb7b8f761ffd24a6ced83e824b6a73ca46921f4",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/d/DaredevilManWithoutFear.java",
+      "java_sha256": "9896ccc40bf4e01c968585cde94e53cf03bb09430d18bfc14fc2e0874046a8ca"
+    },
+    {
+      "name": "The Coming of Galactus",
+      "definition": "src/card_definitions/msh/the_coming_of_galactus.rs",
+      "definition_sha256": "b04f2626f50bc2990a00b42e7922741a59c04fd8929ba5df7647337c42f54da4",
+      "paired_provenance": "src/card_definitions/msh/the_coming_of_galactus.json",
+      "paired_provenance_sha256": "653372581db9b82650aa7bc0f020c1c4e55d41bf0da6b152d57bc14309a251b5",
+      "oracle_id": "e05f23ba-f2b2-4c40-83fa-8defce3cb978",
+      "facts_sha256": "3ba863442a42d840d44a08816554161a02c8788ee0b45097572d6d762885eb55",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/t/TheComingOfGalactus.java",
+      "java_sha256": "b5ce11f579d2bf53d71c692bec2572dddb872b1d1de3fcfb202d08f8351c9eed"
+    },
+    {
+      "name": "U.S.Agent, John Walker",
+      "definition": "src/card_definitions/msh/u_s_agent_john_walker.rs",
+      "definition_sha256": "d5e004380808b4dac4623fc1b4cd9befbdee9824473d3a0686946535bc39b910",
+      "paired_provenance": "src/card_definitions/msh/u_s_agent_john_walker.json",
+      "paired_provenance_sha256": "f703a2920227230b4766e85f62115597c522097a18a417b443a93dcfee155257",
+      "oracle_id": "2b6fa8b6-4865-4eb6-974b-00f6b16b6f0f",
+      "facts_sha256": "fcb91ce09c6e9237cb22dbba49a095bd4825d94d319b6f40a73da4d80a27c8dc",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/u/USAgentJohnWalker.java",
+      "java_sha256": "623aad546bdd92e2c121b4982a87e9a212d80fe364bbfc55ac1e336911c81488"
+    },
+    {
+      "name": "The Vision",
+      "definition": "src/card_definitions/msh/the_vision.rs",
+      "definition_sha256": "a89662f4cdc9b4f8e4a0d151d6a32a1d3dd9d4863909787df1be1a799e6d336e",
+      "paired_provenance": "src/card_definitions/msh/the_vision.json",
+      "paired_provenance_sha256": "19b990d44fcc2928d5bf6d3cd678a9da98705c12ad32fbd9cb15ea18c5d021c6",
+      "oracle_id": "32aee76a-e738-4898-985a-801d1cce15ea",
+      "facts_sha256": "07fb1672c77832ab8731a941164bedcd79eb29fd5d8cfeaf713ae3e749fef05a",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/t/TheVision.java",
+      "java_sha256": "be4e944e36b1825905f4e5216ac88ddcf9912c763e7a050a012edee7933b181e"
+    }
+  ],
+  "groups": [
+    {
+      "test": "msh_eleventh_combined_paid_tokens_improvise_top_exile_modes_life_saga_and_natural_win",
+      "seats": [
+        "P0",
+        "P1"
+      ],
+      "actual_payments": [
+        "Heroic Feast 2G -> Food",
+        "U.S.Agent 3W alternative cost -> attached Sturdy Shield",
+        "Iron Lad 2U",
+        "Arc Reactor 2C plus reserved Food, Shield, Lad; one commit taps all; Reactor enters tapped",
+        "Daredevil 2RW; sole attack accepts Vision exile, temporary 5/5, vigilance, five combat damage",
+        "Vision exact exile permission 4C",
+        "Ironheart U plus real Arc Reactor activation CCC before reserving Shield",
+        "Iron Lad tap activation publicly reveals/draws exact second Arc Reactor",
+        "Coming of Galactus BBG plus Ironheart-granted Improvise taps Vision and summoning-sick Ironheart",
+        "Food 2C, tap, sacrifice -> gain 3, Feast three counters"
+      ],
+      "outcomes": [
+        "Exact Vision density modal packet grants indestructible before Saga I destroys Spy Kit",
+        "Agent final 5/5, Daredevil 4/5, Ironheart 4/5; one counter each",
+        "Natural own turns resolve II/III, opponent loses 4 total; IV creates 16/16 Galactus and sacrifices Saga",
+        "Next natural own turn removes summoning sickness; Galactus attacks, mandatory Mountain target destroyed, Daredevil optional declined,16 combat damage gives Winner(seat) and opponent life -5"
+      ],
+      "adversarial": [
+        "Exact packet IDs avoid consuming another same-source/modal packet",
+        "No reservation tap; duplicate helper, land/nonland mismatch, duplicate Feast target and player-as-land target reject atomically",
+        "Complete both-view privacy for privately known library top and hidden opponent hand",
+        "Orphan raw/indexed application, parent disposal, snapshot restore, stale index rejection and full both-view equality at helper and Saga/Feast target choices"
+      ]
+    },
+    {
+      "test": "msh_eleventh_combined_paid_plot_changed_top_defers_until_owned_payment",
+      "seats": [
+        "P0",
+        "P1"
+      ],
+      "actual_payments": [
+        "Iron Lad 2U",
+        "Slickshot Show-Off Plot {1}{R}"
+      ],
+      "boundary_fixture": "While real PlotPayment is pending, move old top Forest with production move_object to Exile. This scoped phase-boundary probe is not a naturally mana-driven top-change claim.",
+      "outcomes": [
+        "Old top initially visible only to Lad controller; changed top stays hidden until Plot payment completes",
+        "Changing hidden Shock to Giant Growth preserves complete both observations and legal actions",
+        "Invalid zero payment rejects atomically",
+        "Actual PayPlot {1}{R} performs orphan raw/index/parent-disposal/restore replay; exact plotted new incarnation Exile, mana 0, replacement top visible only to owner"
+      ]
+    }
+  ],
+  "validation": {
+    "focused_groups": 2,
+    "passed": 2,
+    "failed": 0,
+    "filtered_out": 1297,
+    "aggregate_native_group_count": 1299,
+    "native_test_seconds": 0.03,
+    "clippy": "cargo clippy --all-targets -- -D warnings: terminal 0",
+    "static_checks": [
+      "python3 scripts/link_catalogue.py --check",
+      "python3 scripts/check_sources.py",
+      "git diff --check",
+      "rustfmt --edition 2024 --check src/engine_msh_eleventh_combined_tests.rs"
+    ],
+    "source_counts": {
+      "definitions": 5401,
+      "source_blobs": 1252,
+      "catalogue_version": "3c322b94323c19af024fd7d9f3536d253d1b8aad51f8a0334d643aea7632ab22"
+    },
+    "guard_reports": [
+      {
+        "report": "<cache>/rustmage-msh-eleventh-combined-focus-1.guard.json",
+        "report_sha256": "d3d45592a60d17e61d5841de3c5107c9cebaf6b36a326214bbe6cec808cec332",
+        "log": "<cache>/rustmage-msh-eleventh-combined-focus-1.log",
+        "log_sha256": "6a073b5872ea66d61d3b3bf519d7ddcfae4b99fbc9ab875a72704da46df58b9f",
+        "command": [
+          "env",
+          "CARGO_TARGET_DIR=<cache>/rustmage-msh-eleventh-combined-target",
+          "cargo",
+          "test",
+          "--lib",
+          "msh_eleventh_combined",
+          "--",
+          "--test-threads=1"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 137.251452000055,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2580742144,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "report": "<cache>/rustmage-msh-eleventh-combined-focus-2.guard.json",
+        "report_sha256": "c2f10b1d54c147096c90e3a47c5a7bfd43ce86168c14ced2ed6c5b656c382a5e",
+        "log": "<cache>/rustmage-msh-eleventh-combined-focus-2.log",
+        "log_sha256": "ae1f5b90402e3391d3dc0918f82f4e634551b4144d7c63b6ab391628bba25040",
+        "command": [
+          "env",
+          "CARGO_TARGET_DIR=<cache>/rustmage-msh-eleventh-combined-target",
+          "cargo",
+          "test",
+          "--lib",
+          "msh_eleventh_combined",
+          "--",
+          "--test-threads=1"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 131.230406814022,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2540150784,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "report": "<cache>/rustmage-msh-eleventh-combined-clippy.guard.json",
+        "report_sha256": "af46aa5c8b72ded50fd5a0147763a9a91521b0b897dbf5f2bf4403876a54f3b9",
+        "log": "<cache>/rustmage-msh-eleventh-combined-clippy.log",
+        "log_sha256": "0de36e29ca23816d303fb30db2922108ff9ab89e04bcc295f62a87b3daf0513d",
+        "command": [
+          "env",
+          "CARGO_TARGET_DIR=<cache>/rustmage-msh-eleventh-combined-target",
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 38.043249170994386,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1967992832,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    ],
+    "first_run": "Fixture-only restore observation comparison failed because restore advances revision. Final complete observation comparisons normalize only revision. Three inverted untapped fixture assertions were corrected after actual terminal; no runtime issue found.",
+    "trace": "Inherited base baseline remains 2503 unchanged. No export, acceptance or recorder change in this child; root owns full aggregate 2508 normal 147 / previous 146 parent-table proof."
+  },
+  "cleanup": {
+    "active_fd_maps_exe_cwd_matches": [],
+    "unreadable_proc_maps": 47,
+    "files_removed": 1019,
+    "bytes_freed": 122327180,
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-eleventh-combined-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-eleventh-combined-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "56cf000021e80604f29f63b4791651953c628d85896b1a64b521820545fe49f1"
+      }
+    ],
+    "required_shared_libraries": [
+      {
+        "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<existing-worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-coulson/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-hideout-falcon/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-under-siege/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-baron/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-eleventh-combined-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "measurement": {
+    "started_utc": "2026-10-25T04:57:34.834059+00:00",
+    "finished_utc": "2026-10-25T05:04:34.986590+00:00",
+    "elapsed_seconds": 420.152531,
+    "new_groups": 2,
+    "new_groups_per_hour": 17.136633647935824,
+    "new_cards": 0,
+    "scope": "Scenario source creation through terminal focused/Clippy and cleanup; includes compile/wait and fixture correction. Not a simulation benchmark."
+  },
+  "limits": [
+    "Scenario fixtures use exact hand/library/battlefield setup and exact floating mana, not legal Standard deck construction or full-set game acceptance.",
+    "Existing dedicated parent groups certify individual printed obligations; these two groups stress interactions and a scoped Plot boundary.",
+    "Full MSH 281 and all-Standard acceptance/performance remain open."
+  ],
+  "additional_fixture_source_reads": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/s/SlickshotShowOff.java",
+      "sha256": "f8bb6c365d89c1b747adbd1acb88aeda2796383812a363a22a67b93b17f982d9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    }
+  ],
+  "test_source_sha256": "9a49e726ac2bc39ba60af6a80ea27ee36ffedaecfb4c321100949857fa871793",
+  "path_notation": {
+    "<cache>": "Persistent per-user cache directory",
+    "<worktree>": "This isolated msh-power-up/rustmage checkout",
+    "<existing-worktree>": "Preserved msh-existing-cards/rustmage checkout",
+    "<temp>": "Temporary directory; no artifact required from it"
+  }
+}
