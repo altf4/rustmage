@@ -112,12 +112,12 @@ fn msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_e
             let actor = g.actor().unwrap();
             progress_event(
                 &mut progress,
-                serde_json::json!({"config":game_index,"decision":ledger.len(),"phase":"legal_actions","turn":g.state.turn,"pending":format!("{:?}",g.state.pending),"objects":g.state.objects.len(),"library_counts":[g.state.players[0].library.len(),g.state.players[1].library.len()]}),
+                || serde_json::json!({"config":game_index,"decision":ledger.len(),"phase":"legal_actions","turn":g.state.turn,"pending":format!("{:?}",g.state.pending),"objects":g.state.objects.len(),"library_counts":[g.state.players[0].library.len(),g.state.players[1].library.len()]}),
             );
             let actions = g.legal_actions();
             progress_event(
                 &mut progress,
-                serde_json::json!({"config":game_index,"decision":ledger.len(),"phase":"policy","legal_count":actions.len()}),
+                || serde_json::json!({"config":game_index,"decision":ledger.len(),"phase":"policy","legal_count":actions.len()}),
             );
             let index = crate::policy::smoke_index(&g, &actions);
             let action = actions[index].clone();
@@ -126,7 +126,7 @@ fn msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_e
             ledger.push((actor, action.clone()));
             progress_event(
                 &mut progress,
-                serde_json::json!({"config":game_index,"decision":ledger.len(),"phase":"before_apply","actor":actor,"action":action,"owned_privacy_checkpoint":ledger.len()%97==1}),
+                || serde_json::json!({"config":game_index,"decision":ledger.len(),"phase":"before_apply","actor":actor,"action":action,"owned_privacy_checkpoint":ledger.len()%97==1}),
             );
             if ledger.len() % 97 == 1 {
                 hidden_information_contract(&g, actor);
@@ -137,7 +137,7 @@ fn msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_e
             }
             progress_event(
                 &mut progress,
-                serde_json::json!({"config":game_index,"decision":ledger.len(),"phase":"after_apply"}),
+                || serde_json::json!({"config":game_index,"decision":ledger.len(),"phase":"after_apply"}),
             );
             // Read actual committed stack packets after successful application.
             // This covers ordinary announcements and legacy direct casts alike;
@@ -194,14 +194,15 @@ fn msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_e
     let deck_records:Vec<_>=frozen.decks.iter().map(|d|serde_json::json!({"id":d.id,"ordered_cards":d.cards,"configuration_sha256":d.configuration_sha256})).collect();
     write_cache_record(
         "RUSTMAGE_RECORD_MSH_BROAD_GAMES",
-        serde_json::json!({"schema":1,"scope":"Fixed natural Standard60 MSH-only games from132 planned configurations across17 frozen decks; unchanged smoke_index; full exact replay and owned/privacy probes; bounded sampling, not full-set acceptance","planned_configurations":132,"selected_configuration":only,"diagnostic_progress_enabled":progress.is_some(),"design_sha256":frozen.design_sha256,"decklists":deck_records,"games":records,"decisions":decisions,"paid_spell_commits_by_physical_identity":paid,"positive_mana_paid_spell_commits_by_physical_identity":paid_positive,"nonterminal_configuration_indices":nonterminal,"decision_cap":frozen.decision_cap,"checked_seconds_including_replay_assertions_and_record_preparation":start.elapsed().as_secs_f64(),"limits":"A payment is not a resolved effect. Announced activations and target choices are separate successful-action metrics. Bounded nonterminal policy/workload gaps stay explicit; no forced progress, concession, seed substitution or claim that a cap alone is a rules defect. Only132 preselected phase1/2 configurations run here; optional24 late followups are not claimed."}),
+        serde_json::json!({"schema":1,"scope":"Fixed natural Standard60 MSH-only games from132 planned configurations across17 frozen decks; unchanged smoke_index; full exact replay and owned/privacy probes; bounded sampling, not full-set acceptance","planned_configurations":132,"selected_configuration":only,"diagnostic_progress_enabled":progress.is_some(),"design_sha256":frozen.design_sha256,"decklists":deck_records,"games":records,"decisions":decisions,"paid_spell_commits_by_physical_identity":paid,"positive_mana_paid_spell_commits_by_physical_identity":paid_positive,"nonterminal_configuration_indices":nonterminal,"decision_cap":frozen.decision_cap,"checked_seconds_including_replay_assertions_and_record_preparation":start.elapsed().as_secs_f64(),"limits":"A payment is not a resolved effect. Announced activations and target choices are separate successful-action metrics. Bounded nonterminal policy/workload gaps stay explicit; no forced progress, concession, seed substitution or claim that a cap alone is a rules defect. Uses only the132 preselected phase1/2 configurations; selected_configuration identifies a diagnostic subset. Optional24 late followups are not run."}),
     );
 }
 
 // Diagnostic writes observe the fixed workload and never feed the game or policy.
-fn progress_event(file: &mut Option<std::fs::File>, value: serde_json::Value) {
+fn progress_event(file: &mut Option<std::fs::File>, make: impl FnOnce() -> serde_json::Value) {
     if let Some(file) = file {
         use std::io::Write;
+        let value = make();
         writeln!(file, "{value}").unwrap();
         file.flush().unwrap();
     }
