@@ -14,7 +14,8 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes) => modes.iter().any(|m| selected(m.program)),
         Instruction::SelectLibraryTo(effect) => effect.maximum_mana_value.is_some_and(amount),
-        Instruction::IfAmountAtLeast { value, .. }
+        Instruction::UpToTargets(value)
+        | Instruction::IfAmountAtLeast { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }
         | Instruction::DiscardScaled(_, value)
         | Instruction::AddCastEntryCounters { amount: value, .. }

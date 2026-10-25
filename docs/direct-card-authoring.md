@@ -197,3 +197,20 @@ incarnation. Public `ObjectView.face` and `SpellView.source_transform` are absen
 for ordinary objects/packets. Copied double-faced tokens use the immutable pair
 and retain their `CopyRecipe` exceptions across transformation. This does not
 admit arbitrary in-place copy effects or the remaining gated DFC consumers.
+
+## Captured event target counts
+
+For one homogeneous optional target group, put
+`Instruction::UpToTargets(AmountValue::LifeEventAmount)` first in its selected
+program and declare a `TargetSpec` with `min: 0`. The target count comes from the
+packet's existing captured life event, including replacements, independently of
+later life gain, source departure or controller changes. It does not use the
+turn's cumulative gain. Targets keep ordinary distinctness, controller and
+incarnation checks; the effect still puts one counter on each surviving target.
+
+The header fixes the announcement's maximum and does nothing during resolution.
+It composes with the group's ordinary target-rule specialization. A zero-target
+packet remains a triggered ability; when there are no legal optional recipients,
+announcement can finish automatically. The scalar consumption walkers inspect
+this header for any existing opt-in quantity facts. This does not introduce an
+English parser or public state field.

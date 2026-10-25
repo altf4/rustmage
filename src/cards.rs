@@ -814,6 +814,8 @@ pub(crate) enum Instruction {
         power: i32,
         toughness: i32,
     },
+    /// First program header: a homogeneous optional target bound from the packet.
+    UpToTargets(AmountValue),
     OfferMiracleCast(ManaCost),
     Cascade,
     CreateCopyTokenForPlayer {

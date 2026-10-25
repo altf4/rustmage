@@ -7722,3 +7722,6 @@ mod msh_library_top_tests;
 #[cfg(test)]
 #[path = "engine_msh_improvise_tests.rs"]
 mod msh_improvise_tests;
+#[cfg(test)]
+#[path = "engine_msh_feast_tests.rs"]
+mod msh_feast_tests;

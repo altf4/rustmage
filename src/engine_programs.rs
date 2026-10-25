@@ -3197,6 +3197,7 @@ impl Game {
                         );
                     }
                 }
+                Instruction::UpToTargets(_) => (), // Bound before announcing targets.
                 Instruction::IfAmountAtLeast {
                     value,
                     minimum,
