@@ -321,10 +321,17 @@ impl<'a> TargetSourceCharacteristics<'a> {
 
 impl Game {
     pub(super) fn target_spec(&self, item: &SpellView) -> TargetPlan {
-        let plan = item
+        let mut plan = item
             .program()
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
+        if let Some((TargetPlan::Single(mut spec), program)) = item.program()
+            && let Some(Instruction::UpToTargets(value)) = program.first()
+        {
+            assert_eq!(spec.min, 0, "optional bound requires zero minimum");
+            spec.max = usize::try_from(self.item_amount(*value, item)).unwrap_or(usize::MAX);
+            plan = TargetPlan::Single(spec);
+        }
         if item.kind == StackKind::Spell && item.source_card.targets_up_to_x() {
             let TargetPlan::Single(mut spec) = plan else {
                 panic!("X target maximum requires one homogeneous target group")

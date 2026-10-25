@@ -43,7 +43,8 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
                     amount(value, &mut result);
                 }
             }
-            Instruction::IfAmountAtLeast { value, .. }
+            Instruction::UpToTargets(value)
+            | Instruction::IfAmountAtLeast { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }

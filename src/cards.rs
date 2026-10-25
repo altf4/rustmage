@@ -808,6 +808,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// First program header: a homogeneous optional target bound from the packet.
+    UpToTargets(AmountValue),
     OfferMiracleCast(ManaCost),
     Cascade,
     CreateCopyTokenForPlayer {

@@ -46,7 +46,8 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                     amount(value, kinds);
                 }
             }
-            Instruction::IfAmountAtLeast { value, .. }
+            Instruction::UpToTargets(value)
+            | Instruction::IfAmountAtLeast { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }
