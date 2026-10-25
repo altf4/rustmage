@@ -251,6 +251,7 @@ pub(crate) enum TargetPredicate {
     EnteredGraveyardThisTurn,
     ManaValueAtMostLifeGained,
     OtherThanSource,
+    OtherThanSourceAttachment,
     Blocking,
     Nontoken,
     Permanent,
@@ -1573,6 +1574,10 @@ pub(crate) enum Instruction {
     },
     ExileTargetsAndTopPlayForOwners,
     ExileUntilSourceLeaves,
+    /// Freeze copiable values before a successful linked exile; wait for immediate returns.
+    ExileAndCaptureAttachedCopy,
+    /// Apply the captured blueprint to the Aura's current exact attached creature.
+    ApplyCapturedAttachedCopy,
     ExileGraveyard(PlayerSet),
     ReturnToHand,
     /// Move all legal target groups together, deduplicating exact incarnations.

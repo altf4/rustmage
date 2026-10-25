@@ -895,7 +895,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             },
             copy_recipe: self.stored_recipe(id),
             temporary_copy: if obj.zone == Zone::Battlefield {
-                self.temporary_copy_view(self.object_ref(id)).map(Box::new)
+                self.world.temporary_copy_view(self.object_ref(id)).map(Box::new)
             } else {
                 None
             },

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e1c542b609d29a21c725d673ad96edf6a0f641949a67e4c49691ce7aa90c6e02",
+  "catalogue_version": "a5955bd57446b226d8505f0aa75d938a6ba33dd7e41126b207c461a03ff170d8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2538,
-  "implemented_total": 2544,
+  "implemented_standard_cards": 2539,
+  "implemented_total": 2545,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 233,
-      "gated": 40
+      "complete": 234,
+      "gated": 39
     },
     "one": {
       "total": 1,
@@ -30285,8 +30285,8 @@
     {
       "name": "Secret Invasion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/secret_invasion.rs",
       "set": "msh"
     },

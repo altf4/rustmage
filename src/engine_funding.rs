@@ -9,6 +9,8 @@ use cast_cost_planning::CostContext;
 #[path = "engine_funding_entries.rs"]
 mod funding_entries;
 use funding_entries::{EntryProjection, PaymentContinuation};
+#[path = "engine_funding_linked_copies.rs"]
+mod funding_linked_copies;
 
 #[derive(Clone, Debug)]
 pub(super) struct FundingGoal {
@@ -54,6 +56,27 @@ pub(super) struct FundingState<'g> {
     borrowed_uses: Vec<(ObjectRef, u64)>,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn ability_origin(&self, id: CardId) -> Option<u64> {
+        if self.object(id).zone != Zone::Battlefield {
+            return None;
+        }
+        let object = self.reference(id);
+        self.entry_projection
+            .as_ref()
+            .and_then(|p| p.copy_origins.iter().find(|(source, _)| *source == object))
+            .map_or_else(
+                || self.game.copy_ability_origin(object),
+                |(_, origin)| *origin,
+            )
+    }
+    fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
+        let mut view = self.game.temporary_copy_view(object)?;
+        view.layers.retain(|layer| layer.deadline.source().is_none_or(|source| {
+            self.object(source.card).zone == Zone::Battlefield && self.reference(source.card) == source
+        }));
+        view.active_origin = view.layers.last()?.origin;
+        Some(view)
+    }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         let reference = self.reference(id);
         let rows = self.copy_recipes.as_ref()?;
@@ -188,6 +211,7 @@ struct ResourceKey {
 }
 #[derive(Hash, PartialEq, Eq)]
 struct EntryFundingKey {
+    copy_origins: Vec<(ObjectRef, Option<u64>)>,
     order: Vec<ObjectRef>,
     entered: Vec<ObjectRef>,
     values: Vec<(ObjectRef, EntryChoiceValue)>,
@@ -1176,6 +1200,7 @@ impl<'g> FundingState<'g> {
         moves
     }
     fn refresh_control_projection(&mut self) {
+        self.refresh_source_bound_copies();
         for row in continuous_control::controllers(self) {
             if let Some(resource) = self
                 .resources
@@ -1446,6 +1471,7 @@ impl<'g> FundingState<'g> {
                 self.other_life,
             )),
             entries: self.entry_projection.as_ref().map(|p| EntryFundingKey {
+                copy_origins: p.copy_origins.clone(),
                 order: p.order.clone(),
                 entered: p.entered.clone(),
                 values: p.entry_values.iter().map(|r| (r.object, r.value)).collect(),
@@ -3100,3 +3126,7 @@ mod msh_self_granted_static_tests;
 #[cfg(test)]
 #[path = "engine_msh_self_granted_activation_tests.rs"]
 mod msh_self_granted_activation_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_linked_copy_tests.rs"]
+mod msh_linked_copy_tests;

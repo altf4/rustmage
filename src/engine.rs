@@ -1,5 +1,7 @@
 #[path = "engine_entering_copies.rs"]
 mod entering_copies;
+#[path = "engine_linked_copies.rs"]
+mod linked_copies;
 #[path = "engine_self_granted_activations.rs"]
 mod self_granted_activations;
 pub use self_granted_activations::SelfGrantedActivationContext;
@@ -7582,7 +7584,9 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution.cascade.as_ref().map_or(0, |row| {
+                    resolution.linked_copy.as_ref().map_or(0, |_| {
+                        std::mem::size_of::<linked_copies::LinkedCopyCapture>()
+                    }) + resolution.cascade.as_ref().map_or(0, |row| {
                         std::mem::size_of::<CascadeView>()
                             + row.exiled.len() * std::mem::size_of::<ObjectRef>()
                     }) + resolution

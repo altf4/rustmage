@@ -11,6 +11,7 @@ pub(super) struct TargetCardFacts {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    pub linked_copy: Option<Box<linked_copies::LinkedCopyCapture>>,
     pub cascade: Option<Box<cascade::CascadeView>>,
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
@@ -1849,6 +1850,7 @@ impl Game {
                 )
             });
         self.state.resolving = Some(Resolution {
+            linked_copy: None,
             cascade: None,
             target_card_facts,
             immediate_blink_return: None,
@@ -3675,6 +3677,10 @@ impl Game {
                     self.exile_targets_play(&item, true, true, true)
                 }
                 Instruction::ExileUntilSourceLeaves => self.exile_until_source_leaves(&item),
+                Instruction::ExileAndCaptureAttachedCopy => {
+                    self.exile_and_capture_attached_copy(&item)
+                }
+                Instruction::ApplyCapturedAttachedCopy => self.apply_captured_attached_copy(),
                 Instruction::ExileGraveyard(set) => {
                     let players: Vec<_> = self.program_players(set, &item).collect();
                     let ids: Vec<_> = self

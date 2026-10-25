@@ -76,6 +76,7 @@ fn bounded(g: &mut Game, p: Player, program: &'static [Instruction]) {
     let item = g.state.stack.pop().unwrap();
     assert_eq!(item.card, source);
     g.state.resolving = Some(programs::Resolution {
+        linked_copy: None,
         cascade: None,
         target_card_facts: None,
         immediate_blink_return: None,

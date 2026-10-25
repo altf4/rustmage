@@ -10,6 +10,8 @@ pub(super) struct PaymentContinuation<'g> {
 }
 #[derive(Clone)]
 pub(super) struct EntryProjection {
+    /// Opt-in restoration origins; these are copy changes, never entry history.
+    pub copy_origins: Vec<(ObjectRef, Option<u64>)>,
     pub static_sources: Vec<CardId>,
     pub attachment_sources: Vec<CardId>,
     pub roles: roles::RoleState,
@@ -37,6 +39,7 @@ impl EntryProjection {
                 && w.object(row.source.card).zone == Zone::Battlefield
         });
         Self {
+            copy_origins: Vec::new(),
             static_sources: w.static_sources().to_vec(),
             attachment_sources: w.attachment_sources().to_vec(),
             roles: w.roles().cloned().unwrap_or_default(),
@@ -51,13 +54,16 @@ impl EntryProjection {
     }
     fn register(&mut self, source: ObjectRef, card: Card) -> u64 {
         self.order.push(source);
+        let timestamp = self.roles.next_timestamp();
+        self.register_at(source, card, timestamp)
+    }
+    pub(super) fn register_at(&mut self, source: ObjectRef, card: Card, timestamp: u64) -> u64 {
         if !self.static_sources.contains(&source.card) {
             self.static_sources.push(source.card);
         }
         if card.attachment_bonus().is_some() && !self.attachment_sources.contains(&source.card) {
             self.attachment_sources.push(source.card);
         }
-        let timestamp = self.roles.next_timestamp();
         if let Some(spec) = card.base_stat_setter() {
             self.roles.base_stats.push(BaseStatsEffectView {
                 recipient: source,

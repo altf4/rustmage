@@ -310,6 +310,7 @@ impl Announcement {
 struct TargetSourceCharacteristics<'a> {
     reference: ObjectRef,
     snapshot: Option<&'a DamageFacts>,
+    attachment: Option<ObjectRef>,
     spell: Option<Card>,
 }
 impl<'a> TargetSourceCharacteristics<'a> {
@@ -317,6 +318,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
         Self {
             reference: item.object,
             snapshot: Some(&item.source_facts),
+            attachment: item.source_attachment,
             spell: (item.kind == StackKind::Spell).then_some(item.source_card),
         }
     }
@@ -396,6 +398,7 @@ impl Game {
         let qualification = Some(TargetSourceCharacteristics {
             reference: source,
             snapshot: None,
+            attachment: None,
             spell: Some(definition),
         });
         let departing =
@@ -993,6 +996,16 @@ impl Game {
                             <= self.state.players[controller.index()].life_gained_this_turn
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
+                    TargetPredicate::OtherThanSourceAttachment => {
+                        let attached = if self.on_battlefield(source.card)
+                            && self.object_ref(source.card) == source
+                        {
+                            self.state.objects[source.card as usize].attached_to
+                        } else {
+                            qualification.and_then(|q| q.attachment)
+                        };
+                        attached.is_some_and(|r| self.object_ref(id) != r)
+                    }
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
