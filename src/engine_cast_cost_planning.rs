@@ -278,6 +278,29 @@ impl FundingState<'_> {
         if remaining.is_empty() {
             return true;
         }
+        // With only Teamwork and Mana left, these inner costs merely tap
+        // contributors. They cannot add mana or restore/change a type, color,
+        // provider or mana-type permission. The current Hall test is therefore
+        // an upper bound before any teammates are spent. A successful bound
+        // retains the complete ordered search and every live power evaluation.
+        // Other costs may remove suppression or return providers, so they must
+        // keep the general path even when mana is not currently payable.
+        if remaining
+            .iter()
+            .any(|&i| matches!(c.clauses[i].clause, CastCostClause::Teamwork(_)))
+            && remaining
+                .iter()
+                .any(|&i| c.clauses[i].clause == CastCostClause::Mana)
+            && remaining.iter().all(|&i| {
+                matches!(
+                    c.clauses[i].clause,
+                    CastCostClause::Teamwork(_) | CastCostClause::Mana
+                )
+            })
+            && !self.mana_clause_payable(c)
+        {
+            return false;
+        }
         for (position, &index) in remaining.iter().enumerate() {
             if c.active.is_some_and(|i| usize::from(i) != index) {
                 continue;
@@ -391,6 +414,8 @@ impl FundingState<'_> {
         selected: &mut Vec<ObjectRef>,
         exact: bool,
     ) -> bool {
+        #[cfg(test)]
+        teamwork_scalability_tests::visit_teamwork_node();
         let mut sum = saddle::PowerSum::default();
         for r in selected.iter() {
             sum.add(self.power(r.card));
@@ -445,6 +470,138 @@ impl FundingState<'_> {
                 .any(|r| !r.paid && r.clause == CastCostClause::Mana)
         })
     }
+    /// A deliberately narrow negative bound across future mana-source moves.
+    /// Unknown providers and non-tap mutations retain the complete search.
+    pub(super) fn pure_tap_teamwork_deficit(&self, goal: &FundingGoal) -> bool {
+        let Some(c) = &self.cast_costs else {
+            return false;
+        };
+        let mut minimum = None;
+        let mut has_mana = false;
+        for row in c.clauses.iter().filter(|row| !row.paid) {
+            match row.clause {
+                CastCostClause::Teamwork(n) => minimum = Some(minimum.unwrap_or(0).max(n)),
+                CastCostClause::Mana => has_mana = true,
+                _ => return false,
+            }
+        }
+        let Some(minimum) = minimum.filter(|_| has_mana) else {
+            return false;
+        };
+        let mut upper = saddle::PowerSum::default();
+        for resource in &self.resources {
+            let o = &resource.object;
+            if o.zone == Zone::Battlefield
+                && o.controller == c.actor
+                && !o.tapped
+                && CharacteristicWorld::kinds(self, resource.id) & 1 != 0
+            {
+                let power = self.power(resource.id);
+                if power > 0 {
+                    upper.add(power);
+                }
+            }
+        }
+        if upper.enough(minimum) {
+            return false;
+        }
+        if goal.source.is_some()
+            || goal.reserve.is_some()
+            || self.continuation.is_some()
+            || self.entry_projection.is_some()
+            || self.controls().is_some()
+            || self.payment_source.is_some()
+            || self.cost_group.is_some()
+            || !self.sacrifice_group.is_empty()
+            || self.game.state.borrowed_links.is_some()
+            || !self.game.state.exile_links.is_empty()
+        {
+            return false;
+        }
+        if self
+            .roles()
+            .is_some_and(|r| !r.base_stats.is_empty() || !r.live_static.is_empty())
+        {
+            return false;
+        }
+        // Inspect every resource and every immutable mana activation, including
+        // hidden/nonbattlefield/unavailable routes. Pure taps cannot introduce
+        // a new route, recipient, incarnation or counter configuration.
+        for resource in &self.resources {
+            let card = resource.object.card;
+            if self
+                .mana_activations(resource.id)
+                .any(|(_, a, borrowed)| borrowed.is_some() || !Self::only_tap_mana(a))
+                || CharacteristicWorld::granted_mana(self, resource.id)
+                    .iter()
+                    .any(|g| g.sacrifice)
+            {
+                return false;
+            }
+            if resource.object.zone != Zone::Battlefield {
+                continue;
+            }
+            if card.dynamic_stats().is_some()
+                || !card.scaling_modifiers().is_empty()
+                || !card.static_modifiers().is_empty()
+                || !card.enchanted_modifiers().is_empty()
+                || card.base_stat_setter().is_some()
+                || card.attachment_bonus().is_some()
+                || card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|g| g.fragments)
+                    .any(|f| {
+                        !matches!(
+                            f,
+                            crate::cards::StaticAbilityFragment::IntrinsicKeywords(_)
+                                | crate::cards::StaticAbilityFragment::Changeling
+                                | crate::cards::StaticAbilityFragment::SpellImprovise(_)
+                                | crate::cards::StaticAbilityFragment::LandMana { .. }
+                                | crate::cards::StaticAbilityFragment::NoMaximumHandSize
+                                | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
+                                | crate::cards::StaticAbilityFragment::SpendAnyManaForCreatures
+                        )
+                    })
+            {
+                return false;
+            }
+        }
+        // In this flat class base exceptions, fixed animation/base values,
+        // counters, growth, choices and copy layers remain immutable. No mana
+        // step changes turn/combat/attachment state. Further taps can only
+        // remove a candidate from this exact positive-power upper sum.
+        true
+    }
+    fn only_tap_mana(a: &ActivatedAbility) -> bool {
+        let c = a.cost;
+        a.origin == ActivationOrigin::Battlefield
+            && c.tap
+            && !c.sacrifice
+            && !c.exile_self
+            && !c.discard
+            && c.life == 0
+            && c.remove.is_none()
+            && c.loyalty.is_none()
+            && c.additional.is_none()
+            && !a.exhaust
+            && !a.once_per_turn
+            && matches!(a.program, [Instruction::AddMana(_)])
+    }
+    fn mana_clause_payable(&self, c: &CostContext) -> bool {
+        let Some(cost) = c.mana else {
+            return false;
+        };
+        convoke::payable_in(
+            self,
+            c.actor,
+            self.purpose,
+            mana_lots::available(self.mana, &self.lots, self.purpose),
+            cost.colored,
+            cost.generic,
+            &self.convoke_masks(),
+        )
+    }
     fn complete_convoke_clause(
         &self,
         c: &CostContext,
@@ -458,15 +615,7 @@ impl FundingState<'_> {
         // Fail before assigning individual helpers when the current mana clause
         // cannot be paid at all. If it is last, exact Hall matching is the whole
         // obligation; later nonmana costs still use the original assignment walk.
-        if !convoke::payable_in(
-            self,
-            c.actor,
-            self.purpose,
-            pool,
-            cost.colored,
-            cost.generic,
-            &self.convoke_masks(),
-        ) {
+        if !self.mana_clause_payable(c) {
             return false;
         }
         if rest.is_empty() {
@@ -1157,3 +1306,12 @@ impl Game {
 #[cfg(test)]
 #[path = "engine_msh_improvise_ordered_tests.rs"]
 mod msh_improvise_ordered_tests;
+
+#[cfg(test)]
+#[path = "engine_teamwork_funding_scalability_tests.rs"]
+mod teamwork_scalability_tests;
+
+#[cfg(test)]
+pub(super) fn visit_funding_diagnostic_node() {
+    teamwork_scalability_tests::visit_funding_node();
+}
