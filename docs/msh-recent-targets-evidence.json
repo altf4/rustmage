@@ -1,0 +1,342 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+  "tested_source_head": "4f1820f48deb66cc2481f454aeba193be40f4865",
+  "runtime_source_head": "bb9e69c05bc952e05380e62604ff28d0ba557a65",
+  "whole_cards": [
+    "Night Nurse, Healer of Heroes",
+    "Restorative Technique"
+  ],
+  "candidate_flags": 207,
+  "candidate_gated": 74,
+  "native_tests": 1322,
+  "native_terminal": true,
+  "new_test_groups": 23,
+  "test_groups": [
+    "msh_recent_nurse_paid_flash_after_real_murder_and_lifelink_combat",
+    "msh_recent_nurse_all_inventory_permanent_kinds_and_owner_hand_knowledge",
+    "msh_recent_nurse_any_origin_uses_actual_final_graveyard_transition",
+    "msh_recent_nurse_rejects_old_opponent_instant_and_wrong_zone_atomically",
+    "msh_recent_nurse_turn_reset_and_new_incarnation_history_are_exact",
+    "msh_recent_nurse_target_departure_and_same_slot_reentry_do_not_rebind",
+    "msh_recent_nurse_queued_controller_survives_source_death_or_theft",
+    "msh_recent_nurse_public_target_private_hand_and_orphan_restore",
+    "msh_recent_nurse_real_duress_discard_then_flash_return",
+    "msh_recent_nurse_real_paid_bloodseeker_mill_and_instant_exclusion",
+    "msh_recent_nurse_replaced_graveyard_entry_creates_no_eligible_target",
+    "msh_recent_nurse_graveyard_ownership_ignores_prior_battlefield_controller",
+    "msh_recent_rest_paid_player_and_optional_creature_groups_are_independent",
+    "msh_recent_rest_all_six_basic_land_recipes_and_normal_play_allowance",
+    "msh_recent_rest_targeted_search_actor_private_choices_and_owned_commit",
+    "msh_recent_rest_search_rejects_nonbasic_foreign_duplicate_and_excess",
+    "msh_recent_rest_fail_to_find_with_or_without_eligible_land_still_shuffles",
+    "msh_recent_rest_life_prevention_and_actual_gain_replacement_do_not_skip_search",
+    "msh_recent_rest_paid_player_hexproof_response_leaves_other_creature_effect",
+    "msh_recent_rest_illegal_creature_does_not_cancel_player_and_search",
+    "msh_recent_rest_paid_truce_makes_all_targets_illegal_without_any_effect",
+    "msh_recent_rest_counter_replacement_and_real_life_event_wait_for_search",
+    "msh_recent_rest_late_counter_failure_rolls_back_search_commit_atomically"
+  ],
+  "printed_obligations": {
+    "Night Nurse, Healer of Heroes": [
+      "{1}{W} 2/1 Human Rebel with flash and lifelink",
+      "Mandatory enters trigger targets a permanent card in your graveyard put there this turn, and returns it to your hand",
+      "Any actual final graveyard entry origin qualifies; ownership, exact incarnation, turn boundary and graveyard replacement remain ordinary target rules"
+    ],
+    "Restorative Technique": [
+      "{2}{G} sorcery with one required player and up to one independent creature target",
+      "Target player gains2 then may find one basic land from their library, put it onto the battlefield tapped and shuffle; player performs private search even when opponent",
+      "Put one +1/+1 counter on up to one target creature; partial legality and prevented life gain do not cancel independent surviving instructions"
+    ]
+  },
+  "shared_mechanics": [
+    "Private EnteredGraveyardThisTurn predicate reuses existing exact owned graveyard-entry history; no additional persistent state",
+    "Private SearchTargetPlayer instruction uses the legal player in the selected target group and existing private search transaction machinery"
+  ],
+  "provenance": {
+    "design_cache": "<cache>/rustmage-msh-recent-graveyard-target-player-design-0c1f30dd.json",
+    "sha256": "4d23ca6fff66704b41f4ff8289e1881afb835b9ccfeb07604bea1ce7e1737b24",
+    "full_java_sources": 23,
+    "partial_infrastructure_sources": 1,
+    "pins": [
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/n/NightNurseHealerOfHeroes.java",
+        "sha256": "c6c0b64b397726a687b0d34dc3824a85c8fb966668694f06f5e21394b5188314"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RestorativeTechnique.java",
+        "sha256": "cf9e2ffd9296ae172916228983481286ef10133c4be008bae3ab5cc741fcbfe7"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeTargetEffect.java",
+        "sha256": "9f89eae0cab67d969113091a50272e8b91503ec438466324e3790bbe8ac54b65"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayTargetPlayerEffect.java",
+        "sha256": "298e82bd931bffcac0e192153e518c82256b08faf43d438ec03b1ba7dfd1adb9"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+        "sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+        "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+        "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+        "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+        "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/targetpointer/NthTargetPointer.java",
+        "sha256": "d3f06450efa592e446dbcab29c913f7946e36b31d5d0a7f6b1d3e5ac824ebc73"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterLandCard.java",
+        "sha256": "e9e31535856250c875e2036b551236be506dd0b4229c3e7a4f3f4f639ac257df"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterPermanentCard.java",
+        "sha256": "2af04f95edb47547b39271ca3c5024712fa9ba1728c5e2c7249d63fa8c411033"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+        "sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+        "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/card/PutIntoGraveFromAnywhereThisTurnPredicate.java",
+        "sha256": "c2935fa1d4f1d97eb62fc90dd802089b75dd9abb516de4baafec0531d2f55c35"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/watchers/common/CardsPutIntoGraveyardWatcher.java",
+        "sha256": "7adcba89bfd94638c279998a6175725be871324c3f70b3f05ab0b540f107b2a3"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+        "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+        "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+        "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+        "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+        "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+        "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+      },
+      {
+        "repository": "magefree/mage",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+        "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+      }
+    ],
+    "source_coverage_note": "Complete card and helper implementations read. StaticFilters whole file pinned with relevant BasicLand/Creature declarations read; full infrastructure-file comprehension is not claimed."
+  },
+  "interaction_scope": [
+    "Both seats and actual paid Murder death, Duress discard and Bloodseeker mill before flash Nurse; actual lifelink combat and all inventoried permanent kinds",
+    "Graveyard replacement, old/new incarnation, turn reset, owner versus former controller, source departure and controller changes",
+    "Both target players, optional own/enemy creature, all six basic lands including Wastes, unchanged land play allowance, prevented/replaced gain, fail-to-find and shuffle",
+    "Real paid Dawn\u2019s Truce responses causing partial or complete target illegality; creature blink; Doubling Season counters and Heroic Feast actual-life event continuation after private search",
+    "Unknown enemy hand/library counterfactuals, complete both-seat observations, wrong actor and illegal-action atomicity, orphan raw/index branches and restore, late search-commit failure rollback"
+  ],
+  "trace_proof": {
+    "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+    "schema": 147,
+    "rows": 2510,
+    "inherited_full_Trace_structs": 2508,
+    "base_trace_sha256": "8b0cb3dfdc9cee46637c0c43b639a917135357f1a8de32f0ba1fc5805351b478",
+    "normal_sha256": "621df564b53526e22dd9c23ab0758654fa7067aa5c26e5f8078089775423c833",
+    "changed": [],
+    "removed": [],
+    "new_rows": {
+      "Night Nurse, Healer of Heroes": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "ce93789b5fa64c9f",
+        "observations": "487c313004b71740"
+      },
+      "Restorative Technique": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Graveyard",
+        "journal": "4e3ecd79df95ffa0",
+        "observations": "e1c631b361ef0aa5"
+      }
+    },
+    "metadata_sha256": "504e5898b107e869e75afb89ff24c3a13e139a3fad02ce875224fe500c7ab768",
+    "definitions": 5401,
+    "token_recipes": 123,
+    "new_ids": [],
+    "metadata_membership_policy_recorder_exact_base": true,
+    "no_field_stripping": true,
+    "new_public_fields": false,
+    "wire_unchanged": true,
+    "fixed_inputs": 11775,
+    "fixed_input_changes": [],
+    "preacceptance_native_rules_passed": 1321,
+    "sole_preacceptance_failure": "Expected new row count2510 vs2508"
+  },
+  "checks": {
+    "native": 101,
+    "clippy": 0,
+    "format": 0,
+    "card_format": 0,
+    "sources": 0,
+    "link": 0,
+    "changed": [],
+    "files": 11775,
+    "terminal": true
+  },
+  "focused_guard": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib",
+      "msh_recent"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 235.29239642602624,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2590240768,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "export_clippy_guard": {
+    "command": [
+      "python3",
+      "<temp>/msh-recent-targets-export-checks.py"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 381.662705670984,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 1986600960,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "strict_native_guard": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 486.0429348819889,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2546597888,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "cleanup": {
+    "terminal": true,
+    "no_active_target_consumers": true,
+    "accessible_proc_fd_maps_exe_scan_clear": true,
+    "root": "<cache>/rustmage-msh-recent-targets-target",
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 125554688,
+    "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+    "preserved_shared_libraries": {
+      "<cache>/rustmage-msh-recent-targets-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_native_binary": {
+      "path": "<cache>/rustmage-msh-recent-targets-target/debug/deps/rustmage-b764cd26223fba2c",
+      "sha256": "4dc10f188665b6346c391623d81cca6f16b80a1a1953ac223fb24b95dd5392c6"
+    }
+  },
+  "corrections": [
+    "No implementation or fixture corrections were needed after the first authored implementation; all23 focused groups passed on their first run. The first full native export failed only the expected2510-versus2508 new baseline row count; all1321 other groups passed. Accepted the full table only after comparing all2508 inherited full Trace structs exactly; strict full native then passed1322."
+  ],
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T05:11:53.713550+00:00",
+    "end_utc": "2026-10-24T22:52:18.992189-07:00",
+    "seconds": 2425.278639,
+    "whole_cards": 2,
+    "cards_per_hour": 2.968731049793409,
+    "scope": "Includes read-only source preparation overlapping prior cohort final gates, direct implementation, guarded queue/build/checks, full inherited-trace proof and cleanup. Excludes final eight-card integration/release/reviews. Not a simulation benchmark."
+  },
+  "remaining": "Full-set gameplay and interactions/performance acceptance remain open. No new natural-game or pure simulation throughput claim in this isolated child. Final combined published-head release, CI and two independent nonauthor reviews pending. All remaining work is confined to draft PR516; no main merge authorized.",
+  "recorded_utc": "2026-10-24T22:52:18.992189-07:00"
+}
