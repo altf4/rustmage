@@ -141,7 +141,8 @@ mod replacements;
 #[path = "engine_sagas.rs"]
 mod sagas;
 pub use replacements::{
-    CreatedTokenChoiceView, ReplacementChoiceView, ReplacementEffectView, TokenGroupView,
+    CreatedTokenChoiceView, DamagePreventionKind, DamagePreventionView, ReplacementChoiceView,
+    ReplacementEffectView, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -460,6 +461,7 @@ define_actions! {
     FinishEvidence,
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
+    ChooseDamagePrevention { source: ObjectRef, kind: DamagePreventionKind },
     ChooseCreatedToken { object: ObjectRef },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
@@ -4462,6 +4464,9 @@ impl Game {
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
             }
+            Action::ChooseDamagePrevention { source, kind } => {
+                self.choose_damage_prevention(source, kind)
+            }
             Action::ChooseCreatedToken { object } => self.choose_created_token(object),
             Action::ChooseLibraryDestination {
                 object,
@@ -8125,3 +8130,7 @@ mod msh_broker_thrall_tests;
 #[cfg(test)]
 #[path = "engine_msh_super_adaptoid_tests.rs"]
 mod msh_super_adaptoid_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_damage_replacement_tests.rs"]
+mod msh_damage_replacement_tests;

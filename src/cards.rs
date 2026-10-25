@@ -2060,6 +2060,9 @@ pub(crate) enum ReplacementSpec {
     CountersPlacedByController,
     DoubleCreatureDamage,
     DoubleOpponentDamage,
+    NoncombatDamagePlusSourcePower,
+    DoubleEquippedDamage,
+    HealPreviousDamageToSelf,
     PreventOtherCreatureNoncombatDamage,
     PreventAllDamageToSelf,
     Counters {
