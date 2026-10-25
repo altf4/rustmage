@@ -7852,3 +7852,7 @@ mod msh_baxter_raft_tests;
 #[cfg(test)]
 #[path = "engine_msh_hand_exile_tests.rs"]
 mod msh_hand_exile_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_temporary_copy_cards_tests.rs"]
+mod msh_temporary_copy_cards_tests;

@@ -1,7 +1,6 @@
-// Staged core consumer from full frozen Oracle and direct pinned Java. The card
-// remains gated until its complete paid gameplay and interaction audit passes.
+// Complete frozen Oracle and direct pinned Java; owned in-place copies preserve physical identity.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
+    effect: Effect::Creature(4, 4),
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::AtStep {
             step: TriggerStep::Main1,

@@ -3,7 +3,7 @@
   "catalogue_id": 38,
   "oracle_id": "ec8e310f-e871-498f-8d80-c3617c5e1433",
   "facts_sha256": "c76253acf1b3305b8cee40daf9c7d8b567cfcb2fc46624b7aed34fe62a99a9ac",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a8e06cb519eb3f875c166baf513a98aeb104e3bf02c51d6f1d155f8ca1362871"
@@ -126,6 +126,6 @@
   ],
   "rules_authority": {
     "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
-    "rules": "Full frozen Oracle and official Absorbing Man notes; CR707.2/707.9 fixed power and toughness exclude a copied P/T characteristic-defining ability, retain additive card/subtypes, and freeze a flat blueprint; CR613.7 static timestamps are distinct from ability acquisition. Staged immutable first-main copy program only: Effect::Unsupported and complete:false remain until whole-card acceptance."
+    "rules": "Complete frozen Oracle and official Absorbing Man notes; CR707.2/707.9 fixed power and toughness exclude a copied P/T characteristic-defining ability, retain additive Human/Villain/Creature types and vigilance, and freeze a flat blueprint. Any artifact (including an Aura), non-Aura enchantment or land can be targeted, regardless of controller. Optional first-main copy lasts until the captured ability controller next turn, with physical identity preserved. CR613.7 static timestamps remain distinct from intrinsic/granted ability acquisition; creature Aura copies follow CR303.4d/704.5 SBA rules."
   }
 }
