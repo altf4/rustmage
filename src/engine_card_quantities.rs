@@ -34,7 +34,9 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                     }
                 }
             }
-            Instruction::Modal(modes) | Instruction::ModalOnce(modes) => {
+            Instruction::Modal(modes)
+            | Instruction::ModalOnce(modes)
+            | Instruction::ModalOncePerTurn(modes) => {
                 for mode in modes {
                     read_counter_kinds(mode.program, kinds);
                 }

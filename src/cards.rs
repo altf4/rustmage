@@ -1113,6 +1113,8 @@ pub(crate) enum Instruction {
     },
     /// Definition-only triggered header whose modes may each be chosen once per source incarnation.
     ModalOnce(&'static [SpellMode]),
+    /// Triggered modes each available once during the current actual turn.
+    ModalOncePerTurn(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.
     LoseGame(PlayerSet),
     WinIfDistinctSubtypeNames {

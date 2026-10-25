@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1c13873e83897e737d2f38524b06b2d0b17c351f20d7830896048b01055eb033",
+  "catalogue_version": "ffa901d7dd12c374fe713b6da998010b22b207edd4aa991ac97e2c2c740bf547",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2492,
-  "implemented_total": 2498,
+  "implemented_standard_cards": 2493,
+  "implemented_total": 2499,
   "token_definitions": 120,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 187,
-      "gated": 86
+      "complete": 188,
+      "gated": 85
     },
     "one": {
       "total": 1,
@@ -36309,8 +36309,8 @@
     {
       "name": "The Vision",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_vision.rs",
       "set": "msh"
     },

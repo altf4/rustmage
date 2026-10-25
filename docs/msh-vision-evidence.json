@@ -1,0 +1,296 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "One whole-card candidate and per-turn modal-history prerequisite for single draft PR516; no main merge",
+  "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+  "validated_head_before_documentation": "85fa9800dd11d7309814370ff8ee235306978f87",
+  "cards": [
+    "The Vision"
+  ],
+  "complete_card_obligations": [
+    "4mana legendary2/5artifactcreatureRobotHeroFlyingVigilance",
+    "Every own noncreature actualCAST triggers; no copiedspell/creature/opponentcast",
+    "Choose unused mode asannouncement; consume evenifcountered; threechoices distinct",
+    "Reset eachactualturn inclopponent/extra, preserve lifetimeDemonicPact",
+    "Source exactincarnation/control/suppression/oldpacket/copies",
+    "doubleStrike/indestructible EOT and drawcapturedcontroller throughsource departure",
+    "publicoptionalturn genuinewire146, no oldfieldsdrift, nativeownedrollback/privatefailures"
+  ],
+  "shared_mechanics": [
+    "Typed ModalOncePerTurn header through existing mode admission/recording; lifetime ModalOnce remains distinct",
+    "Optional public history turn stamp keyed by exact source/definition/ability; actual turn advance prunes expired per-turn rows and preserves lifetime rows",
+    "Existing owned mode and effect continuations supply captured-controller draw and exact-source EOT keyword layers"
+  ],
+  "source": {
+    "definitions": 5398,
+    "source_blobs": 1206,
+    "java_verified": true,
+    "catalogue_version": "1dc5e587df8944ad5cad68ee7245f552df27436022d588bb52d478e956b47f27"
+  },
+  "source_pins": [
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TheVision.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "be4e944e36b1825905f4e5216ac88ddcf9912c763e7a050a012edee7933b181e",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/Modes.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aba1a0699596a6f1db972182990d248cad9f8a59146211b4902ceb0a26c882b1",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559",
+      "scope": "complete"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+      "scope": "FILTER_SPELL_A_NON_CREATURE lines1026-1030"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/common/ModesAlreadyUsedHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5aedbaf1b02deb4abeb43229898bea6e1563ecb1ede9a2cf77ed9e3ccac4b737",
+      "scope": "complete"
+    }
+  ],
+  "source_read_scope": {
+    "total_pins": 15,
+    "complete_bodies": 14,
+    "scoped_broad_helper": "StaticFilters.FILTER_SPELL_A_NON_CREATURE"
+  },
+  "authoritative_rules": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt#700.2"
+  ],
+  "scenarios": {
+    "new_groups": 14,
+    "both_seats": true,
+    "native_total": 1114,
+    "source": "src/engine_msh_vision_tests.rs",
+    "covers": [
+      "Paid4 mana2/5legendaryartifact/Robot/Hero; Flying,Vigilance and actual Double Strike combat",
+      "Three distinct modes and fourth exhausted trigger; invalid used/out-of-range choice atomicity",
+      "Actual opponent-turn and Time Stop reset, keyword expiry, Density versus paid destroy",
+      "Draw after source death for captured controller, exact source control and same-turn end-step blink",
+      "Noncreature artifact cast, creature/opponent spell quiet, ability suppression and restored availability",
+      "Owned orphan raw/index mode application and restore, equal-revision hidden-hand noninterference",
+      "Lifetime Demonic Pact choices persist across turns",
+      "Bounded selected-trigger packet-copy fixture repeats effect while preserving chosen mode/history; no new copy-consumer admission"
+    ]
+  },
+  "development_corrections": [
+    "Test ObjectView.card and Action::Block.blocker APIs",
+    "Payment fixture stops when original spell packet finishes, preserving immediately announced modal trigger",
+    "Two target fixtures omitted FinishTargets after automatic trigger announcement completion",
+    "Used existing supported Involuntary Employment for paid control change"
+  ],
+  "runtime_fixes_after_initial_authoring": [],
+  "trace_proof": {
+    "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+    "inherited_full_Trace_exact_matches": 2497,
+    "changed": [],
+    "removed": [],
+    "new_rows": {
+      "The Vision": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "ad0926541e55fa73",
+        "observations": "e0ba6e553fd21d7e"
+      }
+    },
+    "rows": 2498,
+    "normal_schema": 146,
+    "comparison_schema": 145,
+    "normal_sha256": "ea46c7e10c3448ee1de56de19dd46639c3fc90f5e908305a324629c5c463882f",
+    "previous145_sha256": "c49b998a0324a3db6dba1a6d76edc652e6d953b8454499364376090e7d5dc098",
+    "base_sha256": "860abacedbca501847d01ee19254fdacb2b4b656bcd1d40123028af6392f41b1",
+    "metadata_sha256": "4d95450061275c456e39e129a5d3680e24e4d1ffe49ff1c1fea4de839c0091b9",
+    "metadata_byte_identical": true,
+    "catalogue_definitions": 5398,
+    "token_recipes": 120,
+    "new_ids": [],
+    "old_fields_stripped": false,
+    "recorder_changed": false,
+    "fixed_input_files": 11735,
+    "fixed_input_changes": []
+  },
+  "identity": {
+    "wire_schema": 146,
+    "new_public_payload": "ModalHistoryView.turn optional; omitted for all existing lifetime histories",
+    "new_ids": [],
+    "definitions": 5398,
+    "token_recipes": 120,
+    "metadata_byte_identical": true,
+    "metadata_sha256": "4d95450061275c456e39e129a5d3680e24e4d1ffe49ff1c1fea4de839c0091b9"
+  },
+  "validation": {
+    "focused": "14 passed",
+    "preacceptance_native": "1113 passed; only expected2498vs2497 baseline-row failure",
+    "strict_native": "1114 passed",
+    "clippy": "all-targets -D warnings passed",
+    "format": "repository cargo fmt --all --check and authored Rust checks passed",
+    "link_and_source": "passed",
+    "aggregate_release_and_two_independent_nonauthor_reviews": "Required at final published aggregate head; no child release or full-set acceptance claim"
+  },
+  "resource_reports": {
+    "focused": {
+      "path": "<cache>/rustmage-build-reports/73f339ee31f04a438b796c79e1889080.json",
+      "sha256": "11a79fa416db67c8b1ebff87d4363bee1b2a621018b27c0d6479308c519a91f1",
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 385.3232750889729,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2437931008,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "export_clippy": {
+      "path": "<cache>/rustmage-build-reports/27ce1b665ecc4933a9e6388e25146175.json",
+      "sha256": "683ba769ffaa943e70aed2e0acde94b34940ae687dfa26b3a541d462dd6cb71f",
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 388.1915026360075,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1900490752,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "native": {
+      "path": "<cache>/rustmage-build-reports/575394d184c7473da912c492deb9c042.json",
+      "sha256": "a68fe0a9d1abe1b7a3ee73780d660a6b68ae19b0462e48757c7807c51a743956",
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 378.24527964001754,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2453344256,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "format": {
+      "path": "<cache>/rustmage-build-reports/a29ad02f1c00489187a7a1d103400ab6.json",
+      "sha256": "7dd899613962994fda481226ab4abc7f36fe18d81ce590cbb25c34c87d66b2e9",
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 423.24145443201996,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 106889216,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "resource_safety": {
+    "fixed_files": 11735,
+    "fixed_input_changes": [],
+    "all_consumers_terminal": true,
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0
+  },
+  "cleanup": {
+    "terminal": true,
+    "no_active_target_consumers": true,
+    "accessible_proc_fd_maps_exe_scan_clear": true,
+    "root": "<cache>/rustmage-msh-vision-target",
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 125075456,
+    "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+    "preserved_shared_libraries": {
+      "<cache>/rustmage-msh-vision-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_native_binary": {
+      "path": "<cache>/rustmage-msh-vision-target/debug/deps/rustmage-b764cd26223fba2c",
+      "sha256": "581091c41863d512436d47d89f77916aa431626677acbf9c8f12da6c0cb334e9"
+    }
+  },
+  "membership": {
+    "identities": 281,
+    "printings": 448,
+    "main_admissions": 180,
+    "base_candidate_admissions": 194,
+    "isolated_candidate_admissions": 195,
+    "isolated_gated": 86,
+    "entire_pool_acceptance": false
+  },
+  "throughput": {
+    "scope": "This one-card/core authoring through terminal tests/source/format/link/Clippy, exact full trace proof and cleanup. Includes serialized waits and fixture corrections, excludes earlier read-only preparation, final aggregate gates and full-set games.",
+    "start_utc": "2026-10-25T03:03:30.508257+00:00",
+    "cutoff_utc": "2026-10-25T03:37:12.360819+00:00",
+    "elapsed_seconds": 2021.852562,
+    "candidate_cards_per_hour": 1.7805452621327191,
+    "simulation_claim": false
+  },
+  "publication_policy": "Source branch only; root integrates into same draft PR516. Existing main merges remain and no new main merge is authorized."
+}
