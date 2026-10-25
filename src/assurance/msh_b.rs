@@ -2010,7 +2010,7 @@ fn msh_b_control_duration_and_combat_only_target_damage() {
     }
     for teamwork in [false, true] {
         let mut g = fresh(p);
-        let attacker = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let attacker = put(&mut g, p, "Savage Land Dinosaur", Zone::Battlefield);
         let idle = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
         let teammate = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
         let spell = put(&mut g, p, "Helicarrier Strike", Zone::Hand);
@@ -2032,11 +2032,12 @@ fn msh_b_control_duration_and_combat_only_target_damage() {
             pay(&mut g);
         }
         settle(&mut g);
-        if teamwork {
-            assert_eq!(g.state.objects[attacker as usize].zone, Zone::Graveyard);
-        } else {
-            assert_eq!(g.state.objects[attacker as usize].damage, 2);
-        }
+        assert_eq!(g.object_view(attacker).zone, Zone::Battlefield);
+        assert_eq!(
+            g.object_view(attacker).damage,
+            if teamwork { 4 } else { 2 },
+            "Strike has exact printed damage in both branches"
+        );
     }
 }
 

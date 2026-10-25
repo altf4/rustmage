@@ -2381,7 +2381,7 @@
               "line": 1979
             }
           ],
-          "assertion_scope": "NormalW deals2 to attacking3/3; Teamwork2 deals4/kills; idle creature target rejected; actual contributor tapped.",
+          "assertion_scope": "NormalW deals exactly2 and Teamwork2 exactly4 to a surviving7/6 attacker; idle creature target rejected; actual contributor tapped.",
           "evidence_identity": {
             "card_index": 97,
             "face": "Helicarrier Strike",
@@ -2402,7 +2402,7 @@
               "line": 1979
             }
           ],
-          "assertion_scope": "NormalW deals2 to attacking3/3; Teamwork2 deals4/kills; idle creature target rejected; actual contributor tapped.",
+          "assertion_scope": "NormalW deals exactly2 and Teamwork2 exactly4 to a surviving7/6 attacker; idle creature target rejected; actual contributor tapped.",
           "evidence_identity": {
             "card_index": 97,
             "face": "Helicarrier Strike",
@@ -2411,7 +2411,7 @@
         }
       ],
       "scenario": "msh_b_control_duration_and_combat_only_target_damage",
-      "asserted_interaction": "NormalW deals2 to attacking3/3; Teamwork2 deals4/kills; idle creature target rejected; actual contributor tapped."
+      "asserted_interaction": "NormalW deals exactly2 and Teamwork2 exactly4 to a surviving7/6 attacker; idle creature target rejected; actual contributor tapped."
     },
     {
       "index": 98,
@@ -6421,7 +6421,7 @@
   "body_paragraphs_mapped": 156,
   "header_source_facts": 236,
   "coverage_qualification": "All156 printed paragraphs map to explicit meaningful scenarios, with direct extra assertions for Net block rejection, permanent Feast next-turn life gain, Fist activation expiry, Armor animated flying and both Enforcers sacrifice types. Source keyword bindings remain separate from named shared actual keyword interactions. The236 header facts remain independent source facts rather than standalone gameplay evidence. Final integrated static/contracts and routine validation are owned centrally.",
-  "test_functions": 25,
+  "test_functions": 26,
   "expectation_authoring": "Full independent Oracle/direct XMage read and initial392-obligation ledger preceded scenario authoring. Expected values are literal Oracle facts; typed Rust is consulted to drive existing APIs, not to generate expectations. No old MSH test bodies were read or copied.",
   "known_gaps": [
     {

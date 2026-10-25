@@ -783,7 +783,7 @@
       "identities": 71,
       "test_module": "src/assurance/msh_a.rs",
       "test_functions": 41,
-      "test_sha256": "f4bae59bbd247b55ef46879ef89a8082e205d310d62c2850ce29f5efe2af58a5",
+      "test_sha256": "fec8d599a4a3edde3e5be4ad2347bd35932191b77c454c5fa333af771e158003",
       "obligation_ledger": "src/assurance/msh_a_obligations.json",
       "ledger_sha256": "1f73ef3ca54ccaee489c1cdaf6098095ec1be7c1521b4ad440bf6255844dd973"
     },
@@ -791,31 +791,31 @@
       "partition": "b",
       "identities": 70,
       "test_module": "src/assurance/msh_b.rs",
-      "test_functions": 25,
-      "test_sha256": "65596189ecbc9598ef25a95f65df6afa5d8e4b68695b43daa7d110b16fa552c1",
+      "test_functions": 26,
+      "test_sha256": "8719c9fecba9b85a5bbe7a4a065cdbb698dc149e6fad0c811bcad83c96d7984d",
       "obligation_ledger": "src/assurance/msh_b_obligations.json",
-      "ledger_sha256": "d9e4e5bcf31e51be13b498bcc8206f4a5489d90f0e3c2bb23ab76ada2104f97e"
+      "ledger_sha256": "06eb76c4fe3cb251c056d0687c7cd9bb7c8091cdfa708998eab52f20d98c8f5d"
     },
     {
       "partition": "c",
       "identities": 70,
       "test_module": "src/assurance/msh_c.rs",
       "test_functions": 31,
-      "test_sha256": "be398ff22bc87f1d35699ecfec82b78369b06b17369d280bdd7ce0fd8c5fac3b",
+      "test_sha256": "ca6f5049a75e39f796f0ced987b94a51abb26b93fdeb06004a5fe4756a50d03a",
       "obligation_ledger": "src/assurance/msh_c_obligations.json",
-      "ledger_sha256": "e65c199436201ddf4822f32cda17080b77d2b740404ba058ba631fbebb166022"
+      "ledger_sha256": "2bd08c27edde8d0a8bdf9127a7cadaa0ebfc264861a03ac3750110cd61ee42a8"
     },
     {
       "partition": "d",
       "identities": 70,
       "test_module": "src/assurance/msh_d.rs",
       "test_functions": 35,
-      "test_sha256": "32b3a7bd2e3417748879faa4a670b784ef8435d7b3fe14123acdf1c2e79ec224",
+      "test_sha256": "b953a930c7fb6b0b6bcc9511f03a843c566010972375f7cd5e624d6182922593",
       "obligation_ledger": "src/assurance/msh_d_obligations.json",
       "ledger_sha256": "fe32b197cd5d9dba4d00c8ed585a82fe83b49299d790013bae4215f75eb84264"
     }
   ],
-  "fresh_card_test_functions": 132,
+  "fresh_card_test_functions": 133,
   "representative_engine_contracts": {
     "path": "src/assurance/msh_contracts.rs",
     "functions": 3,
@@ -826,7 +826,8 @@
       "controlled-player resolution payment with paid Baxter conversion"
     ],
     "shared_helper": "src/assurance/contracts.rs::branch_contract",
-    "scope": "Raw/index equivalence, parent disposal, snapshot/restore, stale indices, rejected-action transactionality and two-view observations are checked only at representative roots."
+    "scope": "Raw/index equivalence, parent disposal, snapshot/restore, stale indices, rejected-action transactionality and two-view observations are checked only at representative roots.",
+    "sha256": "bf42e064e757b72a4450dd723bb6e0ea810b0763ed672d0d0533533ebf7ee6b6"
   },
   "printed_rule_denominators": {
     "a_oracle_paragraphs": 160,

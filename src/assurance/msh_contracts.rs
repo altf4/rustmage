@@ -136,7 +136,7 @@ fn msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_control
             let index = crate::policy::smoke_index(&g, &actions);
             assert!(
                 matches!(&actions[index], Action::ActivateMana { card, payment: [0,0,0,0,0,4], production, .. }
-                if *card == baxter && production.iter().map(|&x| u32::from(x)).sum::<u32>() == 4 && production[0] + production[2] > 0)
+                if *card == baxter && production.iter().copied().sum::<u32>() == 4 && production[0] + production[2] > 0)
             );
             g.apply_index(controller, g.revision(), index).unwrap();
             assert!(g.object_view(baxter).tapped);
@@ -152,7 +152,7 @@ fn msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_control
                 g.state.players[payer.index()]
                     .mana
                     .iter()
-                    .map(|&x| u32::from(x))
+                    .copied()
                     .sum::<u32>(),
                 3
             );
