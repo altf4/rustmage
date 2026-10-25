@@ -2811,6 +2811,27 @@ fn msh_echo_copies_creature_ability_and_changes_only_the_copys_target() {
     let echo = put(&mut g, p, "Echo, Perceptive Prodigy", Zone::Battlefield);
     let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
     let discard = put(&mut g, p, "Shock", Zone::Hand);
+    let shield = put(&mut g, p, "Captain America's Shield", Zone::Battlefield);
+    activate(
+        &mut g,
+        p,
+        shield,
+        0,
+        [0, 0, 0, 0, 0, 2],
+        &[Target::Card(bear)],
+    );
+    let noncreature_ability = g.state.stack.last().unwrap().id;
+    let foreign = put(&mut g, p.other(), "Agent Phil Coulson", Zone::Battlefield);
+    activate(&mut g, p.other(), foreign, 0, [0; 6], &[]);
+    let opponents_ability = g.state.stack.last().unwrap().id;
+    spell(
+        &mut g,
+        p,
+        "Shock",
+        [0, 0, 0, 1, 0, 0],
+        Some(Target::Player(p.other())),
+    );
+    let spell_on_stack = g.state.stack.last().unwrap().id;
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
     act(
         &mut g,
@@ -2834,14 +2855,26 @@ fn msh_echo_copies_creature_ability_and_changes_only_the_copys_target() {
     act(&mut g, Action::ChooseAdditionalCost { object });
     pay(&mut g);
     let original = g.state.stack.last().unwrap().id;
-    activate(
+    priority(&mut g, p);
+    g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+    act(
         &mut g,
-        p,
-        echo,
-        0,
-        [0, 0, 0, 0, 0, 1],
-        &[Target::Stack(original)],
+        Action::AnnounceActivate {
+            card: echo,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
     );
+    for forbidden in [noncreature_ability, opponents_ability, spell_on_stack] {
+        assert!(
+            !g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Stack(forbidden)
+            }),
+            "Echo requires a controlled ability from a creature source"
+        );
+    }
+    target(&mut g, Target::Stack(original));
+    finish_targets(&mut g);
     until(&mut g, |g| g.observe(p).retarget.is_some());
     act(
         &mut g,
@@ -2859,8 +2892,8 @@ fn msh_echo_copies_creature_ability_and_changes_only_the_copys_target() {
     );
     assert_eq!(
         g.state.players[p.other().index()].life,
-        18,
-        "original target was retained"
+        16,
+        "original two-damage target plus original Shock were retained"
     );
     assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
     assert!(g.object_view(echo).tapped && g.object_view(bullseye).tapped);

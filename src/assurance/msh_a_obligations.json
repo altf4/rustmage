@@ -82,7 +82,8 @@
           "power": "3",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -130,7 +131,8 @@
           "power": "1",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -168,7 +170,9 @@
           "power": "4",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_abomination_optional_fight_hybrid_cost_and_surviving_damage",
+            "engine::assurance::interactions::trample_with_deathtouch_assigns_one_lethal_and_the_rest_to_defender"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -217,7 +221,10 @@
           "power": "4",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -267,7 +274,10 @@
           "power": "1",
           "toughness": "1",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -317,7 +327,8 @@
           "power": "3",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -355,7 +366,8 @@
           "power": "2",
           "toughness": "1",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -393,7 +405,10 @@
           "power": "2",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_phil_coulson_counters_other_owned_heroes_only_and_taps",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -443,7 +458,8 @@
           "power": "2",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_prowess_family_has_real_noncreature_trigger_and_cleanup"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -481,7 +497,8 @@
           "power": "1",
           "toughness": "1",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -519,7 +536,8 @@
           "power": "2",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -595,7 +613,8 @@
           "power": "3",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -633,7 +652,8 @@
           "power": "2",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_ant_man_optional_payment_reflexive_counter_and_once_each_turn_insect"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -739,7 +759,8 @@
           "power": "4",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_ares_attacking_death_returns_owner_card_after_source_departs"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -855,7 +876,8 @@
           "power": "2",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -951,7 +973,10 @@
           "power": "3",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -1069,7 +1094,8 @@
           "power": "3",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -1417,7 +1443,8 @@
           "power": "3",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -1465,7 +1492,8 @@
           "power": "2",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -1579,7 +1607,8 @@
           "power": "3",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -1685,7 +1714,8 @@
           "power": "4",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -1743,7 +1773,10 @@
           "power": "3",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -1793,7 +1826,10 @@
           "power": "2",
           "toughness": "1",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::indestructible_survives_destroy_and_menace_requires_two_blockers"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -1891,7 +1927,8 @@
           "power": "1",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -1980,7 +2017,10 @@
           "power": "2",
           "toughness": "1",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2030,7 +2070,8 @@
           "power": "1",
           "toughness": "1",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2062,7 +2103,8 @@
           "power": "8",
           "toughness": "8",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2113,7 +2155,8 @@
           "power": "2",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_bullseye_optional_entry_and_both_activated_alternative_costs"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2309,7 +2352,10 @@
           "power": "3",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2359,7 +2405,10 @@
           "power": "3",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::first_strike_removes_blocker_before_it_deals_damage"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2419,7 +2468,8 @@
           "power": "3",
           "toughness": "1",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2467,7 +2517,10 @@
           "power": "4",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_window",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2517,7 +2570,8 @@
           "power": "5",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2684,7 +2738,10 @@
           "power": "2",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_cloak_hand_or_creature_exile_returns_to_original_zone_and_may_decline",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2734,7 +2791,8 @@
           "power": "2",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_window"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2868,7 +2926,9 @@
           "power": "3",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_prowess_family_has_real_noncreature_trigger_and_cleanup",
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2918,7 +2978,10 @@
           "power": "3",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -2968,7 +3031,8 @@
           "power": "1",
           "toughness": "2",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -3054,7 +3118,8 @@
           "power": "3",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -3425,7 +3490,8 @@
           "power": "3",
           "toughness": "6",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -3473,7 +3539,8 @@
           "power": "3",
           "toughness": "3",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_doctor_doom_tokens_conditional_indestructibility_and_own_end_step"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
@@ -3627,7 +3694,11 @@
           "power": "1",
           "toughness": "4",
           "tests": [
-            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios",
+            "engine::assurance::msh_a::msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires",
+            "engine::assurance::msh_a::msh_echo_copies_creature_ability_and_changes_only_the_copys_target",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
