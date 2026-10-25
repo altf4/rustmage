@@ -1476,6 +1476,8 @@ fn msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat() {
         "nonattacking enrage does not untap"
     );
     g.finish_cleanup();
+    g.state.active = p;
+    g.state.priority = p;
     g.state.turn += 1;
     g.begin_turn();
     g.state.step = Step::Main1;
@@ -1537,7 +1539,7 @@ fn msh_villain_observers_cost_discount_connive_and_first_entry_limit() {
     resolved(&mut g);
     assert_eq!(g.counter_count(cross, CounterKind::PlusOne), 1);
     assert_eq!(g.state.players[p.other().index()].life, 18);
-    spell(&mut g, p, "Bear Cub", [0, 0, 0, 0, 0, 2], None);
+    spell(&mut g, p, "Bear Cub", [0, 0, 0, 0, 1, 1], None);
     resolved(&mut g);
     assert_eq!(
         g.counter_count(cross, CounterKind::PlusOne),
@@ -1673,4 +1675,362 @@ fn msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_win
     cast(&mut g, bot, None);
     resolved(&mut g);
     assert_eq!(g.object_view(bot).zone, Zone::Battlefield);
+}
+
+#[test]
+fn msh_super_soldier_shields_and_wings_toughness_response_with_ward() {
+    let p = Player::P0;
+    for removal in ["Shock", "Murder"] {
+        let mut g = scenario(p);
+        let hero = put(&mut g, p, "Agent of Atlas", Zone::Battlefield);
+        let cap = spell(
+            &mut g,
+            p,
+            "Captain America, Super-Soldier",
+            [2, 0, 0, 0, 0, 1],
+            None,
+        );
+        resolved(&mut g);
+        assert_eq!(g.counter_count(cap, CounterKind::Shield), 1);
+        assert!(g.keywords(cap).contains(Keywords::FIRST_STRIKE));
+        priority(&mut g, p.other());
+        g.state.players[p.other().index()].mana = [0, 0, 2, 1, 0, 1];
+        let shock = put(&mut g, p.other(), "Shock", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: shock });
+        assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Player(p)
+        }));
+        assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(hero)
+        }));
+        target(&mut g, Target::Card(cap));
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        act(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        resolved(&mut g);
+        assert_eq!(g.counter_count(cap, CounterKind::Shield), 0);
+        assert_eq!(g.object_view(cap).damage, 0);
+        if removal == "Murder" {
+            spell(
+                &mut g,
+                p.other(),
+                "Murder",
+                [0, 0, 2, 0, 0, 1],
+                Some(Target::Card(cap)),
+            );
+            resolved(&mut g);
+            assert_eq!(g.object_view(cap).zone, Zone::Graveyard);
+        } else {
+            spell(
+                &mut g,
+                p.other(),
+                "Shock",
+                [0, 0, 0, 1, 0, 0],
+                Some(Target::Player(p)),
+            );
+            resolved(&mut g);
+            assert_eq!(g.state.players[p.index()].life, 18);
+        }
+    }
+    let mut g = scenario(p);
+    let wing = put(
+        &mut g,
+        p,
+        "Captain America, Wings of Freedom",
+        Zone::Battlefield,
+    );
+    let hero = put(&mut g, p, "Agent Maria Hill", Zone::Battlefield);
+    attack(&mut g, &[wing]);
+    until(&mut g, |g| {
+        g.state.pending == Pending::Priority && g.state.stack.iter().any(|s| s.card == wing)
+    });
+    spell(
+        &mut g,
+        p,
+        "Giant Growth",
+        [0, 0, 0, 0, 1, 0],
+        Some(Target::Card(wing)),
+    );
+    resolved(&mut g);
+    assert_eq!(stats(&g, wing), (6, 4));
+    assert_eq!(
+        stats(&g, hero),
+        (6, 5),
+        "attack trigger reads toughness after response"
+    );
+    spell(
+        &mut g,
+        p.other(),
+        "Shock",
+        [0, 0, 0, 1, 0, 0],
+        Some(Target::Card(wing)),
+    );
+    until(&mut g, |g| {
+        g.legal_actions().contains(&Action::DeclineResolutionMana)
+    });
+    assert_eq!(
+        g.observe(p.other())
+            .resolution_payment
+            .unwrap()
+            .cost
+            .generic,
+        1
+    );
+    act(&mut g, Action::DeclineResolutionMana);
+    resolved(&mut g);
+    assert_eq!(g.object_view(wing).damage, 0);
+    g.finish_cleanup();
+    assert_eq!(stats(&g, hero), (2, 1));
+    assert_eq!(stats(&g, wing), (3, 1));
+}
+
+#[test]
+fn msh_cloak_hand_or_creature_exile_returns_to_original_zone_and_may_decline() {
+    let p = Player::P0;
+    for route in [0, 1, 2] {
+        let mut g = scenario(p);
+        let creature = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let secret = put(&mut g, p.other(), "Shock", Zone::Hand);
+        let land = put(&mut g, p.other(), "Forest", Zone::Hand);
+        let source = spell(
+            &mut g,
+            p,
+            "Cloak and Dagger, Entwined",
+            [1, 0, 1, 0, 0, 1],
+            None,
+        );
+        until(&mut g, |g| {
+            g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            })
+        });
+        target(&mut g, Target::Player(p.other()));
+        target(&mut g, Target::Card(creature));
+        finish_targets(&mut g);
+        until(&mut g, |g| g.observe(p).hand_choice.is_some());
+        assert!(g.observe(p).objects.iter().any(|o| o.id == secret));
+        assert!(
+            g.observe(p).objects.iter().any(|o| o.id == land),
+            "whole hand is revealed"
+        );
+        let chosen = match route {
+            0 => None,
+            1 => Some(g.object_ref(secret)),
+            _ => Some(g.object_ref(creature)),
+        };
+        act(&mut g, Action::ChooseHandCard { object: chosen });
+        resolved(&mut g);
+        if route > 0 {
+            assert_eq!(
+                g.object_view(if route == 1 { secret } else { creature })
+                    .zone,
+                Zone::Exile
+            );
+        }
+        spell(
+            &mut g,
+            p,
+            "Murder",
+            [0, 0, 2, 0, 0, 1],
+            Some(Target::Card(source)),
+        );
+        resolved(&mut g);
+        assert_eq!(g.object_view(secret).zone, Zone::Hand);
+        assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions() {
+    let p = Player::P0;
+    for counter in [false, true] {
+        let mut g = scenario(p);
+        let widow = put(&mut g, p, "Black Widow, Super Spy", Zone::Battlefield);
+        let top = library(&mut g, p.other(), &["Forest", "Shock", "Forest"]);
+        attack(&mut g, &[widow]);
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        act(&mut g, Action::FinishBlockers);
+        until(&mut g, |g| {
+            g.legal_actions()
+                .contains(&Action::ChooseOptional { accept: counter })
+        });
+        act(&mut g, Action::ChooseOptional { accept: counter });
+        resolved(&mut g);
+        assert_eq!(g.object_view(top[0]).zone, Zone::Exile);
+        assert_eq!(g.object_view(top[1]).zone, Zone::Exile);
+        assert_eq!(g.object_view(top[2]).zone, Zone::Library);
+        assert_eq!(
+            g.counter_count(widow, CounterKind::PlusOne),
+            u64::from(counter)
+        );
+        if !counter {
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 0];
+            act(&mut g, Action::AnnounceExile { card: top[1] });
+            target(&mut g, Target::Player(p.other()));
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            act(
+                &mut g,
+                Action::PayCosts {
+                    payment: [0, 0, 0, 0, 1, 0],
+                },
+            );
+            resolved(&mut g);
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                16,
+                "combat two plus stolen Shock two"
+            );
+            assert_eq!(g.object_view(top[1]).owner, p.other());
+            assert_eq!(g.object_view(top[1]).zone, Zone::Graveyard);
+        } else {
+            assert!(
+                !g.state
+                    .exile_permissions
+                    .iter()
+                    .any(|r| r.object.card == top[1])
+            );
+        }
+    }
+    for name in ["Agent Maria Hill", "Forest"] {
+        let mut g = scenario(p);
+        let source = spell(
+            &mut g,
+            p,
+            "Daredevil, Man Without Fear",
+            [1, 0, 0, 1, 0, 2],
+            None,
+        );
+        resolved(&mut g);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let top = put(&mut g, p, name, Zone::Library);
+        assert!(g.observe(p).objects.iter().any(|o| o.id == top));
+        assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == top));
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        assert!(
+            g.legal_actions().contains(&Action::Attack { card: source }),
+            "printed haste works on entry turn"
+        );
+        act(&mut g, Action::Attack { card: bear });
+        act(&mut g, Action::FinishAttackers);
+        until(&mut g, |g| {
+            g.legal_actions()
+                .contains(&Action::ChooseOptional { accept: true })
+        });
+        act(&mut g, Action::ChooseOptional { accept: true });
+        resolved(&mut g);
+        assert_eq!(
+            stats(&g, source),
+            if name == "Forest" { (3, 4) } else { (5, 5) }
+        );
+        assert_eq!(g.object_view(top).zone, Zone::Exile);
+        g.state.step = Step::Main2;
+        g.state.priority = p;
+        if name == "Forest" {
+            act(&mut g, Action::PlayLand { card: top });
+        } else {
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 0];
+            act(&mut g, Action::AnnounceExile { card: top });
+            pay(&mut g);
+            resolved(&mut g);
+        }
+        assert_eq!(g.object_view(top).zone, Zone::Battlefield);
+        g.finish_cleanup();
+        assert_eq!(stats(&g, source), (3, 4));
+    }
+}
+
+#[test]
+fn msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = spell(&mut g, p, "Baron Helmut Zemo", [0, 0, 3, 0, 0, 0], None);
+    resolved(&mut g);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let discard = put(&mut g, p, "Shock", Zone::Library);
+    spell(
+        &mut g,
+        p,
+        "Dark Deed",
+        [0, 0, 1, 0, 0, 1],
+        Some(Target::Card(bear)),
+    );
+    until(&mut g, |g| {
+        g.legal_actions()
+            .contains(&Action::Discard { card: discard })
+    });
+    act(&mut g, Action::Discard { card: discard });
+    resolved(&mut g);
+    assert_eq!(g.counter_count(source, CounterKind::PlusOne), 1);
+    let cards = (0..15)
+        .map(|_| put(&mut g, p, "Duress", Zone::Graveyard))
+        .collect::<Vec<_>>();
+    let boast = Action::AnnounceActivate {
+        card: source,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    assert!(
+        !g.legal_actions().contains(&boast),
+        "boast requires attacking this turn"
+    );
+    g.state.turn += 1;
+    g.begin_turn();
+    g.state.step = Step::Main1;
+    attack(&mut g, &[source]);
+    priority(&mut g, p);
+    g.state.players[p.index()].mana = [0; 6];
+    act(&mut g, boast);
+    for (index, &id) in cards.iter().enumerate() {
+        let object = g.object_ref(id);
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        if index == 13 {
+            assert!(
+                !g.legal_actions()
+                    .contains(&Action::FinishGraveyardSymbolCost)
+            );
+        }
+    }
+    act(&mut g, Action::FinishGraveyardSymbolCost);
+    if g.state.announcing.is_some() {
+        pay(&mut g);
+    }
+    until(&mut g, |g| {
+        g.legal_actions().contains(&Action::FinishResolutionCasts)
+    });
+    for id in &cards {
+        assert_eq!(g.object_view(*id).zone, Zone::Exile);
+    }
+    for _ in 0..3 {
+        choose(
+            &mut g,
+            |a| matches!(a,Action::CastExiledDuringResolution{object,..}if !cards.contains(&object.card)),
+        );
+        target(&mut g, Target::Player(p.other()));
+        finish_targets(&mut g);
+    }
+    assert!(
+        !g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::CastExiledDuringResolution { .. })),
+        "three casts exhaust quota"
+    );
+    if g.legal_actions().contains(&Action::FinishResolutionCasts) {
+        act(&mut g, Action::FinishResolutionCasts);
+    }
+    resolved(&mut g);
+    assert_eq!(
+        g.counter_count(source, CounterKind::PlusOne),
+        1,
+        "copies are cast from exile, not hand"
+    );
+    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
 }
