@@ -2045,6 +2045,8 @@ pub(crate) enum ReplacementFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReplacementSpec {
+    /// Draw one card before the original creature connive proceeds.
+    ConniveDraw,
     /// Add one of each positive kind, only for the provider controller placing
     /// counters on their own permanent. General providers do not apply entering.
     CountersPlacedByController,

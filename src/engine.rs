@@ -8104,3 +8104,7 @@ mod msh_armor_hulk_sagas_tests;
 #[cfg(test)]
 #[path = "engine_msh_graveyard_plans_tests.rs"]
 mod msh_graveyard_plans_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_leader_tests.rs"]
+mod msh_leader_tests;

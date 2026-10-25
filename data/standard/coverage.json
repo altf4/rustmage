@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "632c61d99ced753da38037dbde59797f19644d3ae462a35a384371c9d271c419",
+  "catalogue_version": "8a7c00ba42ee8f7d651399426a3c431c775bec53f8dd676134d8b65a2a6d1e4e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2533,
-  "implemented_total": 2539,
+  "implemented_standard_cards": 2534,
+  "implemented_total": 2540,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 228,
-      "gated": 45
+      "complete": 229,
+      "gated": 44
     },
     "one": {
       "total": 1,
@@ -19909,8 +19909,8 @@
     {
       "name": "Leader, Super-Genius",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/leader_super_genius.rs",
       "set": "msh"
     },
