@@ -736,7 +736,10 @@ fn msh_source_quantities_packets_private_hidden_cards_and_owned_departure_restor
             let mut different_secret = g.clone();
             different_secret.state.objects[hidden as usize].card =
                 Card::from_name("Murder").unwrap();
-            assert_eq!(g.observe(p.other()), different_secret.observe(p.other()));
+            assert_eq!(
+                serde_json::to_value(g.observe(p.other())).unwrap(),
+                serde_json::to_value(different_secret.observe(p.other())).unwrap()
+            );
             let before = g.snapshot();
             let bytes = g.state_bytes();
             let mut child = {
@@ -912,5 +915,55 @@ fn msh_source_quantities_whiplash_simultaneous_type_provider_departure_keeps_pre
             settle(&mut g);
             assert_eq!((g.life(p), g.life(p.other())), (20, 20));
         }
+    }
+}
+
+#[test]
+fn msh_source_quantities_wings_growth_updates_real_and_speculative_power_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let captain = paid(&mut g, p, WINGS, &[]);
+        let source = named(&mut g, p, "Topiary Lecturer", Zone::Battlefield);
+        types(&mut g, source, &["Hero"]);
+        g.state.objects[source as usize].summoning_sick = false;
+        g.state.players[p.index()].mana = [0; 6];
+        let goal = |amount| FundingGoal {
+            actor: p,
+            required: [0, 0, 0, 0, amount, 0],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        assert!(!g.can_fund(goal(2)));
+        declare(&mut g, p, captain);
+        settle(&mut g);
+        assert_eq!(g.stats(source).power, 2);
+        let before = g.snapshot();
+        assert!(g.can_fund(goal(2)));
+        assert!(!g.can_fund(goal(3)));
+        assert_eq!(g.snapshot(), before);
+        priority(&mut g, p);
+        reject(
+            &mut g,
+            Action::ActivateMana {
+                card: source,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 3, 0],
+            },
+        );
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: source,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 2, 0],
+            },
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 2, 0]);
+        assert!(g.object_view(source).tapped);
     }
 }
