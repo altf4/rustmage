@@ -1,0 +1,159 @@
+{
+  "scope": "Three complete individual cards and directly affected damage/prevention interactions. No aggregate validation or full-set acceptance.",
+  "base": "4f48659b",
+  "tested_source": "02c6d2bb5a285b005f50cd844f5781dad38d549e",
+  "cards": [
+    "Hawkeye, Young Avenger",
+    "Wolverine, Fierce Fighter",
+    "Mj\u00f6lnir, Hammer of Thor"
+  ],
+  "complete": true,
+  "sources": {
+    "full_oracle": 3,
+    "full_direct_java": 3,
+    "full_read_semantic_helpers": 26,
+    "audit": "<cache>/rustmage-msh-damage-replacements-design-4f48659b.json",
+    "audit_sha256": "8e619501e5fb8e387cad9b140f168f6712983dedd619c199721c6fdd4e1dd3fc",
+    "scoped_utility": "Complete CardUtil overflowInc, overflowMultiply and overflowResult methods only; broad retained file not claimed fully read.",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "primary_release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "primary_rules": [
+      "CR107.1b including all examples",
+      "CR614.5",
+      "CR616.1a\u2013g",
+      "CR701.69a"
+    ],
+    "intentional_java_discrepancy": "Oracle damage plus X uses current signed power inside a calculation; CR107.1b clamps only final negative damage. Implementmax(0,originalDamage+signedPower). XMage NOT_NEGATIVE clamps intermediate power, intentionally not copied. This is a rules inference from primary wording, not an explicit negative-Hawkeye ruling.",
+    "scoped_exact_pins_rehashed": 30
+  },
+  "implementation": {
+    "Hawkeye": "Noncombat damage from its current controller to an opponent or their current permanent receives signed current provider power, clamped only after addition; each exact provider applies once per event. Frozen damage actor/keywords retain ordinary lifelink/LKI semantics.",
+    "Wolverine": "Optional other-creature entry fight. Before the final simultaneous damage batch, remove old marked damage from each exact pending heal recipient once. Preserve the entire new batch and damage/deathtouch history. Heal is a replacement, not prevention.",
+    "Mjolnir": "Optional entry4damage; equip1 only current own legendary non-Villain red/white creatures. Other attachment abilities bypass worthiness. Every exact equipped creature damage source doubles, including combat after assignment and noncombat. Hand channel2R pays actual discard and deals2 to all creatures.",
+    "intrinsic_prevention_order": "Existing keyword protection and combat-prevention effects participate in the ordered damage loop alongside printed replacements. New typed intrinsic prevention choices have no invented printed ability indices. Prevention first can make healing inapplicable; healing first remains queued if the later damage portion is prevented.",
+    "ownership": "DamageBatch owns exact pending heal refs, counted in state_bytes and cloned/restored with pending choices.",
+    "wire": 152,
+    "actual_new_action": "ChooseDamagePrevention{source,prevention}",
+    "actual_new_views": [
+      "DamagePreventionKind",
+      "DamagePreventionView",
+      "ReplacementChoiceView.damage_preventions",
+      "ReplacementChoiceView.heals_before_damage"
+    ],
+    "compatibility": "New view vectors omitted when empty. Existing printed replacement action and old policy scores retained; new intrinsic choice uses analogous score120.",
+    "new_catalogue_ids": 0
+  },
+  "focused": {
+    "groups": 30,
+    "new_individual_groups": 23,
+    "directly_affected_existing_groups": 7,
+    "both_seats": true,
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "new_rules_seconds": 0.28,
+    "summed_rules_seconds": 0.35000000000000003,
+    "guard_seconds": 30.608144185040146,
+    "driver_seconds": 30.437058925628662,
+    "memory_peak_bytes": 2730401792,
+    "memory_max_bytes": 6442450944,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "fixed_inputs": 11859,
+    "changed": [],
+    "input_map": "<cache>/rustmage-msh-damage-final-focus-inputs.json",
+    "input_map_sha256": "08998e2e03e4a2c4bdcbdc816765d621d96715f7ef3168ea44f3393b0ee4bffd",
+    "runs": [
+      {
+        "filter": "msh_damage_",
+        "exit_code": 0
+      },
+      {
+        "filter": "big_sword_protection_prevents_targeting_and_damage_and_delays_one_spell_copy",
+        "exit_code": 0
+      },
+      {
+        "filter": "sos_joke_global_prevention_target_optional_fizzle_and_cleanup",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_red_grim_red_noncombat_prevented_before_event",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_king_back_prevents_repeated_damage_but_respects_removal_and_prohibition",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_jennifer_acceptance_is_recorded_before_owned_damage_replacement_choice",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_jennifer_mixed_prevented_fragments_capture_actual_sum_and_post_lifelink_layers",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_inherited_keyword_menace_double_strike_lifelink_trample_and_deathtouch_damage",
+        "exit_code": 0
+      }
+    ],
+    "tests": [
+      "msh_damage_hawkeye_paid_costs_reach_and_own_opponent_recipient_filter",
+      "msh_damage_hawkeye_signed_power_clamps_only_final_damage",
+      "msh_damage_hawkeye_current_power_at_resolution_and_departed_provider",
+      "msh_damage_hawkeye_ability_removal_and_restoration",
+      "msh_damage_mjolnir_paid_entry_optional_four_and_target_departure",
+      "msh_damage_mjolnir_worthy_equip_checks_all_current_restrictions_and_atomicity",
+      "msh_damage_mjolnir_equip_sorcery_costs_target_rechecked_after_announcement",
+      "msh_damage_mjolnir_unworthy_actual_attachment_noncombat_order_lifelink_owned_choices",
+      "msh_damage_mjolnir_foreign_equipment_controller_still_doubles_creature_damage",
+      "msh_damage_mjolnir_channel_actual_discard_colored_generic_hand_only_and_instant",
+      "msh_damage_wolverine_optional_other_fight_and_lethal_damage_not_prevention",
+      "msh_damage_wolverine_sequential_heals_only_old_marks_keeps_damage_history",
+      "msh_damage_wolverine_fight_source_or_target_departure_never_rebinds",
+      "msh_damage_wolverine_simultaneous_combat_keeps_entire_new_batch_after_one_heal",
+      "msh_damage_wolverine_new_deathtouch_is_not_erased_by_healing",
+      "msh_damage_wolverine_prevention_order_exposes_owned_queued_heal_truthfully",
+      "msh_damage_wolverine_healing_still_applies_when_damage_cannot_be_prevented",
+      "msh_damage_mjolnir_trample_assigns_before_doubling_and_hawkeye_excludes_combat",
+      "msh_damage_hawkeye_current_controller_and_multiple_real_copied_providers_apply_once",
+      "msh_damage_mjolnir_destroyed_provider_does_not_double_queued_creature_ability",
+      "msh_damage_wolverine_suppression_stops_healing_and_restoration_resumes_it",
+      "msh_damage_hawkeye_negative_power_has_order_sensitive_doubling",
+      "msh_damage_mjolnir_distinct_nonlegendary_copy_providers_each_double_once"
+    ],
+    "bounded_fixtures": "Initial selected counter values and nonlegendary copy-recipe fixture are explicitly bounded; no admitted card is claimed to produce that nonlegendary Equipment exception. Main cards, payment, optional choices, combat, source/control changes, ordinary Taskmaster copy, trample, suppression, global unpreventability, channel and ordinary Equipment bypass use real supported definitions and paid actions.",
+    "ownership_privacy_atomicity": "Checked actions compare raw/index/restore and wrong actors. Explicit parent-disposed branches cover target, ordered replacement and intrinsic prevention choices including the nonempty queued-heal view. Illegal mana/targets/choices preserve snapshot, state_bytes and both observations. New action JSON round-trip is checked.",
+    "prior_attempts": "Eight development consumers retained, including compile failures for a tagged action field collision and missing fixture fields, and incorrect fixture names/rules assumptions (Witness remains legendary white; Winter Soldier is a Villain; automatic trample remainder; eight damage is nonlethal to Gigantosaurus). These failures were corrected. The final23 gated groups and final30 ordinary-supported/affected groups passed. No confirmed prior production rules defect is claimed beyond the new intrinsic-order requirement."
+  },
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-damage-replacements-preservation.json",
+    "sha256": "e689e1fad09467b0a95917b9b583aeb096793d414be577b474d65307057f95f6",
+    "required_paths": 4444,
+    "prior_paths_rehashed_exact": 4434,
+    "retained": {
+      "<cache>/rustmage-msh-damage-replacements-dev-target/debug/deps/rustmage-55e16bd14e329fbf": "a4e1ef1650ee3d7d75aeefb43af88ddd13b0164eb3ba5710e37e822557f4af25",
+      "<cache>/rustmage-msh-damage-replacements-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "removed_files": 166,
+    "removed_path_allocated_bytes": 40370176,
+    "own_processes_inspected": 197,
+    "accessible_target_refs": [],
+    "denied_inspections": 169,
+    "cleaned_target_must_not_be_reused": true
+  },
+  "implementation_interval": {
+    "start_utc": "2026-10-25T16:18:33.014157+00:00",
+    "end_utc": "2026-10-25T16:56:49.206811+00:00",
+    "hours": 0.6378312927777777,
+    "cards": 3,
+    "cards_per_hour": 4.703438094005853,
+    "scope": "Durable full-source design packet through final ordinary-supported result, including authoring, individual tests, development compiles and serialized queue. Not simulation throughput."
+  },
+  "deferred": [
+    "Serum bypass-worthiness cross-interaction after final source integration",
+    "Full native/default/trace migrations/release/CI",
+    "Two independent nonauthor final published-PR reviews",
+    "Entire281-card clause/game/performance acceptance"
+  ],
+  "main_merged": false,
+  "pr": "https://github.com/altf4/rustmage/pull/516"
+}
