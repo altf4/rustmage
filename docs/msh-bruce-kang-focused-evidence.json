@@ -1,0 +1,320 @@
+{
+  "schema": 1,
+  "scope": "Two complete MSH producers with focused individual printed-clause and affected core tests; final aggregate integration deferred.",
+  "base": "d16a5d12bf103ca810a73c5734f47782cde0ca61",
+  "tested_runtime": "1a46e89d4eb02543dff9c20702760c41844530e9",
+  "complete_cards": [
+    "Bruce Banner // The Incredible Hulk",
+    "Kang the Conqueror"
+  ],
+  "new_definitions": [
+    {
+      "id": 5404,
+      "name": "The Incredible Hulk",
+      "kind": "modal back face",
+      "front_id": 571,
+      "printed_cost": "{2}{R}{R}{G}{G}"
+    }
+  ],
+  "next_free_id": 5405,
+  "wire_schema": 152,
+  "wire_note": "Real sparse optional Observation.turn_schedule with pending creation order, current exact extra context and saved normal successor; skipped when absent.",
+  "source_sha256": {
+    "data/catalogue-identities.json": "57382a60d74330ac28047f178bf3c9254349af881329537d9c41803705761698",
+    "data/standard/coverage.json": "4afc23ebcbf7cd0c77b8ca871d1ee100ae2e9131cc323ca23997faa0d6691288",
+    "src/card_definitions/msh/bruce_banner_the_incredible_hulk.json": "dac52b35e08b59594b3dcda75aeb75327bd76048e42fd70431454d79276949d5",
+    "src/card_definitions/msh/bruce_banner_the_incredible_hulk.rs": "a513cfb52e28e89a8622ffa45eeac9659b922500c029235fa93d14853f5bf22e",
+    "src/card_definitions/msh/kang_the_conqueror.json": "41599bda204033a803f249f9c8be6dbed3906d47865707d28edfe02ca56fa952",
+    "src/card_definitions/msh/kang_the_conqueror.rs": "0c6c7ce5b6fcd4fca6f48e7b667fd03d0b90a1a43c3b44c260e5c53aed41882a",
+    "src/card_definitions/msh/the_incredible_hulk.json": "1844faeb4c1e1ce0bb2522a45de77a2c2f6c4131e2dbd1c77a095968b74c5e47",
+    "src/card_definitions/msh/the_incredible_hulk.rs": "6cd852a9946dffea82665283f601de62d0f690adadb43f592c3bc193f63ec78f",
+    "src/cards.rs": "0bfd2de3b32408d44985f1e6349466887ea3c73f5adee8f8f37e50c6145cd41e",
+    "src/engine.rs": "0ccfa99767583ecbd0ab65fb1d1cf3d1471b28a59a5277866f58b1a6c0efbf79",
+    "src/engine_combat_allocations.rs": "085b5b6486eca926d5931cbca9fadbe4d335465416862ed1f54f7e8a609d0df6",
+    "src/engine_funding.rs": "12a0f88cb40347670fe52b408f072eb578bbd1fcb048a6ac14437e0a288c8065",
+    "src/engine_msh_bruce_kang_tests.rs": "8cf560b98000b2f256bec27991902aa256cfd134ddd3fd2397868299ee92df36",
+    "src/engine_power_up.rs": "b82a0d8e490f567d071feb69c15fe92c126c4162c4a862f9182f8a1ab273767e",
+    "src/engine_programs.rs": "bd6cc07456c22ae20063d1dc511ed518ac9b9b528391fd4ff129ff05b193a0df",
+    "src/engine_scalar_x.rs": "1a6ba72b0ad6ae29fd405a4fbf683ad681c006d34c5922969a9a4625116b8814",
+    "src/engine_targeting.rs": "9f9939f74ca04f5375f52cd732aedcef635e4bbfa8961202b67667d030c0e608",
+    "src/engine_turn_schedule.rs": "967f003dc7e86b90b1a184ed8248314fb5047253e61c92dd3dda6e82c97ba54b",
+    "src/engine_turn_skips.rs": "b64a544aef5edca5831b788ee759e8a491bfb508b2ac4ae0d4a58b1e2d7d4fb3",
+    "src/generated/authored_cards.rs": "ce40cbdf6129d7e08b7b7f5b791e4946af467af129f7e859dd8fe736dfd7de36",
+    "src/generated/catalogue.rs": "b01dde3393fe8e854adbdc27c07712adcfa22377e818f9988b8e3b0070c120f7"
+  },
+  "source_cache": {
+    "path": "<cache>/rustmage-msh-bruce-kang-sources.json",
+    "sha256": "dca4db3910d236c91a879f862bd5166f19ac03607b319448295526f13e1e5887",
+    "full_frozen_oracle": true,
+    "java_files": 27,
+    "read_coverage": "26 complete main/helper bodies including retained unchanged modal/common helpers; CardUtil ranged1918-2008 cost-tag lookup only."
+  },
+  "owned_provenance": {
+    "schema": 1,
+    "tested_source": "1a46e89d4eb02543dff9c20702760c41844530e9",
+    "fixed_inputs": 11148,
+    "changed": [],
+    "checks": [
+      {
+        "command": [
+          "python3",
+          "scripts/link_catalogue.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "{\"schema\": 1, \"catalogue_version\": \"b5c32fd266f53c7e29dcb54af2a06e086fb1c55278d7be01c16139b7f8288fd6\", \"standard_legal_cards\": 5164, \"implemented_standard_cards\": 2539, \"implemented_total\": 2545, \"token_definitions\": 125, \"emblem_definitions\": 3, \"adventure_definitions\": 40, \"omen_definitions\": 13}\n"
+      },
+      {
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "--config",
+          "skip_children=true",
+          "src/card_definitions/msh/bruce_banner_the_incredible_hulk.rs",
+          "src/card_definitions/msh/kang_the_conqueror.rs",
+          "src/card_definitions/msh/the_incredible_hulk.rs",
+          "src/cards.rs",
+          "src/engine.rs",
+          "src/engine_combat_allocations.rs",
+          "src/engine_funding.rs",
+          "src/engine_msh_bruce_kang_tests.rs",
+          "src/engine_power_up.rs",
+          "src/engine_programs.rs",
+          "src/engine_scalar_x.rs",
+          "src/engine_targeting.rs",
+          "src/engine_turn_schedule.rs",
+          "src/engine_turn_skips.rs"
+        ],
+        "exit_code": 0,
+        "output": ""
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check",
+          "d16a5d12bf103ca810a73c5734f47782cde0ca61",
+          "HEAD"
+        ],
+        "exit_code": 0,
+        "output": ""
+      }
+    ],
+    "owned": [
+      {
+        "path": "src/card_definitions/msh/bruce_banner_the_incredible_hulk.json",
+        "sha256": "dac52b35e08b59594b3dcda75aeb75327bd76048e42fd70431454d79276949d5",
+        "definition_sha256": "a513cfb52e28e89a8622ffa45eeac9659b922500c029235fa93d14853f5bf22e",
+        "java_source": "Mage.Sets/src/mage/cards/b/BruceBanner.java",
+        "java_sha256": "0ff7e49d28db4585ab4534a114d714efc558b0fc0e6010a70a2832b3a30b92b7",
+        "dependencies": 21
+      },
+      {
+        "path": "src/card_definitions/msh/the_incredible_hulk.json",
+        "sha256": "1844faeb4c1e1ce0bb2522a45de77a2c2f6c4131e2dbd1c77a095968b74c5e47",
+        "definition_sha256": "6cd852a9946dffea82665283f601de62d0f690adadb43f592c3bc193f63ec78f",
+        "java_source": "Mage.Sets/src/mage/cards/b/BruceBanner.java",
+        "java_sha256": "0ff7e49d28db4585ab4534a114d714efc558b0fc0e6010a70a2832b3a30b92b7",
+        "dependencies": 21
+      },
+      {
+        "path": "src/card_definitions/msh/kang_the_conqueror.json",
+        "sha256": "41599bda204033a803f249f9c8be6dbed3906d47865707d28edfe02ca56fa952",
+        "definition_sha256": "0c6c7ce5b6fcd4fca6f48e7b667fd03d0b90a1a43c3b44c260e5c53aed41882a",
+        "java_source": "Mage.Sets/src/mage/cards/k/KangTheConqueror.java",
+        "java_sha256": "a7bf8c66505e7810c5f07c2f843bc1c0d92139ab04e8eefbfc64e2ecb975c29b",
+        "dependencies": 7
+      }
+    ],
+    "java_pins": {
+      "Mage.Sets/src/mage/cards/b/BruceBanner.java": "0ff7e49d28db4585ab4534a114d714efc558b0fc0e6010a70a2832b3a30b92b7",
+      "Mage.Sets/src/mage/cards/k/KangTheConqueror.java": "a7bf8c66505e7810c5f07c2f843bc1c0d92139ab04e8eefbfc64e2ecb975c29b",
+      "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc",
+      "Mage/src/main/java/mage/abilities/common/DealtDamageToSourceTriggeredAbility.java": "97485da3564c3e9e3b6355947a03b4480cd40bd32fc00a0f3b4e6c8d5e166b79",
+      "Mage/src/main/java/mage/abilities/condition/common/SourceAttackingCondition.java": "5988c02698c861fbea49e3be94d936c07d2694e5285093f523ec4f4932cc7b14",
+      "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b",
+      "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+      "Mage/src/main/java/mage/abilities/costs/mana/VariableManaCost.java": "b4889a84a0f5375d21a3ca8aeb4478147e7a97e029b71f688042199c7e0d259e",
+      "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5",
+      "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c",
+      "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0",
+      "Mage/src/main/java/mage/abilities/effects/common/AdditionalCombatPhaseEffect.java": "52f33fcfab80ac5e2027406daace88dec6cd258ea19421a98551e2d34394efd3",
+      "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+      "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e",
+      "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71",
+      "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53",
+      "Mage/src/main/java/mage/abilities/effects/common/turn/AddExtraTurnControllerEffect.java": "aa00be1d559a93aaaf8b77bb7047455c84fc74c603b6c6cbe9916edc29f8c28e",
+      "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb",
+      "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63",
+      "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559",
+      "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c",
+      "Mage/src/main/java/mage/cards/ModalDoubleFacedCard.java": "e5f3411b714da1f2b68d5003bc2bb7ef39a1fafbd3fef94fb69fdef21a8d0edb",
+      "Mage/src/main/java/mage/cards/ModalDoubleFacedCardHalf.java": "37d2bee15a7f11769410f0a6caee99e41a9eeaad0daa965aa3d12600bf11f59f",
+      "Mage/src/main/java/mage/cards/DoubleFacedCard.java": "84cf08e3f8ac922aadb4856757341b6cbdf9db66e8b2401b43b9be9ee0316db0",
+      "Mage/src/main/java/mage/cards/DoubleFacedCardHalf.java": "238869dbb53fc008cf0cf72225f9c983040317b4e7979acfd01db5114772f5e2",
+      "Mage/src/main/java/mage/game/turn/TurnMod.java": "f15213fe573eb67e7650c78d93726021700267839219ff022dd72fb304826698",
+      "Mage/src/main/java/mage/util/CardUtil.java": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    },
+    "unchanged_sha256": {
+      "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+      "src/assurance/msh_games.rs": "bdf8b3f53b7c3b6c509b4116b4539acc70045b8ee648987ef78c4c98b904d50d",
+      "src/assurance/card_traces.json": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3",
+      "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0"
+    }
+  },
+  "identity_audit": {
+    "schema": 1,
+    "base": "d16a5d12bf103ca810a73c5734f47782cde0ca61",
+    "old_rows": 5404,
+    "new_rows": 5405,
+    "append": 5404,
+    "next_free": 5405,
+    "old_changed_rows": [
+      571
+    ],
+    "layout": "modal_dfc",
+    "front_cost": "{U}",
+    "back_cost": "{2}{R}{R}{G}{G}",
+    "new_aliases": [
+      "Bruce Banner",
+      "The Incredible Hulk"
+    ],
+    "old_recipes_and_aliases_exact": true
+  },
+  "mechanics": [
+    "Repeated immutable ActivationX headers describe one chosen X in each printed occurrence; checked wide intermediates preserve existing power-up reduction order and scalar interval funding",
+    "Owned source-independent LIFO extra-turn schedule captures controller and normal successor; only selected queued turn is consumed by a skip, without starting events or turn numbering",
+    "Exact current extra-turn prohibition applies through the existing common power-up availability path for all players, direct/copy/borrowed templates",
+    "Hulk reuses actual post-damage SelfDamaged lookback, exact-source live attacking guard, central untap and existing independent additional combat count"
+  ],
+  "primary_rules": {
+    "CR": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "sections": [
+      "107.3a/i/k chosenX",
+      "500.7 latest extra turn first",
+      "500.8 additional phase insertion",
+      "614.10/10a skipped turns and next actual occurrence",
+      "702.193 power-up",
+      "712.3/9 modal transform"
+    ],
+    "access": "Existing exact officialSeptember25,2026 snapshot used and pinned; web tool fetch of text was inaccessible during this pass."
+  },
+  "tests": {
+    "whole_pair_groups": 24,
+    "whole_pair_seconds": 0.31,
+    "affected_helper_groups": 71,
+    "affected_helper_seconds": 1.08,
+    "both_seats": true,
+    "actual_paid_actions": true,
+    "ordinary_supported_final_run": true,
+    "obligations": {
+      "Bruce Banner // The Incredible Hulk": [
+        "both modal faces actually cast atU and2RRGG; front1/1 Human Scientist Hero; back8/8 Gamma Berserker Hero with reach/trample; represented face mana values1/6 and front restoration outside BF/stack",
+        "sorcery-only XX,tap chooses one X while paying2X; X0/1/2/4, odd budget floor, impossible andu32max choices atomic, sickness/tapped/timing",
+        "actual lands floated during X payment, exact4mana forX2, orphan raw/index payment+restore; artifact-spell-only CastleDoom mana cannot pay this ability",
+        "paid2RRGG sorcery transform preserves exact incarnation and counters; blink/new source and duplicate paid packet serial guards",
+        "actual positive damage triggers one counter per batch; prevented damage none, nonattacking/blocking no extra combat",
+        "live attacking condition at resolution; actual Shock, central untap, stun counter prevents untap but still creates combat",
+        "actual reach block against SerraAngel; actual trample allocation with BearCub and lethal deathtouch blocker; lethal source departure leaves no counter/extra",
+        "ordinary actual extra combat is taken and Hulk can attack again; multiple resolved additional combats persist after subsequent paid Murder; source leaves before enrage resolution no combat"
+      ],
+      "Kang the Conqueror": [
+        "paid2UU4/5 flying body; entry-turn power-up reduction3U versus later full5UUU; one lifetime use, +1/+1 counter and independent extra turn",
+        "source absent or control changed before resolution does not cancel or retarget captured controller extra turn",
+        "sparse public pending/current extra-turn context and saved original normal successor; both observers see the same public facts",
+        "actual both-controller paid grants are LIFO; nested bounded extra grants preserve normal turn order",
+        "queued skipped extra turns do not start events/increment turn or spill their prohibition; duplicate genuine paid packet with skipone preserves second exact context",
+        "designated extra turn bans power-ups for both players, including real TerritoryForge borrowed Kang template and real Shuri fresh copied Kang origin; ordinary Bruce activation still legal",
+        "power-up ban expires at end of that exact extra context; real borrowed power-up is payable afterward; paid TimeStop ends extra turn without leaking prohibition",
+        "source-independent queue and public views preserved through parent disposal, raw/index replay and restore; atomic illegal actions and wrong actors through shared checked helpers"
+      ]
+    },
+    "profiles": "focused testopt0, one job/test thread,6GiB shared guard"
+  },
+  "fixed_inputs": {
+    "source": "1a46e89d4eb02543dff9c20702760c41844530e9",
+    "terminal": true,
+    "exit_code": 0,
+    "inputs": 11148,
+    "changed": []
+  },
+  "resource_guard": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib",
+      "msh_bruce_kang",
+      "--",
+      "--nocapture"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 30.76434412301751,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2724937728,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "affected_guard": {
+    "command": [
+      "<cache>/rustmage-msh-bruce-kang-focused-target/debug/deps/rustmage-55e16bd14e329fbf",
+      "power_up",
+      "msh_stature",
+      "msh_armor_tony",
+      "scalar_x",
+      "sos_ral_coins",
+      "sos_actual_turn_skip",
+      "--nocapture"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 1.0889524139929563,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 18251776,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-bruce-kang-preservation.json",
+    "sha256": "4d15d1ad45eaceab73a04ad5e4bb9e7a7e76c715220cb17bf10b156f787c199e",
+    "prior_required": 4461,
+    "required": 4482,
+    "retained": {
+      "<cache>/rustmage-msh-bruce-kang-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-bruce-kang-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "c034f073034f1dd31f60ced01b4ee6ba31620c3cad664cde24262bcecf4e3f07"
+    }
+  },
+  "cleanup": {
+    "created_utc": "2026-10-25T17:30:34.139038+00:00",
+    "only_terminal_target": true,
+    "target": "<cache>/rustmage-msh-bruce-kang-focused-target",
+    "processes": 1174,
+    "maps_denied": 48,
+    "accessible_references": [],
+    "removed_files": 165,
+    "removed_path_bytes": 39840850,
+    "preserved": {
+      "<cache>/rustmage-msh-bruce-kang-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-bruce-kang-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "c034f073034f1dd31f60ced01b4ee6ba31620c3cad664cde24262bcecf4e3f07"
+    }
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T17:06:40+00:00",
+    "final_focused_terminal_utc": "2026-10-25T17:25:51.686183+00:00",
+    "seconds": 1151.686183,
+    "complete_physical_cards": 2,
+    "cards_per_hour": 6.251703030112674,
+    "scope": "isolated pair branch creation through final ordinary supported focused terminal; not a simulation benchmark"
+  },
+  "limits": [
+    "No DEFAULT/full native, old-trace exports, release, CI or complete-set corpus validation in this phase.",
+    "Final source composition, broad interactions and two final-head nonauthor reviews remain with the parent task.",
+    "Nested generic extra-turn consumer, preexisting skip counts, duplicate genuine paid ability packet and prevention keyword fixture are explicitly bounded in source; they admit no additional producer.",
+    "Decision delegation/player-turn control is a separate owner; scheduled skipped turns never call begin_turn, allowing that core to consume pending control only on an actual turn."
+  ]
+}
