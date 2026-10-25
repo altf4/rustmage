@@ -526,3 +526,83 @@ fn msh_broker_thrall_thrall_paid_target_selection_color_timing_and_owned_resolut
         settle(&mut g);
     }
 }
+#[test]
+fn msh_broker_thrall_thrall_later_short_control_expires_back_to_long_control() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid(&mut g, p, BROKER, &[]);
+        let target = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        paid(&mut g, p, THRALL, &[Target::Card(target)]);
+        next_turn(&mut g);
+        until(&mut g, |g| {
+            g.state.active == p.other()
+                && g.state.step == Step::Main1
+                && g.state.pending == Pending::Priority
+        });
+        paid(
+            &mut g,
+            p.other(),
+            "Involuntary Employment",
+            &[Target::Card(target)],
+        );
+        controls(&g, target, p.other());
+        assert_eq!(g.observe(p).temporary_controls.len(), 2);
+        next_turn(&mut g);
+        controls(&g, target, p);
+        assert_eq!(g.observe(p).temporary_controls.len(), 1);
+        next_turn(&mut g);
+        controls(&g, target, p.other());
+        assert!(g.observe(p).temporary_controls.is_empty());
+    }
+}
+#[test]
+fn msh_broker_thrall_thrall_later_fixed_control_supersedes_and_removes_long_deadline() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid(&mut g, p, BROKER, &[]);
+        let target = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        paid(&mut g, p, THRALL, &[Target::Card(target)]);
+        paid(&mut g, p, "Harmless Offering", &[Target::Card(target)]);
+        controls(&g, target, p.other());
+        assert!(g.observe(p).temporary_controls.is_empty());
+        next_turn(&mut g);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        controls(&g, target, p.other());
+    }
+}
+#[test]
+fn msh_broker_thrall_thrall_uses_real_current_copy_mana_value() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid(&mut g, p, BROKER, &[]);
+        let target = paid(&mut g, p, "Taskmaster, Mercenary Mimic", &[]);
+        let bear = paid(&mut g, p, "Bear Cub", &[]);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::Targets { .. })
+                && g.state
+                    .announcing
+                    .as_ref()
+                    .is_some_and(|a| a.item.card == target)
+        });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.objects[target as usize].card.fixed_mana_value(), 2);
+        paid(&mut g, p, THRALL, &[Target::Card(target)]);
+        assert!(
+            g.observe(p)
+                .temporary_controls
+                .iter()
+                .any(|row| row.object == g.object_ref(target)
+                    && row.expires_after_next_turn.is_some())
+        );
+    }
+}
