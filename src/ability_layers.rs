@@ -143,6 +143,8 @@ pub(crate) enum StaticAbilityFragment {
     AttacksEachCombat,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
+    /// Rules restriction evaluated after all derived power modifications.
+    CannotBeBlockedIfSourcePowerAtMost(i128),
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,

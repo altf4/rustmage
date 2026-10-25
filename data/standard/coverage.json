@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f6282bc78e022c2bb6f947315cbd3004e3bed55bcab53f6cc60f37b83a276726",
+  "catalogue_version": "5aed824b508c47b1b2950923ead628d0a15c7da25808e9a323600318da748b00",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2469,
-  "implemented_total": 2475,
+  "implemented_standard_cards": 2470,
+  "implemented_total": 2476,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 164,
-      "gated": 109
+      "complete": 165,
+      "gated": 108
     },
     "one": {
       "total": 1,
@@ -33165,8 +33165,8 @@
     {
       "name": "Stature, Size Shifter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/stature_size_shifter.rs",
       "set": "msh"
     },
