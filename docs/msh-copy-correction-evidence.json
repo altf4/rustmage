@@ -1,0 +1,256 @@
+{
+  "scope": "Three shared copy-rule corrections; zero new card admissions. Full-set acceptance remains open.",
+  "base": "a41d2a700ba0064c210b5342528580d7398a096a",
+  "tested_runtime_head": "7a41be85fa79cdd4faf6901f5a4f26a063d2bab6",
+  "schema": {
+    "normal": 149,
+    "previous": 148,
+    "changed": false
+  },
+  "rules": {
+    "source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+    "effective": "2026-09-25",
+    "707.9d": "A copy replacing creature types excludes the subtype-defining ability. Additive types retain it.",
+    "707.8a": "Token face structure follows the actual source permanent, independently of its current copied definition. Other copy effects modify both copied faces."
+  },
+  "changes": [
+    {
+      "rule": "Intrinsic subtype CDA",
+      "implementation": "CopyRecipe::intrinsic_keywords filters only definition CHANGELING when copy_types().replace; actual raw query, layer-six evaluation and speculative funding share this baseline. Copied exceptions, resolution grants and later providers remain separate.",
+      "evidence": "Paid Taskmaster copies both supported changelings in both seats and both evaluation paths; additive Absorbing keeps changeling; Undercover conditional all-types and bounded genuine external keyword grants stay effective; copy-of-copy and Hero-only mana legality remain correct."
+    },
+    {
+      "rule": "Artifact-token replacement classification",
+      "implementation": "TokenBatch::artifact_at uses recipe.kinds() when a copy recipe exists, otherwise ordinary token metadata.",
+      "evidence": "Paid Self-Reflection copies real artifact-creature positives and Taskmaster Creature-only copies; Helm/Visitor apply only to actual artifact token recipes."
+    },
+    {
+      "rule": "Independent physical token faces",
+      "implementation": "Flat private CopyRecipe face template distinguishes Single and Double, with immutable front/back definitions and side. Canonical ordinary recipes keep None. In-place copies preserve recipient physical shape; copied DFC-under-copy freezes the active definition on both faces. Transform and existing FaceView use that template. No hot Object fields added.",
+      "evidence": "Paid Taskmaster/Monica/Molten negative pays the inherited transform cost and cannot transform; actual Monica/Molten positive transforms. Paid Shuri overlays a true DFC token with Arc Reactor, and a second paid Molten preserves DFC structure."
+    },
+    {
+      "rule": "Owned and departed-source face facts",
+      "implementation": "Materialized recipient-normalized recipes and existing source_copy_recipe capture retain nondefault private face templates, including faces-only recipes.",
+      "evidence": "The paid inverse fixture adds a bounded captured-source departure/orphan/restore check. Its final Arc/Arc side-toggle check invokes transform_source directly because Arc has no printed transform ability; this is a bounded continuation, not a playable activation claim."
+    }
+  ],
+  "tests": {
+    "new_groups": 12,
+    "focused_groups_including_prior_producers": 42,
+    "both_seats": true,
+    "actual_actions": "Printed paid casts/activations, actual Taskmaster first-main target choices, real public legend choices and paid Shuri target groups. Existing checked helper exercises wrong actor atomicity, raw/index owned branches after parent disposal and restore for actual actions.",
+    "bounded_limits": [
+      "The external CHANGELING grant fixture uses existing typed grant machinery; no admitted card is claimed to grant it.",
+      "The inverse Arc/Arc transform and source-capture continuation are explicitly bounded, after the real paid creation/overlay/copy sequence."
+    ],
+    "functions": [
+      {
+        "path": "src/engine_msh_temporary_copy_cards_tests.rs",
+        "function": "msh_copy_subtype_cda_paid_taskmaster_excludes_intrinsic_changeling_in_both_query_paths"
+      },
+      {
+        "path": "src/engine_msh_temporary_copy_cards_tests.rs",
+        "function": "msh_copy_subtype_cda_paid_absorbing_additive_types_keep_changeling"
+      },
+      {
+        "path": "src/engine_msh_temporary_copy_cards_tests.rs",
+        "function": "msh_copy_subtype_cda_external_keyword_grant_survives_intrinsic_filter_and_restore"
+      },
+      {
+        "path": "src/engine_msh_temporary_copy_cards_tests.rs",
+        "function": "msh_copy_subtype_cda_undercover_conditional_all_types_remains_live"
+      },
+      {
+        "path": "src/engine_msh_temporary_copy_cards_tests.rs",
+        "function": "msh_copy_subtype_cda_paid_molten_then_shuri_flat_copy_never_restores_changeling"
+      },
+      {
+        "path": "src/engine_msh_temporary_copy_cards_tests.rs",
+        "function": "msh_copy_subtype_cda_taskmaster_cannot_spend_hero_mana_on_copied_mascot_activation"
+      },
+      {
+        "path": "src/engine_temporary_copy_funding_tests.rs",
+        "function": "msh_copy_subtype_cda_funding_raw_and_evaluated_keywords_equal_paid_actual"
+      },
+      {
+        "path": "src/engine_msh_copy_identity_regression_tests.rs",
+        "function": "msh_copy_identity_taskmaster_creature_only_does_not_add_worldwalker_map"
+      },
+      {
+        "path": "src/engine_msh_copy_identity_regression_tests.rs",
+        "function": "msh_copy_identity_taskmaster_creature_only_is_not_replaced_by_draconic_visitor"
+      },
+      {
+        "path": "src/engine_msh_copy_identity_regression_tests.rs",
+        "function": "msh_copy_identity_token_of_single_faced_taskmaster_copying_monica_cannot_transform"
+      },
+      {
+        "path": "src/engine_msh_copy_identity_regression_tests.rs",
+        "function": "msh_copy_identity_token_of_actual_monica_retains_double_faces_and_transforms"
+      },
+      {
+        "path": "src/engine_msh_copy_identity_regression_tests.rs",
+        "function": "msh_copy_identity_token_of_dfc_under_single_face_copy_retains_two_frozen_faces"
+      }
+    ]
+  },
+  "sources": {
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "full_cache": "<cache>/rustmage-msh-copy-correction-sources-a41.json",
+    "full_cache_sha256": "fc520297f1e61d8aabce72ac546a96ed52e703bcbdb402d517751d29d62ac703",
+    "full_java_bodies": 14,
+    "full_oracle_records": 12,
+    "full_rust_and_provenance_bodies": 26,
+    "java_pins": [
+      {
+        "path": "Mage.Sets/src/mage/cards/t/ThreeTreeMascot.java",
+        "sha256": "bdf4a44e939398f2b5d363849c0438e48a8b95e5476dd988a51ae15315f933ea"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/b/BarkformHarvester.java",
+        "sha256": "f9be9e704e4c2b148ebcb0e1837be5213d26ff2ccb4e672a0328449309094351"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/u/UndercoverSkrull.java",
+        "sha256": "a39ec60323380b155f1d09e4f2f5dc31e4f1c62e5185d7c803a409678bf38794"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/w/WorldwalkerHelm.java",
+        "sha256": "204dd397fe788da409c066ce8485b08f48cf53885c253bb82f0a4dea28407030"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/d/DraconicVisitor.java",
+        "sha256": "fbd4640192d37caf906c209c4d06f2eb3453207575921ec4783038a6f0d2ddac"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/s/SelfReflection.java",
+        "sha256": "cc6fce9fb9a3afcda102cecfefcdbb1b0b549dd19a13df932d6f68a2002d7692"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/m/MoltenDuplication.java",
+        "sha256": "4b801de3f2ef9d9c20adc26ccf89214248f8a8fab5999e0bbe30589e41a7dd21"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/m/MonicaRambeau.java",
+        "sha256": "2dea62b67ec40d2d54fb0505112b6b61c0a8b239cf80845c50202c9817e7e053"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/a/ArcReactor.java",
+        "sha256": "70264154e4c2f7d30b044f5c14e88c9bd31f890e14a1651e9e21a2c35286c02a"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+        "sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/IsAllCreatureTypesSourceEffect.java",
+        "sha256": "6c340da9dc171835b171f118084f41d65fcbcdc629b20c0d0c14f5c2bd727cd1"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+        "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java",
+        "sha256": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e"
+      },
+      {
+        "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+        "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+      }
+    ],
+    "taskmaster_direct_java": "Absent from frozen inventory; no fabricated source pin. Unchanged Shuri/Absorbing helper audit is retained in the prior copy evidence."
+  },
+  "validation": {
+    "profile": "Repository defaults for final native, export and Clippy. OPT_LEVEL=0 was used only for labeled focused iterations.",
+    "native": 1590,
+    "new_groups": 12,
+    "native_execution_seconds": 12.36,
+    "commands": {
+      "native": {
+        "exit": 0,
+        "seconds": 160.78041744232178
+      },
+      "clippy": {
+        "exit": 0,
+        "seconds": 38.72540354728699
+      },
+      "format": {
+        "exit": 0,
+        "seconds": 1.5868258476257324
+      },
+      "card-format": {
+        "exit": 0,
+        "seconds": 0.9556229114532471
+      },
+      "source": {
+        "exit": 0,
+        "seconds": 0.6277101039886475
+      },
+      "link": {
+        "exit": 0,
+        "seconds": 0.456118106842041
+      },
+      "runner-contracts": {
+        "exit": 0,
+        "seconds": 0.40544772148132324
+      }
+    },
+    "source_inputs": 11813,
+    "changed_inputs": [],
+    "source_input_manifest": "<cache>/rustmage-msh-copy-subtype-cda-default-inputs.json",
+    "source_input_manifest_sha256": "2c62bafd412899e4e55a38a02f5758e78b85fafe9d4e6a65dd1feca57aadc265",
+    "driver_seconds": 203.67444586753845,
+    "memory_peak_bytes": 2729177088,
+    "memory_max_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n"
+  },
+  "trace_proof": {
+    "artifact": "<cache>/rustmage-msh-copy-correction-proof.json",
+    "sha256": "8548694888a4e56a581544424eeb454b9b7b0008367f07b74e129325e308c9df",
+    "rows": 2525,
+    "full_rows_exact_against_base_both_schemas": 2525,
+    "normal149_sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+    "previous148_sha256": "bacddb814caac0997ed1b3b97a1e7c7b1820531ca42efb06c617d624bba196d9",
+    "complete_parent_tables_exact": 10,
+    "no_field_stripping": true,
+    "no_recorder_changes": true,
+    "no_rebaseline": true,
+    "metadata_ids_recipes_membership_policy_flags_card_definitions_unchanged": true
+  },
+  "preservation": {
+    "artifact": "<cache>/rustmage-msh-copy-correction-preservation.json",
+    "sha256": "2ff44ed43a7f4a210ffaaeca5b86c82d36182d587b59d3c1449f9d77373c58ed",
+    "prior_required_exact": 665,
+    "total_required_exact": 676,
+    "new_libraries": {
+      "<cache>/rustmage-msh-copy-subtype-cda-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-copy-subtype-cda-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "useful_natives": {
+      "<cache>/rustmage-msh-copy-correction-default-native-7a41be85": "2f481fd1fcee7ea1f77603747e51e2c79546af0ed2131cc48bd1545c2632bb5a",
+      "<cache>/rustmage-msh-copy-correction-profile0-native-42groups-7a41be85": "11389d4239a7092ff069a7384a2f498d467ee95b93b1786a54fce0a4da4cc5c3"
+    },
+    "cleanup": "<cache>/rustmage-msh-copy-correction-cleanup.json",
+    "cleanup_sha256": "88efeada962f067760c0d12f8f5e1bb4d4a1640f6857a63b19bd4b9c3e86d2a7",
+    "removed_terminal_files": 1186,
+    "removed_terminal_path_bytes": 262598986,
+    "own_processes_inspected": 193,
+    "denied_process_inspections": 5,
+    "accessible_target_exe_fd_maps_cwd_references": []
+  },
+  "measurement": {
+    "scope": "Correction work only, from first failing regression guard start to terminal artifact cleanup; includes investigation, fixtures and validation.",
+    "start_utc": "2026-10-25T10:26:50.664906+00:00",
+    "end_utc": "2026-10-25T10:51:50.320524+00:00",
+    "elapsed_seconds": 1499.656,
+    "cards_admitted": 0,
+    "new_regression_groups": 12,
+    "groups_per_hour": 28.807,
+    "simulation_scope": "1590 deterministic native rules tests, not complete Standard gameplay or a simulation throughput benchmark."
+  },
+  "integration": "Source branch only. Aggregate release, CI and final published-head reviews remain integrator gates; no new PR or main merge."
+}
