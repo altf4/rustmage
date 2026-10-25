@@ -637,10 +637,11 @@ fn super_skrull_all_four_activated_abilities() {
         activate(&mut g, p, id, 1, [0, 0, 0, 0, 1, 3], None);
         settle(&mut g);
         assert_eq!(stats(&g, id), (8, 9));
-        let c = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let c = put(&mut g, p.other(), "Savage Land Dinosaur", Zone::Battlefield);
         activate(&mut g, p, id, 2, [0, 0, 0, 1, 0, 4], Some(Target::Card(c)));
         settle(&mut g);
-        assert_eq!(g.object_view(c).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(c).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(c).damage, 4, "red ability deals exactly four");
         activate(
             &mut g,
             p,
@@ -956,7 +957,7 @@ fn teamwork_tactics_reanimation_bite_and_counter_tax() {
             let mut g = scenario(p);
             let helper = put(&mut g, p, "Serra Angel", Zone::Battlefield);
             let a = put(&mut g, p, "Bear Cub", Zone::Battlefield);
-            let b = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let b = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
             teamwork_cast(
                 &mut g,
                 p,
@@ -968,14 +969,15 @@ fn teamwork_tactics_reanimation_bite_and_counter_tax() {
             );
             settle(&mut g);
             assert!(g.keywords(a).contains(Keywords::DEATHTOUCH));
+            assert_eq!(g.object_view(b).zone, Zone::Battlefield);
             assert_eq!(
-                g.object_view(b).zone,
-                if using {
-                    Zone::Graveyard
-                } else {
-                    Zone::Battlefield
-                }
+                stats(&g, b),
+                if using { (1, 1) } else { (3, 3) },
+                "Bite changes a 3/3 by exactly -2/-2"
             );
+            g.finish_cleanup();
+            assert_eq!(stats(&g, b), (3, 3), "Bite expires at cleanup");
+            assert!(!g.keywords(a).contains(Keywords::DEATHTOUCH));
             let mut g = scenario(p.other());
             let spell = paid(
                 &mut g,

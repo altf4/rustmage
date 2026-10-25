@@ -2293,7 +2293,7 @@ fn msh_c_teamwork_modes_controller_damage_and_chosen_x_spell_copies() {
         for teamwork in [false, true] {
             let mut g = fresh(p);
             let teammate = put(&mut g, p, "Bear Cub", Zone::Battlefield);
-            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Savage Land Dinosaur", Zone::Battlefield);
             let blast = put(&mut g, p, "Repulsor Blast", Zone::Hand);
             mana(&mut g, p, [0, 0, 0, 1, 0, 3]);
             act(&mut g, Action::AnnounceCast { card: blast });
@@ -2312,7 +2312,12 @@ fn msh_c_teamwork_modes_controller_damage_and_chosen_x_spell_copies() {
                 act(&mut g, Action::FinishTeamwork);
             }
             settle(&mut g);
-            assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(enemy).zone, Zone::Battlefield);
+            assert_eq!(
+                g.object_view(enemy).damage,
+                5,
+                "Repulsor Blast deals exactly five in either branch"
+            );
             assert_eq!(
                 g.state.players[p.other().index()].life,
                 if teamwork { 18 } else { 20 }

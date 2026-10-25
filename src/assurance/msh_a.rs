@@ -849,7 +849,7 @@ fn msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history() {
         &mut shield,
         p,
         "Captain America, Super-Soldier",
-        [2, 0, 0, 0, 0, 2],
+        [2, 0, 0, 0, 0, 1],
         None,
     );
     resolved(&mut shield);
