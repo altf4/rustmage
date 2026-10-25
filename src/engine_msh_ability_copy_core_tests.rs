@@ -1139,3 +1139,505 @@ fn msh_ability_copy_core_copied_ability_counts_as_a_second_resolution_without_ne
         assert!(g.keywords(echo).contains(Keywords::DEATHTOUCH));
     }
 }
+// Printed-card obligations retain gated physical setup until the complete matrix passes.
+fn copy_searches(g: &mut Game, p: Player, count: usize) {
+    for _ in 0..count {
+        until(g, |g| {
+            matches!(g.state.pending, Pending::EffectSearch { .. })
+        });
+        assert!(g.observe(p).search_choice.is_some());
+        assert!(g.observe(p.other()).search_choice.is_none());
+        let card = g.state.players[p.index()].library[0];
+        checked(g, Action::ChooseSearch { card });
+        checked(g, Action::FinishSearch);
+    }
+    settle(g);
+}
+fn announce_copier(g: &mut Game, source: CardId) {
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+}
+#[test]
+fn msh_ability_copy_cards_paid_printed_bodies_mana_and_spell_timing() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let echo = paid(&mut g, p, ECHO);
+        assert_eq!((g.stats(echo).power, g.stats(echo).toughness), (1, 4));
+        assert!(g.keywords(echo).contains(Keywords::VIGILANCE));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let scientist = paid(&mut g, p, SCIENTIST);
+        assert_eq!(
+            (g.stats(scientist).power, g.stats(scientist).toughness),
+            (2, 2)
+        );
+        assert_eq!(g.life(p), 20);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let other_echo = prepared(&mut g, p.other(), ECHO);
+        priority(&mut g, p.other());
+        g.state.players[p.other().index()].mana = [0, 1, 0, 0, 0, 2];
+        reject(&mut g, Action::AnnounceCast { card: other_echo });
+        let other_scientist = prepared(&mut g, p.other(), SCIENTIST);
+        g.state.players[p.other().index()].mana = [0, 1, 1, 0, 0, 0];
+        reject(
+            &mut g,
+            Action::AnnounceCast {
+                card: other_scientist,
+            },
+        );
+    }
+}
+#[test]
+fn msh_ability_copy_cards_echo_vigilance_in_blocked_combat_preserves_postcombat_tap_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let echo = paid(&mut g, p, ECHO);
+        age(&mut g, p);
+        let bear = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        until(&mut g, |g| g.state.pending == Pending::Attackers);
+        checked(&mut g, Action::Attack { card: echo });
+        checked(&mut g, Action::FinishAttackers);
+        assert!(!g.object_view(echo).tapped);
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: bear,
+                attacker: echo,
+            },
+        );
+        checked(&mut g, Action::FinishBlockers);
+        until(&mut g, |g| {
+            g.state.step == Step::Main2 && g.state.pending == Pending::Priority
+        });
+        assert_eq!(g.object_view(echo).damage, 2);
+        assert_eq!(g.object_view(bear).damage, 1);
+        assert!(!g.object_view(echo).tapped);
+        let kree = named(&mut g, p, "Kree Sentinel", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        activate(&mut g, kree, None);
+        let target = stack_ability(&g, kree);
+        activate(&mut g, echo, Some(Target::Stack(target)));
+        assert!(g.object_view(echo).tapped);
+        copy_searches(&mut g, p, 2);
+        assert_eq!(g.object_view(echo).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn msh_ability_copy_cards_echo_sickness_mana_tap_and_real_untap_repeat() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let echo = paid(&mut g, p, ECHO);
+        let raft = named(&mut g, p, "Raft Security Officer", Zone::Battlefield);
+        let bear = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        activate(&mut g, raft, Some(Target::Card(bear)));
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: echo,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        settle(&mut g);
+        age(&mut g, p);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        activate(&mut g, raft, Some(Target::Card(bear)));
+        let original = g.state.stack.last().unwrap().clone();
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: echo,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        activate(&mut g, echo, Some(Target::Stack(original.id)));
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: echo,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::Retarget { .. })
+        });
+        checked(&mut g, Action::FinishStackTargets);
+        paid_target(&mut g, p, "Shore Up", Target::Card(echo));
+        until(&mut g, |g| {
+            !g.object_view(echo).tapped && g.state.pending == Pending::Priority
+        });
+        priority(&mut g, p);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        activate(&mut g, echo, Some(Target::Stack(original.id)));
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::Retarget { .. })
+        });
+        checked(&mut g, Action::FinishStackTargets);
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .filter(|s| s.is_copy && s.object == original.object)
+                .count(),
+            2
+        );
+        settle(&mut g);
+        assert!(g.object_view(echo).tapped);
+        assert!(g.object_view(bear).tapped);
+    }
+}
+#[test]
+fn msh_ability_copy_cards_echo_copies_during_opponents_turn_at_instant_speed() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let echo = paid(&mut g, p, ECHO);
+        age(&mut g, p);
+        next_turn(&mut g);
+        until(&mut g, |g| {
+            g.state.active == p.other() && g.state.step == Step::Main1
+        });
+        priority(&mut g, p);
+        let kree = named(&mut g, p, "Kree Sentinel", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        activate(&mut g, kree, None);
+        let target = stack_ability(&g, kree);
+        activate(&mut g, echo, Some(Target::Stack(target)));
+        copy_searches(&mut g, p, 2);
+        assert_eq!(g.state.active, p.other());
+        assert!(g.object_view(echo).tapped);
+    }
+}
+#[test]
+fn msh_ability_copy_cards_scientist_own_turn_once_and_actual_turn_reset() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let scientist = paid(&mut g, p, SCIENTIST);
+        assert!(g.object_view(scientist).summoning_sick);
+        let kree = named(&mut g, p, "Kree Sentinel", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        activate(&mut g, kree, None);
+        let id = stack_ability(&g, kree);
+        activate(&mut g, scientist, Some(Target::Stack(id)));
+        assert!(!g.object_view(scientist).tapped);
+        assert_eq!(g.life(p), 18);
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: scientist,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        copy_searches(&mut g, p, 2);
+        next_turn(&mut g);
+        until(&mut g, |g| {
+            g.state.active == p.other() && g.state.step == Step::Main1
+        });
+        priority(&mut g, p);
+        let kree2 = named(&mut g, p, "Kree Sentinel", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        activate(&mut g, kree2, None);
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: scientist,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        assert_eq!(g.life(p), 18);
+        copy_searches(&mut g, p, 1);
+        next_turn(&mut g);
+        until(&mut g, |g| {
+            g.state.active == p && g.state.step == Step::Main1
+        });
+        priority(&mut g, p);
+        let kree3 = named(&mut g, p, "Kree Sentinel", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        activate(&mut g, kree3, None);
+        let id = stack_ability(&g, kree3);
+        activate(&mut g, scientist, Some(Target::Stack(id)));
+        assert_eq!(g.life(p), 16);
+        copy_searches(&mut g, p, 2);
+    }
+}
+#[test]
+fn msh_ability_copy_cards_scientist_life_payment_boundary_is_real_and_atomic() {
+    for p in [Player::P0, Player::P1] {
+        for life in [1, 2, 3] {
+            let mut g = setup(p);
+            let scientist = paid(&mut g, p, SCIENTIST);
+            let kree = named(&mut g, p, "Kree Sentinel", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+            activate(&mut g, kree, None);
+            let target = stack_ability(&g, kree);
+            g.state.players[p.index()].life = life;
+            if life == 1 {
+                reject(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: scientist,
+                        ability: 0,
+                        counter_payment: Counters::default(),
+                    },
+                );
+            } else {
+                activate(&mut g, scientist, Some(Target::Stack(target)));
+                assert_eq!(g.life(p), life - 2);
+                if life == 2 {
+                    assert!(g.outcome().is_some());
+                } else {
+                    assert!(g.outcome().is_none());
+                    copy_searches(&mut g, p, 2);
+                }
+            }
+        }
+    }
+}
+#[test]
+fn msh_ability_copy_cards_paid_source_death_after_activation_preserves_captured_controller() {
+    for p in [Player::P0, Player::P1] {
+        for copier in [ECHO, SCIENTIST] {
+            let mut g = setup(p);
+            let source = paid(&mut g, p, copier);
+            age(&mut g, p);
+            let kree = named(&mut g, p, "Kree Sentinel", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+            activate(&mut g, kree, None);
+            let target = stack_ability(&g, kree);
+            activate(&mut g, source, Some(Target::Stack(target)));
+            let old = g.object_ref(source);
+            paid_target(&mut g, p.other(), "Murder", Target::Card(source));
+            until(&mut g, |g| {
+                g.object_view(source).zone == Zone::Graveyard
+                    && g.state.pending == Pending::Priority
+            });
+            assert_ne!(g.object_ref(source), old);
+            let hand = g.hand_count(p);
+            copy_searches(&mut g, p, 2);
+            assert_eq!(g.hand_count(p), hand + 2);
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        }
+    }
+}
+#[test]
+fn msh_ability_copy_cards_paid_suppression_removes_activations_but_not_queued_programs() {
+    for p in [Player::P0, Player::P1] {
+        for copier in [ECHO, SCIENTIST] {
+            for after in [false, true] {
+                let mut g = setup(p);
+                let source = paid(&mut g, p, copier);
+                age(&mut g, p);
+                if !after {
+                    paid_target(&mut g, p, "Eaten by Piranhas", Target::Card(source));
+                    settle(&mut g);
+                }
+                let kree = named(&mut g, p, "Kree Sentinel", Zone::Hand);
+                g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+                activate(&mut g, kree, None);
+                let target = stack_ability(&g, kree);
+                if after {
+                    activate(&mut g, source, Some(Target::Stack(target)));
+                    let aura =
+                        paid_target(&mut g, p.other(), "Eaten by Piranhas", Target::Card(source));
+                    until(&mut g, |g| {
+                        g.object_view(aura).zone == Zone::Battlefield
+                            && g.state.pending == Pending::Priority
+                    });
+                    copy_searches(&mut g, p, 2);
+                } else {
+                    reject(
+                        &mut g,
+                        Action::AnnounceActivate {
+                            card: source,
+                            ability: 0,
+                            counter_payment: Counters::default(),
+                        },
+                    );
+                    copy_searches(&mut g, p, 1);
+                }
+                assert_eq!((g.stats(source).power, g.stats(source).toughness), (1, 1));
+                assert!(!g.keywords(source).contains(Keywords::VIGILANCE));
+            }
+        }
+    }
+}
+#[test]
+fn msh_ability_copy_cards_real_funding_requires_third_land_for_echo_after_cycling() {
+    for p in [Player::P0, Player::P1] {
+        for enough in [false, true] {
+            let mut g = setup(p);
+            let echo = paid(&mut g, p, ECHO);
+            age(&mut g, p);
+            let lands: Vec<_> = (0..if enough { 3 } else { 2 })
+                .map(|_| named(&mut g, p, "Forest", Zone::Battlefield))
+                .collect();
+            g.state.players[p.index()].mana = [0; 6];
+            let kree = named(&mut g, p, "Kree Sentinel", Zone::Hand);
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: kree,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            fund_lands(&mut g, &lands);
+            let target = stack_ability(&g, kree);
+            if enough {
+                announce_copier(&mut g, echo);
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Stack(target),
+                    },
+                );
+                fund_lands(&mut g, &lands);
+                assert_eq!(
+                    lands.iter().filter(|&&id| g.object_view(id).tapped).count(),
+                    3
+                );
+                copy_searches(&mut g, p, 2);
+            } else {
+                reject(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: echo,
+                        ability: 0,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                copy_searches(&mut g, p, 1);
+            }
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}
+fn fund_lands(g: &mut Game, lands: &[CardId]) {
+    while g.state.announcing.is_some() {
+        let actions = g.legal_actions();
+        let a = actions
+            .iter()
+            .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+            .or_else(|| {
+                actions
+                    .iter()
+                    .find(|a| matches!(a, Action::TapMana { card } if lands.contains(card)))
+            })
+            .unwrap();
+        checked(g, a.clone());
+    }
+}
+#[test]
+fn msh_ability_copy_cards_new_target_ward_relates_to_copy_and_never_repeats_source_cost() {
+    for p in [Player::P0, Player::P1] {
+        for pay_ward in [false, true] {
+            let mut g = setup(p);
+            let echo = paid(&mut g, p, ECHO);
+            let raft = paid(&mut g, p, "Raft Security Officer");
+            age(&mut g, p);
+            let bear = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let titan = named(
+                &mut g,
+                p.other(),
+                "Titania, Rugged Rumbler",
+                Zone::Battlefield,
+            );
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
+            activate(&mut g, raft, Some(Target::Card(bear)));
+            let original = g.state.stack.last().unwrap().clone();
+            activate(&mut g, echo, Some(Target::Stack(original.id)));
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::Retarget { .. })
+            });
+            checked(
+                &mut g,
+                Action::SetStackTarget {
+                    index: 0,
+                    target: Target::Card(titan),
+                },
+            );
+            checked(&mut g, Action::FinishStackTargets);
+            let copy = g.state.stack.iter().find(|s| s.is_copy).unwrap().id;
+            assert_eq!(g.state.players[p.index()].mana[5], 2);
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::ResolutionMana { .. })
+            });
+            assert_eq!(g.observe(p).resolution_payment.unwrap().victim, Some(copy));
+            g = orphan(
+                g,
+                if pay_ward {
+                    Action::PayResolutionMana {
+                        payment: [0, 0, 0, 0, 0, 2],
+                    }
+                } else {
+                    Action::DeclineResolutionMana
+                },
+            );
+            settle(&mut g);
+            assert!(g.object_view(bear).tapped);
+            assert_eq!(g.object_view(titan).tapped, pay_ward);
+            assert_eq!(g.object_view(raft).zone, Zone::Battlefield);
+            assert!(g.object_view(raft).tapped && g.object_view(echo).tapped);
+        }
+    }
+}
+#[test]
+fn msh_ability_copy_cards_scientist_copies_noncreature_equipment_ability_without_equip_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let echo = paid(&mut g, p, ECHO);
+        let scientist = paid(&mut g, p, SCIENTIST);
+        let pole = paid(&mut g, p, "Fishing Pole");
+        age(&mut g, p);
+        let a = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let b = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        activate(&mut g, pole, Some(Target::Card(a)));
+        let original = g.state.stack.last().unwrap().clone();
+        assert!(!g.is_creature(pole));
+        assert_eq!(g.state.players[p.index()].mana[5], 1);
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: echo,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        activate(&mut g, scientist, Some(Target::Stack(original.id)));
+        assert_eq!(g.life(p), 18);
+        assert_eq!(g.state.players[p.index()].mana[5], 1);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::Retarget { .. })
+        });
+        exact_copy(&g.retarget_view().unwrap().item, &original, p);
+        checked(
+            &mut g,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(b),
+            },
+        );
+        checked(&mut g, Action::FinishStackTargets);
+        until(&mut g, |g| {
+            g.object_view(pole).attached_to == Some(g.object_ref(b))
+                && g.state.pending == Pending::Priority
+        });
+        assert_eq!(g.state.players[p.index()].mana[5], 1);
+        settle(&mut g);
+        assert_eq!(g.object_view(pole).attached_to, Some(g.object_ref(a)));
+        assert_eq!(g.object_view(pole).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].mana[5], 1);
+    }
+}
