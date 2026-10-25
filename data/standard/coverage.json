@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "735ca2499f3c524f856eacef976e9bf0907b754e9433b001e8d1dbabb68d3476",
+  "catalogue_version": "7cc583df62afd323e9b308ecbaa9f265a43e9ca76097fdb9df803a023dc502bc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2473,
-  "implemented_total": 2479,
+  "implemented_standard_cards": 2474,
+  "implemented_total": 2480,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 168,
-      "gated": 105
+      "complete": 169,
+      "gated": 104
     },
     "one": {
       "total": 1,
@@ -36469,8 +36469,8 @@
     {
       "name": "Thirst for Knowledge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/thirst_for_knowledge.rs",
       "set": "msh"
     },
