@@ -1,0 +1,312 @@
+{
+  "schema": 1,
+  "scope": "Semantics-preserving borrowed funding search bound; no new card admissions, metadata, schema, cost ordering, key equivalence, policy, deck or seed changes.",
+  "base": "c51defa402a94f4958a6b74e178d3aac792bed74",
+  "tested_runtime_head": "abf5d35bbb3973fdcfe1862c9eddac2d14bd3cca",
+  "new_supported_cards": [],
+  "wire_schema": 150,
+  "mechanic": {
+    "necessary_bound": "If remaining unpaid clauses contain both Teamwork and Mana and no other cost kind, run the existing exact current-world mana Hall feasibility check before enumerating teammates. A negative result rejects the branch.",
+    "safety_boundary": "The current typed pure tap contributions cannot add mana or restore type/color/improvise/spend-any-type permissions; they only remove untapped contributors. A successful bound retains the existing full ordered search, exact selected prefixes, signed/live powers and teammate subsets/supersets.",
+    "outer_teamwork_bound": "Before floating mana, reject an exact positive PowerSum deficit only for a narrow class: pure tap/AddMana immutable routes across every resource/origin, explicit flat static fragment allowlist, no PT providers or enclosing/control/entry/borrowed/linked projections. Fixed numeric crew animations, choices, copy exceptions, growth and counters stay immutable under the allowed moves. Unknown worlds retain the full search.",
+    "general_costs": "Additional, Casualty and Life clauses bypass the new preflight; the generic sacrifice boundary proves removal of Witness Protection can restore improvise before payment.",
+    "deliberately_unchanged": [
+      "cost clause order",
+      "teammate subset and superset legality",
+      "FundingKey and visited placement",
+      "power-sensitive exact identities",
+      "CostContext shape",
+      "payment/contributor actions"
+    ]
+  },
+  "source_sha256": {
+    "src/engine_funding.rs": "f169f05043aa90f6d950ffb5b72b798500242849eece9ea6c95312b9509ba41d",
+    "src/engine_cast_cost_planning.rs": "36dc970446ebc018c493e5ff42bf5a12cca68e7b9c77393fe572928b15f1efaa",
+    "src/engine_teamwork_funding_scalability_tests.rs": "b61ada227d9e8dc35799bf91e3903ea0cb45e9f3eb1165399b85920a09699c01"
+  },
+  "unchanged_sha256": {
+    "src/assurance/card_traces.json": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+    "data/catalogue-identities.json": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+    "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+    "src/policy.rs": "08123c4bf511d7ced3c7b4a4ddc7816b8483ab7e045ba5aa4cfab114778f0369",
+    "data/assurance/msh-broad-legal-games.json": "370b8f95b4a3d4203d888367b7315f6ed8d13c2c05bd874c72ac6b7f1f5933f6",
+    "src/engine_msh_broad_legal_games_tests.rs": "27570a553faffbf83f5a293022e64a12737fbfa1e3b4786cc45389902821a525"
+  },
+  "unchanged_actual_producer_pins": [
+    {
+      "name": "Atlantis Attacks",
+      "oracle_id": "b5c8e24a-f4d7-42dc-8117-905ad0bad888",
+      "facts_sha256": "4ff5a0e1705687e3e14373279c489d87196532d510388e8cfd6c2a112f0f91cb",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/a/AtlantisAttacks.java",
+      "java_sha256": "3e40aa025aff7862844ffc3363dc46aefe90591163fe906636ef12b37aa99303",
+      "unchanged_paired_rust_sha256": "61ca505c426fa4d4ae76e95af7324f24e4b57eaabee97c52ef847af069aa48ce",
+      "unchanged_provenance_sha256": "171963de675af19ed2757695e5787da98ebd13223f6a4a2070744bf8640259a9"
+    },
+    {
+      "name": "Ironheart, Clever Champion",
+      "oracle_id": "df3d5b86-7b75-4df9-8985-7159cde12261",
+      "facts_sha256": "480ed6c3652fcf0ba55341b46df73ab5330500363a95e2ef3125745bc61496d5",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/i/IronheartCleverChampion.java",
+      "java_sha256": "29a654bbd604682b1fd095da6bfd4b5e594d764b75ba1dad0853aa14720f4cc3",
+      "unchanged_paired_rust_sha256": "ae3d30559df2ea9e41acb3c714a2f27a17daef3228e07c40fb41c1c150657773",
+      "unchanged_provenance_sha256": "3a9b1f79cef766f3e2fa7387fc8c85869d821dfc90208fed739cea870026f989"
+    }
+  ],
+  "bounded_regressions": {
+    "groups": 8,
+    "paid_scenario": "Actual paid Ironheart, forty existing Doombot tokens as an explicitly prepared initial board, two real Islands, actual Atlantis teamwork announcement with zero floated blue, both seats and both cost orders; seven disjoint tap contributors; exact paid spell resolves Leviathan plus bounce.",
+    "node_comparison": {
+      "old_test_first_head": "92d15da56ede08e43369eda6a377b5d9775beb01",
+      "old_result": "Deterministic scoped 256-node budget failure in 0.05s, not an OOM/timeout probe.",
+      "new_result": "Three Teamwork nodes at each of four paid seat/order query checkpoints.",
+      "counter": "cfg(test), default-off thread-local with RAII reset including caught panic; no gameplay counter."
+    },
+    "other_boundaries": [
+      "actual paid Ironheart/Bear/Quinjet crew leaves only three untapped power with twenty basic Islands, rejects Teamwork transactionally/owned while actual normal Atlantis cast pays seven blue and resolves, both seats",
+      "primitive mutating-mana classifier and actual dynamic-PT/opponent-Treasure conservative fallback boundaries",
+      "192 small independent shared-resource feasibility cases across both seats and all active clause orders",
+      "unfundable second-blue announcement full snapshot/revision/both-observation atomicity",
+      "own/opponent/suppressed improvise provider and missing-color rejection before teammate nodes",
+      "exact/extendable signed teammate prefixes",
+      "bounded live TappedCount expression; no invented card or CDA admission",
+      "generic sacrifice before Teamwork/Mana restores improvise",
+      "owned raw/index clones survive parent disposal, full observations match, restore and stale revision checks"
+    ],
+    "focused_development": {
+      "terminal": true,
+      "head": "abf5d35bbb3973fdcfe1862c9eddac2d14bd3cca",
+      "profile": "Focused development opt-level0 only; default proof remains required",
+      "exit": 0,
+      "files": 11833,
+      "changed": [],
+      "seconds": 32.411840542044956
+    }
+  },
+  "default_validation": {
+    "head": "abf5d35bbb3973fdcfe1862c9eddac2d14bd3cca",
+    "terminal": true,
+    "success": true,
+    "default_profile": true,
+    "excluded_test": "msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_evidence",
+    "exclusion_scope": "Only the existing broad132 natural-game sampler; aggregate owner executes full 132 plus exact config14 and new32 corpus after integration.",
+    "phases": [
+      {
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit": 0,
+        "seconds": 43.41916388599202,
+        "log": "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2/00.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 1.6677161349798553,
+        "log": "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2/01.log"
+      },
+      {
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "src/engine_cast_cost_planning.rs",
+          "src/engine_teamwork_funding_scalability_tests.rs"
+        ],
+        "exit": 0,
+        "seconds": 0.05568036501063034,
+        "log": "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2/02.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/check_sources.py"
+        ],
+        "exit": 0,
+        "seconds": 0.6432427879772149,
+        "log": "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2/03.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/link_catalogue.py",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 0.47496705199591815,
+        "log": "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2/04.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/test_assurance_runner.py"
+        ],
+        "exit": 0,
+        "seconds": 0.43210714898305014,
+        "log": "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2/05.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--test-threads=1",
+          "--skip",
+          "msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_evidence"
+        ],
+        "exit": 0,
+        "seconds": 172.8712188609643,
+        "log": "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2/06.log"
+      }
+    ],
+    "trace_proof": {
+      "parent_rows": 2525,
+      "normal150_rows": 2525,
+      "previous149_rows": 2525,
+      "new_keys": [],
+      "missing_keys": [],
+      "full_normal150_parent_differences": [],
+      "full_previous149_parent_differences": [],
+      "summary": [
+        "test result: ok. 1670 passed; 0 failed; 1 ignored; 0 measured; 1 filtered out; finished in 12.95s"
+      ],
+      "normal_sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+      "previous_sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+      "parent_proof_exact": true
+    },
+    "inputs": 11833,
+    "changed": [],
+    "seconds": 219.70182177703828
+  },
+  "resource_guard": {
+    "command": [
+      "python3",
+      "/tmp/msh-teamwork-funding-fixed-strict.py",
+      "rustmage-msh-teamwork-funding-default-2"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 219.87481928203488,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2906673152,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "exact_original_config14": {
+    "head": "abf5d35bbb3973fdcfe1862c9eddac2d14bd3cca",
+    "terminal": true,
+    "exit": 0,
+    "command": [
+      "/home/altf4/.cache/rustmage-msh-teamwork-funding-fixed-default-target/debug/deps/rustmage-b764cd26223fba2c",
+      "msh_broad_132",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "profile": "Same already-built DEFAULT strict native; no Cargo/build",
+    "files": 11833,
+    "changed": [],
+    "native_sha256_before": "1f2bbde6559b026d19cd0309604c9c6aed4777489be56643feadb90550993e4a",
+    "native_sha256_after": "1f2bbde6559b026d19cd0309604c9c6aed4777489be56643feadb90550993e4a",
+    "seconds": 0.8550408800365403,
+    "summary": {
+      "config_index": 14,
+      "decks": [
+        "U-artifact-late",
+        "U-artifact-late"
+      ],
+      "seed": 5571876328824635697,
+      "starting_player": "P0",
+      "decisions": 1717,
+      "turn": 39,
+      "outcome": {
+        "Winner": "P1"
+      },
+      "pending_at_end": "terminal",
+      "owned_privacy_checkpoints": 18,
+      "nonterminal_configuration_indices": [],
+      "decision_cap": 30000,
+      "checked_seconds": 0.679184264,
+      "successful_spell_cast_commits": 42,
+      "positive_paid_physical_identities": 13,
+      "decisions_per_second": 2528.032657717759
+    },
+    "record": "/home/altf4/.cache/rustmage-msh-teamwork-config14-fixed-default-2-observed.json",
+    "record_sha256": "cfaa43fa40fc0f2815ad3392b5b59bae81e8d9704d5f6819999987e630fca003"
+  },
+  "initial_preflight_only_config14": {
+    "completion": "INCOMPLETE deliberately stopped, wrapper0 is not pass",
+    "reason": "Exact config14 remains in decision1141 TeamworkIntent for more than one minute; the necessary Hall bound alone does not resolve the actual workload.",
+    "fixed_inputs": 11833,
+    "changed": [],
+    "natural_outcome_observed": false,
+    "cap_reached": false,
+    "last_progress": {
+      "config": 14,
+      "decision": 1141,
+      "library_counts": [
+        11,
+        31
+      ],
+      "objects": 128,
+      "pending": "TeamworkIntent { player: P0 }",
+      "phase": "legal_actions",
+      "turn": 31
+    }
+  },
+  "exact_original_prefix_diagnostic": {
+    "result": {
+      "terminal": true,
+      "head": "abf5d35bbb3973fdcfe1862c9eddac2d14bd3cca",
+      "profile": "Focused development opt-level0 only; default proof remains required",
+      "exit": 0,
+      "files": 11833,
+      "changed": [],
+      "seconds": 32.411840542044956
+    },
+    "execution_seconds": 1.26,
+    "original_1141_actions_exact": true,
+    "private_context_bodies": "Local cache only; not included in this portable document."
+  },
+  "throughput_limits": "The diagnostic reports one exact unchanged natural game and replay. The full 132 plus aggregate 32 games and final release/CI validation belong to aggregate validation; this local proof does not certify the complete 281-card pool. No wall-time speedup ratio is inferred from the intentionally stopped red budget.",
+  "retained_artifacts": {
+    "/home/altf4/.cache/rustmage-msh-teamwork-funding-fixed-default-target/debug/deps/rustmage-b764cd26223fba2c": "1f2bbde6559b026d19cd0309604c9c6aed4777489be56643feadb90550993e4a",
+    "/home/altf4/.cache/rustmage-msh-teamwork-funding-fixed-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+  },
+  "preservation": {
+    "path": "/home/altf4/.cache/rustmage-msh-teamwork-funding-preservation.json",
+    "sha256": "8d4e1980af8ef1e4f3830c1c332af5c46b21f174511188e32a82e1a3745d0a05",
+    "prior_required": 4118,
+    "required": 4220
+  },
+  "cleanup": {
+    "removed_files": 1019,
+    "removed_path_bytes": 123367639,
+    "report": "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-cleanup.json",
+    "sha256": "5bd3912e0e874e0b28eb6445ce4a288a03c8551b68810411053abd26850ae967"
+  },
+  "logs_and_reports": {
+    "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2/result.json": "d543338ce58341a16ff8947b8af166b54f992cb0f9cd6fc05919f3bbcae5a92b",
+    "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2/trace-proof.json": "5ae3879c0a808d74780bee63ca0a7a380c9911321f84a40523e289ba40a88337",
+    "/home/altf4/.cache/rustmage-msh-teamwork-funding-default-2-guard.json": "6fa500ce9a561b4e246fbed59dcf625276e888bbf1f8ea49ccce8be989733d83",
+    "/home/altf4/.cache/rustmage-msh-teamwork-funding-green-5.log": "12464a9043d44482a54a7510a3a6dbc7cef8b4674bf41d2d04694ac317ecc706",
+    "/home/altf4/.cache/rustmage-msh-teamwork-funding-red-1.log": "7d0d267ebfbee81ca872d999fbf0578139e7ef1ac8058c86965d727e71e3ade2",
+    "/home/altf4/.cache/rustmage-msh-teamwork-config14-fixed-default-2-result.json": "0cdd8eac5402d86c76877ff63322bcad287cdb2500619f4ca28f82ca7d15b56f",
+    "/home/altf4/.cache/rustmage-msh-teamwork-config14-fixed-default-2-observed.json": "cfaa43fa40fc0f2815ad3392b5b59bae81e8d9704d5f6819999987e630fca003",
+    "/home/altf4/.cache/rustmage-msh-teamwork-config14-fixed-default-2-observed.progress.jsonl": "7f205d200020b68be243d29f02b6a0edf4a0cef16aad3f593d881c418445c1ae",
+    "/home/altf4/.cache/rustmage-msh-teamwork-config14-fixed-default-2-guard.json": "2b550f2c8926d61c9082b0d8b6e304e1e0d86e19e3d3c4d75734cc01cd1ec344"
+  }
+}
