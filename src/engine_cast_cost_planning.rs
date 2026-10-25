@@ -278,6 +278,29 @@ impl FundingState<'_> {
         if remaining.is_empty() {
             return true;
         }
+        // With only Teamwork and Mana left, these inner costs merely tap
+        // contributors. They cannot add mana or restore/change a type, color,
+        // provider or mana-type permission. The current Hall test is therefore
+        // an upper bound before any teammates are spent. A successful bound
+        // retains the complete ordered search and every live power evaluation.
+        // Other costs may remove suppression or return providers, so they must
+        // keep the general path even when mana is not currently payable.
+        if remaining
+            .iter()
+            .any(|&i| matches!(c.clauses[i].clause, CastCostClause::Teamwork(_)))
+            && remaining
+                .iter()
+                .any(|&i| c.clauses[i].clause == CastCostClause::Mana)
+            && remaining.iter().all(|&i| {
+                matches!(
+                    c.clauses[i].clause,
+                    CastCostClause::Teamwork(_) | CastCostClause::Mana
+                )
+            })
+            && !self.mana_clause_payable(c)
+        {
+            return false;
+        }
         for (position, &index) in remaining.iter().enumerate() {
             if c.active.is_some_and(|i| usize::from(i) != index) {
                 continue;
@@ -447,6 +470,20 @@ impl FundingState<'_> {
                 .any(|r| !r.paid && r.clause == CastCostClause::Mana)
         })
     }
+    fn mana_clause_payable(&self, c: &CostContext) -> bool {
+        let Some(cost) = c.mana else {
+            return false;
+        };
+        convoke::payable_in(
+            self,
+            c.actor,
+            self.purpose,
+            mana_lots::available(self.mana, &self.lots, self.purpose),
+            cost.colored,
+            cost.generic,
+            &self.convoke_masks(),
+        )
+    }
     fn complete_convoke_clause(
         &self,
         c: &CostContext,
@@ -460,15 +497,7 @@ impl FundingState<'_> {
         // Fail before assigning individual helpers when the current mana clause
         // cannot be paid at all. If it is last, exact Hall matching is the whole
         // obligation; later nonmana costs still use the original assignment walk.
-        if !convoke::payable_in(
-            self,
-            c.actor,
-            self.purpose,
-            pool,
-            cost.colored,
-            cost.generic,
-            &self.convoke_masks(),
-        ) {
+        if !self.mana_clause_payable(c) {
             return false;
         }
         if rest.is_empty() {

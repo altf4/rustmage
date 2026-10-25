@@ -121,7 +121,7 @@ fn msh_teamwork_funding_scalability_paid_atlantis_zero_floated_blue_then_real_is
                 budget.nodes()
             );
             drop(budget);
-            checked(&mut g, Action::ChooseTeamwork { pay: true });
+            g = orphan(g, Action::ChooseTeamwork { pay: true });
             checked(&mut g, Action::ChooseMode { mode: 2 });
             checked(
                 &mut g,
@@ -200,5 +200,290 @@ fn msh_teamwork_funding_scalability_paid_atlantis_zero_floated_blue_then_real_is
                 && o.controller == p
                 && o.card == Card::MshLeviathanToken));
         }
+    }
+}
+
+fn orphan(g: Game, action: Action) -> Game {
+    let actor = g.actor().unwrap();
+    let revision = g.revision();
+    let before = g.snapshot();
+    let seen = [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap());
+    let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+    let (mut raw, mut indexed) = (g.clone(), g.clone());
+    drop(g);
+    raw.apply(actor, action.clone()).unwrap();
+    indexed.apply_index(actor, revision, index).unwrap();
+    let after = raw.snapshot();
+    assert_eq!(after, indexed.snapshot());
+    assert_eq!(
+        [Player::P0, Player::P1].map(|p| serde_json::to_value(raw.observe(p)).unwrap()),
+        [Player::P0, Player::P1].map(|p| serde_json::to_value(indexed.observe(p)).unwrap())
+    );
+    raw.restore(&before).unwrap();
+    let mut restored = seen;
+    for v in &mut restored {
+        v["revision"] = serde_json::json!(raw.revision());
+    }
+    assert_eq!(
+        [Player::P0, Player::P1].map(|p| serde_json::to_value(raw.observe(p)).unwrap()),
+        restored
+    );
+    assert_eq!(
+        raw.apply_index(actor, revision, index),
+        Err(Error::StaleRevision)
+    );
+    raw.apply(actor, action).unwrap();
+    assert_eq!(raw.snapshot(), after);
+    indexed
+}
+fn context(g: &Game, p: Player, spell: CardId) -> Box<CostContext> {
+    Box::new(CostContext {
+        actor: p,
+        source: g.object_ref(spell),
+        clauses: vec![
+            CastCostRow {
+                clause: CastCostClause::Teamwork(4),
+                paid: false,
+            },
+            CastCostRow {
+                clause: CastCostClause::Mana,
+                paid: false,
+            },
+        ],
+        active: None,
+        casualty: vec![],
+        additional: None,
+        forage: None,
+        selected: vec![],
+        exact: false,
+        counters: vec![],
+        mana: Some(ManaCost {
+            colored: [0, 2, 0, 0, 0, 0],
+            generic: 5,
+        }),
+        teammates: vec![],
+        teamwork_exact: false,
+    })
+}
+fn world<'g>(g: &'g Game, p: Player, spell: CardId, c: Box<CostContext>) -> FundingState<'g> {
+    let goal = FundingGoal {
+        actor: p,
+        required: [0, 2, 0, 0, 0, 0],
+        generic: 5,
+        source: None,
+        reserve: None,
+    };
+    let mut w = FundingState::from_game(g, &goal);
+    w.set_purpose(g.spell_mana_purpose_for_card(
+        p,
+        spell,
+        Card::from_name("Atlantis Attacks").unwrap(),
+    ));
+    w.install_cost_context(Some(c));
+    w
+}
+#[test]
+fn msh_teamwork_funding_scalability_small_independent_shared_resource_oracle_and_active_orders() {
+    // The diagnostic itself must not leak a counter into other tests on unwind.
+    assert!(
+        std::panic::catch_unwind(|| {
+            let _budget = Budget::new(0);
+            visit_teamwork_node();
+        })
+        .is_err()
+    );
+    assert!(LIMIT.with(|c| c.get().is_none()));
+    visit_teamwork_node();
+    for p in [Player::P0, Player::P1] {
+        for robots in 0u32..=7 {
+            for blue in 0u32..=3 {
+                for active in [None, Some(0), Some(1)] {
+                    let mut g = setup(p);
+                    paid_iron(&mut g, p);
+                    g.create_tokens(p, Card::MshDoombotToken, robots, false);
+                    settle(&mut g);
+                    let spell = named(&mut g, p, "Atlantis Attacks", Zone::Hand);
+                    g.state.players[p.index()].mana = [0, blue, 0, 0, 0, 0];
+                    let mut c = context(&g, p, spell);
+                    c.active = active;
+                    let w = world(&g, p, spell, c);
+                    let before = g.snapshot();
+                    // Every helper has power3 and is an artifact: at least two pay Teamwork,
+                    // and each of the remaining helpers can pay only one generic mana.
+                    let n = robots + 1;
+                    let expected = blue >= 2 && n >= 2 && 5 <= n - 2 + blue - 2;
+                    let budget = Budget::new(4096);
+                    assert_eq!(
+                        w.cost_completion(),
+                        expected,
+                        "robots={robots} blue={blue} active={active:?}"
+                    );
+                    drop(budget);
+                    assert_eq!(g.snapshot(), before);
+                }
+            }
+        }
+    }
+}
+#[test]
+fn msh_teamwork_funding_scalability_paid_unfundable_second_blue_is_atomic() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid_iron(&mut g, p);
+        g.create_tokens(p, Card::MshDoombotToken, 40, false);
+        settle(&mut g);
+        named(&mut g, p, "Island", Zone::Battlefield);
+        let spell = named(&mut g, p, "Atlantis Attacks", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 5];
+        let budget = Budget::new(256);
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        assert_eq!(g.object_view(spell).zone, Zone::Hand);
+        drop(budget);
+    }
+}
+#[test]
+fn msh_teamwork_funding_scalability_provider_control_suppression_and_missing_colors() {
+    for p in [Player::P0, Player::P1] {
+        for mode in 0..3 {
+            let mut g = setup(p);
+            let iron = paid_iron(&mut g, p);
+            if mode == 1 {
+                // Explicit earlier-layer provider-control fixture.
+                g.change_controller(g.object_ref(iron), p.other());
+            }
+            if mode == 2 {
+                let aura = named(&mut g, p, "Witness Protection", Zone::Hand);
+                g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+                cast(&mut g, aura, None, &[Target::Card(iron)]);
+                settle(&mut g);
+            }
+            g.create_tokens(p, Card::MshDoombotToken, 20, false);
+            settle(&mut g);
+            let spell = named(&mut g, p, "Atlantis Attacks", Zone::Hand);
+            assert!(improvise::potential(
+                &g,
+                Card::from_name("Atlantis Attacks").unwrap()
+            ));
+            for blue in 0..=1 {
+                g.state.players[p.index()].mana = [0, blue, 0, 0, 0, 0];
+                let c = context(&g, p, spell);
+                let w = world(&g, p, spell, c);
+                let budget = Budget::new(256);
+                assert!(!w.cost_completion());
+                assert_eq!(budget.nodes(), 0);
+                drop(budget);
+            }
+            g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 5];
+            let c = context(&g, p, spell);
+            let w = world(&g, p, spell, c);
+            assert!(w.cost_completion());
+        }
+    }
+}
+#[test]
+fn msh_teamwork_funding_scalability_signed_exact_prefix_and_live_tap_quantity() {
+    use crate::cards::{CountFilter, CountZone, StatValue};
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let iron = paid_iron(&mut g, p);
+        g.create_tokens(p, Card::MshDoombotToken, 8, false);
+        settle(&mut g);
+        let robots: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(i, o)| {
+                (o.zone == Zone::Battlefield && o.card == Card::MshDoombotToken)
+                    .then_some(i as CardId)
+            })
+            .collect();
+        let negative = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[negative as usize].growth.power = -5;
+        let spell = named(&mut g, p, "Atlantis Attacks", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 0];
+        let mut c = context(&g, p, spell);
+        c.teammates = vec![g.object_ref(negative)];
+        c.teamwork_exact = true;
+        let w = world(&g, p, spell, c.clone());
+        assert!(!w.cost_completion());
+        c.teamwork_exact = false;
+        let w = world(&g, p, spell, c.clone());
+        assert!(w.cost_completion());
+        c.teammates.extend([
+            g.object_ref(iron),
+            g.object_ref(robots[0]),
+            g.object_ref(robots[1]),
+        ]);
+        c.teamwork_exact = true;
+        let mut w = world(&g, p, spell, c);
+        assert!(w.cost_completion());
+        // Bounded earlier-layer tap-count primitive (not an invented card/CDA).
+        // It stays live in the exact borrowed world rather than being frozen by
+        // the feasibility preflight; signed teammate powers also stay distinct.
+        let value = StatValue::TappedCount(CountFilter {
+            zone: CountZone::Battlefield,
+            relation: 0,
+            kind: 1,
+            exclude: 0,
+            subtype: None,
+            basic: false,
+            other: false,
+            cards_only: false,
+        });
+        assert_eq!(w.value(value, iron), 0);
+        let index = w.resources.iter().position(|r| r.id == robots[0]).unwrap();
+        w.resources[index].object.tapped = true;
+        assert_eq!(w.value(value, iron), 1);
+        assert_eq!(w.power(negative), -3);
+    }
+}
+#[test]
+fn msh_teamwork_funding_scalability_general_sacrifice_restores_improvise_before_mana() {
+    // Private generic-cost boundary, not a new printed producer: this ordinary
+    // enchantment sacrifice must remain available before the mana clause.
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let iron = paid_iron(&mut g, p);
+        let aura = named(&mut g, p, "Witness Protection", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        cast(&mut g, aura, None, &[Target::Card(iron)]);
+        settle(&mut g);
+        g.create_tokens(p, Card::MshDoombotToken, 8, false);
+        settle(&mut g);
+        let spell = named(&mut g, p, "Atlantis Attacks", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 0];
+        let mut c = context(&g, p, spell);
+        c.additional = Some(AdditionalCost {
+            kind: EffectChoiceKind::Sacrifice,
+            filter: SacrificeFilter {
+                keywords: Keywords::NONE,
+                source_only: false,
+                kinds: 32,
+                nonland: false,
+                other: false,
+                tokens: None,
+                artifact_enchantment_or_token: false,
+                subtype: None,
+            },
+        });
+        c.clauses.insert(
+            0,
+            CastCostRow {
+                clause: CastCostClause::Additional,
+                paid: false,
+            },
+        );
+        let w = world(&g, p, spell, c);
+        assert!(!w.mana_clause_payable(w.cast_costs.as_ref().unwrap()));
+        let before = g.snapshot();
+        assert!(w.cost_completion());
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.object_view(aura).zone, Zone::Battlefield);
+        assert!(!improvise::available(
+            &g,
+            p,
+            Card::from_name("Atlantis Attacks").unwrap()
+        ));
     }
 }
