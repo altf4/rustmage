@@ -253,7 +253,7 @@ fn msh_copy_identity_token_of_actual_monica_retains_double_faces_and_transforms(
         assert!(!g.object_view(copy).face.unwrap().back);
         paid_monica_transform(&mut g, p, copy);
         let after = g.object_view(copy);
-        assert!(after.face.unwrap().back);
+        assert!(after.face.as_ref().unwrap().back);
         assert_eq!(after.name(), "Photon, Living Light");
         assert_eq!((after.power, after.toughness), (4, 4));
         assert!(after.keywords.contains(Keywords::HEXPROOF));
