@@ -136,7 +136,7 @@ fn msh_eighth_combined_paid_costs_alone_attacks_lki_merfolk_and_tapped_equipment
         until(&mut g, |g| g.state.pending == Pending::Attackers);
         checked(&mut g, Action::Attack { card: wings });
         checked(&mut g, Action::FinishAttackers);
-        put(&mut g, wings, 0);
+        put(&mut g, wings, 1);
         until(&mut g, |g| {
             matches!(g.state.pending, Pending::EffectLibrary { .. })
         });
