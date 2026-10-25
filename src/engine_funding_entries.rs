@@ -1438,3 +1438,7 @@ mod msh_ten_rings_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_namor_funding_tests.rs"]
 mod msh_namor_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_galactus_funding_tests.rs"]
+mod msh_galactus_funding_tests;

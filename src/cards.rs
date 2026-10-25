@@ -1526,6 +1526,11 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         counters: AmountValue,
     },
+    /// Create first, then attach every exact resulting Equipment to this source.
+    CreateEquipmentForSource {
+        token: Card,
+        amount: u16,
+    },
     CreateTokens {
         token: Card,
         amount: u16,

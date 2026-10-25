@@ -7667,3 +7667,11 @@ mod msh_namor_tests;
 #[cfg(test)]
 #[path = "engine_msh_tenth_combined_tests.rs"]
 mod msh_tenth_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_galactus_tests.rs"]
+mod msh_galactus_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_us_agent_tests.rs"]
+mod msh_us_agent_tests;

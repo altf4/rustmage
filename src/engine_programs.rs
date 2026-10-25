@@ -3481,6 +3481,15 @@ impl Game {
                         self.create_tokens(player, token, u128::from(amount), tapped);
                     }
                 }
+                Instruction::CreateEquipmentForSource { token, amount } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        replacements::TokenCompletion::AttachCreatedTo(item.object),
+                    );
+                }
                 Instruction::CreateTokens {
                     token,
                     amount,

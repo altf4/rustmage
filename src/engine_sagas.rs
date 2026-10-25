@@ -1,6 +1,16 @@
 //! Saga chapters are ordinary exact-source triggered packets, not mutable scripts.
 use super::*;
 impl Game {
+    /// CR714.3c/714.4 require a live Saga with at least one chapter ability.
+    /// The admitted chapter set is its immutable definition, subject to live removal.
+    fn live_saga_final_chapter(&self, id: CardId) -> Option<u16> {
+        let object = &self.state.objects[id as usize];
+        (object.zone == Zone::Battlefield
+            && self.has_subtype(id, "Saga")
+            && self.printed_abilities_available(id))
+        .then(|| object.card.saga_final_chapter())
+        .flatten()
+    }
     pub(super) fn lore_counters_added(&mut self, object: ObjectRef, before: u64) {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
@@ -28,7 +38,7 @@ impl Game {
                 let o = &self.state.objects[id as usize];
                 if o.zone != Zone::Battlefield
                     || o.controller != self.state.active
-                    || o.card.saga_final_chapter().is_none()
+                    || self.live_saga_final_chapter(id).is_none()
                 {
                     return None;
                 }
@@ -65,13 +75,10 @@ impl Game {
     }
     pub(super) fn saga_sacrifice_required(&self, id: CardId) -> bool {
         let o = &self.state.objects[id as usize];
-        let Some(final_chapter) = o.card.saga_final_chapter() else {
+        let Some(final_chapter) = self.live_saga_final_chapter(id) else {
             return false;
         };
-        if o.zone != Zone::Battlefield
-            || !self.printed_abilities_available(id)
-            || o.counters.lore < u64::from(final_chapter)
-        {
+        if o.counters.lore < u64::from(final_chapter) {
             return false;
         }
         let source = self.object_ref(id);
