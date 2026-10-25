@@ -11,7 +11,7 @@ struct Retarget {
     item: SpellView,
     template: SpellView,
     remaining: u64,
-    victim: Option<u64>,
+    victim: Option<(u64, bool)>,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct RetargetView {
@@ -236,7 +236,22 @@ impl Game {
         let mut delayed = std::mem::take(&mut state.delayed);
         let mut retained = Vec::new();
         for mut trigger in delayed.drain(..) {
-            if trigger.controller == spell.controller {
+            let power_limited = matches!(
+                trigger.kind,
+                StackKind::TriggeredAbility { ability }
+                    if trigger.trigger_definition().triggers()[usize::from(ability)]
+                        .condition.event() == TriggerCondition::DelayedSpellCastSourcePower
+            );
+            let source_power = if self.on_battlefield(trigger.object.card)
+                && self.object_ref(trigger.object.card) == trigger.object
+            {
+                self.stats(trigger.object.card).power
+            } else {
+                trigger.source_facts.power
+            };
+            if trigger.controller == spell.controller
+                && (!power_limited || i128::from(spell.mana_value()) <= source_power)
+            {
                 trigger.id = self.next_stack_id();
                 trigger.copy_event = Some(Box::new(CopyEvent {
                     spell: spell.clone(),
@@ -443,7 +458,43 @@ impl Game {
             item: victim.clone(),
             template: victim,
             remaining: 0,
-            victim: Some(id),
+            victim: Some((id, false)),
+        });
+        self.advance_copy_targets()
+    }
+    /// Delayed callbacks retain the exact source incarnation, including its
+    /// most recent battlefield power even if it changes after registration.
+    pub(super) fn capture_delayed_copy_source_departure(&mut self, before: &ObjectView) {
+        if let Some(state) = &mut self.state.stack_copy_data {
+            for item in &mut state.delayed {
+                if item.object == before.reference {
+                    item.source_facts = DamageFacts::from_view(before);
+                    item.source_keywords = before.keywords;
+                    item.source_tapped = before.tapped;
+                }
+            }
+        }
+    }
+    pub(super) fn change_cast_spell_targets(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = item
+            .cast_event
+            .as_ref()
+            .and_then(|event| {
+                self.state
+                    .stack
+                    .iter()
+                    .find(|spell| spell.kind == StackKind::Spell && spell.id == event.stack_id)
+            })
+            .cloned()
+        else {
+            return false;
+        };
+        let id = victim.id;
+        self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
+            item: victim.clone(),
+            template: victim,
+            remaining: 0,
+            victim: Some((id, true)),
         });
         self.advance_copy_targets()
     }
@@ -458,7 +509,7 @@ impl Game {
         Some(RetargetView {
             item: r.item.clone(),
             original: r.template.targets.clone(),
-            victim: r.victim,
+            victim: r.victim.map(|(id, _)| id),
             remaining_copies: r.remaining,
         })
     }
@@ -509,7 +560,7 @@ impl Game {
             .iter()
             .zip(&r.template.targets)
             .any(|(a, b)| a != b);
-        if r.victim.is_some() && !changed {
+        if r.victim.is_some_and(|(_, optional)| !optional) && !changed {
             return false;
         }
         let plan = self.target_spec(&r.item);
@@ -612,7 +663,7 @@ impl Game {
             .as_ref()
             .unwrap()
             .clone();
-        if let Some(id) = r.victim {
+        if let Some((id, _)) = r.victim {
             if let Some(index) = self.state.stack.iter().position(|s| s.id == id) {
                 let previous = self.state.stack[index].clone();
                 self.acquire_stack_target_set(&r.item, &previous.targets);

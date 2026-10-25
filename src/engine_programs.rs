@@ -682,6 +682,7 @@ impl Game {
                     | TriggerCondition::Foraged
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
+                    | TriggerCondition::DelayedSpellCastSourcePower
                     | TriggerCondition::Ward
                     | TriggerCondition::SelfTargeted { .. }
                     | TriggerCondition::CardDrawn { .. }
@@ -1191,6 +1192,7 @@ impl Game {
                     let object = &self.state.objects[id as usize];
                     match target {
                         CastTarget::Source => reference == source.reference,
+                        CastTarget::PermanentKinds(kinds) => self.current_kinds(id) & kinds != 0,
                         CastTarget::OpponentOrCreature => {
                             self.is_creature(id) && object.controller != source.controller
                         }
@@ -1284,7 +1286,8 @@ impl Game {
                             || ability.program.iter().any(|instruction| {
                                 matches!(
                                     instruction,
-                                    Instruction::GainLifeScaled(_, AmountValue::SpellColors)
+                                    Instruction::ChangeCastSpellTargets
+                                        | Instruction::GainLifeScaled(_, AmountValue::SpellColors)
                                         | Instruction::DamageScaled(
                                             AmountValue::CastSpellManaValue
                                         )
@@ -2136,6 +2139,11 @@ impl Game {
                 }
                 Instruction::CopyCastSpell { .. } | Instruction::CopyStormSpell => {
                     if self.copy_captured_spell(&item) {
+                        return;
+                    }
+                }
+                Instruction::ChangeCastSpellTargets => {
+                    if self.change_cast_spell_targets(&item) {
                         return;
                     }
                 }

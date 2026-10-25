@@ -964,6 +964,8 @@ pub(crate) enum Instruction {
     },
     CopyStormSpell,
     ChangeSingleStackTarget,
+    /// Optionally choose new targets for the exact spell captured by this cast trigger.
+    ChangeCastSpellTargets,
     GrantGraveyardCast(GraveyardCastKind),
     ReduceArtifactSpellCostsThisTurn(u32),
     NextRedOrGreenCreatureFreeThisTurn,
@@ -2420,6 +2422,7 @@ impl Counters {
 pub(crate) enum CastTarget {
     Creature(CastRelation),
     OpponentOrCreature,
+    PermanentKinds(u16),
     Source,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2820,6 +2823,8 @@ pub(crate) enum TriggerCondition {
         relation: CastRelation,
         guard: StepGuard,
     },
+    /// A registered next-spell callback, never a passive battlefield observer.
+    DelayedSpellCastSourcePower,
     SpellCast {
         relation: CastRelation,
         filter: CastFilter,

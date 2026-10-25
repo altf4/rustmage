@@ -5919,6 +5919,7 @@ impl Game {
                 .retain(|spell| spell.kind != StackKind::Spell || spell.object != before.reference);
         }
         if before.zone == Zone::Battlefield {
+            self.capture_delayed_copy_source_departure(&before);
             self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
@@ -8096,3 +8097,7 @@ mod msh_turn_cast_grants_tests;
 #[cfg(test)]
 #[path = "engine_msh_ability_copy_core_tests.rs"]
 mod msh_ability_copy_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_cast_target_copy_tests.rs"]
+mod msh_cast_target_copy_tests;
