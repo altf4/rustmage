@@ -7,6 +7,8 @@ impl Game {
             object.zone == Zone::Battlefield
                 && self.printed_abilities_available(source)
                 && object.controller == actor
+                && (!object.card.cast_timing_requires_opponent_spell()
+                    || self.state.players[actor.other().index()].spells_cast_this_turn > 0)
                 && object
                     .card
                     .cast_timing_grants()

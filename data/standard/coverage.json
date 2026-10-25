@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f6282bc78e022c2bb6f947315cbd3004e3bed55bcab53f6cc60f37b83a276726",
+  "catalogue_version": "bfbdce3b005f02f09be5feaa87af06cbd0bfda5d2ade00c90226541418d53de1",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2469,
-  "implemented_total": 2475,
+  "implemented_standard_cards": 2471,
+  "implemented_total": 2477,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 164,
-      "gated": 109
+      "complete": 166,
+      "gated": 107
     },
     "one": {
       "total": 1,
@@ -5341,8 +5341,8 @@
     {
       "name": "Captain America, Living Legend",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/captain_america_living_legend.rs",
       "set": "msh"
     },
@@ -5373,8 +5373,8 @@
     {
       "name": "Captain Mar-Vell, Space-Born",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/captain_mar_vell_space_born.rs",
       "set": "msh"
     },
