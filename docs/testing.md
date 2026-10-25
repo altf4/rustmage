@@ -41,8 +41,8 @@ flushed start/finish event for every exact test. Every scenario has a 10-second
 wall-clock cap and the entire native execution suite has a 30-second cap; both
 are independent of compilation. Inspect `report/native.json` for build versus
 execution time and `report/native.jsonl` to locate a stalled scenario. The
-validator also limits the Python API suite to 30 seconds and the full CI
-validation workload to nine minutes. A failing timeout terminates the process
+Python binding suite has a five-second execution budget and a 15-second
+worker timeout. The full CI validation workload has a nine-minute limit. A failing timeout terminates the process
 tree before cleanup, so it cannot leave a background compiler consuming deleted
 inputs.
 
@@ -74,15 +74,21 @@ unit tests repeatedly reconstructing the entire catalogue.
 
 ## Current coverage and limits
 
-The replacement contains 33 native test functions: 54 independent Oracle card
-cases exercised from both seats, 25 focused interaction scenarios, four shared
-engine contracts, basic-land and whole-catalogue admission checks, and one broad
-cast/entry regression table. The broad table executes all 2,196 supported physical
-cards, including 2,190 Standard cards, using fixed small main-phase, stack or
+PR #468 established the existing 54 independent Oracle card cases, focused
+interaction cases and shared engine contracts. The Marvel Super Heroes rebuild
+extends those helpers with four card-family modules and one representative
+engine-contract module. It removes the previous MSH development tests and game
+corpora. The per-card `msh_*_obligations.json` ledgers distinguish printed rules,
+header facts, concrete behavior assertions and shared keyword proofs. See
+[`msh-bounded-assurance-rebuild.json`](msh-bounded-assurance-rebuild.json) for the
+frozen membership and replacement inventory.
+
+The broad regression table now executes all 2,584 candidate supported physical
+cards, including 2,578 Standard cards, using fixed small main-phase, stack or
 combat fixtures. Every candidate must be offered and finish its declaration and
-resolution. The current longest trace uses 15 accepted actions; the limit is 64
-and the fixture object ceiling is 192. A missing cast, unresolved decision or
-exceeded budget fails; there are no silently skipped cards.
+resolution. The longest accepted trace uses 15 actions; the limit is 64 and the
+fixture object ceiling is 192. A missing cast, unresolved decision or exceeded
+budget fails. No card is silently skipped.
 
 `src/assurance/oracle_cases.json` records independently pinned Oracle text, stats,
 keyword expectations, damage/draw/pump values and total printed cost for the
@@ -100,9 +106,9 @@ are regression baselines, not independent proof that every printed obligation
 works. In particular they do not exhaust each card's activated/attack/upkeep/death
 abilities, all modes or combinations. Those remain reasons to add focused
 independent scenarios when changing the relevant behavior. Admission and trace
-counts must never be presented as complete all-pool rules certification. The
-remaining 2,974 Standard cards are still gated; this test rewrite changes no
-card definition or complete flag.
+counts must never be presented as complete all-pool rules certification. The remaining 2,586 Standard identities are still gated in this candidate.
+Admission counts and this bounded rewrite do not certify the entire Standard
+pool or every cross-card interaction.
 
 The eight Python contracts finish well below their five-second execution budget
 and 15-second worker timeout. The five infrastructure contracts check actual
@@ -150,6 +156,6 @@ for explicitly requested versions below 138; ordinary validation is unprojected.
 The modal-face schema141 cohort records prior140 with every existing Power-up,
 counter-placement history and keyword field intact. New optional face/transform
 fields are omitted on inherited roots, so the previous-schema export changes only
-that version and must exactly match all2453 inherited full traces. Whole Monica
-interactions are covered by `engine_msh_faces_tests.rs`; the sole new physical
-trace and immutable comparison hashes are in `msh-faces-core-evidence.json`.
+that version and must exactly match all2453 inherited full traces. That development test module was retired by the bounded MSH rebuild; current
+Monica interactions are in `src/assurance/msh_c.rs`. The historical physical
+trace and immutable comparison hashes remain in `msh-faces-core-evidence.json`.
