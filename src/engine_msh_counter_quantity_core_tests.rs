@@ -1,24 +1,13 @@
-//! Gated real consumers exercise shared core only; no new complete-card claims.
+//! Reviewed shared core regressions, retained for the three whole-card consumers.
 use super::ability_world::CharacteristicWorld;
 use super::assurance::big_helpers::{cast, checked, named as supported_named, settle, setup};
 use super::*;
 const DOC: &str = "Doc Samson, Super Psychiatrist";
 const HYDE: &str = "Mister Hyde, Monster Within";
 const ANT: &str = "The Astonishing Ant-Man";
-// Only these three explicitly authorized incomplete definitions are seeded.
-// The common assurance helper keeps its support guard. Real typed Card identity
-// is installed outside the game, then ordinary production movement registers it;
-// all subsequent casts, costs and choices use the unchanged checked action API.
+// Whole-card admissions now use the ordinary support-checked fixture path.
 pub(super) fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    if ![DOC, HYDE, ANT].contains(&name) {
-        return supported_named(g, p, name, zone);
-    }
-    let definition = Card::from_name(name).unwrap();
-    assert!(!definition.is_supported());
-    let id = supported_named(g, p, "Bear Cub", Zone::Outside);
-    g.state.objects[id as usize].card = definition;
-    g.move_object(id, zone);
-    id
+    supported_named(g, p, name, zone)
 }
 fn reject(g: &mut Game, a: Action) {
     let s = g.snapshot();
@@ -164,11 +153,11 @@ fn ant_announce(g: &mut Game, p: Player, id: CardId, n: u64) {
     checked(g, Action::ChooseSourceCounterAmount { amount: n });
 }
 #[test]
-fn msh_counter_core_gated_real_fixtures_stay_excluded_from_support() {
+fn msh_counter_core_real_consumers_are_supported_with_original_paid_stats() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         for (name, stats) in [(DOC, (3, 6)), (HYDE, (2, 2)), (ANT, (1, 1))] {
-            assert!(!Card::from_name(name).unwrap().is_supported());
+            assert!(Card::from_name(name).unwrap().is_supported());
             let id = paid(&mut g, p, name);
             assert_eq!((g.stats(id).power, g.stats(id).toughness), stats);
         }

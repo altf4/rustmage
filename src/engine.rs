@@ -7933,3 +7933,7 @@ mod msh_copy_identity_regression_tests;
 #[cfg(test)]
 #[path = "engine_msh_counter_quantity_core_tests.rs"]
 mod msh_counter_quantity_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_counter_three_tests.rs"]
+mod msh_counter_three_tests;

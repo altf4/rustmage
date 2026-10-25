@@ -4455,6 +4455,14 @@
     "journal": "87c199e3b586e2a2",
     "observations": "2023f4407d49dd62"
   },
+  "Doc Samson, Super Psychiatrist": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1cf44c3255a028f2",
+    "observations": "58e6b2a2879af4c0"
+  },
   "Doctor Doom": {
     "root": "main",
     "status": "completed",
@@ -11071,6 +11079,14 @@
     "journal": "b3f39d5b44da38ed",
     "observations": "bef8532709ac4d22"
   },
+  "Mister Hyde, Monster Within": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "a6470aa01709f79e"
+  },
   "Mistmeadow Council": {
     "root": "main",
     "status": "completed",
@@ -17478,6 +17494,14 @@
     "zone": "Battlefield",
     "journal": "230674eee5870f53",
     "observations": "98bfb428a1e18338"
+  },
+  "The Astonishing Ant-Man": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "21c94e12108ffb3f",
+    "observations": "4ebe527622294214"
   },
   "The Chase Is On": {
     "root": "main",

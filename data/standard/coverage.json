@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fb598e87319ae1d0feac262966ac96862607fbad1573bbe9bf34c674d1256b0f",
+  "catalogue_version": "46233807a6f05eca20b911fdf3621c6d1dc4952a16a9df6970e5f7b49630a395",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2519,
-  "implemented_total": 2525,
+  "implemented_standard_cards": 2522,
+  "implemented_total": 2528,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 214,
-      "gated": 59
+      "complete": 217,
+      "gated": 56
     },
     "one": {
       "total": 1,
@@ -9141,8 +9141,8 @@
     {
       "name": "Doc Samson, Super Psychiatrist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/doc_samson_super_psychiatrist.rs",
       "set": "msh"
     },
@@ -22549,8 +22549,8 @@
     {
       "name": "Mister Hyde, Monster Within",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/mister_hyde_monster_within.rs",
       "set": "msh"
     },
@@ -35573,8 +35573,8 @@
     {
       "name": "The Astonishing Ant-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_astonishing_ant_man.rs",
       "set": "msh"
     },

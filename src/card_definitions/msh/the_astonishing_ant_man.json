@@ -3,7 +3,7 @@
   "catalogue_id": 4421,
   "oracle_id": "6c7e4e51-099a-4398-a4b7-e2f0ddd36429",
   "facts_sha256": "10f5f6131639f51e5ba98163dbef13fabde32bd71f61adf43ef72811cf999c42",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fb6ac4dc1607393bb4da349bc4b4e7d607a40fc0f20016b28a04ed19b65ccd71"
@@ -12,9 +12,6 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TheAstonishingAntMan.java",
   "java_sha256": "45f59daaa08e3a71976832d8c47fbe3e9f18846a192809357c6c9e04f4f85c54",
-  "core_fixture_notes": [
-    "Gated real typed consumer used only to exercise the shared core. No complete-card admission until independently reviewed core and whole printed interaction tests pass."
-  ],
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -176,5 +173,9 @@
       "path": "Mage/src/main/java/mage/abilities/costs/VariableCostType.java",
       "sha256": "1138024dde918ed96ed8387e92540be45ed22e6973775007fe0f01547f8adcb6"
     }
+  ],
+  "implementation_notes": [
+    "Direct complete typed behavior; shared counter and nonmana paid-quantity dependency is 6fbf0265ea61d2f0a718cfaddf0fbb44c601e3ab.",
+    "Every printed clause is covered by the preserved counter core and whole-card paid scenario modules; source references pin complete direct classes and reusable helpers."
   ]
 }
