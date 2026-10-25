@@ -1,0 +1,296 @@
+{
+  "schema": 1,
+  "kind": "Two whole-card candidates, not full-set acceptance",
+  "base": "b6dfb877bfaf818b8cffa50087fd23b0e2a6ec25",
+  "validated_runtime_head": "961dbabc4c4f1c1b9b9deba3b3d0985ecbcf2498",
+  "authored_runtime_commits": [
+    "351764c3ddea177c3e17f50d71f409bdd129c626",
+    "1928ea5084d418c57107cf2163d951707f3fed9a"
+  ],
+  "issue": "https://github.com/altf4/rustmage/issues/478",
+  "cards": [
+    {
+      "name": "Stature, Size Shifter",
+      "catalogue_id": 4120,
+      "definition": "src/card_definitions/msh/stature_size_shifter.rs",
+      "obligations": [
+        "Actual {U} cast; blue legendary Human Hero, 1/1.",
+        "Printed blocking restriction uses current derived power <= 1 only when its source group remains available.",
+        "Blocking restriction never retroactively removes a committed block or creates a block after declarations finish.",
+        "Power-up {X}{U}{U} uses the existing chosen-X scalar and exact source counter placement; entry-turn reduction gives {X}{U}.",
+        "Zero X is legal and consumes the exact-incarnation use; timing is instant and requires no tap.",
+        "Existing Wonder Man/Hulk, source theft/departure/blink, doubling/placement, copies, private choices and owned replay remain correct."
+      ]
+    },
+    {
+      "name": "Undercover Skrull",
+      "catalogue_id": 4766,
+      "definition": "src/card_definitions/msh/undercover_skrull.rs",
+      "obligations": [
+        "Actual {1}{G} cast; green Skrull Shapeshifter Villain, 1/1.",
+        "Current source controller has at least two owned non-token creature cards in their graveyard: +2/+2 and all creature types.",
+        "One source effect starts in layer four and continues its layer-seven bonus through later printed-ability removal, with timestamp-correct type replacement.",
+        "Conditional all-types is battlefield-only and grants no changeling characteristic-defining ability.",
+        "Tap adds exactly one of five colors, obeying summoning sickness, control, suppression and immediate mana semantics.",
+        "Actual and borrowed funding worlds share projected graveyard kinds/owners/zones; control-source departures and entry registration preserve exact source chronology."
+      ]
+    }
+  ],
+  "shared_mechanics": [
+    "Private post-characteristic conditional source-power blocking restriction.",
+    "Private source-controller graveyard threshold all-types/stat fragments, in one Type-starting immutable group.",
+    "Existing graveyard-card-count helper generalized to CharacteristicWorld+?Sized for actual and funding reuse.",
+    "Existing owned source timestamps, generic mana production, chosen X, Power-up, counters, copy and zone-change engines reused."
+  ],
+  "rules_authorities": [
+    {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "relevant_rules": "Stature already-blocked ruling and Power-up general rules."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "relevant_rules": [
+        "205.3d",
+        "604.3a",
+        "613.6",
+        "702.73a"
+      ]
+    }
+  ],
+  "membership": {
+    "base_msh": 172,
+    "candidate_msh": 174,
+    "full_oracle_denominator": 281,
+    "candidate_gated": 107,
+    "new_whole_candidates": 2,
+    "not_yet_merged": true
+  },
+  "identity_and_wire": {
+    "definitions": 5397,
+    "new_ids": [],
+    "token_recipes": 119,
+    "metadata_byte_equal": true,
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "wire_schema": 143,
+    "wire_file_byte_equal": true,
+    "new_public_payloads": []
+  },
+  "test_cases": {
+    "stature": [
+      "msh_stature_paid_body_boundary_and_counter_power_change_real_block_actions",
+      "msh_stature_live_growth_and_depower_before_blocks_include_negative_power",
+      "msh_stature_reducing_after_committed_blocks_keeps_blocked_status",
+      "msh_stature_raising_after_unblocked_declaration_never_creates_retroactive_block",
+      "msh_stature_printed_suppression_and_resolution_rule_have_separate_lifetimes",
+      "msh_stature_scalar_entry_and_later_costs_zero_use_private_choice_and_atomicity",
+      "msh_stature_actual_land_funding_upper_x_and_required_blue",
+      "msh_stature_counter_doubling_is_one_hero_event_and_zero_x_is_no_event",
+      "msh_stature_counter_placer_stays_captured_after_paid_source_theft",
+      "msh_stature_lifetime_cleanup_theft_blink_and_old_packet_never_rebind",
+      "msh_stature_wonder_man_additional_use_does_not_refresh_consumed_count",
+      "msh_stature_hulk_reduction_after_x_and_locked_payment_preserves_blue",
+      "msh_stature_copy_recipe_and_incarnation_own_independent_power_up_uses"
+    ],
+    "skrull": [
+      "msh_skrull_paid_body_all_five_mana_colors_sickness_and_atomic_invalid_production",
+      "msh_skrull_threshold_only_current_controller_creature_cards_not_tokens_or_other_zones",
+      "msh_skrull_actual_paid_death_and_graveyard_mana_exile_toggle_both_parts",
+      "msh_skrull_type_effect_continues_bonus_through_later_printed_ability_removal",
+      "msh_skrull_noncreature_land_form_has_no_creature_types_then_restores",
+      "msh_skrull_source_theft_uses_new_controller_graveyard_and_cleanup_restores_relation",
+      "msh_skrull_type_setter_timestamp_order_and_restarted_source_effect",
+      "msh_skrull_other_elf_modifier_and_real_subtype_scaled_mana_follow_live_threshold",
+      "msh_skrull_copies_recompute_for_their_controller_and_zone_changes_clear_stale_types"
+    ],
+    "skrull_funding": [
+      "msh_skrull_funding_virtual_death_and_graveyard_exile_match_owned_actual_branches",
+      "msh_skrull_funding_threshold_rechecks_projected_controller_after_control_source_departure",
+      "msh_skrull_funding_new_entry_registers_shared_type_timestamp_and_bonus_provider",
+      "msh_skrull_funding_later_type_setter_and_suppression_keep_same_layer_seven_bonus"
+    ]
+  },
+  "validation": {
+    "new_native_cases": 26,
+    "all_native_cases": 887,
+    "all_native_passed": true,
+    "native_execution_seconds": 4.61,
+    "strict_trace_rows": 2477,
+    "all_targets_clippy": "passed with -D warnings",
+    "source_pins": {
+      "definitions": 5397,
+      "source_blobs": 1158,
+      "java_verified": true,
+      "catalogue_version": "06faa33306ae3b4061e926f550918ef4a5227c2a4f187205e6170e826dd8f02b"
+    },
+    "linker_and_rustfmt": "passed",
+    "resource_guards": {
+      "stature": {
+        "report": "<cache>/rustmage-build-reports/8ffb82ab0a7c4a85b22ccd39107961f5.json",
+        "report_sha256": "985e2fe3144a13ebb9b394fc62b5c8c84c96a5c5291e4d8d7a8e9e8a088b3654",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_stature",
+          "--",
+          "--nocapture"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 309.70067794801435,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2319679488,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "skrull": {
+        "report": "<cache>/rustmage-build-reports/2e4aa0efcc6246a0af80d7dd9a457d8f.json",
+        "report_sha256": "3a74e5a3d322b55f5f101bcd4c5bc0094080e992a176c15b2398ebcb27675cbf",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_skrull",
+          "--",
+          "--nocapture"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 166.48565539700212,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2323001344,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "native": {
+        "report": "<cache>/rustmage-build-reports/c0f96a48454240969bbbc0c5ba941844.json",
+        "report_sha256": "8ed6f963d9821f4d7576cfba7dbae319e58f68e76a42845f80205e15470a72fd",
+        "command": [
+          "cargo",
+          "test",
+          "--lib"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 224.37184318195796,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2324246528,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "clippy": {
+        "report": "<cache>/rustmage-build-reports/671eaf5ac7ae4910b126fc961955bc75.json",
+        "report_sha256": "dca82a2da6b2df077c044f918a5044cc8845aab1638160d92c9509d091e5adf9",
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 122.02212859201245,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1813196800,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "full_trace_proof": {
+      "base": "b6dfb877bfaf818b8cffa50087fd23b0e2a6ec25",
+      "old_rows": 2475,
+      "new_rows": 2477,
+      "all_inherited_full_trace_structs_exact": true,
+      "changed": [],
+      "removed": [],
+      "added": [
+        "Stature, Size Shifter",
+        "Undercover Skrull"
+      ],
+      "old_fields_stripped": false,
+      "trace_recorder_changed": false,
+      "base_trace_sha256": "4722634e71961d11cd7287a4224a176c629f98621c2fcb1078bf1932e298b58a",
+      "new_trace_sha256": "a062c4bd9b574dec65bbcdcdda5b99250c9fe0c926315642b32eeff27308047e",
+      "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+      "metadata_byte_equal": true,
+      "wire_schema": 143,
+      "wire_byte_equal": true,
+      "new_rows_full": {
+        "Stature, Size Shifter": {
+          "root": "main",
+          "status": "completed",
+          "decisions": 4,
+          "zone": "Battlefield",
+          "journal": "77fe8ec276f5ddde",
+          "observations": "c731e2301933efeb"
+        },
+        "Undercover Skrull": {
+          "root": "main",
+          "status": "completed",
+          "decisions": 4,
+          "zone": "Battlefield",
+          "journal": "100cb581dd613f1f",
+          "observations": "4ba9f48169be5e36"
+        }
+      }
+    },
+    "final_runtime_source_sha256": {
+      "src/ability_layers.rs": "5a7b1f44418eece15b65540e51703c67c60059cdd3189766a54a0e0f3f4f77e6",
+      "src/assurance/card_traces.json": "a062c4bd9b574dec65bbcdcdda5b99250c9fe0c926315642b32eeff27308047e",
+      "src/card_definitions/msh/stature_size_shifter.json": "b2a3dac32eaa7add07e65525a8986c45ad9c087ca64b75f036abfbc189f162b1",
+      "src/card_definitions/msh/stature_size_shifter.rs": "f1fdebe1b8e32670ba4c72b7d072eb91efa28a02af6f8f5f46f9f3fe93da1b45",
+      "src/card_definitions/msh/undercover_skrull.json": "7faaaba3277bd94c415d37b9be47097d15ef93b094260ce737fe26ab8acc03e6",
+      "src/card_definitions/msh/undercover_skrull.rs": "9e4ed9118dfff44570d5aeb0cf8d22630bee94761afdc66503b3067e9be1fcd5",
+      "src/engine.rs": "405c751d4499e2903bca0bffe67e0141a83767006ffcc57748090ad1227183ef",
+      "src/engine_ability_timeline.rs": "288aff30705c2864432e50825b3999c95772c441e23920a95050a20e01ffb921",
+      "src/engine_activations.rs": "da1dc8fa86e6962b8e83daed070e2623e5b8a4ac02aba2d0ae55a87d2e764c62",
+      "src/engine_blocking.rs": "0c4857574a40fce458b04fe8addfe7a38b1b054b8bf3ef09b169a11d7b0a1759",
+      "src/engine_characteristic_query.rs": "56443f3f2523f82f1dde4d7dad95581deb25c94762ea010925cb536bb998bdee",
+      "src/engine_funding.rs": "afd8fcdc91e0b409350c176b3207e81e7e711e129f8f0257dcfd5e6de6f74ea4",
+      "src/engine_funding_entries.rs": "fc3eaf1467bd36454266c470a2ad1b3a5c3336628d9121b26c71af49654a2ad4",
+      "src/engine_msh_skrull_funding_tests.rs": "7df9ff5ec828f5cfdfd5a8f0a805df0b40288cf49ef8ab7b1daf12dfe309a38f",
+      "src/engine_msh_skrull_tests.rs": "d9e185390717e996cae0ecf4e5f75dfece1cb765e550c8dbbac605097a5392d7",
+      "src/engine_msh_stature_tests.rs": "85bc65a8a282e9853c51da0435c9cc6ece42ff41598db51ab9535d176597be2e",
+      "src/engine_stats.rs": "28a4a6000e2fd57ff846fdee10920407d4e0abf46d319f24ffe8c5226d08e416",
+      "src/engine_subtypes.rs": "d642e6ddbe5d978ea9582d198e42c2d6337a1222456abf2fcfd5f11d9d1e3d9b",
+      "src/generated/catalogue.rs": "d5eb0406dcd6b92a6cd8929289e9bad63d76e4a80f33cb6915ad5abe2f438a69"
+    },
+    "cleanup": {
+      "terminal": true,
+      "no_active_target_consumers": true,
+      "root": "<cache>/rustmage-msh-stature-target",
+      "removed_files": 1019,
+      "removed_path_allocated_bytes": 124657664,
+      "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+      "preserved_shared_libraries": {
+        "<cache>/rustmage-msh-stature-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      "preserved_final_native_binary": {
+        "path": "<cache>/rustmage-msh-stature-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "a5f5e6d848d3282cebe6efd58ebb0a1d1717b29796c7e282ddc9a41c67b4c745"
+      }
+    }
+  },
+  "implementation_throughput": {
+    "scope": "Two whole candidates authored and natively validated in this parent; excludes future publication, independent final reviews and integration. Includes reading, rule design, fixtures, failed fixture iterations and shared build queue time.",
+    "start_utc": "2026-10-25T00:16:26+00:00",
+    "evidence_cutoff_utc": "2026-10-25T00:52:58.452204+00:00",
+    "elapsed_seconds": 2192.452204,
+    "candidate_cards": 2,
+    "candidate_cards_per_hour": 3.2839940532632927,
+    "simulation_throughput": "Not measured by this parent; full-set legal games are not supplied by the bounded trace table."
+  },
+  "remaining_gates": [
+    "Integrator must run full python3 scripts/validate.py --release on the final published batch.",
+    "Two independent nonauthor reviews of the exact final published integrated head remain required.",
+    "Final published batch CI, merge and issue counts remain the integrator responsibility.",
+    "Full MSH acceptance remains open until every 281-card obligation, interactions and set-only legal complete games are verified."
+  ]
+}
