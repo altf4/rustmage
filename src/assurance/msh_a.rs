@@ -667,7 +667,7 @@ fn msh_baxter_modes_and_dark_fortress_entry_or_basic_guard() {
 fn msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations() {
     let p = Player::P0;
     let mut g = scenario(p);
-    let victim = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+    let victim = put(&mut g, p.other(), "Aggressive Mammoth", Zone::Battlefield);
     spell(
         &mut g,
         p,
@@ -677,10 +677,12 @@ fn msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations() {
     );
     resolved(&mut g);
     assert_eq!(
-        g.object_view(victim).zone,
-        Zone::Graveyard,
-        "-4 toughness kills a 3/3"
+        stats(&g, victim),
+        (4, 4),
+        "Dark Deed changes an 8/8 by exactly -4/-4"
     );
+    g.finish_cleanup();
+    assert_eq!(stats(&g, victim), (8, 8), "Dark Deed expires at cleanup");
     for attacking in [false, true] {
         let mut g = scenario(p);
         let target = put(&mut g, p, "Hill Giant", Zone::Battlefield);
@@ -857,8 +859,17 @@ fn msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition() {
         assert_eq!(stats(&g, nonhero), (2, 2));
         assert_eq!(stats(&g, enemy), (2, 2));
         if condition == 1 {
-            g.state.step = Step::Main1;
-            spell(&mut g, p, "Agent Maria Hill", [1, 0, 0, 0, 0, 0], None);
+            g.finish_cleanup();
+            assert_eq!(g.state.active, p.other());
+            g.state.step = Step::BeginCombat;
+            g.state.priority = p;
+            spell(
+                &mut g,
+                p,
+                "Captain Marvel, Earth's Protector",
+                [2, 0, 0, 0, 0, 3],
+                None,
+            );
             resolved(&mut g);
         }
         if condition == 2 {
@@ -866,13 +877,12 @@ fn msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition() {
             resolved(&mut g);
         }
         let hand = g.hand_count(p);
-        g.state.active = p.other();
         g.begin_step(Step::End);
         resolved(&mut g);
         assert_eq!(
             g.hand_count(p),
             hand + usize::from(condition != 0),
-            "opponent's end step, intervening condition"
+            "either player's end step, intervening condition"
         );
     }
 }
