@@ -3,7 +3,7 @@ use super::*;
 
 // These advance only mandatory priority/trigger plumbing. Card choices remain
 // explicit in each scenario; no policy, search or per-action branch checks run.
-fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
+pub(super) fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
     g.prepare_triggers();
     for _ in 0..32 {
         if stop(g) {
@@ -13,7 +13,7 @@ fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
     }
     panic!("32-action priority budget exhausted: {:?}", g.state.pending);
 }
-fn resolved(g: &mut Game) {
+pub(super) fn resolved(g: &mut Game) {
     until(g, |g| {
         g.state.pending == Pending::Priority
             && g.state.stack.is_empty()
@@ -85,7 +85,7 @@ fn creatures(g: &Game, p: Player) -> Vec<CardId> {
         })
         .collect()
 }
-fn attack(g: &mut Game, cards: &[CardId]) {
+pub(super) fn attack(g: &mut Game, cards: &[CardId]) {
     g.state.step = Step::Attackers;
     g.state.pending = Pending::Attackers;
     for &card in cards {
@@ -1082,7 +1082,7 @@ fn msh_recovery_modes_recover_their_types_and_respect_two_mode_limit() {
     }
 }
 
-fn library(g: &mut Game, p: Player, names: &[&str]) -> Vec<CardId> {
+pub(super) fn library(g: &mut Game, p: Player, names: &[&str]) -> Vec<CardId> {
     let old = g.state.players[p.index()].library.to_vec();
     for id in old {
         g.state.objects[id as usize].zone = Zone::Outside;
@@ -2332,7 +2332,7 @@ fn msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice() {
         ),
         (
             "Castle Doom",
-            "A.I.M. Synthoids",
+            "Mind Stone",
             "Agent Maria Hill",
             [0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0],

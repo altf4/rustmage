@@ -3,7 +3,7 @@ use super::*;
 // Ownership, indices and restore are shared engine contracts, not repeated in
 // every card test. Include suspended announcement, payment, private search and
 // numeric combat choices in addition to ordinary priority.
-fn branch_contract(mut root: Game) {
+pub(super) fn branch_contract(mut root: Game) {
     let actor = root.actor().unwrap();
     let revision = root.revision();
     let actions = root.legal_actions();
