@@ -7717,11 +7717,11 @@ mod msh_us_agent_tests;
 mod library_top;
 pub use library_top::LibraryRevealEvent;
 #[cfg(test)]
-#[path = "engine_msh_library_top_tests.rs"]
-mod msh_library_top_tests;
+#[path = "engine_msh_feast_tests.rs"]
+mod msh_feast_tests;
 #[cfg(test)]
 #[path = "engine_msh_improvise_tests.rs"]
 mod msh_improvise_tests;
 #[cfg(test)]
-#[path = "engine_msh_feast_tests.rs"]
-mod msh_feast_tests;
+#[path = "engine_msh_library_top_tests.rs"]
+mod msh_library_top_tests;
