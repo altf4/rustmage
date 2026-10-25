@@ -7527,3 +7527,7 @@ mod msh_sixth_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_stature_tests.rs"]
 mod msh_stature_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_skrull_tests.rs"]
+mod msh_skrull_tests;

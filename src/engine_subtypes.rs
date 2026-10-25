@@ -213,6 +213,38 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                 }),
         );
     }
+    // This battlefield-only conditional effect starts in layer four. It is
+    // neither a changeling CDA nor a layer-six ability grant; later removal of
+    // its printed ability does not undo a type effect that already started.
+    if kinds(id, target) & CREATURE_OR_KINDRED != 0 {
+        for group in target.card.static_ability_groups() {
+            for fragment in group.fragments {
+                if let crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes {
+                    kind,
+                    minimum,
+                } = *fragment
+                    && activations::graveyard_cards_at_least(
+                        world,
+                        target.controller,
+                        kind,
+                        minimum,
+                    )
+                {
+                    let timestamp = world
+                        .roles()
+                        .and_then(|state| {
+                            state
+                                .ability_timestamps
+                                .iter()
+                                .find(|row| row.source == reference)
+                        })
+                        .expect("registered conditional type source")
+                        .timestamp;
+                    changes.push((timestamp, characteristic_layers::SubtypeChange::All));
+                }
+            }
+        }
+    }
     changes.sort_by_key(|row| row.0);
     let replacement_time = changes
         .iter()

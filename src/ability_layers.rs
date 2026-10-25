@@ -96,6 +96,16 @@ pub(crate) enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
+    /// One source-local conditional effect may span type and stat layers.
+    SourceGraveyardAllTypes {
+        kind: u16,
+        minimum: u16,
+    },
+    SourceGraveyardBonus {
+        kind: u16,
+        minimum: u16,
+        stats: Stats,
+    },
     AttachedSubtype(&'static str),
     AttachmentStats(Stats),
     AttachmentTurnStats(Stats),

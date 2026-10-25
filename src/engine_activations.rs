@@ -12,8 +12,8 @@ impl ActivatedAbility {
 }
 
 /// Starting restriction reads the same object overlay in actual and funding worlds.
-pub(super) fn graveyard_cards_at_least(
-    world: &impl ability_world::CharacteristicWorld,
+pub(super) fn graveyard_cards_at_least<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
     actor: Player,
     kind: u16,
     minimum: u16,
