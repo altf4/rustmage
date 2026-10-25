@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Seven whole-card candidates in the single remaining-set draft PR516; no main merge authorized",
+  "base_main": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+  "base_prerequisite": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+  "tested_runtime_head": "a8e6f4586c25deef893540df01db214be72378f4",
+  "cards": [
+    "Ares, God of War",
+    "Avengers: Under Siege",
+    "Castle Doom",
+    "Doctor Doom",
+    "Hawkeye's Bow",
+    "Hulkling, Burgeoning Bruiser",
+    "I Am Iron Man"
+  ],
+  "membership": {
+    "frozen_identities": 281,
+    "frozen_printings": 448,
+    "merged_flags_at_base": 180,
+    "candidate_flags": 194,
+    "candidate_gated": 87,
+    "entire_pool_acceptance": false
+  },
+  "parent_evidence": {
+    "animation_death": {
+      "head": "ab855327c0b6712beaf03a124122252e4a038350",
+      "evidence": "docs/msh-animation-death-evidence.json",
+      "sha256": "ca2535f2d7bce27fce17f6d1fdc29a0e3a6420bd977256abea40547e0acb8c82",
+      "new_native_groups": 22
+    },
+    "under_siege": {
+      "head": "39cae7d5ccb080e93efeb346bcb65b80d984d29b",
+      "evidence": "docs/msh-under-siege-evidence.json",
+      "sha256": "8663b0ceb3b0882f8c94c33a317f6873c38834574d0a4d0e24b2c61883521fcb",
+      "new_native_groups": 10
+    },
+    "doom": {
+      "head": "0e7760587ac40483b53a7443af900b70c7971a1a",
+      "evidence": "docs/msh-doom-artifact-evidence.json",
+      "sha256": "2ccc0f999e35c502689f094b25c22eab87079a16dd6c2c392f63c5b2e5170344",
+      "new_native_groups": 25
+    },
+    "event_objects": {
+      "head": "70be35c2c3ea242f90927084a3cb516bf9aeba2d",
+      "evidence": "docs/msh-event-objects-evidence.json",
+      "sha256": "009d240a833759d6fec4e0a75be36139e8c5e85e7bf674771342e1851d732878",
+      "new_native_groups": 33
+    }
+  },
+  "scenarios": {
+    "parent_new_groups": 90,
+    "combined_new_groups": 1,
+    "new_groups": 91,
+    "expected_final_native": 1100,
+    "both_seats": true,
+    "combined_source": "src/engine_msh_ninth_combined_tests.rs",
+    "combined": "Paid Doctor Doom/Doombots and artifact-only Castle mana funding Bow; Hulkling growth/Equipment/animation layers; three natural Under Siege chapters; artifact sacrifice across orphan raw/index branches; vigilant attacking Hulkling crews Flying Car, Murder triggers Ares exact return above Bow, and departed damage actor survives graveyard-to-hand; actual Treasure funding Shock; illegal combat recast atomicity and restore."
+  },
+  "shared_mechanics": [
+    "Typed target animation through existing owned characteristic layers; exact nontarget event-card owner return guarded by resulting graveyard incarnation",
+    "ArtifactSpell-only mana spending; source conditional keywords and composite kind counts in actual/funding worlds; one append-only exact Doombot recipe",
+    "Distinct optional owned EventObject facts for creature damage actor and signed entrant/source comparison, captured before whole departure batches and retained through copied packets",
+    "Effective subtype exclusion through shared battlefield damage execution, preserving Villain objects and captured-controller Saga amounts"
+  ],
+  "source": {
+    "definitions": 5398,
+    "source_blobs": 1203,
+    "java_verified": true,
+    "catalogue_version": "b75a7350ad3e6ce0a59c958293bfbbb2c3d013a9375921b23e2dd3a2bec4601d"
+  },
+  "trace_proof": {
+    "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+    "parents": {
+      "eighth": {
+        "head": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+        "schema": 144,
+        "full_Trace_exact_matches": 2490,
+        "trace_sha256": "88275144dc386ddf37a71d78fd2d81ade6d08697d7e8e1ec0a5a7124b4427c80",
+        "changed": [],
+        "removed": []
+      },
+      "animation_death": {
+        "head": "ab855327c0b6712beaf03a124122252e4a038350",
+        "schema": 144,
+        "full_Trace_exact_matches": 2492,
+        "trace_sha256": "84ee493f108ea9cdfbddbc50c478b4594bb5b97bd1e299269f2e3e756a19c7b2",
+        "changed": [],
+        "removed": []
+      },
+      "under_siege": {
+        "head": "39cae7d5ccb080e93efeb346bcb65b80d984d29b",
+        "schema": 144,
+        "full_Trace_exact_matches": 2491,
+        "trace_sha256": "b19719ffcf2047c032cefc0ff1cfa1c6d23d80b4db06cc67e53128ee2fcc403d",
+        "changed": [],
+        "removed": []
+      },
+      "doom": {
+        "head": "0e7760587ac40483b53a7443af900b70c7971a1a",
+        "schema": 145,
+        "full_Trace_exact_matches": 2492,
+        "trace_sha256": "dfbad35e2873ce2866d49a4bb18d31da419b47c6debbc04c72cb6935c699635c",
+        "changed": [],
+        "removed": []
+      },
+      "event_objects": {
+        "head": "70be35c2c3ea242f90927084a3cb516bf9aeba2d",
+        "schema": 145,
+        "full_Trace_exact_matches": 2492,
+        "trace_sha256": "87cc6b6a4c834e8f990b013dbafaa2700ea250c3a2a8be45f2d43a7201ee8271",
+        "changed": [],
+        "removed": []
+      }
+    },
+    "normal_schema": 145,
+    "comparison_schema": 144,
+    "normal_sha256": "860abacedbca501847d01ee19254fdacb2b4b656bcd1d40123028af6392f41b1",
+    "previous144_sha256": "bd3f5741d4a3a8a5c327f17174f92c227f15b350ea8a58b2011fe1c64790c658",
+    "new_rows": {
+      "Ares, God of War": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "dc0112764aa2bb2e",
+        "observations": "e2678ed909ead2d8"
+      },
+      "Avengers: Under Siege": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 6,
+        "zone": "Battlefield",
+        "journal": "c840d8a2ea15c38d",
+        "observations": "7fc90e86873cdf5a"
+      },
+      "Castle Doom": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 1,
+        "zone": "Battlefield",
+        "journal": "1c41fdead70727d2",
+        "observations": "335395c3ab383ebc"
+      },
+      "Doctor Doom": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 6,
+        "zone": "Battlefield",
+        "journal": "060a086fccb3a1b9",
+        "observations": "084c9695536f9b39"
+      },
+      "Hawkeye's Bow": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "c4b8f6d37ca7169e",
+        "observations": "78fbbbd339c62178"
+      },
+      "Hulkling, Burgeoning Bruiser": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "7c50116fb450cf1c",
+        "observations": "dae8399119b685f4"
+      },
+      "I Am Iron Man": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 5,
+        "zone": "Graveyard",
+        "journal": "cc857d3443c062fe",
+        "observations": "8e7196e448be5118"
+      }
+    },
+    "rows": 2497,
+    "metadata_sha256": "4d95450061275c456e39e129a5d3680e24e4d1ffe49ff1c1fea4de839c0091b9",
+    "metadata_exact_doom_parent": true,
+    "catalogue_definitions": 5398,
+    "token_recipes": 120,
+    "new_ids": [
+      {
+        "id": 5397,
+        "identity": "@token/msh-doombot"
+      }
+    ],
+    "old_fields_stripped": false,
+    "recorder_changed": false,
+    "fixed_input_files": 11733,
+    "fixed_input_changes": []
+  },
+  "identity": {
+    "wire_schema": 145,
+    "new_public_payloads": [
+      "ManaRestriction::ArtifactSpell",
+      "optional EventObjectView damage-actor or creature-comparison facts",
+      "signed SourceQuantityView creature comparison"
+    ],
+    "new_ids": [
+      5397
+    ],
+    "definitions": 5398,
+    "token_recipes": 120,
+    "metadata_sha256": "4d95450061275c456e39e129a5d3680e24e4d1ffe49ff1c1fea4de839c0091b9",
+    "metadata_exact_doom_parent": true
+  },
+  "validation": {
+    "combined": "Pass, both seats",
+    "preacceptance_native": "1099 passed; only expected trace-row admission failure (2497 vs2495), then all inherited full tables independently compared before accepting fresh normal145 export",
+    "full_release": "Pending exact final published aggregate head",
+    "two_independent_nonauthor_reviews": "Required on exact final published aggregate head; local receipts only",
+    "ci": "Pending exact final published aggregate head"
+  },
+  "resource_safety": {
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "fixed_inputs_through_actual_terminal": true,
+    "recorded_files": 11733,
+    "fixed_input_changes": []
+  },
+  "throughput": {
+    "scope": "Seven candidates and parent/combined preparation through fresh integrated trace proof; includes serialized queues and fixture corrections, excludes prior cached design, final published-head gates and human approval",
+    "start_utc": "2026-10-25T02:06:29+00:00",
+    "evidence_cutoff_utc": "2026-10-25T02:53:43.039908+00:00",
+    "elapsed_seconds": 2834.039908,
+    "candidate_cards_per_hour": 8.89190019126576,
+    "simulation_claim": false
+  },
+  "remaining_blocker": {
+    "effective_saga_subtype": "Inherited precombat lore uses printed final chapter; synthetic animated Saga made non-Saga can still receive lore. No currently supported producer of exact condition established; revisit effective subtype/copy consumers before full-pool acceptance. Source-specific evidence in Under Siege parent document."
+  },
+  "publication_policy": "Leave existing merges in place. Remaining work stays in draft PR516 for final user approval; no automatic main merge.",
+  "remaining_scope": "87 candidate-gated identities plus full-pool obligations/game/search/privacy/replay/performance acceptance. Main remains180/281 with101 gated until final approval."
+}

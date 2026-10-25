@@ -885,7 +885,7 @@
     "decisions": 4,
     "zone": "Battlefield",
     "journal": "dc0112764aa2bb2e",
-    "observations": "d051190e0213725e"
+    "observations": "e2678ed909ead2d8"
   },
   "Ark of Hunger": {
     "root": "main",
@@ -1165,7 +1165,7 @@
     "decisions": 6,
     "zone": "Battlefield",
     "journal": "c840d8a2ea15c38d",
-    "observations": "ca0642b04ece5844"
+    "observations": "7fc90e86873cdf5a"
   },
   "Axebane Ferox": {
     "root": "main",
@@ -7799,6 +7799,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "b54c0d0926b3fced"
   },
+  "Hawkeye's Bow": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "c4b8f6d37ca7169e",
+    "observations": "78fbbbd339c62178"
+  },
   "Hazard of the Dunes": {
     "root": "main",
     "status": "completed",
@@ -8295,6 +8303,14 @@
     "journal": "dbb8ae3f9a5d3b87",
     "observations": "b9c15aec904f2838"
   },
+  "Hulkling, Burgeoning Bruiser": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "dae8399119b685f4"
+  },
   "Hullcarver": {
     "root": "main",
     "status": "completed",
@@ -8381,7 +8397,7 @@
     "decisions": 5,
     "zone": "Graveyard",
     "journal": "cc857d3443c062fe",
-    "observations": "d61a9fbcdcb514e0"
+    "observations": "8e7196e448be5118"
   },
   "Ice Magic": {
     "root": "main",
