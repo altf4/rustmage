@@ -637,7 +637,7 @@ fn msh_feast_legal_set_only_games_reach_natural_outcomes_with_both_life_controll
     let mut casts = 0;
     let mut records = Vec::new();
     for starting_player in [Player::P0, Player::P1] {
-        for seed in [20261024, 20261025] {
+        for seed in 20261024..20261040 {
             let config = Config {
                 decks: [deck.clone(), deck.clone()],
                 seed,
@@ -686,7 +686,11 @@ fn msh_feast_legal_set_only_games_reach_natural_outcomes_with_both_life_controll
         }
     }
     assert!(casts > 0);
-    assert_eq!(targeted, [true, true]);
+    assert_eq!(
+        targeted,
+        [true, true],
+        "cast count {casts}, games {records:?}"
+    );
     if let Ok(output) = std::env::var("RUSTMAGE_RECORD_FEAST_GAMES") {
         let output = std::path::PathBuf::from(output);
         assert!(
@@ -694,6 +698,6 @@ fn msh_feast_legal_set_only_games_reach_natural_outcomes_with_both_life_controll
                 std::path::PathBuf::from(std::env::var("HOME").unwrap()).join(".cache")
             )
         );
-        std::fs::write(output,serde_json::to_string_pretty(&serde_json::json!({"scope":"Four natural Standard-legal MSH-only white/green mirror games. Ordinary setup, unchanged observation-only policy, actual paid Heroic Feast and target choices by both controllers, full exact action replay. Bounded consumer integration, not full-set acceptance or a benchmark.","games":records,"paid_feast_casts":casts,"both_controllers_selected_life_targets":targeted})).unwrap()+"\n").unwrap();
+        std::fs::write(output,serde_json::to_string_pretty(&serde_json::json!({"scope":"32 natural Standard-legal MSH-only white/green mirror games. Ordinary setup, unchanged observation-only policy, actual paid Heroic Feast and target choices by both controllers, full exact action replay. Bounded consumer integration, not full-set acceptance or a benchmark.","games":records,"paid_feast_casts":casts,"both_controllers_selected_life_targets":targeted})).unwrap()+"\n").unwrap();
     }
 }
