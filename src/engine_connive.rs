@@ -191,6 +191,9 @@ impl Game {
             copy_recipes: Vec::new(),
             role_attachments: Vec::new(),
             damage: None,
+            damage_preventions: Vec::new(),
+            heals_before_damage: Vec::new(),
+            damage_event_order: Vec::new(),
         })
     }
     pub(super) fn choose_conniver(&mut self, object: ObjectRef) {

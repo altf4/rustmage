@@ -11,6 +11,7 @@ impl Game {
                 Some(Box::new(EventObjectView {
                     object: entering.reference,
                     facts: EventObjectFacts::Copiable(self.copiable_recipe(entering.reference)),
+                    conniver_creature: None,
                 }));
         }
     }
