@@ -1911,8 +1911,15 @@ fn msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions() {
         resolved(&mut g);
         let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let top = put(&mut g, p, name, Zone::Library);
-        assert!(g.observe(p).objects.iter().any(|o| o.id == top));
-        assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == top));
+        assert_eq!(
+            g.observe(p).known_library_top[p.index()]
+                .as_ref()
+                .unwrap()
+                .object
+                .card,
+            top
+        );
+        assert!(g.observe(p.other()).known_library_top[p.index()].is_none());
         g.state.step = Step::Attackers;
         g.state.pending = Pending::Attackers;
         assert!(
@@ -1970,9 +1977,18 @@ fn msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies() {
     act(&mut g, Action::Discard { card: discard });
     resolved(&mut g);
     assert_eq!(g.counter_count(source, CounterKind::PlusOne), 1);
-    let cards = (0..15)
-        .map(|_| put(&mut g, p, "Duress", Zone::Graveyard))
-        .collect::<Vec<_>>();
+    let cards = [
+        "Baron Helmut Zemo",
+        "Baron Helmut Zemo",
+        "Baron Helmut Zemo",
+        "Baron Helmut Zemo",
+        "Duress",
+        "Duress",
+        "Duress",
+    ]
+    .iter()
+    .map(|name| put(&mut g, p, name, Zone::Graveyard))
+    .collect::<Vec<_>>();
     let boast = Action::AnnounceActivate {
         card: source,
         ability: 0,
@@ -1992,7 +2008,7 @@ fn msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies() {
     for (index, &id) in cards.iter().enumerate() {
         let object = g.object_ref(id);
         act(&mut g, Action::ChooseAdditionalCost { object });
-        if index == 13 {
+        if index == 5 {
             assert!(
                 !g.legal_actions()
                     .contains(&Action::FinishGraveyardSymbolCost)
@@ -2012,7 +2028,7 @@ fn msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies() {
     for _ in 0..3 {
         choose(
             &mut g,
-            |a| matches!(a,Action::CastExiledDuringResolution{object,..}if !cards.contains(&object.card)),
+            |a| matches!(a,Action::CastExiledDuringResolution{object,..}if !cards.contains(&object.card) && g.object_view(object.card).name()=="Duress"),
         );
         target(&mut g, Target::Player(p.other()));
         finish_targets(&mut g);
@@ -2076,8 +2092,11 @@ fn msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_tar
             })
     });
     target(&mut g, Target::Player(p.other()));
-    act(&mut g, Action::AllocateTargetAmount { amount: 4 });
     target(&mut g, Target::Card(bear));
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut g, Action::FinishTargets);
+    }
+    act(&mut g, Action::AllocateTargetAmount { amount: 4 });
     act(&mut g, Action::AllocateTargetAmount { amount: 3 });
     finish_targets(&mut g);
     resolved(&mut g);
@@ -2218,10 +2237,13 @@ fn msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder(
     };
     assert!(g.legal_actions().contains(&allowed));
     assert!(!g.legal_actions().contains(&forbidden));
+    let looked = g.observe(p).library_cast_look.unwrap();
+    assert_eq!(looked.cards.len(), 6);
     for id in &top[..6] {
-        assert!(g.observe(p).objects.iter().any(|o| o.id == *id));
-        assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == *id));
+        assert!(looked.cards.iter().any(|o| o.id == *id));
     }
+    assert!(g.observe(p.other()).library_cast_look.is_none());
+    assert!(g.observe(p.other()).resolution_free_casts.is_none());
     act(&mut g, allowed);
     if g.state.announcing.is_some() {
         pay(&mut g);
@@ -2251,7 +2273,7 @@ fn msh_avengers_disassembled_modes_damage_land_and_optional_basic_search() {
         let card = put(&mut g, p, "Avengers Disassembled", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 0, 2, 0, 1];
         act(&mut g, Action::AnnounceCast { card });
-        select_mode(&mut g, if both { "both" } else { "deals 3" });
+        select_mode(&mut g, if both { "both" } else { "deal 3" });
         if both {
             target(&mut g, Target::Card(land));
         }
@@ -2293,5 +2315,375 @@ fn msh_avengers_disassembled_modes_damage_land_and_optional_basic_search() {
         if both {
             assert!(g.object_view(basic).tapped);
         }
+    }
+}
+
+#[test]
+fn msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice() {
+    let p = Player::P0;
+    for (name, qualified, unqualified, initial, production) in [
+        (
+            "Avengers Tower",
+            "Agent Maria Hill",
+            "Shock",
+            [0; 6],
+            [1, 0, 0, 0, 0, 0],
+        ),
+        (
+            "Castle Doom",
+            "A.I.M. Synthoids",
+            "Agent Maria Hill",
+            [0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0],
+        ),
+    ] {
+        let mut g = scenario(p);
+        let land = put(&mut g, p, name, Zone::Battlefield);
+        g.state.players[p.index()].mana = initial;
+        let spell_id = put(&mut g, p, qualified, Zone::Hand);
+        choose(
+            &mut g,
+            |a| matches!(a,Action::ActivateMana{card,ability:1,production:m,..}if *card==land&&*m==production),
+        );
+        cast(&mut g, spell_id, None);
+        resolved(&mut g);
+        assert_eq!(g.object_view(spell_id).zone, Zone::Battlefield, "{name}");
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let mut g = scenario(p);
+        let land = put(&mut g, p, name, Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        let id = put(&mut g, p, unqualified, Zone::Hand);
+        let color = if name == "Avengers Tower" {
+            [0, 0, 0, 1, 0, 0]
+        } else {
+            [1, 0, 0, 0, 0, 0]
+        };
+        choose(
+            &mut g,
+            |a| matches!(a,Action::ActivateMana{card,ability:1,production:m,..}if *card==land&&*m==color),
+        );
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: id }),
+            "{name}: restricted mana cannot cast {unqualified}"
+        );
+    }
+    let mut g = scenario(p);
+    let tower = put(&mut g, p, "Avengers Tower", Zone::Battlefield);
+    let brawler = put(&mut g, p, "Brave Brawler", Zone::Battlefield);
+    g.state.turn += 1;
+    g.begin_turn();
+    g.state.step = Step::Main1;
+    g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
+    choose(
+        &mut g,
+        |a| matches!(a,Action::ActivateMana{card,ability:1,production:[1,0,0,0,0,0],..}if *card==tower),
+    );
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: brawler,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    pay(&mut g);
+    resolved(&mut g);
+    assert_eq!(
+        g.counter_count(brawler, CounterKind::PlusOne),
+        2,
+        "Tower also pays Hero activations"
+    );
+    let mut g = scenario(p);
+    let tower = put(&mut g, p, "Avengers Tower", Zone::Battlefield);
+    let top = library(
+        &mut g,
+        p,
+        &["Agent Maria Hill", "Shock", "Forest", "Mountain"],
+    );
+    activate(&mut g, p, tower, 2, [0, 0, 0, 0, 0, 4], &[]);
+    until(&mut g, |g| {
+        g.legal_actions()
+            .contains(&Action::SelectLibrary { card: top[0] })
+    });
+    assert!(g.observe(p.other()).library_selection.is_none());
+    act(&mut g, Action::SelectLibrary { card: top[0] });
+    if g.legal_actions().contains(&Action::FinishLibrarySelection) {
+        act(&mut g, Action::FinishLibrarySelection);
+    }
+    for &id in &top[1..3] {
+        if g.legal_actions()
+            .contains(&Action::OrderLibraryBottom { card: id })
+        {
+            act(&mut g, Action::OrderLibraryBottom { card: id });
+        }
+    }
+    resolved(&mut g);
+    assert_eq!(g.object_view(top[0]).zone, Zone::Hand);
+    assert!(
+        g.observe(p.other()).objects.iter().any(|o| o.id == top[0]),
+        "chosen Hero is revealed"
+    );
+    assert_eq!(g.state.players[p.index()].library.last(), Some(&top[3]));
+    let mut g = scenario(p);
+    let castle = put(&mut g, p, "Castle Doom", Zone::Battlefield);
+    let artifact = put(&mut g, p, "A.I.M. Synthoids", Zone::Battlefield);
+    g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+    g.state.step = Step::BeginCombat;
+    let announce = Action::AnnounceActivate {
+        card: castle,
+        ability: 2,
+        counter_payment: Counters::default(),
+    };
+    assert!(!g.legal_actions().contains(&announce));
+    g.state.step = Step::Main1;
+    act(&mut g, announce);
+    let object = g.object_ref(artifact);
+    act(&mut g, Action::ChooseAdditionalCost { object });
+    pay(&mut g);
+    resolved(&mut g);
+    assert_eq!(g.object_view(artifact).zone, Zone::Graveyard);
+    let token = creatures(&g, p)[0];
+    assert_eq!(stats(&g, token), (3, 3));
+    assert_eq!(g.object_view(token).name(), "Doombot");
+    assert!(g.object_view(castle).tapped);
+}
+
+#[test]
+fn msh_quinjet_any_color_and_crew_threshold_animate_only_until_cleanup() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let jet = spell(&mut g, p, "Dependable Quinjet", [0, 0, 0, 0, 0, 3], None);
+    resolved(&mut g);
+    assert!(!g.is_creature(jet));
+    choose(
+        &mut g,
+        |a| matches!(a,Action::ActivateMana{card,production:[0,0,0,0,1,0],..}if *card==jet),
+    );
+    assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 1, 0]);
+    g.state.turn += 1;
+    g.begin_turn();
+    g.state.step = Step::Main1;
+    let giant = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: jet,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    let object = g.object_ref(giant);
+    act(&mut g, Action::ChooseCrewer { object });
+    assert!(!g.legal_actions().contains(&Action::FinishCrew));
+    let object = g.object_ref(bear);
+    act(&mut g, Action::ChooseCrewer { object });
+    act(&mut g, Action::FinishCrew);
+    if g.state.announcing.is_some() {
+        pay(&mut g);
+    }
+    resolved(&mut g);
+    assert!(g.is_creature(jet));
+    assert_eq!(stats(&g, jet), (3, 3));
+    assert!(g.keywords(jet).contains(Keywords::FLYING));
+    assert!(g.object_view(giant).tapped && g.object_view(bear).tapped);
+    g.finish_cleanup();
+    assert!(!g.is_creature(jet));
+}
+
+#[test]
+fn msh_ant_man_optional_payment_reflexive_counter_and_once_each_turn_insect() {
+    let p = Player::P0;
+    for accept in [false, true] {
+        let mut g = scenario(p);
+        let ant = put(&mut g, p, "Ant-Man, Colony Commander", Zone::Battlefield);
+        let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        attack(&mut g, &[ant]);
+        until(&mut g, |g| {
+            g.legal_actions().contains(&Action::DeclineResolutionMana)
+        });
+        act(
+            &mut g,
+            if accept {
+                Action::PayResolutionMana {
+                    payment: [0, 0, 0, 0, 0, 1],
+                }
+            } else {
+                Action::DeclineResolutionMana
+            },
+        );
+        if accept {
+            until(&mut g, |g| {
+                g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                })
+            });
+            target(&mut g, Target::Card(enemy));
+            finish_targets(&mut g);
+        }
+        resolved(&mut g);
+        assert_eq!(
+            g.counter_count(enemy, CounterKind::PlusOne),
+            u64::from(accept)
+        );
+        let insects = |g: &Game| {
+            g.state
+                .objects
+                .iter()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield && o.is_token() && o.card.has_subtype("Insect")
+                })
+                .count()
+        };
+        assert_eq!(insects(&g), usize::from(accept));
+        spell(
+            &mut g,
+            p,
+            "Snakeskin Veil",
+            [0, 0, 0, 0, 1, 0],
+            Some(Target::Card(own)),
+        );
+        resolved(&mut g);
+        assert_eq!(insects(&g), 1);
+        g.state.turn += 1;
+        g.begin_turn();
+        g.state.step = Step::Main1;
+        spell(
+            &mut g,
+            p,
+            "Snakeskin Veil",
+            [0, 0, 0, 0, 1, 0],
+            Some(Target::Card(own)),
+        );
+        resolved(&mut g);
+        assert_eq!(insects(&g), 2);
+        for id in creatures(&g, p)
+            .into_iter()
+            .filter(|&id| g.state.objects[id as usize].is_token())
+        {
+            assert_eq!(stats(&g, id), (1, 1));
+        }
+    }
+}
+
+#[test]
+fn msh_bullseye_optional_entry_and_both_activated_alternative_costs() {
+    let p = Player::P0;
+    for route in [0, 1, 2] {
+        let mut g = scenario(p);
+        let artifact = put(&mut g, p, "A.I.M. Synthoids", Zone::Battlefield);
+        let discard = put(&mut g, p, "Shock", Zone::Hand);
+        let source = spell(
+            &mut g,
+            p,
+            "Bullseye, Death Dealer",
+            [0, 0, 1, 0, 0, 2],
+            None,
+        );
+        until(&mut g, |g| {
+            g.legal_actions().iter().any(|a| {
+                matches!(
+                    a,
+                    Action::ChooseOptional { .. }
+                        | Action::DeclineEffectPayment
+                        | Action::Discard { .. }
+                        | Action::Sacrifice { .. }
+                )
+            })
+        });
+        if g.legal_actions()
+            .contains(&Action::ChooseOptional { accept: route != 0 })
+        {
+            act(&mut g, Action::ChooseOptional { accept: route != 0 });
+        }
+        if route == 0 {
+            if g.legal_actions().contains(&Action::DeclineEffectPayment) {
+                act(&mut g, Action::DeclineEffectPayment);
+            }
+        } else {
+            if route == 1 {
+                let object = g.object_ref(artifact);
+                act(&mut g, Action::Sacrifice { object });
+            } else {
+                act(&mut g, Action::Discard { card: discard });
+            }
+            until(&mut g, |g| {
+                g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                })
+            });
+            target(&mut g, Target::Player(p.other()));
+            finish_targets(&mut g);
+        }
+        resolved(&mut g);
+        assert_eq!(stats(&g, source), (2, 3));
+        assert_eq!(
+            g.state.players[p.other().index()].life,
+            if route == 0 { 20 } else { 18 }
+        );
+        assert_eq!(
+            g.object_view(artifact).zone,
+            if route == 1 {
+                Zone::Graveyard
+            } else {
+                Zone::Battlefield
+            }
+        );
+        assert_eq!(
+            g.object_view(discard).zone,
+            if route == 2 {
+                Zone::Graveyard
+            } else {
+                Zone::Hand
+            }
+        );
+    }
+    for discard in [false, true] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Bullseye, Death Dealer", Zone::Battlefield);
+        let cost = put(
+            &mut g,
+            p,
+            if discard { "Shock" } else { "A.I.M. Synthoids" },
+            if discard {
+                Zone::Hand
+            } else {
+                Zone::Battlefield
+            },
+        );
+        let land = put(&mut g, p, "Forest", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        if g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::ChooseActivationCost { .. }))
+        {
+            choose(&mut g, |a| matches!(a, Action::ChooseActivationCost { .. }));
+        }
+        target(&mut g, Target::Player(p.other()));
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        assert!(!g.legal_actions().contains(&Action::ChooseAdditionalCost {
+            object: g.object_ref(land)
+        }));
+        let object = g.object_ref(cost);
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        resolved(&mut g);
+        assert_eq!(g.object_view(cost).zone, Zone::Graveyard);
+        assert!(g.object_view(source).tapped);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     }
 }
