@@ -71,9 +71,12 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     }
     fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
         let mut view = self.game.temporary_copy_view(object)?;
-        view.layers.retain(|layer| layer.deadline.source().is_none_or(|source| {
-            self.object(source.card).zone == Zone::Battlefield && self.reference(source.card) == source
-        }));
+        view.layers.retain(|layer| {
+            layer.deadline.source().is_none_or(|source| {
+                self.object(source.card).zone == Zone::Battlefield
+                    && self.reference(source.card) == source
+            })
+        });
         view.active_origin = view.layers.last()?.origin;
         Some(view)
     }
@@ -662,7 +665,10 @@ impl<'g> FundingState<'g> {
         result.set_cost_context(game.state.announcing.as_ref());
         if let Some(a) = game.state.announcing.as_ref()
             && !a.additional_paid
-            && a.additional_cost().and_then(evidence::threshold).is_some()
+            && a.additional_cost().is_some_and(|s| {
+                evidence::threshold(s).is_some()
+                    || matches!(s.kind, EffectChoiceKind::ExileGraveyardSymbols { .. })
+            })
         {
             // Ordinary evidence declarations also need their selected exact
             // incarnations protected while nested mana abilities consume fuel.
@@ -903,6 +909,11 @@ impl<'g> FundingState<'g> {
                 self.game.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::SourceAttackedThisTurn => self
+                .game
+                .state
+                .attacked_this_turn
+                .contains(&self.reference(source)),
             ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
                 activations::controls_tough_creature(self, actor, minimum)
             }

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a5955bd57446b226d8505f0aa75d938a6ba33dd7e41126b207c461a03ff170d8",
+  "catalogue_version": "2dd4fa1169e2b2a6a2dd6bcd68671876345d9636b3a549f5a504edc16e5d90c0",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2539,
-  "implemented_total": 2545,
+  "implemented_standard_cards": 2541,
+  "implemented_total": 2547,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 234,
-      "gated": 39
+      "complete": 236,
+      "gated": 37
     },
     "one": {
       "total": 1,
@@ -2869,8 +2869,8 @@
     {
       "name": "Baron Helmut Zemo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/baron_helmut_zemo.rs",
       "set": "msh"
     },
@@ -25405,8 +25405,8 @@
     {
       "name": "Photon Blast Barrage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/photon_blast_barrage.rs",
       "set": "msh"
     },

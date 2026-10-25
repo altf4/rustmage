@@ -557,6 +557,7 @@ define_actions! {
     FinishOpeningHand,
     CastExiledDuringResolution { object: ObjectRef, face: CastFace },
     FinishResolutionCasts,
+    FinishGraveyardSymbolCost,
     Mulligan,
     Bottom {
         card: CardId,
@@ -941,6 +942,13 @@ pub struct SpellView {
     /// Declared nonmana counter cost; paid is set only by the committed cost executor.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_payment: Option<SourceCounterPaymentView>,
+    /// Successful exact exile results paid by this ability's printed-symbol cost.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare owned cost results use one pointer in ordinary packets"
+    )]
+    pub exiled_symbol_cards: Option<Box<Vec<ObjectRef>>>,
     /// Allocated only after a targeted permanent departs; these are public facts.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
@@ -1060,7 +1068,10 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.self_granted_activation
+        self.exiled_symbol_cards.as_ref().map_or(0, |r| {
+            std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+        }) + self
+            .self_granted_activation
             .as_ref()
             .map_or(0, |_| std::mem::size_of::<SelfGrantedActivationContext>())
             + self.cast_creature_subjects.as_ref().map_or(0, |event| {
@@ -3307,6 +3318,11 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                if self.graveyard_symbol_selection_complete()
+                    && emit(Action::FinishGraveyardSymbolCost)
+                {
+                    return true;
+                }
                 if self
                     .state
                     .announcing
@@ -4532,6 +4548,7 @@ impl Game {
                 self.announce_attached_ability(grantor, ability)
             }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::FinishGraveyardSymbolCost => self.finish_graveyard_symbol_cost(),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
             Action::ChooseEntryReplacement { source, intrinsic } => {
                 self.choose_entry_tap_effect(source, intrinsic)
@@ -5781,6 +5798,7 @@ impl Game {
                     && item.card == id
                     && item.object == before.reference)
             });
+            self.clear_copy_recipe(before.reference);
             let object = &mut self.state.objects[id as usize];
             object.zone = Zone::Outside;
             object.generation = object
@@ -8161,3 +8179,14 @@ mod msh_storm_tests;
 #[cfg(test)]
 #[path = "engine_msh_entering_copy_tests.rs"]
 mod msh_entering_copy_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_photon_barrage_tests.rs"]
+mod msh_photon_barrage_tests;
+
+#[path = "engine_graveyard_symbol_cost.rs"]
+mod graveyard_symbol_cost;
+
+#[cfg(test)]
+#[path = "engine_msh_zemo_tests.rs"]
+mod msh_zemo_tests;

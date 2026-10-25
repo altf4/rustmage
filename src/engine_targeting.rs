@@ -1382,6 +1382,7 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            exiled_symbol_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
             event_object: None,
@@ -1481,13 +1482,22 @@ impl Game {
 
     pub(super) fn open_payment_announcement_with_origin_cost(
         &mut self,
-        item: SpellView,
+        mut item: SpellView,
         counters: Counters,
         production: Option<Mana>,
         origin_counter_cost: Option<u16>,
     ) {
         if item.cast.is_some_and(|cast| cast.face == CastFace::Back) {
             self.state.objects[item.card as usize].card = item.source_card;
+        }
+        // A copied card becomes a genuine token when its permanent spell resolves.
+        // Freeze the selected face now, after face choice and before any zone move.
+        if self.state.objects[item.card as usize].copy_kind == CopyKind::Card
+            && item.source_card.kind_mask() & (1 | 16 | 32 | 64 | 256) != 0
+        {
+            let recipe = CopyRecipe::new(item.source_card);
+            self.set_copy_recipe(item.object, recipe);
+            item.source_copy_recipe = Some(Box::new(recipe));
         }
         if production.is_some() {
             self.suspend_mana_announcement();

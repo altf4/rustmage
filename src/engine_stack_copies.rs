@@ -227,14 +227,17 @@ impl Game {
         let prior = self.state.players[spell.controller.index()].instant_sorcery_cast_this_turn - 1;
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
             if let Some((_, program)) = trigger.program()
-                && let Some(prior_spells) = program.iter().find_map(|i| match i {
-                    Instruction::CopyCastSpell { prior_spells } => Some(*prior_spells),
+                && let Some(amount) = program.iter().find_map(|i| match i {
+                    Instruction::CopyCastSpell { prior_spells } => {
+                        Some(if *prior_spells { prior } else { 1 })
+                    }
+                    Instruction::CopyCastSpellChosenX => Some(u64::from(spell.x.unwrap_or(0))),
                     _ => None,
                 })
             {
                 trigger.copy_event = Some(Box::new(CopyEvent {
                     spell: spell.clone(),
-                    amount: if prior_spells { prior } else { 1 },
+                    amount,
                 }));
             }
         }

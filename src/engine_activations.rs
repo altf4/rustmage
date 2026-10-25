@@ -128,6 +128,10 @@ impl Game {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::SourceAttackedThisTurn => self
+                .state
+                .attacked_this_turn
+                .contains(&self.object_ref(source)),
             ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
                 activations::controls_tough_creature(self, actor, minimum)
             }
@@ -561,6 +565,7 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            exiled_symbol_cards: None,
             source_counter_lki: self.state.objects[card as usize]
                 .card
                 .activations()

@@ -695,6 +695,11 @@ pub enum EffectChoiceKind {
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     ExileGraveyardCards(u16),
+    /// Non-targeted graveyard cards of this color, with this printed-symbol sum.
+    ExileGraveyardSymbols {
+        color: ChoiceColor,
+        minimum: u16,
+    },
     HandToTop,
     RemoveCreatureCounters(u16),
     UntapLands {
@@ -964,6 +969,11 @@ pub(crate) enum Instruction {
     CopyEnteringPermanentThenAnimate(AnimationSpec),
     CopyCastSpell {
         prior_spells: bool,
+    },
+    /// Copy the actual triggering spell its chosen X times.
+    CopyCastSpellChosenX,
+    CopyPaidExiledCardsFree {
+        maximum_casts: u16,
     },
     CopyStormSpell,
     ChangeSingleStackTarget,
@@ -2722,6 +2732,8 @@ pub(crate) enum TriggerCondition {
     Reflexive,
     /// A cast-event qualification, not an intervening-if resolution guard.
     DuringOpponentsTurn(&'static TriggerCondition),
+    /// Cast-event origin qualification, independent of spell payment method.
+    CastFromHand(&'static TriggerCondition),
     OncePerTurn(&'static TriggerCondition),
     /// Qualification checked only when the event occurs.
     When {
@@ -2914,12 +2926,26 @@ pub(crate) enum TriggerCondition {
 }
 
 impl TriggerCondition {
+    pub(crate) fn requires_hand_cast(self) -> bool {
+        match self {
+            Self::CastFromHand(_) => true,
+            Self::InZone { event, .. }
+            | Self::Granted(event)
+            | Self::OncePerTurn(event)
+            | Self::DuringOpponentsTurn(event)
+            | Self::ManaSpent { event, .. }
+            | Self::When { event, .. }
+            | Self::InterveningIf { event, .. } => event.requires_hand_cast(),
+            _ => false,
+        }
+    }
     pub(crate) fn origin(self) -> Option<TargetZone> {
         match self {
             Self::InZone { zone, .. } => Some(zone),
             Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
+            | Self::CastFromHand(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.origin(),
@@ -2935,6 +2961,7 @@ impl TriggerCondition {
             | Self::Granted(e)
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
+            | Self::CastFromHand(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. } => e.mana_spent_rule(),
             _ => None,
@@ -2947,6 +2974,7 @@ impl TriggerCondition {
             Self::InZone { event: e, .. }
             | Self::OncePerTurn(e)
             | Self::DuringOpponentsTurn(e)
+            | Self::CastFromHand(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
             | Self::ManaSpent { event: e, .. } => e.is_granted(),
@@ -2957,6 +2985,7 @@ impl TriggerCondition {
         match self {
             Self::DuringOpponentsTurn(_) => true,
             Self::InZone { event, .. }
+            | Self::CastFromHand(event)
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::ManaSpent { event, .. }
@@ -2972,6 +3001,7 @@ impl TriggerCondition {
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
+            | Self::CastFromHand(event)
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::ManaSpent { event, .. } => event.event(),
@@ -2986,7 +3016,8 @@ impl TriggerCondition {
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::ManaSpent { event, .. }
-            | Self::DuringOpponentsTurn(event) => event.once_per_turn(),
+            | Self::DuringOpponentsTurn(event)
+            | Self::CastFromHand(event) => event.once_per_turn(),
             _ => false,
         }
     }
@@ -3033,6 +3064,7 @@ pub(crate) enum ActivationOrigin {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ActivationGuard {
     CastInstantSorceryThisTurn,
+    SourceAttackedThisTurn,
     Always,
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
@@ -3047,6 +3079,7 @@ impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
             Self::Always
+            | Self::SourceAttackedThisTurn
             | Self::CastInstantSorceryThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)

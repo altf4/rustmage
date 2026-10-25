@@ -664,6 +664,7 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
+                    TriggerCondition::CastFromHand(_) => unreachable!("unwrapped event"),
                     TriggerCondition::SelfEntersIfCast => same && event.was_cast,
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
@@ -1053,6 +1054,7 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            exiled_symbol_cards: None,
             source_counter_lki: card_quantities::counter_quantity_facts(
                 definition.triggers()[index].program,
                 |kind| source.counters.get(kind),
@@ -1219,6 +1221,7 @@ impl Game {
     }
 
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
+        self.consume_resolution_cast_quota(caster, stack);
         self.consume_turn_cast_grants(caster, card);
         let first_trigger = self.state.pending_triggers.len();
         let spell_owner =
@@ -1259,6 +1262,12 @@ impl Game {
                         CastRelation::Any => true,
                     };
                     if related
+                        && (!ability.condition.requires_hand_cast()
+                            || stack.is_some_and(|i| {
+                                self.state.stack[i]
+                                    .cast
+                                    .is_some_and(|c| c.origin == Zone::Hand)
+                            }))
                         && self.cast_payment_condition(
                             ability.condition,
                             source.reference,
@@ -2147,7 +2156,14 @@ impl Game {
                 Instruction::CopyNextInstantSorcery { ability } => {
                     self.remember_next_spell_copy(&item, ability)
                 }
-                Instruction::CopyCastSpell { .. } | Instruction::CopyStormSpell => {
+                Instruction::CopyPaidExiledCardsFree { maximum_casts } => {
+                    if self.copy_paid_exiled_cards_free(&item, maximum_casts) {
+                        return;
+                    }
+                }
+                Instruction::CopyCastSpell { .. }
+                | Instruction::CopyCastSpellChosenX
+                | Instruction::CopyStormSpell => {
                     if self.copy_captured_spell(&item) {
                         return;
                     }
