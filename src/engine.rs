@@ -1651,6 +1651,7 @@ struct State {
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
+    tap_history: tap_history::Rows,
     counter_placement_history: counter_placement_history::Rows,
     cast_entry_counters: cast_entry_counters::Rows,
     entry_values: entry_choices::Rows,
@@ -2313,6 +2314,7 @@ impl Game {
                 named_counters: None,
                 combat_rules: None,
                 creature_damage_history: None,
+                tap_history: None,
                 counter_placement_history: None,
                 cast_entry_counters: None,
                 entry_values: None,
@@ -5842,6 +5844,7 @@ impl Game {
         self.state.ability_resolutions = None;
         self.state.used_free_hand_permissions = None;
         self.state.creature_damage_history = None;
+        self.state.tap_history = None;
         self.state.counter_placement_history = None;
         self.state.cast_entry_counters = None;
         self.state.combat_rules = None;
@@ -7052,6 +7055,7 @@ impl Game {
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
             + power_up::owned_bytes(&s.power_up_uses)
+            + tap_history::owned_bytes(&s.tap_history)
             + s.entered_this_turn.as_ref().map_or(0, |r| {
                 std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
             })
@@ -7523,3 +7527,14 @@ mod msh_tap_batch_tests;
 #[cfg(test)]
 #[path = "engine_msh_sixth_combined_tests.rs"]
 mod msh_sixth_combined_tests;
+
+#[path = "engine_tap_history.rs"]
+mod tap_history;
+
+#[cfg(test)]
+#[path = "engine_msh_first_tap_tests.rs"]
+mod msh_first_tap_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_marvell_tests.rs"]
+mod msh_marvell_tests;

@@ -53,10 +53,13 @@ impl Game {
         }) {
             self.state.counter_sources.push(id);
         }
-        if triggers
-            .iter()
-            .any(|a| a.condition.event() == TriggerCondition::ControlledCreaturesBecomeTapped)
-        {
+        if triggers.iter().any(|a| {
+            matches!(
+                a.condition.event(),
+                TriggerCondition::ControlledCreaturesBecomeTapped
+                    | TriggerCondition::ControlledCreatureFirstTapOwnTurn
+            )
+        }) {
             self.state.tap_sources.push(id);
         }
         if triggers
