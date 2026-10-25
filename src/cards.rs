@@ -1206,6 +1206,8 @@ pub(crate) enum Instruction {
     },
     ReturnSourceToHand(TargetZone),
     ReturnSourceFromFirstPublicZoneToHand,
+    /// Return the exact resulting graveyard card captured from this death event.
+    ReturnEventCardToHand,
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },
@@ -1285,6 +1287,7 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     AnimateSource(AnimationSpec),
+    AnimateTargets(AnimationSpec),
     /// Change creature subtypes, base stats and keywords without adding a card type.
     ChangeSourceCreatureForm(AnimationSpec),
     SetCreatureForm {

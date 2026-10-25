@@ -1,0 +1,223 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Two whole typed cards, target animation and exact nontarget death-card return; source branch for single draft PR516",
+  "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+  "tested_runtime_head": "67197bdd144e77cbbcec66f81949202d646730bb",
+  "cards": [
+    "Ares, God of War",
+    "I Am Iron Man"
+  ],
+  "membership": {
+    "frozen_identities": 281,
+    "frozen_printings": 448,
+    "merged_admissions": 180,
+    "base_candidate_admissions": 187,
+    "child_candidate_admissions": 189,
+    "child_gated": 92,
+    "entire_pool_acceptance": false
+  },
+  "oracle": {
+    "Ares, God of War": {
+      "oracle_id": "8a09d4a2-4796-4a15-ab75-a3a0b717f62d",
+      "name": "Ares, God of War",
+      "layout": "normal",
+      "mana_cost": "{1}{B}{R}",
+      "cmc": 3.0,
+      "type_line": "Legendary Creature \u2014 God Warrior Villain",
+      "oracle_text": "Ares attacks each combat if able.\nWhenever an attacking creature you control dies, return that card to its owner's hand.",
+      "power": "4",
+      "toughness": "3",
+      "colors": [
+        "B",
+        "R"
+      ],
+      "color_identity": [
+        "B",
+        "R"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "3e121d65-d341-40b9-bebc-1e7d1b83905c",
+        "set": "msh",
+        "collector_number": "202",
+        "released_at": "2026-06-26"
+      }
+    },
+    "I Am Iron Man": {
+      "oracle_id": "deb16a9a-2fa9-4ad3-bb20-7c16066e3d14",
+      "name": "I Am Iron Man",
+      "layout": "normal",
+      "mana_cost": "{2}{U}",
+      "cmc": 3.0,
+      "type_line": "Instant",
+      "oracle_text": "Until end of turn, target artifact or creature becomes an artifact creature with base power and toughness 4/4 and gains flying.\nDraw a card.",
+      "colors": [
+        "U"
+      ],
+      "color_identity": [
+        "U"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "9c401abb-5978-41c0-962b-0432f9433929",
+        "set": "msh",
+        "collector_number": "58",
+        "released_at": "2026-06-26"
+      }
+    }
+  },
+  "shared_mechanics": [
+    "AnimateTargets uses the same exact-incarnation owned AnimationView and actual/projected layers as existing source animation. Artifact creature retains prior types/subtypes/colors/abilities/counters; base4/4 and flying expire at cleanup. Whole target failure skips draw.",
+    "ReturnEventCardToHand opts an actual death packet into existing owned ReturnLinkView using the resulting exact graveyard incarnation and owner. Whole departure observers include source Ares. Tokens cannot return, exile replacement is not death, and later movement never rebinds the original card.",
+    "Ares attacks each combat if able via the existing central legal-attacker requirement; ability availability, sickness, tapping and restrictions remain central."
+  ],
+  "scenarios": {
+    "new_groups": 22,
+    "iron_groups": 12,
+    "ares_groups": 10,
+    "both_seats": true,
+    "final_native": 1031,
+    "meaningful_interactions": [
+      "Exact2U/1BR paid bodies; both-controller artifact/creature targets; illegal land/enchantment/player/extra targets with snapshot/revision atomicity",
+      "Real Veil/Giant Growth counters and EOT buffs; Stop Cold timestamps; animated Crawling Barrens retains land/Elemental/counters and sickness",
+      "Paid instant combat flying changes actual blocking; opponent Veil response and departed/reentered target fizzle before draw; captured caster survives target control change",
+      "Owned target-choice raw/index branches after parent disposal and restore; full nonactor observation equality for distinct private draws",
+      "Actual/speculative Topiary Lecturer power-mana includes the real increment counter caused by casting the spell",
+      "Animating actual attached Spy Kit detaches Equipment under existing SBA and removes its recipient bonus",
+      "Ares sickness and mandatory attack; attacking self/other death vs nonattacker/opponent; actual combat death and paid Murder",
+      "Whole simultaneous death orders; old-controller packet and actual stolen attacker return to owner; moved/reentered graveyard cards cannot bind",
+      "Suppression before death vs source departure after queue; token cessation and Finality exile replacement; orphan raw/index pending return and restore"
+    ]
+  },
+  "source": {
+    "definitions": 5397,
+    "source_blobs": 1190,
+    "java_verified": true,
+    "catalogue_version": "bdfd3b842faef75d926ed18ec3456ee24b4027d032ea12cf084cced388de34ed"
+  },
+  "java_pins": {
+    "unique": 18,
+    "full_files_read": 16,
+    "scoped_broad_helpers_read": 2,
+    "paths_and_sha256": {
+      "Mage.Sets/src/mage/cards/a/AresGodOfWar.java": "1cbc0dae634916ae570dbef643c321ff01bebfe714adc678e071af7a945684c0",
+      "Mage/src/main/java/mage/abilities/common/AttacksEachCombatStaticAbility.java": "85243fdf02d35648e569259e01a901a2b356807971b1db74bb8d27153c6ae40d",
+      "Mage/src/main/java/mage/abilities/effects/common/combat/AttacksIfAbleSourceEffect.java": "d6230d30e62ef789a51c2584ff4b0d213f744792672d6fc99263ea6d9ba5194a",
+      "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81",
+      "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd",
+      "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede",
+      "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+      "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617",
+      "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655",
+      "Mage/src/main/java/mage/constants/TargetController.java": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6",
+      "Mage/src/main/java/mage/util/CardUtil.java": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+      "Mage.Sets/src/mage/cards/i/IAmIronMan.java": "cd9b016ab6cd2f324b671bb20180d04463e28d7503cbd1325c0d1fb972e7ed35",
+      "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8",
+      "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c",
+      "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+      "Mage/src/main/java/mage/target/TargetPermanent.java": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+      "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb",
+      "Mage/src/main/java/mage/filter/StaticFilters.java": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    }
+  },
+  "trace_proof": {
+    "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+    "inherited_full_Trace_exact_matches": 2490,
+    "changed": [],
+    "removed": [],
+    "new_rows": {
+      "I Am Iron Man": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 5,
+        "zone": "Graveyard",
+        "journal": "cc857d3443c062fe",
+        "observations": "d61a9fbcdcb514e0"
+      },
+      "Ares, God of War": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "dc0112764aa2bb2e",
+        "observations": "d051190e0213725e"
+      }
+    },
+    "rows": 2492,
+    "normal_schema": 144,
+    "normal_sha256": "84ee493f108ea9cdfbddbc50c478b4594bb5b97bd1e299269f2e3e756a19c7b2",
+    "base_sha256": "88275144dc386ddf37a71d78fd2d81ade6d08697d7e8e1ec0a5a7124b4427c80",
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "metadata_byte_identical": true,
+    "catalogue_definitions": 5397,
+    "token_recipes": 119,
+    "new_ids": [],
+    "wire_change": false,
+    "old_fields_stripped": false,
+    "recorder_changed": false,
+    "fixed_input_files": 11721,
+    "fixed_input_changes": []
+  },
+  "identity": {
+    "wire_schema": 144,
+    "wire_change": false,
+    "new_ids": [],
+    "definitions": 5397,
+    "token_recipes": 119,
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "metadata_byte_identical": true
+  },
+  "validation": {
+    "source_link_format": "Pass",
+    "native": "1031 passed including all22 new groups and strict2492-row baseline",
+    "clippy_all_targets": "Pass with -D warnings",
+    "guarded_final": {
+      "report": "<cache>/rustmage-build-reports/ad52b818447e4ac58b0fe16a20c20408.json",
+      "seconds_including_queue": 373.00727761298185,
+      "peak_bytes": 2384138240,
+      "memory_max_bytes": 6442450944,
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "oom_events": 0
+    },
+    "fixed_inputs": {
+      "fixed_source_files": 11721,
+      "changes_between_terminal_export_and_strict_run": [
+        "src/assurance/card_traces.json"
+      ],
+      "other_source_changes": [],
+      "strict_head": "67197bdd",
+      "accepted_trace_sha256": "84ee493f108ea9cdfbddbc50c478b4594bb5b97bd1e299269f2e3e756a19c7b2"
+    },
+    "full_release": "Pending final published aggregate head",
+    "two_independent_nonauthor_reviews": "Required on final published aggregate head; local receipts only",
+    "ci": "Pending final published aggregate head"
+  },
+  "cleanup": {
+    "terminal": true,
+    "no_active_target_consumers": true,
+    "accessible_proc_fd_maps_exe_scan_clear": true,
+    "root": "<cache>/rustmage-msh-animation-death-target",
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 124968960,
+    "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+    "preserved_shared_libraries": {
+      "<cache>/rustmage-msh-animation-death-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_native_binary": {
+      "path": "<cache>/rustmage-msh-animation-death-target/debug/deps/rustmage-b764cd26223fba2c",
+      "sha256": "3fa6804048eef8bd35d936fc0e49a6b9e3711ee2aace04f220cf17c4bc92e013"
+    }
+  },
+  "throughput": {
+    "scope": "Two complete candidates, shared core,22 new groups,1031 native tests,source/format/link/Clippy,trace proof and terminal cleanup; includes serialized queues and fixture corrections, excludes prior cached design and final aggregate gates",
+    "start_utc": "2026-10-25T02:06:29+00:00",
+    "cutoff_utc": "2026-10-25T02:27:46.229325+00:00",
+    "elapsed_seconds": 1277.229325,
+    "candidate_cards_per_hour": 5.637202230695729,
+    "simulation_claim": false
+  },
+  "publication_policy": "Source branch feeds only draft PR516. Preserve existing main180/281; no additional main merge until user approves the entire remaining implementation.",
+  "remaining_scope": "92 other gated identities in this isolated child; full-pool printed obligations, legal set-only games, owned replay/search/privacy and performance acceptance remain open."
+}

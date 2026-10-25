@@ -322,12 +322,29 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
-        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+        self.change_object_form(item.object, spec, type_mode);
+    }
+    pub(super) fn animate_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
+        for target in &item.targets {
+            if self.same_target_object(*target)
+                && let Some(object) = target.object
+            {
+                self.change_object_form(object, spec, AnimationTypeMode::AddCreature);
+            }
+        }
+    }
+    fn change_object_form(
+        &mut self,
+        object: ObjectRef,
+        spec: AnimationSpec,
+        type_mode: AnimationTypeMode,
+    ) {
+        if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }
         let timestamp = self.next_role_timestamp();
         let row = AnimationView {
-            object: item.object,
+            object,
             timestamp,
             artifact: spec.artifact,
             preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),

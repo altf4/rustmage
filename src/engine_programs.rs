@@ -600,6 +600,20 @@ impl Game {
                         if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
                             self.capture_return_death(event);
                         }
+                        if ability
+                            .program
+                            .iter()
+                            .any(|i| matches!(i, Instruction::ReturnEventCardToHand))
+                        {
+                            self.state.pending_triggers.last_mut().unwrap().return_link =
+                                Some(Box::new(ReturnLinkView {
+                                    object: event.after,
+                                    zone: Zone::Graveyard,
+                                    controller: event.before.owner,
+                                    counter: None,
+                                    tapped: false,
+                                }));
+                        }
                         if ability.program.iter().any(|i| {
                             matches!(i, Instruction::ScheduleSacrificedArtifactCopy { .. })
                         }) {
@@ -2505,6 +2519,7 @@ impl Game {
                     self.blink_until_end_step(&item, under_owner)
                 }
                 Instruction::ReturnDeathCard(kind) => self.return_death_card(&item, kind),
+                Instruction::ReturnEventCardToHand => self.return_event_card_to_hand(&item),
                 Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
                 Instruction::ReturnSourceFromFirstPublicZoneToHand => {
                     self.return_source_from_first_public_zone_to_hand(&item);
@@ -3046,6 +3061,7 @@ impl Game {
                     }
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),
                 Instruction::ChangeSourceCreatureForm(spec) => self.change_source_form(
                     &item,
                     spec,

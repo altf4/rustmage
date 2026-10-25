@@ -79,6 +79,24 @@ impl Game {
                 )),
             }));
     }
+    pub(super) fn return_event_card_to_hand(&mut self, item: &SpellView) {
+        let Some(link) = &item.return_link else {
+            return;
+        };
+        if self
+            .state
+            .objects
+            .get(link.object.card as usize)
+            .is_some_and(|object| {
+                object.generation == link.object.generation
+                    && object.zone == link.zone
+                    && link.zone == Zone::Graveyard
+                    && !object.is_token()
+            })
+        {
+            self.move_object(link.object.card, Zone::Hand);
+        }
+    }
     fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
         let view = DelayedReturnView {
             id: self.next_stack_id(),
