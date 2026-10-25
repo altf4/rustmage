@@ -6,6 +6,9 @@ pub(crate) use ability_layers::{
     StaticAbilityGroup, UntapRestriction,
 };
 
+#[path = "card_mana_symbols.rs"]
+mod mana_symbols;
+
 use crate::capacity::CapacityExt;
 use crate::engine::{GrantedSubtypes, Zone};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -1649,6 +1652,7 @@ pub(crate) enum AmountValue {
     ColorsSpent,
     SpellColors,
     CastSpellManaValue,
+    CastSpellManaSymbols(ChoiceColor),
     SourcePower,
     SourceToughness,
     SourceEquipmentCount,
@@ -2311,6 +2315,10 @@ pub(crate) enum CastFilter {
         filter: &'static CastFilter,
         mask: u8,
     },
+    ManaSymbols {
+        filter: &'static CastFilter,
+        color: ChoiceColor,
+    },
     Targeted {
         filter: &'static CastFilter,
         target: CastTarget,
@@ -2344,6 +2352,9 @@ impl CastFilter {
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::Colors { filter, mask } => {
                 card.colors() & mask != 0 && filter.matches_mana_value(card, mana_value)
+            }
+            Self::ManaSymbols { filter, color } => {
+                card.mana_symbols_of_color(color) > 0 && filter.matches_mana_value(card, mana_value)
             }
             Self::ManaValueMaximum { filter, maximum } => {
                 filter.matches_mana_value(card, mana_value) && mana_value <= maximum

@@ -1,0 +1,393 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "source_base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+  "tested_runtime_content_head": "5b241bd955136847ec1adf58a12dc4717c1ffeac",
+  "scope": "One complete Namor candidate on isolated source branch for aggregate draft PR516. No extra PR or main merge. Final aggregate-head nonauthor local reviews, release/CI validation, whole-set games and human approval remain integration gates. No whole-set acceptance claimed.",
+  "complete_candidates": [
+    "Namor the Sub-Mariner"
+  ],
+  "observation_wire_unchanged": 145,
+  "wire_reason": "Only private Card fact helper/CastFilter/AmountValue and opted retention of existing public CastPaymentEvent. No new observation/packet fields, SourceQuantityView or EventObjectView changes.",
+  "new_ids": [
+    5398
+  ],
+  "definitions": 5399,
+  "token_recipes": 121,
+  "catalogue_version": "07f20aa9ab5dfe61199f31aca4d3065087b41f6bd023d2b5f6aecb9075a87bf3",
+  "candidate_set_flags": {
+    "total": 281,
+    "admitted": 195,
+    "gated": 86,
+    "qualification": "Isolated candidate flags, not independent set acceptance. Frozen Base 194 admitted, 87 gated."
+  },
+  "oracle": {
+    "oracle_id": "dff11626-ad4d-443a-b7db-f508790b5fd2",
+    "name": "Namor the Sub-Mariner",
+    "layout": "normal",
+    "mana_cost": "{1}{U}{U}",
+    "cmc": 3.0,
+    "type_line": "Legendary Creature \u2014 Mutant Merfolk Villain",
+    "oracle_text": "Flying\nNamor's power is equal to the number of Merfolk you control.\nWhenever you cast a noncreature spell with one or more blue mana symbols in its mana cost, create that many 1/1 blue Merfolk creature tokens.",
+    "power": "*",
+    "toughness": "4",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Flying"
+    ],
+    "all_parts": [
+      {
+        "id": "7f7a4f95-f12b-4c28-a6f7-f3c64364abba",
+        "component": "token",
+        "name": "Merfolk",
+        "type_line": "Token Creature \u2014 Merfolk"
+      },
+      {
+        "id": "47016620-48c7-42b2-9bef-8e2f8fc0786e",
+        "component": "combo_piece",
+        "name": "Namor the Sub-Mariner",
+        "type_line": "Legendary Creature \u2014 Mutant Merfolk Villain"
+      }
+    ],
+    "reference_printing": {
+      "id": "7aaefcf9-fbe1-4767-92a5-09825761d116",
+      "set": "msh",
+      "collector_number": "69",
+      "released_at": "2026-06-26"
+    }
+  },
+  "printed_obligations": [
+    "Cast {1}{U}{U}; legendary Mutant Merfolk Villain creature with flying and toughness 4.",
+    "Power is an all-zone layer-7a characteristic definition counting every Merfolk permanent controlled by the relevant player, including Namor itself on battlefield, tokens, changelings and noncreature Kindred Merfolk; never merely Merfolk creatures.",
+    "Trigger only upon a completed actual cast by the current Namor controller of a noncreature spell whose chosen spell-face mana cost has at least one blue symbol.",
+    "Create that original number of ordinary untapped nonattacking 1/1 blue Merfolk creature tokens under the trigger controller. Do not recompute using mana paid, spell colors, Namor power or the live spell slot at resolution.",
+    "Trigger exists independently of the spell and Namor; copying a spell on stack causes no cast trigger, while an actual cast of a card copy does. No targets or intervening condition."
+  ],
+  "source_evidence": {
+    "direct_java_and_helpers_read_in_full": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/n/NamorTheSubMariner.java",
+        "sha256": "a07fb0ba75ecb0790dc36ab5449c2600386d88b7103a9011551034375106357a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+        "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+        "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+        "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/DevotionCount.java",
+        "sha256": "ca78c34dcb78ad11b2fb19d776ea5f127e5f1a2ea4ba3bb8349ffb097f2b295f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerSourceEffect.java",
+        "sha256": "07d7b0ba8fdb6f3e6eeb405c2768a37677e7fded311795af1425dc2bfdb9bbd1"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+        "sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+        "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+        "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+        "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/token/MerfolkToken.java",
+        "sha256": "bf4402a2fc55df7f50f08bc0d30255ba8d4ded5b14c4b465375fac73da852f32"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/token/TokenImpl.java",
+        "sha256": "64e2102a28036ddfaaec4914c34355f7174f90df30d71527b0553aef9a14687d"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterSpell.java",
+        "sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterStackObject.java",
+        "sha256": "a47a787b87661adc505b2476795e54a795bf631b998d1eab1c971edfdc685155"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ColoredManaCost.java",
+        "sha256": "9b862bbf8a95520da3bc4798bc253cdf263e9637290c865f5e2dc4726080b928"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/HybridManaCost.java",
+        "sha256": "75a83ce4be6ff11778f6f32c6782df9c68250cc55d04e22b03a5efec27de8ee6"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/MonoHybridManaCost.java",
+        "sha256": "d62b4d01af1ac18abeed165fb0026f56f3946fde92835feb1460991263d03b0c"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+        "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostImpl.java",
+        "sha256": "22993c90f4047d015504922f5fe38d98de760d1a89755ec8ce40f127b4e3274a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/EffectImpl.java",
+        "sha256": "ee3f353b168c7f692cd213ea864d15861a9121c8b5aa72a1df2aeaadfd54fb78"
+      }
+    ],
+    "java_verified": true,
+    "source_blobs": 1211,
+    "frozen_inputs": {
+      "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+      "data/catalogue-identities.json": "4d95450061275c456e39e129a5d3680e24e4d1ffe49ff1c1fea4de839c0091b9"
+    },
+    "local_design_cache": "<cache>/rustmage-msh-namor-design-7addcbc7.json",
+    "local_design_sha256": "376b7de64f3ab8eea2bafca839983bb8e2c5ecfc8dac066c3787808ab7ab3f4d"
+  },
+  "authoritative_sources": [
+    {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "published": "2026-06-12",
+      "read_section": "Namor the Sub-Mariner",
+      "summary": "Namor's defining power ability works in every zone. Its cast trigger resolves ahead of the spell and survives that spell being countered or otherwise leaving the stack."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "effective": "2026-09-25",
+      "rules": [
+        "107.4e-f",
+        "109.5",
+        "202.1",
+        "202.2",
+        "202.4",
+        "604.3",
+        "613.4a-c",
+        "700.5",
+        "707.10",
+        "113.7a",
+        "608.2h"
+      ],
+      "summary": "Hybrid and Phyrexian symbols have their component colors irrespective of payment. Mana costs differ from total costs and spell colors. Characteristic definitions work in all zones before later setters and modifiers. A source uses its controller, or owner when uncontrolled. A spell copy normally is not cast; a copied card can be cast. Queued abilities survive source removal."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+      "rules": [
+        "111.4"
+      ],
+      "summary": "Token name defaults to its subtypes plus Token; exact new blue recipe is Merfolk Token, distinct factory from existing white-blue recipe."
+    }
+  ],
+  "shared_mechanics": [
+    "Allocation-free per-color exact component count over immutable chosen-face braced mana cost. Hybrid, two-brid and Phyrexian symbols count independently of payment. No English rules parser or runtime LLM.",
+    "Typed colored-symbol cast filter preserves contextual inner filtering; frozen cast-symbol amount reads the opted existing CastPaymentEvent.card, including source/spell removal and recast. Off-stack expressions return 0.",
+    "Existing all-zone layer7a DynamicStats counts controlled Merfolk permanents, tokens and changelings; no creature-only kind mask. Existing current/speculative characteristic queries and simultaneous source LKI reused.",
+    "One exact canonical blue 1/1 Creature Merfolk recipe, actual rules name Merfolk Token. Existing white-blue same-name recipe 5247 and all factory aliases remain unchanged."
+  ],
+  "meaningful_tests": {
+    "new_groups": 30,
+    "actual_groups": 26,
+    "funding_groups": 3,
+    "symbol_semantics_groups": 1,
+    "named_groups": [
+      "msh_namor_printed_colored_symbol_components_are_independent_of_payment",
+      "msh_namor_paid_body_cost_and_missing_blue_are_atomic",
+      "msh_namor_blue_spell_symbols_resolve_before_triggering_spell",
+      "msh_namor_hybrid_red_payment_still_counts_two_blue_symbols",
+      "msh_namor_twobrid_generic_payment_and_counter_preserve_one_symbol",
+      "msh_namor_paid_blue_generic_mana_does_not_make_symbols",
+      "msh_namor_noncreature_blue_permanent_qualifies_creature_does_not",
+      "msh_namor_free_and_reduced_casts_keep_printed_symbols",
+      "msh_namor_x_does_not_change_printed_symbol_quantity",
+      "msh_namor_adventure_uses_noncreature_chosen_face",
+      "msh_namor_source_theft_departure_and_blink_do_not_redirect_tokens",
+      "msh_namor_paid_counter_of_spell_does_not_cancel_original_token_packet",
+      "msh_namor_same_physical_spell_recast_has_separate_frozen_packets",
+      "msh_namor_cda_all_zones_and_current_controller_then_owner",
+      "msh_namor_changelings_and_noncreature_merfolk_count_without_creature_filter",
+      "msh_namor_ability_removal_restores_cda_and_suppresses_future_casts",
+      "msh_namor_cda_precedes_base_setter_lord_and_counters",
+      "msh_namor_simultaneous_departures_freeze_intact_cda_lki_in_both_orders",
+      "msh_namor_flying_changes_actual_block_legality",
+      "msh_namor_prepared_card_copy_is_an_actual_paid_cast",
+      "msh_namor_stack_spell_copy_is_not_an_additional_cast",
+      "msh_namor_token_replacement_uses_exact_blue_recipe_and_updates_power",
+      "msh_namor_hidden_hand_cda_and_draw_keep_full_nonactor_observation_private",
+      "msh_namor_no_event_or_tokens_until_all_targets_and_payment_are_complete",
+      "msh_namor_orphaned_packets_raw_index_restore_keep_frozen_count",
+      "msh_namor_teamwork_cannot_use_future_tokens_and_live_power_pays_exact_threshold",
+      "msh_namor_symbol_retention_is_opted_nested_and_contextual_filter_safe",
+      "msh_namor_funding_virtual_merfolk_departure_matches_actual_view_and_mana_quantity",
+      "msh_namor_funding_projected_entry_counts_new_self_without_mutating_parent",
+      "msh_namor_funding_control_source_departure_uses_new_controller_merfolk"
+    ],
+    "both_seats": true,
+    "paid_routes": "Actual 1UU Namor; UU noncreature symbols before spell resolution; blue permanent versus blue creature; Teach by Example paid RR; Rakshasas Bargain paid generic 6 then countered; colorless artifact paid U gives 0; free casts, generic reductions and varied X; chosen Adventure; source theft/exile/blink; actual counter and legal instant same-object recast; prepared Ancestral Recall card-copy cast versus uncast stack copy; exact tokens/doublers; teamwork declaration uses current power and cannot use future tokens.",
+    "cda_and_lki": "All-zone owner/current-controller counts; actual changelings; source ability removal/restoration; lord/counters/later base setter; intact simultaneous departure source facts in both iteration orders; actual flying block legality; borrowed virtual witness/control-source departures and projected Namor entry.",
+    "privacy_atomicity_ownership": "Full serialized nonactor observations for hidden Namor and differing private draw identity; illegal action snapshot/bytes/revision atomicity; existing checked helper wrong-actor, raw/index orphan branch and restore checks; explicit orphan after allocated cast packet and source removal.",
+    "bounded_fixtures": "Secondary permanents/library initialized with existing helpers. Noncreature Kindred Merfolk uses a borrowed earlier-layer kind world, without admitting gated Firdoch Core. Later base setter and simultaneous source LKI use existing primitives; same-object recast uses a public zone bounce fixture followed by actual legal paid instant cast. No paid generic trigger-copy claim.",
+    "x_fixture": "Small actual available pools make every chosen X enumerated by the existing indexed helper; this does not narrow engine scalar domains."
+  },
+  "trace_proof": {
+    "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+    "base_wire": 145,
+    "candidate_wire": 145,
+    "full_inherited_rows_compared": 2497,
+    "every_full_struct_equal": true,
+    "fields_removed": [],
+    "added_only": [
+      "Namor the Sub-Mariner"
+    ],
+    "normal_rows": 2498,
+    "normal_sha256": "c6a023be0727ac29f908c73e28aa1889924a456c7d808e085f62411f2d8afb7d",
+    "normal_file": "rustmage-msh-namor-traces.json",
+    "previous_export": "Not required: no public wire change.",
+    "checked_utc": "2026-10-25T03:42:54.022877+00:00"
+  },
+  "metadata_proof": {
+    "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+    "all_prior_metadata_equal": true,
+    "authorized_append_id": 5398,
+    "definitions_before": 5398,
+    "definitions_after": 5399,
+    "tokens_before": 120,
+    "tokens_after": 121,
+    "physical_count_unchanged": 5183,
+    "old_token_recipes_and_aliases_unchanged": true,
+    "old_rules_name_duplicate_preserved": "Merfolk Token at5247 is white-blue; new5398 is blue only. Neither old nor new has a plain-name alias.",
+    "added_factory": "@token/msh-blue-merfolk",
+    "added_rules_name": "Merfolk Token",
+    "manifest_sha256": "7cb0ff5302b7fceab46f1f76c441c6048935a7a765613b386ff02b285ae21e49"
+  },
+  "validation": {
+    "native_tests": 1130,
+    "clippy_all_targets_deny_warnings": true,
+    "source_pins": true,
+    "linker_check": true,
+    "rustfmt_check": true,
+    "git_diff_check": true,
+    "resource_runs": [
+      {
+        "log": "<cache>/rustmage-msh-namor-native-final.log",
+        "log_sha256": "f4f5b04014e04218bf71be16e0f818fcaf869b9733a78b1e7763fa3db12c4c36",
+        "report": "<cache>/rustmage-build-reports/461ae6c7dab343e6bce1ef462ef242ca.json",
+        "command": [
+          "cargo",
+          "test",
+          "--lib"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 130.08927301404765,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2471665664,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "log": "<cache>/rustmage-msh-namor-clippy-final.log",
+        "log_sha256": "382668b448e7a213eb7f7aee25c3e317a39c168519ec325194dbf6be90466f51",
+        "report": "<cache>/rustmage-build-reports/56792c2ddd0743c4b54c3c20bf7556b7.json",
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 163.68079939298332,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1894334464,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    ],
+    "cap_bytes": 6442450944,
+    "oom_probe": false,
+    "inputs_fixed_through_actual_terminal": true,
+    "qualification": "Author-focused/full-native and Clippy gates; parent runs final aggregate release and CI."
+  },
+  "development_corrections": [
+    "First compile corrected test imports, private Card constructor and activations API name. Final Clippy correction used an equivalent byte string and copied Copy facts without clone.",
+    "Old same-name Merfolk token has no plain-name alias; factory lookup assertion corrected, without metadata change.",
+    "Initially large X pools omitted desired scalar from bounded legal-action representatives; fixture pool bounded so indexed helper covers every chosen value.",
+    "Recast fixture changed from illegal sorcery above an old packet to an actually paid instant Negate above that packet. Teamwork declaration follows existing intent/targets/mana/cost-clause order. No runtime change was required for these fixture corrections."
+  ],
+  "cleanup": {
+    "terminal_inputs_only": true,
+    "proc_fd_maps_exe_scan_clear": true,
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 125304832,
+    "qualification": "Path-allocated total, not deduplicated physical disk reclaim.",
+    "preserved": [
+      {
+        "path": "<cache>/rustmage-msh-namor-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "c5d59f667e2658e5a3c74f1a61463c94f2ba94eb8d58be9436547ca3a420b3d8"
+      },
+      {
+        "path": "<cache>/rustmage-msh-namor-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T03:03:38+00:00",
+    "end_utc": "2026-10-25T03:43:26.425884+00:00",
+    "elapsed_seconds": 2388.425884,
+    "whole_card_candidates": 1,
+    "candidate_cards_per_hour": 1.507268877010713,
+    "scope": "Branch creation through authoring, fixture fixes, guarded build queues, full-native/Clippy/source validation and cleanup/evidence cutoff. Excludes prior read-only design, final aggregate integration/reviews/release/CI/publication and full-set games.",
+    "simulation": "No simulation throughput measured or whole-set gameplay claim."
+  },
+  "remaining_blockers": "No known unimplemented printed Namor obligation after successful native checks. Aggregate independent review and release/CI remain parent gates. Remaining 86 gated identities plus complete MSH-only games/performance block full-set acceptance."
+}

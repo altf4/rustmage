@@ -7656,3 +7656,14 @@ pub use hand_size::{HandSizeSourceView, HandSizeTimelineView};
 #[cfg(test)]
 #[path = "engine_msh_ten_rings_tests.rs"]
 mod msh_ten_rings_tests;
+
+#[path = "engine_cast_symbol_quantities.rs"]
+mod cast_symbol_quantities;
+
+#[cfg(test)]
+#[path = "engine_msh_namor_tests.rs"]
+mod msh_namor_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_tenth_combined_tests.rs"]
+mod msh_tenth_combined_tests;

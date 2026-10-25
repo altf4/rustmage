@@ -5403,7 +5403,8 @@
     4,
     8,
     17,
-    0
+    0,
+    2
   ],
   "aliases": [
     [
@@ -6189,6 +6190,10 @@
     [
       "@token/msh-alien",
       5395
+    ],
+    [
+      "@token/msh-blue-merfolk",
+      5398
     ],
     [
       "@token/msh-doombot",
@@ -28447,6 +28452,12 @@
       "name": "Doombot",
       "subtypes": "Robot Villain",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/msh-blue-merfolk",
+      "name": "Merfolk Token",
+      "subtypes": "Merfolk",
+      "colors": 2
     }
   ],
   "emblems": [
@@ -28814,7 +28825,8 @@
     "MshPhotonLivingLight": 5391,
     "MshBlackPantherHopeEnduring": 5392,
     "MshSensationalSheHulk": 5396,
-    "MshDoombotToken": 5397
+    "MshDoombotToken": 5397,
+    "MshBlueMerfolkToken": 5398
   },
   "helper_interface": [
     [
@@ -182698,6 +182710,33 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5398,
+      "module": "card_5398",
+      "path": "synthetic/token_msh_blue_merfolk.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-blue-merfolk",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Merfolk",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
