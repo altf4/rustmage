@@ -1,6 +1,7 @@
 //! Seven whole candidates combine paid costs, declaration rules, LKI and exact blink.
 use super::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
 use super::*;
+#[track_caller]
 fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
     g.prepare_triggers();
     for _ in 0..180 {
@@ -21,7 +22,12 @@ fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
                         | Action::FinishBlockers
                 )
             })
-            .unwrap_or_else(|| panic!("unexpected {:?}", g.state.pending));
+            .unwrap_or_else(|| {
+                panic!(
+                    "unexpected {:?} at {:?}, turn {}",
+                    g.state.pending, g.state.step, g.state.turn
+                )
+            });
         checked(g, a);
     }
     panic!("combined stalled {:?}", g.state.pending);
@@ -73,7 +79,16 @@ fn put(g: &mut Game, card: CardId, ability: u16) {
         .map(|a| a.id)
     {
         checked(g, Action::PutTrigger { id });
-        pay(g);
+        // Paying this packet may automatically begin the last different trigger.
+        // Leave that next announcement open so its optional target can be chosen.
+        while g.state.announcing.as_ref().is_some_and(|a| a.item.id == id) {
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                .unwrap();
+            checked(g, action);
+        }
     } else {
         assert!(
             g.state
