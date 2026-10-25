@@ -67,13 +67,16 @@ impl Game {
         self.state.objects[source.card as usize].attached_to = Some(target);
         true
     }
-    pub(super) fn attach_selected_equipment_to_attached(&mut self, item: &SpellView, group: u16) {
+    pub(super) fn attach_selected_equipment_to_attached(
+        &mut self,
+        item: &SpellView,
+        group: u16,
+    ) -> bool {
         let Some(recipient) = self.attached_subject(item).map(|id| self.object_ref(id)) else {
-            return;
+            return false;
         };
-        // Targets are already revalidated. Freeze the whole legal attachment set
-        // before changing characteristics; target order supplies its controller's
-        // relative timestamp order for these simultaneous attachments (CR613.7m).
+        // Freeze the selected exact legal objects before the controller chooses
+        // their relative timestamps during resolution (CR613.7m).
         let equipment: Vec<_> = item
             .targets
             .iter()
@@ -81,6 +84,19 @@ impl Game {
             .filter_map(|b| b.object)
             .filter(|&r| self.equipment_can_attach(r, recipient))
             .filter(|r| self.state.objects[r.card as usize].attached_to != Some(recipient))
+            .collect();
+        self.order_equipment_attachments(item, recipient, equipment)
+    }
+    pub(super) fn attach_equipment_batch(&mut self, equipment: &[ObjectRef], recipient: ObjectRef) {
+        // Recheck the complete final set before any attachment changes. No
+        // partial batch is exposed while choosing relative timestamps.
+        let equipment: Vec<_> = equipment
+            .iter()
+            .copied()
+            .filter(|&source| {
+                self.equipment_can_attach(source, recipient)
+                    && self.state.objects[source.card as usize].attached_to != Some(recipient)
+            })
             .collect();
         for &source in &equipment {
             self.state.objects[source.card as usize].attached_to = Some(recipient);

@@ -234,9 +234,10 @@ fn msh_serum_paid_queued_recipient_survives_aura_departure_or_reattachment() {
             let other = named(&mut g, p, "Hill Giant", Zone::Battlefield);
             let s = paid(&mut g, p, SERUM, &[bear]);
             let ring = named(&mut g, p, "Lotus Ring", Zone::Battlefield);
+            let second = named(&mut g, p, "Lotus Ring", Zone::Battlefield);
             attack(&mut g, p, bear);
             trigger(&mut g, s);
-            choose(&mut g, &[ring]);
+            choose(&mut g, &[ring, second]);
             if reattach {
                 // Bounded attachment change after the real trigger froze its event recipient.
                 g.state.objects[s as usize].attached_to = Some(g.object_ref(other));
@@ -246,6 +247,7 @@ fn msh_serum_paid_queued_recipient_survives_aura_departure_or_reattachment() {
             }
             settle(&mut g);
             assert_eq!(g.object_view(ring).attached_to, Some(g.object_ref(bear)));
+            assert_eq!(g.object_view(second).attached_to, Some(g.object_ref(bear)));
         }
     }
 }
@@ -492,5 +494,85 @@ fn msh_serum_same_attachment_keeps_timestamp_while_moved_equipment_is_later() {
         // Bounded departure distinguishes the unchanged old attachment's timestamp.
         g.move_object(newer, Zone::Graveyard);
         assert!(!g.keywords(bear).contains(Keywords::VIGILANCE));
+    }
+}
+
+#[test]
+fn msh_serum_resolution_timestamp_order_is_mandatory_selected_and_batch_atomic() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let other = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let s = paid(&mut g, p, SERUM, &[bear]);
+        let tools: Vec<_> = (0..3)
+            .map(|_| named(&mut g, p, "Lotus Ring", Zone::Battlefield))
+            .collect();
+        let unselected = named(&mut g, p, "Lotus Ring", Zone::Battlefield);
+        let unselected_ref = g.object_ref(unselected);
+        let references: Vec<_> = tools.iter().map(|&id| g.object_ref(id)).collect();
+        for &id in &tools {
+            assert!(g.attach_equipment(g.object_ref(id), g.object_ref(other)));
+        }
+        attack(&mut g, p, bear);
+        trigger(&mut g, s);
+        choose(&mut g, &tools);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EquipmentAttachment { .. })
+        });
+        let view = g.equipment_attachment_view().unwrap();
+        assert_eq!(view.ordering, Some(true));
+        assert_eq!(view.candidates.len(), 3);
+        reject(
+            &mut g,
+            Action::ChooseEquipmentAttachment { equipment: None },
+        );
+        reject(
+            &mut g,
+            Action::ChooseEquipmentAttachment {
+                equipment: Some(unselected_ref),
+            },
+        );
+        let action = Action::ChooseEquipmentAttachment {
+            equipment: Some(references[2]),
+        };
+        let actor = g.actor().unwrap();
+        let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+        g = super::msh_thirteenth_combined_tests::owned_checked_step(g, actor, index, action);
+        assert_eq!(g.equipment_attachment_view().unwrap().candidates.len(), 2);
+        for &id in &tools {
+            assert_eq!(g.object_view(id).attached_to, Some(g.object_ref(other)));
+        }
+        reject(
+            &mut g,
+            Action::ChooseEquipmentAttachment {
+                equipment: Some(references[2]),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseEquipmentAttachment {
+                equipment: Some(references[1]),
+            },
+        );
+        settle(&mut g);
+        for &id in &tools {
+            assert_eq!(g.object_view(id).attached_to, Some(g.object_ref(bear)));
+        }
+        let times: Vec<_> = tools
+            .iter()
+            .map(|id| {
+                g.state
+                    .roles
+                    .as_ref()
+                    .unwrap()
+                    .ability_timestamps
+                    .iter()
+                    .find(|row| row.source == g.object_ref(*id))
+                    .unwrap()
+                    .timestamp
+            })
+            .collect();
+        assert!(times[2] < times[1] && times[1] < times[0]);
+        assert!(g.equipment_attachment_view().is_none());
     }
 }

@@ -7624,9 +7624,10 @@ impl Game {
                             })
                             .unwrap_or(0)
                         + resolution.selection.as_ref().map_or(0, |f| f.bytes())
-                        + resolution.return_attachment.as_ref().map_or(0, |_| {
-                            std::mem::size_of::<return_attachment::ReturnAttachment>()
-                        })
+                        + resolution
+                            .return_attachment
+                            .as_ref()
+                            .map_or(0, |frame| frame.owned_bytes())
                         + resolution
                             .selected_discards
                             .iter()

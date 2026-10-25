@@ -2996,7 +2996,9 @@ impl Game {
                     }
                 }
                 Instruction::AttachEquipmentToAttached { group } => {
-                    self.attach_selected_equipment_to_attached(&item, group);
+                    if self.attach_selected_equipment_to_attached(&item, group) {
+                        return;
+                    }
                 }
                 Instruction::AttachEquipmentByGroups {
                     equipment,

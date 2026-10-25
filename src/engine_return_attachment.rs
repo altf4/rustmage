@@ -6,14 +6,56 @@ pub(super) struct ReturnAttachment {
     pub player: Player,
     pub recipient: Option<ObjectRef>,
     pub entering: bool,
+    order: Option<Box<EquipmentOrder>>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct EquipmentOrder {
+    remaining: Vec<ObjectRef>,
+    chosen: Vec<ObjectRef>,
+}
+impl ReturnAttachment {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.order.as_ref().map_or(0, |order| {
+                std::mem::size_of::<EquipmentOrder>()
+                    + (order.remaining.len() + order.chosen.len())
+                        * std::mem::size_of::<ObjectRef>()
+            })
+    }
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct EquipmentAttachmentView {
     pub player: Player,
     pub recipient: ObjectView,
     pub candidates: Vec<ObjectRef>,
+    /// Mandatory relative timestamp choice for an already selected batch.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ordering: Option<bool>,
 }
 impl Game {
+    pub(super) fn order_equipment_attachments(
+        &mut self,
+        item: &SpellView,
+        recipient: ObjectRef,
+        equipment: Vec<ObjectRef>,
+    ) -> bool {
+        if equipment.len() < 2 {
+            self.attach_equipment_batch(&equipment, recipient);
+            return false;
+        }
+        self.state.resolving.as_mut().unwrap().return_attachment =
+            Some(Box::new(ReturnAttachment {
+                origin: item.object,
+                player: item.controller,
+                recipient: Some(recipient),
+                entering: false,
+                order: Some(Box::new(EquipmentOrder {
+                    remaining: equipment,
+                    chosen: Vec::new(),
+                })),
+            }));
+        self.advance_return_attachment()
+    }
     pub(super) fn return_source_with_equipment(&mut self, item: &SpellView, counter: CounterKind) {
         if self.object_ref(item.card) != item.object
             || self.state.objects[item.card as usize].zone != Zone::Graveyard
@@ -26,6 +68,7 @@ impl Game {
                 player: item.controller,
                 recipient: None,
                 entering: true,
+                order: None,
             }));
         let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
         movement.controller = item.controller;
@@ -67,13 +110,17 @@ impl Game {
         else {
             return false;
         };
-        frame.recipient.is_some_and(|recipient| {
-            self.state
-                .objects
-                .get(equipment.card as usize)
-                .is_some_and(|o| o.controller == frame.player)
-                && self.equipment_can_attach(equipment, recipient)
-        })
+        frame
+            .order
+            .as_ref()
+            .is_none_or(|order| order.remaining.contains(&equipment))
+            && frame.recipient.is_some_and(|recipient| {
+                self.state
+                    .objects
+                    .get(equipment.card as usize)
+                    .is_some_and(|o| o.controller == frame.player)
+                    && self.equipment_can_attach(equipment, recipient)
+            })
     }
     pub(super) fn advance_return_attachment(&mut self) -> bool {
         let Some(frame) = self
@@ -85,6 +132,12 @@ impl Game {
             return false;
         };
         if frame.entering {
+            return true;
+        }
+        if frame.order.is_some() {
+            self.state.pending = Pending::EquipmentAttachment {
+                player: frame.player,
+            };
             return true;
         }
         if frame.recipient.is_some_and(|recipient| {
@@ -110,7 +163,13 @@ impl Game {
         &self,
         mut emit: impl FnMut(Action) -> bool,
     ) -> bool {
-        if emit(Action::ChooseEquipmentAttachment { equipment: None }) {
+        let ordering = self
+            .state
+            .resolving
+            .as_ref()
+            .and_then(|r| r.return_attachment.as_ref())
+            .is_some_and(|frame| frame.order.is_some());
+        if !ordering && emit(Action::ChooseEquipmentAttachment { equipment: None }) {
             return true;
         }
         for (id, _) in self.state.objects.iter().enumerate() {
@@ -126,6 +185,55 @@ impl Game {
         false
     }
     pub(super) fn choose_equipment_attachment(&mut self, equipment: Option<ObjectRef>) {
+        let ordering = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .return_attachment
+            .as_ref()
+            .unwrap()
+            .order
+            .is_some();
+        if ordering {
+            let order = self
+                .state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .return_attachment
+                .as_mut()
+                .unwrap()
+                .order
+                .as_mut()
+                .unwrap();
+            let equipment = equipment.expect("mandatory timestamp ordering");
+            order.remaining.retain(|r| *r != equipment);
+            order.chosen.push(equipment);
+            if order.remaining.len() > 1 {
+                return;
+            }
+            order.chosen.append(&mut order.remaining);
+            let frame = self
+                .state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .return_attachment
+                .take()
+                .unwrap();
+            let recipient = frame.recipient.unwrap();
+            let equipment: Vec<_> = frame
+                .order
+                .unwrap()
+                .chosen
+                .into_iter()
+                .filter(|r| self.state.objects[r.card as usize].controller == frame.player)
+                .collect();
+            self.attach_equipment_batch(&equipment, recipient);
+            self.run_program();
+            return;
+        }
         let frame = self
             .state
             .resolving
@@ -148,6 +256,7 @@ impl Game {
         Some(EquipmentAttachmentView {
             player: frame.player,
             recipient: self.object_view(recipient.card),
+            ordering: frame.order.as_ref().map(|_| true),
             candidates: self
                 .state
                 .objects
