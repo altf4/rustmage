@@ -88,5 +88,8 @@
     "Complete Oracle, full pinned TheVision, Modes, Mode, trigger/effect/keyword helper bodies read; broad StaticFilters scoped to FILTER_SPELL_A_NON_CREATURE.",
     "Modes.setLimitUsageByOnce(true) resets on each actual turn; Rust retains distinct lifetime ModalOnce for Demonic Pact. Modes are consumed on announcement, independent of resolution or source/controller changes.",
     "Optional public ModalHistoryView.turn is omitted for all existing lifetime histories. New header/turn field uses wire146; no catalogue IDs or token recipes change."
+  ],
+  "rules_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
   ]
 }

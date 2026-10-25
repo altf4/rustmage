@@ -271,7 +271,12 @@ fn msh_vision_mode_history_follows_control_and_new_controller_gets_remaining_cho
         shock(&mut g, p);
         choose(&mut g, 0);
         let old = g.object_ref(id);
-        paid(&mut g, p.other(), "Act of Treason", &[Target::Card(id)]);
+        paid(
+            &mut g,
+            p.other(),
+            "Involuntary Employment",
+            &[Target::Card(id)],
+        );
         assert_eq!(g.object_ref(id), old);
         assert_eq!(g.object_view(id).controller, p.other());
         shock(&mut g, p.other());
@@ -333,7 +338,6 @@ fn msh_vision_paid_end_step_blink_gives_new_incarnation_fresh_modes_same_turn() 
                 target: Target::Card(id),
             },
         );
-        checked(&mut g, Action::FinishTargets);
         settle(&mut g);
         assert_eq!(g.object_view(id).zone, Zone::Exile);
         until(&mut g, |g| {
@@ -417,7 +421,6 @@ fn msh_vision_lifetime_demonic_pact_choices_do_not_reset_on_turn_change() {
                 target: Target::Player(p.other()),
             },
         );
-        checked(&mut g, Action::FinishTargets);
         settle(&mut g);
     }
 }
