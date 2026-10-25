@@ -1,0 +1,328 @@
+{
+  "scope": "Two complete card candidates using individual focused rules tests. Whole-set integration and acceptance remain deferred.",
+  "base": "6cffcd084eb07f05177eab6812ed133532fd2ac4",
+  "tested_source_commit": "465f7f39730bb1913dc0b865956a1f27d17f1175",
+  "complete_candidates": [
+    "Photon Blast Barrage",
+    "Baron Helmut Zemo"
+  ],
+  "new_focused_groups": 30,
+  "wire": 152,
+  "ids_allocated": 0,
+  "printed_clause_evidence": {
+    "Photon Blast Barrage": {
+      "XRR sorcery, creature target, exact one damage": [
+        "msh_photon_paid_x_zero_no_copies_and_exact_one_creature_damage",
+        "msh_photon_x_cost_timing_target_failures_and_nonactor_privacy_are_atomic"
+      ],
+      "cast trigger makes chosen X copies even after original is countered; copies retain X": [
+        "msh_photon_paid_x_zero_no_copies_and_exact_one_creature_damage",
+        "msh_photon_paid_x_three_retains_optional_targets_and_chosen_x_without_recasting",
+        "msh_photon_countered_original_keeps_frozen_spell_and_x_for_trigger"
+      ],
+      "optional independent targets, unchanged original, legal retained illegal targets and ward": [
+        "msh_photon_each_copy_targets_independently_without_changing_original",
+        "msh_photon_illegal_old_target_may_be_kept_or_one_copy_can_be_retargeted",
+        "msh_photon_copy_target_ward_choices_are_independent_real_payments"
+      ],
+      "copies are not casts; actual Fin Fang Foom combination": [
+        "msh_photon_cast_observer_fires_once_and_real_noncast_spell_copy_has_no_cast_trigger"
+      ],
+      "timing, funding, illegal actions, nonactor views and owned raw/index restore": [
+        "msh_photon_x_cost_timing_target_failures_and_nonactor_privacy_are_atomic",
+        "msh_photon_each_copy_targets_independently_without_changing_original"
+      ]
+    },
+    "Baron Helmut Zemo": {
+      "BBB legendary3/3 physical creature and actual attack requirement": [
+        "msh_zemo_paid_body_and_boast_requires_actual_attack_not_just_fifteen_symbols"
+      ],
+      "your black spell from hand connives; free exile casts and other players/colors do not": [
+        "msh_zemo_connive_black_hand_only_with_real_draw_discard_and_nonland_counter",
+        "msh_zemo_free_casts_are_real_spells_up_to_three_and_cost_cards_remain_exiled",
+        "msh_zemo_free_x_copy_uses_zero_x_and_remains_a_real_exile_cast"
+      ],
+      "draw then discard; nonland counter versus land discard, departed source no new incarnation counters": [
+        "msh_zemo_connive_black_hand_only_with_real_draw_discard_and_nonland_counter",
+        "msh_zemo_connive_land_discard_no_counter_and_departed_source_still_draws_discards"
+      ],
+      "Boast only after declared attack, once each turn, control transfer/opponent turn and reset": [
+        "msh_zemo_paid_body_and_boast_requires_actual_attack_not_just_fifteen_symbols",
+        "msh_zemo_attacked_exact_incarnation_and_each_turn_limit_survive_control_but_not_blink",
+        "msh_zemo_actual_offering_after_attack_allows_opponent_turn_boast_without_resetting_once",
+        "msh_zemo_actual_grim_return_attacking_does_not_satisfy_declared_attack_boast"
+      ],
+      "any number of own black graveyard cards, printed black symbol sum>=15, hybrids and overpayment": [
+        "msh_zemo_symbol_cost_rejects_fourteen_wrong_color_owner_and_duplicate_atomically",
+        "msh_zemo_more_than_minimum_selection_is_permitted_and_all_paid_cards_stay_exiled",
+        "msh_zemo_monocolored_hybrid_symbols_count_once_independent_of_generic_payment_components"
+      ],
+      "copy only successful exact exile results from this activation, including a second payment": [
+        "msh_zemo_only_exact_successful_cost_exile_incarnations_are_copied",
+        "msh_zemo_attacked_exact_incarnation_and_each_turn_limit_survive_control_but_not_blink"
+      ],
+      "may cast zero to three copies now, free X=0, mandatory additional costs, independent copied ability quota": [
+        "msh_zemo_symbol_cost_rejects_fourteen_wrong_color_owner_and_duplicate_atomically",
+        "msh_zemo_free_casts_are_real_spells_up_to_three_and_cost_cards_remain_exiled",
+        "msh_zemo_free_copy_pays_mandatory_additional_cost_and_quota_only_on_successful_cast",
+        "msh_zemo_free_x_copy_uses_zero_x_and_remains_a_real_exile_cast",
+        "msh_zemo_real_echo_ability_copy_reuses_paid_refs_but_has_independent_three_spell_quota"
+      ],
+      "cast permanent copies become tokens once, printed values, entry replacements and recursive flat exceptions": [
+        "msh_zemo_cast_permanent_copies_become_tokens_with_printed_keywords_and_loyalty",
+        "msh_zemo_copied_card_token_recipe_survives_real_recursive_copies_and_flat_exceptions",
+        "msh_zemo_actual_planeswalker_copy_entry_replacements_are_owned_and_not_token_creation"
+      ],
+      "source departure/controller change, suppression and private cost branching": [
+        "msh_zemo_cost_branch_full_nonactor_privacy_owned_restore_and_cancelled_snapshot",
+        "msh_zemo_paid_source_departure_and_controller_change_do_not_redirect_copies",
+        "msh_zemo_actual_witness_protection_removes_connive_and_boast_after_attack"
+      ],
+      "generic accepted-card selected modal faces, entry choices and countered-copy recipe cleanup (bounded permission fixture)": [
+        "msh_zemo_bounded_generic_copied_card_selected_faces_preserve_physical_dfc_token_shape",
+        "msh_zemo_bounded_generic_copied_card_entry_choice_and_failed_entry_are_owned"
+      ]
+    }
+  },
+  "shared_rules": [
+    "Captured chosen-X quantity through existing CopyEvent and retarget continuations; no extra cast event.",
+    "CastFromHand condition wrapper tests actual cast origin without changing old CastPaymentEvent payloads.",
+    "Exact attacked-this-turn incarnation guard and existing per-origin once-per-turn activation history.",
+    "Non-targeted ExileGraveyardSymbols typed cost with optional-size selection, exact weighted funding completion, explicit finish and successful frozen exile references.",
+    "Existing quota contract copied from7f71218d2831f757c59cc71e5671c882bce647ff; only successful matching child cast consumes quota. No sibling card admissions imported.",
+    "Physical card copies may be permanent cards. Freeze selected face recipe before casting; resolve to token through existing spell-copy entry boundary; countered copy clears its old exact recipe."
+  ],
+  "provenance": {
+    "cache": "<cache>/rustmage-msh-photon-zemo-source-audit.json",
+    "sha256": "b46e9801176a557a4d9f7e40b553cb18d79dd5bfb142e8ea54f7df60b230d8b2",
+    "oracle_and_typed_fixture_records": 30,
+    "java_source_records": 18,
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "large_helper_read_coverage": "CardUtil free-cast and source-cost-tag methods, plus exile identity/name accessors; GameState copyCard/prepareCardForCopy; Spell.copySpell. Other methods captured but not claimed read.",
+    "authority": {
+      "release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "rules_file": "<cache>/rustmage-MagicCompRules-20260925.txt",
+      "rules_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "rules": [
+        "107.4e-f",
+        "601.2",
+        "702.142",
+        "707.10",
+        "707.12"
+      ]
+    }
+  },
+  "focused_results": {
+    "profile": "Development CARGO_PROFILE_TEST_OPT_LEVEL=0, repository unchanged. One guarded Cargo job/test thread,6GiB shared cap.",
+    "photon": {
+      "groups": 8,
+      "execution_seconds": 0.1,
+      "resource": "<cache>/rustmage-msh-photon-supported2-resource.json",
+      "sha256": "9f4300293254b882bce9ffd29875db3943b74dbd9ec57a0c7a8ec904cd4b5578",
+      "compile_and_run_seconds": 30.025134608033113
+    },
+    "zemo": {
+      "groups": 22,
+      "execution_seconds": 1.0592607569997199,
+      "log": "<cache>/rustmage-msh-photon-zemo-final-affected-1.log",
+      "log_sha256": "b389180ddb437d4fc25b289599ad123d9cb90c8004a76fa3fc4b0aff382c5c3c"
+    },
+    "affected": {
+      "groups_including_zemo": 106,
+      "additional_unique_groups": 84,
+      "execution_seconds": 5.3357990920194425,
+      "summary": "<cache>/rustmage-msh-photon-zemo-final-affected-summary.json",
+      "sha256": "9b46bb601284d4885c522fc18f172f5f9ed331acddda8b8fe6bf7a96c8d22e97",
+      "filters": [
+        {
+          "filter": "msh_zemo_",
+          "passed": 22,
+          "exit_code": 0,
+          "seconds": 1.0592607569997199,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-1.log",
+          "log_sha256": "b389180ddb437d4fc25b289599ad123d9cb90c8004a76fa3fc4b0aff382c5c3c"
+        },
+        {
+          "filter": "msh_cast_copy_",
+          "passed": 34,
+          "exit_code": 0,
+          "seconds": 0.30699370097136125,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-2.log",
+          "log_sha256": "56d8c2510319b179239435be46b49bbe8f39f60626c15ec5b56c3291c40a8764"
+        },
+        {
+          "filter": "msh_ability_copy_",
+          "passed": 32,
+          "exit_code": 0,
+          "seconds": 0.4687438390101306,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-3.log",
+          "log_sha256": "e1f774f205b91d9f23bea9d1270f08cbc690a3acfabaf81d5452b5654f780f3a"
+        },
+        {
+          "filter": "sos_evidence_funding",
+          "passed": 4,
+          "exit_code": 0,
+          "seconds": 3.2889946619980037,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-4.log",
+          "log_sha256": "bc985b7a135caf665adea4502990a2d19647b3b83aa1289b60bec7ab8cc13c2f"
+        },
+        {
+          "filter": "sos_paradigm_first_resolution",
+          "passed": 1,
+          "exit_code": 0,
+          "seconds": 0.006086283014155924,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-5.log",
+          "log_sha256": "f9cbfa84fac27042b1ece723ff21610fe27c484a36906fc6c52ac15fea9f2329"
+        },
+        {
+          "filter": "sos_countered_paradigm",
+          "passed": 1,
+          "exit_code": 0,
+          "seconds": 0.0065134200267493725,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-6.log",
+          "log_sha256": "5ea0b785e331375bea49d0d7aff96dca7198dab61770fcfdbfb0fe7fd395f9e8"
+        },
+        {
+          "filter": "sos_ordinary_resolutions_do_not_allocate_paradigm_history",
+          "passed": 1,
+          "exit_code": 0,
+          "seconds": 0.005572472000494599,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-7.log",
+          "log_sha256": "0f52e57c280c295fcfc66ab55c692d56f938863116114ebbd4e06a40988cd827"
+        },
+        {
+          "filter": "sos_prepared_",
+          "passed": 6,
+          "exit_code": 0,
+          "seconds": 0.024428446020465344,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-8.log",
+          "log_sha256": "1eb624125bdc8611b81b32577f278282c4dfc2deb3a076d953a255f271d0b3b7"
+        },
+        {
+          "filter": "sos_restoration_paradigm",
+          "passed": 1,
+          "exit_code": 0,
+          "seconds": 0.00878575601382181,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-9.log",
+          "log_sha256": "b8a9104af4133b3f8fc572eae9e7ee004c47b0296e9e01004ec597ade0134e9c"
+        },
+        {
+          "filter": "sos_infirmary_healer_",
+          "passed": 1,
+          "exit_code": 0,
+          "seconds": 0.017174043983686715,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-10.log",
+          "log_sha256": "b176944ae31c5ff018176be18824bb914d5054685ac4d3379ff609a22cef7cee"
+        },
+        {
+          "filter": "sos_sparks_creature_copy_keeps_x_and_entry_replacements_but_is_not_token_creation",
+          "passed": 1,
+          "exit_code": 0,
+          "seconds": 0.0062835150165483356,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-11.log",
+          "log_sha256": "dedcc11574301f30504e441e51c7ab8d7c3a54614a3c3e39df30125a15001cdc"
+        },
+        {
+          "filter": "sos_silverquill_casualty_supplies_evidence",
+          "passed": 1,
+          "exit_code": 0,
+          "seconds": 0.010898518958128989,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-12.log",
+          "log_sha256": "4d9b9de360256a4e2c69c0241bfa2b76fccb4baff265df7c9cb2838f49139be4"
+        },
+        {
+          "filter": "msh_namor_prepared_card_copy",
+          "passed": 1,
+          "exit_code": 0,
+          "seconds": 0.007982639013789594,
+          "log": "<cache>/rustmage-msh-photon-zemo-final-affected-13.log",
+          "log_sha256": "b359cc8010455cbdb75d54d1d4970eef8ab10574da27f1d9d4464a65b6f24d1a"
+        }
+      ]
+    },
+    "total_unique_groups": 114,
+    "fixed_inputs": {
+      "manifest": "<cache>/rustmage-msh-photon-zemo-final2-inputs.json",
+      "sha256": "7e351ecf12139614b16a0c60553b1e8097f0b721dc6ffdca5668283557100f67",
+      "count": 11873,
+      "changed": []
+    },
+    "oom_kills": 0,
+    "peak_bytes": 2763669504
+  },
+  "compatibility": {
+    "old_trace_table": "2535 rows byte-identical to base; no exports/rebaseline.",
+    "old_trace_sha256": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3",
+    "metadata": "Only Photon row3150 fixed colored mana from allzero toRR. IDs, aliases, colors, types, token recipes and all other rows unchanged. Paired physical metadata pin updated.",
+    "definitions": 5403,
+    "token_recipes": 125,
+    "new_public_payload": "Optional SpellView.exiled_symbol_cards; absent for old packets. Public printed-symbol cost/finish action. Optional ResolutionFreeCasts quota reuses the existing sibling contract.",
+    "format_link": "Linker regeneration/check, explicit authored card/module rustfmt2024 skip_children and git diff --check passed. Full static/default/release deferred."
+  },
+  "qualifications": [
+    "Monica/Adaptive Automaton generic allocator/permission scenarios append accepted cards to an actual owned resolution offer. They do not claim those cards paid Zemo black-symbol costs. Actual Zemo permanent consumer evidence uses Nighthawk and Liliana.",
+    "Real paid spells/abilities seed physical sources, graveyards and mana through existing scenario helpers. Direct unrelated exile/reentry and DFC toggles are labelled bounded supplementary transitions.",
+    "The cost-selection cancel scenario restores an owned preannouncement snapshot; it does not invent a UI cancellation producer.",
+    "No default/all-native/broad static/release/CI or new trace export was run. Entire-pool interactions, natural games, performance and final publication gates remain deferred."
+  ],
+  "source_pins": {
+    "data/catalogue-identities.json": "d2ecb2e5afd1d6fbc9705cbd9e904013f5beae310f5c7e121777cc038403f738",
+    "data/standard/coverage.json": "aeaf091c873853137f5ce3a07caafcc6edfb3b469af9306ba62814d4e08b89e5",
+    "src/card_definitions/msh/baron_helmut_zemo.json": "bd441a0c354609ed99f503254bc24210561b6c3e1758deba36f9c34b088380ce",
+    "src/card_definitions/msh/baron_helmut_zemo.rs": "4b54606546e4b3deb3dff7b2793689bef5da1691f8d9060ded407b5d7f9ac11b",
+    "src/card_definitions/msh/photon_blast_barrage.json": "38f09bb5491e47065ac48639d1636b4b225d37fa5bb872abe8ff20ee091560fc",
+    "src/card_definitions/msh/photon_blast_barrage.rs": "1622ed9ff79aa0d59987acd0b11edc63da1324c36efc5fe062822f8d7d0371a6",
+    "src/cards.rs": "ca09381cb376b22fbfe2b864bf229b5633eb8a14512776dc59383aa630a2ada3",
+    "src/engine.rs": "958ecf839f3d9a7ae7d3415fc31bd1d4ff37f5c88204419747f99524c758d516",
+    "src/engine_activations.rs": "f8421a698ec51e39a7e10e7db3c2be339dc7d8941af6df3fe6be79c387198574",
+    "src/engine_additional_costs.rs": "89e58ff4fd0e311ad9522b19742a771260c14036970de9b5fb701892964ba20d",
+    "src/engine_card_copies.rs": "1877daa8ecaa5123a347b0207264fa5976d2cd044ed980bb62f6aa6c7a158bdb",
+    "src/engine_cascade.rs": "cd13d0665f00461ff13004d0aae17905ad100db7f3454d80b3e7ed4f68b6cc74",
+    "src/engine_cast_cost_planning.rs": "82eb64466cf84d52e4dbc6fe42db62cf4157c5fde325472002362e037277a8c1",
+    "src/engine_cast_origins.rs": "e409c7dee584c41db3fad97ab23f1fe15fb568220c3317d684740ae5abd688f1",
+    "src/engine_funding.rs": "be129f982c0bce020efe319c84e963187b5568577729a9a76b3ff82fa595dfcc",
+    "src/engine_graveyard_symbol_cost.rs": "0f3f8731df84b40b3e8a9fbcf390f43cee30c002c090085dcf3ca5a85d5f2229",
+    "src/engine_linked_choices.rs": "824ca9823ae62fbe4e34df34b605b6db6da8e0c025150c15f78df11dc5824862",
+    "src/engine_miracle.rs": "c3064699ff99f9bc169e4b67ba06532f027d550ab6dd834c4d4c8acf5570ce4c",
+    "src/engine_mobilize.rs": "8c82b57d08a07683cc9bc0d2d0c459ad33264b43c95a1faec88ec45889c97896",
+    "src/engine_msh_photon_barrage_tests.rs": "5477f9a5a9e247d3419ce5a81abaaa199845e7e04260ad7d91f2c2f461644ed7",
+    "src/engine_msh_zemo_tests.rs": "d96de05d20d742cfaa23987a8bc228869339135b200c3ee3aa1210a8d96e451b",
+    "src/engine_paradigm.rs": "9a066aa8761daa9eb5feed636a60df0010a7fd47e435d82a4357954da38fd5f0",
+    "src/engine_programs.rs": "7fe6f3658e8c93caf52fa408561d7ee6dbb9e8afc29e0f55ceb547d247d981fd",
+    "src/engine_stack_copies.rs": "65eb0b2231555695aa3e13cbcc63777512e17341ff79b87bceb1ca766b98260a",
+    "src/engine_targeting.rs": "3bf81de2d04dca2c8c8f33ad5c0ef3896b6faeaef233414391c358cf048d110b",
+    "src/engine_warp.rs": "a355ff5d7cb03f13ecdb8fb08384c517bb5e9786b350dec4e4b9a8f791c2785f",
+    "src/generated/catalogue.rs": "1e1b31b27c49e93d2d581453c84f2f88e6b8186b8abbb799e6ee87671313721c",
+    "src/policy.rs": "ea3c2114558a22fbfa266e602f31e09fc7503c20d9a1215fd74d0c0920f59143"
+  },
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-photon-zemo-preservation.json",
+    "sha256": "2a3d34cf3bf7eeddc4bfe3ea293563ee666b299cafbdd99646c96b846fcf7433",
+    "required_paths": 4651,
+    "parent_exact": 4626,
+    "cleanup": "<cache>/rustmage-msh-photon-zemo-cleanup.json",
+    "cleanup_sha256": "b11e6fc77df557eeddf74d8f5a57a9081b9e4d2e7f5def7e7f611d9685480eaf",
+    "processes_inspected": 221,
+    "denied_process_count": 5,
+    "target_refs": [],
+    "removed_files": 165,
+    "removed_bytes": 39840429,
+    "preserved_natives": {
+      "<cache>/rustmage-msh-photon-gated8-native": "c70633cb1c4c2b409d4b3e368afc237c599d95c115583de4a5c47f2760cd7a57",
+      "<cache>/rustmage-msh-zemo-gated21-native": "f6ba33e6c06e305c8e9e9765c8c6766f76ef736618666ad9d9f2bf422c5b1684",
+      "<cache>/rustmage-msh-photon-zemo-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "c61f4e51822ca240d1178d1d7c128d6fd9bba8b3f7f58f04c951a8f9399358c7"
+    },
+    "preserved_libraries": {
+      "<cache>/rustmage-msh-photon-zemo-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "terminal_resource_reports": 21
+  },
+  "measured_implementation_interval": {
+    "start_utc": "2026-10-25T18:11:40.379731+00:00",
+    "end_utc": "2026-10-25T18:55:27.808890+00:00",
+    "elapsed_seconds": 2627.429159,
+    "cards_per_hour": 2.7403212662602563,
+    "scope": "Two whole cards and supporting chosen-X/cost/permanent-card-copy rules,30 focused groups plus84 affected groups, includes development iterations and source/provenance finalization. Not a simulation throughput benchmark."
+  },
+  "publication": "Source branch only; no new PR/main merge. Whole-set integration remains deferred."
+}
