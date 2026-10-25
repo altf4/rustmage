@@ -266,7 +266,12 @@ fn msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires() {
             put(&mut g, p, name, Zone::Battlefield);
             let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
             let second = put(&mut g, p, "Hill Giant", Zone::Battlefield);
-            attack(&mut g, if alone { &[bear] } else { &[bear, second] });
+            let attackers = if alone {
+                vec![bear]
+            } else {
+                vec![bear, second]
+            };
+            attack(&mut g, &attackers);
             resolved(&mut g);
             if benefit == 0 {
                 let clues = g
