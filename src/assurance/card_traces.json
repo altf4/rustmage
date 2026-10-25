@@ -1407,6 +1407,14 @@
     "journal": "fa023aad863dc9ad",
     "observations": "82ca3be8dff8479a"
   },
+  "Baxter Building": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "4cfabfccb3a9471a"
+  },
   "Beamsaw Prospector": {
     "root": "main",
     "status": "completed",
@@ -8063,6 +8071,14 @@
     "journal": "7cf9667d9239e4fd",
     "observations": "c3b56f70127ac3e2"
   },
+  "Hex Magic": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "543918deceb4be8c",
+    "observations": "023bb278e4c99469"
+  },
   "Hidden Grotto": {
     "root": "main",
     "status": "completed",
@@ -11263,6 +11279,14 @@
     "journal": "21b4895374b4450b",
     "observations": "ad68915dd0be3372"
   },
+  "Moonstone, Harsh Mistress": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9d78478b460edd3d",
+    "observations": "86c54733b485f236"
+  },
   "Morbius the Living Vampire": {
     "root": "main",
     "status": "completed",
@@ -13190,6 +13214,14 @@
     "zone": "Battlefield",
     "journal": "d96ad4ca883f316e",
     "observations": "b6e511b8090ef05d"
+  },
+  "Raft Security Officer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "ae3128c33df941be"
   },
   "Ragged Short Spear": {
     "root": "main",
