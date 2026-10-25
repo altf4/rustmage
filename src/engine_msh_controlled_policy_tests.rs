@@ -13,7 +13,10 @@ fn msh_controlled_policy_baxter_extort_scores_and_spends_actual_payer_pool() {
                     player.mana = [0; 6];
                 }
                 let king = named(&mut g, payer, "The Kingpin of Crime", Zone::Hand);
-                g.state.players[payer.index()].mana = [0, 0, 1, 0, 0, 3];
+                let (mut king_mana, generic) =
+                    Card::from_name("The Kingpin of Crime").unwrap().cost();
+                king_mana[5] += generic;
+                g.state.players[payer.index()].mana = king_mana;
                 cast(&mut g, king, None, &[]);
                 settle(&mut g);
                 assert_eq!(g.object_view(king).zone, Zone::Battlefield);
