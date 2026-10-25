@@ -1,0 +1,705 @@
+{
+  "schema": 1,
+  "status": "Prepared complete authored candidates; aggregate release validation, final reviews and user approval remain pending",
+  "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+  "runtime_commit": "673af0216ee59d8383f6da347c085eae8ed602df",
+  "delivery": {
+    "branch": "codex/msh-event-object-facts",
+    "integration_target": "codex/msh-complete-set-implementation",
+    "aggregate_pr": 516,
+    "additional_pr_created": false,
+    "main_merge_authorized": false
+  },
+  "scope": [
+    {
+      "name": "Hawkeye's Bow",
+      "catalogue_id": 1966,
+      "oracle_id": "83798eb8-b14f-4620-bce2-1a6804a24dc7",
+      "facts_sha256": "6af74fbe1f8acbe69601148914ca117d03a622e0966ae14af9e3aadc32b63b82",
+      "physical_metadata_sha256": "d0d493efa6e05ce2e1684c9bce41515a053d331b7524cf6fc22f2299273dbea7",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/h/HawkeyesBow.java",
+      "java_sha256": "29bf4c5e4d1632be7d08bcb274efb6f8607910fff1fb86aa83934165413c4d4b",
+      "xmage_dependencies": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedAttachedTriggeredAbility.java",
+          "sha256": "437845d7520e40e660b9c27bea14d88149bb47b3433bb3d25e8b0b4686848a23"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+          "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/EvolveAbility.java",
+          "sha256": "45b783000395b9c77421dad33a72b7bf48fb9d9b5a1fa1dfd6901e1cd952d809"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+          "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+          "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+          "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/EffectImpl.java",
+          "sha256": "ee3f353b168c7f692cd213ea864d15861a9121c8b5aa72a1df2aeaadfd54fb78"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/AbilityImpl.java",
+          "sha256": "7c70aa5739de67e806ff96174bde87f22457c5627fbacdd57075222b46c530af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/GameImpl.java",
+          "sha256": "592ad774bce5257b688c0f54e1e9e586c3d984d4ff2b2b2782f5b0154a78657c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/PermanentImpl.java",
+          "sha256": "5b72e235e1fe716b7337ffe76539d7fd79a5a9de1c54e6f343426126aeec6fe1"
+        }
+      ]
+    },
+    {
+      "name": "Hulkling, Burgeoning Bruiser",
+      "catalogue_id": 2094,
+      "oracle_id": "03c934a6-be57-480d-8c84-4e46d9ccb406",
+      "facts_sha256": "eafcf2e539ba3f29d95dbd4c478e8d9097e449cc08feba51fb81d2afd3d57322",
+      "physical_metadata_sha256": "05ac3e6c917f7a735804399ef4eca31668595c6934f51952f7893cd2f7ac477b",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/h/HulklingBurgeoningBruiser.java",
+      "java_sha256": "3ee703bd1b0e96fdcea9f54eed15f16b5c650d8414e71b4320d59168c76f8c6c",
+      "xmage_dependencies": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedAttachedTriggeredAbility.java",
+          "sha256": "437845d7520e40e660b9c27bea14d88149bb47b3433bb3d25e8b0b4686848a23"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+          "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/EvolveAbility.java",
+          "sha256": "45b783000395b9c77421dad33a72b7bf48fb9d9b5a1fa1dfd6901e1cd952d809"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+          "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+          "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+          "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+          "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/EffectImpl.java",
+          "sha256": "ee3f353b168c7f692cd213ea864d15861a9121c8b5aa72a1df2aeaadfd54fb78"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/AbilityImpl.java",
+          "sha256": "7c70aa5739de67e806ff96174bde87f22457c5627fbacdd57075222b46c530af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/GameImpl.java",
+          "sha256": "592ad774bce5257b688c0f54e1e9e586c3d984d4ff2b2b2782f5b0154a78657c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/PermanentImpl.java",
+          "sha256": "5b72e235e1fe716b7337ffe76539d7fd79a5a9de1c54e6f343426126aeec6fe1"
+        }
+      ]
+    }
+  ],
+  "frozen_oracle": [
+    {
+      "oracle_id": "83798eb8-b14f-4620-bce2-1a6804a24dc7",
+      "name": "Hawkeye's Bow",
+      "layout": "normal",
+      "mana_cost": "{R}",
+      "cmc": 1.0,
+      "type_line": "Artifact \u2014 Equipment",
+      "oracle_text": "Equipped creature gets +1/+0 and has reach.\nWhenever equipped creature becomes tapped, it deals 1 damage to each opponent.\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "keywords": [
+        "Equip"
+      ],
+      "reference_printing": {
+        "id": "485be72b-d784-4886-bb3a-48cff8f781c6",
+        "set": "msh",
+        "collector_number": "132",
+        "released_at": "2026-06-26"
+      }
+    },
+    {
+      "oracle_id": "03c934a6-be57-480d-8c84-4e46d9ccb406",
+      "name": "Hulkling, Burgeoning Bruiser",
+      "layout": "normal",
+      "mana_cost": "{2}{G}",
+      "cmc": 3.0,
+      "type_line": "Legendary Creature \u2014 Kree Skrull Hero",
+      "oracle_text": "Vigilance\nWhenever another creature you control enters, if it has greater power or toughness than Hulkling, put a +1/+1 counter on Hulkling.",
+      "power": "2",
+      "toughness": "3",
+      "colors": [
+        "G"
+      ],
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [
+        "Vigilance"
+      ],
+      "reference_printing": {
+        "id": "9018477f-a67b-4fa4-8661-11ab91fae863",
+        "set": "msh",
+        "collector_number": "173",
+        "released_at": "2026-06-26"
+      }
+    }
+  ],
+  "rules_evidence": [
+    {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "published": "2026-06-12",
+      "document_last_modified": "2026-05-14",
+      "read_sections": [
+        "Hawkeye's Bow",
+        "Hulkling, Burgeoning Bruiser"
+      ],
+      "summary": "Bow requires an actual untapped-to-tapped transition. Hulkling compares matching statistics, checks again on resolution, includes entry counters and uses the departed entrant's last battlefield statistics. Multiple entries create separate checks; the qualifying axis may change."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "effective": "2026-09-25",
+      "rules": [
+        "113.7a",
+        "113.8",
+        "208.3",
+        "400.7",
+        "603.4",
+        "603.6a-b",
+        "608.2a",
+        "608.2h",
+        "608.2k",
+        "701.26a",
+        "702.15b-d",
+        "702.100a-d"
+      ],
+      "summary": "Ability source and controller are fixed independently of a specified damage actor. Specific objects use current or latest-departure information. Intervening conditions are checked twice. Entry observers see the resulting battlefield. New incarnations are distinct. Noncreatures have no power or toughness. Lifelink uses the damage actor's controller and applicable current or last-known ability. Evolve uses a strict comparison on either matching axis."
+    }
+  ],
+  "source_discrepancies": [
+    {
+      "card": "Hawkeye's Bow",
+      "status": "confirmed direct/helper mismatch with Oracle and CR 608.2h",
+      "detail": "DamagePlayersEffect constructor sourceName=\"it\" changes displayed text only; apply passes source.getSourceId() to player.damage. Bow owns the trigger, so Java deals damage from Bow instead of the equipped event creature. Rust must keep Bow as ability source while passing the separate exact creature as damage actor."
+    },
+    {
+      "card": "Hulkling, Burgeoning Bruiser",
+      "status": "representation hazard; no unverified failing-Java claim",
+      "detail": "Pinned Java stores a mutable Permanent in effect.values for the entrant and copies that value shallowly through EffectImpl. It explicitly obtains source current/LKI but does not explicitly re-resolve the entrant by incarnation/current-or-departure reference. Rust must implement explicit signed current/latest-departure facts for both objects. Its custom ability is evolve-like but is not the evolve keyword: do not emit an EVOLVED_CREATURE event merely because a counter is added."
+    }
+  ],
+  "shared_mechanics": [
+    "An optional owned SpellView.event_object binds an exact independent untargeted event object, distinct from the ability source. Damage actor or signed creature-comparison variants expose only public battlefield facts; absent contexts omit serialization and allocation.",
+    "Bow remains the trigger source. Its captured ability controller selects opponents, while the exact event creature supplies current or latest-departure damage facts, controller, keywords and colors through the existing damage/lifelink pipeline.",
+    "Both source comparison and independent entrant comparison use signed i128 power or toughness, require both objects to be creatures, and check strict matching-axis OR when the event occurs and again on resolution. The satisfying axis may change.",
+    "Every whole battlefield departure commit captures selected source and event facts before any object in the batch moves. Stack, pending, ordering, resolving, announcing and nested mana announcements retain owned context; new incarnations never replace the saved event object.",
+    "Existing tap observer index handles attached-creature taps without imposing a shared controller requirement. Typed equip, static reach and power boost, counter placement, normal damage prevention/replacement, vigilance and mana funding are reused. No fake combat or evolved event, no hot Object field, no parser or bot."
+  ],
+  "wire": {
+    "previous": 144,
+    "current": 145,
+    "reason": "Actual opt-in public event-object and signed source comparison payloads; coordinated shared version with this authoring wave"
+  },
+  "counts": {
+    "msh_oracle_identities": 281,
+    "msh_printings": 448,
+    "main_admitted": 180,
+    "base_admitted_candidates": 187,
+    "candidate_admitted": 189,
+    "candidate_gated": 92,
+    "new_complete_candidates": 2,
+    "new_native_scenario_groups": 33,
+    "full_native_tests": 1042,
+    "definitions": 5397,
+    "tokens": 119,
+    "emblems": 3,
+    "adventures": 40,
+    "omens": 13,
+    "new_ids_or_tokens": 0
+  },
+  "trace_proof": {
+    "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+    "normal_schema": 145,
+    "previous_schema": 144,
+    "inherited_full_traces": 2490,
+    "candidate_full_traces": 2492,
+    "added": [
+      "Hawkeye's Bow",
+      "Hulkling, Burgeoning Bruiser"
+    ],
+    "all_inherited_full_trace_structs_exact_at_previous_schema": true,
+    "compared_fields": [
+      "root",
+      "status",
+      "decisions",
+      "zone",
+      "journal",
+      "observations"
+    ],
+    "unchanged_recorder": true,
+    "field_stripping_or_normalization": false,
+    "base_trace_sha256": "88275144dc386ddf37a71d78fd2d81ade6d08697d7e8e1ec0a5a7124b4427c80",
+    "normal_trace_sha256": "87cc6b6a4c834e8f990b013dbafaa2700ea250c3a2a8be45f2d43a7201ee8271",
+    "previous_trace_sha256": "d80a108b564a799f3f3baa35c2e79b16f5d9222d3c010c40021a852d681d04e1",
+    "identity_metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "identity_metadata_equal_to_base": true
+  },
+  "validation": {
+    "full_native": {
+      "command": [
+        "cargo",
+        "test",
+        "--lib"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 344.42436875600833,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2387582976,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "log": "<cache>/rustmage-msh-event-objects-native-final-2.log",
+      "log_sha256": "45f08726968ecc8191470bedf5e17163ebb9d5b6fbdc40ab5cf0f1c63c8fb521",
+      "resource_report": "<cache>/rustmage-build-reports/4c34de7c99ff446cbe20f08850ff1f6b.json",
+      "resource_report_sha256": "02349b5f9c216da7d4407b55a1219d63bed159aedee3849fa9c3c93aaeee859d",
+      "passed": 1042,
+      "execution_seconds": 5.67
+    },
+    "clippy_all_targets": {
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 356.8858439770411,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1783246848,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "log": "<cache>/rustmage-msh-event-objects-clippy-final.log",
+      "log_sha256": "86dc6031b567527d73a7f9e745053d736975381769ac062947cec6082241e716",
+      "resource_report": "<cache>/rustmage-build-reports/27e756b5ecc64abd87197fd39137e47b.json",
+      "resource_report_sha256": "b65309b67546b3aa635f9ec4fe4bc324f1c7791ed7bb6137a55f4757de8f048c"
+    },
+    "cargo_fmt": {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 357.0304603379918,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 103264256,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "log": "<cache>/rustmage-msh-event-objects-format-final.log",
+      "log_sha256": "08666c284de008a819702718f079f7541c6d2325afe6d5b39f9f220342388738",
+      "resource_report": "<cache>/rustmage-build-reports/d11749f6771d420baa5fe74e192c85ee.json",
+      "resource_report_sha256": "d5932af06ca8698e30851d84543f5d1f7c68b36d4ef19c57678202f2b01d57fb"
+    },
+    "direct_sources": {
+      "report": "<cache>/rustmage-msh-event-objects-sources.json",
+      "sha256": "9bf1ca75e7a85aae69895a497986d90c8e57193bd3748778591f5134ceadf538",
+      "result": {
+        "definitions": 5397,
+        "source_blobs": 1192,
+        "java_verified": true,
+        "catalogue_version": "b4613167988b0f766aa5155e769babe4936cf29ee3145ada49ffd3c58cdb3d33"
+      }
+    },
+    "catalogue_link": {
+      "report": "<cache>/rustmage-msh-event-objects-link.json",
+      "sha256": "92682900aadf88fabb9f5216958364e87c9cd3b0c5c9d7d798a4e20465cff3ae",
+      "result": {
+        "schema": 1,
+        "catalogue_version": "b4613167988b0f766aa5155e769babe4936cf29ee3145ada49ffd3c58cdb3d33",
+        "standard_legal_cards": 5164,
+        "implemented_standard_cards": 2486,
+        "implemented_total": 2492,
+        "token_definitions": 119,
+        "emblem_definitions": 3,
+        "adventure_definitions": 40,
+        "omen_definitions": 13
+      }
+    },
+    "authored_format": {
+      "report": "<cache>/rustmage-msh-event-objects-format-authored.json",
+      "sha256": "5ad69d6018aee3c80c6c48c07cd5684b197fe05d406603a45a8abd908239bd11",
+      "result": {
+        "files": [
+          {
+            "path": "src/card_definitions/msh/hawkeye_s_bow.rs",
+            "sha256": "4691d9025022d6eba4b715ce239bbc983f84a96b1e2398a2ba5ee065377e9a1b"
+          },
+          {
+            "path": "src/card_definitions/msh/hulkling_burgeoning_bruiser.rs",
+            "sha256": "4fa73c2550ae05dc0db09784cd9213cfca933299d5a1d8f7a0c3fa3bc52cd6fe"
+          },
+          {
+            "path": "src/cards.rs",
+            "sha256": "b7758d7530dbcd9dedfe6c8210009fa9bc5944441807447c3e7f233180c510dd"
+          },
+          {
+            "path": "src/engine.rs",
+            "sha256": "7b8165beafa64a7ffc2f6447a7fe7e8dc8f184eb62b433583b9dddc95ae14cf9"
+          },
+          {
+            "path": "src/engine_activations.rs",
+            "sha256": "4762e496fd2158cd399e3b64a2f877fb858c0dbbe371796701b259e4189df0fb"
+          },
+          {
+            "path": "src/engine_cast_rollback.rs",
+            "sha256": "cd788b4239361027073c96f6dc4d66e544a198c9699e340e253246b4283ad2ea"
+          },
+          {
+            "path": "src/engine_entries.rs",
+            "sha256": "144086208c2b96ce9ae3e284e52343c3f7f7ded5906e621c29321fca7aa362e8"
+          },
+          {
+            "path": "src/engine_event_objects.rs",
+            "sha256": "b6143f0a7c7beb371336f4b90e5bc5c758c2e08278d8b2b687b85e1e0337bcab"
+          },
+          {
+            "path": "src/engine_mobilize.rs",
+            "sha256": "b733ae027a3ac2ab52b2d22d295c9965e0f05c1b816ecf57258c0253bc3402cb"
+          },
+          {
+            "path": "src/engine_msh_event_objects_tests.rs",
+            "sha256": "e524349a2586638d368e9023c23a001eba57f265544fec17e6de76fd1fa7dabb"
+          },
+          {
+            "path": "src/engine_programs.rs",
+            "sha256": "3c05f78276a3dad0e2401b4c761c3899e587ae0b67a41478ff974b35b6e5c399"
+          },
+          {
+            "path": "src/engine_source_quantities.rs",
+            "sha256": "0a3f6b8f28c0202e065128883ae8aeebfce88f792826bdac9c270633ad1a8e3a"
+          },
+          {
+            "path": "src/engine_stack_copies.rs",
+            "sha256": "a070303e266174355577867492c6283fa4c4a3cc72c6bd35df39a96595f7d985"
+          },
+          {
+            "path": "src/engine_stats.rs",
+            "sha256": "ff0f90639c8fca1b6f6c159db1fbfbdc9f960470158f9d23d01bb0ae92583113"
+          },
+          {
+            "path": "src/engine_targeting.rs",
+            "sha256": "afe6ae2294f694cf8fd5e58020883d5e2086b2909bdc41202f40a2ddd2e1e06a"
+          },
+          {
+            "path": "src/engine_warp.rs",
+            "sha256": "2a3b3644cf6725dc5da667952e440e35a2dd6f3becd385751a2223457651d826"
+          }
+        ],
+        "exit_code": 0,
+        "output": ""
+      }
+    }
+  },
+  "fixed_inputs": {
+    "manifest": "<cache>/rustmage-msh-event-objects-inputs.json",
+    "sha256": "a11328f8b3f5acd65ae4f4775f20dee26537e593c20d2929490727375cc64b46",
+    "preserved_until_all_consumers_terminal": true,
+    "runtime_source_equal_to_tested_manifest": true
+  },
+  "tests": {
+    "file": "src/engine_msh_event_objects_tests.rs",
+    "all_scenarios_both_seats": true,
+    "groups": [
+      "msh_event_objects_paid_equipment_body_equip_cost_targets_timing_atomicity",
+      "msh_event_objects_bow_reach_blocks_flying_and_actual_combat_boost",
+      "msh_event_objects_bow_mana_tap_funding_and_production_failures_are_atomic",
+      "msh_event_objects_bow_event_qualification_vigilance_repeated_taps_and_entry_tapped",
+      "msh_event_objects_bow_current_actor_controller_lifelink_and_independent_opponents",
+      "msh_event_objects_bow_detach_reequip_source_theft_and_removal_preserve_actor",
+      "msh_event_objects_bow_latest_departure_controller_keywords_colors_all_zones_generations",
+      "msh_event_objects_bow_simultaneous_departure_preserves_granted_lifelink_all_orders",
+      "msh_event_objects_bow_suppression_before_event_after_event_and_creature_removal",
+      "msh_event_objects_bow_noncreature_after_tap_still_deals_current_damage",
+      "msh_event_objects_hulkling_paid_body_vigilance_and_initial_or_comparison",
+      "msh_event_objects_hulkling_initial_power_or_toughness_live_derived_stats",
+      "msh_event_objects_hulkling_rechecks_either_axis_and_equalities_signed_stats",
+      "msh_event_objects_hulkling_entry_counters_simultaneous_entries_and_source_entry",
+      "msh_event_objects_hulkling_event_control_and_source_control_are_historical",
+      "msh_event_objects_hulkling_latest_entrant_departure_and_reentry_all_zones",
+      "msh_event_objects_hulkling_both_latest_departures_and_new_source_exclusion",
+      "msh_event_objects_hulkling_prebatch_statics_and_entry_suppression",
+      "msh_event_objects_hulkling_ability_loss_before_and_after_trigger_noncreatures_fail",
+      "msh_event_objects_paid_removal_freezes_facts_without_disabling_bow_trigger",
+      "msh_event_objects_public_contexts_full_nonactor_privacy_and_orphan_restore",
+      "msh_event_objects_copied_packets_own_exact_references_and_independent_controllers",
+      "msh_event_objects_packet_owned_bytes_absent_old_payloads_and_funding_stats",
+      "msh_event_objects_bow_crew_multiple_bows_and_controller_batches",
+      "msh_event_objects_bow_teamwork_paid_tap_commits_before_spell_resolution",
+      "msh_event_objects_bow_damage_lifelink_gain_modifiers_and_player_hexproof",
+      "msh_event_objects_hulkling_departed_noncreature_facts_never_compare_as_zero",
+      "msh_event_objects_copied_permanent_recipe_uses_its_own_ability_source",
+      "msh_event_objects_paid_tap_effect_survives_creature_ability_removal",
+      "msh_event_objects_hulkling_token_entrant_ceases_and_new_token_keeps_original_facts",
+      "msh_event_objects_copied_hulkling_observes_its_controller_and_source_incarnation",
+      "msh_event_objects_bow_new_and_removed_lifelink_grants_freeze_before_entire_batch",
+      "msh_event_objects_borrowed_funding_power_recomputes_without_mutating_packets"
+    ],
+    "matrix": [
+      "Actual paid spell and equip actions; target/controller/sorcery legality; atomic illegal costs, taps and mana-production choices; actual flying blocks and combat power.",
+      "Tap transition qualification, vigilance, entry tapped, repeat taps, crew batches and teamwork paid taps; equip reattachment/theft/removal and source/actor independence.",
+      "Live and latest-departure damage colors, keywords and controller; dynamic lifelink grants, source and equipment simultaneous movement in both orders; life gain modifiers, hexproof and normal damage observers.",
+      "Hulkling initial and intervening strict signed power OR toughness, equality, cross-axis changes, entry counters, simultaneous entries/source entry, lords leaving and suppression.",
+      "Both exact objects moving to every zone, source and entrant control changes, noncreature facts, reincarnations, vanished tokens, actual copied permanent recipes and independently cloned packets.",
+      "Full nonactor hidden observations, owned snapshots and restore, raw/index orphan branches, context byte accounting, funding affected by actual tap and equipment power, borrowed-world quantity recomputation without packet mutation."
+    ]
+  },
+  "resources": {
+    "runner": "python3 scripts/resource_guard.py -- cargo ...",
+    "shared_memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_or_cap_probe_performed": false,
+    "all_final_consumers_terminal": true,
+    "cleanup": {
+      "created_utc": "2026-10-25T02:44:57.721142+00:00",
+      "all_consuming_jobs_terminal": true,
+      "target": "<cache>/rustmage-msh-event-objects-target",
+      "scan": {
+        "surfaces": [
+          "executable symlinks",
+          "file descriptors",
+          "memory maps"
+        ],
+        "processes_scanned": 527,
+        "permission_denied_surfaces": 862,
+        "references": []
+      },
+      "removed_files": 1019,
+      "removed_allocated_bytes": 125136896,
+      "removed_logical_bytes": 121852002,
+      "retained_artifacts": [
+        {
+          "path": "<cache>/rustmage-msh-event-objects-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+          "purpose": "shared library"
+        },
+        {
+          "path": "<cache>/rustmage-msh-event-objects-target/debug/deps/rustmage-b764cd26223fba2c",
+          "sha256": "706ca9d555c643ab3fe2342502133884c1f183c6dfa66ebb7865555f7710cdc5",
+          "purpose": "useful final native test executable"
+        }
+      ],
+      "preserved_prior_artifacts": [
+        {
+          "path": "<cache>/rustmage-msh-source-quantities-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage-msh-source-quantities-target/debug/deps/rustmage-b764cd26223fba2c",
+          "sha256": "8da65393061c896dccb9ad037ec849356438eade39e652ab2d8d9b81a2848c00"
+        }
+      ]
+    }
+  },
+  "preserved_design_cache": {
+    "path": "<cache>/rustmage-msh-bow-hulkling-design-466da8e0.json",
+    "sha256": "60680bd4f7d68c04d6e1fa6a07d5ebdffc56585ee91df65ccfcb24d8ab789caa"
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T02:07:26+00:00",
+    "validation_finished_utc": "2026-10-25T02:44:24+00:00",
+    "elapsed_seconds": 2218.0,
+    "complete_candidates": 2,
+    "candidates_per_hour": 3.2461677186654643,
+    "includes": "This authoring wave setup, source changes, debugging, shared queue waits and final native/Clippy/fmt validation",
+    "excludes": "Earlier read-only design research, later aggregate integration/release/reviews and source delivery bookkeeping",
+    "simulation_throughput_measured": false
+  },
+  "remaining_gates": [
+    "Root aggregate release validation and CI on integrated published source",
+    "Two independent nonauthor local reviews of final published aggregate head",
+    "All remaining gated MSH cards, whole-set games and measured simulation throughput",
+    "User approval of the single final aggregate implementation PR; no main merge"
+  ]
+}
