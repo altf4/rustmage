@@ -4,15 +4,9 @@ use super::assurance::big_helpers::{cast, checked, named, next_turn, settle, set
 use super::*;
 const STORM: &str = "Storm, Windrider";
 fn hand(g: &mut Game, p: Player, name: &str) -> CardId {
-    if name == STORM && !Card::from_name(name).unwrap().is_supported() {
-        // Bounded gated fixture: ordinary paid actions, rejected accepted-pool definition.
-        let id = named(g, p, "Hill Giant", Zone::Hand);
-        g.state.objects[id as usize].card = Card::from_name(name).unwrap();
-        id
-    } else {
-        named(g, p, name, Zone::Hand)
-    }
+    named(g, p, name, Zone::Hand)
 }
+
 fn priority(g: &mut Game, p: Player) {
     if g.actor() != Some(p) {
         checked(g, Action::Pass);
@@ -774,5 +768,168 @@ fn msh_storm_non_target_grant_never_triggers_second_ward() {
         assert_eq!(g.object_view(shock).zone, Zone::Graveyard);
         assert!(granted(&g, target));
         assert_eq!(g.object_view(target).damage, 0);
+    }
+}
+
+fn eaten(g: &mut Game, p: Player, target: CardId, sacrifice: CardId) -> CardId {
+    priority(g, p);
+    let id = named(g, p, "Eaten Alive", Zone::Hand);
+    g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+    checked(g, Action::AnnounceCast { card: id });
+    let mut chose = false;
+    while g.state.announcing.is_some() {
+        let actions = g.legal_actions();
+        let a = if !chose
+            && actions.contains(&Action::ChooseTarget {
+                target: Target::Card(target),
+            }) {
+            chose = true;
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            }
+        } else if actions.contains(&Action::ChooseAdditionalCost {
+            object: g.object_ref(sacrifice),
+        }) {
+            Action::ChooseAdditionalCost {
+                object: g.object_ref(sacrifice),
+            }
+        } else {
+            actions
+                .into_iter()
+                .find(|a| {
+                    matches!(
+                        a,
+                        Action::ChooseSpellCost { .. }
+                            | Action::FinishTargets
+                            | Action::PayCosts { .. }
+                    )
+                })
+                .unwrap_or_else(|| panic!("Eaten Alive {:?}", g.state.pending))
+        };
+        checked(g, a);
+    }
+    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    assert_eq!(g.object_view(sacrifice).zone, Zone::Graveyard);
+    id
+}
+
+#[test]
+fn msh_storm_paid_cast_real_lands_live_funding_and_transactional_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].mana = [0; 6];
+        let id = hand(&mut g, p, STORM);
+        let lands = ["Plains", "Plains", "Forest", "Mountain"]
+            .map(|name| named(&mut g, p, name, Zone::Battlefield));
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: id })
+        );
+        // Funding forecasts are borrowed; merely asking does not tap or spend anything.
+        let before = g.snapshot();
+        let _ = g.legal_actions();
+        assert_eq!(g.snapshot(), before);
+        assert!(lands.iter().all(|&id| !g.object_view(id).tapped));
+        for land in lands {
+            checked(&mut g, Action::TapMana { card: land });
+        }
+        cast(&mut g, id, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+        assert!(lands.iter().all(|&id| g.object_view(id).tapped));
+    }
+}
+#[test]
+fn msh_storm_cast_ignores_target_already_sacrificed_as_actual_additional_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let s = paid(&mut g, p, STORM);
+        let a = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        eaten(&mut g, p, a, a);
+        assert_eq!(g.object_view(a).zone, Zone::Graveyard);
+        assert!(
+            g.state
+                .pending_triggers
+                .iter()
+                .chain(&g.state.stack)
+                .all(|item| item.card != s)
+        );
+        settle(&mut g);
+    }
+}
+#[test]
+fn msh_storm_graveyard_creature_target_does_not_trigger() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let s = paid(&mut g, p, STORM);
+        let a = named(&mut g, p, "Hill Giant", Zone::Graveyard);
+        named(&mut g, p, "Forest", Zone::Hand);
+        packet(&mut g, p, "Macabre Waltz", None, &[Target::Card(a)]);
+        assert!(
+            g.state
+                .pending_triggers
+                .iter()
+                .chain(&g.state.stack)
+                .all(|item| item.card != s)
+        );
+        settle(&mut g);
+    }
+}
+#[test]
+fn msh_storm_partial_subject_departure_keeps_other_frozen_recipient() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let s = paid(&mut g, p, STORM);
+        let a = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let b = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        packet(
+            &mut g,
+            p,
+            "Epic Fight",
+            Some(1),
+            &[Target::Card(a), Target::Card(b)],
+        );
+        assert_eq!(
+            storm_packet(&g, s)
+                .cast_creature_subjects
+                .as_ref()
+                .unwrap()
+                .objects
+                .len(),
+            2
+        );
+        g.move_object(a, Zone::Hand);
+        resolve_grant(&mut g, b);
+        assert!(granted(&g, b));
+        assert!(!granted(&g, a));
+        settle(&mut g);
+        assert_eq!(g.object_view(b).damage, 0);
+    }
+}
+#[test]
+fn msh_storm_copied_static_and_trigger_provider_uses_current_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let s = paid(&mut g, p, STORM);
+        let copy = paid(&mut g, p.other(), "Hill Giant");
+        // Bounded copy-core transition isolates provider registration without a new card admission.
+        let reference = g.object_ref(copy);
+        let recipe = CopyRecipe::new(Card::from_name(STORM).unwrap());
+        g.apply_temporary_copy(reference, recipe, CopyDeadline::EndOfTurn);
+        let a = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        packet(&mut g, p.other(), "Shock", None, &[Target::Card(a)]);
+        assert!(g.state.pending_triggers.iter().all(|item| item.card != s));
+        assert_eq!(
+            storm_packet(&g, copy)
+                .cast_creature_subjects
+                .as_ref()
+                .unwrap()
+                .objects,
+            vec![g.object_ref(a)]
+        );
+        settle(&mut g);
+        assert!(granted(&g, a));
+        assert!(!g.can_attack_defender(s, CombatDefender::Player(p.other())));
     }
 }
