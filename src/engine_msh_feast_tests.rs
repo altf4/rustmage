@@ -127,6 +127,7 @@ fn finish_targets(g: &mut Game, f: CardId) {
     }
 }
 fn select(g: &mut Game, f: CardId, ids: &[CardId]) {
+    let packet = g.state.announcing.as_ref().unwrap().item.id;
     for &id in ids {
         checked(
             g,
@@ -135,7 +136,13 @@ fn select(g: &mut Game, f: CardId, ids: &[CardId]) {
             },
         );
     }
-    finish_targets(g, f);
+    if g.state
+        .announcing
+        .as_ref()
+        .is_some_and(|a| a.item.id == packet)
+    {
+        finish_targets(g, f);
+    }
 }
 fn reject(g: &mut Game, a: Action) {
     let before = g.snapshot();
@@ -243,13 +250,22 @@ fn msh_feast_no_creatures_still_announces_and_resolves_zero_targets() {
     for p in [Player::P0, Player::P1] {
         let (mut g, f) = body(p);
         activate_food(&mut g, p);
-        assert_eq!(targets(&mut g, f), 3);
-        assert!(g.legal_actions().contains(&Action::FinishTargets));
-        finish_targets(&mut g, f);
+        // Zero legal optional recipients can finish automatically; the ability
+        // is still put on the stack with its captured event and zero targets.
+        until(&mut g, |g| {
+            g.state.stack.last().is_some_and(|a| {
+                a.card == f && matches!(a.kind, StackKind::TriggeredAbility { ability: 1 })
+            })
+        });
+        let packet = g.state.stack.last().unwrap();
+        assert_eq!(packet.life_event.unwrap().amount, 3);
+        assert!(packet.targets.is_empty());
+        assert_eq!(g.target_spec(packet).single().unwrap().max, 3);
         settle(&mut g);
         assert!(g.state.stack.is_empty());
     }
 }
+
 #[test]
 fn msh_feast_separate_captured_events_do_not_read_turn_sum_or_later_gain() {
     for p in [Player::P0, Player::P1] {
@@ -389,10 +405,11 @@ fn msh_feast_source_controller_changes_preserve_old_event_controller() {
         assert_eq!(g.counter_count(own[0], CounterKind::PlusOne), 1);
         g.gain_life(p, 3);
         assert!(g.state.pending_triggers.is_empty());
+        let other = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         g.gain_life(p.other(), 1);
         assert_eq!(targets(&mut g, f), 1);
         assert_eq!(g.actor(), Some(p.other()));
-        finish_targets(&mut g, f);
+        select(&mut g, f, &[other]);
         settle(&mut g);
     }
 }
@@ -593,5 +610,90 @@ fn msh_feast_copied_source_has_its_own_food_and_life_observer() {
         select(&mut g, copied, &[recipient]);
         settle(&mut g);
         assert_eq!(g.counter_count(recipient, CounterKind::PlusOne), 1);
+    }
+}
+
+#[test]
+fn msh_feast_legal_set_only_games_reach_natural_outcomes_with_both_life_controllers() {
+    let feast = Card::from_name(FEAST).unwrap();
+    let mut deck = vec![Card::Plains; 12];
+    deck.extend([Card::Forest; 12]);
+    for name in [
+        FEAST,
+        "Brave Brawler",
+        "Hulkling, Burgeoning Bruiser",
+        "Go Nuts!",
+        "Giant Growth",
+        "Guerrilla Gorilla",
+        "Take Up the Shield",
+        "Agent of Atlas",
+        "Crowd of True Believers",
+    ] {
+        let card = Card::from_name(name).unwrap();
+        assert!(card.is_supported() && card.is_standard_legal());
+        deck.extend([card; 4]);
+    }
+    let mut targeted = [false; 2];
+    let mut casts = 0;
+    let mut records = Vec::new();
+    for starting_player in [Player::P0, Player::P1] {
+        for seed in [20261024, 20261025] {
+            let config = Config {
+                decks: [deck.clone(), deck.clone()],
+                seed,
+                starting_player,
+                deck_rules: DeckRules::Standard,
+            };
+            let mut g = Game::new(config.clone()).unwrap();
+            let mut ledger = Vec::new();
+            let mut packets = std::collections::BTreeSet::new();
+            while g.outcome().is_none() {
+                let actor = g.actor().unwrap();
+                let actions = g.legal_actions();
+                let index = crate::policy::smoke_index(&g, &actions);
+                let action = actions[index].clone();
+                assert!(!matches!(action, Action::Concede));
+                if let Some(a) = &g.state.announcing {
+                    if a.item.source_card == feast
+                        && a.item.kind == StackKind::Spell
+                        && matches!(action, Action::PayCosts { .. })
+                    {
+                        casts += 1;
+                    }
+                    if a.item.source_card == feast
+                        && matches!(a.item.kind, StackKind::TriggeredAbility { ability: 1 })
+                    {
+                        packets.insert(a.item.id);
+                        if matches!(action, Action::ChooseTarget { .. }) {
+                            targeted[actor.index()] = true;
+                        }
+                    }
+                }
+                g.apply(actor, action.clone()).unwrap();
+                ledger.push((actor, action));
+                assert!(
+                    ledger.len() < 20_000,
+                    "Feast game stalled at {:?}",
+                    g.state.pending
+                );
+            }
+            let mut replay = Game::new(config).unwrap();
+            for (actor, action) in &ledger {
+                replay.apply(*actor, action.clone()).unwrap();
+            }
+            assert_eq!(g.snapshot(), replay.snapshot());
+            records.push(serde_json::json!({"seed":seed,"starting_player":starting_player,"decisions":ledger.len(),"outcome":g.outcome(),"turn":g.state.turn,"observed_targeted_life_packets":packets.len()}));
+        }
+    }
+    assert!(casts > 0);
+    assert_eq!(targeted, [true, true]);
+    if let Ok(output) = std::env::var("RUSTMAGE_RECORD_FEAST_GAMES") {
+        let output = std::path::PathBuf::from(output);
+        assert!(
+            output.starts_with(
+                std::path::PathBuf::from(std::env::var("HOME").unwrap()).join(".cache")
+            )
+        );
+        std::fs::write(output,serde_json::to_string_pretty(&serde_json::json!({"scope":"Four natural Standard-legal MSH-only white/green mirror games. Ordinary setup, unchanged observation-only policy, actual paid Heroic Feast and target choices by both controllers, full exact action replay. Bounded consumer integration, not full-set acceptance or a benchmark.","games":records,"paid_feast_casts":casts,"both_controllers_selected_life_targets":targeted})).unwrap()+"\n").unwrap();
     }
 }
