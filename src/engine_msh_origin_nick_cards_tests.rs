@@ -794,7 +794,7 @@ fn msh_origin_nick_cards_nick_captured_player_and_old_source_reference_survive_c
             g.state.players[p.index()].mana = [0, 1, 1, 1, 1, 0];
             activate(&mut g, p, source);
             // Explicit no-priority identity/control fixture after a real paid packet.
-            // The accepted core separately proves the same exact-reference boundary.
+            // The shared core separately proves the same exact-reference boundary.
             if blink {
                 g.move_object(source, Zone::Exile);
                 g.move_object(source, Zone::Battlefield);
