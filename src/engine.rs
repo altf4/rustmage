@@ -8516,3 +8516,7 @@ mod msh_final_shared_interactions_tests;
 #[cfg(test)]
 #[path = "engine_msh_final_copy_interactions_tests.rs"]
 mod msh_final_copy_interactions_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_controlled_policy_tests.rs"]
+mod msh_controlled_policy_tests;
