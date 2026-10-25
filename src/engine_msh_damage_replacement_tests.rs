@@ -912,6 +912,7 @@ fn msh_damage_mjolnir_distinct_nonlegendary_copy_providers_each_double_once() {
             &[TokenGroupView {
                 token: definition,
                 amount: 1,
+                tapped: false,
             }],
             &[Some(recipe)],
             None,
