@@ -1450,3 +1450,7 @@ mod msh_galactus_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_turn_facts_funding_tests.rs"]
 mod msh_turn_facts_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_land_origins_funding_tests.rs"]
+mod msh_land_origins_funding_tests;

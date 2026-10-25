@@ -3,10 +3,127 @@
   "catalogue_id": 2811,
   "oracle_id": "34994475-b914-44f6-8ca1-c2747b6d5956",
   "facts_sha256": "80ba1bb00f1b65f9aac025c8367fa30f0e38fc6eb41141420062f94d312d9bb7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "99d7f4d79a22baef1be6d07e683165b83a1608762f57930802ebf2803c3d62b0"
   },
-  "physical_metadata_sha256": "60047f88d5070a2aac807f12a845860097bbc3087fb01d344f73ed197196e89d"
+  "physical_metadata_sha256": "60047f88d5070a2aac807f12a845860097bbc3087fb01d344f73ed197196e89d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MoleManMoloidMaster.java",
+  "java_sha256": "54518656e977027c1d8fe23700fbd30ac51ac9de171291f16813cb966a05cd94",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/k/KaZarOfTheSavageLand.java",
+      "sha256": "5bc0fc94089d3ffa35f234b95118e5100a25f2b5a705589f20426bfe025805f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+      "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+      "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/PlayFromGraveyardControllerEffect.java",
+      "sha256": "72cc948dd1f65f347eb25cc2f8b19dab87326c3aa0ae77945c2fd4b6e142c6a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ZabuToken.java",
+      "sha256": "cdeaf6fc334e47fbefde2d75e3328eed8a19ff3e5ec27ec54749f63756798e83"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/MoloidToken.java",
+      "sha256": "25c6d8759dd00338ac7496b04e330c2924cfe5d508c867a2c37eec5e5b894d96"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+      "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterLandCard.java",
+      "sha256": "e9e31535856250c875e2036b551236be506dd0b4229c3e7a4f3f4f639ac257df"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+      "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TokenImpl.java",
+      "sha256": "64e2102a28036ddfaaec4914c34355f7174f90df30d71527b0553aef9a14687d"
+    }
+  ],
+  "remaining_obligations": [],
+  "implementation_notes": [
+    "Full Oracle and entire concrete Java/helper bodies reviewed at pinned revision; native rules evidence covers all printed obligations.",
+    "Normal land-origin permission uses live source control/ability availability and global land-play timing/allowance, never a per-source use or spell-cast grant.",
+    "CR401.5 defers next top through the whole land special action; selected top-land identity is public during staged entry.",
+    "Moloid optional mill uses existing MayMill exact-choice guard under CR701.17b; legendary Zabu counters only its exact source incarnation."
+  ]
 }

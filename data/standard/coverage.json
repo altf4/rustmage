@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "03473aa52d785abbd9245ad56fd83fbbd49fbdfbe13c7d2b978164d7782b77ce",
+  "catalogue_version": "68990609a46b5ef55d61be6114fe58a7cad853b5b066d7233b0d771ca32e30d6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2508,
-  "implemented_total": 2514,
-  "token_definitions": 123,
+  "implemented_standard_cards": 2510,
+  "implemented_total": 2516,
+  "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 203,
-      "gated": 70
+      "complete": 205,
+      "gated": 68
     },
     "one": {
       "total": 1,
@@ -18629,8 +18629,8 @@
     {
       "name": "Ka-Zar of the Savage Land",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ka_zar_of_the_savage_land.rs",
       "set": "msh"
     },
@@ -22693,8 +22693,8 @@
     {
       "name": "Mole Man, Moloid Master",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/mole_man_moloid_master.rs",
       "set": "msh"
     },

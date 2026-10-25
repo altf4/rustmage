@@ -22,6 +22,9 @@ pub(super) struct EntryMove {
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
+    /// A played library land is public throughout its pre-entry special action.
+    /// Its actual origin remains Library; unrelated library entries stay private.
+    pub public_origin: bool,
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
     pub cast_payment: Option<Mana>,
@@ -74,6 +77,7 @@ impl EntryMove {
             attacking: None,
             skipped: false,
             reveal_hand: false,
+            public_origin: false,
             life_paid: None,
             offspring_paid: false,
             cast_payment: None,
@@ -149,7 +153,8 @@ pub struct EntryLifeView {
     pub selected_attachments: Vec<AuraAttachmentView>,
 }
 pub(super) fn visible(m: &EntryMove, viewer: Player, known_hand: &[ObjectRef]) -> bool {
-    m.before.owner == viewer
+    m.public_origin
+        || m.before.owner == viewer
         || known_hand.contains(&m.before.reference)
         || !matches!(m.before.zone, Zone::Hand | Zone::Library)
 }
