@@ -176,8 +176,9 @@
     "dedicated_whole_cards": 113,
     "shared_copy_core": 47,
     "combined": 2,
-    "expected_total_native_after_integration": 1578,
-    "final_release_validation": "Pending required validate.py --release on the final published source; final exact-head CI is also pending."
+    "expected_total_native_after_integration": 1590,
+    "final_release_validation": "Pending required validate.py --release on the final published source; final exact-head CI is also pending.",
+    "copy_rule_corrections": 12
   },
   "combined_games": {
     "fixture_record": {
@@ -283,14 +284,14 @@
   "implementation_throughput": {
     "whole_candidates": 9,
     "window_start_utc": "2026-10-25T04:50:08.092020+00:00",
-    "window_end_utc": "2026-10-25T10:13:00.572651+00:00",
-    "elapsed_seconds": 19372.480631,
-    "candidates_per_hour": 1.672475539769195,
+    "window_end_utc": "2026-10-25T10:54:29.303673+00:00",
+    "elapsed_seconds": 21861.211653,
+    "candidates_per_hour": 1.482077046518772,
     "start_artifact": {
       "path": "<cache>/rustmage-msh-temporary-copy-design-a29274fe.json",
       "sha256": "a3c34d39e09d818e0a1703b227150b16a4c4ee64b0cc5f4e63a9dbceac73177b"
     },
-    "scope": "Observed earliest retained temporary-copy design audit through aggregate evidence. Includes shared-core design, parallel card work, fixtures, queues, fixes, integration, evidence work and cleanup; overlaps other cohort gates and preparatory audits. Excludes subsequent final release validation, CI and approval. Not isolated typing speed."
+    "scope": "Observed earliest retained temporary-copy design audit through corrected aggregate evidence. Includes shared-core/card work, fixtures, integration, initial release validation and subsequent rules corrections, queues, evidence and cleanup; overlaps preparatory audits. Excludes the final corrected release validation, CI and approval."
   },
   "remaining": {
     "gated_cards": [
@@ -355,5 +356,45 @@
       "Worlds Within Worlds"
     ],
     "acceptance": "Complete the remaining whole cards and reconcile all admitted Oracle obligations with meaningful rules evidence, then verify broader set-only games, interactions, hidden information, owned search/replay and workload-specific performance. Existing flags and bounded cohort games alone do not certify the entire pool."
-  }
+  },
+  "initial_checkpoint_implementation_throughput": {
+    "whole_candidates": 9,
+    "window_start_utc": "2026-10-25T04:50:08.092020+00:00",
+    "window_end_utc": "2026-10-25T10:13:00.572651+00:00",
+    "elapsed_seconds": 19372.480631,
+    "candidates_per_hour": 1.672475539769195,
+    "start_artifact": {
+      "path": "<cache>/rustmage-msh-temporary-copy-design-a29274fe.json",
+      "sha256": "a3c34d39e09d818e0a1703b227150b16a4c4ee64b0cc5f4e63a9dbceac73177b"
+    },
+    "scope": "Observed earliest retained temporary-copy design audit through aggregate evidence. Includes shared-core design, parallel card work, fixtures, queues, fixes, integration, evidence work and cleanup; overlaps other cohort gates and preparatory audits. Excludes subsequent final release validation, CI and approval. Not isolated typing speed."
+  },
+  "copy_rule_corrections": {
+    "source_head": "d6c2ecda905c12fb7a3cecad6ddc85ececcb33b7",
+    "tested_runtime": "7a41be85fa79cdd4faf6901f5a4f26a063d2bab6",
+    "evidence_document": {
+      "path": "docs/msh-copy-correction-evidence.json",
+      "sha256": "4b4abe09d3ce6ddf0744b710f5ac6d794bf8b5ca2e7b98b3a8e003d837b86768"
+    },
+    "new_groups": 12,
+    "native": 1590,
+    "native_execution_seconds": 12.36,
+    "fixed_inputs": 11813,
+    "changed": [],
+    "all_static_green": true,
+    "trace_rows": 2525,
+    "normal_schema": 149,
+    "previous_schema": 148,
+    "all_ten_full_parent_tables_exact": true,
+    "source_behaviors": [
+      "Exclude copied intrinsic changeling CDA when copy exceptions fix creature types; retain additive copies and later keyword grants.",
+      "Classify created tokens by their full copiable recipe for artifact-only replacements.",
+      "Preserve physical single/double-faced token structure separately from active copied definitions, including flat face snapshots, transformation and departed-source captures."
+    ],
+    "new_admissions": [],
+    "new_ids": [],
+    "schema_changed": false,
+    "final_release": "Pending required validate.py --release and exact-head CI on the corrected aggregate."
+  },
+  "updated_utc": "2026-10-25T10:54:29.303673+00:00"
 }
