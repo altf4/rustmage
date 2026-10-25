@@ -3282,6 +3282,9 @@ impl Game {
                     self.event_object_damage_players(&item, players, amount);
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::AnimateSourceWithAbilityIfNoncreature { spec, kind } => {
+                    self.animate_source_with_ability_if_noncreature(&item, spec, kind)
+                }
                 Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),
                 Instruction::ChangeSourceCreatureForm(spec) => self.change_source_form(
                     &item,

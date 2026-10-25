@@ -1,4 +1,4 @@
-// The separately castable modal back face has its own printed4UR mana value.
+// The separately castable modal back face has its own printed 4UR mana value.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     deck_limit: None,
     effect: Effect::Creature(5, 5),
