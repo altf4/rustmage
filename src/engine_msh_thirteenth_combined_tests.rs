@@ -179,7 +179,12 @@ fn hidden_information_contract(game: &Game, viewer: Player) {
     assert_eq!(game.legal_actions(), alternative.legal_actions());
 }
 
-fn owned_checked_step(mut game: Game, actor: Player, index: usize, action: Action) -> Game {
+pub(super) fn owned_checked_step(
+    mut game: Game,
+    actor: Player,
+    index: usize,
+    action: Action,
+) -> Game {
     let revision = game.revision();
     let before = game.snapshot();
     assert_eq!(

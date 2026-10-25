@@ -582,3 +582,76 @@ fn msh_parity_paid_strat_nonland_discard_exile_replacement_still_pays_connive() 
         assert_eq!(g.object_view(spell).zone, Zone::Exile);
     }
 }
+
+#[test]
+fn msh_parity_paid_strat_poison_ward_and_private_owned_resolution_menus() {
+    fn orphan(game: Game, action: Action) -> Game {
+        let actor = game.actor().unwrap();
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        super::msh_thirteenth_combined_tests::owned_checked_step(game, actor, index, action)
+    }
+    for p in [Player::P0, Player::P1] {
+        for accept in [false, true] {
+            let mut g = setup(p);
+            let victim = named(&mut g, p.other(), "The Serpent Society", Zone::Battlefield);
+            let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let discard = named(&mut g, p, "Shock", Zone::Hand);
+            let foreign = named(&mut g, p.other(), "Cancel", Zone::Hand);
+            let spell = strat(&mut g, p, victim, Some(own));
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::EffectOptional { .. })
+            });
+            assert_eq!(g.actor(), Some(p));
+            g = orphan(g, Action::ChooseOptional { accept });
+            if !accept {
+                settle(&mut g);
+                assert_eq!(g.object_view(victim).zone, Zone::Battlefield);
+                assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+                assert_eq!(g.counter_count(own, CounterKind::PlusOne), 0);
+                assert_eq!(g.state.players[p.index()].poison_counters, 0);
+                continue;
+            }
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::TargetLibrary { .. })
+            });
+            assert_eq!(g.actor(), Some(p.other()));
+            let mut alternative = g.clone();
+            alternative.state.objects[discard as usize].card = Card::from_name("Forest").unwrap();
+            assert_eq!(
+                serde_json::to_value(g.observe(p.other())).unwrap(),
+                serde_json::to_value(alternative.observe(p.other())).unwrap()
+            );
+            assert_eq!(g.legal_actions(), alternative.legal_actions());
+            let object = g.object_ref(victim);
+            g = orphan(
+                g,
+                Action::ChooseLibraryDestination {
+                    object,
+                    destination: LibraryDestination::SecondFromTop,
+                },
+            );
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::EffectDiscard { .. })
+            });
+            assert_eq!(g.actor(), Some(p));
+            let mut alternative = g.clone();
+            alternative.state.objects[foreign as usize].card = Card::from_name("Forest").unwrap();
+            assert_eq!(
+                serde_json::to_value(g.observe(p)).unwrap(),
+                serde_json::to_value(alternative.observe(p)).unwrap()
+            );
+            assert_eq!(g.legal_actions(), alternative.legal_actions());
+            g = orphan(g, Action::Discard { card: discard });
+            settle(&mut g);
+            assert_eq!(g.object_view(victim).zone, Zone::Library);
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            assert_eq!(g.counter_count(own, CounterKind::PlusOne), 1);
+            assert_eq!(g.state.players[p.index()].poison_counters, 5);
+            assert_eq!(g.state.players[p.other().index()].poison_counters, 0);
+        }
+    }
+}
