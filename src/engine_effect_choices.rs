@@ -56,6 +56,9 @@ impl Game {
         player: Player,
         object: ObjectRef,
     ) -> bool {
+        if matches!(choice.kind, EffectChoiceKind::TargetAttackingReturn { .. }) {
+            return false;
+        }
         let o = &self.state.objects[object.card as usize];
         if matches!(choice.kind, EffectChoiceKind::DiscardedLand { .. }) {
             return self.state.resolving.as_ref().unwrap().item.controller == player
@@ -445,6 +448,106 @@ impl Game {
         }
     }
 
+    pub(super) fn attacking_return_combat(&self, player: Player) -> bool {
+        self.state.active == player
+            && matches!(
+                self.state.step,
+                Step::BeginCombat
+                    | Step::Attackers
+                    | Step::Blockers
+                    | Step::FirstStrikeDamage
+                    | Step::CombatDamage
+                    | Step::EndCombat
+            )
+    }
+    pub(super) fn start_target_attacking_return(
+        &mut self,
+        item: &SpellView,
+        counter: CounterKind,
+    ) -> bool {
+        let Some(bound) = item
+            .targets
+            .iter()
+            .copied()
+            .find(|&b| self.same_target_object(b) && matches!(b.target, Target::Card(_)))
+        else {
+            return false;
+        };
+        let Target::Card(id) = bound.target else {
+            unreachable!()
+        };
+        let reference = self.object_ref(id);
+        let player = item.controller;
+        self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
+            discard_draw: None,
+            discarded: None,
+            kind: EffectChoiceKind::TargetAttackingReturn { counter },
+            filter: evidence::cost(0).filter,
+            amount: 1,
+            source: item.object,
+            required: [0; 2],
+            selected: std::array::from_fn(|i| {
+                if i == player.index() {
+                    vec![reference]
+                } else {
+                    Vec::new()
+                }
+            }),
+            skip_to: None,
+            greatest_value: [None; 2],
+            discard_mana_value_life: None,
+            hand_defender: None,
+            entry_life_bonus: None,
+        }));
+        self.advance_target_attacking_return()
+    }
+    fn advance_target_attacking_return(&mut self) -> bool {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let choice = resolution.choice.as_ref().unwrap();
+        let EffectChoiceKind::TargetAttackingReturn { counter } = choice.kind else {
+            unreachable!()
+        };
+        let player = resolution.item.controller;
+        let reference = choice.selected[player.index()][0];
+        if self.object_ref(reference.card) != reference
+            || self.state.objects[reference.card as usize].zone != Zone::Graveyard
+        {
+            self.state.resolving.as_mut().unwrap().choice = None;
+            return false;
+        }
+        let combat = self.attacking_return_combat(player);
+        if combat
+            && choice.hand_defender.is_none()
+            && self.state.objects.iter().enumerate().any(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == player.other()
+                    && self.current_kinds(id as CardId) & 64 != 0
+            })
+        {
+            self.state.pending = Pending::HandDefender { player };
+            return true;
+        }
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .take()
+            .unwrap();
+        let mut movement = self.entry_move(reference.card, Zone::Battlefield, true);
+        movement.controller = player;
+        movement.effect_counter = Some((counter, 1));
+        if combat {
+            movement.attacking = Some(
+                choice
+                    .hand_defender
+                    .unwrap_or(CombatDefender::Player(player.other())),
+            );
+        }
+        self.stage_entries(vec![movement], None);
+        false
+    }
     pub(super) fn choose_hand_defender(&mut self, defender: CombatDefender) {
         self.state
             .resolving
@@ -605,6 +708,18 @@ impl Game {
     }
 
     pub(super) fn advance_effect_choice(&mut self) -> bool {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .is_some_and(|c| matches!(c.kind, EffectChoiceKind::TargetAttackingReturn { .. }))
+        {
+            return self.advance_target_attacking_return();
+        }
+
         let choice = self
             .state
             .resolving

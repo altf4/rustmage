@@ -31,6 +31,7 @@ impl Game {
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::PlayerDamaged { .. }
                             | TriggerCondition::CreatureDamaged { .. }
+                            | TriggerCondition::SelfDamaged
                     )
             }) {
                 out.push((giver.clone(), None));

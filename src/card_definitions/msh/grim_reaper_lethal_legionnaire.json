@@ -3,10 +3,50 @@
   "catalogue_id": 1881,
   "oracle_id": "edf429a8-6a4d-4d2a-b0ca-c0c72a0698a3",
   "facts_sha256": "d975bfd4a628fe19a04d4111c51a83137d07c9347e115e2d2d6622ff78d1b6d3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "91f538fd3d58926056f3751eb378f956ce600d13d6c5b16bddc0e262182d660d"
   },
-  "physical_metadata_sha256": "eb70713913b14d6e949cb7c389ff824c2c870423e5b0549a1722c9b90c40c6ed"
+  "physical_metadata_sha256": "eb70713913b14d6e949cb7c389ff824c2c870423e5b0549a1722c9b90c40c6ed",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrimReaperLethalLegionnaire.java",
+  "java_sha256": "0a841e62f9e2d464766a12937e3562c2738ce4dc00a3fff68a4499b5024c4bff",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+      "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ]
 }

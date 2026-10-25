@@ -507,7 +507,8 @@ impl Game {
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind {
-            EffectChoiceKind::HandToTop
+            EffectChoiceKind::TargetAttackingReturn { .. }
+            | EffectChoiceKind::HandToTop
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGreatestManaValue
             | EffectChoiceKind::SacrificeDifferentNames(_)

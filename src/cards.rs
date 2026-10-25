@@ -644,6 +644,10 @@ pub enum EffectChoiceKind {
     UntapLands {
         maximum: u16,
     },
+    /// Public exact targeted graveyard return; only the independent defender is chosen.
+    TargetAttackingReturn {
+        counter: CounterKind,
+    },
     HandCreature,
     HandPermanent {
         maximum: u32,
@@ -1039,6 +1043,11 @@ pub(crate) enum Instruction {
         ability: u16,
     },
     /// Offer a tap of the exact untapped source; queue only after the actual tap.
+    PutSourceCounterReflexive {
+        kind: CounterKind,
+        amount: u64,
+        ability: u16,
+    },
     MayTapSourceReflexive {
         ability: u16,
     },
@@ -1483,6 +1492,7 @@ pub(crate) enum Instruction {
     ReturnToBattlefield,
     ReturnToBattlefieldUnderControl,
     ReturnToBattlefieldTapped,
+    ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
     Tap,
     Untap,
@@ -2633,6 +2643,8 @@ pub(crate) enum TriggerCondition {
         minimum: u64,
     },
     /// One occurrence per damaged creature in a simultaneous actual damage batch.
+    /// Once for actual positive damage to this exact source in a completed batch.
+    SelfDamaged,
     CreatureDamaged {
         relation: CastRelation,
     },

@@ -590,6 +590,18 @@ impl Game {
                 }
                 if event.destination == Zone::Battlefield
                     && let Some(defender) = movement.attacking
+                    && self.is_creature(event.after.card)
+                    && self.attacking_return_combat(movement.controller)
+                    && match defender {
+                        CombatDefender::Player(p) => p == movement.controller.other(),
+                        CombatDefender::Planeswalker(r) => {
+                            self.on_battlefield(r.card)
+                                && self.object_ref(r.card) == r
+                                && self.state.objects[r.card as usize].controller
+                                    == movement.controller.other()
+                                && self.current_kinds(r.card) & 64 != 0
+                        }
+                    }
                 {
                     self.state.attackers.push(Attacker {
                         card: event.after.card,

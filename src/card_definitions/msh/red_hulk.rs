@@ -1,16 +1,32 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Whole Oracle: one received-damage batch, actual counter completion, then later targets.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(6, 7),
     keywords: Keywords::REACH.union(Keywords::TRAMPLE),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfDamaged,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutSourceCounterReflexive {
+                kind: CounterKind::PlusOne,
+                amount: 1,
+                ability: 1,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: one(TargetRule::Union(&[
+                TargetRule::Player {
+                    opponent_only: false,
+                },
+                TargetRule::Filtered {
+                    base: &TargetRule::Any,
+                    predicate: &TargetPredicate::OtherThanSource,
+                },
+            ])),
+            program: &[Instruction::DamageScaled(
+                AmountValue::SourceCounterQuantity(CounterKind::PlusOne),
+            )],
+        },
+    ],
     ..CardRules::EMPTY
 };
