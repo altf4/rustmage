@@ -3055,15 +3055,20 @@ impl Game {
                     self.random_linked_exile_to_battlefield(item.object, item.controller)
                 }
                 Instruction::ExileTopPlayScaled { amount, next_turn } => {
-                    let count = self.item_amount(amount, &item).min(u128::from(u16::MAX)) as u16;
+                    let count = self.item_amount(amount, &item);
                     self.exile_top_play(item.controller, count, next_turn);
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
-                    self.exile_top_play(item.controller, amount, next_turn);
+                    self.exile_top_play(item.controller, u128::from(amount), next_turn);
                 }
                 Instruction::ExileTargetLibraryPlay { amount } => {
                     for player in self.program_players(PlayerSet::Targeted, &item) {
-                        self.exile_top_play_from(player, item.controller, amount, false);
+                        self.exile_top_play_from(
+                            player,
+                            item.controller,
+                            u128::from(amount),
+                            false,
+                        );
                     }
                 }
                 Instruction::IfAmountAtLeast {

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f6282bc78e022c2bb6f947315cbd3004e3bed55bcab53f6cc60f37b83a276726",
+  "catalogue_version": "977255b94edaba3b9d614404c00ec77a260a268f6cf5d3f26c72b0da3301f3c9",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2469,
-  "implemented_total": 2475,
+  "implemented_standard_cards": 2472,
+  "implemented_total": 2478,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 164,
-      "gated": 109
+      "complete": 167,
+      "gated": 106
     },
     "one": {
       "total": 1,
@@ -18397,8 +18397,8 @@
     {
       "name": "Jessica Jones, Private Eye",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/jessica_jones_private_eye.rs",
       "set": "msh"
     },
@@ -26725,8 +26725,8 @@
     {
       "name": "Quicksilver, Brash Blur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/quicksilver_brash_blur.rs",
       "set": "msh"
     },
@@ -29293,8 +29293,8 @@
     {
       "name": "S.H.I.E.L.D. Flying Car",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/s_h_i_e_l_d_flying_car.rs",
       "set": "msh"
     },

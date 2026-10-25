@@ -26,6 +26,12 @@ impl ExilePlayExpiry {
         }
     }
 }
+/// Exact top-card selection, bounded only by the finite library's length.
+/// Keep the full rules scalar until that bound makes conversion address-safe.
+pub(super) fn top_library_cards(library: &[CardId], amount: u128) -> Vec<CardId> {
+    let count = usize::try_from(amount.min(library.len() as u128)).unwrap();
+    library.iter().rev().take(count).copied().collect()
+}
 impl Game {
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
         if self.can_cast_prepared(player, card)
@@ -87,7 +93,7 @@ impl Game {
         }
         self.finish_zone_events(&events, &[]);
     }
-    pub(super) fn exile_top_play(&mut self, player: Player, amount: u16, next_turn: bool) {
+    pub(super) fn exile_top_play(&mut self, player: Player, amount: u128, next_turn: bool) {
         self.exile_top_play_from(player, player, amount, next_turn);
     }
 
@@ -95,16 +101,10 @@ impl Game {
         &mut self,
         library_owner: Player,
         player: Player,
-        amount: u16,
+        amount: u128,
         next_turn: bool,
     ) {
-        let ids: Vec<_> = self.state.players[library_owner.index()]
-            .library
-            .iter()
-            .rev()
-            .take(usize::from(amount))
-            .copied()
-            .collect();
+        let ids = top_library_cards(&self.state.players[library_owner.index()].library, amount);
         if ids.is_empty() {
             return;
         }
