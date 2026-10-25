@@ -2695,6 +2695,20 @@ impl Game {
                 Instruction::GrantGraveyardCast(kind) => self.grant_graveyard_cast(&item, kind),
                 Instruction::GrantMilledPlay => self.grant_milled_play(item.controller),
                 Instruction::ExileDiscardedWithStash => self.exile_discarded_with_stash(&item),
+                Instruction::ExileHandDraw => self.exile_hand_draw(&item),
+                Instruction::GrantExiledResultPlay { next_turn } => {
+                    self.grant_exiled_result_play(item.controller, next_turn);
+                }
+                Instruction::MayExileDiscardedPlay { .. } => {
+                    let skip_to = resolution.pc;
+                    if self.discarded_play_object(&item).is_some() {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    }
+                }
                 Instruction::CastTargetedGraveyardFree => {
                     if self.offer_targeted_graveyard_free_cast(&item) {
                         return;

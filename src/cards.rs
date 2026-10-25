@@ -894,6 +894,12 @@ pub(crate) enum Instruction {
     CreateTokenChoice(&'static [Card]),
     PlayHideawayIfCoven,
     ExileHandCardCopy,
+    /// Exile the current hand and draw its frozen size, retaining exact exile results.
+    ExileHandDraw,
+    /// Grant ordinary paid plays for the preceding exact exile results after draws finish.
+    GrantExiledResultPlay {
+        next_turn: bool,
+    },
     ExileTopPlayScaled {
         amount: AmountValue,
         next_turn: bool,
@@ -933,6 +939,10 @@ pub(crate) enum Instruction {
     /// Permission for the exact public card(s) just milled by this resolution.
     GrantMilledPlay,
     ExileDiscardedWithStash,
+    /// Optional exact discarded-card exile; only actual success grants paid plays.
+    MayExileDiscardedPlay {
+        next_turn: bool,
+    },
     ExileEachLibraryTopCastFree,
     CastTargetedGraveyardFree,
     CounterRelatedUnlessPayLife(u32),
