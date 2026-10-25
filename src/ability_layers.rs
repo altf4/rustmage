@@ -63,6 +63,12 @@ pub(crate) enum StaticAbilityFragment {
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
     PlayerHexproof,
+    PlayerHexproofIfSourceCounter {
+        kind: CounterKind,
+        minimum: u64,
+    },
+    /// Real immutable trigger template, present only on the harnessed source.
+    HarnessedTrigger(u16),
     CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),

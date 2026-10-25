@@ -67,6 +67,7 @@ impl Game {
             &|id| self.object_name(id),
             &|id| ability_world::CharacteristicWorld::colors(self, id),
             &|id| ability_world::CharacteristicWorld::legendary(self, id),
+            &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.state.players[owner.index()].life,
             self.state.attack_declared
@@ -87,6 +88,7 @@ impl Game {
         names: &impl Fn(CardId) -> &'static str,
         colors: &impl Fn(CardId) -> u8,
         legendary: &impl Fn(CardId) -> bool,
+        counter_count: &impl Fn(CardId, CounterKind) -> u64,
         has_counters: &impl Fn(CardId) -> bool,
         life: i128,
         attacking: bool,
@@ -97,6 +99,9 @@ impl Game {
     {
         match value {
             StatValue::Fixed(n) => i128::from(n),
+            StatValue::SourceCounters(kind) => objects()
+                .find(|(id, object)| *id == source.card && object.generation == source.generation)
+                .map_or(0, |_| i128::from(counter_count(source.card, kind))),
             StatValue::LegendaryCreaturesYouControl => objects()
                 .filter(|(id, object)| {
                     object.zone == Zone::Battlefield
@@ -122,6 +127,7 @@ impl Game {
                     names,
                     colors,
                     legendary,
+                    counter_count,
                     has_counters,
                     life,
                     attacking,
@@ -227,6 +233,7 @@ impl Game {
                     names,
                     colors,
                     legendary,
+                    counter_count,
                     has_counters,
                     life,
                     attacking,
@@ -343,6 +350,7 @@ impl Game {
                         names,
                         colors,
                         legendary,
+                        counter_count,
                         has_counters,
                         life,
                         attacking,

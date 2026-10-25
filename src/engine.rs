@@ -140,9 +140,11 @@ pub use subtypes::GrantedSubtypes;
 mod replacements;
 #[path = "engine_sagas.rs"]
 mod sagas;
+#[path = "engine_shield_harness.rs"]
+mod shield_harness;
 pub use replacements::{
-    CreatedTokenChoiceView, DamagePreventionKind, DamagePreventionView, ReplacementChoiceView,
-    ReplacementEffectView, TokenGroupView,
+    CreatedTokenChoiceView, DamageEventOrderView, DamagePreventionKind, DamagePreventionView,
+    ReplacementChoiceView, ReplacementEffectView, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -462,6 +464,7 @@ define_actions! {
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
+    ChooseDamageEvent { index: u32 },
     ChooseCreatedToken { object: ObjectRef },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
@@ -1876,6 +1879,8 @@ pub struct EndureChoiceView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
     pub prepared: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub harnessed: Option<bool>,
     /// Frozen effective nonkeyword abilities only while a removal effect exists.
     /// None is the allocation-free complete printed/default-grant case.
     pub abilities: Option<Box<AbilityAvailabilityView>>,
@@ -4467,6 +4472,7 @@ impl Game {
             Action::ChooseDamagePrevention { source, prevention } => {
                 self.choose_damage_prevention(source, prevention)
             }
+            Action::ChooseDamageEvent { index } => self.choose_damage_event(index),
             Action::ChooseCreatedToken { object } => self.choose_created_token(object),
             Action::ChooseLibraryDestination {
                 object,
@@ -5859,6 +5865,11 @@ impl Game {
         }
         self.forget_borrowed_source(before.reference);
         self.forget_power_up_object(before.reference);
+        if let Some(state) = &mut self.state.roles {
+            state
+                .harnessed
+                .retain(|reference| *reference != before.reference);
+        }
         self.forget_face_change(before.reference);
         if let Some(state) = &mut self.state.roles {
             state.keyword_effects.retain(|row| {
@@ -8134,3 +8145,7 @@ mod msh_super_adaptoid_tests;
 #[cfg(test)]
 #[path = "engine_msh_damage_replacement_tests.rs"]
 mod msh_damage_replacement_tests;
+
+#[cfg(test)]
+#[path = "engine_shield_harness_tests.rs"]
+mod shield_harness_tests;

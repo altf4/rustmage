@@ -220,7 +220,7 @@ impl Game {
             }
         }
         let x = u64::from(item.x.expect("announced X"));
-        let ids: Vec<_> = self
+        let mut ids: Vec<_> = self
             .state
             .objects
             .iter()
@@ -235,6 +235,7 @@ impl Game {
                 .then_some(id)
             })
             .collect();
+        ids.retain(|&id| !self.effect_destruction_prevented(id));
         let sources = self.death_trigger_sources();
         let events = self.move_objects_raw(&ids, Zone::Graveyard);
         self.finish_zone_events(&events, &sources);

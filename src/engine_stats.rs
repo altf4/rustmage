@@ -192,6 +192,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
+                            | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
+                            | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)

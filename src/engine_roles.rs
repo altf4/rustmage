@@ -29,6 +29,7 @@ pub(super) struct RoleState {
     pub keyword_effects: Vec<KeywordEffectView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
+    pub harnessed: Vec<ObjectRef>,
 }
 impl RoleState {
     pub(super) fn next_timestamp(&mut self) -> u64 {
@@ -53,6 +54,7 @@ impl RoleState {
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self.harnessed.len() * std::mem::size_of::<ObjectRef>()
     }
 }
 impl Game {

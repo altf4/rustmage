@@ -167,6 +167,12 @@ pub(super) trait CharacteristicWorld {
                     && self.printed_abilities_available(source)
             })
     }
+    fn harnessed(&self, id: CardId) -> bool {
+        self.object(id).zone == Zone::Battlefield
+            && self
+                .roles()
+                .is_some_and(|state| state.harnessed.contains(&self.reference(id)))
+    }
     fn is_token(&self, id: CardId) -> bool {
         self.object(id).is_token()
     }
@@ -357,6 +363,7 @@ pub(super) trait CharacteristicWorld {
             &|id| self.name(id),
             &|id| self.colors(id),
             &|id| self.legendary(id),
+            &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),

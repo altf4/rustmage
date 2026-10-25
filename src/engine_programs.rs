@@ -2175,6 +2175,20 @@ impl Game {
                 Instruction::GiveGift => self.give_gift(&item),
                 Instruction::ReturnSpellToHand => self.return_targeted_spells_to_hand(&item),
                 Instruction::ProhibitCastingThisTurn => self.state.casting_prohibited = true,
+                Instruction::HarnessSource => {
+                    if self.on_battlefield(item.object.card)
+                        && self.object_ref(item.object.card) == item.object
+                    {
+                        let rows = &mut self
+                            .state
+                            .roles
+                            .get_or_insert_with(Default::default)
+                            .harnessed;
+                        if !rows.contains(&item.object) {
+                            rows.push(item.object);
+                        }
+                    }
+                }
                 Instruction::PlayerHexproofThisTurn => {
                     self.state.players[item.controller.index()].hexproof_until_end_turn = true;
                 }
@@ -2941,9 +2955,7 @@ impl Game {
                         .iter()
                         .copied()
                         .filter(|bound| match bound.target {
-                            Target::Card(id) => {
-                                !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
-                            }
+                            Target::Card(id) => !self.effect_destruction_prevented(id),
                             _ => false,
                         })
                         .collect();
@@ -4645,9 +4657,7 @@ impl Game {
                             .iter()
                             .copied()
                             .filter(|bound| match bound.target {
-                                Target::Card(id) => {
-                                    !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
-                                }
+                                Target::Card(id) => !self.effect_destruction_prevented(id),
                                 _ => true,
                             })
                             .collect();

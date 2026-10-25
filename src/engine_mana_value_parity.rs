@@ -16,7 +16,7 @@ impl Game {
         let item = self.state.resolving.as_ref().unwrap().item.clone();
         // The source need not remain. Exclude only its captured incarnation,
         // then freeze eligibility and indestructibility before any departure.
-        let ids: Vec<_> = (0..self.state.objects.len())
+        let mut ids: Vec<_> = (0..self.state.objects.len())
             .map(|id| id as CardId)
             .filter(|&id| {
                 self.on_battlefield(id)
@@ -30,6 +30,7 @@ impl Game {
                     && !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
             })
             .collect();
+        ids.retain(|&id| !self.effect_destruction_prevented(id));
         let sources = if ids.is_empty() {
             Vec::new()
         } else {

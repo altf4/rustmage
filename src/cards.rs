@@ -1012,6 +1012,7 @@ pub(crate) enum Instruction {
     ReturnSpellToHand,
     ProhibitCastingThisTurn,
     PlayerHexproofThisTurn,
+    HarnessSource,
     GrantPermanentsThisTurn(Keywords),
     DamageWithController {
         damage: i32,
@@ -1858,6 +1859,7 @@ pub(crate) enum StatValue {
     SourceModified,
     SourceEquipmentCount,
     LegendaryCreaturesYouControl,
+    SourceCounters(CounterKind),
     Tokens(CountFilter),
     AtLeast {
         value: &'static StatValue,
@@ -2112,10 +2114,11 @@ pub enum CounterKind {
     Trample,
     Vigilance,
     Finality,
+    Shield,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 30] = [
+    pub const ALL: [Self; 31] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -2146,6 +2149,7 @@ impl CounterKind {
         Self::Trample,
         Self::Vigilance,
         Self::Finality,
+        Self::Shield,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -2175,6 +2179,7 @@ impl CounterKind {
                 | Self::Trample
                 | Self::Vigilance
                 | Self::Finality
+                | Self::Shield
         )
     }
 }

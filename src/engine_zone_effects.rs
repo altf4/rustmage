@@ -238,7 +238,7 @@ impl Game {
         // Token factories have stable synthetic identities; their actual names,
         // not those factory identifiers, determine shared-name destruction.
         let target_name = self.object_name(id);
-        let ids: Vec<_> = self
+        let mut ids: Vec<_> = self
             .state
             .objects
             .iter()
@@ -256,6 +256,7 @@ impl Game {
                 .then_some(i as CardId)
             })
             .collect();
+        ids.retain(|&id| !self.effect_destruction_prevented(id));
         let sources = if ids.is_empty() {
             Vec::new()
         } else {
