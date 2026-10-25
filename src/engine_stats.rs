@@ -82,6 +82,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
+                    | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
             )
         }) {

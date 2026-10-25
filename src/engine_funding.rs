@@ -2950,3 +2950,7 @@ mod msh_hideout_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_punch_zola_funding_tests.rs"]
 mod msh_punch_zola_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_declaration_funding_tests.rs"]
+mod msh_declaration_funding_tests;

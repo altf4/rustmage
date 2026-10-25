@@ -698,6 +698,7 @@ impl Game {
                     | TriggerCondition::CounterPlacedByYou { .. }
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
+                    | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksIfEquipped
                     | TriggerCondition::SelfFirstAttack
@@ -707,6 +708,7 @@ impl Game {
                     | TriggerCondition::SelfSaddledFirst
                     | TriggerCondition::SelfPaysTeamwork
                     | TriggerCondition::EquippedAttacks
+                    | TriggerCondition::EquippedAttacksAlone
                     | TriggerCondition::GrantedAttacks
                     | TriggerCondition::AttachedBecomesUntapped
                     | TriggerCondition::SelfBecomesTapped
@@ -1370,8 +1372,13 @@ impl Game {
     }
 
     /// One event per completed declaration, irrespective of whether its observer attacked.
-    pub(super) fn declaration_triggers(&mut self, actor: Player, alone: Option<ObjectRef>) {
-        self.attachment_attack_triggers(actor);
+    pub(super) fn declaration_triggers(
+        &mut self,
+        actor: Player,
+        alone: Option<ObjectRef>,
+        declared: &[AttackDeclaration],
+    ) {
+        self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
         let sources: Vec<_> = self
             .state
@@ -1413,6 +1420,23 @@ impl Game {
                         self.queue_trigger(&source, index);
                     }
                 }
+                if let TriggerCondition::AttackPlayer(filter) = ability.condition.event() {
+                    // Qualification belongs to this declaration, not all live attackers.
+                    // A creature put onto the battlefield attacking did not attack.
+                    for player in [Player::P0, Player::P1] {
+                        if declared.iter().any(|attack| {
+                            attack.defender == Some(CombatDefender::Player(player))
+                                && self.creature_matches(
+                                    filter,
+                                    actor,
+                                    source.reference,
+                                    attack.card,
+                                )
+                        }) {
+                            self.queue_trigger(&source, index);
+                        }
+                    }
+                }
                 if let TriggerCondition::AttackDeclared {
                     minimum,
                     power_min,
@@ -1445,7 +1469,7 @@ impl Game {
 
     /// Reuse the live attachment index once per completed declaration. No arena scan
     /// or mutable granted-ability graph; every queued packet owns its provenance.
-    fn attachment_attack_triggers(&mut self, actor: Player) {
+    fn attachment_attack_triggers(&mut self, actor: Player, alone: Option<ObjectRef>) {
         let grants: Vec<_> = self
             .state
             .attachment_sources
@@ -1473,6 +1497,7 @@ impl Game {
             for (index, ability) in giver.card.triggers().iter().enumerate() {
                 let granted = match ability.condition.event() {
                     TriggerCondition::EquippedAttacks => false,
+                    TriggerCondition::EquippedAttacksAlone if alone == Some(recipient) => false,
                     TriggerCondition::GrantedAttacks => true,
                     TriggerCondition::SelfAttacks if ability.condition.is_granted() => true,
                     _ => continue,
@@ -3663,7 +3688,20 @@ impl Game {
                     }
                 }
                 Instruction::UntapEventObject => {
-                    if let Some(id) = self.entering_subject(&item) {
+                    // An untargeted event object remains identified even if it stops
+                    // being a creature, or the Equipment leaves or attaches elsewhere.
+                    let recipient = item.entering_object.or_else(|| {
+                        item.attachment_trigger
+                            .as_ref()
+                            .map(|event| event.recipient)
+                    });
+                    if let Some(id) = recipient
+                        .filter(|object| {
+                            self.on_battlefield(object.card)
+                                && self.object_ref(object.card) == *object
+                        })
+                        .map(|object| object.card)
+                    {
                         self.untap_objects(&[id], untap_rules::UntapCause::Effect);
                     }
                 }
