@@ -261,6 +261,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         if !battlefield_creature {
             return (base, stats);
         }
+        stats += self.self_granted_artifact_bonus(id);
         stats += self.chosen_bonus(id);
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
@@ -626,6 +627,24 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 }
             }
         }
+        if let Some(rows) = &self.state.self_granted_abilities {
+            for row in rows.iter() {
+                if row.kind == SelfGrantedAbilityKind::ControllerHandPower
+                    && row.recipient == object
+                    && row.expires_turn == self.state.turn
+                    && power_time.is_none_or(|time| row.effect_timestamp > time)
+                    && self.self_grant_available(row.recipient, row.timestamp)
+                {
+                    stats.power = self.stat_value_without_hand(
+                        StatValue::ControllerHandSize,
+                        object,
+                        self.object(id).controller,
+                        departing,
+                    );
+                    power_time = Some(row.effect_timestamp);
+                }
+            }
+        }
         stats = self.apply_live_base_stat_layers(id, stats, &mut power_time, &mut toughness_time);
         for (time, (power, toughness)) in characteristic_layers::base_changes(self, id) {
             if power_time.is_none_or(|old| time > old) {
@@ -782,6 +801,15 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             "continuous helper has no immutable source-group identity"
         );
         available
+    }
+    pub(super) fn self_grant_available(&self, source: ObjectRef, timestamp: u64) -> bool {
+        self.on_battlefield(source.card)
+            && self.object_ref(source.card) == source
+            && self.evaluation.as_ref().is_none_or(|value| {
+                value.result.objects[source.card as usize]
+                    .self_grants
+                    .contains(&timestamp)
+            })
     }
     pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
         if !self.on_battlefield(id) {

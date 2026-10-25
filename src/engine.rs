@@ -1,3 +1,6 @@
+#[path = "engine_self_granted.rs"]
+mod self_granted;
+pub use self_granted::{SelfGrantedAbilityKind, SelfGrantedAbilityView};
 #[path = "engine_hand_exile.rs"]
 mod hand_exile;
 #[path = "engine_mana_announcements.rs"]
@@ -1727,6 +1730,8 @@ struct State {
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
     #[allow(clippy::box_collection)]
+    self_granted_abilities: Option<Box<Vec<self_granted::Row>>>,
+    #[allow(clippy::box_collection)]
     suspected: Option<Box<Vec<ObjectRef>>>,
     #[allow(clippy::box_collection)]
     death_exile_replacements: Option<Box<Vec<ExileDeathReplacementView>>>,
@@ -2220,6 +2225,8 @@ pub struct Observation {
     pub damage_prevention_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub self_granted_abilities: Option<Vec<SelfGrantedAbilityView>>,
     pub suspected: Vec<ObjectRef>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub zone_replacement_choice: Option<ZoneReplacementChoiceView>,
@@ -2534,6 +2541,7 @@ impl Game {
                 resolution_free_casts: None,
                 miracle: None,
                 temporary_abilities: None,
+                self_granted_abilities: None,
                 suspected: None,
                 death_exile_replacements: None,
                 roles: None,
@@ -6375,6 +6383,7 @@ impl Game {
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_spell_copies();
         self.expire_temporary_controls();
+        self.state.self_granted_abilities = None;
         if let Some(grants) = &mut self.state.temporary_abilities {
             grants.retain(|grant| grant.permanent);
             if grants.is_empty() {
@@ -6845,6 +6854,7 @@ impl Game {
                 .temporary_controls
                 .as_ref()
                 .map_or_else(Vec::new, |v| v.as_ref().clone()),
+            self_granted_abilities: self.self_granted_ability_views(),
             temporary_abilities: s
                 .temporary_abilities
                 .as_ref()
@@ -7430,6 +7440,7 @@ impl Game {
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
             + self.control_bytes()
+            + self_granted::owned_bytes(&s.self_granted_abilities)
             + self.temporary_ability_bytes()
             + self.suspected_bytes()
             + self.death_exile_bytes()

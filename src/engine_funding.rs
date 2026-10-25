@@ -3130,3 +3130,7 @@ mod msh_attachment_core_tests;
 #[cfg(test)]
 #[path = "engine_msh_serum_funding_tests.rs"]
 mod msh_serum_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_self_granted_static_tests.rs"]
+mod msh_self_granted_static_tests;
