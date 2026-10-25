@@ -54,6 +54,22 @@ impl CardRules {
             );
             power_up_index += 1;
         }
+        let mut reduction_index = 0;
+        while reduction_index < self.extras.activation_target_reductions.len() {
+            let (slot, _) = self.extras.activation_target_reductions[reduction_index];
+            assert!(
+                (slot as usize) < self.activated.len(),
+                "target reduction lacks activated slot"
+            );
+            match self.activated[slot as usize].targets {
+                TargetPlan::Single(spec) => assert!(
+                    spec.min == 1 && spec.max == 1,
+                    "target activation reduction requires one mandatory target"
+                ),
+                _ => panic!("target activation reduction requires one target group"),
+            }
+            reduction_index += 1;
+        }
         // A printed mana component opens the mana-ability payment window.
         // Reject zero-mana template flags copied into newly authored paid abilities.
         let mut index = 0;
@@ -144,6 +160,7 @@ pub(super) struct CardExtras {
     /// Other equivalents of the printed mana cost, for hybrid reduction choices.
     /// These are not alternative casting costs.
     pub power_up_mana_cost_alternatives: &'static [ManaCost],
+    pub activation_target_reductions: &'static [(u16, TargetActivationReduction)],
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
@@ -228,6 +245,7 @@ impl CardExtras {
         power_up_additional_uses: 0,
         power_up_other_creature_reduction: 0,
         power_up_mana_cost_alternatives: &[],
+        activation_target_reductions: &[],
         activation_counter_discounts: &[],
         activation_put_counters: &[],
         fixed_entry_counters: &[],

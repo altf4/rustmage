@@ -834,6 +834,9 @@ impl<'g> FundingState<'g> {
                 self.game.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
+                activations::controls_tough_creature(self, actor, minimum)
+            }
             ActivationGuard::GraveyardCardsAtLeast { kind, minimum } => {
                 activations::graveyard_cards_at_least(self, actor, kind, minimum)
             }
@@ -2181,6 +2184,14 @@ impl Game {
         })
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if let StackKind::ActivatedAbility { ability } = a.item.kind
+            && a.item
+                .source_card
+                .activation_target_reduction(ability)
+                .is_some()
+        {
+            return self.announcement_activation_target_fundable(a, None, false);
+        }
         if a.item
             .cast
             .is_some_and(|c| c.method == CastMethod::Flashback)
@@ -2371,9 +2382,11 @@ impl Game {
             }
             StackKind::ActivatedAbility { ability } => {
                 let cost = announcement.item.source_card.activation(ability).cost;
-                let power_up = announcement.power_up_costs.as_ref().map(|_| {
-                    announcement.cost.unwrap_or_else(|| {
-                        announcement.cost_options().next().expect("activation cost")
+                let power_up = announcement.total_cost.or_else(|| {
+                    announcement.power_up_costs.as_ref().map(|_| {
+                        announcement.cost.unwrap_or_else(|| {
+                            announcement.cost_options().next().expect("activation cost")
+                        })
                     })
                 });
                 FundingGoal {
@@ -3005,3 +3018,7 @@ mod msh_declaration_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_improvise_funding_tests.rs"]
 mod msh_improvise_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_baxter_raft_funding_tests.rs"]
+mod msh_baxter_raft_funding_tests;

@@ -1407,6 +1407,14 @@
     "journal": "fa023aad863dc9ad",
     "observations": "01c4dd08a3b3892e"
   },
+  "Baxter Building": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "f7acb2c8b12be6dc"
+  },
   "Beamsaw Prospector": {
     "root": "main",
     "status": "completed",
@@ -13182,6 +13190,14 @@
     "zone": "Battlefield",
     "journal": "d96ad4ca883f316e",
     "observations": "a422bc0ae2c00fd3"
+  },
+  "Raft Security Officer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "eb50dc43617c2e9e"
   },
   "Ragged Short Spear": {
     "root": "main",

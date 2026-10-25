@@ -36,6 +36,22 @@ pub(super) fn graveyard_cards_at_least<W: ability_world::CharacteristicWorld + ?
         .count()
         >= usize::from(minimum)
 }
+/// Starting guard: a payment may later remove the witness without invalidating activation.
+pub(super) fn controls_tough_creature<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    minimum: u16,
+) -> bool {
+    let query = characteristic_query::CharacteristicQuery::in_world(world);
+    (0..world.game().state.objects.len()).any(|id| {
+        let id = id as CardId;
+        let object = world.object(id);
+        object.zone == Zone::Battlefield
+            && object.controller == actor
+            && world.kinds(id) & 1 != 0
+            && query.stats(id).toughness >= i128::from(minimum)
+    })
+}
 impl Game {
     pub(super) fn activation_generic_discount(
         &self,
@@ -112,6 +128,9 @@ impl Game {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
+                activations::controls_tough_creature(self, actor, minimum)
+            }
             ActivationGuard::GraveyardCardsAtLeast { kind, minimum } => {
                 graveyard_cards_at_least(self, actor, kind, minimum)
             }
@@ -305,7 +324,7 @@ impl Game {
                     let fundable = || {
                         self.activation_mana_costs(card, object.card, index as u16, 0)
                             .any(|cost| {
-                                self.activation_can_fund(
+                                self.initial_activation_target_fundable(
                                     FundingGoal {
                                         reserve: None,
                                         actor,
@@ -319,7 +338,7 @@ impl Game {
                                             None,
                                         )),
                                     },
-                                    ability.cost.additional,
+                                    ability.targets,
                                 )
                             })
                     };
@@ -355,6 +374,19 @@ impl Game {
                         if done {
                             return true;
                         }
+                    }
+                    if object
+                        .card
+                        .activation_target_reduction(index as u16)
+                        .is_some()
+                    {
+                        return self.visit_target_cost_direct_actions(
+                            card,
+                            index as u16,
+                            actor,
+                            &counter_payment,
+                            emit,
+                        );
                     }
                     // A modal activation must choose its mode before targets and
                     // costs. Legacy direct actions cannot encode that declaration.

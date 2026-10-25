@@ -1516,6 +1516,21 @@ impl Game {
             && announcement.pay_window
             && matches!(self.state.pending, Pending::Targets { .. })
         {
+            if let StackKind::ActivatedAbility { ability } = announcement.item.kind
+                && announcement
+                    .item
+                    .source_card
+                    .activation_target_reduction(ability)
+                    .is_some()
+                && announcement.total_cost.is_none()
+            {
+                let base = announcement.cost.unwrap_or_else(|| {
+                    announcement.cost_options().next().expect("activation cost")
+                });
+                let total = self.selected_activation_target_cost(&announcement.item, base);
+                self.state.announcing.as_mut().unwrap().total_cost = Some(total);
+            }
+            let announcement = self.state.announcing.as_ref().unwrap();
             if announcement.item.kind == StackKind::Spell && announcement.total_cost.is_none() {
                 let base = Self::announcement_base_cost(announcement);
                 let total = if announcement.item.source_card.x_symbols() > 0 {

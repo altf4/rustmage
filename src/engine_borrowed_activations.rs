@@ -289,7 +289,7 @@ impl Game {
                     let fundable = self
                         .activation_mana_costs(card, descriptor.definition, descriptor.ability, 0)
                         .any(|cost| {
-                            self.activation_can_fund(
+                            self.initial_activation_target_fundable(
                                 FundingGoal {
                                     actor,
                                     required: cost.colored,
@@ -303,7 +303,7 @@ impl Game {
                                         Some(descriptor.slot),
                                     )),
                                 },
-                                ability.cost.additional,
+                                ability.targets,
                             )
                         });
                     let modes = match ability.program.first() {
