@@ -80,6 +80,11 @@ pub(crate) enum StaticAbilityFragment {
     SelfUntap(UntapRestriction),
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),
+    /// Source-only ability grant whose earlier-layer condition remains live.
+    SourceConditionalKeywords {
+        condition: StatValue,
+        keywords: Keywords,
+    },
     /// Current matching recipients with exact +1/+1 placement history by this controller.
     PlusOnePlacedKeywords {
         filter: CountFilter,

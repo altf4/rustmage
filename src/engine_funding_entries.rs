@@ -1388,3 +1388,7 @@ mod super_intelligence_tests;
 #[cfg(test)]
 #[path = "engine_msh_skrull_funding_tests.rs"]
 mod msh_skrull_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_doom_funding_tests.rs"]
+mod msh_doom_funding_tests;

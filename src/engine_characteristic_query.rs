@@ -488,6 +488,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             .union(self.copied_keywords(self.object_ref(id)))
             .union(self.attachment_bonus(id).1)
             .union(CharacteristicWorld::counter_subtype_keywords(self, id))
+            .union(CharacteristicWorld::source_conditional_keywords(self, id))
             .union(CharacteristicWorld::placement_history_keywords(self, id));
         if target.zone != Zone::Battlefield {
             return keywords;

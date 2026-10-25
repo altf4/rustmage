@@ -7,6 +7,7 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
+    ArtifactSpell,
     ExceptNonArtifactSpells,
     SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
@@ -95,6 +96,7 @@ impl Quality {
     ) -> Self {
         Self {
             restriction: match quality.restriction {
+                ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
                 ManaRestriction::ExceptNonArtifactSpells => {
                     ManaRestrictionView::ExceptNonArtifactSpells
                 }
@@ -142,6 +144,9 @@ impl Quality {
     }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
+            ManaRestrictionView::ArtifactSpell => {
+                matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
+            }
             ManaRestrictionView::ExceptNonArtifactSpells => {
                 !matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 == 0)
             }

@@ -7600,3 +7600,7 @@ mod msh_animation_death_tests;
 #[cfg(test)]
 #[path = "engine_msh_under_siege_tests.rs"]
 mod msh_under_siege_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_doom_tests.rs"]
+mod msh_doom_tests;
