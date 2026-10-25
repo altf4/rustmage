@@ -519,6 +519,20 @@ pub(super) fn visit_funding_node() {
 }
 #[test]
 fn msh_teamwork_config14_exact_context_diagnostic() {
+    exact_teamwork_context(14, 1141, 31, 128, Player::P0, 59);
+}
+#[test]
+fn msh_teamwork_config40_exact_context_diagnostic() {
+    exact_teamwork_context(40, 920, 27, 120, Player::P1, 114);
+}
+fn exact_teamwork_context(
+    configuration: usize,
+    prefix: usize,
+    turn: u32,
+    objects: usize,
+    player: Player,
+    source: CardId,
+) {
     let output = std::env::var("RUSTMAGE_TEAMWORK_CONTEXT_RECORD")
         .ok()
         .map(std::path::PathBuf::from);
@@ -532,8 +546,15 @@ fn msh_teamwork_config14_exact_context_diagnostic() {
     }
     let pool: serde_json::Value =
         serde_json::from_str(include_str!("../data/assurance/msh-broad-legal-games.json")).unwrap();
-    let case = &pool["games"][14];
-    assert_eq!(case["seed"].as_u64(), Some(5571876328824635697));
+    let case = &pool["games"][configuration];
+    assert_eq!(
+        case["seed"].as_u64(),
+        Some(if configuration == 14 {
+            5571876328824635697
+        } else {
+            5571876328824635808
+        })
+    );
     let decks = std::array::from_fn(|i| {
         let deck = pool["decks"]
             .as_array()
@@ -561,7 +582,7 @@ fn msh_teamwork_config14_exact_context_diagnostic() {
     };
     let mut g = Game::new(config).unwrap();
     let mut ledger = Vec::new();
-    for _ in 0..1141 {
+    for _ in 0..prefix {
         assert!(g.outcome().is_none());
         let actor = g.actor().unwrap();
         let actions = g.legal_actions();
@@ -570,13 +591,13 @@ fn msh_teamwork_config14_exact_context_diagnostic() {
         ledger.push((actor, action.clone()));
         g.apply(actor, action).unwrap();
     }
-    assert_eq!(g.state.turn, 31);
-    assert_eq!(g.state.objects.len(), 128);
-    assert!(matches!(
-        g.state.pending,
-        Pending::TeamworkIntent { player: Player::P0 }
-    ));
-    assert_eq!(g.state.announcing.as_ref().unwrap().item.object.card, 59);
+    assert_eq!(g.state.turn, turn);
+    assert_eq!(g.state.objects.len(), objects);
+    assert_eq!(g.state.pending, Pending::TeamworkIntent { player });
+    assert_eq!(
+        g.state.announcing.as_ref().unwrap().item.object.card,
+        source
+    );
     if let Some(output) = output {
         let mut contexts = Vec::new();
         for pay in [false, true] {
@@ -599,7 +620,7 @@ fn msh_teamwork_config14_exact_context_diagnostic() {
                 contexts.push(serde_json::json!({"pay_teamwork":pay,"goal":format!("{goal:?}"),"pool":w.mana,"lots":format!("{:?}",w.lots),"available_mana":mana_lots::available(w.mana,&w.lots,w.purpose),"locked_mana":c.and_then(|c|c.mana),"clauses":c.map(|c|&c.clauses),"active":c.and_then(|c|c.active),"current_hall_payable":c.is_some_and(|c|w.mana_clause_payable(c)),"convoke_masks":w.convoke_masks(),"improvise_potential":improvise::potential(&g,choice.item.source_card),"improvise_available":improvise::available(&w,goal.actor,choice.item.source_card),"resources":resources}));
             }
         }
-        std::fs::write(output,serde_json::to_vec_pretty(&serde_json::json!({"config_index":14,"configuration":case,"prefix_decisions":ledger.len(),"ledger":ledger,"snapshot_debug":format!("{:?}",g.snapshot()),"contexts":contexts})).unwrap()).unwrap();
+        std::fs::write(output,serde_json::to_vec_pretty(&serde_json::json!({"config_index":configuration,"configuration":case,"prefix_decisions":ledger.len(),"ledger":ledger,"snapshot_debug":format!("{:?}",g.snapshot()),"contexts":contexts})).unwrap()).unwrap();
     }
     let _funding_budget = FundingBudget::new(128);
     let _teamwork_budget = Budget::new(256);
