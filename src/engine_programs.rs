@@ -3164,6 +3164,14 @@ impl Game {
                     self.state.pending = Pending::EffectSearch { player };
                     return;
                 }
+                Instruction::RevealTopDrawIfArtifact => self.reveal_top_draw_if_artifact(&item),
+                Instruction::ExileTopPlayBoostSourceIfSubtype {
+                    subtype,
+                    power,
+                    toughness,
+                } => {
+                    self.exile_top_play_boost_source(&item, subtype, power, toughness);
+                }
                 Instruction::ExileTopChoosePlay { amount, next_turn } => {
                     if self.exile_top_choose_play(item.controller, amount, next_turn) {
                         return;

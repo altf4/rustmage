@@ -95,16 +95,16 @@ impl Game {
                 matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
             })
     }
+    pub(super) fn can_look_library_top(&self, player: Player) -> bool {
+        has_fragment(self, player, |f| {
+            matches!(f, StaticAbilityFragment::LookAtLibraryTop)
+        })
+    }
     pub(super) fn visible_library_top(&self, viewer: Player, owner: Player) -> Option<ObjectRef> {
-        let next_top_hidden = self.state.announcing.as_ref().is_some_and(|a| {
-            a.item.cast.is_some_and(|c| c.origin == Zone::Library) && a.item.controller == owner
-        });
-        if viewer == owner
-            && !next_top_hidden
-            && has_fragment(self, viewer, |f| {
-                matches!(f, StaticAbilityFragment::LookAtLibraryTop)
-            })
-        {
+        if self.library_top_deferred(owner) {
+            return None;
+        }
+        if viewer == owner && self.can_look_library_top(viewer) {
             self.state.players[owner.index()]
                 .library
                 .last()

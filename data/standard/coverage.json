@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "cc1f3e5a8ae0b17791913b117a2441ad56f68c1b1a55cac5c2d89fc0d0b772d8",
+  "catalogue_version": "719ce03dd61b3c0786d16559eb080703ae74a54d0e57f56b321f193700af5e8c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2497,
-  "implemented_total": 2503,
+  "implemented_standard_cards": 2499,
+  "implemented_total": 2505,
   "token_definitions": 123,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 192,
-      "gated": 81
+      "complete": 194,
+      "gated": 79
     },
     "one": {
       "total": 1,
@@ -7861,8 +7861,8 @@
     {
       "name": "Daredevil, Man Without Fear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/daredevil_man_without_fear.rs",
       "set": "msh"
     },
@@ -18037,8 +18037,8 @@
     {
       "name": "Iron Lad, Diverging Destiny",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/iron_lad_diverging_destiny.rs",
       "set": "msh"
     },

@@ -1,0 +1,496 @@
+{
+  "schema": 1,
+  "status": "Complete authored two-card candidate; aggregate integration release validation and user approval remain outstanding. The full set goal remains open.",
+  "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+  "runtime_and_tests_commit": "5dbc85f94532bb7cfb5d530836093362f7366bd5",
+  "delivery": {
+    "branch": "codex/msh-library-top-heroes",
+    "aggregate_pr": 516,
+    "new_pr_created": false,
+    "main_merged": false
+  },
+  "cards": [
+    {
+      "name": "Iron Lad, Diverging Destiny",
+      "catalogue_id": 2229,
+      "oracle_id": "3e715032-0d21-441b-b2d4-c91084728718",
+      "facts_sha256": "119df31d253cbb1a8792bb1a0098df3325b61cd5a9f52cb2115124133f75e3dc",
+      "complete": true,
+      "typed_lift": {
+        "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+        "definition_sha256": "b837cbeb7f06667cdfb56b4f13b75ecf1d214ecb87a5954e9cf0d4fcf6c261da"
+      },
+      "physical_metadata_sha256": "30924595191cdfb7a61460fa9f6962ad72c5530e4c11c7a4bb818bd2096cec59",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/i/IronLadDivergingDestiny.java",
+      "java_sha256": "fe1b4a7c50e0f73239351800a1a39e6f70f1006eda8cbeb30cfd5823f4669e67",
+      "xmage_dependencies": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+          "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+          "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+          "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+        }
+      ],
+      "implementation_notes": [
+        "CR401.5 owned operation snapshots defer changed top knowledge through nested costs and special actions; follows full Oracle and official rulings over the pinned library-cast-only Java visibility guard."
+      ],
+      "remaining_obligations": []
+    },
+    {
+      "name": "Daredevil, Man Without Fear",
+      "catalogue_id": 957,
+      "oracle_id": "88aadf60-91f9-4932-a2bc-63365a139d36",
+      "facts_sha256": "87d420b2c6472b141da54661eeb7b8f761ffd24a6ced83e824b6a73ca46921f4",
+      "complete": true,
+      "typed_lift": {
+        "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+        "definition_sha256": "120df0bd0720ba2ff1db398b4ef94a5642bba3ec2f15829e8b019318188c2b4e"
+      },
+      "physical_metadata_sha256": "e6ba553957aa3a1ccaa4ea62259912deacca98b1e95d9c62e41517bcacfb7037",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/d/DaredevilManWithoutFear.java",
+      "java_sha256": "9896ccc40bf4e01c968585cde94e53cf03bb09430d18bfc14fc2e0874046a8ca",
+      "xmage_dependencies": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+          "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+          "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+          "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+          "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+        }
+      ],
+      "implementation_notes": [
+        "CR401.5 owned operation snapshots defer changed top knowledge through nested costs and special actions; follows full Oracle and official rulings over the pinned library-cast-only Java visibility guard."
+      ],
+      "remaining_obligations": []
+    }
+  ],
+  "frozen_oracle": [
+    {
+      "oracle_id": "88aadf60-91f9-4932-a2bc-63365a139d36",
+      "name": "Daredevil, Man Without Fear",
+      "layout": "normal",
+      "mana_cost": "{2}{R}{W}",
+      "cmc": 4.0,
+      "type_line": "Legendary Creature — Human Hero",
+      "oracle_text": "Vigilance, haste\nRadar Sense — You may look at the top card of your library any time.\nWhenever you attack, you may exile the top card of your library. If that card is a Hero card, Daredevil gets +2/+1 until end of turn. You may play that card this turn.",
+      "power": "3",
+      "toughness": "4",
+      "colors": [
+        "R",
+        "W"
+      ],
+      "color_identity": [
+        "R",
+        "W"
+      ],
+      "keywords": [
+        "Radar Sense",
+        "Vigilance",
+        "Haste"
+      ],
+      "reference_printing": {
+        "id": "14e821bb-55cc-474e-9b63-0ceecc2666c1",
+        "set": "msh",
+        "collector_number": "213",
+        "released_at": "2026-06-26"
+      }
+    },
+    {
+      "oracle_id": "3e715032-0d21-441b-b2d4-c91084728718",
+      "name": "Iron Lad, Diverging Destiny",
+      "layout": "normal",
+      "mana_cost": "{2}{U}",
+      "cmc": 3.0,
+      "type_line": "Legendary Artifact Creature — Human Hero",
+      "oracle_text": "Flying, vigilance\nYou may look at the top card of your library any time.\n{T}: Reveal the top card of your library. If it's an artifact card, draw a card.",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "U"
+      ],
+      "color_identity": [
+        "U"
+      ],
+      "keywords": [
+        "Flying",
+        "Vigilance"
+      ],
+      "reference_printing": {
+        "id": "355e7197-2f20-43b6-9305-73c4e1fd4a3c",
+        "set": "msh",
+        "collector_number": "59",
+        "released_at": "2026-06-26"
+      }
+    }
+  ],
+  "shared_mechanics": [
+    "Owned CR401.5 snapshots cover changed library tops during any cast/activation, nested actual mana announcements, staged land special actions; unchanged original tops remain visible. Plot retention is implemented but its distinct changed-top continuation is not proven by these tests.",
+    "Opt-in bounded public historical library reveal, with exact drawn incarnation and ordinary draw/miracle pipeline. Empty library does not attempt a draw.",
+    "Optional once-per-declaration Daredevil top exile, exact surviving source Hero boost until cleanup, and independent exact-object paid exile permission with existing land/timing/face restrictions."
+  ],
+  "scope": {
+    "new_complete_cards": 2,
+    "new_native_groups": 33,
+    "source_pool_admitted": 200,
+    "full_pool": 281,
+    "gated": 81,
+    "new_ids": 0,
+    "identity_manifest_equal_base": true,
+    "identity_manifest_sha256": "7cb0ff5302b7fceab46f1f76c441c6048935a7a765613b386ff02b285ae21e49",
+    "ka_zar_zabu": "Read-only next-cohort plan retained; token remains unallocated. No source changes or admission."
+  },
+  "source_audit": {
+    "full_java_bodies_read": 24,
+    "design_cache": "<cache>/rustmage-msh-library-top-author-design-7d958ebd.json",
+    "design_cache_sha256": "f0312cb20cad1161ea43ebf8c33791201b078102731b835c8a61d34fee1073f4",
+    "read_only_design_cache": "<cache>/rustmage-msh-top-library-design-7d958ebd.json",
+    "read_only_design_sha256": "d12ca10cf5bda6662638c1aaa08009a3d501b6323b9d91667582db22c9e137d0",
+    "official_rules": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "rules_file": "<cache>/rustmage-rules-20260925.txt",
+    "rules_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "discrepancy": "Pinned Java top-look helper restricts only library-origin Spell payment; implemented CR401.5 and official rulings for all casting/activating/special-action top changes."
+  },
+  "validation": {
+    "native": {
+      "log": "<cache>/rustmage-msh-library-top-final-native.log",
+      "log_sha256": "3dff5325f0c87e5603c9d315469706c8d4e55c92475b907806e649ad8e259bbb",
+      "report": "<cache>/rustmage-build-reports/2da9b1f2ed044e3995555911c4c801f0.json",
+      "metrics": {
+        "command": [
+          "cargo",
+          "test",
+          "--lib"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 214.166243907006,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2519732224,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "clippy": {
+      "log": "<cache>/rustmage-msh-library-top-final-clippy.log",
+      "log_sha256": "25ee68f5db7abe1dcb6faa5df09b63a76a6066aaf65f73d6114a152ad871948f",
+      "report": "<cache>/rustmage-build-reports/238568dcd8414bdba4cde7533f238d7d.json",
+      "metrics": {
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 252.62550129403826,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1932419072,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "fmt": {
+      "log": "<cache>/rustmage-msh-library-top-final-fmt.log",
+      "log_sha256": "1e2e33ef220fa9ee9f3f794d5cba1f064311df89590af781418cdd18c7dc1dbb",
+      "report": "<cache>/rustmage-build-reports/8adc697a31d64a82a68054b099f2cefd.json",
+      "metrics": {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--",
+          "--check"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 214.94315876398468,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 110157824,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    }
+  },
+  "native": {
+    "passed": 1218,
+    "failed": 0,
+    "new_groups": [
+      "msh_library_top_paid_bodies_keywords_and_private_no_priority_look",
+      "msh_library_top_look_control_transfer_suppression_and_multiple_providers",
+      "msh_library_top_lad_sickness_tap_cost_and_vigilance",
+      "msh_library_top_lad_artifact_draw_is_public_and_ordinary",
+      "msh_library_top_lad_nonartifact_reveal_then_shuffle_invalidates_top",
+      "msh_library_top_lad_empty_library_does_not_attempt_draw",
+      "msh_library_top_lad_reads_resolution_top_after_response",
+      "msh_library_top_lad_departure_blink_theft_keep_captured_controller",
+      "msh_library_top_lad_borrowed_tap_activation_uses_forge_controller",
+      "msh_library_top_revealed_draw_owned_orphan_and_restore",
+      "msh_library_top_daredevil_haste_vigilance_and_self_attack_boost",
+      "msh_library_top_daredevil_other_attackers_once_per_declaration",
+      "msh_library_top_daredevil_decline_and_empty_optional",
+      "msh_library_top_daredevil_kindred_changeling_is_hero_without_creature_type",
+      "msh_library_top_daredevil_source_departure_blink_and_theft",
+      "msh_library_top_daredevil_paid_exile_instant_and_sorcery_timing",
+      "msh_library_top_daredevil_land_permission_normal_allowance_and_source_independence",
+      "msh_library_top_daredevil_generation_and_cleanup_expiry",
+      "msh_library_top_library_cast_defers_new_card_until_costs_finish",
+      "msh_library_top_unchanged_top_visible_during_hand_cast_and_activation",
+      "msh_library_top_activation_changed_top_snapshot_is_owned_and_private",
+      "msh_library_top_hidden_libraries_full_nonactor_observation_matches",
+      "msh_library_top_lad_countered_activation_keeps_paid_tap_without_reveal",
+      "msh_library_top_lad_ordinary_first_draw_miracle_pause_is_owned",
+      "msh_library_top_lad_reveal_sequence_capacity_failure_is_transactional",
+      "msh_library_top_copied_lad_and_daredevil_have_independent_sources",
+      "msh_library_top_daredevil_no_attack_and_extra_combat_declarations",
+      "msh_library_top_daredevil_top_changes_after_trigger_and_suppression_after_event",
+      "msh_library_top_lad_activation_prohibition_and_suppression_are_atomic",
+      "msh_library_top_nested_mana_frames_keep_outer_changed_top_hidden",
+      "msh_library_top_land_special_action_pending_entry_owns_visibility",
+      "msh_library_top_funding_does_not_treat_draw_as_mana_or_publish_hidden_top",
+      "msh_library_top_daredevil_paid_alternate_faces_keep_origin_costs_and_timing"
+    ],
+    "execution_seconds": 5.68,
+    "both_seats": true,
+    "raw_and_indexed_owned_orphan_restore": true,
+    "transactional_capacity_failure": true,
+    "full_nonactor_private_observations": true,
+    "funding_and_nested_actual_external_mana": true,
+    "supported_paid_alternate_faces": true,
+    "fixture_limits": [
+      "A gated Nameless Inversion supplies intrinsic Kindred/changeling metadata only; its spell behavior is not executed or admitted.",
+      "Operation-boundary fixtures use real paid casts/activations/land plays plus controlled library movement to isolate a changed-top continuation; no new unsupported printed consumer is admitted.",
+      "The plot_payment retention condition is implemented, but no distinct paid Plot plus changed-top continuation scenario is proven here; these tests do not claim all special actions are exercised.",
+      "Copied-source recipes are fixture-created; their activated/attack abilities execute through actual paid legal actions."
+    ]
+  },
+  "wire": {
+    "normal": 147,
+    "previous": 146,
+    "new_public_payload": "Optional last_library_reveal; absent without an actual reveal event. Private visibility snapshots never expose hidden top references."
+  },
+  "full_trace_proof": {
+    "base": 2501,
+    "candidate": 2503,
+    "all_inherited_full_trace_structs_exact_at_previous_schema": true,
+    "changed": [],
+    "missing": [],
+    "added": [
+      "Daredevil, Man Without Fear",
+      "Iron Lad, Diverging Destiny"
+    ],
+    "base_sha256": "4ff88e0fa4f9018f16702429281addbcbe56800707d77d86d06d717f687f338e",
+    "normal_sha256": "57224b9113327cdb1bcb5d8eaf04099a28d09eecdae7e9337dfd14ae8620cdfa",
+    "previous_sha256": "3751fa0dbfa3156ed9d40ebe3b5eeeb37c53442a407916f5a137197b1dae6acc",
+    "recorder_unchanged": true,
+    "field_stripping": false,
+    "fresh_final_exports_match_accepted_normal_table": true
+  },
+  "fixed_inputs": {
+    "file": "<cache>/rustmage-msh-library-top-final-inputs.json",
+    "sha256": "7c7a3e7a701fa9425140501a11632c832b3a077a40e85f8476bd73cc7f6965dc",
+    "files": 11753,
+    "unchanged_through_all_terminal_consumers": true
+  },
+  "cleanup": {
+    "file": "<cache>/rustmage-msh-library-top-cleanup.json",
+    "sha256": "61283a0244265af69647e6e09479d86c6883224a4aa8ace2a8cea6cefafaf99f",
+    "terminal_consumers": [
+      "native",
+      "clippy",
+      "format"
+    ],
+    "scan": {
+      "scanned": {
+        "exe": 188,
+        "maps": 470,
+        "fd": 5930
+      },
+      "inaccessible_or_exited": {
+        "exe": 329,
+        "maps": 47,
+        "fd": 487
+      },
+      "matching_references": [],
+      "limitation": "Only accessible process metadata can be inspected; permission-denied or already-exited entries are counted."
+    },
+    "removed_files": 1019,
+    "removed_allocated_file_bytes": 125468672,
+    "removed_logical_bytes": 122185918,
+    "preserved": {
+      "<cache>/rustmage-msh-library-top-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-library-top-target/debug/deps/rustmage-b764cd26223fba2c": "3d6cf5b0466980b0f486ba3adfe9ec98b16cae168b01353c0553282ec71df24c"
+    },
+    "prior_artifacts_unchanged": {
+      "<cache>/rustmage-msh-source-quantities-target/debug/deps/libserde_derive-31145c71f3b23723.so": {
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      "<cache>/rustmage-msh-source-quantities-target/debug/deps/rustmage-b764cd26223fba2c": {
+        "sha256": "8da65393061c896dccb9ad037ec849356438eade39e652ab2d8d9b81a2848c00",
+        "bytes": 31957896
+      },
+      "<cache>/rustmage-msh-event-objects-target/debug/deps/libserde_derive-31145c71f3b23723.so": {
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      "<cache>/rustmage-msh-event-objects-target/debug/deps/rustmage-b764cd26223fba2c": {
+        "sha256": "706ca9d555c643ab3fe2342502133884c1f183c6dfa66ebb7865555f7710cdc5",
+        "bytes": 32992152
+      },
+      "<cache>/rustmage-msh-ten-rings-target/debug/deps/libserde_derive-31145c71f3b23723.so": {
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      "<cache>/rustmage-msh-ten-rings-target/debug/deps/rustmage-b764cd26223fba2c": {
+        "sha256": "b5743599f07bf585d25184c28d1d8caf9fdc1a87aceba099b12d40fdbf9ef8db",
+        "bytes": 34014696
+      }
+    }
+  },
+  "measured_implementation_throughput": {
+    "preparation_start_utc": "2026-10-25T03:53:47+00:00",
+    "author_start_utc": "2026-10-25T04:00:32+00:00",
+    "validation_cleanup_completed_utc": "2026-10-25T04:33:59.844062+00:00",
+    "preparation_author_tests_queue_and_validation_seconds": 2412.844,
+    "cards_per_hour_including_preparation_and_queue": 2.984,
+    "author_tests_queue_validation_seconds": 2007.844,
+    "cards_per_author_hour": 3.5859,
+    "cards": 2,
+    "simulation_throughput": "Not measured in this child. Native rules execution is not a games-per-second benchmark; final aggregate release/simulation gates belong to the integrator."
+  }
+}

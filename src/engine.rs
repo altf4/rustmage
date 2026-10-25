@@ -1641,6 +1641,7 @@ impl Pending {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct State {
+    library_top: Option<Box<library_top::LibraryTopState>>,
     cast_rollback: Option<Box<cast_rollback::CastRollback>>,
     paradigm: Option<Box<paradigm::ParadigmState>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
@@ -2063,6 +2064,8 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_library_reveal: Option<LibraryRevealEvent>,
     pub paradigms: Vec<ParadigmView>,
     pub resolved_spell_names: Vec<ResolvedSpellNameView>,
     pub preparations: Vec<PreparationView>,
@@ -2326,6 +2329,7 @@ impl Game {
         let mut game = Self {
             revision: 0,
             state: State {
+                library_top: None,
                 cast_rollback: None,
                 paradigm: None,
                 ending_turn: false,
@@ -2745,6 +2749,7 @@ impl Game {
             self.capture_cast_mana_action(actor, &action);
             self.clear_zone_reveals();
             self.prepare_mana_allocations(&action);
+            self.prepare_library_visibility(&action);
             self.apply_legal(actor, action);
             // Resolution is atomic with respect to SBAs and priority, even when
             // a program is suspended for an optional effect or discard choice.
@@ -2787,6 +2792,7 @@ impl Game {
             let fundable = self.current_cast_costs_fundable();
             self.finish_cast_rollback(fundable);
         }
+        self.finish_library_visibility();
         self.clear_finished_cast_rollback();
         self.prune_modal_history();
         self.revision = self.revision.checked_add(1).capacity("revision exhausted");
@@ -5612,6 +5618,12 @@ impl Game {
         if before.zone == Zone::Graveyard {
             self.forget_graveyard_cast_permission(before.reference);
         }
+        if (before.zone == Zone::Library
+            && self.state.players[before.owner.index()].library.last() == Some(&id))
+            || destination == Zone::Library
+        {
+            self.library_top_changed(before.owner);
+        }
         let revealed_top = self.public_library_top(before.owner) == Some(before.reference);
         if before.zone == Zone::Library && revealed_top || destination == Zone::Library {
             self.forget_library_top(before.owner);
@@ -7018,6 +7030,7 @@ impl Game {
                 .as_ref()
                 .and_then(|r| r.explore.as_ref())
                 .map(|c| (**c).clone()),
+            last_library_reveal: s.library_top.as_ref().and_then(|s| s.reveal.clone()),
             last_explore: s.explore_data.as_ref().and_then(|d| d.last.clone()),
             known_library_top: std::array::from_fn(|i| {
                 self.visible_library_top(viewer, if i == 0 { Player::P0 } else { Player::P1 })
@@ -7081,6 +7094,9 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + s.library_top
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<library_top::LibraryTopState>())
             + s.cast_rollback.as_ref().map_or(0, |r| r.bytes())
             + self.mana_lot_bytes()
             + self.mana_announcement_bytes()
@@ -7675,3 +7691,10 @@ mod msh_galactus_tests;
 #[cfg(test)]
 #[path = "engine_msh_us_agent_tests.rs"]
 mod msh_us_agent_tests;
+
+#[path = "engine_library_top.rs"]
+mod library_top;
+pub use library_top::LibraryRevealEvent;
+#[cfg(test)]
+#[path = "engine_msh_library_top_tests.rs"]
+mod msh_library_top_tests;
