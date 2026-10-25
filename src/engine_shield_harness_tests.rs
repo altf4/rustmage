@@ -912,3 +912,91 @@ fn msh_shield_harness_mind_blink_owns_entry_choice_pause() {
         assert_eq!(g.object_view(automaton).entry_choice, Some(value));
     }
 }
+#[test]
+fn msh_shield_harness_mind_blinks_noncreature_equipment_and_detaches_it() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, MIND, &[]);
+        let bear = paid(&mut g, p, "Bear Cub", &[]);
+        let pole = paid(&mut g, p, "Fishing Pole", &[]);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        checked(&mut g, activation(pole, 0));
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            g.state.objects[pole as usize].attached_to,
+            Some(g.object_ref(bear))
+        );
+        harness(&mut g, p, id);
+        let old = g.object_ref(pole);
+        choose(&mut g, id, pole);
+        settle(&mut g);
+        assert_ne!(g.object_ref(pole), old);
+        assert_eq!(g.state.objects[pole as usize].attached_to, None);
+        assert_eq!(g.object_view(pole).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn msh_shield_harness_mind_blinked_token_ceases_and_does_not_return() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, MIND, &[]);
+        let skrull = paid(&mut g, p, "Super-Skrull", &[]);
+        activate(&mut g, p, skrull, 0, [1, 0, 0, 0, 0, 2]);
+        settle(&mut g);
+        let token = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| o.zone == Zone::Battlefield && o.is_token())
+            .map(|(id, _)| id as CardId)
+            .unwrap();
+        harness(&mut g, p, id);
+        choose(&mut g, id, token);
+        settle(&mut g);
+        assert_eq!(g.object_view(token).zone, Zone::Outside);
+    }
+}
+#[test]
+fn msh_shield_harness_mind_blinked_aura_has_owned_nontarget_entry_attachment_choice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, MIND, &[]);
+        let old = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let new = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let aura = paid(&mut g, p, "Witness Protection", &[Target::Card(old)]);
+        harness(&mut g, p, id);
+        choose(&mut g, id, aura);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::AuraEntry { .. })
+        });
+        let object = g.object_ref(new);
+        g = orphan(g, Action::ChooseAuraAttachment { object });
+        settle(&mut g);
+        assert_eq!(
+            g.stats(old),
+            Stats {
+                power: 2,
+                toughness: 2
+            }
+        );
+        assert_eq!(
+            g.stats(new),
+            Stats {
+                power: 1,
+                toughness: 1
+            }
+        );
+        assert_eq!(
+            g.state.objects[aura as usize].attached_to,
+            Some(g.object_ref(new))
+        );
+    }
+}
