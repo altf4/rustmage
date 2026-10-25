@@ -2210,6 +2210,8 @@ pub struct Observation {
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub counter_placement_history: Vec<CounterPlacementHistoryView>,
     pub cast_entry_counters: Vec<CastEntryCounterView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub toughness_combat_damage: Option<[bool; 2]>,
     pub additional_combats: u64,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
@@ -6392,6 +6394,9 @@ impl Game {
         self.expire_graveyard_cast_permissions();
         self.state.turn_cast_grants = None;
         self.expire_keyword_effects();
+        if let Some(roles) = &mut self.state.roles {
+            roles.toughness_combat_damage = [false; 2];
+        }
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
@@ -6627,6 +6632,18 @@ impl Game {
         }
     }
 
+    /// Assignment rule only. Actual characteristic power and noncombat damage are unchanged.
+    pub(super) fn combat_assignment_amount(&self, id: CardId) -> i128 {
+        let stats = self.stats(id);
+        if self.state.roles.as_ref().is_some_and(|r| {
+            r.toughness_combat_damage[self.state.objects[id as usize].controller.index()]
+        }) && stats.toughness > stats.power
+        {
+            stats.toughness.max(0)
+        } else {
+            stats.power.max(0)
+        }
+    }
     fn prepare_damage(&mut self) {
         self.state.hits.clear();
         self.state.damage_choices.clear();
@@ -6645,7 +6662,7 @@ impl Game {
             for &blocker in &blockers {
                 if self.assigns_this_step(blocker) {
                     let source = self.damage_source(blocker);
-                    let amount = self.stats(blocker).power.max(0);
+                    let amount = self.combat_assignment_amount(blocker);
                     self.queue_hit(source, Target::Card(attacker.card), amount, true);
                 }
             }
@@ -6653,7 +6670,7 @@ impl Game {
                 continue;
             }
             let source = self.damage_source(attacker.card);
-            let power = self.stats(attacker.card).power.max(0);
+            let power = self.combat_assignment_amount(attacker.card);
             let defender = self.combat_defender_target(attacker.defender);
             let trample = source.keywords.contains(Keywords::TRAMPLE) && defender.is_some();
             if !attacker.blocked || (trample && blockers.is_empty()) {
@@ -6876,6 +6893,12 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
+            toughness_combat_damage: s.roles.as_ref().and_then(|r| {
+                r.toughness_combat_damage
+                    .iter()
+                    .any(|x| *x)
+                    .then_some(r.toughness_combat_damage)
+            }),
             additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
             must_be_blocked: s
                 .combat_rules
@@ -8154,3 +8177,7 @@ mod shield_harness_tests;
 #[cfg(test)]
 #[path = "engine_msh_restricted_creatures_tests.rs"]
 mod msh_restricted_creatures_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_kingpin_tests.rs"]
+mod msh_kingpin_tests;

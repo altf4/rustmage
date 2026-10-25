@@ -3895,6 +3895,24 @@ impl Game {
                         self.lose_life(player, amount);
                     }
                 }
+                Instruction::CombatDamageByGreaterToughnessThisTurn => {
+                    self.state
+                        .roles
+                        .get_or_insert_default()
+                        .toughness_combat_damage[item.controller.index()] = true;
+                }
+                Instruction::DrainOpponents(amount) => {
+                    let other = item.controller.other();
+                    let before = self.state.players[other.index()].life;
+                    self.lose_life(other, i128::from(amount));
+                    let lost = before
+                        .checked_sub(self.state.players[other.index()].life)
+                        .capacity("life drain representation exhausted")
+                        .max(0);
+                    if lost > 0 {
+                        self.gain_life(item.controller, lost);
+                    }
+                }
                 Instruction::LoseLife(set, amount) => {
                     for player in self.program_players(set, &item) {
                         self.lose_life(player, i128::from(amount));

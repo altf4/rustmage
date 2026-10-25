@@ -19,6 +19,8 @@ pub(super) struct RoleState {
     clock: u64,
     /// Only true while an entry transaction assigns one simultaneous timestamp group.
     pub deferred_timestamps: bool,
+    /// Rule effect on players, independent of a fixed creature set or its source.
+    pub toughness_combat_damage: [bool; 2],
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
     pub live_static: Vec<LiveStaticSourceView>,

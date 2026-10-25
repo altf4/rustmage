@@ -1698,6 +1698,9 @@ pub(crate) enum Instruction {
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
     LoseLife(PlayerSet, u16),
+    /// Untargeted loss followed by a gain of the life actually lost.
+    DrainOpponents(u16),
+    CombatDamageByGreaterToughnessThisTurn,
     LoseLifeScaled(PlayerSet, AmountValue),
     /// Each opponent loses the frozen amount; the controller gains it once.
     DrainLifeScaled(AmountValue),
