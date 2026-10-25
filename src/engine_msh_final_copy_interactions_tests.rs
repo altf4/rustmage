@@ -1,4 +1,5 @@
 //! Paid interactions across copied spells, cast card copies, Sneak and harness.
+use super::ability_world::CharacteristicWorld;
 use super::assurance::big_helpers::{cast, checked, named, next_turn, setup};
 use super::msh_thirteenth_combined_tests::owned_checked_step;
 use super::*;
