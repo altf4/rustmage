@@ -7,7 +7,7 @@ pub(crate) use ability_layers::{
 };
 
 use crate::capacity::CapacityExt;
-use crate::engine::GrantedSubtypes;
+use crate::engine::{GrantedSubtypes, Zone};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// Immutable additions made as part of a token-copy effect (CR707.9).
@@ -660,7 +660,7 @@ pub enum EffectChoiceKind {
     Discard,
     DiscardNamed(&'static str),
     /// One controlled permanent matching the sacrifice filter, or one private hand card.
-    /// Resolution-only; the flag restricts the discard route, not the permanent.
+    /// The flag restricts the discard route, not the permanent, for resolution or activation costs.
     SacrificeOrDiscard {
         nonland: bool,
     },
@@ -683,6 +683,34 @@ pub(crate) struct SacrificeFilter {
 pub(crate) struct AdditionalCost {
     pub kind: EffectChoiceKind,
     pub filter: SacrificeFilter,
+}
+
+impl AdditionalCost {
+    /// A union cost selects exactly one route using the selected object's zone.
+    /// The hand route has its own printed restriction; the permanent filter
+    /// applies only to the sacrifice route.
+    pub(crate) fn in_zone(mut self, zone: Zone) -> Self {
+        if let EffectChoiceKind::SacrificeOrDiscard { nonland } = self.kind {
+            match zone {
+                Zone::Hand => {
+                    self.kind = EffectChoiceKind::Discard;
+                    self.filter = SacrificeFilter {
+                        keywords: Keywords::NONE,
+                        source_only: false,
+                        kinds: 0,
+                        nonland,
+                        other: false,
+                        tokens: None,
+                        artifact_enchantment_or_token: false,
+                        subtype: None,
+                    };
+                }
+                Zone::Battlefield => self.kind = EffectChoiceKind::Sacrifice,
+                _ => {}
+            }
+        }
+        self
+    }
 }
 
 /// Public qualities for a non-targeted choice from one exact milling event.
@@ -1236,6 +1264,11 @@ pub(crate) enum Instruction {
         source: u16,
         recipient: u16,
     },
+    ScaledPowerDamage {
+        source: u16,
+        recipient: u16,
+        factor: u16,
+    },
     AddMana(ManaProduction),
     AddColorlessScaled(AmountValue),
     AddManaScaled {
@@ -1590,6 +1623,7 @@ pub(crate) enum AmountValue {
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
     )]
     DamageEventAmount,
+    DamageReceivedAmount,
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
@@ -2528,6 +2562,10 @@ pub(crate) enum TriggerCondition {
         kind: CounterKind,
         minimum: u64,
     },
+    /// One occurrence per damaged creature in a simultaneous actual damage batch.
+    CreatureDamaged {
+        relation: CastRelation,
+    },
     PlayerDamaged {
         subject: DamageSubject,
         combat_only: bool,
@@ -2629,6 +2667,8 @@ pub(crate) enum TriggerCondition {
     EquippedAttacks,
     GrantedAttacks,
     SelfBecomesTapped,
+    /// One event after the complete simultaneous tap group, using post-event types.
+    ControlledCreaturesBecomeTapped,
     AttachedBecomesUntapped,
     AttackDeclared {
         minimum: u16,
@@ -2787,6 +2827,7 @@ pub(crate) enum ActivationGuard {
     ControlLandsAtLeast(u16),
     SourceEnteredOrControlsBasicLand,
     HandSizeAtLeast(u16),
+    GraveyardCardsAtLeast { kind: u16, minimum: u16 },
     LifeAboveStarting(u16),
 }
 impl ActivationGuard {
@@ -2798,6 +2839,7 @@ impl ActivationGuard {
             | Self::ControlLandsAtLeast(_)
             | Self::SourceEnteredOrControlsBasicLand
             | Self::HandSizeAtLeast(_)
+            | Self::GraveyardCardsAtLeast { .. }
             | Self::LifeAboveStarting(_) => &[],
             Self::ControlSubtypeAny(types) => types,
         }

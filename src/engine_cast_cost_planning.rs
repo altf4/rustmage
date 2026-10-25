@@ -63,6 +63,20 @@ impl CostContext {
 impl FundingState<'_> {
     pub(super) fn set_cost_context(&mut self, a: Option<&Announcement>) {
         self.install_cost_context(a.and_then(CostContext::from_announcement));
+        if let Some(a) = a.filter(|a| a.cast_costs.is_some())
+            && let Some(frame) = &a.convoke
+        {
+            // A contributor is reserved during selection and becomes tapped in
+            // the speculative world. The live group commits only with payment.
+            for selected in &frame.selected {
+                if let Some(r) = self.resources.iter_mut().find(|r| {
+                    r.id == selected.object.card
+                        && r.object.generation == selected.object.generation
+                }) {
+                    r.object.tapped = true;
+                }
+            }
+        }
     }
     pub(super) fn set_payment_context(&mut self, a: &Announcement) {
         if a.cast_costs.is_none() && a.additional_cost().is_some() {
@@ -98,6 +112,7 @@ impl FundingState<'_> {
     }
     fn cost_object(&self, spec: AdditionalCost, r: ObjectRef, source: ObjectRef) -> bool {
         let o = self.object(r.card);
+        let spec = spec.in_zone(o.zone);
         self.reference(r.card) == r
             && (r != source
                 || !matches!(
@@ -279,7 +294,7 @@ impl FundingState<'_> {
                     }
                 }
                 CastCostClause::Mana => {
-                    if self.complete_convoke_clause(c, &later, remaining, &rest) {
+                    if self.complete_convoke_clause(c, &later, &rest) {
                         return true;
                     }
                 }
@@ -430,7 +445,6 @@ impl FundingState<'_> {
         &self,
         c: &CostContext,
         later: &CostContext,
-        all: &[usize],
         rest: &[usize],
     ) -> bool {
         let Some(cost) = c.mana else {
@@ -468,9 +482,9 @@ impl FundingState<'_> {
                     .position(|r| r.id == resource.id)
                     .unwrap();
                 next.resources[i].object.tapped = true;
-                let mut context = later.clone();
+                let mut context = c.clone();
                 context.mana = Some(remaining);
-                if next.complete_cost_rows(&context, all) {
+                if next.complete_convoke_clause(&context, later, rest) {
                     return true;
                 }
             }
@@ -517,7 +531,6 @@ impl FundingState<'_> {
         if !contribution.apply(colors, cost) {
             return false;
         }
-        c.active = None;
         self.resources[index].object.tapped = true;
         true
     }
@@ -565,6 +578,7 @@ impl FundingState<'_> {
             }
             EffectChoiceKind::ReturnToHand => destination = Zone::Hand,
             EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_) => {}
             _ => return false,

@@ -3480,9 +3480,9 @@ fn sos_silverquill_casualty_can_return_a_creature_before_convoking_it() {
                 contribution: ConvokeContribution::Generic,
             },
         );
-        assert!(g.object_view(bear).tapped);
-        choose_cast_clause(&mut g, CastCostClause::Mana);
+        assert!(!g.object_view(bear).tapped);
         pay(&mut g);
+        assert!(g.object_view(bear).tapped);
         until_choice(&mut g);
         act(&mut g, Action::FinishStackTargets);
         settle(&mut g);

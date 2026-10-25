@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9f67c067bf7a3caea5ee398101b9a6580880910ea447cc87ae541bc988841d5a",
+  "catalogue_version": "f6282bc78e022c2bb6f947315cbd3004e3bed55bcab53f6cc60f37b83a276726",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2463,
-  "implemented_total": 2469,
+  "implemented_standard_cards": 2469,
+  "implemented_total": 2475,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 158,
-      "gated": 115
+      "complete": 164,
+      "gated": 109
     },
     "one": {
       "total": 1,
@@ -2053,8 +2053,8 @@
     {
       "name": "Arnim Zola, Bio-Fanatic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/arnim_zola_bio_fanatic.rs",
       "set": "msh"
     },
@@ -4837,8 +4837,8 @@
     {
       "name": "Bullseye, Death Dealer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/bullseye_death_dealer.rs",
       "set": "msh"
     },
@@ -18309,8 +18309,8 @@
     {
       "name": "Jennifer Walters // The Sensational She-Hulk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/jennifer_walters_the_sensational_she_hulk.rs",
       "set": "msh"
     },
@@ -18621,8 +18621,8 @@
     {
       "name": "K'un-Lun Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/k_un_lun_warrior.rs",
       "set": "msh"
     },
@@ -26453,8 +26453,8 @@
     {
       "name": "Punishing Punch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/punishing_punch.rs",
       "set": "msh"
     },
@@ -28293,8 +28293,8 @@
     {
       "name": "Rewrite History",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/rewrite_history.rs",
       "set": "msh"
     },

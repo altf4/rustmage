@@ -803,6 +803,9 @@ impl<'g> FundingState<'g> {
                 self.game.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::GraveyardCardsAtLeast { kind, minimum } => {
+                activations::graveyard_cards_at_least(self, actor, kind, minimum)
+            }
             ActivationGuard::SourceEnteredOrControlsBasicLand => {
                 ability_world::CharacteristicWorld::entered_this_turn(self, self.reference(source))
                     || ability_world::CharacteristicWorld::controls_basic_land(self, actor)
@@ -2384,18 +2387,19 @@ impl Game {
         }
         let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
         let (required, generic) = if let Some(frame) = &a.convoke {
+            if !frame
+                .selected
+                .iter()
+                .all(|s| self.convoke_eligible(a.item.controller, s.object))
+            {
+                return None;
+            }
             if a.cast_costs.is_some() {
                 let mut world = self.cast_cost_world(a);
                 world.mark_mana_clause_paid();
                 if !world.cost_completion() {
                     return None;
                 }
-            } else if !frame
-                .selected
-                .iter()
-                .all(|s| self.convoke_eligible(a.item.controller, s.object))
-            {
-                return None;
             }
             cast_origins::payment_requirements(
                 self,
@@ -2922,3 +2926,7 @@ mod msh_faces_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_hideout_funding_tests.rs"]
 mod msh_hideout_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_punch_zola_funding_tests.rs"]
+mod msh_punch_zola_funding_tests;

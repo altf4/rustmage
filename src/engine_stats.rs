@@ -55,6 +55,12 @@ impl Game {
         }
         if triggers
             .iter()
+            .any(|a| a.condition.event() == TriggerCondition::ControlledCreaturesBecomeTapped)
+        {
+            self.state.tap_sources.push(id);
+        }
+        if triggers
+            .iter()
             .any(|a| a.condition.event() == TriggerCondition::EvidenceCollected)
         {
             self.register_evidence_source(id);
@@ -98,6 +104,7 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn

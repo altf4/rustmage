@@ -16,7 +16,7 @@ impl Game {
             object: Some(context.object),
             group: 0,
         });
-        self.creature_power_damage(&operands, 0, 1, true);
+        self.creature_power_damage(&operands, 0, 1, true, 1);
     }
     pub(super) fn creature_power_damage(
         &mut self,
@@ -24,6 +24,7 @@ impl Game {
         source: u16,
         recipient: u16,
         fight: bool,
+        factor: u16,
     ) {
         let permanent = |group: u16, creature_only: bool| {
             let kinds = if creature_only { 1 } else { 1 | 64 };
@@ -45,7 +46,7 @@ impl Game {
         else {
             return;
         };
-        self.creatures_deal_power_damage(source, recipient, fight);
+        self.creatures_deal_power_damage(source, recipient, fight, factor);
     }
     pub(super) fn source_fight(&mut self, item: &SpellView) {
         if !self.on_battlefield(item.card)
@@ -66,11 +67,22 @@ impl Game {
             }
         });
         if let Some(target) = target {
-            self.creatures_deal_power_damage(item.card, target, true);
+            self.creatures_deal_power_damage(item.card, target, true, 1);
         }
     }
-    fn creatures_deal_power_damage(&mut self, source: CardId, recipient: CardId, fight: bool) {
-        let power = self.stats(source).power.max(0);
+    fn creatures_deal_power_damage(
+        &mut self,
+        source: CardId,
+        recipient: CardId,
+        fight: bool,
+        factor: u16,
+    ) {
+        let power = self
+            .stats(source)
+            .power
+            .max(0)
+            .checked_mul(i128::from(factor))
+            .capacity("damage representation exhausted");
         let source_damage = DamageEvent {
             preventable: true,
             source: self.damage_source(source),

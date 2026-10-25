@@ -21,6 +21,7 @@ impl Game {
         let Some(o) = self.state.objects.get(object.card as usize) else {
             return false;
         };
+        let spec = spec.in_zone(o.zone);
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
@@ -62,6 +63,7 @@ impl Game {
         subtypes: GrantedSubtypes,
         name: &str,
     ) -> bool {
+        let spec = spec.in_zone(o.zone);
         let zone = match spec.kind {
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileGraveyardCards(_) => {
                 Zone::Graveyard
@@ -500,6 +502,7 @@ impl Game {
         if object == a.item.object {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
+        let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind {
             EffectChoiceKind::HandToTop
             | EffectChoiceKind::ExileGraveyardCards(_)

@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "One complete candidate physical Jennifer Walters // The Sensational She-Hulk and its nonphysical back, plus minimal shared actual creature damage-received packet; full 281 acceptance remains open",
+  "source_base": "319802ddc91d45b4bfc3d07090b49326ee897960",
+  "wire_schema": {
+    "previous": 142,
+    "candidate": 143,
+    "change": "Optional public SpellView.damage_received with exact recipient and actual amount; omitted when None"
+  },
+  "complete_candidate_cards": [
+    "Jennifer Walters // The Sensational She-Hulk"
+  ],
+  "nonphysical_back": {
+    "5396": "The Sensational She-Hulk"
+  },
+  "metadata_proof": {
+    "base": "319802ddc91d45b4bfc3d07090b49326ee897960",
+    "unchanged_old_ids": 5396,
+    "only_old_metadata_change": {
+      "2263": "Explicit Oracle-verified front facts and back pointer"
+    },
+    "appended_back": 5396,
+    "all_old_aliases_colors_constants_recipes_preserved": true,
+    "base_trace_rows": 2469,
+    "base_trace_sha256": "875c9bc250cc499e7fa8e256494d862137eafcad09366cfd259942762f0e25da"
+  },
+  "printed_obligations": [
+    "Selectable front {1}{W} 2/3 white legendary Human Advisor Hero; selectable back {3}{G}{W}{W} 6/6 green-white legendary Gamma Hero with reach/trample",
+    "Both faces prohibit only opponent spells during their controllers turn; activated mana abilities remain legal; suppression removes the prohibition",
+    "Front {3}{G}{W}{W} sorcery-only transform without tap preserves identity/counters/control/damage/attachments; departures restore front and copies retain pair exceptions",
+    "Back triggers per controlled creature actually damaged, summing simultaneous sources/fragments after replacements/prevention; exact amount and ability controller survive lethal departure",
+    "Ordinary any target is chosen on announcement; optional resolution-limited allowance is consumed on acceptance before outgoing damage/replacement choices; queued siblings and later events cannot reuse it",
+    "Current source or latest departure LKI supplies outgoing damage keywords/controller, independently of ability controller; new incarnation is never rebound"
+  ],
+  "focused_tests": {
+    "passed": 19,
+    "log": "<cache>/msh-jennifer-focused-final.log",
+    "report": "<cache>/rustmage-build-reports/e12e49f1596541ecb5d526cc6844f790.json",
+    "coverage": "Both seats; paid face costs/timing/transform/privacy, actual opponent spell lock/removal and mana activation, counters/Equipment/keyword layers, owned raw/index branch/parent disposal/restore and illegal action atomicity; simultaneous multi-blocker/lethal victims/source, first-strike versus regular batches, fight doubling, actual prevention, frozen any-target amounts, optional decline/accept and queued siblings, prevention after acceptance, source control/LKI with later lifelink and exact life events, fresh incarnation/turn reset, suppression before and after queue, own/foreign copies, invalid targets/private cancellation, two orders of owned replacement choice; mixed preventable 5/unpreventable 2 paid King-back boundary plus actual post-lifelink Aettir source snapshot 20→22"
+  },
+  "clippy": {
+    "passed": true,
+    "command": "python3 scripts/resource_guard.py -- cargo clippy --all-targets -- -D warnings",
+    "log": "<cache>/msh-jennifer-clippy-final.log",
+    "report": "<cache>/rustmage-build-reports/30026da037c9491fa989623205d2889e.json"
+  },
+  "source_link_format": {
+    "source_verified_definitions": 5397,
+    "source_verified_java_blobs": 1142,
+    "java_verified": true,
+    "source_log": "<cache>/msh-jennifer-sources-final.log",
+    "link_log": "<cache>/msh-jennifer-link-final.log",
+    "format_log": "<cache>/msh-jennifer-format-final.log"
+  },
+  "trace_proof": {
+    "base": "319802ddc91d45b4bfc3d07090b49326ee897960",
+    "previous_schema": 142,
+    "candidate_schema": 143,
+    "projection": "<cache>/msh-jennifer-traces-143.previous-schema.json",
+    "baseline_rows": 2469,
+    "candidate_rows": 2470,
+    "inherited_exact_matches": 2469,
+    "inherited_changes": [],
+    "inherited_journal_changes": [],
+    "new_traces": {
+      "Jennifer Walters // The Sensational She-Hulk": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "ce93789b5fa64c9f",
+        "observations": "2d8d77f6bb4d497a"
+      }
+    },
+    "baseline_sha256": "875c9bc250cc499e7fa8e256494d862137eafcad09366cfd259942762f0e25da",
+    "candidate_sha256": "f551abf594421783b45f98cfa1de22fb1a6d964bb3e9c7ad2c7ca35f529b8d44",
+    "recording_only_expected_count_failure": true,
+    "strict_passed": true,
+    "strict_log": "<cache>/msh-jennifer-trace-strict-final.log",
+    "proof": "<cache>/msh-jennifer-trace-proof.json",
+    "candidate": "<cache>/msh-jennifer-traces-143.json",
+    "strict_report": "<cache>/rustmage-build-reports/4ba139964c794ff78172975c618c2a19.json"
+  },
+  "review_boundary": {
+    "mixed_fragments": "Scheduling replacement work is a preview: no packet or lifegain before advance_replacements(false); after actual central commit, prevented5 contributes 0, unpreventable 2 contributes 2, one exact-recipient packet results",
+    "post_lifelink_layers": "Paid Aettir and Priwen makes the source power change 20→22 from simultaneous lifelink; queued source_facts.power must be 22, final outgoing amount remains 2",
+    "type_control_limit": "No admitted life-dependent creature-type or controller effect found in full frozen complete-pool Oracle faces or existing kind/control providers. Post-lifelink type/controller qualification is supported by central ordering inspection, not a claimed unavailable live scenario",
+    "java_discrepancy": "Pinned Jennifer passes SetTargetPointer.PERMANENT and its helper installs FixedTarget(victim) despite TargetAnyTarget; Rust follows frozen Oracle and official release notes with ordinary any-target selection, keeping packet recipient non-targeting"
+  },
+  "resource_safety": {
+    "outer_report": "<cache>/rustmage-build-reports/ec85fe5d3eef4c1fbd51e3e13c4e1867.json",
+    "memory_limit_bytes": 6442450944,
+    "memory_peak_bytes": 2308440064,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "full_release": "Combined integrator will run the required full release; no redundant full release was launched in this child scope"
+  },
+  "packet_sizes": {
+    "DamageReceivedView_bytes": 32,
+    "Option_Box_DamageReceivedView_bytes": 8,
+    "scope": "Measured field types on this host; ordinary packets allocate no received payload"
+  },
+  "cleanup": {
+    "report": "<cache>/msh-jennifer-cleanup.json",
+    "removed_bytes": 151152233,
+    "removed_files": 1019,
+    "preserved_libraries": {
+      "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "active_target_fds": []
+  },
+  "throughput": {
+    "scope": "One physical card plus shared prerequisite, implementation/check interval from preserved branch creation; prepared source/design audit precedes this interval; includes shared build queue, fixture corrections and review regression",
+    "started_utc": "2026-10-24T23:16:00+00:00",
+    "finished_utc": "2026-10-24T23:58:30.368930+00:00",
+    "elapsed_seconds": 2550.36893,
+    "complete_candidate_physical_cards": 1,
+    "cards_per_hour": 1.4115604835258089,
+    "simulation_benchmark": "Not run in this child scope; combined release owns its limited smoke workload. No full-set simulation or acceptance claim."
+  },
+  "remaining_gates": [
+    "Two independent nonauthor reviews of the final published head and combined full release/CI before integration",
+    "Bruce Banner and Red Hulk remain gated; Bruce XX activation cost and current/latest-departure attacking LKI are separate prerequisites",
+    "No expansion of separately acquired in-place copy ability identity or other downstream consumers; full 281 MSH acceptance remains pending"
+  ]
+}

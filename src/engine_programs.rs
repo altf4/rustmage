@@ -677,6 +677,7 @@ impl Game {
                     | TriggerCondition::StateCounterAtLeast { .. }
                     | TriggerCondition::CounterThresholdCrossed { .. }
                     | TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
                     | TriggerCondition::SelfLeaves
@@ -708,6 +709,7 @@ impl Game {
                     | TriggerCondition::GrantedAttacks
                     | TriggerCondition::AttachedBecomesUntapped
                     | TriggerCondition::SelfBecomesTapped
+                    | TriggerCondition::ControlledCreaturesBecomeTapped
                     | TriggerCondition::SelfCast
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::ManaSpentForSpell
@@ -982,6 +984,7 @@ impl Game {
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
+            damage_received: None,
             creature_combat_event: None,
             discard_event: None,
             draw_event: None,
@@ -1263,6 +1266,7 @@ impl Game {
             if object.zone == Zone::Battlefield && !object.tapped {
                 object.tapped = true;
                 self.tapped_triggers(id);
+                self.tapped_batch_triggers(&[id]);
             }
             return;
         }
@@ -1271,20 +1275,50 @@ impl Game {
             let object = &mut self.state.objects[id as usize];
             if object.zone == Zone::Battlefield && !object.tapped {
                 object.tapped = true;
-                if object.card.triggers().iter().any(|ability| {
-                    matches!(
-                        ability.condition.event(),
-                        TriggerCondition::SelfBecomesTapped
-                    )
-                }) {
+                if !self.state.tap_sources.is_empty()
+                    || object.card.triggers().iter().any(|ability| {
+                        matches!(
+                            ability.condition.event(),
+                            TriggerCondition::SelfBecomesTapped
+                        )
+                    })
+                {
                     changed.push(id);
                 }
             }
         }
         // Every observer sees the complete simultaneous tapped result. No queued
         // effect resolves until the surrounding action or instruction completes.
-        for id in changed {
+        for &id in &changed {
             self.tapped_triggers(id);
+        }
+        self.tapped_batch_triggers(&changed);
+    }
+
+    fn tapped_batch_triggers(&mut self, changed: &[CardId]) {
+        if changed.is_empty() || self.state.tap_sources.is_empty() {
+            return;
+        }
+        let sources: Vec<_> = self
+            .state
+            .tap_sources
+            .iter()
+            .copied()
+            .filter(|&id| self.on_battlefield(id))
+            .map(|id| self.object_view(id))
+            .collect();
+        for source in sources {
+            if !changed.iter().any(|&id| {
+                let object = &self.state.objects[id as usize];
+                object.controller == source.controller && self.object_kinds(id, object) & 1 != 0
+            }) {
+                continue;
+            }
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::ControlledCreaturesBecomeTapped {
+                    self.queue_trigger(&source, index);
+                }
+            }
         }
     }
 
@@ -1903,6 +1937,7 @@ impl Game {
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
+                    | Instruction::ScaledPowerDamage { .. }
                     | Instruction::CreateCopyTokenForPlayer { .. }
                     | Instruction::GainControl {
                         controller: PlayerSet::Targeted,
@@ -2906,7 +2941,15 @@ impl Game {
                         source,
                         recipient,
                         matches!(instruction, Instruction::Fight { .. }),
+                        1,
                     );
+                }
+                Instruction::ScaledPowerDamage {
+                    source,
+                    recipient,
+                    factor,
+                } => {
+                    self.creature_power_damage(&item, source, recipient, false, factor);
                 }
                 Instruction::AddColorlessScaled(amount) => {
                     let amount = u32::try_from(self.item_amount(amount, &item))

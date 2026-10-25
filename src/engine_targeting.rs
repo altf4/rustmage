@@ -1320,6 +1320,7 @@ impl Game {
             entering_object: None,
             evidence_collected: false,
             damage_event: None,
+            damage_received: None,
             creature_combat_event: None,
             discard_event: None,
             draw_event: None,
@@ -1568,6 +1569,9 @@ impl Game {
             && !announcement.additional_paid
         {
             if announcement.additional_cost().is_some_and(|spec| {
+                let spec = announcement.additional.map_or(spec, |object| {
+                    spec.in_zone(self.state.objects[object.card as usize].zone)
+                });
                 matches!(
                     spec.kind,
                     EffectChoiceKind::Sacrifice
