@@ -4373,6 +4373,15 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::RemoveTargetAbilitiesUntilSourceLeaves => {
+                    self.resolve_source_linked_effect(
+                        &item,
+                        SourceLinkedEffectKind::RemoveAbilities,
+                    );
+                }
+                Instruction::PreventTargetUntapWhileSourceControlled => {
+                    self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::PreventUntap);
+                }
                 Instruction::Tap | Instruction::Untap => {
                     if instruction == Instruction::Untap {
                         let ids: Vec<_> = item

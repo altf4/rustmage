@@ -283,6 +283,9 @@ pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
 mod ability_order;
 #[path = "engine_ability_timeline.rs"]
 mod ability_timeline;
+#[path = "engine_source_linked_effects.rs"]
+mod source_linked_effects;
+pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
 #[path = "engine_ability_world.rs"]
 mod ability_world;
 pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
@@ -2274,6 +2277,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hand_size_timeline: Option<HandSizeTimelineView>,
     pub keyword_effects: Vec<KeywordEffectView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_linked_effects: Option<Vec<SourceLinkedEffectView>>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -7086,6 +7091,7 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.ability_timestamps.clone()),
             keyword_effects: self.keyword_effect_views(viewer),
+            source_linked_effects: self.source_linked_effect_views(),
             role_timestamps: s
                 .roles
                 .as_ref()
@@ -8096,3 +8102,7 @@ mod msh_turn_cast_grants_tests;
 #[cfg(test)]
 #[path = "engine_msh_ability_copy_core_tests.rs"]
 mod msh_ability_copy_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_source_linked_sting_tests.rs"]
+mod msh_source_linked_sting_tests;

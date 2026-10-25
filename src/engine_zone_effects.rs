@@ -37,6 +37,7 @@ impl Game {
         {
             return;
         }
+        self.end_control_linked_effects(object);
         self.remember_hideaway_controller(object, controller);
         self.remove_from_combat(object.card, object);
         let target = &mut self.state.objects[object.card as usize];

@@ -360,6 +360,19 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         }
     }
     if let Some(state) = world.roles() {
+        for row in &state.source_linked_effects {
+            if row.kind == SourceLinkedEffectKind::RemoveAbilities
+                && source_linked_effects::active(world, row)
+            {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: row.timestamp,
+                    recipients: vec![row.recipient.card],
+                    action: LayerSixAction::Remove,
+                });
+            }
+        }
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
             if (matches!(object.zone, Zone::Battlefield | Zone::Stack)

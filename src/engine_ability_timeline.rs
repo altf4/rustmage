@@ -112,6 +112,7 @@ impl Game {
             .push(AbilitySourceTimestampView { source, timestamp });
     }
     pub(super) fn forget_ability_source(&mut self, reference: ObjectRef) {
+        self.forget_source_linked_effects(reference);
         if let Some(state) = &mut self.state.roles {
             state
                 .ability_timestamps

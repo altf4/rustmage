@@ -1066,6 +1066,7 @@ impl FundingState<'_> {
         }
         next.entry_projection.as_mut().unwrap().counter = None;
         next.refresh_control_projection();
+        next.prune_source_linked_projection();
         emit(&next)
     }
 }

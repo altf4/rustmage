@@ -281,7 +281,10 @@ pub(super) trait CharacteristicWorld {
     }
     fn has_ability_removal(&self) -> bool {
         self.roles().is_some_and(|state| {
-            state.ability_removal_sources.iter().any(|&source| {
+            state.source_linked_effects.iter().any(|row| {
+                row.kind == SourceLinkedEffectKind::RemoveAbilities
+                    && source_linked_effects::active(self, row)
+            }) || state.ability_removal_sources.iter().any(|&source| {
                 self.object(source.card).zone == Zone::Battlefield
                     && self.reference(source.card) == source
             })
@@ -309,6 +312,16 @@ pub(super) trait CharacteristicWorld {
             })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
+        if self.roles().is_some_and(|state| {
+            state.source_linked_effects.iter().any(|row| {
+                row.recipient == self.reference(id)
+                    && row.kind == SourceLinkedEffectKind::RemoveAbilities
+                    && source_linked_effects::active(self, row)
+            })
+        }) {
+            return ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
+                .printed;
+        }
         // Only an exact attached removal provider can remove printed abilities.
         // Unrelated sources need no whole-world layer-six evaluation. Keep the
         // full evaluator for candidates: competing effects may blank a provider.

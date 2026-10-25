@@ -27,6 +27,7 @@ pub(super) struct RoleState {
     pub creature_types: Vec<subtypes::CreatureTypesEffectView>,
     pub animations: Vec<AnimationView>,
     pub keyword_effects: Vec<KeywordEffectView>,
+    pub source_linked_effects: Vec<SourceLinkedEffectView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
 }
@@ -51,6 +52,7 @@ impl RoleState {
             + self.creature_types.len() * std::mem::size_of::<subtypes::CreatureTypesEffectView>()
             + self.animations.len() * std::mem::size_of::<AnimationView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
+            + self.source_linked_effects.len() * std::mem::size_of::<SourceLinkedEffectView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
     }

@@ -1590,6 +1590,8 @@ pub(crate) enum Instruction {
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
     Tap,
+    RemoveTargetAbilitiesUntilSourceLeaves,
+    PreventTargetUntapWhileSourceControlled,
     Untap,
     /// One simultaneous placement on battlefield permanents matching the count predicate.
     PutFilteredCounters {
