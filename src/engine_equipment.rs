@@ -43,10 +43,6 @@ impl Game {
             || !self.on_battlefield(source.card)
             || self.object_ref(source.card) != source
             || !ability_world::CharacteristicWorld::is_equipment(self, source.card)
-            || self.state.objects[source.card as usize]
-                .card
-                .equipment()
-                .is_none()
             || self.is_creature(source.card)
             || !self.on_battlefield(target.card)
             || self.object_ref(target.card) != target

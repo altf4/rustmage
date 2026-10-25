@@ -723,6 +723,7 @@ impl Game {
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::ControlledEquippedCreatureAttacks
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
                     | TriggerCondition::SelfPaysTeamwork
@@ -1468,6 +1469,22 @@ impl Game {
                         .unwrap()
                         .entering_object = Some(attacker);
                 }
+                if ability.condition.event() == TriggerCondition::ControlledEquippedCreatureAttacks
+                {
+                    for attacker in declared {
+                        let event = self.object_view(attacker.card);
+                        if self.source_equipment_count(event.reference).unwrap_or(0) != 0
+                            && self.queue_trigger(&source, index)
+                        {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .entering_object = Some(event.reference);
+                            self.bind_entering_conniver(&event, ability.program);
+                        }
+                    }
+                }
                 if let TriggerCondition::CreatureAttacksYou { colors } = ability.condition.event() {
                     let count = self
                         .state
@@ -2055,6 +2072,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::DamageByGroup { .. }
@@ -2933,6 +2951,24 @@ impl Game {
                 Instruction::TapAttached => {
                     if let Some(id) = self.attached_permanent(&item) {
                         self.tap_objects(&[id]);
+                    }
+                }
+                Instruction::AttachEquipmentByGroups {
+                    equipment,
+                    recipient,
+                } => {
+                    let first = item
+                        .targets
+                        .iter()
+                        .find(|bound| bound.group == equipment)
+                        .and_then(|bound| bound.object);
+                    let second = item
+                        .targets
+                        .iter()
+                        .find(|bound| bound.group == recipient)
+                        .and_then(|bound| bound.object);
+                    if let (Some(first), Some(second)) = (first, second) {
+                        self.attach_equipment(first, second);
                     }
                 }
                 Instruction::AttachSource => {

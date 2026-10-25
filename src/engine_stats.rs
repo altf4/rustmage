@@ -87,6 +87,7 @@ impl Game {
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
             self.state.attack_sources.push(id);
