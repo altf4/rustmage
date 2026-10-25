@@ -3759,6 +3759,14 @@
     "journal": "3ad6d4893695dc9c",
     "observations": "aaa35cab3b7de24e"
   },
+  "Daredevil, Man Without Fear": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7cf9667d9239e4fd",
+    "observations": "8628321a4b9c97ac"
+  },
   "Daring Thunder-Thief": {
     "root": "main",
     "status": "completed",
@@ -8023,6 +8031,14 @@
     "journal": "f833142f3ffafc96",
     "observations": "c2d458c8bc7d7a3d"
   },
+  "Heroic Feast": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "34d9b2b58f992ebc",
+    "observations": "c38ca9f379decf86"
+  },
   "Heroic Reinforcements": {
     "root": "main",
     "status": "completed",
@@ -8830,6 +8846,14 @@
     "zone": "Battlefield",
     "journal": "ad817a2b37dc4f00",
     "observations": "e8aa0122d3bbb8c6"
+  },
+  "Iron Lad, Diverging Destiny": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "5a37305467443acc",
+    "observations": "eff22b7e2c672338"
   },
   "Iron-Fist Pulverizer": {
     "root": "main",
@@ -17335,6 +17359,14 @@
     "journal": "b57420d067cd09ad",
     "observations": "3b650ca68b3daf52"
   },
+  "The Coming of Galactus": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "1fa2e414f0dfe395",
+    "observations": "18477abd36e8f59b"
+  },
   "The Crystal's Chosen": {
     "root": "main",
     "status": "completed",
@@ -18318,6 +18350,14 @@
     "zone": "Battlefield",
     "journal": "b43781f2834dd88f",
     "observations": "36c5473858eb102a"
+  },
+  "U.S.Agent, John Walker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "c788bd6ffad9aa32",
+    "observations": "ecea6523364f8122"
   },
   "Ulna Alley Shopkeep": {
     "root": "main",
