@@ -1,0 +1,166 @@
+{
+  "scope": "Focused individual-card proof; aggregate acceptance deferred until all remaining set cards are implemented, as requested.",
+  "tested_source_commit": "75c09a5cc99ef7c0230ca96da47a23f99204b87f",
+  "whole_phase_base": "6a782a266f7dcc987ac0f58d03f1303ae282ec43",
+  "complete_candidates": [
+    "Echo, Perceptive Prodigy",
+    "Scientist Supreme of A.I.M."
+  ],
+  "shared_core": "Ability copying preserves captured controller, program, targets/groups/divisions, modes, X, paid facts, exact physical source and independent resolution choices; no physical allocation or repeated activation costs. Core historical evidence: docs/msh-ability-copy-core-evidence.json.",
+  "printed_clause_evidence": {
+    "Echo printed cost, legendary Human Hero, 1/4": [
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_paid_printed_bodies_mana_and_spell_timing"
+    ],
+    "Echo vigilance": [
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_echo_vigilance_in_blocked_combat_preserves_postcombat_tap_cost"
+    ],
+    "Echo {1}, tap; sickness, repeatability and instant timing": [
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_echo_sickness_mana_tap_and_real_untap_repeat",
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_echo_copies_during_opponents_turn_at_instant_speed",
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_real_funding_requires_third_land_for_echo_after_cycling"
+    ],
+    "Echo targets your creature-source activated or triggered ability; current or departure source facts; optional new targets": [
+      "20 shared-core groups in src/engine_msh_ability_copy_core_tests.rs",
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_new_target_ward_relates_to_copy_and_never_repeats_source_cost"
+    ],
+    "Scientist printed UB, legendary Human Scientist Villain, 2/2": [
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_paid_printed_bodies_mana_and_spell_timing"
+    ],
+    "Scientist pay 2 life, own turn, once each turn": [
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_own_turn_once_and_actual_turn_reset",
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_life_payment_boundary_is_real_and_atomic"
+    ],
+    "Scientist targets your artifact-source activated or triggered ability, including noncreature and departed token sources": [
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_copies_noncreature_equipment_ability_without_equip_payment",
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_copies_real_sacrificed_clue_after_token_ceases"
+    ],
+    "Both copy targets/modes/choices independently without repeating costs; source departure and suppression": [
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_paid_source_death_after_activation_preserves_captured_controller",
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_paid_suppression_removes_activations_but_not_queued_programs",
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_new_target_ward_relates_to_copy_and_never_repeats_source_cost",
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_copies_noncreature_equipment_ability_without_equip_payment",
+      "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_copies_real_sacrificed_clue_after_token_ceases"
+    ]
+  },
+  "focused_result": {
+    "command": "cargo test --lib msh_ability_copy_ -- --nocapture",
+    "runner": "python3 scripts/resource_guard.py",
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "passed_groups": 32,
+    "whole_card_groups": 12,
+    "shared_core_groups": 20,
+    "both_seats": true,
+    "ordinary_support_checked_card_setup": true,
+    "native_seconds": 0.57,
+    "guard_seconds_including_queue": 150.12446687201736,
+    "memory_peak_bytes": 2625949696,
+    "memory_max_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "filtered_other_groups": 1764,
+    "simulation_throughput": "Not measured by this focused rules workload.",
+    "paid_privacy_atomicity_owned": "Existing checked helpers assert wrong-actor rejection, raw/index branches, parent disposal, restore and full both-seat views. Explicit rejection helper compares snapshot, owned bytes and both serialized observations."
+  },
+  "whole_test_functions": [
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_paid_printed_bodies_mana_and_spell_timing",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_echo_vigilance_in_blocked_combat_preserves_postcombat_tap_cost",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_echo_sickness_mana_tap_and_real_untap_repeat",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_echo_copies_during_opponents_turn_at_instant_speed",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_own_turn_once_and_actual_turn_reset",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_life_payment_boundary_is_real_and_atomic",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_paid_source_death_after_activation_preserves_captured_controller",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_paid_suppression_removes_activations_but_not_queued_programs",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_real_funding_requires_third_land_for_echo_after_cycling",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_new_target_ward_relates_to_copy_and_never_repeats_source_cost",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_copies_noncreature_equipment_ability_without_equip_payment",
+    "src/engine_msh_ability_copy_core_tests.rs::msh_ability_copy_cards_scientist_copies_real_sacrificed_clue_after_token_ceases"
+  ],
+  "bounded_scope": "Artifact Chandra divisions and live type/control mutation core fixtures are explicitly bounded assertions, not claims that an admitted producer creates those forms.",
+  "source_inputs": {
+    "cache": "/home/altf4/.cache/rustmage-msh-echo-scientist-cards-focused-inputs.json",
+    "sha256": "053db9e0666bd82076389aff32618bee93af9010a4f8b6a8c619c618d4590c79",
+    "count": 11849,
+    "changed": []
+  },
+  "provenance": {
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "direct_sources": [
+      {
+        "name": "Echo, Perceptive Prodigy",
+        "oracle_id": "1091c83a-a4b9-457f-a69a-9a44a7e10759",
+        "facts_sha256": "0e21244bc3a6c7def060ba621accf0b30b5757ddfe48983f2b1c71b9c0a5f02f",
+        "java_source": "Mage.Sets/src/mage/cards/e/EchoPerceptiveProdigy.java",
+        "java_sha256": "a29c1ebf533a5c1b511ba6810c3750bf8dcb2ddac9d27bff91e9bb36844dbcf6"
+      },
+      {
+        "name": "Scientist Supreme of A.I.M.",
+        "oracle_id": "c09c424b-6aba-4190-9f55-f0307d746386",
+        "facts_sha256": "a2de9144bc1feb734f813829b4bf2b72027795f73775a2949dc978ac4d2ddf79",
+        "java_source": "Mage.Sets/src/mage/cards/s/ScientistSupremeOfAIM.java",
+        "java_sha256": "7cc0e81dad774404b249108b1a98a37f04d0cc5fbc799c261961fb5bc86b8196"
+      }
+    ],
+    "full_read_caches": {
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-design-c0994f29.json": "5050f5267b8c46ba813e4e00be714b7541b575006c0b0ef714349d8dec6cef97",
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-design-570a494a.json": "da2f1c4c4566a7396002187ff319b7654f8daa94efba9ea57146cc465553c2b6",
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-fixture-full-sources-570a494a.json": "a753f6511663432f084ca4f1890db6a1b918e91917614815432b5d1b8d477d37",
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-whole-fixture-source-pins-c8cb03a6.json": "d0cd1e4edf04c5f90de671f250d9e41c99153b4f8adf068e0906f186c4ae702d",
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-clue-fixture-source-pins.json": "37951ef51671b3ee9411d9fc820a0a1ebbfaf39d9af492dfdb49b08331a6391a",
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-clue-ability-source-pins.json": "2093676593c3e373de67588b555af135c12f64e70a42c55b57ffa9db84d4faa6"
+    },
+    "read_coverage": "Full two Oracle records and direct classes; 38 reusable full classes plus explicitly ranged broad helper methods in prepared packet, supplementary full scenario bodies in fixture packets. Transitive whole framework classes are not claimed.",
+    "rules": [
+      "CR113.7/113.7a",
+      "CR115.7",
+      "CR119.4",
+      "CR400.7",
+      "CR602.5b",
+      "CR605.1",
+      "CR608.2h",
+      "CR702.29",
+      "CR707.10/707.10b/707.10c"
+    ],
+    "official_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+  },
+  "deferred_aggregate": {
+    "default_all_native": "Not run to acceptance for the admitted pair.",
+    "cancelled_session": 89787,
+    "cancelled_status": "Intentionally SIGTERM during compilation after new user priority; runner exit0 is not a test pass; no native summary.",
+    "static_release_ci_full_trace": "Deferred until final integration.",
+    "existing_card_trace_rows_unchanged": 2535,
+    "local_supported_candidates": 2537,
+    "schema": 151,
+    "new_wire_payload": false,
+    "new_ids": 0,
+    "new_runtime_changes_after_shared_core": false
+  },
+  "artifact_custody": {
+    "manifest": "/home/altf4/.cache/rustmage-msh-echo-scientist-cards-preservation.json",
+    "sha256": "55e6817c307ab791a7038a0a6aa6697f9e52754a0f90fbdfc9839e1f5386dec5",
+    "required_paths": 4229,
+    "prior_paths_rehashed_exact": 4220,
+    "native": {
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-whole-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "dd4f5a4c99abb8f7c4414ea3f3f9358a0499c33fd0e894b2ee8dee479c598986",
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-whole-gated32-native": "cb8812b086600e033ab1066d5adb4504fa5fce96c36c6aa4dcde6a0b0cea41ec"
+    },
+    "libraries": {
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-whole-gated-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-whole-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "cleanup": "/home/altf4/.cache/rustmage-msh-echo-scientist-cards-cleanup.json",
+    "cleanup_sha256": "795d3d6571629245283c88f4f8ab6d3b62c377c04684ed3c959f248a5833c0a0",
+    "removed_terminal_files": 326,
+    "removed_path_bytes": 79082724,
+    "processes_inspected": 190,
+    "active_target_references": [],
+    "denied_process_inspections": [
+      "4299",
+      "4313",
+      "4688",
+      "6612",
+      "204298"
+    ]
+  }
+}
