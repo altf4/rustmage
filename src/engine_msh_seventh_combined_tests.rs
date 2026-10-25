@@ -119,8 +119,10 @@ fn msh_seventh_combined_paid_discard_types_first_tap_stun_timing_blink_and_power
         // An actual opposing cast unlocks Mar-Vell before it resolves, allowing
         // Jessica's exiled sorcery to be cast in response with ordinary costs.
         checked(&mut g, Action::Pass);
+        g.state.players[p.other().index()].mana = [0, 0, 0, 1, 0, 0];
         let shock = named(&mut g, p.other(), "Shock", Zone::Hand);
         cast(&mut g, shock, None, &[Target::Player(p)]);
+        assert_eq!(g.state.players[p.other().index()].mana, [0; 6]);
         checked(&mut g, Action::Pass);
         checked(&mut g, Action::AnnounceExile { card: divination });
         pay(&mut g);
