@@ -2052,14 +2052,12 @@ impl Game {
         }
         if let Some(a) = &self.state.announcing
             && !a.additional_paid
-            && a.item
-                .cast
-                .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
+            && a.graveyard_origin_counter_cost().is_some()
         {
             return self.creature_counter_fundable(
                 goal,
                 purpose,
-                a.item.source_card.graveyard_counter_cost().unwrap(),
+                a.graveyard_origin_counter_cost().unwrap(),
                 a.creature_counter_cost
                     .as_ref()
                     .map_or(&[], |v| v.as_slice()),
@@ -2271,10 +2269,7 @@ impl Game {
                 &[],
             );
         }
-        if a.item
-            .cast
-            .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
-        {
+        if a.graveyard_origin_counter_cost().is_some() {
             let cost = self.reduced_spell_cost(a.item.controller, a.item.card, cost);
             return self.creature_counter_fundable(
                 FundingGoal {
@@ -2285,7 +2280,7 @@ impl Game {
                     source: None,
                 },
                 self.purpose_for_item(&a.item),
-                a.item.source_card.graveyard_counter_cost().unwrap(),
+                a.graveyard_origin_counter_cost().unwrap(),
                 a.creature_counter_cost
                     .as_ref()
                     .map_or(&[], |v| v.as_slice()),

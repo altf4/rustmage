@@ -266,7 +266,15 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseZoneReplacement { .. } => 50,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
-            Action::AnnounceFreeFromPermission {
+            Action::AnnounceFreeCounterGraveyard {
+                flash_surcharge: false,
+                ..
+            }
+            | Action::AnnounceFreeGraveyardPermanent {
+                flash_surcharge: false,
+                ..
+            }
+            | Action::AnnounceFreeFromPermission {
                 flash_surcharge: false,
                 ..
             }
@@ -274,7 +282,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 flash_surcharge: false,
                 ..
             } => 81,
-            Action::AnnounceFreeFromPermission { .. }
+            Action::AnnounceFreeCounterGraveyard { .. }
+            | Action::AnnounceFreeGraveyardPermanent { .. }
+            | Action::AnnounceFreeFromPermission { .. }
             | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceCounterGraveyard { .. }

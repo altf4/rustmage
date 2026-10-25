@@ -1,0 +1,897 @@
+{
+  "schema": 1,
+  "scope": "Armor Wars and World War Hulk shared casting core only; both whole cards remain gated",
+  "base": "c51defa402a94f4958a6b74e178d3aac792bed74",
+  "tested_runtime_head": "ce5ecc11ab8f545274b0048e1a575050d4e57f40",
+  "complete_cards_added": [],
+  "new_admissions": 0,
+  "paired_definitions": [
+    {
+      "name": "Armor Wars",
+      "path": "src/card_definitions/msh/armor_wars.rs",
+      "complete": false,
+      "staged": "Only chapter II creates the captured-player artifact discount; other chapters and complete Saga producer evidence are unfinished."
+    },
+    {
+      "name": "World War Hulk",
+      "path": "src/card_definitions/msh/world_war_hulk.rs",
+      "complete": false,
+      "staged": "Only chapter I creates the next qualifying free-cast rule; chapters II/III and complete Saga producer evidence are unfinished."
+    }
+  ],
+  "interfaces": [
+    "Private ReduceArtifactSpellCostsThisTurn(amount) and NextRedOrGreenCreatureFreeThisTurn instructions create source-independent rules for the resolving ability controller until finish_cleanup.",
+    "The common definition-based spell reducer adds the captured artifact-only generic reduction; it never reduces colored or colorless symbols and remains shared by actual, scalar and funding paths.",
+    "Only successful record_cast consumes every older matching next-cast grant. Paid qualifying casts, Plot and Warp consume it; probes, failed actions, plotting, and spell copies do not.",
+    "Existing AnnounceFree retains independent ordinary hand/library/exile/graveyard permissions. New AnnounceFreeCounterGraveyard preserves the selected mandatory six-counter origin cost; a separate AnnounceFreeGraveyardPermanent retains Muldrotha source/type allowance. Neither creates timing or zone permission.",
+    "Mandatory counter origin selection is owned by Announcement independently of the free mana alternative and uses the existing central additional-cost and counter-cost funder/executor.",
+    "The new hand enumeration defers only to the legacy unrestricted hand alternative with the identical selected-face/surcharge availability check and nonland physical-front gate; no duplicate action is emitted."
+  ],
+  "wire": {
+    "previous": 150,
+    "current": 151,
+    "actual_delta": [
+      "Optional public PlayerView.turn_cast_grants contains artifact_generic_reduction and next_red_or_green_creature_free counts for the captured player. Absent rows are serde-skipped.",
+      "Two distinct real free-origin Action variants retain mandatory counter or per-type permission choices."
+    ],
+    "cast_info_unchanged": true,
+    "private_announcement_field": "origin_counter_cost: Option<u16>",
+    "new_public_cost_sentinel": false
+  },
+  "source_provenance": {
+    "oracle": [
+      {
+        "oracle_id": "1ad83cac-2c85-477b-ab00-1369f9683db5",
+        "name": "Armor Wars",
+        "layout": "saga",
+        "mana_cost": "{2}{U}{R}",
+        "cmc": 4.0,
+        "type_line": "Enchantment \u2014 Saga",
+        "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI \u2014 You may draw a card for each artifact you control. If you do, each opponent draws a card.\nII \u2014 Artifact spells you cast this turn cost {1} less to cast.\nIII \u2014 This Saga deals X damage to target opponent, where X is the greatest mana value among artifacts you control.",
+        "colors": [
+          "R",
+          "U"
+        ],
+        "color_identity": [
+          "R",
+          "U"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "11a13397-1d31-4257-87c2-a757a751c601",
+          "set": "msh",
+          "collector_number": "203",
+          "released_at": "2026-06-26"
+        }
+      },
+      {
+        "oracle_id": "8c4da760-8913-46ca-b00c-bba6d877d482",
+        "name": "World War Hulk",
+        "layout": "saga",
+        "mana_cost": "{3}{G}{G}",
+        "cmc": 5.0,
+        "type_line": "Enchantment \u2014 Saga",
+        "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI \u2014 The next red or green creature spell you cast this turn can be cast without paying its mana cost.\nII \u2014 Put three +1/+1 counters on target creature you control.\nIII \u2014 Choose target creature you control. Until end of turn, double its power and toughness and it gains trample.",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [
+          "Double"
+        ],
+        "reference_printing": {
+          "id": "9032f05b-5c21-4996-90c1-268dc6dffbaa",
+          "set": "msh",
+          "collector_number": "197",
+          "released_at": "2026-06-26"
+        }
+      }
+    ],
+    "audit": {
+      "path": "<cache>/rustmage-msh-turn-cast-grants-core-source-audit.json",
+      "sha256": "f1ef507c4afa0a9143e864a1adf41e61754faf53b0a85d42303deefa40a9cf20"
+    },
+    "java_pins": [
+      {
+        "path": "Mage.Sets/src/mage/cards/a/ArmorWars.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c5211be3a669190fe5f470b59bb4b404f3f3f423f466ce7d85d9074ca020348f",
+        "read_coverage": "Complete file including all file-local effect classes"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/w/WorldWarHulk.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "343a25e3eb0b15686fbab6d6fe03caca7e4d2df47e5c7ef81a15fdf2f3ccc055",
+        "read_coverage": "Complete file including all file-local effect classes"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ArtifactYouControlCount.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "92087ef848245fb2f446712fb82cfc54bd7d12bf00b8babd522e4ba655a52a6a",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/TargetPermanentPowerCount.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "f0b296ef8d2fb45064bc8c791842e589a5bbd3c2622ef4fe2e78b26dde8b94fc",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/TargetPermanentToughnessCount.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "8992bb343bdbeb14bdc4c7b1af9189b0bd4a56d54d3eacafb558221ca0cb34ae",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterArtifactCard.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b83bf74eb3350828f9e0d61a716272f06439b9752ece9b10b041b03ee0dc32d4",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorPredicate.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b62ced1f121575b7737a20875425334d7bf61e018a809548805d14f38d71e82b",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/AlternativeSourceCosts.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "0c40d112c19c51bb28c7ae73b19af4832b9d1df059d0a3705425c8dfa0c0e5a6",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCostImpl.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e6bb4d27385a2cc14ab0adc712781c2f80bd43c40a18f5dd6eda69152b2b8e51",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCost.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "9b78b1fc6ea8164a490ddd146a2cbc1dd26f1ceda48f1475765482f890a8df50",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/constants/SagaChapter.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "2a5bcf61b6a211a22ba02c94ee762bdb3f70ae6470df54d28b11f255142077f5",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/FilterOpponent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "45813e5fd75e1b9a5401f9927d811a9ebf05ea2364938b8f7c1020da7b6f1f7f",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/FilterPlayer.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "f531a6fb8bfa0286f878356a95ad5636734a0de844643691303058fa7c5ecf8f",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/constants/Duration.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747",
+        "read_coverage": "complete body; some unchanged shared helpers reread earlier in this same task chain, hash revalidated here"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+        "read_coverage": "explicit ranges only; enclosing full body retained for reproducibility"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/q/QuilledGreatwurm.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "4af8931ec9972ef0a8b7e92055c2fb3269ba8fc902b807e1790cf6268ecf46c2",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/common/RemoveCounterCost.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "fbe3e23cc772d9043c2a5f1aa21d5d464d4878219cfc4143d6049bbdd6b05909",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/m/MuldrothaTheGravetide.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "69fda3677c726581998b9b154dc5811ff1d4de963b089d56ba2c1542e605d606",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/v/VizierOfTheMenagerie.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "caaadf7b9d864566f91db7dda1acaa7c77b8359a6552a11e788ad8d568a3e23e",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/w/WildwoodScourge.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b62da3d7c0f930f6713c9c298a016a87ea5a3cda80805b7ad9a043f14b5e9c4a",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/t/TitaniaRuggedRumbler.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "678d2d66bbebf714ce506b3fe93cf95933c29ff78cccab2445f27812cc70a8ec",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/o/Omniscience.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "3e3cf8aa8c124f9cea6ed1bbf6f61addea6caa8e72cb21602c8918984aafac8e",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastFromHandWithoutPayingManaCostEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "21f6707d883b719f93109cf5687fe1141e7cd80c13ea464ba9bbb1b4f0f20ca8",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/condition/CompoundCondition.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "1577f41ffe084565cd38c201fb8b0ac92bf6eae3b2ee2618966495ee10f3898f",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/condition/common/SourceIsSpellCondition.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "9e5ce1e6b629d33136723fd52cb62e5e7a7270f34165234a36b2eb94cd6bffed",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/condition/common/IsBeingCastFromHandCondition.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "4763c76911d2a96bb5bf2944b0bf7c2743e251782983eb995fac42f31e1ba33a",
+        "read_coverage": "complete direct helper/class; fixture proof is limited to its origin/cost permission obligations"
+      }
+    ],
+    "java_pin_count": 53,
+    "limited_source_reads": [
+      "StaticFilters.java: only relevant declarations446-463; complete enclosing bytes retained but not claimed fully read.",
+      "Large current Rust engine/funding/program files: exact affected boundaries listed in the local audit; entire retained snapshots do not imply an entire-file read."
+    ],
+    "primary_sources": [
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "section": "World War Hulk",
+        "applied": "The next qualifying paid cast consumes chapter I; chapter III is a fixed current-P/T snapshot, whose whole producer is not claimed by this core."
+      },
+      {
+        "url": "https://magic.wizards.com/en/news/feature/core-set-2021-and-jumpstart-release-notes-2020-06-20",
+        "section": "Sanctum of Calm Waters",
+        "inference": "Together with CR118.12, its optional zero-draw ruling supports accepting Armor Wars draw0 then opponent draw1. The pinned Java positive-artifact guard differs; Armor chapter I is still unfinished here."
+      }
+    ]
+  },
+  "tests": {
+    "module": "src/engine_msh_turn_cast_grants_tests.rs",
+    "new_groups": 27,
+    "parent_registered_groups": 1663,
+    "total_registered_groups": 1690,
+    "executed_groups": 1689,
+    "passed": 1689,
+    "failed": 0,
+    "filtered_out": 1,
+    "excluded_exact": "msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_evidence",
+    "exclusion_reason": "Known slow 132-game sampling workload awaits the separate Teamwork funding performance change. No other native group is excluded; this checkpoint does not claim that sampler completed.",
+    "native_seconds": 11.66,
+    "assertion_scope": [
+      "Both seats: real paid spells and gated real grant-chapter fixtures, captured controller after source control change/departure/reentry, source-independent continued use.",
+      "Stacked artifact discounts, generic-only clamp, colored shortage, nonartifact/caster filters, small exhaustive funding-versus-paid-menu equivalence.",
+      "Red-or-green creature qualification and actual chosen face; free/paid next cast, query purity, copies, countered spells, Plot/Warp, and new grants after the old grants are consumed.",
+      "Independent timing and zone permissions; owned library-top visibility deferral, exile and ordinary graveyard permissions, flashback incompatibility, X0 with no scalar choice.",
+      "Quilled Greatwurm six-counter mandatory origin cost: insufficient/extra counters, wrong source, current creature/controller qualification, independent normal graveyard permission, raw/index/orphan restore at each selection.",
+      "Muldrotha exact source/type, own-turn and suppression restrictions, mandatory payment failures before allowance consumption, source reincarnation and owned replay.",
+      "Titania real discard-or-two additional cost, public sparse counts, cleanup expiry for both players, actor errors, illegal-action atomicity, stale revision, both complete observations, and protected nonowner hand counterfactuals.",
+      "Supported Omniscience overlap emits each same selected-face alternative once, for own versus opponent provider; the static free route persists after the next-cast grant is consumed."
+    ],
+    "fixture_limits": [
+      "Only the two authorized gated real Saga definitions bypass the support guard through a bounded outside-zone identity setup; their grant chapters do not certify the whole printed card.",
+      "Some controller and counter states are bounded owned scenario fixtures; subsequent casting, payments, choices, movement, privacy and replay use production APIs.",
+      "There is no immutable land-front/creature-modal-back recipe in the current catalogue. The source branch preserves that condition; no synthetic paid reachability is claimed."
+    ]
+  },
+  "checks": [
+    {
+      "name": "native",
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "--",
+        "--skip",
+        "msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_evidence",
+        "--nocapture"
+      ],
+      "seconds": 172.992467604985,
+      "exit_code": 0,
+      "log": "<cache>/rustmage-msh-turn-cast-grants-core-final-native.log"
+    },
+    {
+      "name": "legacy149",
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "supported_cards_retain_bounded_cast_and_entry_traces",
+        "--",
+        "--nocapture"
+      ],
+      "seconds": 1.6985180579940788,
+      "exit_code": 0,
+      "log": "<cache>/rustmage-msh-turn-cast-grants-core-final-legacy149.log"
+    },
+    {
+      "name": "legacy148",
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "supported_cards_retain_bounded_cast_and_entry_traces",
+        "--",
+        "--nocapture"
+      ],
+      "seconds": 1.6595777919865213,
+      "exit_code": 0,
+      "log": "<cache>/rustmage-msh-turn-cast-grants-core-final-legacy148.log"
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "seconds": 39.354046428983565,
+      "exit_code": 0,
+      "log": "<cache>/rustmage-msh-turn-cast-grants-core-final-clippy.log"
+    },
+    {
+      "name": "format",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "seconds": 1.6483184000244364,
+      "exit_code": 0,
+      "log": "<cache>/rustmage-msh-turn-cast-grants-core-final-format.log"
+    },
+    {
+      "name": "card-format",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "src/card_definitions/msh/armor_wars.rs",
+        "src/card_definitions/msh/world_war_hulk.rs"
+      ],
+      "seconds": 0.009295310010202229,
+      "exit_code": 0,
+      "log": "<cache>/rustmage-msh-turn-cast-grants-core-final-card-format.log"
+    },
+    {
+      "name": "sources",
+      "command": [
+        "python3",
+        "scripts/check_sources.py"
+      ],
+      "seconds": 0.6154595770058222,
+      "exit_code": 0,
+      "log": "<cache>/rustmage-msh-turn-cast-grants-core-final-sources.log"
+    },
+    {
+      "name": "link",
+      "command": [
+        "python3",
+        "scripts/link_catalogue.py",
+        "--check"
+      ],
+      "seconds": 0.4611645090044476,
+      "exit_code": 0,
+      "log": "<cache>/rustmage-msh-turn-cast-grants-core-final-link.log"
+    }
+  ],
+  "guard": {
+    "command": [
+      "python3",
+      "<temp>/msh-turn-cast-grants-core-final-driver.py"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 218.47434439201606,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2806878208,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "trace_proof": {
+    "base": "c51defa402a94f4958a6b74e178d3aac792bed74",
+    "normal_schema": 151,
+    "previous_schema": 150,
+    "rows": 2525,
+    "normal_sha256": "4339ba91c4483767a18f07260cb9b629beb1a426d9b1e24dd3632ad7760c3eb2",
+    "exports": [
+      {
+        "schema": 151,
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-traces.json",
+        "sha256": "4339ba91c4483767a18f07260cb9b629beb1a426d9b1e24dd3632ad7760c3eb2",
+        "rows": 2525
+      },
+      {
+        "schema": 150,
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-traces.previous-schema.json",
+        "sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+        "rows": 2525
+      },
+      {
+        "schema": 149,
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-legacy149-traces.previous-schema.json",
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "rows": 2525
+      },
+      {
+        "schema": 148,
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-legacy148-traces.previous-schema.json",
+        "sha256": "bacddb814caac0997ed1b3b97a1e7c7b1820531ca42efb06c617d624bba196d9",
+        "rows": 2525
+      }
+    ],
+    "parents": [
+      {
+        "name": "current_c51_base",
+        "head": "c51defa402a94f4958a6b74e178d3aac792bed74",
+        "schema": 150,
+        "rows": 2525,
+        "sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2525
+      },
+      {
+        "name": "published_e5",
+        "head": "e5f576b58e0c98fd430fc7932b56530339e4d088",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2525
+      },
+      {
+        "name": "base",
+        "head": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+        "schema": 148,
+        "rows": 2516,
+        "sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2516
+      },
+      {
+        "name": "red_grim",
+        "head": "9fb8a5f44aced128411250f4662a9e2c9dd05f1c",
+        "schema": 149,
+        "rows": 2518,
+        "sha256": "2a8b12a2923f4bd74673f081c6ca549f15e5a971f604fa45b251d58d9c08f8ec",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2518
+      },
+      {
+        "name": "baxter_raft",
+        "head": "8fb9c4fde96afb72f5ab37af453eca59ca7913b4",
+        "schema": 148,
+        "rows": 2518,
+        "sha256": "19575053e0252530881ddb758d0850e1d33140417001c0da50d281228d5c3226",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2518
+      },
+      {
+        "name": "hex_moon",
+        "head": "03d01f448a04a06083397ce440cfbaadd22c079a",
+        "schema": 148,
+        "rows": 2518,
+        "sha256": "e83465e157f8790accd1cf9fef0fbb4162c4ee1b58908c9d8db9ca173d8d4d1f",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2518
+      },
+      {
+        "name": "whole_six",
+        "head": "530c5205465b05d9f70c5f69313b152358ba5d4c",
+        "schema": 149,
+        "rows": 2522,
+        "sha256": "6e496077cc408eb84e3a877884a06473e6bf08dcfa540e78031e2bf866070cf6",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2522
+      },
+      {
+        "name": "copy_core",
+        "head": "d2dd845c92654eedc5ba402bb1c3b014f78ddcc1",
+        "schema": 149,
+        "rows": 2516,
+        "sha256": "960a1397e96079bdd75d9c45c71c6628c83870d05b87d761d070920685361728",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2516
+      },
+      {
+        "name": "reviewed_core_whole_six",
+        "head": "057ecbb5f83acda151accd472b5ea0e3d37ee5ce",
+        "schema": 149,
+        "rows": 2522,
+        "sha256": "6e496077cc408eb84e3a877884a06473e6bf08dcfa540e78031e2bf866070cf6",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2522
+      },
+      {
+        "name": "whole_copy_three",
+        "head": "7a34fe15aab80980edd6f6481e319bb9ea4876f9",
+        "schema": 149,
+        "rows": 2519,
+        "sha256": "e24f5a5d73bd8076d8d3373eec9dcb0e754f4ca43e4454bb7ebf91f860fe7480",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2519
+      },
+      {
+        "name": "whole_nine_strict",
+        "head": "6cb1ab8009ea2d03134cec2607bda0928e1930c6",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2525
+      },
+      {
+        "name": "combined_nine",
+        "head": "48966258a9a28e4974261d8469e1dcd2a9f3dc91",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2525
+      },
+      {
+        "name": "initial_published_nine",
+        "head": "a41d2a700ba0064c210b5342528580d7398a096a",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2525
+      },
+      {
+        "name": "copy_rule_correction",
+        "head": "d6c2ecda905c12fb7a3cecad6ddc85ececcb33b7",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2525
+      },
+      {
+        "name": "prior_corrected_published",
+        "head": "f798abe6c25f7df572915beccd0cae6355d9a77e",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2525
+      },
+      {
+        "name": "projected_faces_source",
+        "head": "04d0de61e6c9752d867b98b92951fb524013b943",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": 2525
+      }
+    ],
+    "full_prior148_aggregate_exact": true,
+    "prior148_aggregate_sha256": "bacddb814caac0997ed1b3b97a1e7c7b1820531ca42efb06c617d624bba196d9",
+    "fixed_input_count": 11834,
+    "fixed_input_changes": [],
+    "metadata_membership_oracle_recorder_exact": [
+      "data/catalogue-identities.json",
+      "data/sets/msh.json",
+      "data/standard/cards.json",
+      "data/standard/xmage-inventory.json",
+      "src/assurance/regressions.rs"
+    ],
+    "new_rows": [],
+    "new_admissions": 0,
+    "policy_delta": "Only two new free-origin action variants are added to existing free-cast score arms; old scoring logic unchanged.",
+    "excluded_native": "Only msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_evidence; pending separate Teamwork performance prerequisite.",
+    "no_field_stripping": true
+  },
+  "trace_proof_artifact": {
+    "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-trace-proof.json",
+    "sha256": "e9aaae3a4d5390828faae5ade2cc6936ef4af6290040e5546e19a4d774804c34"
+  },
+  "runtime_inputs": {
+    "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-native-inputs.json",
+    "sha256": "6bc1341fbeb1f3fdf6160c9630f2cba221af2301d0fa216a4b3a14dafdbfbff9"
+  },
+  "source_checks": {
+    "definitions": 5403,
+    "java_blobs": 1325,
+    "all_verified": true
+  },
+  "history": [
+    {
+      "stage": "focused1",
+      "outcome": "Compile-only two test borrow-check errors; no rules execution.",
+      "guard": {
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-focused-1-guard.json",
+        "sha256": "4abc19dbe8b9dd39b2ae4bec0d0031c14e8855b6540affdc25f10dc335659515"
+      }
+    },
+    {
+      "stage": "focused2",
+      "outcome": "23 of 24 passed; the remaining assertion incorrectly compared the hand owner view in a private-card counterfactual.",
+      "guard": {
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-focused-2-guard.json",
+        "sha256": "4cad09e3e8362e1d981a010807edb5d827dbc51476e44d3bd53f2c5f3e8fc5b8"
+      }
+    },
+    {
+      "stage": "first_strict",
+      "outcome": "1,688 passed with the sole broad 132 exclusion. A subsequent source audit identified duplicate identical hand-free actions under Omniscience; the final new regression covers the correction.",
+      "guard": {
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-strict-guard.json",
+        "sha256": "349445c759b1df40ac3a1a3068924c2e8d75a3ab2f8810407f878880c1923253"
+      }
+    }
+  ],
+  "cleanup": {
+    "created_utc": "2026-10-25T14:18:36.953829+00:00",
+    "terminal": true,
+    "known_guarded_consumers_terminal": true,
+    "own_user_processes_scanned": 192,
+    "accessible_fd_maps_exe_cwd_target_refs": [],
+    "denied_inspections": 174,
+    "target": "<cache>/rustmage-msh-turn-cast-grants-core-final-target",
+    "parent_manifest": "<cache>/rustmage-msh-turn-cast-grants-core-prior-preservation.json",
+    "parent_manifest_sha256": "50f77b54014ba6804ca2aadeecbc53feefe1195b9177d4cdd55105b04ac3cda4",
+    "prior_required": 4096,
+    "all_prior_paths_and_hashes_exact": true,
+    "missing_prior": [],
+    "changed_prior": [],
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 126767104,
+    "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation.",
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "e71be30c834cb37fffd0fb1db081c6179340948d2538012c7939fa8a0e257a68"
+      }
+    ]
+  },
+  "preservation": {
+    "manifest": {
+      "path": "<cache>/rustmage-msh-turn-cast-grants-core-preservation.json",
+      "sha256": "2d74d906390fa1921f6f3427680c6119216c73bf7c054dac8bc66d0b9ea74046"
+    },
+    "required_paths": 4099,
+    "prior_paths_exact": 4096,
+    "retained_final_files": [
+      {
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-turn-cast-grants-core-final-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "e71be30c834cb37fffd0fb1db081c6179340948d2538012c7939fa8a0e257a68"
+      }
+    ]
+  },
+  "policy": "Only the two new actual Action variants join existing free-cast scoring arms. No hidden-state access, old-score change or new policy was introduced.",
+  "unchanged": [
+    "Catalogue IDs/colors/aliases/token recipes",
+    "Frozen Oracle and MSH membership",
+    "Trace recorder and comparison assertions"
+  ],
+  "measurements": {
+    "interval_start_utc": "2026-10-25T13:21:37+00:00",
+    "interval_end_utc": "2026-10-25T14:18:36.953829+00:00",
+    "elapsed_minutes": 56.999230483333335,
+    "scope": "Core authoring/source refresh/queue/validation/cleanup; prior cached design preparation excluded. 0 whole cards admitted, 27 new groups. Not a whole-card throughput or pure simulation benchmark.",
+    "native_execution": "11.66 seconds includes rules assertions, owned replay and privacy checks."
+  },
+  "remaining": [
+    "Both complete producer implementations and their entire printed paid-clause matrices remain unfinished.",
+    "The 132-game sampler and required final aggregate release validation remain outside this core checkpoint.",
+    "Whole 281 identity / 448 printing set gameplay, interactions and performance acceptance remain open."
+  ]
+}

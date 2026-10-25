@@ -961,6 +961,8 @@ pub(crate) enum Instruction {
     CopyStormSpell,
     ChangeSingleStackTarget,
     GrantGraveyardCast(GraveyardCastKind),
+    ReduceArtifactSpellCostsThisTurn(u32),
+    NextRedOrGreenCreatureFreeThisTurn,
     /// Permission for the exact public card(s) just milled by this resolution.
     GrantMilledPlay,
     ExileDiscardedWithStash,
