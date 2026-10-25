@@ -811,11 +811,14 @@ fn msh_teamwork_funding_scalability_ordinary_nay_fixed_equipment_and_empty_board
             cast(&mut g, victim, None, &[]);
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
             let spell = named(&mut g, p, "We Say Thee Nay!", Zone::Hand);
-            let funding = FundingBudget::new(128);
-            let teamwork = Budget::new(256);
             checked(&mut g, Action::AnnounceCast { card: spell });
             let before = g.snapshot();
+            // Bound the one feasibility query, not repeated owned payment replays.
+            let funding = FundingBudget::new(128);
+            let teamwork = Budget::new(256);
             let actions = g.legal_actions();
+            drop(teamwork);
+            drop(funding);
             assert!(actions.contains(&Action::ChooseTeamwork { pay: false }));
             assert_eq!(
                 actions.contains(&Action::ChooseTeamwork { pay: true }),
@@ -852,8 +855,6 @@ fn msh_teamwork_funding_scalability_ordinary_nay_fixed_equipment_and_empty_board
                 g = orphan(g, Action::FinishTeamwork);
                 assert!(g.object_view(id).tapped);
             }
-            drop(teamwork);
-            drop(funding);
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
             assert_eq!(
                 g.state
