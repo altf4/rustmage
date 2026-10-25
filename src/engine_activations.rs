@@ -192,7 +192,7 @@ impl Game {
                 &self.state.objects[card as usize],
                 self.counter_amounts(card),
                 self.current_kinds(card),
-                || self.keywords(card),
+                || ability_world::CharacteristicWorld::activation_keywords(self, card),
                 self.state.players[actor.index()].life,
                 ability,
                 index,
@@ -260,7 +260,8 @@ impl Game {
             || object.tapped
             || (self.is_creature(card)
                 && object.summoning_sick
-                && !self.keywords(card).contains(Keywords::HASTE))
+                && !ability_world::CharacteristicWorld::activation_keywords(self, card)
+                    .contains(Keywords::HASTE))
         {
             return false;
         }

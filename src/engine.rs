@@ -3447,7 +3447,8 @@ impl Game {
                             .is_some()
                         && (!self.is_creature(card)
                             || !obj.summoning_sick
-                            || self.keywords(card).contains(Keywords::HASTE))
+                            || ability_world::CharacteristicWorld::activation_keywords(self, card)
+                                .contains(Keywords::HASTE))
                         && emit(Action::TapMana { card })
                     {
                         return true;
@@ -8149,3 +8150,7 @@ mod msh_damage_replacement_tests;
 #[cfg(test)]
 #[path = "engine_shield_harness_tests.rs"]
 mod shield_harness_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_restricted_creatures_tests.rs"]
+mod msh_restricted_creatures_tests;

@@ -274,7 +274,7 @@ impl Game {
                     &ready_object,
                     self.counter_amounts(card),
                     self.current_kinds(card),
-                    || self.keywords(card),
+                    || CharacteristicWorld::activation_keywords(self, card),
                     self.state.players[actor.index()].life,
                     ability,
                     0,

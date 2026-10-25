@@ -113,6 +113,11 @@ impl FundingState<'_> {
     }
     fn cost_object(&self, spec: AdditionalCost, r: ObjectRef, source: ObjectRef) -> bool {
         let o = self.object(r.card);
+        if spec.kind == EffectChoiceKind::SacrificeAttachedEquipment
+            && o.attached_to != Some(source)
+        {
+            return false;
+        }
         let spec = spec.in_zone(o.zone);
         self.reference(r.card) == r
             && (r != source
@@ -776,6 +781,7 @@ impl FundingState<'_> {
             }
             EffectChoiceKind::ReturnToHand => destination = Zone::Hand,
             EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_) => {}

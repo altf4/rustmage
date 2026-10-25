@@ -437,6 +437,8 @@ pub(crate) enum ManaRestriction {
     Unrestricted,
     SpellSubtype(&'static str),
     ChosenCreatureSpellOrActivation,
+    EquipmentSpellOrEquip,
+    CreatureActivation,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaSpellBonus {
@@ -724,6 +726,8 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    /// One controlled Equipment attached to this exact activated source.
+    SacrificeAttachedEquipment,
     ReturnToHand,
     Discard,
     DiscardNamed(&'static str),
@@ -758,6 +762,9 @@ impl AdditionalCost {
     /// The hand route has its own printed restriction; the permanent filter
     /// applies only to the sacrifice route.
     pub(crate) fn in_zone(mut self, zone: Zone) -> Self {
+        if self.kind == EffectChoiceKind::SacrificeAttachedEquipment && zone == Zone::Battlefield {
+            self.kind = EffectChoiceKind::Sacrifice;
+        }
         if let EffectChoiceKind::SacrificeOrDiscard { nonland } = self.kind {
             match zone {
                 Zone::Hand => {
@@ -3090,6 +3097,11 @@ pub(crate) struct ActivatedAbility {
 }
 
 impl ActivatedAbility {
+    /// Existing typed equip slots are exactly the battlefield AttachSource program.
+    /// Entry attachments, channel and animation programs are different abilities.
+    pub(crate) fn is_equip(&self) -> bool {
+        self.origin == ActivationOrigin::Battlefield && self.program == [Instruction::AttachSource]
+    }
     pub(crate) fn source_counter_cost(&self) -> Option<CounterKind> {
         match self.program.first() {
             Some(Instruction::SourceCounterCost { kind }) => {

@@ -1,0 +1,507 @@
+//! Individual paid restricted-mana cards and activation-only haste rules.
+use super::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
+use super::msh_thirteenth_combined_tests::owned_checked_step;
+use super::*;
+const RONIN: &str = "Ronin, Shadow Stalker";
+const SHANG: &str = "Shang-Chi, Master of Kung Fu";
+fn seed(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
+    let card = Card::from_name(name).unwrap();
+    if card.is_supported() {
+        return named(g, p, name, zone);
+    }
+    assert!([RONIN, SHANG].contains(&name));
+    assert_eq!(zone, Zone::Hand);
+    let id = named(g, p, "Forest", zone);
+    g.state.objects[id as usize].card = card;
+    id
+}
+fn game(p: Player) -> Game {
+    let mut g = setup(p);
+    for s in &mut g.state.players {
+        s.mana = [0; 6]
+    }
+    g
+}
+fn priority(g: &mut Game, p: Player) {
+    if g.actor() != Some(p) {
+        checked(g, Action::Pass)
+    }
+    assert_eq!(g.actor(), Some(p));
+}
+fn packet(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
+    priority(g, p);
+    let id = seed(g, p, name, Zone::Hand);
+    let (mut mana, generic) = Card::from_name(name).unwrap().cost();
+    mana[5] += generic;
+    g.state.players[p.index()].mana = mana;
+    cast(g, id, None, targets);
+    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    id
+}
+fn paid(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
+    let id = packet(g, p, name, targets);
+    settle(g);
+    id
+}
+fn announce(id: CardId, ability: u16) -> Action {
+    Action::AnnounceActivate {
+        card: id,
+        ability,
+        counter_payment: Counters::default(),
+    }
+}
+fn mana(id: CardId, production: Mana) -> Action {
+    Action::AnnounceMana {
+        card: id,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production,
+    }
+}
+fn reject(g: &mut Game, a: Action) {
+    let s = g.snapshot();
+    let b = g.state_bytes();
+    let v = [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap());
+    assert_eq!(g.apply(g.actor().unwrap(), a), Err(Error::IllegalAction));
+    assert_eq!(g.snapshot(), s);
+    assert_eq!(g.state_bytes(), b);
+    assert_eq!(
+        [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap()),
+        v
+    );
+}
+fn finish(g: &mut Game) {
+    for _ in 0..35 {
+        if g.state.announcing.is_none() && !matches!(g.state.pending, Pending::ManaLotSpend { .. })
+        {
+            return;
+        }
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| {
+                matches!(
+                    a,
+                    Action::FinishTargets
+                        | Action::PayCosts { .. }
+                        | Action::ChooseManaLotSpend { .. }
+                )
+            })
+            .unwrap_or_else(|| panic!("unfinished {:?}", g.state.pending));
+        checked(g, a)
+    }
+    panic!("unfinished")
+}
+fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
+    g.prepare_triggers();
+    for _ in 0..250 {
+        if stop(g) {
+            return;
+        }
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| {
+                matches!(
+                    a,
+                    Action::Pass
+                        | Action::PutTrigger { .. }
+                        | Action::FinishTargets
+                        | Action::FinishAttackers
+                        | Action::FinishBlockers
+                        | Action::AssignDamage { .. }
+                        | Action::ChooseKicker { pay: false }
+                )
+            })
+            .unwrap_or_else(|| panic!("stalled {:?}", g.state.pending));
+        checked(g, a)
+    }
+    panic!("stalled")
+}
+fn main(g: &mut Game, p: Player) {
+    until(g, |g| {
+        g.state.step == Step::Main1 && g.state.active == p && g.state.pending == Pending::Priority
+    });
+    priority(g, p)
+}
+fn equip(g: &mut Game, p: Player, e: CardId, who: CardId) {
+    priority(g, p);
+    checked(g, announce(e, 0));
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(who),
+        },
+    );
+    finish(g);
+    settle(g);
+    assert_eq!(
+        g.state.objects[e as usize].attached_to,
+        Some(g.object_ref(who))
+    );
+}
+fn orphan(g: Game, a: Action) -> Game {
+    let p = g.actor().unwrap();
+    let i = g.legal_actions().iter().position(|x| *x == a).unwrap();
+    owned_checked_step(g, p, i, a)
+}
+fn removal(g: &mut Game, p: Player, r: CardId, e: CardId, target: CardId) {
+    priority(g, p);
+    checked(g, announce(r, 1));
+    checked(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    checked(g, Action::FinishTargets);
+    assert_eq!(g.state.pending, Pending::AdditionalCost { player: p });
+    checked(
+        g,
+        Action::ChooseAdditionalCost {
+            object: g.object_ref(e),
+        },
+    );
+    finish(g);
+}
+#[test]
+fn msh_restricted_creatures_ronin_paid_body_life_one_color_and_immediate_mana() {
+    for p in [Player::P0, Player::P1] {
+        for color in 0..5 {
+            let mut g = game(p);
+            let r = paid(&mut g, p, RONIN, &[]);
+            assert_eq!(
+                g.stats(r),
+                Stats {
+                    power: 3,
+                    toughness: 3
+                }
+            );
+            assert!(g.object_view(r).summoning_sick);
+            reject(&mut g, mana(r, [1, 1, 0, 0, 0, 0]));
+            reject(&mut g, mana(r, [0, 0, 0, 0, 0, 2]));
+            let mut n = [0; 6];
+            n[color] = 2;
+            let stack = g.state.stack.len();
+            checked(&mut g, mana(r, n));
+            finish(&mut g);
+            assert_eq!(g.state.players[p.index()].life, 18);
+            assert_eq!(g.state.players[p.index()].mana, n);
+            assert_eq!(g.state.stack.len(), stack);
+            assert!(!g.object_view(r).tapped);
+            assert_eq!(
+                g.observe(p).mana_lots[0].restriction,
+                ManaRestrictionView::EquipmentSpellOrEquip
+            );
+        }
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_once_each_turn_life_affordability_and_reset() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        g.state.players[p.index()].life = 1;
+        reject(&mut g, mana(r, [2, 0, 0, 0, 0, 0]));
+        g.state.players[p.index()].life = 20;
+        checked(&mut g, mana(r, [2, 0, 0, 0, 0, 0]));
+        finish(&mut g);
+        reject(&mut g, mana(r, [2, 0, 0, 0, 0, 0]));
+        next_turn(&mut g);
+        priority(&mut g, p);
+        checked(&mut g, mana(r, [0, 2, 0, 0, 0, 0]));
+        finish(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 16);
+        reject(&mut g, mana(r, [0, 2, 0, 0, 0, 0]));
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_mana_pays_real_equipment_spell_and_equip() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        checked(&mut g, mana(r, [2, 0, 0, 0, 0, 0]));
+        finish(&mut g);
+        let e = seed(&mut g, p, "S.H.I.E.L.D. Spy Kit", Zone::Hand);
+        cast(&mut g, e, None, &[]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 0, 0, 0]);
+        equip(&mut g, p, e, r);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(
+            g.stats(r),
+            Stats {
+                power: 4,
+                toughness: 4
+            }
+        );
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_rejects_non_equipment_spells_and_channel() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        checked(&mut g, mana(r, [0, 0, 0, 2, 0, 0]));
+        finish(&mut g);
+        for name in ["Grizzly Bears", "Arc Reactor", "Shock"] {
+            let c = seed(&mut g, p, name, Zone::Hand);
+            reject(&mut g, Action::AnnounceCast { card: c });
+        }
+        let m = seed(&mut g, p, "Mjölnir, Hammer of Thor", Zone::Hand);
+        g.state.players[p.index()].mana[3] += 1;
+        reject(&mut g, announce(m, 1));
+        assert_eq!(g.state.players[p.index()].life, 18);
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_restriction_survives_producer_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        checked(&mut g, mana(r, [2, 0, 0, 0, 0, 0]));
+        finish(&mut g);
+        paid(&mut g, p.other(), "Murder", &[Target::Card(r)]);
+        priority(&mut g, p);
+        assert_eq!(g.object_view(r).zone, Zone::Graveyard);
+        let e = seed(&mut g, p, "S.H.I.E.L.D. Spy Kit", Zone::Hand);
+        cast(&mut g, e, None, &[]);
+        settle(&mut g);
+        let c = seed(&mut g, p, "Shock", Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: c });
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 0, 0, 0]);
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_paid_attached_sacrifice_gives_minus_four_until_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        let e = paid(&mut g, p, "S.H.I.E.L.D. Spy Kit", &[]);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        equip(&mut g, p, e, r);
+        let victim = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        main(&mut g, p);
+        removal(&mut g, p, r, e, victim);
+        assert_eq!(g.object_view(e).zone, Zone::Graveyard);
+        assert!(g.object_view(r).tapped);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(victim),
+            Stats {
+                power: 6,
+                toughness: 6
+            }
+        );
+        assert_eq!(
+            g.stats(r),
+            Stats {
+                power: 3,
+                toughness: 3
+            }
+        );
+        next_turn(&mut g);
+        assert_eq!(
+            g.stats(victim),
+            Stats {
+                power: 10,
+                toughness: 10
+            }
+        );
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_cost_only_current_controlled_attached_equipment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        let e = paid(&mut g, p, "S.H.I.E.L.D. Spy Kit", &[]);
+        let other = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let wrong = named(&mut g, p, "S.H.I.E.L.D. Spy Kit", Zone::Battlefield);
+        let foreign = named(&mut g, p.other(), "S.H.I.E.L.D. Spy Kit", Zone::Battlefield);
+        assert!(g.attach_equipment(g.object_ref(wrong), g.object_ref(other)));
+        assert!(g.attach_equipment(g.object_ref(foreign), g.object_ref(r)));
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        equip(&mut g, p, e, r);
+        let victim = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        main(&mut g, p);
+        checked(&mut g, announce(r, 1));
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(victim),
+            },
+        );
+        checked(&mut g, Action::FinishTargets);
+        let v = g.observe(p).additional_cost.unwrap();
+        assert_eq!(v.kind, EffectChoiceKind::SacrificeAttachedEquipment);
+        assert_eq!(v.candidates, vec![g.object_ref(e)]);
+        for c in [wrong, foreign, other] {
+            let object = g.object_ref(c);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        let object = g.object_ref(e);
+        g = orphan(g, Action::ChooseAdditionalCost { object });
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(
+            g.stats(victim),
+            Stats {
+                power: 6,
+                toughness: 6
+            }
+        );
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_tap_sorcery_and_equipment_cost_are_real_starting_requirements() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        reject(&mut g, announce(r, 1));
+        let e = paid(&mut g, p, "S.H.I.E.L.D. Spy Kit", &[]);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        equip(&mut g, p, e, r);
+        reject(&mut g, announce(r, 1));
+        let s = paid(&mut g, p, SHANG, &[]);
+        assert!(!g.keywords(r).contains(Keywords::HASTE));
+        assert!(g.legal_actions().contains(&announce(r, 1)));
+        g.state.objects[r as usize].tapped = true;
+        reject(&mut g, announce(r, 1));
+        g.state.objects[r as usize].tapped = false;
+        next_turn(&mut g);
+        priority(&mut g, p);
+        reject(&mut g, announce(r, 1));
+        assert_eq!(g.object_view(s).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_paid_self_mana_immediate_without_haste_or_attack() {
+    for p in [Player::P0, Player::P1] {
+        for color in 0..5 {
+            let mut g = game(p);
+            let s = paid(&mut g, p, SHANG, &[]);
+            assert_eq!(
+                g.stats(s),
+                Stats {
+                    power: 2,
+                    toughness: 2
+                }
+            );
+            assert!(!g.keywords(s).contains(Keywords::HASTE));
+            assert!(g.object_view(s).summoning_sick);
+            let mut production = [0; 6];
+            production[color] = 2;
+            reject(&mut g, mana(s, [1, 1, 0, 0, 0, 0]));
+            reject(&mut g, mana(s, [0, 0, 0, 0, 0, 2]));
+            checked(&mut g, mana(s, production));
+            finish(&mut g);
+            assert!(g.object_view(s).tapped);
+            assert_eq!(g.state.players[p.index()].mana, production);
+            assert_eq!(
+                g.observe(p).mana_lots[0].restriction,
+                ManaRestrictionView::CreatureActivation
+            );
+        }
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_allows_new_intrinsic_and_printed_mana_without_granting_haste() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let s = paid(&mut g, p, SHANG, &[]);
+        let elf = paid(&mut g, p, "Llanowar Elves", &[]);
+        let helper = paid(&mut g, p, "Hydraulic Helper", &[]);
+        assert!(g.object_view(elf).summoning_sick);
+        assert!(g.object_view(helper).summoning_sick);
+        assert!(!g.keywords(elf).contains(Keywords::HASTE));
+        checked(&mut g, Action::TapMana { card: elf });
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 1, 0]);
+        checked(&mut g, mana(helper, [0, 1, 0, 0, 0, 0]));
+        finish(&mut g);
+        assert!(g.object_view(helper).tapped);
+        assert!(!g.object_view(s).tapped);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::Attackers { .. })
+        });
+        reject(
+            &mut g,
+            Action::Attack {
+                card: s,
+                defender: Target::Player(p.other()),
+            },
+        );
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_suppression_and_restoration_control_live_permission() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let s = paid(&mut g, p, SHANG, &[]);
+        let elf = paid(&mut g, p, "Llanowar Elves", &[]);
+        let witness = paid(&mut g, p.other(), "Witness Protection", &[Target::Card(s)]);
+        priority(&mut g, p);
+        reject(&mut g, Action::TapMana { card: elf });
+        reject(&mut g, mana(s, [0, 0, 0, 0, 2, 0]));
+        paid(&mut g, p, "Disenchant", &[Target::Card(witness)]);
+        checked(&mut g, Action::TapMana { card: elf });
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 1, 0]);
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_restricted_mana_pays_creature_hand_cycling() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let s = paid(&mut g, p, SHANG, &[]);
+        let scientist = seed(&mut g, p, "A.I.M. Scientists", Zone::Hand);
+        checked(&mut g, mana(s, [0, 0, 0, 0, 2, 0]));
+        finish(&mut g);
+        let count = g.hand_count(p);
+        checked(&mut g, announce(scientist, 0));
+        finish(&mut g);
+        assert_eq!(g.object_view(scientist).zone, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), count);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_restricted_mana_pays_graveyard_creature_activation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let s = paid(&mut g, p, SHANG, &[]);
+        let w = named(&mut g, p, "Winter Soldier, Icy Assassin", Zone::Graveyard);
+        let old = g.object_ref(w);
+        checked(&mut g, mana(s, [0, 0, 2, 0, 0, 0]));
+        finish(&mut g);
+        checked(&mut g, announce(w, 0));
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(w).zone, Zone::Battlefield);
+        assert_ne!(g.object_ref(w), old);
+        assert_eq!(g.counter_count(w, CounterKind::PlusOne), 1);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_rejects_spells_noncreature_equip_and_channel() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let s = paid(&mut g, p, SHANG, &[]);
+        let e = paid(&mut g, p, "S.H.I.E.L.D. Spy Kit", &[]);
+        checked(&mut g, mana(s, [0, 0, 0, 2, 0, 0]));
+        finish(&mut g);
+        reject(&mut g, announce(e, 0));
+        for name in ["Grizzly Bears", "Arc Reactor", "Shock"] {
+            let c = seed(&mut g, p, name, Zone::Hand);
+            reject(&mut g, Action::AnnounceCast { card: c });
+        }
+        let m = seed(&mut g, p, "Mjölnir, Hammer of Thor", Zone::Hand);
+        g.state.players[p.index()].mana[3] += 1;
+        reject(&mut g, announce(m, 1));
+    }
+}

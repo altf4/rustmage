@@ -154,6 +154,40 @@ pub(super) trait CharacteristicWorld {
                 })
             })
     }
+    /// Activation-only permission: never grants the haste keyword or attack permission.
+    fn activation_keywords(&self, id: CardId) -> Keywords {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        let keywords = query.keywords(id);
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield
+            || self.kinds(id) & 1 == 0
+            || !object.summoning_sick
+            || keywords.contains(Keywords::HASTE)
+        {
+            return keywords;
+        }
+        let grants = |f: &crate::cards::StaticAbilityFragment| {
+            matches!(
+                f,
+                crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
+            )
+        };
+        if self.static_sources().iter().any(|&source| {
+            let provider = self.object(source);
+            provider.zone == Zone::Battlefield
+                && provider.controller == object.controller
+                && provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|g| g.fragments.iter().any(grants))
+                && query.continuous_fragment_available(source, grants)
+        }) {
+            keywords.union(Keywords::HASTE)
+        } else {
+            keywords
+        }
+    }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield

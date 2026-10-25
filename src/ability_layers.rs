@@ -63,6 +63,7 @@ pub(crate) enum StaticAbilityFragment {
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
     PlayerHexproof,
+    ActivateControlledCreaturesAsHaste,
     PlayerHexproofIfSourceCounter {
         kind: CounterKind,
         minimum: u64,
