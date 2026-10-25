@@ -11583,6 +11583,14 @@
     "journal": "21c94e12108ffb3f",
     "observations": "0097135b12293d6e"
   },
+  "Night Nurse, Healer of Heroes": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "487c313004b71740"
+  },
   "Nightblade Brigade": {
     "root": "main",
     "status": "completed",
@@ -13694,6 +13702,14 @@
     "zone": "Exile",
     "journal": "3fe985ca52f16c8d",
     "observations": "773072816d51d474"
+  },
+  "Restorative Technique": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "4e3ecd79df95ffa0",
+    "observations": "e1c631b361ef0aa5"
   },
   "Restore with Empathy": {
     "root": "main",
