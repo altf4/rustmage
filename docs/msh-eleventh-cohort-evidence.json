@@ -277,5 +277,41 @@
     "scope": "Concurrent authoring interval through integrated evidence preparation, including queues, fixture fixes, focused checks, trace proof, combined work and cleanup. Excludes earlier cached designs, final release/CI gates and subsequent implementation. Not a simulation benchmark."
   },
   "remaining": "76 gated identities plus full281-member printed-obligation, rules-interaction, all-mechanic complete-game, legality/privacy/transactional, owned search/replay/restore and measured performance acceptance remain open. All remaining work stays in draft PR516 for final human approval; no main merge authorized.",
-  "final_gates": "Final exact published-head release validation, CI and two independent nonauthor reviews are required after this source evidence commit. Review text and outcomes are retained locally only."
+  "final_gates": "Final exact published-head release validation, CI and two independent nonauthor reviews are required after this source evidence commit. Review text and outcomes are retained locally only.",
+  "release_preflight_correction": {
+    "source_head": "402d8f9d7186a12d5ed5317fc6944afbaa3c0555",
+    "report": "<cache>/rustmage-validation-og8l2lac/report/result.json",
+    "terminal": true,
+    "source_pins_exit": 0,
+    "cargo_format_exit": 0,
+    "authored_card_format_exit": 1,
+    "changed": [],
+    "active_processes": [],
+    "seconds": 3.3711748490459286,
+    "scope": "Only explicit authored-card rustfmt differences in two Top parent definitions, corrected by rustfmt. Non-whitespace content is identical except an optional trailing array comma. No native compilation had run. Final full release must rerun at the corrected published head.",
+    "corrections": {
+      "src/card_definitions/msh/daredevil_man_without_fear.rs": {
+        "before_sha256": "a67a14ae4de6ecbcd74b90cf6287a14d4f8c62166c5a653b39b013361b76a68a",
+        "after_sha256": "d936d24e2c77c9b332c732f946ec65edf794ec171beee166414822d349974474",
+        "only_whitespace_and_optional_trailing_array_comma": true
+      },
+      "src/card_definitions/msh/iron_lad_diverging_destiny.rs": {
+        "before_sha256": "b415865848060bd8280a5ec5b6d147d2c2cd4a67a8952ed50e6bb5ad60df117f",
+        "after_sha256": "81c5f9c170677014d2f661613e4d0f60c7528bb755b63dbdc8437c4338d48aaf",
+        "only_whitespace_and_optional_trailing_array_comma": true
+      }
+    },
+    "regenerated_links": {
+      "schema": 1,
+      "catalogue_version": "72c062a6bcc32e9862ed1ac37479cb9ef3da93fe693a6c24aed4308465059c01",
+      "standard_legal_cards": 5164,
+      "implemented_standard_cards": 2502,
+      "implemented_total": 2508,
+      "token_definitions": 123,
+      "emblem_definitions": 3,
+      "adventure_definitions": 40,
+      "omen_definitions": 13
+    },
+    "note": "Catalogue version authenticates authored source bytes; linker regeneration follows formatting even though the definitions retain identical behavior."
+  }
 }
