@@ -8055,6 +8055,14 @@
     "journal": "7cf9667d9239e4fd",
     "observations": "1f0c324c9d1a0f90"
   },
+  "Hex Magic": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "543918deceb4be8c",
+    "observations": "6675876a11df3ec1"
+  },
   "Hidden Grotto": {
     "root": "main",
     "status": "completed",
@@ -11254,6 +11262,14 @@
     "zone": "Battlefield",
     "journal": "21b4895374b4450b",
     "observations": "c048491c3b7975d2"
+  },
+  "Moonstone, Harsh Mistress": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9d78478b460edd3d",
+    "observations": "6ef0f70643694e26"
   },
   "Morbius the Living Vampire": {
     "root": "main",
