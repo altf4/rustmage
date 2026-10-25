@@ -95,6 +95,19 @@ fn accept(g: &mut Game) {
     optional(g);
     checked(g, Action::ChooseOptional { accept: true });
 }
+fn accept_exact(g: &mut Game, entrant: ObjectRef) {
+    // Reentry also legitimately queues a fresh trigger. Decline that packet,
+    // rather than deleting it or silently assuming stack insertion order.
+    for _ in 0..8 {
+        optional(g);
+        let matching = g.state.resolving.as_ref().unwrap().item.entering_object == Some(entrant);
+        checked(g, Action::ChooseOptional { accept: matching });
+        if matching {
+            return;
+        }
+    }
+    panic!("historical entrant never resolved");
+}
 fn discard(g: &mut Game, p: Player, id: CardId) {
     until(g, |g| {
         matches!(g.state.pending, Pending::EffectDiscard { .. })
@@ -229,7 +242,7 @@ fn msh_baron_discount_current_controller_suppression_other_spells_and_funding() 
         let mut g = setup(p);
         let h = named(&mut g, p, "Villainous Hideout", Zone::Battlefield);
         let b = named(&mut g, p, BARON, Zone::Hand);
-        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
         checked(
             &mut g,
             Action::ActivateMana {
@@ -240,8 +253,9 @@ fn msh_baron_discount_current_controller_suppression_other_spells_and_funding() 
                 production: [0, 0, 1, 0, 0, 0],
             },
         );
-        let non = named(&mut g, p, "Hill Giant", Zone::Hand);
+        let non = named(&mut g, p, "Swiftfoot Boots", Zone::Hand);
         reject(&mut g, Action::AnnounceCast { card: non });
+        g.state.players[p.index()].mana[5] = 2;
         cast(&mut g, b, &[]);
         settle(&mut g);
         assert!(g.on_battlefield(b));
@@ -382,7 +396,7 @@ fn msh_baron_latest_departure_all_zones_owner_and_reentry_never_rebind() {
                     assert_eq!(g.object_view(who).controller, p);
                 }
                 let d = named(&mut g, p.other(), "Hill Giant", Zone::Hand);
-                accept(&mut g);
+                accept_exact(&mut g, original);
                 discard(&mut g, p.other(), d);
                 assert_eq!(g.counter_count(who, CounterKind::PlusOne), 0);
                 assert!(!g.put_counter_on_source_this_turn(original, p.other()));
@@ -681,7 +695,7 @@ fn msh_baron_token_ceases_same_slot_new_incarnation_does_not_receive_old_counter
             EventObjectFacts::Controller(p.other())
         );
         let d = named(&mut g, p.other(), "Hill Giant", Zone::Hand);
-        accept(&mut g);
+        accept_exact(&mut g, original);
         discard(&mut g, p.other(), d);
         assert_eq!(g.counter_count(replacement, CounterKind::PlusOne), 0);
     }
