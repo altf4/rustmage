@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8eea76cce2be3df433e1a59199380bd2d8862b6b0c78a047fd306a310d464b05",
+  "catalogue_version": "e6e07fe86ee147437cd70cc4b0560ac46d2c10172a6ae531249515c60e323cee",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2541,
-  "implemented_total": 2547,
+  "implemented_standard_cards": 2542,
+  "implemented_total": 2548,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 236,
-      "gated": 37
+      "complete": 237,
+      "gated": 36
     },
     "one": {
       "total": 1,
@@ -35869,8 +35869,8 @@
     {
       "name": "The Kingpin of Crime",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_kingpin_of_crime.rs",
       "set": "msh"
     },

@@ -17,16 +17,10 @@ fn priority(g: &mut Game, p: Player) {
     assert_eq!(g.actor(), Some(p));
 }
 fn seed(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    let c = Card::from_name(name).unwrap();
-    if c.is_supported() {
-        return named(g, p, name, zone);
-    }
-    assert_eq!(name, KING);
-    assert_eq!(zone, Zone::Hand);
-    let id = named(g, p, "Forest", zone);
-    g.state.objects[id as usize].card = c;
-    id
+    assert!(Card::from_name(name).unwrap().is_supported(), "{name}");
+    named(g, p, name, zone)
 }
+
 fn packet(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
     priority(g, p);
     let id = seed(g, p, name, Zone::Hand);
