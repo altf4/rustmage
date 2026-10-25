@@ -1,4 +1,4 @@
-//! Reviewed shared core regressions, retained for the three whole-card consumers.
+//! Shared core regressions, retained for the three whole-card consumers.
 use super::ability_world::CharacteristicWorld;
 use super::assurance::big_helpers::{cast, checked, named as supported_named, settle, setup};
 use super::*;

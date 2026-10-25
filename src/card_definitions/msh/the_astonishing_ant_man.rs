@@ -1,4 +1,4 @@
-// Direct complete typed Oracle implementation using the reviewed counter core.
+// Direct complete typed Oracle implementation using the shared counter core.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 1),
     triggers: &[TriggeredAbility {

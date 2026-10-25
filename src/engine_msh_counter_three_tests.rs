@@ -1,4 +1,4 @@
-//! Whole-card paid scenarios supplement the separately reviewed counter core.
+//! Whole-card paid scenarios supplement the shared counter core.
 //! Explicit step, draw-event and packet-copy probes are bounded shared-executor
 //! fixtures, not claims of natural Standard games or new copy-card admissions.
 use super::ability_world::CharacteristicWorld;
