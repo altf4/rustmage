@@ -7,7 +7,7 @@ use super::*;
 fn msh_owned_teamwork_and_partial_crew_decisions_survive_branch_and_restore() {
     let p = Player::P0;
     let mut g = scenario(p);
-    let phil = put(&mut g, p, "Agent Phil Coulson", Zone::Battlefield);
+    let phil = put(&mut g, p, "Agent of Atlas", Zone::Battlefield);
     put(&mut g, p, "Bear Cub", Zone::Battlefield);
     let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
     let card = put(&mut g, p, "Cruel Alliance", Zone::Hand);
@@ -117,9 +117,9 @@ fn msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_control
             assert!(g.observe(controller).objects.iter().any(|o| o.id == secret));
             put(&mut g, payer, "The Kingpin of Crime", Zone::Battlefield);
             let baxter = put(&mut g, payer, "Baxter Building", Zone::Battlefield);
-            g.state.players[payer.index()].mana = [0, 0, 0, 0, 0, 6];
+            g.state.players[payer.index()].mana = [0, 0, 0, 0, 0, 4];
             g.state.players[controller.index()].mana = external_pool;
-            let stone = put(&mut g, payer, "Mind Stone", Zone::Hand);
+            let stone = put(&mut g, payer, "Mox Jasper", Zone::Hand);
             cast(&mut g, stone, None);
             assert_eq!(g.state.players[payer.index()].mana, [0, 0, 0, 0, 0, 4]);
             until(&mut g, |g| {

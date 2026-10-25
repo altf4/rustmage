@@ -50,11 +50,14 @@ fn activate(g: &mut Game, p: Player, id: CardId, ability: u16, payment: Mana, ta
             counter_payment: Counters::default(),
         },
     );
-    while g
-        .legal_actions()
-        .iter()
-        .any(|a| matches!(a, Action::ChooseActivationCost { .. }))
-    {
+    for _ in 0..4 {
+        if !g
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::ChooseActivationCost { .. }))
+        {
+            break;
+        }
         choose(g, |a| matches!(a, Action::ChooseActivationCost { .. }));
     }
     for &target in targets {
@@ -1047,6 +1050,12 @@ fn msh_recovery_modes_recover_their_types_and_respect_two_mode_limit() {
             ["Captain America's Shield", "Forest"],
         ),
         (
+            "Call Damage Control",
+            [0, 0, 0, 0, 1, 1],
+            "Creature and enchantment",
+            ["Bear Cub", "Avengers Assemble!"],
+        ),
+        (
             "Decoy Ploy",
             [0, 0, 1, 0, 0, 1],
             "Both",
@@ -1368,6 +1377,8 @@ fn msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires
         let mut g = scenario(p);
         let target_id = put(&mut g, p.other(), name, Zone::Battlefield);
         let wrong = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let aura = put(&mut g, p.other(), "Stab", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(wrong));
         let source = put(&mut g, p, "Absorbing Man", Zone::Battlefield);
         g.begin_step(Step::Main1);
         until(&mut g, |g| {
@@ -1378,6 +1389,12 @@ fn msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires
         assert!(!g.legal_actions().contains(&Action::ChooseTarget {
             target: Target::Card(wrong)
         }));
+        assert!(
+            !g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(aura)
+            }),
+            "non-Aura restriction"
+        );
         target(&mut g, Target::Card(target_id));
         finish_targets(&mut g);
         resolved(&mut g);
@@ -2332,7 +2349,7 @@ fn msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice() {
         ),
         (
             "Castle Doom",
-            "Mind Stone",
+            "Captain America's Shield",
             "Agent Maria Hill",
             [0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0],
@@ -2686,5 +2703,117 @@ fn msh_bullseye_optional_entry_and_both_activated_alternative_costs() {
         assert!(g.object_view(source).tapped);
         assert_eq!(g.state.players[p.other().index()].life, 18);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn msh_echo_copies_creature_ability_and_changes_only_the_copys_target() {
+    let p = Player::P1;
+    let mut g = scenario(p);
+    let bullseye = put(&mut g, p, "Bullseye, Death Dealer", Zone::Battlefield);
+    let echo = put(&mut g, p, "Echo, Perceptive Prodigy", Zone::Battlefield);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let discard = put(&mut g, p, "Shock", Zone::Hand);
+    g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: bullseye,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    if g.legal_actions()
+        .iter()
+        .any(|a| matches!(a, Action::ChooseActivationCost { .. }))
+    {
+        choose(&mut g, |a| matches!(a, Action::ChooseActivationCost { .. }));
+    }
+    target(&mut g, Target::Player(p.other()));
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut g, Action::FinishTargets);
+    }
+    let object = g.object_ref(discard);
+    act(&mut g, Action::ChooseAdditionalCost { object });
+    pay(&mut g);
+    let original = g.state.stack.last().unwrap().id;
+    activate(
+        &mut g,
+        p,
+        echo,
+        0,
+        [0, 0, 0, 0, 0, 1],
+        &[Target::Stack(original)],
+    );
+    until(&mut g, |g| g.observe(p).retarget.is_some());
+    act(
+        &mut g,
+        Action::SetStackTarget {
+            index: 0,
+            target: Target::Card(bear),
+        },
+    );
+    act(&mut g, Action::FinishStackTargets);
+    resolved(&mut g);
+    assert_eq!(
+        g.object_view(bear).zone,
+        Zone::Graveyard,
+        "copy dealt two to new target"
+    );
+    assert_eq!(
+        g.state.players[p.other().index()].life,
+        18,
+        "original target was retained"
+    );
+    assert_eq!(g.object_view(discard).zone, Zone::Graveyard);
+    assert!(g.object_view(echo).tapped && g.object_view(bullseye).tapped);
+}
+
+#[test]
+fn msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs() {
+    // These bindings supplement each card's independent ability scenarios. Actual
+    // primitive outcomes are covered in assurance::interactions and msh_b combat
+    // families; a matching flag alone is never the card's complete assurance.
+    for (name, expected) in [
+        ("Abomination, Terrifying Titan", Keywords::TRAMPLE),
+        ("Absorbing Man", Keywords::VIGILANCE),
+        ("Aerial Doombot", Keywords::FLYING),
+        ("Agent Phil Coulson", Keywords::VIGILANCE),
+        ("Atlantean Cavalry", Keywords::VIGILANCE),
+        ("Black Widow, Double Agent", Keywords::DEATHTOUCH),
+        ("Black Widow, Super Spy", Keywords::MENACE),
+        ("Brave Brawler", Keywords::LIFELINK),
+        ("Captain America's Shield", Keywords::INDESTRUCTIBLE),
+        ("Captain America, Living Legend", Keywords::VIGILANCE),
+        ("Captain America, Super-Soldier", Keywords::FIRST_STRIKE),
+        (
+            "Captain America, Wings of Freedom",
+            Keywords::FLYING.union(Keywords::FIRST_STRIKE),
+        ),
+        (
+            "Captain Mar-Vell, Space-Born",
+            Keywords::FLYING.union(Keywords::VIGILANCE),
+        ),
+        (
+            "Captain Marvel, Earth's Protector",
+            Keywords::FLYING.union(Keywords::LIFELINK),
+        ),
+        (
+            "Cloak and Dagger, Entwined",
+            Keywords::DEATHTOUCH.union(Keywords::LIFELINK),
+        ),
+        ("Crossbones, Malicious Mercenary", Keywords::DEATHTOUCH),
+        (
+            "Daredevil, Man Without Fear",
+            Keywords::VIGILANCE.union(Keywords::HASTE),
+        ),
+        ("Echo, Perceptive Prodigy", Keywords::VIGILANCE),
+    ] {
+        let mut g = scenario(Player::P0);
+        let id = put(&mut g, Player::P0, name, Zone::Battlefield);
+        assert!(
+            g.keywords(id).contains(expected),
+            "{name}: literal printed keyword binding"
+        );
     }
 }
