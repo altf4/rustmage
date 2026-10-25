@@ -171,6 +171,9 @@ impl Game {
         if definition.has_convoke() {
             return self.can_fund_convoke_for(base, purpose);
         }
+        if improvise::potential(self, definition) {
+            return self.can_fund_contributions_for(base, purpose, false);
+        }
         let Some(spec) = definition.additional_cost() else {
             return self.can_fund_for(base, purpose);
         };

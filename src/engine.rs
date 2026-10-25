@@ -170,6 +170,9 @@ pub use power_up::PowerUpUseView;
 mod connive;
 #[path = "engine_convoke.rs"]
 mod convoke;
+#[path = "engine_improvise.rs"]
+mod improvise;
+pub use improvise::ImproviseChoiceView;
 #[path = "engine_damage_triggers.rs"]
 mod damage_triggers;
 #[path = "engine_discard_events.rs"]
@@ -428,6 +431,8 @@ define_actions! {
     ChooseCreatedToken { object: ObjectRef },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
+    BeginImprovise,
+    ChooseImproviser { object: ObjectRef },
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
     ChooseToken { token: Card },
@@ -1446,6 +1451,9 @@ enum Pending {
     PlotPayment {
         player: Player,
     },
+    Improvise {
+        player: Player,
+    },
     Convoke {
         player: Player,
     },
@@ -2098,6 +2106,8 @@ pub struct Observation {
     pub mana_payment: Option<ManaPaymentDomain>,
     pub endure_choice: Option<EndureChoiceView>,
     pub convoke_choice: Option<ConvokeChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub improvise_choice: Option<ImproviseChoiceView>,
     pub delayed_sacrifices: Vec<DelayedSacrificeView>,
     pub delayed_artifact_copies: Vec<SpellView>,
     pub delayed_main_mana: Vec<SpellView>,
@@ -2495,6 +2505,7 @@ impl Game {
             | Pending::Evidence { player }
             | Pending::Endure { player, .. }
             | Pending::Convoke { player }
+            | Pending::Improvise { player }
             | Pending::Mobilize { player }
             | Pending::TeamworkIntent { player }
             | Pending::TeamworkPayment { player }
@@ -2896,7 +2907,7 @@ impl Game {
                     return true;
                 }
             }
-            Pending::Convoke { .. } => {
+            Pending::Convoke { .. } | Pending::Improvise { .. } => {
                 if self.visit_convoke_actions(&mut emit) {
                     return true;
                 }
@@ -3651,6 +3662,7 @@ impl Game {
                                 if self.foreign_stash(actor, card)
                                     || self.exile_cast_modifiers(actor, card).0
                                     || obj.card.has_convoke()
+                                    || improvise::potential(self, obj.card)
                                     || obj.card.additional_cost().is_some()
                                 {
                                     return self.spell_can_fund(actor, card, cost);
@@ -3764,6 +3776,7 @@ impl Game {
                         || obj.card.gift().is_some()
                         || obj.card.collect_evidence_cost().is_some()
                         || obj.card.has_convoke()
+                        || improvise::potential(self, obj.card)
                         || self.has_casualty(actor, obj.card)
                         || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
@@ -4609,6 +4622,8 @@ impl Game {
             }
             Action::ChooseEndure { put_counters } => self.choose_endure(put_counters),
             Action::BeginConvoke => self.begin_convoke(),
+            Action::BeginImprovise => self.begin_improvise(),
+            Action::ChooseImproviser { object } => self.choose_improviser(object),
             Action::ChooseConvoker {
                 object,
                 contribution,
@@ -6475,6 +6490,11 @@ impl Game {
             } else {
                 None
             },
+            improvise_choice: if owns_choice {
+                self.improvise_choice()
+            } else {
+                None
+            },
             convoke_choice: if owns_choice {
                 self.convoke_choice()
             } else {
@@ -6612,6 +6632,7 @@ impl Game {
                 Pending::Gift { .. } => "gift",
                 Pending::Endure { .. } => "endure",
                 Pending::Convoke { .. } => "convoke",
+                Pending::Improvise { .. } => "improvise",
                 Pending::Mobilize { .. } => "mobilize",
                 Pending::TeamworkIntent { .. } => "teamwork_intent",
                 Pending::TeamworkPayment { .. } => "teamwork_payment",
@@ -7698,3 +7719,6 @@ pub use library_top::LibraryRevealEvent;
 #[cfg(test)]
 #[path = "engine_msh_library_top_tests.rs"]
 mod msh_library_top_tests;
+#[cfg(test)]
+#[path = "engine_msh_improvise_tests.rs"]
+mod msh_improvise_tests;

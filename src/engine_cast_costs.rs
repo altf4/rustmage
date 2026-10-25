@@ -40,7 +40,13 @@ impl Announcement {
             });
         }
     }
-    pub(super) fn initialize_cast_costs(&mut self) {
+    pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
+        if self.item.kind == StackKind::Spell
+            && (self.item.source_card.has_convoke() || improvise)
+            && self.additional_cost().is_some()
+        {
+            self.cast_costs.get_or_insert_with(Default::default);
+        }
         if self.item.cast.is_some_and(|c| c.teamwork == Some(true)) {
             self.add_cast_cost_clause(CastCostClause::Teamwork(
                 self.item.source_card.teamwork().unwrap().minimum,
@@ -60,7 +66,7 @@ impl Announcement {
         }
         if self.cast_costs.is_some()
             && self.item.kind == StackKind::Spell
-            && self.item.source_card.has_convoke()
+            && (self.item.source_card.has_convoke() || improvise)
         {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
@@ -106,13 +112,7 @@ impl Game {
             if clause == CastCostClause::Mana {
                 costs.mana_paid = true;
                 if let Some(frame) = &a.convoke {
-                    self.tap_objects(
-                        &frame
-                            .selected
-                            .iter()
-                            .map(|s| s.object.card)
-                            .collect::<Vec<_>>(),
-                    );
+                    self.tap_objects(&frame.objects().iter().map(|s| s.card).collect::<Vec<_>>());
                 }
             }
             if clause == CastCostClause::Additional {
@@ -143,8 +143,14 @@ impl Game {
                 self.state.announcing = Some(a);
             }
             CastCostClause::Mana => {
-                self.state.pending = Pending::Convoke {
-                    player: a.item.controller,
+                self.state.pending = if a.item.source_card.has_convoke() {
+                    Pending::Convoke {
+                        player: a.item.controller,
+                    }
+                } else {
+                    Pending::Improvise {
+                        player: a.item.controller,
+                    }
                 };
                 self.state.announcing = Some(a);
             }

@@ -1,16 +1,17 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Whole Oracle: intrinsic improvise/flying and current-caster noncreature spell grant.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(3, 4),
     keywords: Keywords::FLYING,
+    extras: &CardExtras {
+        has_improvise: true,
+        ..CardExtras::EMPTY
+    },
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::SpellImprovise(
+            CastFilter::Noncreature,
+        )],
+    }],
     ..CardRules::EMPTY
 };

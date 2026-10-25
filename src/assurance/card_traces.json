@@ -799,6 +799,14 @@
     "journal": "df3bbcc75eb8da74",
     "observations": "4a6158b053f8aa29"
   },
+  "Arc Reactor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "bdc89f9863097122",
+    "observations": "dc0023d01b20355f"
+  },
   "Arcane Epiphany": {
     "root": "main",
     "status": "completed",
@@ -3750,14 +3758,6 @@
     "zone": "Battlefield",
     "journal": "3ad6d4893695dc9c",
     "observations": "aaa35cab3b7de24e"
-  },
-  "Daredevil, Man Without Fear": {
-    "root": "main",
-    "status": "completed",
-    "decisions": 4,
-    "zone": "Battlefield",
-    "journal": "7cf9667d9239e4fd",
-    "observations": "8628321a4b9c97ac"
   },
   "Daring Thunder-Thief": {
     "root": "main",
@@ -8831,14 +8831,6 @@
     "journal": "ad817a2b37dc4f00",
     "observations": "e8aa0122d3bbb8c6"
   },
-  "Iron Lad, Diverging Destiny": {
-    "root": "main",
-    "status": "completed",
-    "decisions": 4,
-    "zone": "Battlefield",
-    "journal": "5a37305467443acc",
-    "observations": "eff22b7e2c672338"
-  },
   "Iron-Fist Pulverizer": {
     "root": "main",
     "status": "completed",
@@ -8854,6 +8846,14 @@
     "zone": "Battlefield",
     "journal": "a4c714aeb662e85f",
     "observations": "6afd212fd15cc21b"
+  },
+  "Ironheart, Clever Champion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "87c199e3b586e2a2",
+    "observations": "c1de4473c19b3ef8"
   },
   "Ironpaw Aspirant": {
     "root": "main",

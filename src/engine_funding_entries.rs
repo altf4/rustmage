@@ -1124,7 +1124,7 @@ impl Game {
                 parent.announcement.item.kind == StackKind::Spell
                     && parent.announcement.item.source_card.has_convoke(),
             );
-            world.purpose = self.purpose_for_item(&parent.announcement.item);
+            world.set_purpose(self.purpose_for_item(&parent.announcement.item));
             world.set_payment_context(&parent.announcement);
             world.set_funding_continuation(
                 &parent.announcement,
@@ -1139,7 +1139,7 @@ impl Game {
                 &goal,
                 a.item.kind == StackKind::Spell && a.item.source_card.has_convoke(),
             );
-            world.purpose = self.purpose_for_item(&a.item);
+            world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(a);
             (world, Some(goal))
         } else {
@@ -1387,7 +1387,7 @@ impl<'g> FundingState<'g> {
                         outer,
                         parent.quality.as_ref().map(|(_, q)| q),
                     );
-                    next.purpose = self.game.purpose_for_item(&parent.announcement.item);
+                    next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
                         && parent.announcement.item.source_card.has_convoke();
                     next.set_payment_context(&parent.announcement);

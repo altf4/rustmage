@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "719ce03dd61b3c0786d16559eb080703ae74a54d0e57f56b321f193700af5e8c",
+  "catalogue_version": "a374f6a202e324188810adaab48ca86e20a64d375d079553ffbf44cd32a1d0f6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2499,
-  "implemented_total": 2505,
+  "implemented_standard_cards": 2501,
+  "implemented_total": 2507,
   "token_definitions": 123,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 194,
-      "gated": 79
+      "complete": 196,
+      "gated": 77
     },
     "one": {
       "total": 1,
@@ -1821,8 +1821,8 @@
     {
       "name": "Arc Reactor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/arc_reactor.rs",
       "set": "msh"
     },
@@ -18085,8 +18085,8 @@
     {
       "name": "Ironheart, Clever Champion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ironheart_clever_champion.rs",
       "set": "msh"
     },
