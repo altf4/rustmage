@@ -677,6 +677,7 @@ impl Game {
                 self.finish_temporary_copy(item, tokens);
             }
         }
+        self.capture_selected_library_entry(&events);
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);
         } else {

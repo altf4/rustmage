@@ -41,7 +41,8 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                     read_counter_kinds(mode.program, kinds);
                 }
             }
-            Instruction::SelectLibraryTo(effect) => {
+            Instruction::SelectLibraryTo(effect)
+            | Instruction::SelectLibraryThenMayTransform(effect) => {
                 if let Some(value) = effect.maximum_mana_value {
                     amount(value, kinds);
                 }

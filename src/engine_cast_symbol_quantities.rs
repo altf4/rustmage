@@ -13,7 +13,10 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes) => modes.iter().any(|m| selected(m.program)),
-        Instruction::SelectLibraryTo(effect) => effect.maximum_mana_value.is_some_and(amount),
+        Instruction::SelectLibraryTo(effect)
+        | Instruction::SelectLibraryThenMayTransform(effect) => {
+            effect.maximum_mana_value.is_some_and(amount)
+        }
         Instruction::UpToTargets(value)
         | Instruction::IfAmountAtLeast { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }

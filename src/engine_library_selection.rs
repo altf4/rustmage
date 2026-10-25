@@ -7,6 +7,10 @@ use crate::cards::{
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LibrarySelection {
     pub spec: LibrarySelectionSpec,
+    pub owner: Player,
+    pub may_transform: bool,
+    pub entered: Option<ObjectRef>,
+    pub transform_pending: bool,
     pub destination: LibraryPickDestination,
     pub public: bool,
     pub entering: bool,
@@ -38,6 +42,10 @@ pub struct LibrarySelectionView {
     pub public: bool,
     pub destination: &'static str,
     pub remainder: &'static str,
+}
+#[derive(Clone, Debug, Serialize)]
+pub struct EntryTransformChoiceView {
+    pub object: ObjectView,
 }
 impl Game {
     fn library_selection_matches(&self, filter: LibrarySelectionFilter, id: CardId) -> bool {
@@ -80,6 +88,19 @@ impl Game {
         item: &SpellView,
         effect: LibrarySelectionEffect,
     ) -> bool {
+        self.start_library_selection_completion(item, effect, false)
+    }
+    pub(super) fn start_library_selection_completion(
+        &mut self,
+        item: &SpellView,
+        effect: LibrarySelectionEffect,
+        may_transform: bool,
+    ) -> bool {
+        assert!(
+            !may_transform
+                || (effect.destination == LibraryPickDestination::Battlefield
+                    && effect.spec.count == LibrarySelectionCount::Fixed(1))
+        );
         let spec = effect.spec;
         let owner = item.controller;
         let limit = match effect.look {
@@ -153,6 +174,10 @@ impl Game {
         let minimum = if spec.optional { 0 } else { maximum };
         self.state.resolving.as_mut().unwrap().selection = Some(Box::new(LibrarySelection {
             spec,
+            owner,
+            may_transform,
+            entered: None,
+            transform_pending: false,
             destination: effect.destination,
             public: effect.public,
             entering: false,
@@ -351,6 +376,15 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
     fn commit_library_remainder(&mut self, owner: Player, mut f: LibrarySelection) {
+        // Entry replacements may move another looked card. The remainder means
+        // the original looked incarnations actually still in this library.
+        let remains = |r: &ObjectRef| {
+            self.object_ref(r.card) == *r
+                && self.state.objects[r.card as usize].zone == Zone::Library
+                && self.state.objects[r.card as usize].owner == owner
+        };
+        f.remaining.retain(remains);
+        f.bottom.retain(remains);
         if f.destination == LibraryPickDestination::Battlefield {
             f.remaining.extend(f.selected.iter().copied().filter(|r| {
                 self.object_ref(r.card) == *r
@@ -374,7 +408,63 @@ impl Game {
             }
         }
     }
-    pub(super) fn finish_entered_library_selection(&mut self) {
+    pub(super) fn capture_selected_library_entry(&mut self, events: &[ZoneChange]) {
+        let Some(frame) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|r| r.selection.as_mut())
+        else {
+            return;
+        };
+        if frame.entering
+            && frame.may_transform
+            && let Some(event) = events.iter().find(|event| {
+                event.moved
+                    && event.destination == Zone::Battlefield
+                    && frame.selected.contains(&event.before.reference)
+            })
+        {
+            frame.entered = Some(event.after);
+        }
+    }
+    pub(super) fn complete_library_entry_transform(&mut self, accept: bool) -> bool {
+        if !self
+            .state
+            .resolving
+            .as_ref()
+            .and_then(|r| r.selection.as_ref())
+            .is_some_and(|frame| frame.transform_pending)
+        {
+            return false;
+        }
+        let frame = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .selection
+            .take()
+            .unwrap();
+        if accept && let Some(recipient) = frame.entered {
+            self.transform_permanent(recipient);
+        }
+        self.commit_library_remainder(frame.owner, *frame);
+        true
+    }
+    pub(super) fn entry_transform_choice_view(&self) -> Option<EntryTransformChoiceView> {
+        let frame = self.state.resolving.as_ref()?.selection.as_ref()?;
+        if !frame.transform_pending {
+            return None;
+        }
+        let object = frame.entered?;
+        (self.on_battlefield(object.card) && self.object_ref(object.card) == object).then(|| {
+            EntryTransformChoiceView {
+                object: self.object_view(object.card),
+            }
+        })
+    }
+    pub(super) fn finish_entered_library_selection(&mut self) -> bool {
         if self
             .state
             .resolving
@@ -384,19 +474,42 @@ impl Game {
             .as_ref()
             .is_some_and(|f| f.entering)
         {
+            let recipient = self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .selection
+                .as_ref()
+                .unwrap()
+                .entered;
+            if recipient.is_some_and(|object| self.can_transform_permanent(object)) {
+                let resolution = self.state.resolving.as_mut().unwrap();
+                let frame = resolution.selection.as_mut().unwrap();
+                if frame.may_transform {
+                    frame.entering = false;
+                    frame.transform_pending = true;
+                    self.state.pending = Pending::EffectOptional {
+                        player: frame.owner,
+                        skip_to: resolution.pc,
+                    };
+                    return true;
+                }
+            }
             let resolution = self.state.resolving.as_mut().unwrap();
-            let owner = resolution.item.controller;
             let frame = resolution.selection.take().unwrap();
+            let owner = frame.owner;
             if frame.destination == LibraryPickDestination::LandsTappedRestHand {
                 self.library_selected_nonlands_to_hand(&frame);
             } else {
                 self.commit_library_remainder(owner, *frame);
             }
         }
+        false
     }
     pub(super) fn library_selection_view(&self, viewer: Player) -> Option<LibrarySelectionView> {
         let f = self.state.resolving.as_ref()?.selection.as_ref()?;
-        if self.actor() != Some(viewer) && !f.public {
+        if viewer != f.owner && !f.public {
             return None;
         }
         Some(LibrarySelectionView {
