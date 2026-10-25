@@ -7857,3 +7857,7 @@ mod msh_temporary_copy_cards_tests;
 #[cfg(test)]
 #[path = "engine_msh_thirteenth_combined_tests.rs"]
 mod msh_thirteenth_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_copy_identity_regression_tests.rs"]
+mod msh_copy_identity_regression_tests;
