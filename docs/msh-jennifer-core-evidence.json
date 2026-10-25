@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "MSH",
-  "scope": "One complete candidate physical Jennifer Walters // The Sensational She-Hulk and its nonphysical back, plus minimal shared actual creature damage-received packet; full281 acceptance remains open",
+  "scope": "One complete candidate physical Jennifer Walters // The Sensational She-Hulk and its nonphysical back, plus minimal shared actual creature damage-received packet; full 281 acceptance remains open",
   "source_base": "319802ddc91d45b4bfc3d07090b49326ee897960",
   "wire_schema": {
     "previous": 142,
@@ -26,9 +26,9 @@
     "base_trace_sha256": "875c9bc250cc499e7fa8e256494d862137eafcad09366cfd259942762f0e25da"
   },
   "printed_obligations": [
-    "Selectable front1W2/3 white legendary Human Advisor Hero; selectable back3GWW6/6 green-white legendary Gamma Hero with reach/trample",
+    "Selectable front {1}{W} 2/3 white legendary Human Advisor Hero; selectable back {3}{G}{W}{W} 6/6 green-white legendary Gamma Hero with reach/trample",
     "Both faces prohibit only opponent spells during their controllers turn; activated mana abilities remain legal; suppression removes the prohibition",
-    "Front3GWW sorcery-only transform without tap preserves identity/counters/control/damage/attachments; departures restore front and copies retain pair exceptions",
+    "Front {3}{G}{W}{W} sorcery-only transform without tap preserves identity/counters/control/damage/attachments; departures restore front and copies retain pair exceptions",
     "Back triggers per controlled creature actually damaged, summing simultaneous sources/fragments after replacements/prevention; exact amount and ability controller survive lethal departure",
     "Ordinary any target is chosen on announcement; optional resolution-limited allowance is consumed on acceptance before outgoing damage/replacement choices; queued siblings and later events cannot reuse it",
     "Current source or latest departure LKI supplies outgoing damage keywords/controller, independently of ability controller; new incarnation is never rebound"
@@ -37,7 +37,7 @@
     "passed": 19,
     "log": "<cache>/msh-jennifer-focused-final.log",
     "report": "<cache>/rustmage-build-reports/e12e49f1596541ecb5d526cc6844f790.json",
-    "coverage": "Both seats; paid face costs/timing/transform/privacy, actual opponent spell lock/removal and mana activation, counters/Equipment/keyword layers, owned raw/index branch/parent disposal/restore and illegal action atomicity; simultaneous multi-blocker/lethal victims/source, first-strike versus regular batches, fight doubling, actual prevention, frozen any-target amounts, optional decline/accept and queued siblings, prevention after acceptance, source control/LKI with later lifelink and exact life events, fresh incarnation/turn reset, suppression before and after queue, own/foreign copies, invalid targets/private cancellation, two orders of owned replacement choice; mixed preventable5/unpreventable2 paid King-back boundary plus actual post-lifelink Aettir source snapshot20→22"
+    "coverage": "Both seats; paid face costs/timing/transform/privacy, actual opponent spell lock/removal and mana activation, counters/Equipment/keyword layers, owned raw/index branch/parent disposal/restore and illegal action atomicity; simultaneous multi-blocker/lethal victims/source, first-strike versus regular batches, fight doubling, actual prevention, frozen any-target amounts, optional decline/accept and queued siblings, prevention after acceptance, source control/LKI with later lifelink and exact life events, fresh incarnation/turn reset, suppression before and after queue, own/foreign copies, invalid targets/private cancellation, two orders of owned replacement choice; mixed preventable 5/unpreventable 2 paid King-back boundary plus actual post-lifelink Aettir source snapshot 20→22"
   },
   "clippy": {
     "passed": true,
@@ -83,8 +83,8 @@
     "strict_report": "<cache>/rustmage-build-reports/4ba139964c794ff78172975c618c2a19.json"
   },
   "review_boundary": {
-    "mixed_fragments": "Scheduling replacement work is a preview: no packet or lifegain before advance_replacements(false); after actual central commit, prevented5 contributes0, unpreventable2 contributes2, one exact-recipient packet results",
-    "post_lifelink_layers": "Paid Aettir and Priwen makes the source power change20→22 from simultaneous lifelink; queued source_facts.power must be22, final outgoing amount remains2",
+    "mixed_fragments": "Scheduling replacement work is a preview: no packet or lifegain before advance_replacements(false); after actual central commit, prevented5 contributes 0, unpreventable 2 contributes 2, one exact-recipient packet results",
+    "post_lifelink_layers": "Paid Aettir and Priwen makes the source power change 20→22 from simultaneous lifelink; queued source_facts.power must be 22, final outgoing amount remains 2",
     "type_control_limit": "No admitted life-dependent creature-type or controller effect found in full frozen complete-pool Oracle faces or existing kind/control providers. Post-lifelink type/controller qualification is supported by central ordering inspection, not a claimed unavailable live scenario",
     "java_discrepancy": "Pinned Jennifer passes SetTargetPointer.PERMANENT and its helper installs FixedTarget(victim) despite TargetAnyTarget; Rust follows frozen Oracle and official release notes with ordinary any-target selection, keeping packet recipient non-targeting"
   },
@@ -123,6 +123,6 @@
   "remaining_gates": [
     "Two independent nonauthor reviews of the final published head and combined full release/CI before integration",
     "Bruce Banner and Red Hulk remain gated; Bruce XX activation cost and current/latest-departure attacking LKI are separate prerequisites",
-    "No expansion of separately acquired in-place copy ability identity or other downstream consumers; full281 MSH acceptance remains pending"
+    "No expansion of separately acquired in-place copy ability identity or other downstream consumers; full 281 MSH acceptance remains pending"
   ]
 }
