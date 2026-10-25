@@ -1,0 +1,312 @@
+{
+  "schema": 1,
+  "scope": "Two complete MSH cards with individual focused paid tests and directly affected old cases; integration deferred.",
+  "base": "5bed850cb149492e5c41a50e0e2495f9ba6cd41e",
+  "tested_runtime": "d8912a79beb8b2310be0b6ab12979227b76cb532",
+  "complete_cards": [
+    "Elektra, Daughter of the Hand",
+    "Hellcat, Undying Vigilante"
+  ],
+  "new_ids": [],
+  "identity_manifest_byte_exact": true,
+  "wire_schema": 152,
+  "wire_note": "Actual coordinated additions: AnnounceSneak with absent optional Muldrotha permission, CastMethod::Sneak, absent optional captured defender and resolved recipient ability-modification rows.",
+  "source_sha256": {
+    "data/standard/coverage.json": "bd9aafc5ac402dde5c09b9eff365af2ecb6adfe2926ac9fd6893e90f55e6e90e",
+    "src/card_definitions/mod.rs": "3a62a9c5dd8fda1c14e605c19804052db3c1735bb13d8a823e5b8d9da9998537",
+    "src/card_definitions/msh/elektra_daughter_of_the_hand.json": "ce5d8a3b8149830210514fdc193e81263d128786103f6ffa59cd4ac3f862c7a0",
+    "src/card_definitions/msh/elektra_daughter_of_the_hand.rs": "3251be7f017fd728a6d094c8179f849dae889d0107648951e517340da44c7cc7",
+    "src/card_definitions/msh/hellcat_undying_vigilante.json": "4bf1c4e955f5f279e32ad20cba3908bbc90ee7d23ab666ef5aea59f5697a84eb",
+    "src/card_definitions/msh/hellcat_undying_vigilante.rs": "6e69ed3f3c65bbd6ecb924f1fe381e8a01682943abf92a9993bacf6eaa33bcfa",
+    "src/cards.rs": "d7dd8a0ab04d9b1abaeaab336c3228d9a5193dd463db374ff48d902505f78a69",
+    "src/engine.rs": "254158dee9f516b6520d7113db224992ab79ebca18d44628d44559d3dcc5b0bf",
+    "src/engine_ability_evaluation.rs": "db751dac3dce4d0e91387868e2ee78a12161eba854829d594c6d6fe0ff2ff818",
+    "src/engine_ability_timeline.rs": "2b243eadba660cc881cea3a7d9714547036fdc14a1bc2908cce7449dfbb357d3",
+    "src/engine_ability_world.rs": "774997c52fb4fff68117700ef70fc3ed575280e03418a34fc0c58ce0a59beec2",
+    "src/engine_additional_costs.rs": "f812165a199189e3c1cd60f8791258a930b7025513ce4a90bd13283d57e0d497",
+    "src/engine_cast_cost_planning.rs": "9cca0268fda7a079eaa713c7e19c53e4ff0440fb2c021ff7b8a41f027f715ca5",
+    "src/engine_cast_origins.rs": "7ad37f9fdbfbcc79899ae7bea91a2cdde4e214d1e3c45c25b46510509e43abd4",
+    "src/engine_cast_permissions.rs": "1fb26770e57e2e0533138fec6c0e114375e24bfe23112a43410498d540c85042",
+    "src/engine_cast_rollback.rs": "b95f8158d98dcaff0b0eaf9f8c4fcb5f1c4bdebdfd44ce37aea320f64ac1cee8",
+    "src/engine_entries.rs": "54993c3fbed7f837d3c0f5d8e952b78bfbdc8512c69aa5f421bf1cfd4ccdd05d",
+    "src/engine_funding.rs": "21e7e3082d059939a1c8e1fa458f24b44940f295fa55f8804cccbb4ef4d2d76b",
+    "src/engine_funding_entries.rs": "471fa8cd34d25f81d60e253b07b443691337f809c92b647fdb5348c042abfeff",
+    "src/engine_msh_elektra_hellcat_funding_tests.rs": "70014867fe2aff25b4171015503381bb986db7575b8038b4ee252cb4080fbc3e",
+    "src/engine_msh_elektra_hellcat_tests.rs": "5a6c8df6d3a55fea856e6987f55da7a0f5c188dde2c96c3eabbc96d961f3fc0a",
+    "src/engine_programs.rs": "b93b5da03874b29fe748efeb985947fc65f95f6efa9e5dcf660cc3f142e4dd6b",
+    "src/engine_return_ability_modification.rs": "2e7c72687bab1f0fa465aca8df6e0254d4dad3e0165bd759881efce05a7ea89f",
+    "src/engine_roles.rs": "37e2896a28be1d7f2b6f4f82616c8e1fdca607d2ba82a8bb64eea2f757fe7a1c",
+    "src/engine_sneak.rs": "62eec3d9f6da2b7dda43f5b95dc047f56b83a0c855964e64b10f251e7685ba11",
+    "src/engine_spell_costs.rs": "c2a5874af6bc06a4bab00d1a9eb736df00459aff6b128d6c5df136b3c0a87370",
+    "src/engine_targeting.rs": "6dfe180d2a864fd01897bb3d458be64b2c071483a39c18d9d035f09ff119a05c",
+    "src/generated/catalogue.rs": "78d23fc38045c1cc916bda3f109812432fe7e1565f1f859fb1e438ba523b66cd",
+    "src/policy.rs": "ba2ae389f944055168986417b286abab3e99f0328856daf06e2036071b2241fa"
+  },
+  "source_cache": {
+    "path": "<cache>/rustmage-msh-elektra-hellcat-sources.json",
+    "sha256": "919316e50d7ec04980f5c0d1260c6d20d597dedfb79f978f5433fdaeeba95663",
+    "full_frozen_oracle": true,
+    "java_files": 27,
+    "read_coverage": "25 complete fresh main/helper reads, one exact full ManaCostsImpl read reused from Bruce/Kang, one explicitly ranged CardUtil helper read with full retained body."
+  },
+  "owned_provenance": {
+    "schema": 1,
+    "tested_source": "d8912a79beb8b2310be0b6ab12979227b76cb532",
+    "fixed_inputs": 11152,
+    "changed": [],
+    "checks": [
+      {
+        "command": [
+          "python3",
+          "scripts/link_catalogue.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "{\"schema\": 1, \"catalogue_version\": \"cb34d2bc0989a27dfd6111ae9bfaf7f733b4d50519ec7837dec22619a7ced495\", \"standard_legal_cards\": 5164, \"implemented_standard_cards\": 2541, \"implemented_total\": 2547, \"token_definitions\": 125, \"emblem_definitions\": 3, \"adventure_definitions\": 40, \"omen_definitions\": 13}\n"
+      },
+      {
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "--config",
+          "skip_children=true",
+          "src/card_definitions/mod.rs",
+          "src/card_definitions/msh/elektra_daughter_of_the_hand.rs",
+          "src/card_definitions/msh/hellcat_undying_vigilante.rs",
+          "src/cards.rs",
+          "src/engine.rs",
+          "src/engine_ability_evaluation.rs",
+          "src/engine_ability_timeline.rs",
+          "src/engine_ability_world.rs",
+          "src/engine_additional_costs.rs",
+          "src/engine_cast_cost_planning.rs",
+          "src/engine_cast_origins.rs",
+          "src/engine_cast_permissions.rs",
+          "src/engine_cast_rollback.rs",
+          "src/engine_entries.rs",
+          "src/engine_funding.rs",
+          "src/engine_funding_entries.rs",
+          "src/engine_msh_elektra_hellcat_funding_tests.rs",
+          "src/engine_msh_elektra_hellcat_tests.rs",
+          "src/engine_programs.rs",
+          "src/engine_return_ability_modification.rs",
+          "src/engine_roles.rs",
+          "src/engine_sneak.rs",
+          "src/engine_spell_costs.rs",
+          "src/engine_targeting.rs",
+          "src/policy.rs"
+        ],
+        "exit_code": 0,
+        "output": ""
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check",
+          "5bed850cb149492e5c41a50e0e2495f9ba6cd41e",
+          "HEAD"
+        ],
+        "exit_code": 0,
+        "output": ""
+      }
+    ],
+    "owned": [
+      {
+        "path": "src/card_definitions/msh/elektra_daughter_of_the_hand.json",
+        "sha256": "ce5d8a3b8149830210514fdc193e81263d128786103f6ffa59cd4ac3f862c7a0",
+        "definition_sha256": "3251be7f017fd728a6d094c8179f849dae889d0107648951e517340da44c7cc7",
+        "java_source": "Mage.Sets/src/mage/cards/e/ElektraDaughterOfTheHand.java",
+        "java_sha256": "9f1625c28c416485f4cdc9da6320fc8c519b96cd2f71ffc30169744540b96b8e",
+        "dependencies": 17
+      },
+      {
+        "path": "src/card_definitions/msh/hellcat_undying_vigilante.json",
+        "sha256": "4bf1c4e955f5f279e32ad20cba3908bbc90ee7d23ab666ef5aea59f5697a84eb",
+        "definition_sha256": "6e69ed3f3c65bbd6ecb924f1fe381e8a01682943abf92a9993bacf6eaa33bcfa",
+        "java_source": "Mage.Sets/src/mage/cards/h/HellcatUndyingVigilante.java",
+        "java_sha256": "98588abe5e3866c1eb508a1717db4ad07c7618a87ae0456771ca292d7f93f195",
+        "dependencies": 9
+      }
+    ],
+    "java_pins": {
+      "Mage.Sets/src/mage/cards/e/ElektraDaughterOfTheHand.java": "9f1625c28c416485f4cdc9da6320fc8c519b96cd2f71ffc30169744540b96b8e",
+      "Mage.Sets/src/mage/cards/h/HellcatUndyingVigilante.java": "98588abe5e3866c1eb508a1717db4ad07c7618a87ae0456771ca292d7f93f195",
+      "Mage.Sets/src/mage/cards/m/MuldrothaTheGravetide.java": "69fda3677c726581998b9b154dc5811ff1d4de963b089d56ba2c1542e605d606",
+      "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70",
+      "Mage/src/main/java/mage/abilities/condition/common/SneakCondition.java": "6e3471ef3a5eac8d44996baa39e18c8b323ea8941bd460f0c0f21be874f2b3ba",
+      "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4",
+      "Mage/src/main/java/mage/filter/predicate/permanent/UnblockedPredicate.java": "bf95d7bd3ca8be672602ae46b74daacde865aaff6d8a39d3cadebf800a7455c9",
+      "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617",
+      "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+      "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952",
+      "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde",
+      "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f",
+      "Mage/src/main/java/mage/target/TargetPermanent.java": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+      "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9",
+      "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52",
+      "Mage/src/main/java/mage/abilities/common/ZoneChangeTriggeredAbility.java": "2387eb4e53ef69a480b3ad72111ccdd5f994528cb727378c65c941a46c44d7ed",
+      "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c",
+      "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287",
+      "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4",
+      "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1",
+      "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1",
+      "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+      "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00",
+      "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd",
+      "Mage/src/main/java/mage/abilities/costs/CostImpl.java": "ac24e04444dec48d936fed7a03970a8b7e765ef7f368c7b4024747e6fdd83df7",
+      "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+      "Mage/src/main/java/mage/util/CardUtil.java": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    },
+    "unchanged_sha256": {
+      "data/catalogue-identities.json": "57382a60d74330ac28047f178bf3c9254349af881329537d9c41803705761698",
+      "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+      "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+      "src/assurance/msh_games.rs": "bdf8b3f53b7c3b6c509b4116b4539acc70045b8ee648987ef78c4c98b904d50d",
+      "src/assurance/card_traces.json": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3"
+    },
+    "policy_delta": "New Sneak action classified at existing paid-cast priority; no existing action scores changed.",
+    "rustfmt_files": 25
+  },
+  "mechanics": [
+    "Sneak return uses existing additional-cost transaction and actual/funding non-targeted candidate rules, with exact attacker defender capture before movement",
+    "Otherwise-authorized nonhand casting keeps its own origin permission; existing Muldrotha allowance is consumed through explicit chosen permission/type",
+    "Actual entry continuation applies the permanent layer-six remove-and-grant effect only after successful entry events freeze, using an exact incarnation and captured original source",
+    "Resolution-created removal has no source/control duration, survives copy/control/cleanup and prunes only on recipient departure; actual/funding evaluation and keys include the same rows"
+  ],
+  "primary_rules": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "cache": "<cache>/rustmage-rules-20260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": {
+      "400.7e": "400.7e Abilities that trigger when an object moves from one zone to another (for example, \u201cWhen this Aura is put into a graveyard from the battlefield\u201d) can find the new object that it became in the zone it moved to when the ability triggered, if that zone is a public zone.",
+      "506.3a": "506.3a If an effect would put a noncreature permanent onto the battlefield attacking or blocking, the permanent does enter the battlefield but it\u2019s never considered to be an attacking or blocking permanent.",
+      "506.3b": "506.3b If an effect would put a creature onto the battlefield attacking under the control of any player except an attacking player, that creature does enter the battlefield, but it\u2019s never considered to be an attacking creature.",
+      "506.3c": "506.3c If an effect would put a creature onto the battlefield attacking either a player not in the game or a permanent that\u2019s no longer on the battlefield or isn\u2019t either a planeswalker or a battle, that creature does enter the battlefield, but it\u2019s never considered to be an attacking creature. See rule 508.4a.",
+      "509.1h": "509.1h An attacking creature with one or more creatures declared as blockers for it becomes a blocked creature; one with no creatures declared as blockers for it becomes an unblocked creature. This remains unchanged until the creature is removed from combat, an effect says that it becomes blocked or unblocked, or the combat phase ends, whichever comes first. A creature remains blocked even if all the creatures blocking it are removed from combat.",
+      "611.2a": "611.2a A continuous effect generated by the resolution of a spell or ability lasts as long as stated by the spell or ability creating it (such as \u201cuntil end of turn\u201d). If no duration is stated, it lasts until the end of the game.",
+      "611.2c": "611.2c If a continuous effect generated by the resolution of a spell or ability modifies the characteristics or changes the controller of any objects, the set of objects it affects is determined when that continuous effect begins. After that point, the set won\u2019t change. (Note that this works differently than a continuous effect from a static ability.) A continuous effect generated by the resolution of a spell or ability that doesn\u2019t modify the characteristics or change the controller of any objects modifies the rules of the game, so it can affect objects that weren\u2019t affected when that continuous effect began. If a single continuous effect has parts that modify the characteristics or changes the controller of any objects and other parts that don\u2019t, the set of objects each part applies to is determined independently.",
+      "613.1f": "613.1f Layer 6: Ability-adding effects, keyword counters, ability-removing effects, and effects that say an object can\u2019t have an ability are applied.",
+      "702.190a": "702.190a Sneak is a keyword that represents a static ability that functions while the spell with sneak is on the stack. \u201cSneak [cost]\u201d means \u201cAny time you could cast an instant during your declare blockers step, you may cast this spell by paying [cost] and returning an unblocked creature you control to its owner\u2019s hand rather than paying this spell\u2019s mana cost.\u201d",
+      "702.190b": "702.190b A permanent spell whose sneak cost was paid enters the battlefield tapped and attacking (see rule 506.3a). It will be attacking the same player, planeswalker, or battle as the creature that was returned to its owner\u2019s hand to pay the sneak cost of the spell that became that permanent."
+    },
+    "release_notes": "https://media.wizards.com/2026/downloads/MSH_Release_Notes_N6hMZoes90/zfGb4BJ8Bf_EN_MTGMSH_ReleaseNotes_20260513.pdf",
+    "release_notes_scope": "Elektra official timing/captured-defender/no-declaration bullets inspected via official primary PDF web result"
+  },
+  "source_discrepancies": [
+    "Sneak helper Java hardcodes Hand and does not implement mandatory tapped-attacking entry; CR702.190 and official Elektra notes govern otherwise-authorized origin and entry.",
+    "Hellcat Java return helper uses source controller, despite printed owner control; Rust captures physical owner.",
+    "Hellcat Java source lookup tests current graveyard rather than original death-event incarnation; CR400.7e binds only exact first public destination."
+  ],
+  "tests": {
+    "whole_pair_groups": 29,
+    "whole_pair_seconds": 0.31,
+    "affected_groups": 74,
+    "affected_seconds": 1.36,
+    "both_seats": true,
+    "ordinary_supported_final_run": true,
+    "obligations": {
+      "Elektra, Daughter of the Hand": [
+        "Paid normal2BB3/3 legendary Human Ninja Villain; ordinary entry is untapped/not attacking and mandatory ETB targets opponent creatures only, current power<=3 including zero/negative; target power rechecked after actual GiantGrowth; source departure does not cancel the packet",
+        "Sneak is a counterable spell alternative1BB, not an activation; only declare-blockers priority after blocks on own turn; blocked attacker remains blocked after its blocker dies; deadline excludes later combat steps; short mana/foreign or nonattacking return selections rejected atomically",
+        "Non-targeted return may use a protected attacker or an actual copied token; real mana-producing vigilant attacker can tap for payment before being returned, with shared resource feasibility; actual Swamps are floated and exact3mana paid",
+        "Captures exact defender before returning attacker; enters tapped and attacking that player or exact planeswalker; departed planeswalker does not redirect to defending player; no additional attack declaration/history",
+        "Actual EssenceScatter counters spell while return cost remains paid; Hand, granted graveyard, exact exile and Vizier library-top permissions supported without flash requirement; Muldrotha exact selected per-type permission consumed once",
+        "Owned parent-disposed raw/index return selection and payment replay/restore; full both-observer equality; unrelated hidden hand card absent and nonactor receives no additional-cost candidate payload"
+      ],
+      "Hellcat, Undying Vigilante": [
+        "PaidGG2/2 legendary Human Hero with haste; actual paid Murder triggers exact death-event return to owner, including actual stolen controller; enters with +1/+1 counter doubled by real DoublingSeason",
+        "Only exact first graveyard incarnation returns; departure/reentry does not rebind queued packet; actual RestInPeace sends to exile without death return; actual copy-token death cannot return a token",
+        "Actual successful entry gets lasting source-independent lose-all-abilities and haste after entry trigger facts freeze; real copied InspiringOverseer returns its physical definition and queued gain-life/draw still resolve after blanking",
+        "Real paid AdaptiveAutomaton copied to Hellcat provides an owned mandatory entry-choice pause on return; explicit bounded redirected-entry seam gets no modification; normal return receives counter/haste/removal on exact successful entrant",
+        "Lasting removal survives cleanup/control/copy changes; copied Forest mana ability is unavailable in both actual action menu and funding; later separately granted Flying survives by timestamp; bounce/recast removes old row/counter and restores printed death ability",
+        "A second actual paid Murder leaves blank returned Hellcat dead, with no repeated reanimation; copiable values omit the resolved removal, shown by actual SelfReflection token acquiring printed death ability; public rows/owned branch state remain deterministic",
+        "Full returned-entrant ObjectView matches borrowed entry projection, preserving source, counters and ability availability without changing parent snapshot"
+      ]
+    },
+    "profile": "Focused testopt0, one Cargo job/test thread,6GiB shared guard"
+  },
+  "fixed_inputs": {
+    "source": "d8912a79beb8b2310be0b6ab12979227b76cb532",
+    "terminal": true,
+    "exit_code": 0,
+    "inputs": 11152,
+    "changed": []
+  },
+  "resource_guard": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib",
+      "msh_elektra_hellcat",
+      "--",
+      "--nocapture"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 29.832219510979485,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2732990464,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "affected_guard": {
+    "command": [
+      "<cache>/rustmage-msh-elektra-hellcat-focused-target/debug/deps/rustmage-55e16bd14e329fbf",
+      "msh_sting",
+      "msh_armor_tony",
+      "msh_copy_cards",
+      "muldrotha",
+      "--nocapture"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 1.3655292140319943,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 18747392,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-elektra-hellcat-preservation.json",
+    "sha256": "d3aba60765f8a4dfed08a9e193ae030178f9d31ee6982c139de5c9a7f03b4f3a",
+    "prior_required": 4516,
+    "required": 4563,
+    "retained": {
+      "<cache>/rustmage-msh-elektra-hellcat-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-elektra-hellcat-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "9513e7ca590a8de57a09b0a57ebc3cf5c4c70fcfbe02c95147534dfbd4c7c139"
+    }
+  },
+  "cleanup": {
+    "created_utc": "2026-10-25T18:07:31.869417+00:00",
+    "only_terminal_target": true,
+    "target": "<cache>/rustmage-msh-elektra-hellcat-focused-target",
+    "processes": 597,
+    "maps_denied": 48,
+    "accessible_references": [],
+    "removed_files": 165,
+    "removed_path_bytes": 39841820,
+    "preserved": {
+      "<cache>/rustmage-msh-elektra-hellcat-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-elektra-hellcat-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "9513e7ca590a8de57a09b0a57ebc3cf5c4c70fcfbe02c95147534dfbd4c7c139"
+    }
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T17:39:14+00:00",
+    "final_focused_terminal_utc": "2026-10-25T18:02:58.303532+00:00",
+    "seconds": 1424.303532,
+    "complete_physical_cards": 2,
+    "cards_per_hour": 5.055102257515149,
+    "scope": "Isolated pair branch creation through ordinary supported focused terminal; not a simulation benchmark"
+  },
+  "limits": [
+    "No aggregate/default/full native, Trace baselines/exports, release, CI or complete-set corpus validation in this phase.",
+    "Final composition, cross-family interactions and final-head independent nonauthor reviews remain with the parent task.",
+    "Copy acquisition, source control, zero/negative-power setup, protection/vigilance and entry redirection are explicitly labeled bounded seams; actual spell casting/payment, combat, return and choices remain ordinary legal actions.",
+    "No other gated Sneak producers are admitted. Existing action scores remain unchanged; the new Sneak action uses the existing paid-cast chooser priority."
+  ]
+}
