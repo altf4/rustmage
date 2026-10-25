@@ -2,7 +2,7 @@
 use super::assurance::big_helpers::{checked, named, next_turn, settle, setup};
 use super::*;
 const FEAST: &str = "Heroic Feast";
-const FOOD: Card = Card(5246);
+const FOOD_IDENTITY: &str = "@token/283fd83a9aec83a51b736926";
 fn priority(g: &mut Game, p: Player) {
     if g.actor() != Some(p) {
         checked(g, Action::Pass);
@@ -80,7 +80,7 @@ fn food(g: &Game, p: Player) -> CardId {
     (0..g.state.objects.len() as CardId)
         .find(|&id| {
             let o = g.object_view(id);
-            o.zone == Zone::Battlefield && o.controller == p && o.card == FOOD
+            o.zone == Zone::Battlefield && o.controller == p && o.card.identity() == FOOD_IDENTITY
         })
         .unwrap()
 }
@@ -421,7 +421,7 @@ fn msh_feast_token_and_counter_replacements_use_actual_creation_and_placer() {
         assert_eq!(
             (0..g.state.objects.len() as CardId)
                 .filter(|&id| g.object_view(id).zone == Zone::Battlefield
-                    && g.object_view(id).card == FOOD)
+                    && g.object_view(id).card.identity() == FOOD_IDENTITY)
                 .count(),
             2
         );
@@ -528,5 +528,70 @@ fn msh_feast_late_counter_overflow_rolls_back_all_recipients() {
         assert_eq!(g.revision(), revision);
         assert_eq!(g.counter_count(own[0], CounterKind::PlusOne), 0);
         assert_eq!(g.counter_count(own[1], CounterKind::PlusOne), u64::MAX);
+    }
+}
+
+#[test]
+fn msh_feast_copied_packet_query_retains_event_amount_after_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, f) = body(p);
+        let own = bears(&mut g, p, 1);
+        g.gain_life(p, 3);
+        // Bounded owned packet-copy query; does not admit a new copy-ability producer.
+        let mut copy = g
+            .state
+            .pending_triggers
+            .iter()
+            .find(|a| a.card == f)
+            .unwrap()
+            .clone();
+        copy.id = g.next_stack_id();
+        copy.is_copy = true;
+        copy.controller = p.other();
+        moved(&mut g, &[f], Zone::Graveyard);
+        g.gain_life(p, 9);
+        assert_eq!(
+            copy.life_event,
+            Some(LifeTriggerView {
+                player: p,
+                amount: 3
+            })
+        );
+        assert_eq!(g.target_spec(&copy).single().unwrap().max, 3);
+        assert_eq!(targets(&mut g, f), 3);
+        select(&mut g, f, &own);
+        settle(&mut g);
+        assert_eq!(g.counter_count(own[0], CounterKind::PlusOne), 1);
+    }
+}
+
+#[test]
+fn msh_feast_copied_source_has_its_own_food_and_life_observer() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, f) = body(p);
+        let definition = g.object_view(f).card;
+        // Existing fixed copy-group primitive isolates a token copy, without admitting
+        // any currently gated card's copy-selection/targeting obligations.
+        let copied = g.create_copy_groups_inner(
+            p.other(),
+            &[TokenGroupView {
+                token: definition,
+                amount: 1,
+                tapped: false,
+            }],
+            &[Some(CopyRecipe::new(definition))],
+            None,
+        )[0]
+        .card;
+        g.advance_entries();
+        settle(&mut g);
+        assert_eq!(g.object_view(copied).controller, p.other());
+        assert_ne!(food(&g, p), food(&g, p.other()));
+        let recipient = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        g.gain_life(p.other(), 2);
+        assert_eq!(targets(&mut g, copied), 2);
+        select(&mut g, copied, &[recipient]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(recipient, CounterKind::PlusOne), 1);
     }
 }
