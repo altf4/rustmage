@@ -287,7 +287,9 @@ impl Game {
     ) -> bool {
         let object = &self.state.objects[card as usize];
         for (index, ability) in object.card.activations().iter().enumerate() {
-            if object.card.grants_activation(index as u16) {
+            if object.card.grants_activation(index as u16)
+                || object.card.self_granted_activation_template(index as u16)
+            {
                 continue;
             }
             if !self.activation_cost_available(card, ability, index, actor, sorcery) {
@@ -510,6 +512,7 @@ impl Game {
         SpellView {
             source_move: None,
             borrowed_slot: None,
+            self_granted_activation: None,
             target_controller_lki: None,
             gift: None,
             reflexive_subject: None,
@@ -620,12 +623,14 @@ impl Game {
             );
             return;
         }
-        if let Some(slot) = item.borrowed_slot {
-            self.record_borrowed_use(item.object, slot, definition.exhaust);
-        } else {
-            self.record_copy_activation_use(item, ability);
+        if item.self_granted_activation.is_none() {
+            if let Some(slot) = item.borrowed_slot {
+                self.record_borrowed_use(item.object, slot, definition.exhaust);
+            } else {
+                self.record_copy_activation_use(item, ability);
+            }
+            self.record_power_up_use(item, ability);
         }
-        self.record_power_up_use(item, ability);
         self.pay_counters(item.card, &counter_payment);
         if let Some(kind) = definition.source_counter_cost() {
             item.source_counter_payment = Some(SourceCounterPaymentView {

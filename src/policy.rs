@@ -297,6 +297,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnouncePlot { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
+            | Action::AnnounceSelfGrantedAbility { .. }
             | Action::AnnounceBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. } | Action::AnnounceBorrowedMana { .. } => -2,
             Action::PayCosts { .. } | Action::PayPlot { .. } => 100,

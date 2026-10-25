@@ -1,3 +1,6 @@
+#[path = "engine_self_granted_activations.rs"]
+mod self_granted_activations;
+pub use self_granted_activations::SelfGrantedActivationContext;
 #[path = "engine_self_granted.rs"]
 mod self_granted;
 pub use self_granted::{SelfGrantedAbilityKind, SelfGrantedAbilityView};
@@ -495,6 +498,7 @@ define_actions! {
     AnnounceCounterGraveyard { card: CardId },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
+    AnnounceSelfGrantedAbility { source: ObjectRef, grant_timestamp: u64 },
     ChooseAdditionalCost {
         object: ObjectRef,
     },
@@ -942,6 +946,8 @@ pub struct SpellView {
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
     pub source_move: Option<Box<TriggerSourceMoveView>>,
     pub borrowed_slot: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub self_granted_activation: Option<Box<SelfGrantedActivationContext>>,
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
     /// Exact non-target subjects fixed when the triggering spell was cast.
@@ -1050,13 +1056,17 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.cast_creature_subjects.as_ref().map_or(0, |event| {
-            std::mem::size_of::<CastCreatureSubjectsView>()
-                + event.objects.len() * std::mem::size_of::<ObjectRef>()
-        }) + self
-            .event_object
+        self.self_granted_activation
             .as_ref()
-            .map_or(0, |_| std::mem::size_of::<EventObjectView>())
+            .map_or(0, |_| std::mem::size_of::<SelfGrantedActivationContext>())
+            + self.cast_creature_subjects.as_ref().map_or(0, |event| {
+                std::mem::size_of::<CastCreatureSubjectsView>()
+                    + event.objects.len() * std::mem::size_of::<ObjectRef>()
+            })
+            + self
+                .event_object
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<EventObjectView>())
             + self
                 .captured_artifact_copy
                 .as_ref()
@@ -3464,6 +3474,11 @@ impl Game {
                         return true;
                     }
                     if obj.zone == Zone::Battlefield
+                        && self.visit_self_granted_activations(card, actor, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Battlefield
                         && self.visit_attached_activations(card, actor, &mut emit)
                     {
                         return true;
@@ -4502,6 +4517,12 @@ impl Game {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::GraveyardCounterCost;
                 self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceSelfGrantedAbility {
+                source,
+                grant_timestamp,
+            } => {
+                self.announce_self_granted_ability(source, grant_timestamp);
             }
             Action::AnnounceAttachedAbility { grantor, ability } => {
                 self.announce_attached_ability(grantor, ability)

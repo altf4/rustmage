@@ -942,7 +942,10 @@ impl<'g> FundingState<'g> {
             .activations()
             .iter()
             .enumerate()
-            .filter(|(_, ability)| ability.mana_production().is_some())
+            .filter(|(index, ability)| {
+                !object.card.self_granted_activation_template(*index as u16)
+                    && ability.mana_production().is_some()
+            })
             .map(|(index, ability)| (index as u16, ability, None))
             .chain(
                 borrowed_activations::abilities(self, id)
@@ -3093,3 +3096,7 @@ mod msh_counter_quantity_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_self_granted_static_tests.rs"]
 mod msh_self_granted_static_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_self_granted_activation_tests.rs"]
+mod msh_self_granted_activation_tests;

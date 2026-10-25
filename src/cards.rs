@@ -3606,6 +3606,12 @@ impl Card {
     pub(crate) fn graveyard_counter_cost(self) -> Option<u16> {
         authored::rules(self).and_then(|r| r.extras.graveyard_counter_cost)
     }
+    pub(crate) fn self_granted_activation_template(self, index: u16) -> bool {
+        authored::RULES[self.index()]
+            .extras
+            .self_granted_activation_templates
+            .contains(&index)
+    }
     pub(crate) fn grants_activation(self, index: u16) -> bool {
         self.static_ability_groups().iter().any(|g| {
             g.fragments

@@ -223,6 +223,7 @@ impl Game {
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
                 borrowed_slot: None,
+                self_granted_activation: None,
                 target_controller_lki: None,
                 gift: None,
                 reflexive_subject: None,

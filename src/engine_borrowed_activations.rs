@@ -66,7 +66,9 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
             continue;
         }
         for (index, _) in card.card.activations().iter().enumerate() {
-            if card.card.grants_activation(index as u16) {
+            if card.card.grants_activation(index as u16)
+                || card.card.self_granted_activation_template(index as u16)
+            {
                 continue;
             }
             let slot = link.first_slot + index as u64;
