@@ -935,6 +935,9 @@ pub struct SpellView {
     /// Selected public source facts; refreshed before its complete departure batch.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_quantity_lki: Option<Box<SourceQuantityView>>,
+    /// Exact independent event object and selected public departure facts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub event_object: Option<Box<EventObjectView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_toughness: Option<Box<i128>>,
     pub source_facts: DamageFacts,
@@ -987,9 +990,13 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.captured_artifact_copy
+        self.event_object
             .as_ref()
-            .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
+            .map_or(0, |_| std::mem::size_of::<EventObjectView>())
+            + self
+                .captured_artifact_copy
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
             + self.mana_copy_sources.as_ref().map_or(0, |sources| {
                 std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
                     + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()
@@ -5239,6 +5246,7 @@ impl Game {
                 )
             })
             .collect();
+        self.capture_event_object_facts(before.iter().map(|(_, view, _, _)| view));
         self.capture_source_quantities(before.iter().map(|(_, view, _, _)| view));
         // Replacement decisions precede the entire simultaneous commit.
         let planned: Vec<_> = before
@@ -5389,6 +5397,7 @@ impl Game {
         counters: Counters,
         entry_controller: Option<Player>,
     ) -> ZoneChange {
+        self.capture_event_object_facts(std::iter::once(&before));
         self.capture_source_quantities(std::iter::once(&before));
         let rules = self.freeze_zone_rules(&before, destination, None);
         let plan = self.plan_zone_move(&before, destination, rules);
@@ -7403,9 +7412,15 @@ impl Game {
 #[path = "engine_card_quantities.rs"]
 mod card_quantities;
 pub use card_quantities::SourceCounterQuantityView;
+pub use event_objects::{CreatureComparisonFacts, EventObjectFacts, EventObjectView};
 pub use source_quantities::SourceQuantityView;
 #[path = "engine_cast_entry_counters.rs"]
 mod cast_entry_counters;
+#[path = "engine_event_objects.rs"]
+mod event_objects;
+#[cfg(test)]
+#[path = "engine_msh_event_objects_tests.rs"]
+mod msh_event_objects_tests;
 #[cfg(test)]
 #[path = "engine_msh_source_quantities_tests.rs"]
 mod msh_source_quantities_tests;

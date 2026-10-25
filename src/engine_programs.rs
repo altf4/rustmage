@@ -724,6 +724,7 @@ impl Game {
                     | TriggerCondition::EquippedAttacks
                     | TriggerCondition::EquippedAttacksAlone
                     | TriggerCondition::GrantedAttacks
+                    | TriggerCondition::AttachedCreatureBecomesTapped
                     | TriggerCondition::AttachedBecomesUntapped
                     | TriggerCondition::SelfBecomesTapped
                     | TriggerCondition::ControlledCreaturesBecomeTapped
@@ -777,6 +778,12 @@ impl Game {
                                 }
                             }
                     }
+                    TriggerCondition::OtherCreatureEntersYouIfGreaterStats => {
+                        yours
+                            && !same
+                            && CreatureComparisonFacts::from_view(&entered)
+                                .greater_than(CreatureComparisonFacts::from_view(source))
+                    }
                     TriggerCondition::OtherCreatureEntersYou => {
                         yours && !same && entered.is_creature()
                     }
@@ -804,6 +811,11 @@ impl Game {
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
+                    if ability.condition.event()
+                        == TriggerCondition::OtherCreatureEntersYouIfGreaterStats
+                    {
+                        self.bind_creature_comparison(source, &entered);
+                    }
                     if same {
                         self.state.pending_triggers.last_mut().unwrap().cast_event =
                             event.cast_event.clone();
@@ -1016,6 +1028,7 @@ impl Game {
                 definition.triggers()[index].program,
                 |kind| source.counters.get(kind),
             ),
+            event_object: None,
             source_quantity_lki: self
                 .source_quantity_facts(definition.triggers()[index].program, source),
             sacrificed_toughness: None,
@@ -1316,6 +1329,7 @@ impl Game {
     }
 
     fn tapped_batch_triggers(&mut self, changed: &[CardId]) {
+        self.attached_tap_triggers(changed);
         if changed.is_empty() || self.state.tap_sources.is_empty() {
             return;
         }
@@ -1620,7 +1634,8 @@ impl Game {
                 item.object,
                 item.source_tapped,
             ) || !self.tap_event_guard(&item)
-                || !self.source_quantity_guard(&item))
+                || !self.source_quantity_guard(&item)
+                || !self.event_object_guard(&item))
         {
             self.give_priority();
             return;
@@ -3071,6 +3086,9 @@ impl Game {
                             return;
                         }
                     }
+                }
+                Instruction::EventObjectDamagePlayers(players, amount) => {
+                    self.event_object_damage_players(&item, players, amount);
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),

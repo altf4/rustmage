@@ -56,7 +56,8 @@ impl Game {
         if triggers.iter().any(|a| {
             matches!(
                 a.condition.event(),
-                TriggerCondition::ControlledCreaturesBecomeTapped
+                TriggerCondition::AttachedCreatureBecomesTapped
+                    | TriggerCondition::ControlledCreaturesBecomeTapped
                     | TriggerCondition::ControlledCreatureFirstTapOwnTurn
             )
         }) {

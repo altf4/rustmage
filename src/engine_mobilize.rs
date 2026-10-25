@@ -259,6 +259,7 @@ impl Game {
                 life_event: None,
                 source_counter_lki: None,
                 source_quantity_lki: None,
+                event_object: None,
                 sacrificed_toughness: None,
                 card: source.card,
                 object: source,

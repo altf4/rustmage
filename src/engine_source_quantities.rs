@@ -7,6 +7,9 @@ pub struct SourceQuantityView {
     pub toughness: Option<i128>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub equipment_count: Option<u64>,
+    /// Signed source facts for an intervening creature-stat comparison.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creature_comparison: Option<CreatureComparisonFacts>,
 }
 
 fn selected(program: &[Instruction]) -> (bool, bool) {
@@ -103,6 +106,7 @@ impl Game {
         let (toughness, equipment) = selected(program);
         (toughness || equipment).then(|| {
             Box::new(SourceQuantityView {
+                creature_comparison: None,
                 toughness: toughness.then_some(if source.is_creature() {
                     source.toughness
                 } else {
@@ -145,6 +149,7 @@ impl Game {
                     (
                         source.reference,
                         SourceQuantityView {
+                            creature_comparison: None,
                             toughness: selected.0.then_some(if source.is_creature() {
                                 source.toughness
                             } else {

@@ -1337,6 +1337,8 @@ pub(crate) enum Instruction {
     Damage(i32),
     DamageScaled(AmountValue),
     DamagePlayers(PlayerSet, i32),
+    /// A bound untargeted event object, independently of the ability source.
+    EventObjectDamagePlayers(PlayerSet, i32),
     DamagePlayersScaled(PlayerSet, AmountValue),
     CreateTokensFor {
         players: PlayerSet,
@@ -2709,6 +2711,7 @@ pub(crate) enum TriggerCondition {
     /// Per-creature own-turn tap, with a first-tap intervening condition.
     ControlledCreatureFirstTapOwnTurn,
     AttachedBecomesUntapped,
+    AttachedCreatureBecomesTapped,
     AttackDeclared {
         minimum: u16,
         power_min: Option<i32>,
@@ -2727,6 +2730,7 @@ pub(crate) enum TriggerCondition {
     FilteredEntersYou(EntryPredicate),
     TokensEnterYou,
     OtherCreatureEntersYou,
+    OtherCreatureEntersYouIfGreaterStats,
     CreatureEnters {
         relation: CastRelation,
         other: bool,
