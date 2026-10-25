@@ -661,6 +661,15 @@ impl Game {
             self.activation_cost_counters(item.object, kind, amount, item.controller);
         }
         self.refresh_local_source_counter_quantities(item);
+        if cost.exile_self || cost.discard || cost.sacrifice {
+            // The local announcement is temporarily outside State while costs
+            // commit. Freeze its post-payment source facts before departure too.
+            let source = self.object_view(item.card);
+            item.source_facts = DamageFacts::from_view(&source);
+            item.source_keywords = source.keywords;
+            item.source_tapped = source.tapped;
+            item.source_attachment = source.attached_to;
+        }
         if cost.exile_self {
             self.move_object(item.card, Zone::Exile);
         } else if cost.discard {

@@ -1213,6 +1213,7 @@ impl Game {
     }
 
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
+        self.consume_turn_cast_grants(caster, card);
         let first_trigger = self.state.pending_triggers.len();
         let spell_owner =
             stack.map(|i| self.state.objects[self.state.stack[i].card as usize].owner);
@@ -2075,6 +2076,7 @@ impl Game {
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
+                    | Instruction::CopyTargetAbility { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
                     | Instruction::ScaledPowerDamage { .. }
@@ -2747,6 +2749,12 @@ impl Game {
                     self.start_connive(&item, subject, amount)
                 }
                 Instruction::GrantGraveyardCast(kind) => self.grant_graveyard_cast(&item, kind),
+                Instruction::ReduceArtifactSpellCostsThisTurn(amount) => {
+                    self.grant_artifact_spell_reduction(item.controller, amount)
+                }
+                Instruction::NextRedOrGreenCreatureFreeThisTurn => {
+                    self.grant_next_creature_free(item.controller)
+                }
                 Instruction::GrantMilledPlay => self.grant_milled_play(item.controller),
                 Instruction::ExileDiscardedWithStash => self.exile_discarded_with_stash(&item),
                 Instruction::ExileHandDraw => self.exile_hand_draw(&item),
@@ -3095,6 +3103,11 @@ impl Game {
                     exceptions,
                 } => {
                     if self.copy_target_spell(&item, group, retarget, exceptions) {
+                        return;
+                    }
+                }
+                Instruction::CopyTargetAbility { group } => {
+                    if self.copy_target_ability(&item, group) {
                         return;
                     }
                 }
