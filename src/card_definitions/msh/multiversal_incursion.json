@@ -8,5 +8,55 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "95ff7957ec562b63625d83153fdc68a9e784801d7c22f235ec991021572a1fe2"
   },
-  "physical_metadata_sha256": "91c2048feeee588543f654027db9c18879959431ef86379c0f9af6d5a0ad254c"
+  "physical_metadata_sha256": "91c2048feeee588543f654027db9c18879959431ef86379c0f9af6d5a0ad254c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MultiversalIncursion.java",
+  "java_sha256": "b1602b2d17f075c88dd1cca7540c2a1a2804333ecaf58fdc8336cd5a8e9b4f89",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyEffect.java",
+      "sha256": "4e27230c09fc613d065b165fb57332f3ac4f8bf1fb2f7b33212f155535d8df0b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyApplier.java",
+      "sha256": "82b30d931a3e310abd321918f97eb3ec6d8bf1e93bd665e7ddc66ed032a2fcdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/EmptyCopyApplier.java",
+      "sha256": "b7a59355b96283deb3cb3cf79a0b2c00576637990d87efc64cd8aa82ede040ca"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TokenImpl.java",
+      "sha256": "64e2102a28036ddfaaec4914c34355f7174f90df30d71527b0553aef9a14687d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+      "sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/TargetController.java",
+      "sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+    }
+  ]
 }

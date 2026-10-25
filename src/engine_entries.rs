@@ -549,6 +549,14 @@ impl Game {
                 (m, counters)
             })
             .collect();
+        let returned_hand_observers = if moves
+            .iter()
+            .any(|(m, _)| m.before.zone == Zone::Battlefield && m.destination == Zone::Hand)
+        {
+            self.freeze_returned_hand_observers()
+        } else {
+            None
+        };
         let graveyard_observers = if moves.iter().any(|(m, _)| m.before.zone == Zone::Graveyard) {
             self.freeze_graveyard_observers()
         } else {
@@ -570,7 +578,10 @@ impl Game {
                 movement.tapped,
                 counters,
                 Some(movement.controller),
-                graveyard_observers.clone(),
+                ZoneObservers {
+                    graveyard: graveyard_observers.clone(),
+                    returned_hand: returned_hand_observers.clone(),
+                },
             );
             if event.moved
                 && event.destination == Zone::Battlefield

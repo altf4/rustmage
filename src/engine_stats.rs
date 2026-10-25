@@ -41,6 +41,7 @@ impl Game {
         {
             self.state.attachment_sources.push(id);
         }
+        self.register_ability_target_source(id);
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers.iter().any(|a| {
             matches!(
@@ -130,7 +131,8 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::DamagedCreatureDies
+                TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
+                    | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
                     | TriggerCondition::SelfLeaves

@@ -8,5 +8,40 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2c4c2fda274351daa5ff8d321fa03a2cc0e7baffe18e3432cb4b64ef95a213b8"
   },
-  "physical_metadata_sha256": "cd9f349658f114f3d38374ea0fd84b051160911b1c5e3ddd8d1a2822baf18681"
+  "physical_metadata_sha256": "cd9f349658f114f3d38374ea0fd84b051160911b1c5e3ddd8d1a2822baf18681",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LokiGodOfMischief.java",
+  "java_sha256": "0d00d1ba380824e45c84639eb517bb19fbfc038134a032332242dbde91e45b89",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/stack/StackObject.java",
+      "sha256": "ab532c51a5138d5e02f5e53dae426c6ea63e5db5113274d1008689f085184cf5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetImpl.java",
+      "sha256": "4366d56a414e29c40704e8b734f760d1ec6657d57b0abf8998f51f50d566f915"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/stack/SpellStack.java",
+      "sha256": "b42449c85fd27068b3f561f9e163ef3008621916e6c88ea25f4ab66cc2aaab13"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/stack/StackObjectImpl.java",
+      "sha256": "0c359dde94436a8623c6f9b27cf578af1e34686a9293d83b6cd59d24e1d7c462"
+    }
+  ]
 }

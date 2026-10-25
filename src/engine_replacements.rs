@@ -920,6 +920,31 @@ impl Game {
             used: Vec::new(),
             completion,
         };
+        self.stage_copy_token_batch(batch);
+    }
+    /// A single creation event may contain many unrelated frozen copy recipes.
+    pub(super) fn stage_copy_recipes(&mut self, player: Player, recipes: Vec<CopyRecipe>) {
+        if recipes.is_empty() {
+            return;
+        }
+        let groups = recipes
+            .iter()
+            .map(|recipe| TokenGroupView {
+                token: recipe.definition,
+                amount: 1,
+                tapped: false,
+            })
+            .collect();
+        self.stage_copy_token_batch(TokenBatch {
+            recipes: recipes.into_iter().map(Some).collect(),
+            player,
+            groups,
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::None,
+        });
+    }
+    fn stage_copy_token_batch(&mut self, batch: TokenBatch) {
         if matches!(
             batch.completion,
             TokenCompletion::None | TokenCompletion::TemporaryCopy(_)
@@ -930,7 +955,7 @@ impl Game {
                 TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()),
                 _ => None,
             };
-            self.create_copy_groups_inner(player, &batch.groups, &batch.recipes, temporary);
+            self.create_copy_groups_inner(batch.player, &batch.groups, &batch.recipes, temporary);
             return;
         }
         let state = self.state.replacements.get_or_insert_with(|| {

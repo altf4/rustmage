@@ -228,7 +228,7 @@ impl Game {
                     false,
                     Counters::default(),
                     None,
-                    None,
+                    ZoneObservers::default(),
                 );
             }
             let temporary = self.object_ref(id);

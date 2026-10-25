@@ -575,24 +575,11 @@ impl Game {
         if let Some(id) = r.victim {
             if let Some(index) = self.state.stack.iter().position(|s| s.id == id) {
                 let previous = self.state.stack[index].clone();
-                for bound in &r.item.targets {
-                    if !previous
-                        .targets
-                        .iter()
-                        .any(|old| old.target == bound.target)
-                    {
-                        self.target_becomes_bound(&previous, *bound);
-                    }
-                }
+                self.acquire_stack_target_set(&r.item, &previous.targets);
                 self.state.stack[index] = r.item.clone();
             }
         } else {
-            let mut empty = r.item.clone();
-            empty.targets.clear();
-            for bound in &r.item.targets {
-                self.target_becomes_bound(&empty, *bound);
-                empty.targets.push(*bound);
-            }
+            self.acquire_stack_target_set(&r.item, &[]);
             self.state.stack.push(r.item.clone());
         }
         let state = self.state.stack_copy_data.as_mut().unwrap();
