@@ -617,3 +617,298 @@ fn msh_shield_harness_mind_designation_is_not_copied_but_persists_through_copy_l
         );
     }
 }
+#[test]
+fn msh_shield_harness_captain_real_lands_pay_colored_and_generic_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = seed(&mut g, p, CAP, Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnounceCast { card: id });
+        let a = named(&mut g, p, "Plains", Zone::Battlefield);
+        let b = named(&mut g, p, "Plains", Zone::Battlefield);
+        let c = named(&mut g, p, "Forest", Zone::Battlefield);
+        checked(&mut g, Action::AnnounceCast { card: id });
+        for card in [a, b, c] {
+            checked(&mut g, Action::TapMana { card });
+        }
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.counter_count(id, CounterKind::Shield), 1);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn msh_shield_harness_captain_paid_sacrifice_and_exile_do_not_use_destroy_shield() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, CAP, &[]);
+        let spell = named(&mut g, p, "Corrupted Conviction", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        for _ in 0..8 {
+            let a = Action::ChooseAdditionalCost {
+                object: g.object_ref(id),
+            };
+            if g.legal_actions().contains(&a) {
+                g = orphan(g, a);
+                break;
+            }
+            finish(&mut g);
+        }
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 2);
+        let mut g = setup(p);
+        let id = paid(&mut g, p, CAP, &[]);
+        next_turn(&mut g);
+        main(&mut g, p.other());
+        let light = packet(&mut g, p.other(), "Banishing Light", &[]);
+        choose(&mut g, light, id);
+        settle(&mut g);
+        assert_eq!(g.object_view(id).zone, Zone::Exile);
+    }
+}
+#[test]
+fn msh_shield_harness_captain_destroy_and_create_still_creates_for_unchanged_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, CAP, &[]);
+        let before = g
+            .state
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Battlefield && o.controller == p && o.is_token())
+            .count();
+        paid(&mut g, p.other(), "Stroke of Midnight", &[Target::Card(id)]);
+        assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(id, CounterKind::Shield), 0);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.controller == p && o.is_token())
+                .count(),
+            before + 1
+        );
+    }
+}
+#[test]
+fn msh_shield_harness_captain_live_hero_types_and_changeling_receive_grant() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        paid(&mut g, p, CAP, &[]);
+        let hero = paid(&mut g, p, "Hawkeye, Young Avenger", &[]);
+        let changeling = paid(&mut g, p, "Three Tree Mascot", &[]);
+        assert!(g.keywords(changeling).contains(Keywords::HEXPROOF));
+        let aura = paid(&mut g, p, "Witness Protection", &[Target::Card(hero)]);
+        assert!(!g.keywords(hero).contains(Keywords::HEXPROOF));
+        assert!(g.player_has_hexproof(p));
+        paid(&mut g, p, "Disenchant", &[Target::Card(aura)]);
+        assert!(g.keywords(hero).contains(Keywords::HEXPROOF));
+    }
+}
+#[test]
+fn msh_shield_harness_captain_unpreventable_deathtouch_still_causes_state_based_death() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, CAP, &[]);
+        paid(&mut g, p, "Witness Protection", &[Target::Card(id)]);
+        g.set_counters(
+            id,
+            Counters::of(CounterKind::Shield, 1).with(CounterKind::PlusOne, 4),
+        );
+        let fynn = named(&mut g, p.other(), "Fynn, the Fangbearer", Zone::Battlefield);
+        next_main(&mut g, p);
+        paid(&mut g, p, "Impractical Joke", &[]);
+        until(&mut g, |g| g.state.pending == Pending::Attackers);
+        checked(&mut g, Action::Attack { card: id });
+        checked(&mut g, Action::FinishAttackers);
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: fynn,
+                attacker: id,
+            },
+        );
+        checked(&mut g, Action::FinishBlockers);
+        until(&mut g, |g| {
+            g.state.step == Step::Main2 && g.state.pending == Pending::Priority
+        });
+        assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn msh_shield_harness_shield_prevention_can_be_saved_by_fog_bank_effect_order() {
+    for p in [Player::P0, Player::P1] {
+        for consume in [false, true] {
+            let mut g = setup(p.other());
+            let attacker = paid(&mut g, p.other(), "Hill Giant", &[]);
+            let bank = named(&mut g, p, "Fog Bank", Zone::Battlefield);
+            g.set_counters(bank, Counters::of(CounterKind::Shield, 1));
+            next_main(&mut g, p.other());
+            until(&mut g, |g| g.state.pending == Pending::Attackers);
+            checked(&mut g, Action::Attack { card: attacker });
+            checked(&mut g, Action::FinishAttackers);
+            until(&mut g, |g| g.state.pending == Pending::Blockers);
+            checked(
+                &mut g,
+                Action::Block {
+                    blocker: bank,
+                    attacker,
+                },
+            );
+            checked(&mut g, Action::FinishBlockers);
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::Replacement { .. })
+            });
+            let source = g.object_ref(bank);
+            let view = g.observe(p).replacement_choice.unwrap();
+            assert_eq!(view.damage_preventions.len(), 2);
+            g = orphan(
+                g,
+                Action::ChooseDamagePrevention {
+                    source,
+                    prevention: if consume {
+                        DamagePreventionKind::ShieldCounter
+                    } else {
+                        DamagePreventionKind::CombatToRecipient
+                    },
+                },
+            );
+            until(&mut g, |g| {
+                g.state.step == Step::Main2 && g.state.pending == Pending::Priority
+            });
+            assert_eq!(g.object_view(bank).damage, 0);
+            assert_eq!(
+                g.counter_count(bank, CounterKind::Shield),
+                u64::from(!consume)
+            );
+        }
+    }
+}
+#[test]
+fn msh_shield_harness_mind_reserved_tap_cannot_fund_itself_real_land_payment_is_nonmutating() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, MIND, &[]);
+        g.state.players[p.index()].mana = [0; 6];
+        let lands: Vec<_> = (0..5)
+            .map(|_| named(&mut g, p, "Forest", Zone::Battlefield))
+            .collect();
+        reject(&mut g, activation(id, 1));
+        let white = named(&mut g, p, "Plains", Zone::Battlefield);
+        let before = g.snapshot();
+        let views = [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap());
+        assert!(g.legal_actions().contains(&activation(id, 1)));
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(
+            [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap()),
+            views
+        );
+        checked(&mut g, activation(id, 1));
+        for card in lands.into_iter().chain([white]) {
+            checked(&mut g, Action::TapMana { card });
+        }
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(id).harnessed, Some(true));
+        assert!(g.object_view(id).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn msh_shield_harness_mind_grant_tracks_current_controller_end_step() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, MIND, &[]);
+        let bear = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        harness(&mut g, p, id);
+        paid(
+            &mut g,
+            p,
+            "Harmless Offering",
+            &[Target::Player(p.other()), Target::Card(id)],
+        );
+        until(&mut g, |g| {
+            g.state.step == Step::End && g.state.pending == Pending::Priority
+        });
+        assert!(g.state.stack.is_empty());
+        next_turn(&mut g);
+        main(&mut g, p.other());
+        let old = g.object_ref(bear);
+        choose(&mut g, id, bear);
+        settle(&mut g);
+        assert_ne!(g.object_ref(bear), old);
+        assert_eq!(g.object_view(id).harnessed, Some(true));
+    }
+}
+#[test]
+fn msh_shield_harness_mind_real_copy_harness_suppression_restoration_and_blink_reset() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, MIND, &[]);
+        let mimic = paid(&mut g, p, "Absorbing Man", &[]);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        choose(&mut g, mimic, id);
+        settle(&mut g);
+        harness(&mut g, p, mimic);
+        let aura = paid(&mut g, p, "Witness Protection", &[Target::Card(mimic)]);
+        assert_eq!(g.object_view(mimic).harnessed, Some(true));
+        assert!(
+            g.object_view(mimic)
+                .abilities
+                .as_ref()
+                .unwrap()
+                .grants
+                .is_empty()
+        );
+        reject(&mut g, activation(mimic, 1));
+        paid(&mut g, p, "Disenchant", &[Target::Card(aura)]);
+        assert!(
+            !g.object_view(mimic)
+                .abilities
+                .as_ref()
+                .unwrap()
+                .grants
+                .is_empty()
+        );
+        let old = g.object_ref(mimic);
+        paid(&mut g, p, "Daydream", &[Target::Card(mimic)]);
+        assert_ne!(g.object_ref(mimic), old);
+        assert_eq!(g.object_view(mimic).harnessed, None);
+        assert_eq!(
+            g.object_view(mimic).card,
+            Card::from_name("Absorbing Man").unwrap()
+        );
+        assert_eq!(g.counter_count(mimic, CounterKind::PlusOne), 1);
+    }
+}
+#[test]
+fn msh_shield_harness_mind_blink_owns_entry_choice_pause() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, MIND, &[]);
+        let automaton = paid(&mut g, p, "Adaptive Automaton", &[]);
+        harness(&mut g, p, id);
+        choose(&mut g, id, automaton);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EntryValue { .. })
+        });
+        assert_eq!(g.object_view(automaton).zone, Zone::Exile);
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseEntryValue { .. }))
+            .unwrap();
+        let Action::ChooseEntryValue { value } = action else {
+            unreachable!()
+        };
+        g = orphan(g, Action::ChooseEntryValue { value });
+        settle(&mut g);
+        assert_eq!(g.object_view(automaton).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(automaton).entry_choice, Some(value));
+    }
+}

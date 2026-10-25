@@ -3101,3 +3101,7 @@ mod msh_broker_thrall_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_super_adaptoid_funding_tests.rs"]
 mod msh_super_adaptoid_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_shield_harness_funding_tests.rs"]
+mod shield_harness_funding_tests;
