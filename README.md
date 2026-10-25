@@ -21,9 +21,9 @@ The engine is available through a native Rust API and in-process Python bindings
 Your application supplies the bot, learning algorithm, and reward function;
 Rustmage supplies the game rules and state transitions.
 
-Four full sets are implemented: **Foundations**, **Lorwyn Eclipsed**,
-**Teenage Mutant Ninja Turtles**, and **The Big Score**, with rules tests and
-complete-game acceptance.
+Six full sets are implemented: **Foundations**, **Lorwyn Eclipsed**,
+**Teenage Mutant Ninja Turtles**, **The Big Score**, **Secrets of Strixhaven**,
+and **Marvel Super Heroes**, with accepted rules and interaction assurance.
 The long-term goal is complete Standard coverage; implementation of the wider
 card pool is still in progress. Standard games reject cards whose rules have not
 been implemented.
@@ -41,29 +41,35 @@ To explore the project:
 
 ## Standard set tracker
 
-**4 / 20 sets complete · 20%**
+**6 / 20 sets complete · 30%**
 
-`████░░░░░░░░░░░░░░░░`
+`██████░░░░░░░░░░░░░░`
 
-**2,505 / 5,164 unique Standard cards implemented across accepted branches · 49%**
+**2,868 / 5,164 unique Standard cards implemented across accepted branches · 56%**
 
-`██████████░░░░░░░░░░`
+`███████████░░░░░░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
-“Complete” means whole-set implementation with rules and full-game acceptance;
-partial admission or catalogue entries do not establish set completion. Set completion
-is separate from integration into `main`. Accepted [Lorwyn Eclipsed](https://github.com/altf4/rustmage/pull/463)
+“Complete” means an accepted whole-set implementation, with validation scope
+recorded in its published evidence; partial admission or catalogue entries do not
+establish set completion. Set completion is separate from integration into `main`.
+Accepted [Lorwyn Eclipsed](https://github.com/altf4/rustmage/pull/463)
 and [TMNT](https://github.com/altf4/rustmage/pull/465) implementations are merged into
 `codex/portable-set-skill`; [BIG](https://github.com/altf4/rustmage/pull/470) is merged
-into `main`. The totals below combine their coverage by unique identity. The current
-`main` [coverage report](data/standard/coverage.json) separately admits 2,215 cards;
-its lower count does not undo accepted set milestones.
+into `main`, alongside [Secrets of Strixhaven](https://github.com/altf4/rustmage/pull/477)
+and [Marvel Super Heroes](https://github.com/altf4/rustmage/pull/516). Marvel uses
+[bounded card and interaction assurance](docs/msh-bounded-assurance-rebuild.json);
+its earlier full-game receipts are historical. The totals below combine accepted
+coverage by unique identity. The current `main`
+[coverage report](data/standard/coverage.json) separately admits 2,578 cards;
+its lower count does not undo accepted set milestones. Counts refreshed 2026-10-25.
 
 <!-- Refresh supported counts from the union of accepted implementation branches,
      using their pinned set membership and coverage reports. Deduplicate by physical
      identity; never demote an accepted set using a checkout that lacks its merged
      integration branch. Keep current-main admission separate from accepted coverage.
+     This refresh unions main at 6751babd with codex/portable-set-skill at 91b4d6de.
      Reconcile set acceptance with its rules/game evidence and published PR. -->
 
 | Set | Code | Supported cards | Implementation status |
@@ -77,12 +83,12 @@ its lower count does not undo accepted set milestones.
 | Duskmourn: House of Horror | DSK | 85/276 (31%) | ⏳ Partial |
 | Edge of Eternities | EOE | 110/266 (41%) | ⏳ Partial |
 | Final Fantasy | FIN | 133/312 (43%) | ⏳ Partial |
-| Marvel Super Heroes | MSH | 84/281 (30%) | ⏳ Partial |
+| Marvel Super Heroes | MSH | 281/281 (100%) | ✅ Complete |
 | Marvel's Spider-Man | SPM | 76/193 (39%) | ⏳ Partial |
 | Murders at Karlov Manor | MKM | 81/279 (29%) | ⏳ Partial |
 | Outlaws of Thunder Junction | OTJ | 101/276 (37%) | ⏳ Partial |
 | Reality Fracture | FRA | 89/285 (31%) | ⏳ Partial |
-| Secrets of Strixhaven | SOS | 105/271 (39%) | ⏳ Partial |
+| Secrets of Strixhaven | SOS | 271/271 (100%) | ✅ Complete |
 | Tarkir: Dragonstorm | TDM | 127/276 (46%) | ⏳ Partial |
 | The Big Score | BIG | 30/30 (100%) | ✅ Complete |
 | The Hobbit | HOB | 69/193 (36%) | ⏳ Partial |
