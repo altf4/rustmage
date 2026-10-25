@@ -3,10 +3,81 @@
   "catalogue_id": 4613,
   "oracle_id": "e380e37d-926b-4a4b-a275-7844bf4956d5",
   "facts_sha256": "d76ccf9f1a39ba35d0d18f9a954f94cdb35320ca31877cda3dd8fea036c6fa88",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "102d9c53a35d489d93ab58cff3ee9e99bd40961c2dc2c2ef42739dce7f87d5b5"
   },
-  "physical_metadata_sha256": "63e7a90a8b934bc08941b5d1f6082833e3efa6c58f67d3ba5b05cbc580825dd0"
+  "physical_metadata_sha256": "63e7a90a8b934bc08941b5d1f6082833e3efa6c58f67d3ba5b05cbc580825dd0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TitaniaRuggedRumbler.java",
+  "java_sha256": "678d2d66bbebf714ce506b3fe93cf95933c29ff78cccab2445f27812cc70a8ec",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/CostImpl.java",
+      "sha256": "ac24e04444dec48d936fed7a03970a8b7e765ef7f368c7b4024747e6fdd83df7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+      "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+      "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostImpl.java",
+      "sha256": "22993c90f4047d015504922f5fe38d98de760d1a89755ec8ce40f127b4e3274a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/HybridManaCost.java",
+      "sha256": "75a83ce4be6ff11778f6f32c6782df9c68250cc55d04e22b03a5efec27de8ee6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ColoredManaCost.java",
+      "sha256": "9b862bbf8a95520da3bc4798bc253cdf263e9637290c865f5e2dc4726080b928"
+    }
+  ],
+  "rules_notes": [
+    "CR 118.9d: free and alternative casts still choose the mandatory discard or additive {2}; hybrid equivalents are distinct base costs, never waivers. The unreduced selected composition remains owned through reductions and payment.",
+    "CR 702.21a: ward captures the targeting player. XMage CounterUnlessPaysEffect rereads the victim current controller; Rust retains the triggering-event payer, including later spell control changes. The discard cause remains the ward packet controller.",
+    "CR 118.11: replaced discards still pay the cost. Resolution uses the exact related stack ID and survives source departure or control changes.",
+    "Official rules: https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf; release notes: https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes."
+  ]
 }

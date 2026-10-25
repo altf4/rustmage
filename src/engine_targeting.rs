@@ -182,6 +182,14 @@ impl Announcement {
         });
         options
             .flat_map(move |cost| {
+                std::iter::once(cost).chain(
+                    (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
+                        .then(|| self.item.source_card.explicit_additional_mana())
+                        .flatten()
+                        .map(|extra| Card::add_mana_cost(cost, extra)),
+                )
+            })
+            .flat_map(move |cost| {
                 const ZERO: [ManaCost; 1] = [ManaCost {
                     colored: [0; 6],
                     generic: 0,

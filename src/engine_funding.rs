@@ -2612,6 +2612,26 @@ impl Game {
             .mana_payment
             .as_ref()
             .unwrap();
+        if request.discard {
+            let choice = self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .choice
+                .as_ref()
+                .unwrap();
+            for (id, _) in self.state.objects.iter().enumerate() {
+                if self.effect_choice_candidate(
+                    choice,
+                    request.payer,
+                    self.object_ref(id as CardId),
+                ) && emit(Action::Discard { card: id as CardId })
+                {
+                    return true;
+                }
+            }
+        }
         if emit(Action::DeclineResolutionMana) {
             return true;
         }

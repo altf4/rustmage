@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c9ea1b94cff22b39b03f33914a3103e52656eb6f4e196f3a0c792e92876a5981",
+  "catalogue_version": "0b0712e4142484c0ef7c7c06ebd9e3693835b489f16dbf830cefd45ccefe8e69",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2477,
-  "implemented_total": 2483,
+  "implemented_standard_cards": 2478,
+  "implemented_total": 2484,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 172,
-      "gated": 101
+      "complete": 173,
+      "gated": 100
     },
     "one": {
       "total": 1,
@@ -37109,8 +37109,8 @@
     {
       "name": "Titania, Rugged Rumbler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/titania_rugged_rumbler.rs",
       "set": "msh"
     },

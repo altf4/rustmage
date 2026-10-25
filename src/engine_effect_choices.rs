@@ -31,6 +31,25 @@ impl EffectChoice {
     }
 }
 impl Game {
+    pub(super) fn start_ward_discard_choice(&mut self, item: &SpellView, payer: Player) {
+        let mut required = [0; 2];
+        required[payer.index()] = 1;
+        self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
+            discard_draw: None,
+            discarded: None,
+            kind: EffectChoiceKind::Discard,
+            filter: evidence::cost(0).filter,
+            amount: 1,
+            source: item.object,
+            required,
+            selected: std::array::from_fn(|_| Vec::new()),
+            skip_to: None,
+            greatest_value: [None; 2],
+            discard_mana_value_life: None,
+            hand_defender: None,
+            entry_life_bonus: None,
+        }));
+    }
     pub(super) fn effect_choice_candidate(
         &self,
         choice: &EffectChoice,

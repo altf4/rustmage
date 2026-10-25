@@ -874,6 +874,8 @@ pub(crate) enum Instruction {
     ExileEachLibraryTopCastFree,
     CastTargetedGraveyardFree,
     CounterRelatedUnlessPayLife(u32),
+    /// One captured ward payer may discard a card or pay this mana cost.
+    CounterRelatedUnlessDiscardOrPay(ManaCost),
     /// One combined ward cost, paid atomically or the related item is countered.
     CounterRelatedUnlessPayManaLife {
         cost: ManaCost,
@@ -3235,6 +3237,9 @@ impl Card {
     }
     pub(crate) fn mana_additional_alternative(self) -> Option<ManaCost> {
         let r = authored::rules(self)?;
+        if let Some(extra) = r.extras.additional_mana_alternative {
+            return Some(extra);
+        }
         if !r.extras.mana_alternative_replaces_additional {
             return None;
         }
@@ -3687,8 +3692,12 @@ impl Card {
         generated::cost_alternative_guard(self)
     }
     pub(crate) fn mana_alternative_replaces_additional(self, cost: ManaCost) -> bool {
-        generated::mana_alternative_replaces_additional(self)
-            && generated::cost_alternatives(self).contains(&cost)
+        (generated::mana_alternative_replaces_additional(self)
+            && generated::cost_alternatives(self).contains(&cost))
+            || self.explicit_additional_mana().is_some_and(|extra| {
+                self.cost_options()
+                    .any(|base| Self::add_mana_cost(base, extra) == cost)
+            })
     }
     pub(crate) fn kicked_targets(self) -> Option<TargetPlan> {
         generated::kicked_targets(self)
@@ -3741,6 +3750,28 @@ impl Card {
     }
     pub(crate) fn zone_replacement(self) -> Option<ZoneReplacementRule> {
         generated::zone_replacement(self)
+    }
+    pub(crate) fn explicit_additional_mana(self) -> Option<ManaCost> {
+        authored::rules(self).and_then(|r| r.extras.additional_mana_alternative)
+    }
+    pub(crate) fn add_mana_cost(base: ManaCost, extra: ManaCost) -> ManaCost {
+        ManaCost {
+            colored: std::array::from_fn(|i| {
+                base.colored[i]
+                    .checked_add(extra.colored[i])
+                    .expect("additional colored cost")
+            }),
+            generic: base
+                .generic
+                .checked_add(extra.generic)
+                .expect("additional generic cost"),
+        }
+    }
+    pub(crate) fn additional_mana_options(self, base: ManaCost) -> impl Iterator<Item = ManaCost> {
+        std::iter::once(base).chain(
+            self.explicit_additional_mana()
+                .map(|extra| Self::add_mana_cost(base, extra)),
+        )
     }
     pub(crate) fn cost_options(self) -> ManaCostOptions {
         let definition = &generated::DEFINITIONS[self.0 as usize];

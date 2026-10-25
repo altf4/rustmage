@@ -198,6 +198,8 @@ pub(super) struct CardExtras {
     pub cost_alternatives: &'static [ManaCost],
     pub cost_alternative_guard: Option<StepGuard>,
     pub mana_alternative_replaces_additional: bool,
+    /// Independent additional mana route crossed with every printed hybrid base.
+    pub additional_mana_alternative: Option<ManaCost>,
     pub kicked_targets: Option<TargetPlan>,
     pub cast_entry_counters: &'static [(CounterKind, u64)],
     pub hand_cast_entry_counters: &'static [(CounterKind, u64)],
@@ -282,6 +284,7 @@ impl CardExtras {
         cost_alternatives: &[],
         cost_alternative_guard: None,
         mana_alternative_replaces_additional: false,
+        additional_mana_alternative: None,
         kicked_targets: None,
         entry_counter_rules: &[],
         starting_loyalty: 0,
