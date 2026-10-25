@@ -8096,3 +8096,7 @@ mod msh_turn_cast_grants_tests;
 #[cfg(test)]
 #[path = "engine_msh_ability_copy_core_tests.rs"]
 mod msh_ability_copy_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_armor_hulk_sagas_tests.rs"]
+mod msh_armor_hulk_sagas_tests;

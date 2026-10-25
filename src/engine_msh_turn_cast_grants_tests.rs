@@ -1,4 +1,4 @@
-//! Shared turn-casting rules with paid existing spells; selected Sagas stay gated.
+//! Shared turn-casting rules with ordinary paid supported Saga producers.
 use super::assurance::big_helpers::{cast, checked, named, settle, setup};
 use super::*;
 const ARMOR: &str = "Armor Wars";
@@ -94,10 +94,8 @@ fn count(g: &Game, p: Player) -> u64 {
 fn source(g: &mut Game, p: Player, name: &str) -> CardId {
     assert!([ARMOR, HULK].contains(&name));
     let d = Card::from_name(name).unwrap();
-    assert!(!d.is_supported());
-    let id = named(g, p, "Bear Cub", Zone::Outside);
-    g.state.objects[id as usize].card = d;
-    g.move_object(id, Zone::Hand);
+    assert!(d.is_supported());
+    let id = named(g, p, name, Zone::Hand);
     let (mut m, n) = d.cost();
     m[5] += n;
     g.state.players[p.index()].mana = m;
@@ -113,11 +111,11 @@ fn muldrotha_free(g: &Game, card: CardId) -> Action {
         .unwrap()
 }
 #[test]
-fn turn_cast_grants_core_gated_consumers_and_absent_wire_are_honest() {
+fn turn_cast_grants_supported_consumers_and_absent_wire_are_honest() {
     for p in [Player::P0, Player::P1] {
         let g = setup(p);
-        assert!(!Card::from_name(ARMOR).unwrap().is_supported());
-        assert!(!Card::from_name(HULK).unwrap().is_supported());
+        assert!(Card::from_name(ARMOR).unwrap().is_supported());
+        assert!(Card::from_name(HULK).unwrap().is_supported());
         for view in g.observe(p).players {
             assert!(view.turn_cast_grants.is_none());
             assert!(
@@ -165,7 +163,7 @@ fn turn_cast_grants_armor_opcode_uses_queued_controller_after_source_departure_o
             let mut g = setup(p);
             let id = source(&mut g, p, ARMOR);
             let old = g.object_ref(id);
-            assert!(g.queue_trigger(&g.object_view(id), 0));
+            assert!(g.queue_trigger(&g.object_view(id), 1));
             if depart {
                 g.move_object(id, Zone::Graveyard);
                 g.move_object(id, Zone::Battlefield);
@@ -183,12 +181,13 @@ fn turn_cast_grants_armor_opcode_uses_queued_controller_after_source_departure_o
     }
 }
 #[test]
-fn turn_cast_grants_hulk_opcode_survives_its_gated_fixture_saga_departure() {
+fn turn_cast_grants_hulk_opcode_survives_saga_departure() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let id = source(&mut g, p, HULK);
         assert_eq!(count(&g, p), 1);
-        // Only chapter I is staged in this core fixture, so its Saga finishes here.
+        // A resolved player grant survives the producer's later departure.
+        g.move_object(id, Zone::Graveyard);
         assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
         let bear = named(&mut g, p, "Bear Cub", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
