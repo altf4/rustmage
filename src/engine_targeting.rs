@@ -1027,7 +1027,9 @@ impl Game {
                     TargetPredicate::Permanent => {
                         self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
-                    TargetPredicate::Legendary => object.card.info().legendary,
+                    TargetPredicate::Legendary => {
+                        ability_world::CharacteristicWorld::legendary(self, id)
+                    }
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
@@ -1313,6 +1315,7 @@ impl Game {
             copy_event: None,
             captured_artifact_copy: None,
             source_copy_recipe: None,
+            source_ability_origin: None,
             target_allocations: None,
             mana_copy_sources: None,
             is_copy: false,

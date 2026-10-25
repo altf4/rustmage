@@ -103,6 +103,7 @@ impl Game {
                                     recipient: object,
                                     defender: None,
                                     granted: true,
+                                    origin: source.copied_grant_origin(),
                                 },
                                 ability,
                             ));

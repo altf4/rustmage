@@ -223,6 +223,7 @@ impl FundingState<'_> {
                     // Departure facts above retain the old face; the new object
                     // outside stack/battlefield has only its physical front.
                     let object = &mut n.resources[i].object;
+                    n.game.restore_projected_copy_identity(*r, object);
                     if !object.is_token() && !object.is_spell_copy() {
                         object.card = object.card.front_face();
                     }
@@ -238,6 +239,8 @@ impl FundingState<'_> {
                     n.resources[i].object.deathtouch_since_sba = false;
                     n.resources[i].object.gained_keywords = Keywords::NONE;
                     n.resources[i].object.used_abilities = 0;
+                    let after = n.reference(r.card);
+                    n.project_copy_departure(*r, after);
                     n.resources[i].object.flashback = false;
                     n.resources[i].attacking = false;
                     next.push(n);

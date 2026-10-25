@@ -196,6 +196,7 @@ impl Game {
             self.ensure_control_base(target);
         }
         if self.state.controls.is_none() {
+            self.refresh_copy_grant_availability();
             return;
         }
         for row in controllers(self) {
@@ -227,6 +228,7 @@ impl Game {
         if state.bases.is_empty() {
             self.state.controls = None;
         }
+        self.refresh_copy_grant_availability();
     }
     pub(super) fn control_bytes(&self) -> usize {
         self.state.controls.as_ref().map_or(0, |state| {

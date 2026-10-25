@@ -917,6 +917,15 @@ impl Game {
             .as_ref()
             .filter(|event| event.granted)
             .map_or(source.card, |event| event.granting_card);
+        let ability_origin = event.as_ref().filter(|event| event.granted).map_or_else(
+            || {
+                source
+                    .temporary_copy
+                    .as_ref()
+                    .map(|view| view.active_origin)
+            },
+            |event| event.origin,
+        );
         let condition = definition.triggers()[index].condition;
         if condition.event() == TriggerCondition::SelfAttacksIfEquipped
             && self.source_equipment_count(source.reference).unwrap_or(0) == 0
@@ -969,6 +978,7 @@ impl Game {
         ) && self.state.triggered_this_turn.contains(&TriggerUse {
             source: source.reference,
             ability: u16::try_from(index).expect("ability index"),
+            origin: ability_origin,
         }) {
             return false;
         }
@@ -976,6 +986,7 @@ impl Game {
             let used = TriggerUse {
                 source: source.reference,
                 ability: u16::try_from(index).expect("ability index"),
+                origin: ability_origin,
             };
             if self.state.triggered_this_turn.contains(&used) {
                 return false;
@@ -998,8 +1009,9 @@ impl Game {
             captured_artifact_copy: None,
             source_copy_recipe: source
                 .copy_recipe
-                .filter(|r| r.exceptions != CopyExceptions::NONE)
+                .filter(|r| r.exceptions != CopyExceptions::NONE || r.overrides.is_some())
                 .map(Box::new),
+            source_ability_origin: ability_origin,
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
@@ -1553,6 +1565,7 @@ impl Game {
                     recipient,
                     defender: Some(actor.other()),
                     granted,
+                    origin: giver.copied_grant_origin(),
                 });
                 let source = if granted {
                     self.object_view(recipient.card)
@@ -2037,6 +2050,7 @@ impl Game {
                     | Instruction::PowerDamage { .. }
                     | Instruction::ScaledPowerDamage { .. }
                     | Instruction::CreateCopyTokenForPlayer { .. }
+                    | Instruction::BecomeCopy(..)
                     | Instruction::GainControl {
                         controller: PlayerSet::Targeted,
                         ..
@@ -2936,11 +2950,14 @@ impl Game {
                     }
                 }
                 Instruction::CreateTemporaryArtifactCopy => {
-                    if let Some(mut recipe) = self.recipe_for_subject(&item, Subject::Targets) {
-                        recipe.exceptions = recipe.exceptions.union(CopyExceptions::ARTIFACT);
-                        self.stage_temporary_copy_creation(&item, recipe);
+                    if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        self.stage_temporary_copy_creation(
+                            &item,
+                            recipe.with_exceptions(CopyExceptions::ARTIFACT),
+                        );
                     }
                 }
+                Instruction::BecomeCopy(spec) => self.resolve_in_place_copy(&item, spec),
                 Instruction::CreateCopyTokenForPlayer {
                     subject,
                     amount,
@@ -2967,7 +2984,7 @@ impl Game {
                         if let Instruction::CreateCopyTokenWithExceptions { exceptions, .. } =
                             instruction
                         {
-                            recipe.exceptions = recipe.exceptions.union(exceptions);
+                            recipe = recipe.with_exceptions(exceptions);
                         }
                         self.stage_copy_creation(item.controller, recipe, u128::from(amount));
                     }
@@ -2979,7 +2996,7 @@ impl Game {
                     amount,
                 } => {
                     if let Some(mut recipe) = self.recipe_for_subject(&item, subject) {
-                        recipe.exceptions = recipe.exceptions.union(exceptions);
+                        recipe = recipe.with_exceptions(exceptions);
                         self.stage_copy_creation_inner(
                             item.controller,
                             recipe,

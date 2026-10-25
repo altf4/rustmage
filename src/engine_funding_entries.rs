@@ -17,6 +17,9 @@ pub(super) struct EntryProjection {
     pub controls: continuous_control::ControlState,
     pub entry_values: Vec<entry_choices::ChoiceRow>,
     pub order: Vec<ObjectRef>,
+    /// Every committed entry, independent of whether it provides a timestamped
+    /// continuous effect. Power-up and public entry facts use this exact history.
+    pub entered: Vec<ObjectRef>,
     pub consumed: Vec<ObjectRef>,
     pub counter: Option<replacements::CounterPreview>,
 }
@@ -41,6 +44,7 @@ impl EntryProjection {
             controls: w.controls().cloned().unwrap_or_default(),
             entry_values: w.entry_values().to_vec(),
             order: Vec::new(),
+            entered: Vec::new(),
             consumed: Vec::new(),
             counter: None,
         }
@@ -463,7 +467,7 @@ impl FundingState<'_> {
             let o = self.object(id);
             if o.zone == Zone::Battlefield
                 && o.controller == m.controller
-                && o.card.controlled_entry_untapped() & m.before.card.kind_mask() != 0
+                && o.card.controlled_entry_untapped() & m.before.kinds != 0
                 && self.fragment_available(id, |f| {
                     matches!(
                         f,
@@ -486,7 +490,7 @@ impl FundingState<'_> {
                 let o = self.object(id);
                 o.zone == Zone::Battlefield
                     && o.controller != m.controller
-                    && o.card.opponent_entry_tapped() & m.before.card.kind_mask() != 0
+                    && o.card.opponent_entry_tapped() & m.before.kinds != 0
                     && self.printed_abilities_available(id)
             })
             .collect::<Vec<_>>();
@@ -517,7 +521,7 @@ impl FundingState<'_> {
         }
         effects
     }
-    fn visit_entry_moves(
+    pub(super) fn visit_entry_moves(
         &self,
         mut moves: Vec<entries::EntryMove>,
         initial: bool,
@@ -822,7 +826,7 @@ impl FundingState<'_> {
                         owner: m.before.owner,
                         controller: m.controller,
                         subtypes: Game::entry_choice_subtypes(m),
-                        kind: m.before.card.kind_mask(),
+                        kind: m.before.kinds,
                         amount: m.counters.clone(),
                         effect: true,
                         entry_index: Some(index),
@@ -912,6 +916,8 @@ impl FundingState<'_> {
                 .find(|r| r.id == m.before.id)
                 .expect("entry resource retained");
             let o = &mut row.object;
+            next.game
+                .restore_projected_copy_identity(m.before.reference, o);
             o.card = if m.destination == Zone::Battlefield && m.before.zone == Zone::Stack {
                 m.before.card
             } else if !o.is_token() && !o.is_spell_copy() {
@@ -947,6 +953,7 @@ impl FundingState<'_> {
             };
             live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
             if m.destination == Zone::Battlefield {
+                next.entry_projection.as_mut().unwrap().entered.push(source);
                 if m.counters.has_any() {
                     counter_placement_history::record(
                         &mut next.counter_placement_history,
@@ -969,6 +976,7 @@ impl FundingState<'_> {
                     });
                 }
             }
+            next.project_copy_departure(m.before.reference, source);
         }
         for &i in order {
             let m = &moves[i];

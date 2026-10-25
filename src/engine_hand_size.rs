@@ -82,6 +82,12 @@ impl Card {
     }
 }
 impl Game {
+    pub(super) fn new_copy_hand_timestamp(&mut self, card: Card) -> Option<u64> {
+        let maximum = card.hand_size_setting()?;
+        let state = self.state.hand_size.get_or_insert_default();
+        state.finite_participated |= maximum.is_some();
+        Some(state.next())
+    }
     pub(super) fn register_hand_size_source(&mut self, id: CardId) {
         let card = self.state.objects[id as usize].card;
         if card.hand_size_setting().is_some() {
@@ -98,6 +104,11 @@ impl Game {
         }
     }
     pub(super) fn retimestamp_hand_size_source(&mut self, source: ObjectRef) {
+        // Copy-aware object retimestamps update every retained layer together
+        // through assign_static_source_timestamp, including this independent clock.
+        if self.temporary_copy_row(source).is_some() {
+            return;
+        }
         if let Some(s) = &mut self.state.hand_size {
             s.assign(source);
         }

@@ -9,6 +9,7 @@ impl Game {
         TriggerUse {
             source: item.object,
             ability,
+            origin: item.source_ability_origin,
         }
     }
     pub(super) fn optional_ability_used(&self, item: &SpellView) -> bool {

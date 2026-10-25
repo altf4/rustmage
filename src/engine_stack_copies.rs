@@ -335,7 +335,7 @@ impl Game {
                 .as_deref()
                 .copied()
                 .unwrap_or_else(|| CopyRecipe::new(copy.source_card));
-            recipe.exceptions = recipe.exceptions.union(exceptions);
+            recipe = recipe.with_exceptions(exceptions);
             self.set_copy_recipe(copy.object, recipe);
             copy.source_copy_recipe = Some(Box::new(recipe));
             if exceptions.sacrifice_abilities != 0 {

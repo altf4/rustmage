@@ -45,6 +45,10 @@ impl Game {
         }
     }
     pub(super) fn retimestamp_live_static_source(&mut self, source: ObjectRef) {
+        if self.temporary_copy_row(source).is_some() {
+            self.assign_static_source_timestamp(source);
+            return;
+        }
         if !self.state.roles.as_ref().is_some_and(|r| {
             r.live_static.iter().any(|e| e.source == source)
                 || r.ability_timestamps.iter().any(|e| e.source == source)

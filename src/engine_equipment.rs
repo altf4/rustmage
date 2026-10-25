@@ -8,7 +8,7 @@ impl Game {
             && self.state.attachment_sources.iter().any(|&aura| {
                 let object = &self.state.objects[aura as usize];
                 object.zone == Zone::Battlefield
-                    && object.card.aura().is_some()
+                    && ability_world::CharacteristicWorld::is_aura(self, aura)
                     && object.attached_to == Some(self.object_ref(id))
             })
     }
@@ -42,6 +42,7 @@ impl Game {
         if source == target
             || !self.on_battlefield(source.card)
             || self.object_ref(source.card) != source
+            || !ability_world::CharacteristicWorld::is_equipment(self, source.card)
             || self.state.objects[source.card as usize]
                 .card
                 .equipment()
@@ -59,6 +60,7 @@ impl Game {
         if self.state.objects[source.card as usize].attached_to != Some(target) {
             self.retimestamp_live_static_source(source);
             self.retimestamp_hand_size_source(source);
+            self.renew_copy_grant_origin(source, false);
         }
         self.state.objects[source.card as usize].attached_to = Some(target);
         true

@@ -85,7 +85,7 @@ impl Game {
         {
             return;
         }
-        let Some(other) = self.state.objects[item.card as usize].card.other_face() else {
+        let Some(other) = self.physical_definition(item.card).other_face() else {
             return;
         };
         if other.kind_mask() & (1 | 2 | 16 | 32 | 64 | 128) == 0 {
@@ -103,6 +103,9 @@ impl Game {
                 object: item.object,
                 serial,
             });
+        if self.transform_under_temporary_copy(item.object, other) {
+            return;
+        }
         self.forget_hand_size_source(item.object);
         self.remove_face_providers(item.card);
         self.state.objects[item.card as usize].card = other;
@@ -113,7 +116,7 @@ impl Game {
         self.register_battlefield_providers(item.card);
         self.refresh_controllers();
     }
-    fn remove_face_providers(&mut self, id: CardId) {
+    pub(super) fn remove_face_providers(&mut self, id: CardId) {
         let reference = self.object_ref(id);
         // Keep recipient effects and counters: only the old face's intrinsic providers change.
         if let Some(roles) = &mut self.state.roles {
@@ -124,6 +127,12 @@ impl Game {
             roles.ability_timestamps.retain(|r| r.source != reference);
             roles.ability_removal_sources.retain(|r| *r != reference);
             roles.characteristic_sources.retain(|r| *r != reference);
+        }
+        if let Some(data) = &mut self.state.explore_data {
+            data.sources.retain(|&source| source != id);
+        }
+        if let Some(data) = &mut self.state.evidence_data {
+            data.sources.retain(|&source| source != id);
         }
         for rows in [
             &mut self.state.static_sources,

@@ -6,6 +6,8 @@ pub struct PowerUpUseView {
     pub definition: Card,
     pub ability: u16,
     pub borrowed_slot: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<u64>,
     pub count: u32,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -118,6 +120,7 @@ impl Game {
                     && r.value.definition == definition
                     && r.value.ability == ability
                     && r.value.borrowed_slot == slot
+                    && r.value.origin == self.copy_ability_origin(object)
             })
             .map_or(0, |r| r.value.count)
     }
@@ -240,6 +243,7 @@ impl Game {
                 && r.value.definition == item.source_card
                 && r.value.ability == ability
                 && r.value.borrowed_slot == item.borrowed_slot
+                && r.value.origin == item.source_ability_origin
         }) {
             row.value.count = row
                 .value
@@ -253,6 +257,7 @@ impl Game {
                     definition: item.source_card,
                     ability,
                     borrowed_slot: item.borrowed_slot,
+                    origin: item.source_ability_origin,
                     count: 1,
                 },
             });

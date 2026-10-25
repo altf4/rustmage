@@ -183,6 +183,9 @@ impl Game {
         self.next_role_timestamp()
     }
     pub(super) fn assign_static_source_timestamp(&mut self, source: ObjectRef) {
+        if self.retimestamp_temporary_copy(source) {
+            return;
+        }
         let timestamp = self.next_role_timestamp();
         if let Some(r) = &mut self.state.roles {
             for row in &mut r.keyword_effects {

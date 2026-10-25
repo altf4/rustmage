@@ -6,16 +6,6 @@ impl Game {
         self.copy_recipe(object)
             .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card))
     }
-    pub(super) fn copied_keywords(&self, object: ObjectRef) -> Keywords {
-        if self
-            .copy_recipe(object)
-            .is_some_and(|r| r.exceptions.sacrifice_abilities != 0)
-        {
-            Keywords::HASTE
-        } else {
-            Keywords::NONE
-        }
-    }
     pub(super) fn recipe_for_subject(
         &self,
         item: &SpellView,

@@ -6,6 +6,8 @@ pub struct ModalHistoryView {
     pub object: ObjectRef,
     pub definition: Card,
     pub ability: u16,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<u64>,
     pub modes: Vec<u16>,
     /// Absent for lifetime histories; otherwise the exact actual turn of selection.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -16,6 +18,7 @@ pub(super) struct Key {
     object: ObjectRef,
     definition: Card,
     ability: u16,
+    origin: Option<u64>,
     per_turn: bool,
 }
 pub(super) type Rows = Option<SharedVec<ModalHistoryView>>;
@@ -36,6 +39,7 @@ pub(super) fn key(item: &SpellView) -> Option<Key> {
         object: item.object,
         definition,
         ability,
+        origin: item.source_ability_origin,
         per_turn,
     })
 }
@@ -45,6 +49,7 @@ impl ModalHistoryView {
             object: self.object,
             definition: self.definition,
             ability: self.ability,
+            origin: self.origin,
             per_turn: self.turn.is_some(),
         }
     }
@@ -97,6 +102,7 @@ impl Game {
                 object: key.object,
                 definition: key.definition,
                 ability: key.ability,
+                origin: key.origin,
                 modes: vec![mode],
                 turn,
             });
@@ -111,7 +117,11 @@ impl Game {
                 return false;
             }
             let object = &self.state.objects[row.object.card as usize];
-            (object.zone == Zone::Battlefield && self.object_ref(row.object.card) == row.object)
+            (object.zone == Zone::Battlefield
+                && self.object_ref(row.object.card) == row.object
+                && row
+                    .origin
+                    .is_none_or(|origin| self.retains_ability_origin(row.object, origin)))
                 || self
                     .state
                     .stack

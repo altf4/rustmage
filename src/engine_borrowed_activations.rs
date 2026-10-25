@@ -5,6 +5,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Link {
     pub source: ObjectRef,
+    pub origin: Option<u64>,
     pub exiled: ObjectRef,
     pub first_slot: u64,
     pub width: u64,
@@ -57,7 +58,7 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
         .as_ref()
         .map_or(&[][..], |rows| rows.as_slice())
     {
-        if link.source != world.reference(id) {
+        if link.source != world.reference(id) || link.origin != world.ability_origin(id) {
             continue;
         }
         let card = world.object(link.exiled.card);
@@ -134,6 +135,7 @@ impl Game {
                     .get_or_insert_default()
                     .push(Link {
                         source: item.object,
+                        origin: item.source_ability_origin,
                         exiled: event.after,
                         first_slot,
                         width,

@@ -993,6 +993,7 @@ fn msh_land_origins_copied_artifact_moloid_improvises_and_retains_attack_mill() 
         let recipe = CopyRecipe {
             definition,
             exceptions: CopyExceptions::ARTIFACT,
+            overrides: None,
         };
         let copy = g.create_copy_groups_inner(
             p,

@@ -99,7 +99,7 @@ impl Game {
                     && filter
                         .tokens
                         .is_none_or(|tokens| facts.is_token() == tokens)
-                    && (!filter.artifact || facts.card.is_artifact())
+                    && (!filter.artifact || facts.kinds & 16 != 0)
                     && match qualification {
                         DamageQualification::Any => true,
                         DamageQualification::PowerAboveBase => facts.power_above_base,
