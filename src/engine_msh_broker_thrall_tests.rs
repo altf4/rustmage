@@ -1,18 +1,11 @@
-//! Paid printed-clause scenarios; bounded seeds are explicit and retain typed definitions.
+//! Paid printed-clause scenarios through ordinary supported card definitions.
 use super::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
 use super::msh_thirteenth_combined_tests::owned_checked_step;
 use super::*;
 const BROKER: &str = "Powerful Broker";
 const THRALL: &str = "Evil's Thrall";
 pub(super) fn seed(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    let card = Card::from_name(name).unwrap();
-    if card.is_supported() {
-        return named(g, p, name, zone);
-    }
-    assert!([BROKER, THRALL].contains(&name));
-    let id = named(g, p, "Hill Giant", zone);
-    g.state.objects[id as usize].card = card;
-    id
+    named(g, p, name, zone)
 }
 fn priority(g: &mut Game, p: Player) {
     if g.actor() != Some(p) {
