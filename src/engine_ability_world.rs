@@ -145,6 +145,30 @@ pub(super) trait CharacteristicWorld {
             })
     }
 
+    fn source_conditional_keywords(&self, id: CardId) -> Keywords {
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield {
+            return Keywords::NONE;
+        }
+        object
+            .card
+            .static_ability_groups()
+            .iter()
+            .flat_map(|group| group.fragments)
+            .fold(Keywords::NONE, |result, fragment| {
+                if let crate::cards::StaticAbilityFragment::SourceConditionalKeywords {
+                    condition,
+                    keywords,
+                } = *fragment
+                    && self.value(condition, id) != 0
+                {
+                    result.union(keywords)
+                } else {
+                    result
+                }
+            })
+    }
+
     fn counter_subtype_keywords(&self, id: CardId) -> Keywords {
         let object = self.object(id);
         if object.zone != Zone::Battlefield || self.kinds(id) & 1 == 0 {

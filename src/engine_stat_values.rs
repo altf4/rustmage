@@ -242,6 +242,15 @@ impl Game {
                         && crate::card_names::same_name(names(id), name)
                 })
                 .count() as i128,
+            StatValue::CountAllKinds(filter) => i128::try_from(
+                objects()
+                    .filter(|&(id, o)| {
+                        Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
+                            && kinds(id, o) & filter.kind == filter.kind
+                    })
+                    .count(),
+            )
+            .capacity("stat count exhausted"),
             StatValue::Count(filter) => i128::try_from(
                 objects()
                     .filter(|&(id, o)| {

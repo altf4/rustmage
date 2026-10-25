@@ -406,6 +406,8 @@ pub(crate) struct ChosenModifier {
 /// Rules attached to produced mana, captured independently of its producer.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaRestriction {
+    /// Only the costs of casting a spell with the artifact card type.
+    ArtifactSpell,
     /// Any cost except casting a spell without the artifact card type.
     ExceptNonArtifactSpells,
     /// Spells or activated abilities of any source with this subtype.
@@ -1716,6 +1718,8 @@ pub(crate) enum StatValue {
         color: ChoiceColor,
     },
     Count(CountFilter),
+    /// Every kind bit must occur on one matching object; ordinary Count is a union.
+    CountAllKinds(CountFilter),
     NamedCount {
         filter: CountFilter,
         name: &'static str,

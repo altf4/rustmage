@@ -141,6 +141,15 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::SourceConditionalKeywords {
+            condition,
+            keywords,
+        } => {
+            if world.reference(id) != source || world.value(condition, source.card) == 0 {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::SourcePlusOnePlacedKeywords(keywords) => {
             if id != source.card || !world.plus_one_placed_this_turn(source, provider.controller) {
                 return None;
@@ -282,6 +291,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     f,
                     StaticAbilityFragment::SourcePlusOnePlacedKeywords(..)
                         | StaticAbilityFragment::PlusOnePlacedKeywords { .. }
+                        | StaticAbilityFragment::SourceConditionalKeywords { .. }
                         | StaticAbilityFragment::SourceCounterKeywords { .. }
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)

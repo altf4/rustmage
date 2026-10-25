@@ -48572,8 +48572,17 @@ pub(super) mod card_5396 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/msh/the_sensational_she_hulk.rs");
 }
+pub(super) mod card_5397 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_msh_doombot.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5397] = [
+pub(super) static RULES: [&CardRules; 5398] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -53971,6 +53980,7 @@ pub(super) static RULES: [&CardRules; 5397] = [
     &card_5394::RULES,
     &card_5395::RULES,
     &card_5396::RULES,
+    &card_5397::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

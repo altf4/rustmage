@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "edd02b3c316549be2f71f33084e9c3868fd56c8ae292d00f32333f335e7381c7",
+  "catalogue_version": "f5021378a95e5b4d672a3fe6cbd0a0462e99eb9d2b69795bace997759e1ee99d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2484,
-  "implemented_total": 2490,
-  "token_definitions": 119,
+  "implemented_standard_cards": 2486,
+  "implemented_total": 2492,
+  "token_definitions": 120,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 179,
-      "gated": 94
+      "complete": 181,
+      "gated": 92
     },
     "one": {
       "total": 1,
@@ -5613,8 +5613,8 @@
     {
       "name": "Castle Doom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/castle_doom.rs",
       "set": "msh"
     },
@@ -9157,8 +9157,8 @@
     {
       "name": "Doctor Doom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/doctor_doom.rs",
       "set": "msh"
     },
