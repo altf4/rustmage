@@ -14,10 +14,10 @@
       "catalogue_id": 4120,
       "definition": "src/card_definitions/msh/stature_size_shifter.rs",
       "obligations": [
-        "Actual U cast; blue legendary Human Hero1/1.",
-        "Printed blocking restriction uses current derived power<=1 only when its source group remains available.",
+        "Actual {U} cast; blue legendary Human Hero, 1/1.",
+        "Printed blocking restriction uses current derived power <= 1 only when its source group remains available.",
         "Blocking restriction never retroactively removes a committed block or creates a block after declarations finish.",
-        "Power-up XUU uses the existing chosen-X scalar and exact source counter placement; entry-turn reduction gives XU.",
+        "Power-up {X}{U}{U} uses the existing chosen-X scalar and exact source counter placement; entry-turn reduction gives {X}{U}.",
         "Zero X is legal and consumes the exact-incarnation use; timing is instant and requires no tap.",
         "Existing Wonder Man/Hulk, source theft/departure/blink, doubling/placement, copies, private choices and owned replay remain correct."
       ]
@@ -27,7 +27,7 @@
       "catalogue_id": 4766,
       "definition": "src/card_definitions/msh/undercover_skrull.rs",
       "obligations": [
-        "Actual1G cast; green Skrull Shapeshifter Villain1/1.",
+        "Actual {1}{G} cast; green Skrull Shapeshifter Villain, 1/1.",
         "Current source controller has at least two owned non-token creature cards in their graveyard: +2/+2 and all creature types.",
         "One source effect starts in layer four and continues its layer-seven bonus through later printed-ability removal, with timestamp-correct type replacement.",
         "Conditional all-types is battlefield-only and grants no changeling characteristic-defining ability.",
@@ -291,6 +291,6 @@
     "Integrator must run full python3 scripts/validate.py --release on the final published batch.",
     "Two independent nonauthor reviews of the exact final published integrated head remain required.",
     "Final published batch CI, merge and issue counts remain the integrator responsibility.",
-    "Full MSH acceptance remains open until every281-card obligation, interactions and set-only legal complete games are verified."
+    "Full MSH acceptance remains open until every 281-card obligation, interactions and set-only legal complete games are verified."
   ]
 }
