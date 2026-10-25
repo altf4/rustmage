@@ -259,3 +259,87 @@ fn msh_copy_identity_token_of_actual_monica_retains_double_faces_and_transforms(
         assert!(after.keywords.contains(Keywords::HEXPROOF));
     }
 }
+
+#[test]
+fn msh_copy_identity_token_of_dfc_under_single_face_copy_retains_two_frozen_faces() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        // Cast the artifact first: Shuri otherwise reduces its printed cost.
+        let reactor = paid(&mut g, p, "Arc Reactor", &[]);
+        let shuri = paid(&mut g, p, "Shuri, Wakandan Inventor", &[]);
+        let monica = paid(&mut g, p, "Monica Rambeau", &[]);
+        next_main(&mut g, p);
+        settle(&mut g);
+        paid(&mut g, p, "Molten Duplication", &[Target::Card(monica)]);
+        let original = copy_tokens(&g)[0];
+        assert!(g.object_view(original).face.is_some());
+        priority(&mut g, p);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: shuri,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(original),
+            },
+        );
+        while g.state.announcing.as_ref().is_some_and(|a| a.group == 0) {
+            checked(&mut g, Action::FinishTargets);
+        }
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(reactor),
+            },
+        );
+        for _ in 0..10 {
+            if g.state.announcing.is_none() {
+                break;
+            }
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, action);
+        }
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle_keeping_new_copy(&mut g);
+        assert_eq!(g.object_view(original).name(), "Arc Reactor");
+        assert!(g.object_view(original).face.is_some());
+        // Molten may target an artifact even though the active copy is no
+        // longer a creature. No static type or token identity is fabricated.
+        paid(&mut g, p, "Molten Duplication", &[Target::Card(original)]);
+        let copies = copy_tokens(&g);
+        assert_eq!(copies.len(), 2);
+        let copy = *copies.iter().find(|&&id| id != original).unwrap();
+        let before = g.object_ref(copy);
+        assert!(
+            g.object_view(copy).face.is_some(),
+            "CR707.8a retains the copied permanent's double-face structure even when its active definition is Arc Reactor"
+        );
+        assert_eq!(g.object_view(copy).name(), "Arc Reactor");
+        assert_eq!(g.current_kinds(copy) & 17, 16);
+        // BOUNDED primitive continuation: Arc Reactor has no printed transform
+        // activation, so only this final two-sided check invokes the exact
+        // transform helper directly. All production/overlay/copy above is paid.
+        // The active copy effect modifies both frozen faces, so changing sides
+        // must not recover Monica/Photon from the old underlying printed card.
+        for expected_back in [true, false] {
+            let mut transform = g.activation_item(p, copy, 0);
+            transform.source_transform = Some(g.transform_serial(before));
+            g.transform_source(&transform);
+            let after = g.object_view(copy);
+            assert_eq!(after.reference, before);
+            assert_eq!(after.face.as_ref().unwrap().back, expected_back);
+            assert_eq!(after.name(), "Arc Reactor");
+            assert_eq!(after.kinds & 17, 16);
+        }
+    }
+}
