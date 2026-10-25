@@ -1,5 +1,5 @@
 //! Gated attachment core fixtures: real immutable definitions and paid actions.
-//! Winter's return-and-choice continuation remains outside this first core scope.
+//! Paid complete printed-clause fixtures for both attachment consumers.
 use super::*;
 use crate::engine::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
 use crate::engine::msh_thirteenth_combined_tests::owned_checked_step;
@@ -482,7 +482,7 @@ fn msh_attachment_core_paid_winter_old_graveyard_incarnation_cannot_return_or_at
             let winter = seed(&mut g, p, WINTER, Zone::Graveyard);
             let old = g.object_ref(winter);
             activate_return(&mut g, p, winter);
-            packet(&mut g, p, "Raise the Past", &[]);
+            packet(&mut g, p, "It Doesn't Add Up", &[Target::Card(winter)]);
             until(&mut g, |g| {
                 g.on_battlefield(winter) && g.state.pending == Pending::Priority
             });
@@ -602,5 +602,208 @@ fn msh_attachment_core_winter_actual_entry_result_skipped_or_redirected_has_no_a
             assert_eq!(g.state.objects[pole as usize].attached_to, None);
             assert_eq!(g.counter_count(winter, CounterKind::Finality), 0);
         }
+    }
+}
+#[test]
+fn msh_attachment_card_winter_paid_vigilance_and_menace_single_block_illegal() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let winter = paid(&mut g, p, WINTER, &[]);
+        let a = named(&mut g, p.other(), "Aegis Turtle", Zone::Battlefield);
+        let b = named(&mut g, p.other(), "Aegis Turtle", Zone::Battlefield);
+        next_main(&mut g, p);
+        until(&mut g, |g| g.state.pending == Pending::Attackers);
+        g = orphan(g, Action::Attack { card: winter });
+        checked(&mut g, Action::FinishAttackers);
+        assert!(!g.object_view(winter).tapped);
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: a,
+                attacker: winter,
+            },
+        );
+        reject(&mut g, Action::FinishBlockers);
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: b,
+                attacker: winter,
+            },
+        );
+        g = orphan(g, Action::FinishBlockers);
+        assert!(!g.object_view(winter).tapped);
+    }
+}
+#[test]
+fn msh_attachment_card_winter_graveyard_only_colored_generic_and_opponent_turn_activation() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let winter = paid(&mut g, p, WINTER, &[]);
+        g.state.players[p.index()].mana = [30; 6];
+        let action = Action::AnnounceActivate {
+            card: winter,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        reject(&mut g, action.clone());
+        paid(&mut g, p, "Murder", &[Target::Card(winter)]);
+        for mana in [[1, 0, 0, 0, 0, 4], [1, 0, 1, 0, 0, 2]] {
+            g.state.players[p.index()].mana = mana;
+            reject(&mut g, action.clone());
+        }
+        next_turn(&mut g);
+        until(&mut g, |g| {
+            g.state.active == p.other() && g.state.step == Step::Main1
+        });
+        activate_return(&mut g, p, winter);
+        settle(&mut g);
+        assert_eq!(g.object_view(winter).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(winter, CounterKind::Finality), 1);
+        assert!(g.state.resolving.is_none());
+    }
+}
+#[test]
+fn msh_attachment_card_swordsman_self_foreign_and_nonvillain_excluded_zero_equipment_still_targets()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let sword = paid(&mut g, p, SWORD, &[]);
+        assert!(g.state.pending_triggers.is_empty());
+        paid(&mut g, p, "Bear Cub", &[]);
+        paid(&mut g, p.other(), "Mister Hyde, Monster Within", &[]);
+        assert!(g.state.pending_triggers.is_empty());
+        packet(&mut g, p, "Mister Hyde, Monster Within", &[]);
+        entry_targets(&mut g, sword);
+        // No optional Equipment exists; the independent mandatory creature group
+        // remains an actual targeted ability, and may select Swordsman himself.
+        assert_eq!(g.observe(p).targeting_group, Some(1));
+        reject(&mut g, Action::FinishTargets);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(sword),
+            },
+        );
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(sword).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn msh_attachment_card_swordsman_queued_equipment_animation_type_or_control_change_keeps_old_link()
+{
+    for p in [Player::P0, Player::P1] {
+        for change in 0..3 {
+            let mut g = setup(p);
+            let sword = paid(&mut g, p, SWORD, &[]);
+            let pole = paid(&mut g, p, "Fishing Pole", &[]);
+            let old = paid(&mut g, p, "Bear Cub", &[]);
+            let new = paid(&mut g, p, "Hill Giant", &[]);
+            equip(&mut g, p, pole, old);
+            packet(&mut g, p, "Mister Hyde, Monster Within", &[]);
+            entry_targets(&mut g, sword);
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(pole),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(new),
+                },
+            );
+            finish(&mut g);
+            // Explicit earlier-layer boundary after the actual paid trigger and
+            // both target declarations; no invented playable card is claimed.
+            match change {
+                0 => g.apply_temporary_copy(
+                    g.object_ref(pole),
+                    CopyRecipe::new(Card::from_name("Fishing Pole").unwrap())
+                        .with_exceptions(CopyExceptions::GOLEM),
+                    CopyDeadline::EndOfTurn,
+                ),
+                1 => g.apply_temporary_copy(
+                    g.object_ref(new),
+                    CopyRecipe::new(Card::from_name("Arc Reactor").unwrap()),
+                    CopyDeadline::EndOfTurn,
+                ),
+                _ => g.change_controller(g.object_ref(new), p.other()),
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[pole as usize].attached_to,
+                Some(g.object_ref(old))
+            );
+        }
+    }
+}
+#[test]
+fn msh_attachment_card_winter_foreign_equipment_count_and_actual_ability_suppression() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let winter = paid(&mut g, p, WINTER, &[]);
+        let pole = paid(&mut g, p, "Fishing Pole", &[]);
+        equip(&mut g, p, pole, winter);
+        g.change_controller(g.object_ref(pole), p.other());
+        assert_eq!(g.stats(winter).power, 4);
+        let aura = paid(&mut g, p, "Witness Protection", &[Target::Card(winter)]);
+        assert_eq!(g.stats(winter).power, 1);
+        assert!(!g.keywords(winter).contains(Keywords::VIGILANCE));
+        assert_eq!(
+            g.state.objects[pole as usize].attached_to,
+            Some(g.object_ref(winter))
+        );
+        paid(&mut g, p, "Disenchant", &[Target::Card(aura)]);
+        assert_eq!(g.stats(winter).power, 4);
+        assert!(
+            g.keywords(winter)
+                .contains(Keywords::VIGILANCE.union(Keywords::MENACE))
+        );
+    }
+}
+#[test]
+fn msh_attachment_card_swordsman_two_equipped_attackers_connive_after_source_and_equipment_depart()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let sword = paid(&mut g, p, SWORD, &[]);
+        let a = paid(&mut g, p, "Bear Cub", &[]);
+        let b = paid(&mut g, p, "Hill Giant", &[]);
+        let pole_a = paid(&mut g, p, "Fishing Pole", &[]);
+        let pole_b = paid(&mut g, p, "Fishing Pole", &[]);
+        equip(&mut g, p, pole_a, a);
+        equip(&mut g, p, pole_b, b);
+        g.change_controller(g.object_ref(pole_b), p.other());
+        next_main(&mut g, p);
+        until(&mut g, |g| g.state.pending == Pending::Attackers);
+        checked(&mut g, Action::Attack { card: a });
+        checked(&mut g, Action::Attack { card: b });
+        checked(&mut g, Action::FinishAttackers);
+        until(&mut g, |g| {
+            g.state.stack.iter().filter(|s| s.card == sword).count() == 2
+        });
+        packet(&mut g, p, "Unsummon", &[Target::Card(sword)]);
+        until(&mut g, |g| {
+            g.object_view(sword).zone == Zone::Hand && g.state.pending == Pending::Priority
+        });
+        packet(&mut g, p, "Disenchant", &[Target::Card(pole_a)]);
+        let before = g.state.players[p.index()].library.len();
+        let first = named(&mut g, p, "Shock", Zone::Hand);
+        let second = named(&mut g, p, "Shock", Zone::Hand);
+        for discard in [first, second] {
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::EffectDiscard { .. })
+            });
+            checked(&mut g, Action::Discard { card: discard });
+        }
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].library.len(), before - 2);
+        assert_eq!(g.counter_count(a, CounterKind::PlusOne), 1);
+        assert_eq!(g.counter_count(b, CounterKind::PlusOne), 1);
+        assert_eq!(g.object_view(sword).zone, Zone::Hand);
     }
 }
