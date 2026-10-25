@@ -421,8 +421,6 @@ impl FundingState<'_> {
         selected: &mut Vec<ObjectRef>,
         exact: bool,
     ) -> bool {
-        #[cfg(test)]
-        teamwork_scalability_tests::visit_teamwork_node();
         let mut sum = saddle::PowerSum::default();
         for r in selected.iter() {
             sum.add(self.power(r.card));
@@ -1319,13 +1317,6 @@ impl Game {
             })
         }))
     }
-}
-
-
-
-#[cfg(test)]
-pub(super) fn visit_funding_diagnostic_node() {
-    teamwork_scalability_tests::visit_funding_node();
 }
 
 fn cost_weight(card: Card, color: Option<crate::cards::ChoiceColor>) -> u128 {
