@@ -1,0 +1,611 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+  "tested_source_head": "4bf60125e443a95ca039e124a59a311b57ffae1c",
+  "runtime_source_head": "3f84b11033f6f5b17953a902ca5860c9284d571e",
+  "whole_card": "Heroic Feast",
+  "candidate_flags": 199,
+  "candidate_gated": 82,
+  "new_card_groups": 21,
+  "inherited_extra_legal_game_group": 1,
+  "native_tests": 1207,
+  "native_terminal": true,
+  "printed_obligations": [
+    "{2}{G} enchantment",
+    "Self enters creates exact ordinary untapped colorless Food artifact with ordinary2,T,sacrifice gain3 ability, reusable recipe5246",
+    "Each positive actual life gain queues separate trigger, using actual gained amount after replacements, captured event controller independent of later source/controller state",
+    "Up to event amount distinct target owncreatures at announcement, including zero; putexactlyonepluscounteron each survivinglegaltarget, not distribute amount and not turnsum",
+    "Ordinary targetlegality/hexproof/shroud/protection/partialfizzle/owned event snapshots, sourcegone and copiedpackets"
+  ],
+  "mechanic": "Private UpToTargets(AmountValue) first header, homogeneous optional target maximum; reuse existing LifeEventAmount, no new scalar/state/public fields. Target-rule binding still composes after the cap. All3scalar consumers inspectheader.",
+  "provenance": {
+    "design_cache": "<cache>/rustmage-msh-feast-design-7d958ebd.json",
+    "sha256": "ea4e761c86da98f3ce255dfbacff0115aebf88a43cf28eddddf3bdbdc47b8ae3",
+    "full_java_sources": 19,
+    "pins": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HeroicFeast.java",
+        "sha256": "f4eb75bfc33d2c5a47fea9268417013c5baa53d76103bd1d4115e7dcc94d616f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+        "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+        "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedGainedLifeValue.java",
+        "sha256": "0debc20ff35f4da6bdca2b99270dd881823230107b21bf4a0ed53b62069d714e"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+        "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+        "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+        "sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+        "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+        "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+        "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+        "sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/targetadjustment/TargetsCountAdjuster.java",
+        "sha256": "37eb71fcc39f89d8dda76a2b91d7cc3dcfa062f6149b2e82662f2ff84e8db479"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/targetadjustment/GenericTargetAdjuster.java",
+        "sha256": "4ffb736a7a82f8b0abadb547d292f93b8ca04632f7f9eb2812465ca1f10a83a8"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/targetadjustment/TargetAdjuster.java",
+        "sha256": "93fceb33534a96946e6bef534a6fb518e43aee4be2b7ce20547fa551b41ebbd8"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+        "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+        "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+        "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+      }
+    ],
+    "authoritative_rules": {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "paraphrase": "One trigger per life-gain event uses its gained amount. Distinct lifelink damage sources give distinct events, while simultaneous damage from one lifelink source gives one event even with several recipients. A single for-each life instruction creates one event. Engine is two-player; no multiplayer acceptance claimed.",
+      "checked_utc": "2026-10-25T04:23:11.113429+00:00"
+    }
+  },
+  "interaction_scope": [
+    "Paid Feast and existing exact Food token; actual positive own event amount after prevention/replacement; separate events and opponent gains",
+    "Zero through captured-bound distinct controlled creature targets, control/incarnation changes, own hexproof, source departure and control",
+    "Doubling Season replacements; actual separate-source lifelink; captured scalar beyond u16; late counter overflow rollback",
+    "Owned orphan raw/index branches and restore; private enemy-hand counterfactual; bounded copied-packet/source tests without admitting a new ability-copy consumer",
+    "32 natural Standard60-card MSH-only games with unchanged observation-only policy, no injected setup/progress, no concessions and exact complete replay; both controllers actually choose targets"
+  ],
+  "games": {
+    "both_controllers_selected_life_targets": [
+      true,
+      true
+    ],
+    "games": [
+      {
+        "decisions": 677,
+        "observed_targeted_life_packets": 4,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261024,
+        "starting_player": "P0",
+        "turn": 22
+      },
+      {
+        "decisions": 628,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261025,
+        "starting_player": "P0",
+        "turn": 23
+      },
+      {
+        "decisions": 359,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261026,
+        "starting_player": "P0",
+        "turn": 13
+      },
+      {
+        "decisions": 368,
+        "observed_targeted_life_packets": 1,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261027,
+        "starting_player": "P0",
+        "turn": 13
+      },
+      {
+        "decisions": 438,
+        "observed_targeted_life_packets": 1,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261028,
+        "starting_player": "P0",
+        "turn": 15
+      },
+      {
+        "decisions": 739,
+        "observed_targeted_life_packets": 4,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261029,
+        "starting_player": "P0",
+        "turn": 25
+      },
+      {
+        "decisions": 321,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261030,
+        "starting_player": "P0",
+        "turn": 11
+      },
+      {
+        "decisions": 294,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261031,
+        "starting_player": "P0",
+        "turn": 11
+      },
+      {
+        "decisions": 495,
+        "observed_targeted_life_packets": 2,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261032,
+        "starting_player": "P0",
+        "turn": 17
+      },
+      {
+        "decisions": 480,
+        "observed_targeted_life_packets": 1,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261033,
+        "starting_player": "P0",
+        "turn": 16
+      },
+      {
+        "decisions": 668,
+        "observed_targeted_life_packets": 5,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261034,
+        "starting_player": "P0",
+        "turn": 22
+      },
+      {
+        "decisions": 362,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261035,
+        "starting_player": "P0",
+        "turn": 13
+      },
+      {
+        "decisions": 562,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261036,
+        "starting_player": "P0",
+        "turn": 20
+      },
+      {
+        "decisions": 324,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261037,
+        "starting_player": "P0",
+        "turn": 14
+      },
+      {
+        "decisions": 939,
+        "observed_targeted_life_packets": 2,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261038,
+        "starting_player": "P0",
+        "turn": 31
+      },
+      {
+        "decisions": 391,
+        "observed_targeted_life_packets": 2,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261039,
+        "starting_player": "P0",
+        "turn": 13
+      },
+      {
+        "decisions": 620,
+        "observed_targeted_life_packets": 3,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261024,
+        "starting_player": "P1",
+        "turn": 21
+      },
+      {
+        "decisions": 311,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261025,
+        "starting_player": "P1",
+        "turn": 11
+      },
+      {
+        "decisions": 501,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261026,
+        "starting_player": "P1",
+        "turn": 17
+      },
+      {
+        "decisions": 478,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261027,
+        "starting_player": "P1",
+        "turn": 17
+      },
+      {
+        "decisions": 394,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261028,
+        "starting_player": "P1",
+        "turn": 14
+      },
+      {
+        "decisions": 410,
+        "observed_targeted_life_packets": 1,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261029,
+        "starting_player": "P1",
+        "turn": 15
+      },
+      {
+        "decisions": 377,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261030,
+        "starting_player": "P1",
+        "turn": 13
+      },
+      {
+        "decisions": 558,
+        "observed_targeted_life_packets": 1,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261031,
+        "starting_player": "P1",
+        "turn": 19
+      },
+      {
+        "decisions": 441,
+        "observed_targeted_life_packets": 2,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261032,
+        "starting_player": "P1",
+        "turn": 15
+      },
+      {
+        "decisions": 939,
+        "observed_targeted_life_packets": 9,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261033,
+        "starting_player": "P1",
+        "turn": 29
+      },
+      {
+        "decisions": 466,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261034,
+        "starting_player": "P1",
+        "turn": 16
+      },
+      {
+        "decisions": 441,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261035,
+        "starting_player": "P1",
+        "turn": 16
+      },
+      {
+        "decisions": 420,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "seed": 20261036,
+        "starting_player": "P1",
+        "turn": 16
+      },
+      {
+        "decisions": 224,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261037,
+        "starting_player": "P1",
+        "turn": 9
+      },
+      {
+        "decisions": 571,
+        "observed_targeted_life_packets": 0,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261038,
+        "starting_player": "P1",
+        "turn": 21
+      },
+      {
+        "decisions": 634,
+        "observed_targeted_life_packets": 2,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "seed": 20261039,
+        "starting_player": "P1",
+        "turn": 21
+      }
+    ],
+    "paid_feast_casts": 35,
+    "scope": "32 natural Standard-legal MSH-only white/green mirror games. Ordinary setup, unchanged observation-only policy, actual paid Heroic Feast and target choices by both controllers, full exact action replay. Bounded consumer integration, not full-set acceptance or a benchmark."
+  },
+  "game_aggregate": {
+    "games": 32,
+    "decisions": 15830,
+    "paid_feast_casts": 35,
+    "both_controllers_selected_life_targets": [
+      true,
+      true
+    ],
+    "observed_targeted_life_packets": 40
+  },
+  "trace_proof": {
+    "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+    "parents": {
+      "tenth": {
+        "head": "7d958ebdae306935a8dcf5b907a84743815538d2",
+        "schema": 146,
+        "full_Trace_exact_matches": 2501,
+        "sha256": "4ff88e0fa4f9018f16702429281addbcbe56800707d77d86d06d717f687f338e",
+        "changed": [],
+        "removed": []
+      },
+      "games": {
+        "head": "02f9d72b4960505dcb2dc69aeae0d128e356a184",
+        "schema": 146,
+        "full_Trace_exact_matches": 2501,
+        "sha256": "4ff88e0fa4f9018f16702429281addbcbe56800707d77d86d06d717f687f338e",
+        "changed": [],
+        "removed": []
+      }
+    },
+    "normal_schema": 146,
+    "rows": 2502,
+    "normal_sha256": "d35aa09090afde6c23d9836766577e981ddf8bd316dd173b1d41cdddaf9264c8",
+    "new_rows": {
+      "Heroic Feast": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 6,
+        "zone": "Battlefield",
+        "journal": "34d9b2b58f992ebc",
+        "observations": "8783ede51894ad72"
+      }
+    },
+    "inherited_full_rows": 2501,
+    "metadata_sha256": "7cb0ff5302b7fceab46f1f76c441c6048935a7a765613b386ff02b285ae21e49",
+    "definitions": 5399,
+    "token_recipes": 121,
+    "new_ids": [],
+    "all_metadata_exact_base": true,
+    "membership_policy_recorder_exact_base": true,
+    "no_field_stripping": true,
+    "fixed_inputs": 11754,
+    "changed": [],
+    "native_rules_passed": 1206,
+    "sole_preacceptance_failure": "Expected row count2502 vs2501"
+  },
+  "checks": {
+    "native": 101,
+    "clippy": 0,
+    "format": 0,
+    "sources": 0,
+    "link": 0,
+    "changed": [],
+    "files": 11754,
+    "terminal": true,
+    "preaccept_native_failure_scope": "Only expected2502-versus2501 baseline row count;1206 other groups passed. Strict after accepted full-table proof passed all1207."
+  },
+  "strict_native_guard": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 194.6294345430215,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2514751488,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "focused_guard": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib",
+      "msh_feast"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 128.56139850401087,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2522771456,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "export_clippy_guard": {
+    "command": [
+      "python3",
+      "<temp>/msh-feast-export-checks.py"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 47.9219132399885,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 1945423872,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "cleanup": {
+    "terminal": true,
+    "no_active_target_consumers": true,
+    "accessible_proc_fd_maps_exe_scan_clear": true,
+    "root": "<cache>/rustmage-msh-feast-target",
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 125317120,
+    "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+    "preserved_shared_libraries": {
+      "<cache>/rustmage-msh-feast-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_native_binary": {
+      "path": "<cache>/rustmage-msh-feast-target/debug/deps/rustmage-b764cd26223fba2c",
+      "sha256": "998e7c4234b5e75d2e8227366db5e95e631d23258a3f208eab4ad825d0da1432"
+    }
+  },
+  "corrections": [
+    "Initial compile failure was private Card constructor in a test; use public Food identity lookup",
+    "Three focused failures were fixtures assuming optional zero/max target announcement remained pending or missing new-controller creatures; corrected exact packet helper and fixtures",
+    "Initial four natural games exercised target choice for only one controller; broadened deterministic samples to32 while preserving both-controller requirement",
+    "No runtime change after initial direct implementation; later commits correct fixtures, add bounded copy/game coverage, documentation and independently proved trace baseline"
+  ],
+  "performance_qualification": "Checked natural-game execution includes replay and checks, not a pure simulation benchmark. Source preparation, queue, build and cleanup measurements do not establish full-set performance.",
+  "remaining": "Whole-set and full-pool interactions/performance acceptance remain open. Final combined published-head release, CI and two independent nonauthor reviews pending. All remaining work in draft PR516; no main merge authorized.",
+  "recorded_utc": "2026-10-25T04:52:15.582409+00:00",
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T04:12:25.831490+00:00",
+    "end_utc": "2026-10-25T04:52:26.145863+00:00",
+    "seconds": 2400.314373,
+    "whole_cards": 1,
+    "cards_per_hour": 1.499803542608708,
+    "scope": "Includes full source design, implementation, fixture corrections, natural-game coverage, build/queue/checks and cleanup through evidence preparation. Excludes final integration/release/review gates; not a simulation benchmark."
+  }
+}

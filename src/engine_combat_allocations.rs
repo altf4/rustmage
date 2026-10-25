@@ -220,7 +220,7 @@ impl Game {
             }
         }
         let x = u64::from(item.x.expect("announced X"));
-        let ids: Vec<_> = self
+        let mut ids: Vec<_> = self
             .state
             .objects
             .iter()
@@ -235,14 +235,24 @@ impl Game {
                 .then_some(id)
             })
             .collect();
+        ids.retain(|&id| !self.effect_destruction_prevented(id));
         let sources = self.death_trigger_sources();
         let events = self.move_objects_raw(&ids, Zone::Graveyard);
         self.finish_zone_events(&events, &sources);
     }
 }
 impl ActivatedAbility {
+    pub(super) fn x_symbols(&self) -> u32 {
+        u32::try_from(
+            self.program
+                .iter()
+                .take_while(|i| **i == Instruction::ActivationX)
+                .count(),
+        )
+        .expect("activation X header count")
+    }
     pub(super) fn has_x_cost(&self) -> bool {
-        self.program.first() == Some(&Instruction::ActivationX)
+        self.x_symbols() != 0
     }
 }
 impl Announcement {

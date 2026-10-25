@@ -147,6 +147,7 @@ impl Game {
         sum
     }
     pub(super) fn crew_choice(&self, viewer: Player) -> Option<CrewChoiceView> {
+        let viewer = self.choice_information_player(viewer);
         if !matches!(self.state.pending,Pending::Crew{player} if player==viewer) {
             return None;
         }

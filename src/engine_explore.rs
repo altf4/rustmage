@@ -54,6 +54,7 @@ impl Game {
             .and_then(|d| d.known_top[p.index()])
     }
     pub(super) fn forget_library_top(&mut self, p: Player) {
+        self.library_top_changed(p);
         if let Some(d) = &mut self.state.explore_data {
             d.known_top[p.index()] = None;
         }

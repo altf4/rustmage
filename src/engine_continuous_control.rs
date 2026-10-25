@@ -14,6 +14,7 @@ pub(super) struct ControlEffect {
     pub controller: Player,
     pub timestamp: u64,
     pub expires_turn: Option<u32>,
+    pub expires_after_next_turn: Option<NextTurnControlExpiry>,
 }
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ControlState {
@@ -67,6 +68,23 @@ pub(super) fn controllers<W: super::ability_world::CharacteristicWorld + ?Sized>
             timestamp: row.timestamp,
         })
         .collect();
+    if let Some(roles) = world.roles() {
+        effects.extend(
+            roles
+                .source_linked_effects
+                .iter()
+                .filter(|row| {
+                    row.kind == SourceLinkedEffectKind::Control
+                        && source_linked_effects::active(world, row)
+                })
+                .map(|row| AppliedControl {
+                    object: row.recipient,
+                    controller: row.controller,
+                    source: None,
+                    timestamp: row.timestamp,
+                }),
+        );
+    }
     for &id in world.attachment_sources() {
         let aura = object(id);
         let source = ObjectRef {
@@ -163,6 +181,15 @@ impl Game {
         controller: Player,
         expires_turn: Option<u32>,
     ) {
+        self.record_control_expiring(object, controller, expires_turn, None);
+    }
+    pub(super) fn record_control_expiring(
+        &mut self,
+        object: ObjectRef,
+        controller: Player,
+        expires_turn: Option<u32>,
+        expires_after_next_turn: Option<NextTurnControlExpiry>,
+    ) {
         self.ensure_control_base(object);
         let timestamp = self.next_role_timestamp();
         self.state
@@ -175,6 +202,7 @@ impl Game {
                 controller,
                 timestamp,
                 expires_turn,
+                expires_after_next_turn,
             });
         self.refresh_controllers();
     }
@@ -196,6 +224,7 @@ impl Game {
             self.ensure_control_base(target);
         }
         if self.state.controls.is_none() {
+            self.refresh_copy_grant_availability();
             return;
         }
         for row in controllers(self) {
@@ -214,6 +243,18 @@ impl Game {
             })
             .map(|row| row.object)
             .collect();
+        let linked: Vec<_> = self
+            .state
+            .roles
+            .as_ref()
+            .into_iter()
+            .flat_map(|r| &r.source_linked_effects)
+            .filter(|row| {
+                row.kind == SourceLinkedEffectKind::Control
+                    && source_linked_effects::active(self, row)
+            })
+            .map(|row| row.recipient)
+            .collect();
         let state = self.state.controls.as_mut().unwrap();
         state.bases.retain(|row| live.contains(&row.object));
         state.effects.retain(|row| live.contains(&row.object));
@@ -223,10 +264,12 @@ impl Game {
                 .iter()
                 .any(|effect| effect.object == row.object)
                 || targets.contains(&row.object)
+                || linked.contains(&row.object)
         });
         if state.bases.is_empty() {
             self.state.controls = None;
         }
+        self.refresh_copy_grant_availability();
     }
     pub(super) fn control_bytes(&self) -> usize {
         self.state.controls.as_ref().map_or(0, |state| {

@@ -1,16 +1,43 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior for all three frozen Oracle chapters.
+const ARTIFACTS: CountFilter = CountFilter {
+    zone: CountZone::Battlefield,
+    relation: 0,
+    cards_only: false,
+    kind: 16,
+    exclude: 0,
+    subtype: None,
+    basic: false,
+    other: false,
+};
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 1 },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::May { skip: 2 },
+                Instruction::DrawScaled(
+                    PlayerSet::Controller,
+                    AmountValue::Stat(StatValue::Count(ARTIFACTS)),
+                ),
+                Instruction::Draw(PlayerSet::Opponent, 1),
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 2 },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ReduceArtifactSpellCostsThisTurn(1)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 3 },
+            targets: one(TargetRule::Player {
+                opponent_only: true,
+            }),
+            program: &[Instruction::DamageScaled(AmountValue::Stat(
+                StatValue::GreatestManaValue(ARTIFACTS),
+            ))],
+        },
+    ],
     ..CardRules::EMPTY
 };

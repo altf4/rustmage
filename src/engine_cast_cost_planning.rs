@@ -68,11 +68,12 @@ impl FundingState<'_> {
         {
             // A contributor is reserved during selection and becomes tapped in
             // the speculative world. The live group commits only with payment.
-            for selected in &frame.selected {
-                if let Some(r) = self.resources.iter_mut().find(|r| {
-                    r.id == selected.object.card
-                        && r.object.generation == selected.object.generation
-                }) {
+            for selected in frame.objects() {
+                if let Some(r) = self
+                    .resources
+                    .iter_mut()
+                    .find(|r| r.id == selected.card && r.object.generation == selected.generation)
+                {
                     r.object.tapped = true;
                 }
             }
@@ -82,7 +83,7 @@ impl FundingState<'_> {
         if a.cast_costs.is_none() && a.additional_cost().is_some() {
             let mut shadow = a.clone();
             shadow.cast_costs = Some(Box::default());
-            shadow.initialize_cast_costs();
+            shadow.initialize_cast_costs(matches!(self.purpose, mana_lots::Purpose::Spell(spell) if improvise::potential(self, spell.card)));
             self.set_cost_context(Some(&shadow));
         } else {
             self.set_cost_context(Some(a));
@@ -112,8 +113,15 @@ impl FundingState<'_> {
     }
     fn cost_object(&self, spec: AdditionalCost, r: ObjectRef, source: ObjectRef) -> bool {
         let o = self.object(r.card);
+        if spec.kind == EffectChoiceKind::SacrificeAttachedEquipment
+            && o.attached_to != Some(source)
+        {
+            return false;
+        }
         let spec = spec.in_zone(o.zone);
-        self.reference(r.card) == r
+        (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+            || (self.game.sneak_attacker(self.actor, r) && self.attacking(r.card)))
+            && self.reference(r.card) == r
             && (r != source
                 || !matches!(
                     spec.kind,
@@ -222,6 +230,7 @@ impl FundingState<'_> {
                     // Departure facts above retain the old face; the new object
                     // outside stack/battlefield has only its physical front.
                     let object = &mut n.resources[i].object;
+                    n.game.restore_projected_copy_identity(*r, object);
                     if !object.is_token() && !object.is_spell_copy() {
                         object.card = object.card.front_face();
                     }
@@ -237,6 +246,8 @@ impl FundingState<'_> {
                     n.resources[i].object.deathtouch_since_sba = false;
                     n.resources[i].object.gained_keywords = Keywords::NONE;
                     n.resources[i].object.used_abilities = 0;
+                    let after = n.reference(r.card);
+                    n.project_copy_departure(*r, after);
                     n.resources[i].object.flashback = false;
                     n.resources[i].attacking = false;
                     next.push(n);
@@ -273,6 +284,29 @@ impl FundingState<'_> {
     fn complete_cost_rows(&self, c: &CostContext, remaining: &[usize]) -> bool {
         if remaining.is_empty() {
             return true;
+        }
+        // With only Teamwork and Mana left, these inner costs merely tap
+        // contributors. They cannot add mana or restore/change a type, color,
+        // provider or mana-type permission. The current Hall test is therefore
+        // an upper bound before any teammates are spent. A successful bound
+        // retains the complete ordered search and every live power evaluation.
+        // Other costs may remove suppression or return providers, so they must
+        // keep the general path even when mana is not currently payable.
+        if remaining
+            .iter()
+            .any(|&i| matches!(c.clauses[i].clause, CastCostClause::Teamwork(_)))
+            && remaining
+                .iter()
+                .any(|&i| c.clauses[i].clause == CastCostClause::Mana)
+            && remaining.iter().all(|&i| {
+                matches!(
+                    c.clauses[i].clause,
+                    CastCostClause::Teamwork(_) | CastCostClause::Mana
+                )
+            })
+            && !self.mana_clause_payable(c)
+        {
+            return false;
         }
         for (position, &index) in remaining.iter().enumerate() {
             if c.active.is_some_and(|i| usize::from(i) != index) {
@@ -441,6 +475,142 @@ impl FundingState<'_> {
                 .any(|r| !r.paid && r.clause == CastCostClause::Mana)
         })
     }
+    /// A deliberately narrow negative bound across future mana-source moves.
+    /// Unknown providers and non-tap mutations retain the complete search.
+    pub(super) fn pure_tap_teamwork_deficit(&self, goal: &FundingGoal) -> bool {
+        let Some(c) = &self.cast_costs else {
+            return false;
+        };
+        let mut minimum = None;
+        for row in c.clauses.iter().filter(|row| !row.paid) {
+            match row.clause {
+                CastCostClause::Teamwork(n) => minimum = Some(minimum.unwrap_or(0).max(n)),
+                CastCostClause::Mana => (),
+                _ => return false,
+            }
+        }
+        let Some(minimum) = minimum else {
+            return false;
+        };
+        let mut upper = saddle::PowerSum::default();
+        for resource in &self.resources {
+            let o = &resource.object;
+            if o.zone == Zone::Battlefield
+                && o.controller == c.actor
+                && !o.tapped
+                && CharacteristicWorld::kinds(self, resource.id) & 1 != 0
+            {
+                let power = self.power(resource.id);
+                if power > 0 {
+                    upper.add(power);
+                }
+            }
+        }
+        if upper.enough(minimum) {
+            return false;
+        }
+        if goal.source.is_some()
+            || goal.reserve.is_some()
+            || self.continuation.is_some()
+            || self.entry_projection.is_some()
+            || self.controls().is_some()
+            || self.payment_source.is_some()
+            || self.cost_group.is_some()
+            || !self.sacrifice_group.is_empty()
+            || self.game.state.borrowed_links.is_some()
+            || !self.game.state.exile_links.is_empty()
+        {
+            return false;
+        }
+        if self
+            .roles()
+            .is_some_and(|r| !r.base_stats.is_empty() || !r.live_static.is_empty())
+        {
+            return false;
+        }
+        // Inspect every resource and every immutable mana activation, including
+        // hidden/nonbattlefield/unavailable routes. Pure taps cannot introduce
+        // a new route, recipient, incarnation or counter configuration.
+        for resource in &self.resources {
+            let card = resource.object.card;
+            if self
+                .mana_activations(resource.id)
+                .any(|(_, a, borrowed)| borrowed.is_some() || !Self::only_tap_mana(a))
+                || CharacteristicWorld::granted_mana(self, resource.id)
+                    .iter()
+                    .any(|g| g.sacrifice)
+            {
+                return false;
+            }
+            if resource.object.zone != Zone::Battlefield {
+                continue;
+            }
+            if card.dynamic_stats().is_some()
+                || !card.scaling_modifiers().is_empty()
+                || !card.static_modifiers().is_empty()
+                || !card.enchanted_modifiers().is_empty()
+                || card.base_stat_setter().is_some()
+                || card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|g| g.fragments)
+                    .any(|f| {
+                        !matches!(
+                            f,
+                            crate::cards::StaticAbilityFragment::IntrinsicKeywords(_)
+                                | crate::cards::StaticAbilityFragment::Changeling
+                                | crate::cards::StaticAbilityFragment::AttachmentStats(_)
+                                | crate::cards::StaticAbilityFragment::AttachmentKeywords(_)
+                                | crate::cards::StaticAbilityFragment::AttachmentTrigger(_)
+                                | crate::cards::StaticAbilityFragment::SpellImprovise(_)
+                                | crate::cards::StaticAbilityFragment::LandMana { .. }
+                                | crate::cards::StaticAbilityFragment::NoMaximumHandSize
+                                | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
+                                | crate::cards::StaticAbilityFragment::SpendAnyManaForCreatures
+                        )
+                    })
+            {
+                return false;
+            }
+        }
+        // Ordinary Teamwork keeps its mana in FundingGoal rather than an ordered
+        // Mana row. Fixed attachment bonuses/keywords/trigger grants do not
+        // change from pure tap/AddMana moves; no attachment can move here.
+        // In this flat class base exceptions, fixed animation/base values,
+        // counters, growth, choices and copy layers remain immutable. No mana
+        // step changes turn/combat/attachment state. Further taps can only
+        // remove a candidate from this exact positive-power upper sum.
+        true
+    }
+    fn only_tap_mana(a: &ActivatedAbility) -> bool {
+        let c = a.cost;
+        a.origin == ActivationOrigin::Battlefield
+            && c.tap
+            && !c.sacrifice
+            && !c.exile_self
+            && !c.discard
+            && c.life == 0
+            && c.remove.is_none()
+            && c.loyalty.is_none()
+            && c.additional.is_none()
+            && !a.exhaust
+            && !a.once_per_turn
+            && matches!(a.program, [Instruction::AddMana(_)])
+    }
+    fn mana_clause_payable(&self, c: &CostContext) -> bool {
+        let Some(cost) = c.mana else {
+            return false;
+        };
+        convoke::payable_in(
+            self,
+            c.actor,
+            self.purpose,
+            mana_lots::available(self.mana, &self.lots, self.purpose),
+            cost.colored,
+            cost.generic,
+            &self.convoke_masks(),
+        )
+    }
     fn complete_convoke_clause(
         &self,
         c: &CostContext,
@@ -451,6 +621,15 @@ impl FundingState<'_> {
             return false;
         };
         let pool = mana_lots::available(self.mana, &self.lots, self.purpose);
+        // Fail before assigning individual helpers when the current mana clause
+        // cannot be paid at all. If it is last, exact Hall matching is the whole
+        // obligation; later nonmana costs still use the original assignment walk.
+        if !self.mana_clause_payable(c) {
+            return false;
+        }
+        if rest.is_empty() {
+            return true;
+        }
         let (required, generic) = cast_origins::payment_requirements(
             self,
             c.actor,
@@ -465,12 +644,19 @@ impl FundingState<'_> {
             if resource.object.zone != Zone::Battlefield
                 || resource.object.controller != c.actor
                 || resource.object.tapped
-                || CharacteristicWorld::kinds(self, resource.id) & 1 == 0
             {
                 continue;
             }
             let colors = CharacteristicWorld::colors(self, resource.id);
-            for contribution in convoke::contributions() {
+            let kinds = CharacteristicWorld::kinds(self, resource.id);
+            let choices: &[ConvokeContribution] = if self.convoke && kinds & 1 != 0 {
+                &convoke::contributions()
+            } else if self.improvise_available() && kinds & 16 != 0 {
+                &[ConvokeContribution::Generic]
+            } else {
+                continue;
+            };
+            for &contribution in choices {
                 let mut remaining = cost;
                 if !contribution.apply(colors, &mut remaining) {
                     continue;
@@ -534,6 +720,27 @@ impl FundingState<'_> {
         self.resources[index].object.tapped = true;
         true
     }
+    pub(in crate::engine) fn project_improviser(&mut self, object: ObjectRef) -> bool {
+        if !self.improvise_available() || !improvise::eligible(self, self.actor, object) {
+            return false;
+        }
+        let Some(index) = self
+            .resources
+            .iter()
+            .position(|r| r.id == object.card && r.object.generation == object.generation)
+        else {
+            return false;
+        };
+        let Some(cost) = self.cast_costs.as_mut().and_then(|c| c.mana.as_mut()) else {
+            return false;
+        };
+        let Some(generic) = cost.generic.checked_sub(1) else {
+            return false;
+        };
+        cost.generic = generic;
+        self.resources[index].object.tapped = true;
+        true
+    }
     fn complete_additional(
         &self,
         c: &CostContext,
@@ -561,10 +768,14 @@ impl FundingState<'_> {
                 None => return false,
             },
             EffectChoiceKind::CollectEvidence(n) => {
-                evidence_min = Some(u128::from(n));
+                evidence_min = Some((u128::from(n), None));
                 destination = Zone::Exile;
                 spec.kind = EffectChoiceKind::ExileGraveyard;
                 any_graveyard = true;
+            }
+            EffectChoiceKind::ExileGraveyardSymbols { color, minimum } => {
+                evidence_min = Some((u128::from(minimum), Some(color)));
+                destination = Zone::Exile;
             }
             EffectChoiceKind::RemoveCreatureCounters(n) => counters = Some(n),
             EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
@@ -576,8 +787,11 @@ impl FundingState<'_> {
                 amount = usize::from(n);
                 spec.kind = EffectChoiceKind::ExileGraveyard;
             }
-            EffectChoiceKind::ReturnToHand => destination = Zone::Hand,
+            EffectChoiceKind::ReturnUnblockedAttacker | EffectChoiceKind::ReturnToHand => {
+                destination = Zone::Hand
+            }
             EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_) => {}
@@ -606,10 +820,10 @@ impl FundingState<'_> {
                 self.cost_object(spec, r, c.source).then_some(r)
             })
             .collect::<Vec<_>>();
-        if evidence_min.is_some_and(|n| {
+        if evidence_min.is_some_and(|(n, color)| {
             candidates
                 .iter()
-                .map(|r| u128::from(self.object(r.card).card.fixed_mana_value()))
+                .map(|r| cost_weight(self.object(r.card).card, color))
                 .sum::<u128>()
                 < n
         }) {
@@ -641,15 +855,15 @@ impl FundingState<'_> {
         spec: AdditionalCost,
         destination: Zone,
         amount: usize,
-        evidence_min: Option<u128>,
+        evidence_min: Option<(u128, Option<crate::cards::ChoiceColor>)>,
         candidates: &[ObjectRef],
         at: usize,
         selected: &mut Vec<ObjectRef>,
     ) -> bool {
-        let enough = evidence_min.map_or(selected.len() == amount, |minimum| {
+        let enough = evidence_min.map_or(selected.len() == amount, |(minimum, color)| {
             selected
                 .iter()
-                .map(|r| u128::from(self.object(r.card).card.fixed_mana_value()))
+                .map(|r| cost_weight(self.object(r.card).card, color))
                 .sum::<u128>()
                 >= minimum
         });
@@ -773,7 +987,7 @@ impl Game {
                 &goal,
                 choice.item.source_card.has_convoke(),
             );
-            world.purpose = self.purpose_for_item(&choice.item);
+            world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
             world.reachable(&goal, &mut HashSet::new())
         })
@@ -796,7 +1010,9 @@ impl Game {
             reserve: None,
             source: None,
         };
-        let mut world = FundingState::from_game(self, &goal);
+        let mut world =
+            FundingState::from_game_with_convoke(self, &goal, a.item.source_card.has_convoke());
+        world.set_purpose(self.purpose_for_item(&a.item));
         world.set_cost_context(Some(a));
         world
     }
@@ -890,10 +1106,10 @@ impl Game {
             .unwrap();
         row.pay = pay;
         row.declared = true;
-        a.initialize_cast_costs();
+        a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
         if a.cast_costs.is_none() {
             a.cast_costs = Some(Box::default());
-            a.initialize_cast_costs();
+            a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
         }
         a.cost_options().any(|cost| {
             let mut choice = a.clone();
@@ -904,7 +1120,7 @@ impl Game {
                 &goal,
                 choice.item.source_card.has_convoke(),
             );
-            world.purpose = self.purpose_for_item(&choice.item);
+            world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
             world.reachable(&goal, &mut HashSet::new())
         })
@@ -917,7 +1133,7 @@ impl Game {
         life: u32,
     ) -> bool {
         let mut world = FundingState::from_game(self, &goal);
-        world.purpose = purpose;
+        world.set_purpose(purpose);
         if world.cast_costs.is_none() {
             world.install_cost_context(Some(Box::new(CostContext {
                 teammates: Vec::new(),
@@ -976,7 +1192,10 @@ impl Game {
                 && a.item.controller == goal.actor
                 && a.item.source_card == spell.card
         });
-        if extra.is_empty()
+        let ordered_additional = additional.is_some()
+            && (spell.card.has_convoke() || improvise::potential(self, spell.card));
+        if !ordered_additional
+            && extra.is_empty()
             && current.is_none_or(|a| a.casualty.is_none() && a.cast_costs.is_none())
             && !self.has_casualty(goal.actor, spell.card)
         {
@@ -986,7 +1205,11 @@ impl Game {
             .and_then(|a| a.casualty.as_deref())
             .cloned()
             .unwrap_or_else(|| self.casualty_grants(goal.actor, spell.card));
-        if grants.is_empty() && extra.is_empty() && current.is_none_or(|a| a.cast_costs.is_none()) {
+        if !ordered_additional
+            && grants.is_empty()
+            && extra.is_empty()
+            && current.is_none_or(|a| a.cast_costs.is_none())
+        {
             return None;
         }
         fn declarations(
@@ -1051,7 +1274,7 @@ impl Game {
                         paid: false,
                     });
                 }
-                if spell.card.has_convoke() {
+                if spell.card.has_convoke() || improvise::potential(self, spell.card) {
                     clauses.push(CastCostRow {
                         clause: CastCostClause::Mana,
                         paid: false,
@@ -1071,10 +1294,11 @@ impl Game {
                         .map_or_else(Vec::new, |c| c.teammates.clone()),
                     teamwork_exact: false,
                     actor: goal.actor,
-                    mana: spell.card.has_convoke().then_some(ManaCost {
-                        colored: attempt.required,
-                        generic: attempt.generic,
-                    }),
+                    mana: (spell.card.has_convoke() || improvise::potential(self, spell.card))
+                        .then_some(ManaCost {
+                            colored: attempt.required,
+                            generic: attempt.generic,
+                        }),
                     source,
                     clauses,
                     active: None,
@@ -1087,10 +1311,59 @@ impl Game {
                 };
                 let mut world =
                     FundingState::from_game_with_convoke(self, &attempt, spell.card.has_convoke());
-                world.purpose = purpose;
+                world.set_purpose(purpose);
                 world.install_cost_context(Some(Box::new(context)));
                 world.reachable(&attempt, &mut HashSet::new())
             })
         }))
+    }
+}
+
+fn cost_weight(card: Card, color: Option<crate::cards::ChoiceColor>) -> u128 {
+    u128::from(color.map_or_else(
+        || card.fixed_mana_value(),
+        |color| card.mana_symbols_of_color(color),
+    ))
+}
+
+impl Game {
+    pub(in crate::engine) fn can_fund_symbol_cost_group(
+        &self,
+        goal: FundingGoal,
+        purpose: mana_lots::Purpose,
+        spec: AdditionalCost,
+        source: ObjectRef,
+        selected: &[ObjectRef],
+    ) -> bool {
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_purpose(purpose);
+        world.install_cost_context(Some(Box::new(CostContext {
+            actor: goal.actor,
+            source,
+            clauses: vec![
+                CastCostRow {
+                    clause: CastCostClause::Additional,
+                    paid: false,
+                },
+                CastCostRow {
+                    clause: CastCostClause::Mana,
+                    paid: false,
+                },
+            ],
+            active: None,
+            casualty: Vec::new(),
+            additional: Some(spec),
+            forage: None,
+            selected: selected.to_vec(),
+            exact: false,
+            counters: Vec::new(),
+            mana: Some(ManaCost {
+                colored: goal.required,
+                generic: goal.generic,
+            }),
+            teammates: Vec::new(),
+            teamwork_exact: false,
+        })));
+        world.reachable(&goal, &mut HashSet::new())
     }
 }

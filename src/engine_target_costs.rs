@@ -133,6 +133,14 @@ impl Game {
         extra: Option<Target>,
         finished: bool,
     ) -> bool {
+        if let StackKind::ActivatedAbility { ability } = a.item.kind
+            && a.item
+                .source_card
+                .activation_target_reduction(ability)
+                .is_some()
+        {
+            return self.announcement_activation_target_fundable(a, extra, finished);
+        }
         if a.item.kind != StackKind::Spell || a.item.source_card.target_cost_reduction().is_none() {
             return true;
         }

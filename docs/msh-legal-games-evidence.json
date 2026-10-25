@@ -1,0 +1,508 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+  "tested_source_head": "edb42b54a14bcbf2691d050509033b11a68eb243",
+  "scope": "One additional complete-game assurance group over a bounded supported MSH-only pool; no new card admission, no runtime or policy changes, no full-set acceptance.",
+  "membership": {
+    "full_set_identities": 281,
+    "base_candidate_flags": 198,
+    "base_candidate_gated": 83,
+    "tested_deck_identities": 50,
+    "tested_nonland_spell_identities": 45,
+    "all_45_observed_paid_spell_casts": true
+  },
+  "game_evidence": {
+    "cast_card_names_observed": [
+      "Aerial Doombot",
+      "Agent Maria Hill",
+      "Agent Phil Coulson",
+      "Agent of Atlas",
+      "Agents of HYDRA",
+      "Ant-Man's Army",
+      "Arnim Zola, Bio-Fanatic",
+      "Attuma, Atlantean Warlord",
+      "Baron Strucker, HYDRA Overlord",
+      "Captain America, Wings of Freedom",
+      "Crowd of True Believers",
+      "Dark Deed",
+      "Giant Growth",
+      "Go Nuts!",
+      "Guerrilla Gorilla",
+      "HULK SMASH!",
+      "HYDRA Assault Robot",
+      "HYDRA Troopers",
+      "Hawkeye's Bow",
+      "Helicarrier Strike",
+      "Hulkling, Burgeoning Bruiser",
+      "Human Torch, Johnny Storm",
+      "Hydraulic Helper",
+      "I Am Iron Man",
+      "Jessica Jones, Private Eye",
+      "K'un-Lun Warrior",
+      "Lightning Strike",
+      "Namor the Sub-Mariner",
+      "Ninja of the Hand",
+      "Patriot, Shield Wielder",
+      "Quicksilver, Brash Blur",
+      "Reptil, Dinomorpher",
+      "S.H.I.E.L.D. Flying Car",
+      "S.H.I.E.L.D. Spy Kit",
+      "Serpent Specialist",
+      "She-Hulk, Jade Defender",
+      "Stark Industries Executive",
+      "Stolen Stark Tech",
+      "Super Suit",
+      "Take Up the Shield",
+      "The Vision",
+      "Thirst for Knowledge",
+      "Too Evil to Stay Dead",
+      "Undercover Skrull",
+      "Whiplash, Vengeful Engineer"
+    ],
+    "checked_execution_seconds": 1.331687246,
+    "decks": [
+      [
+        "Plains",
+        [
+          "Agent Maria Hill",
+          "Agent Phil Coulson",
+          "Agent of Atlas",
+          "Captain America, Wings of Freedom",
+          "Crowd of True Believers",
+          "Patriot, Shield Wielder",
+          "S.H.I.E.L.D. Spy Kit",
+          "Take Up the Shield",
+          "Helicarrier Strike"
+        ]
+      ],
+      [
+        "Island",
+        [
+          "Aerial Doombot",
+          "Hydraulic Helper",
+          "Namor the Sub-Mariner",
+          "Attuma, Atlantean Warlord",
+          "Thirst for Knowledge",
+          "I Am Iron Man",
+          "The Vision",
+          "S.H.I.E.L.D. Flying Car",
+          "Super Suit"
+        ]
+      ],
+      [
+        "Swamp",
+        [
+          "Agents of HYDRA",
+          "Baron Strucker, HYDRA Overlord",
+          "HYDRA Troopers",
+          "Ninja of the Hand",
+          "Whiplash, Vengeful Engineer",
+          "Stolen Stark Tech",
+          "Too Evil to Stay Dead",
+          "Dark Deed",
+          "Arnim Zola, Bio-Fanatic"
+        ]
+      ],
+      [
+        "Mountain",
+        [
+          "Quicksilver, Brash Blur",
+          "K'un-Lun Warrior",
+          "Human Torch, Johnny Storm",
+          "Jessica Jones, Private Eye",
+          "Hawkeye's Bow",
+          "Lightning Strike",
+          "HULK SMASH!",
+          "HYDRA Assault Robot",
+          "Stark Industries Executive"
+        ]
+      ],
+      [
+        "Forest",
+        [
+          "Reptil, Dinomorpher",
+          "Hulkling, Burgeoning Bruiser",
+          "Serpent Specialist",
+          "Guerrilla Gorilla",
+          "Ant-Man's Army",
+          "She-Hulk, Jade Defender",
+          "Go Nuts!",
+          "Giant Growth",
+          "Undercover Skrull"
+        ]
+      ]
+    ],
+    "games": [
+      {
+        "decisions": 612,
+        "decks": [
+          "Plains",
+          "Island"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261024,
+        "starting_player": "P0",
+        "turn": 18
+      },
+      {
+        "decisions": 427,
+        "decks": [
+          "Plains",
+          "Island"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 5,
+        "seed": 20261025,
+        "starting_player": "P0",
+        "turn": 13
+      },
+      {
+        "decisions": 519,
+        "decks": [
+          "Plains",
+          "Island"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261024,
+        "starting_player": "P1",
+        "turn": 15
+      },
+      {
+        "decisions": 505,
+        "decks": [
+          "Plains",
+          "Island"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261025,
+        "starting_player": "P1",
+        "turn": 14
+      },
+      {
+        "decisions": 442,
+        "decks": [
+          "Island",
+          "Swamp"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 5,
+        "seed": 20261024,
+        "starting_player": "P0",
+        "turn": 13
+      },
+      {
+        "decisions": 663,
+        "decks": [
+          "Island",
+          "Swamp"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261025,
+        "starting_player": "P0",
+        "turn": 18
+      },
+      {
+        "decisions": 423,
+        "decks": [
+          "Island",
+          "Swamp"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 5,
+        "seed": 20261024,
+        "starting_player": "P1",
+        "turn": 13
+      },
+      {
+        "decisions": 578,
+        "decks": [
+          "Island",
+          "Swamp"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261025,
+        "starting_player": "P1",
+        "turn": 17
+      },
+      {
+        "decisions": 498,
+        "decks": [
+          "Swamp",
+          "Mountain"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261024,
+        "starting_player": "P0",
+        "turn": 15
+      },
+      {
+        "decisions": 514,
+        "decks": [
+          "Swamp",
+          "Mountain"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261025,
+        "starting_player": "P0",
+        "turn": 19
+      },
+      {
+        "decisions": 608,
+        "decks": [
+          "Swamp",
+          "Mountain"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261024,
+        "starting_player": "P1",
+        "turn": 16
+      },
+      {
+        "decisions": 569,
+        "decks": [
+          "Swamp",
+          "Mountain"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261025,
+        "starting_player": "P1",
+        "turn": 19
+      },
+      {
+        "decisions": 649,
+        "decks": [
+          "Mountain",
+          "Forest"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261024,
+        "starting_player": "P0",
+        "turn": 21
+      },
+      {
+        "decisions": 558,
+        "decks": [
+          "Mountain",
+          "Forest"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261025,
+        "starting_player": "P0",
+        "turn": 17
+      },
+      {
+        "decisions": 497,
+        "decks": [
+          "Mountain",
+          "Forest"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261024,
+        "starting_player": "P1",
+        "turn": 15
+      },
+      {
+        "decisions": 535,
+        "decks": [
+          "Mountain",
+          "Forest"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261025,
+        "starting_player": "P1",
+        "turn": 19
+      },
+      {
+        "decisions": 1190,
+        "decks": [
+          "Forest",
+          "Plains"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 13,
+        "seed": 20261024,
+        "starting_player": "P0",
+        "turn": 37
+      },
+      {
+        "decisions": 523,
+        "decks": [
+          "Forest",
+          "Plains"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261025,
+        "starting_player": "P0",
+        "turn": 18
+      },
+      {
+        "decisions": 938,
+        "decks": [
+          "Forest",
+          "Plains"
+        ],
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 10,
+        "seed": 20261024,
+        "starting_player": "P1",
+        "turn": 30
+      },
+      {
+        "decisions": 436,
+        "decks": [
+          "Forest",
+          "Plains"
+        ],
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 5,
+        "seed": 20261025,
+        "starting_player": "P1",
+        "turn": 15
+      }
+    ],
+    "scope": "20 legal Standard-deck MSH-only games across50admitted identities; deterministic observation-only smoke policy. Bounded game/replay/privacy/owned-search evidence, not full-set acceptance or a simulation benchmark: wall time includes checks and replay."
+  },
+  "aggregate": {
+    "games": 20,
+    "decisions": 11684,
+    "owned_privacy_checkpoints": 131,
+    "all_natural_winners": true,
+    "concessions": 0,
+    "all_complete_replays_exact": true,
+    "game_setup_or_progress_injected_state": false
+  },
+  "contracts": [
+    "Standard60-card minimum and four-copy checks enforced by ordinary Game::new; each literal card checked against frozen281-identity membership and supported Standard status",
+    "Five monocolor decks rotate through both seats, both starting players and two deterministic seeds; each game uses ordinary game construction, shuffled libraries and legal actions without scenario mana or permanent placement",
+    "Existing unchanged smoke_index uses acting observation and offered actions only; no new bot",
+    "Every97decisions compare legal actions and full acting observation after hidden opponent hand identities and below-top order counterfactuals",
+    "At every checkpoint reject wrong actor and invalid index atomically; clone raw/index branches, drop parent, execute both, compare full snapshots and both views; restore and reject stale index, replay exact action",
+    "Replay each complete ledger from fresh same seed/decks; final entire snapshot/outcome equality; no concessions, bounded20000decision fail instead of accepting truncation"
+  ],
+  "validation": {
+    "native": 0,
+    "clippy": 0,
+    "format": 0,
+    "sources": 0,
+    "link": 0,
+    "changed": [],
+    "fixed_files": 11752,
+    "terminal": true
+  },
+  "native_tests": 1186,
+  "new_groups": 1,
+  "inherited_trace_rows": 2501,
+  "trace_metadata_membership_policy_byte_identical_to_base": true,
+  "observation_wire_unchanged": 146,
+  "source": {
+    "definitions": 5399,
+    "source_blobs": 1227,
+    "java_verified": true,
+    "catalogue_version": "fe5f440049c4fa2d3cbcb6cb59cd276296e16b7244d4e462cd9978fab630f76d"
+  },
+  "resource_guards": {
+    "focused": {
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "msh_legal_five"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 135.77398562798044,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2556329984,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "all_checks": {
+      "command": [
+        "python3",
+        "/tmp/msh-legal-games-checks.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 47.41653074300848,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1941094400,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "cleanup": {
+    "terminal": true,
+    "no_active_target_consumers": true,
+    "accessible_proc_fd_maps_exe_scan_clear": true,
+    "root": "<cache>/rustmage-msh-legal-games-target",
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 125317120,
+    "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+    "preserved_shared_libraries": {
+      "<cache>/rustmage-msh-legal-games-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_native_binary": {
+      "path": "<cache>/rustmage-msh-legal-games-target/debug/deps/rustmage-b764cd26223fba2c",
+      "sha256": "3771421e5bb2e21b6e330690ea5f9c5c29877cc3d92b079b8f5fcb01fbc750d0"
+    }
+  },
+  "performance_qualification": "Checked execution time includes policy, replay, counterfactual privacy, serialization, snapshots, branching and restore. It is not a pure simulation, MCTS, training, XMage parity or full-set performance benchmark.",
+  "remaining": "All83candidate-gated identities and entire-pool rules/interactions/games/search/replay/privacy/performance acceptance remain open. Final aggregate exact-head release/CI/two independent nonauthor reviews remain required. All remaining work in one draft PR516; no main merge authorized."
+}

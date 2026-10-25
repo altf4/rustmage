@@ -4,9 +4,20 @@ use super::*;
 pub(super) struct TargetLibraryChoice {
     pub source: ObjectRef,
     pub controller: Player,
+    pub second_from_top: bool,
     pub targets: Vec<BoundTarget>,
 }
 impl TargetLibraryChoice {
+    pub fn destinations(&self) -> [LibraryDestination; 2] {
+        [
+            if self.second_from_top {
+                LibraryDestination::SecondFromTop
+            } else {
+                LibraryDestination::Top
+            },
+            LibraryDestination::Bottom,
+        ]
+    }
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>() + self.targets.len() * std::mem::size_of::<BoundTarget>()
     }
@@ -45,20 +56,36 @@ impl Game {
     ) {
         assert!(matches!(
             destination,
-            LibraryDestination::Top | LibraryDestination::Bottom
+            LibraryDestination::Top
+                | LibraryDestination::Bottom
+                | LibraryDestination::SecondFromTop
         ));
         let owner = self.state.objects[object.card as usize].owner;
         let card = self.state.objects[object.card as usize].card;
         let token = self.state.objects[object.card as usize].is_token();
         let prior_top = self.public_library_top(owner);
+        let old_len = self.state.players[owner.index()].library.len();
         let event = self.move_object(object.card, Zone::Library);
         if event.moved && event.destination == Zone::Library {
             let library = &mut self.state.players[owner.index()].library;
-            if !token && destination == LibraryDestination::Bottom {
+            if !token
+                && matches!(
+                    destination,
+                    LibraryDestination::Bottom | LibraryDestination::SecondFromTop
+                )
+            {
                 assert_eq!(library.pop(), Some(object.card));
-                library.insert(0, object.card);
+                let index = if destination == LibraryDestination::SecondFromTop {
+                    old_len.saturating_sub(1)
+                } else {
+                    0
+                };
+                library.insert(index, object.card);
             }
-            if destination == LibraryDestination::Top && !token {
+            if !token
+                && (destination == LibraryDestination::Top
+                    || (destination == LibraryDestination::SecondFromTop && old_len == 0))
+            {
                 self.remember_library_top(owner, event.after);
             } else if let Some(prior) = prior_top
                 && self.state.players[owner.index()].library.last() == Some(&prior.card)
@@ -78,7 +105,7 @@ impl Game {
             }));
         }
     }
-    pub(super) fn start_target_library(&mut self, item: &SpellView) -> bool {
+    pub(super) fn start_target_library(&mut self, item: &SpellView, second_from_top: bool) -> bool {
         let targets = item
             .targets
             .iter()
@@ -92,6 +119,7 @@ impl Game {
             Some(Box::new(TargetLibraryChoice {
                 source: item.target_source(),
                 controller: item.controller,
+                second_from_top,
                 targets,
             }));
         self.advance_target_library()
@@ -150,7 +178,8 @@ impl Game {
         }
     }
     pub(super) fn target_library_view(&self, viewer: Player) -> Option<TargetLibraryView> {
-        if self.actor() != Some(viewer) {
+        let viewer = self.choice_information_player(viewer);
+        if self.semantic_actor() != Some(viewer) {
             return None;
         }
         let f = self.state.resolving.as_ref()?.target_library.as_ref()?;

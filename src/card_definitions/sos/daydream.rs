@@ -4,6 +4,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         one(TargetRule::creature_you_control()),
         &[Instruction::BlinkImmediately {
             counter: Some((CounterKind::PlusOne, 1)),
+            tapped: false,
         }],
     ),
     extras: &CardExtras {

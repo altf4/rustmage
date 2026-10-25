@@ -1,16 +1,15 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete Oracle body from the paired pinned direct source.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 3),
     keywords: Keywords::VIGILANCE,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::OtherCreatureEntersYouIfGreaterStats,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::PutCounters {
+            subject: Subject::Source,
+            kind: CounterKind::PlusOne,
+            amount: 1,
+        }],
+    }],
     ..CardRules::EMPTY
 };

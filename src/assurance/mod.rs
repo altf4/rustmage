@@ -69,8 +69,8 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     id
 }
 fn act(g: &mut Game, action: Action) {
-    g.apply(g.actor().expect("nonterminal scenario"), action)
-        .unwrap();
+    g.apply(g.actor().expect("nonterminal scenario"), action.clone())
+        .unwrap_or_else(|error| panic!("{action:?}: {error:?}; pending {:?}", g.state.pending));
 }
 fn choose(g: &mut Game, predicate: impl Fn(&Action) -> bool) {
     let a = g
@@ -175,17 +175,8 @@ mod sos_evidence_funding;
 
 mod sos_mana_rollback;
 
-#[path = "../engine_teamwork_tests.rs"]
-mod teamwork_tests;
-
-#[path = "../engine_msh_teamwork_cards_tests.rs"]
-mod msh_teamwork_cards;
-
-#[path = "../engine_msh_conditional_lands_tests.rs"]
-mod msh_conditional_lands;
-
-#[path = "../engine_msh_political_triumph_tests.rs"]
-mod msh_political_triumph;
-
-#[path = "../engine_msh_attack_alone_tests.rs"]
-mod msh_attack_alone;
+mod msh_a;
+mod msh_b;
+mod msh_c;
+mod msh_contracts;
+mod msh_d;

@@ -66,6 +66,8 @@ impl Game {
             &|id, o| self.object_kinds(id, o),
             &|id| self.object_name(id),
             &|id| ability_world::CharacteristicWorld::colors(self, id),
+            &|id| ability_world::CharacteristicWorld::legendary(self, id),
+            &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.state.players[owner.index()].life,
             self.state.attack_declared
@@ -85,6 +87,8 @@ impl Game {
         kinds: &impl Fn(CardId, &Object) -> u16,
         names: &impl Fn(CardId) -> &'static str,
         colors: &impl Fn(CardId) -> u8,
+        legendary: &impl Fn(CardId) -> bool,
+        counter_count: &impl Fn(CardId, CounterKind) -> u64,
         has_counters: &impl Fn(CardId) -> bool,
         life: i128,
         attacking: bool,
@@ -95,6 +99,17 @@ impl Game {
     {
         match value {
             StatValue::Fixed(n) => i128::from(n),
+            StatValue::SourceCounters(kind) => objects()
+                .find(|(id, object)| *id == source.card && object.generation == source.generation)
+                .map_or(0, |_| i128::from(counter_count(source.card, kind))),
+            StatValue::LegendaryCreaturesYouControl => objects()
+                .filter(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && kinds(*id, object) & 1 != 0
+                        && legendary(*id)
+                })
+                .count() as i128,
             StatValue::TappedCount(filter) => objects()
                 .filter(|&(id, o)| {
                     o.tapped
@@ -111,11 +126,29 @@ impl Game {
                     kinds,
                     names,
                     colors,
+                    legendary,
+                    counter_count,
                     has_counters,
                     life,
                     attacking,
                 ) == 0,
             ),
+            StatValue::SourceEquipmentCount => {
+                if !objects().any(|(id, object)| {
+                    id == source.card
+                        && object.generation == source.generation
+                        && object.zone == Zone::Battlefield
+                }) {
+                    return 0;
+                }
+                objects()
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.attached_to == Some(source)
+                            && subtypes(*id).has(object.card, "Equipment")
+                    })
+                    .count() as i128
+            }
             StatValue::ControllerHandSize => objects()
                 .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand)
                 .count() as i128,
@@ -199,6 +232,8 @@ impl Game {
                     kinds,
                     names,
                     colors,
+                    legendary,
+                    counter_count,
                     has_counters,
                     life,
                     attacking,
@@ -242,6 +277,15 @@ impl Game {
                         && crate::card_names::same_name(names(id), name)
                 })
                 .count() as i128,
+            StatValue::CountAllKinds(filter) => i128::try_from(
+                objects()
+                    .filter(|&(id, o)| {
+                        Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
+                            && kinds(id, o) & filter.kind == filter.kind
+                    })
+                    .count(),
+            )
+            .capacity("stat count exhausted"),
             StatValue::Count(filter) => i128::try_from(
                 objects()
                     .filter(|&(id, o)| {
@@ -305,6 +349,8 @@ impl Game {
                         kinds,
                         names,
                         colors,
+                        legendary,
+                        counter_count,
                         has_counters,
                         life,
                         attacking,
@@ -327,18 +373,25 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::ControllerHandDeficit(n) => {
+                u128::from(n).saturating_sub(self.hand_count(owner) as u128)
+            }
             AmountValue::SourceCounterQuantity(kind) => {
                 u128::from(self.source_counter_quantity_live(source, kind).unwrap_or(0))
             }
-            AmountValue::TargetPlayerHandSize
+            AmountValue::PaidSourceCounterQuantity(_)
+            | AmountValue::TargetPlayerHandSize
             | AmountValue::MilledCreatures
             | AmountValue::ChosenX
             | AmountValue::ManaSpent
             | AmountValue::CastSpellManaValue
+            | AmountValue::CastSpellManaSymbols(_)
             | AmountValue::SpellColors
             | AmountValue::ColorsSpent
             | AmountValue::SacrificedToughness
             | AmountValue::SourcePower
+            | AmountValue::SourceToughness
+            | AmountValue::SourceEquipmentCount
             | AmountValue::LifeEventAmount
             | AmountValue::DamageEventAmount
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.

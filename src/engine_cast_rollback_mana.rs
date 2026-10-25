@@ -146,7 +146,7 @@ impl Game {
             return None;
         }
         let rollback = self.state.cast_rollback.as_ref()?;
-        if rollback.player != viewer {
+        if !self.shares_information(viewer, rollback.player) {
             return None;
         }
         let replay = rollback.replay.as_ref()?;

@@ -14,7 +14,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         || observation.payment_request.is_some();
     let resolution_mana_score = |payment: crate::Mana, production: crate::Mana| {
         let request = observation.resolution_payment.as_ref().unwrap();
-        let pool = observation.players[actor.index()].mana;
+        let pool = observation.players[request.payer.index()].mana;
         let deficit = |pool: crate::Mana| {
             std::iter::once(request.cost)
                 .chain(request.alternatives.iter().copied())
@@ -169,7 +169,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceBack { .. } => 30,
             Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
             Action::ChooseEntryTimestamp { .. } => 120,
-            Action::ChooseReplacement { .. } => 120,
+            Action::ChooseReplacement { .. }
+            | Action::ChooseDamagePrevention { .. }
+            | Action::ChooseDamageEvent { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
             Action::ChooseEndure { put_counters } => {
                 if *put_counters {
@@ -178,8 +180,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     35
                 }
             }
-            Action::BeginConvoke => 40,
-            Action::ChooseConvoker { .. } => 50,
+            Action::BeginConvoke | Action::BeginImprovise => 40,
+            Action::ChooseConvoker { .. } | Action::ChooseImproviser { .. } => 50,
             Action::ChooseMobilizeDefender { .. } | Action::ChooseHandDefender { .. } => 50,
             Action::PutHandCreature { .. }
             | Action::PutHandPermanent { .. }
@@ -192,6 +194,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::FinishTeamwork => 100,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
+            Action::ChooseSourceCounterAmount { amount } => 80 + i128::from((*amount).min(20)),
             Action::ChooseX { value } => {
                 let life_cost = observation
                     .announcing
@@ -230,7 +233,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseEvidence { .. } => 50,
-            Action::FinishEvidence => 80,
+            Action::FinishEvidence | Action::FinishGraveyardSymbolCost => 80,
             Action::DeclineEvidence => -10,
             Action::ChooseBargain { sacrifice } => {
                 if sacrifice.is_some() {
@@ -252,7 +255,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 observation.aura_entry.as_ref().unwrap().card,
                 Target::Card(object.card),
             ),
-            Action::SelectMilled { .. } | Action::ChooseRevealedDiscard { .. } => 60,
+            Action::ChooseHandCard { object: Some(_) }
+            | Action::SelectMilled { .. }
+            | Action::ChooseRevealedDiscard { .. } => 60,
+            Action::ChooseHandCard { object: None } => -1,
             Action::FinishMilledSelection => 0,
             Action::RecoverMilled { object } => {
                 if object.is_some() {
@@ -261,11 +267,20 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
+            Action::ChooseSearchZones { .. } => 50,
             Action::Concede => -1000,
             Action::ChooseZoneReplacement { .. } => 50,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
-            Action::AnnounceFreeFromPermission {
+            Action::AnnounceFreeCounterGraveyard {
+                flash_surcharge: false,
+                ..
+            }
+            | Action::AnnounceFreeGraveyardPermanent {
+                flash_surcharge: false,
+                ..
+            }
+            | Action::AnnounceFreeFromPermission {
                 flash_surcharge: false,
                 ..
             }
@@ -273,19 +288,23 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 flash_surcharge: false,
                 ..
             } => 81,
-            Action::AnnounceFreeFromPermission { .. }
+            Action::AnnounceFreeCounterGraveyard { .. }
+            | Action::AnnounceFreeGraveyardPermanent { .. }
+            | Action::AnnounceFreeFromPermission { .. }
             | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
+            | Action::AnnounceSneak { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnounceExile { .. }
             | Action::AnnounceFlashback { .. } => 79,
             Action::AnnouncePlot { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
+            | Action::AnnounceSelfGrantedAbility { .. }
             | Action::AnnounceBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. } | Action::AnnounceBorrowedMana { .. } => -2,
             Action::PayCosts { .. } | Action::PayPlot { .. } => 100,
@@ -342,6 +361,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                         }
                     })
                     .sum()
+            }
+            Action::ChooseEquipmentAttachment { equipment } => {
+                if equipment.is_some() {
+                    80
+                } else {
+                    40
+                }
             }
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {
@@ -470,7 +496,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AssignDamage { amount, .. } => 50 + *amount,
             Action::Bottom { .. } | Action::Discard { .. } => 50,
             Action::PutTrigger { .. } => 50,
-            Action::ChooseLibraryDestination { .. } => 50,
+            Action::ChooseLibraryDestination { .. } | Action::ChooseManaValueParity { .. } => 50,
             Action::SelectLibrary { .. } => 60,
             Action::FinishLibrarySelection | Action::OrderLibraryBottom { .. } => 50,
             Action::ArrangeLibrary { destination, .. } => {

@@ -1,0 +1,581 @@
+{
+  "schema": 1,
+  "scope": "Two whole MSH candidates plus smallest shared reflexive rules, source-only branch for parent draft PR516; no extra PR or main merge.",
+  "base": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+  "tested_source_commit": "112eb9398841201dcee1a1b75873ecabc6328cfe",
+  "branch": "codex/msh-damage-counter-attacking-reflexive",
+  "complete_candidates": [
+    "Red Hulk",
+    "Grim Reaper, Lethal Legionnaire"
+  ],
+  "local_pool_flags": {
+    "admitted": 215,
+    "total": 281,
+    "gated": 66,
+    "qualification": "Local candidate only; other concurrent scopes excluded; no full-set acceptance claim."
+  },
+  "native_groups": {
+    "base": 1416,
+    "new": 32,
+    "final_passed": 1448,
+    "failed": 0,
+    "all_new_groups_both_seats": true,
+    "names": [
+      "msh_red_grim_red_paid_body_counter_then_any_other_player_and_current_quantity",
+      "msh_red_grim_red_latest_departure_counter_lki_ignores_reentry",
+      "msh_red_grim_red_dynamic_removed_counters_and_noncreature_source",
+      "msh_red_grim_red_lethal_or_departed_parent_cannot_place_or_reflex",
+      "msh_red_grim_red_simultaneous_dealers_one_occurrence_other_victim_ignored",
+      "msh_red_grim_red_actual_doubled_counter_one_child_and_replacement_orphan",
+      "msh_red_grim_red_zero_action_never_infers_success_from_prior_counters",
+      "msh_red_grim_red_counter_on_control_changed_source_attributed_original_actor",
+      "msh_red_grim_red_suppression_before_damage_and_after_queue",
+      "msh_red_grim_red_noncombat_prevented_before_event",
+      "msh_red_grim_red_child_target_departure_and_new_source_incarnation",
+      "msh_red_grim_grim_paid_attack_decline_no_early_targets",
+      "msh_red_grim_grim_paid_return_tapped_attacking_finality_and_combat",
+      "msh_red_grim_grim_defender_independent_and_truthful_public_owned_menu",
+      "msh_red_grim_grim_child_source_departure_or_control_does_not_change_return_actor",
+      "msh_red_grim_grim_target_legality_stale_and_noncreature",
+      "msh_red_grim_grim_finality_at_entry_doubled_and_no_declared_attack_trigger",
+      "msh_red_grim_grim_outside_combat_child_returns_without_attack",
+      "msh_red_grim_grim_finality_removed_bounce_reentry_and_ability_loss",
+      "msh_red_grim_full_both_views_hidden_counterfactual_and_owned_payment",
+      "msh_red_grim_red_real_reach_block_and_trample_combat",
+      "msh_red_grim_red_child_current_controller_lifelink_and_departure_lki",
+      "msh_red_grim_red_parent_and_child_packet_copies_keep_independent_success",
+      "msh_red_grim_grim_source_gone_before_actual_payment_still_independent",
+      "msh_red_grim_grim_pending_entry_color_choice_owns_finality_and_attacking",
+      "msh_red_grim_grim_defender_disappears_during_entry_choice_no_invalid_attacker",
+      "msh_red_grim_grim_stale_defender_choice_rejects_exact_old_incarnation",
+      "msh_red_grim_grim_finality_entry_replacement_choice_owned",
+      "msh_red_grim_grim_real_mana_abilities_pay_optional_cost_before_later_targets",
+      "msh_red_grim_red_successful_counter_cancellation_still_announces_zero_damage_child",
+      "msh_red_grim_red_any_other_planeswalker_and_opponent_hexproof_targets",
+      "msh_red_grim_grim_copied_child_keeps_exact_target_and_fizzles_after_first_return"
+    ]
+  },
+  "wire": {
+    "base": 148,
+    "candidate": 149,
+    "reason": "Actual new public EffectChoiceKind::TargetAttackingReturn { counter } truthfully identifies the exact targeted graveyard return while choosing its independent defender. Existing ChooseHandDefender action and owned view reused. Counter completion and opcodes themselves remain private. Shared149 allocation coordinated with parallel copy scope; no150."
+  },
+  "full_frozen_Oracle": [
+    {
+      "oracle_id": "edf429a8-6a4d-4d2a-b0ca-c0c72a0698a3",
+      "name": "Grim Reaper, Lethal Legionnaire",
+      "layout": "normal",
+      "mana_cost": "{3}{B}",
+      "cmc": 4.0,
+      "type_line": "Legendary Creature \u2014 Human Villain",
+      "oracle_text": "Whenever Grim Reaper attacks, you may pay {3}{B}. When you do, return target creature card from your graveyard to the battlefield tapped and attacking with a finality counter on it. (If a creature with a finality counter on it would die, exile it instead.)",
+      "power": "3",
+      "toughness": "4",
+      "colors": [
+        "B"
+      ],
+      "color_identity": [
+        "B"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "4b1cedfe-4712-4602-a8a8-112bd54c9938",
+        "set": "msh",
+        "collector_number": "98",
+        "released_at": "2026-06-26"
+      }
+    },
+    {
+      "oracle_id": "a14a838a-49f4-45e3-9ec0-3c803af45a68",
+      "name": "Red Hulk",
+      "layout": "normal",
+      "mana_cost": "{4}{R}{R}",
+      "cmc": 6.0,
+      "type_line": "Legendary Creature \u2014 Gamma Berserker Villain",
+      "oracle_text": "Reach, trample\nEnrage \u2014 Whenever Red Hulk is dealt damage, put a +1/+1 counter on him. When you do, he deals damage equal to the number of +1/+1 counters on him to any other target.",
+      "power": "6",
+      "toughness": "7",
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "keywords": [
+        "Reach",
+        "Enrage",
+        "Trample"
+      ],
+      "reference_printing": {
+        "id": "e25468e2-17c6-47b2-8eb6-fcb8ae6f4c17",
+        "set": "msh",
+        "collector_number": "149",
+        "released_at": "2026-06-26"
+      }
+    }
+  ],
+  "source_provenance": {
+    "paired_records": [
+      {
+        "name": "Red Hulk",
+        "catalogue_id": 3428,
+        "oracle_id": "a14a838a-49f4-45e3-9ec0-3c803af45a68",
+        "facts_sha256": "649337f787b74382acd136a50b54756065072c261800ff86997500fcc1206873",
+        "complete": true,
+        "typed_lift": {
+          "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+          "definition_sha256": "cf1fc5d6951f107d8cf600e29aec4ecc4fd7bad01c6ca434df1f49a3786aeb6d"
+        },
+        "physical_metadata_sha256": "6d2aaaa9307d787b858b346c7b4cf235809399147978857f5634f6eff79cf611",
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/r/RedHulk.java",
+        "java_sha256": "91ad718d2e2f464abff57c5d278e6d62f2b65ff919e962f87ebbc751f720f2f1",
+        "xmage_dependencies": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+            "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+            "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+            "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/DealtDamageToSourceTriggeredAbility.java",
+            "sha256": "97485da3564c3e9e3b6355947a03b4480cd40bd32fc00a0f3b4e6c8d5e166b79"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayer.java",
+            "sha256": "f43a3bbef4f7d2f923cddf063aa48211aad59848ccefcdace9b08a40b5cd67ab"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+            "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+            "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+            "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+          }
+        ]
+      },
+      {
+        "name": "Grim Reaper, Lethal Legionnaire",
+        "catalogue_id": 1881,
+        "oracle_id": "edf429a8-6a4d-4d2a-b0ca-c0c72a0698a3",
+        "facts_sha256": "d975bfd4a628fe19a04d4111c51a83137d07c9347e115e2d2d6622ff78d1b6d3",
+        "complete": true,
+        "typed_lift": {
+          "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+          "definition_sha256": "91f538fd3d58926056f3751eb378f956ce600d13d6c5b16bddc0e262182d660d"
+        },
+        "physical_metadata_sha256": "eb70713913b14d6e949cb7c389ff824c2c870423e5b0549a1722c9b90c40c6ed",
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/g/GrimReaperLethalLegionnaire.java",
+        "java_sha256": "0a841e62f9e2d464766a12937e3562c2738ce4dc00a3fff68a4499b5024c4bff",
+        "xmage_dependencies": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+            "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+            "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+            "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+            "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+            "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+            "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+          }
+        ]
+      }
+    ],
+    "design_cache": "<cache>/msh-reflexive-future-design-0c1f30dd.json",
+    "design_cache_sha256": "8ab2e6a1c7ebea5b4107297513404bd52e46c8661bf89ba4ecac614cd5664ebf",
+    "design_source_coverage": [
+      "All five complete direct Java classes, nested concrete effects and listed concrete helpers were read. Large generic CardImpl, AbilityImpl, GameImpl, PermanentImpl and StaticFilters are retained in full but audited only at explicit relevant ranges.",
+      "Rust snapshots retain complete fixed inputs, but large engines were read at recorded relevant ranges; this is a design audit, not a new runtime verification or full recursive engine audit.",
+      "No new rule code, tests, generated artifacts, branches, IDs or schema were authored; no Cargo or game simulation ran. All five remain gated in fixed base."
+    ],
+    "current_source_audit_cache": "<cache>/rustmage-msh-red-grim-source-audit.json",
+    "current_source_audit_sha256": "141b7ba8cca0de134dd4600badac089fdea0608a96cf58f1d452a46651a0486a",
+    "additional_full_helper_pins": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterAnyTarget.java",
+        "sha256": "39d309804844b705a2400ce7086858449831db75048e836f777b66d5d0af18e5",
+        "read_coverage": "Full body read"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterPermanentOrPlayer.java",
+        "sha256": "04c19c65a0f4981e721ccab97940fecb624699a4d58732cbda4b6676b6d673c0",
+        "read_coverage": "Full body read"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+        "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742",
+        "read_coverage": "Full body read"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DiamondMare.java",
+        "sha256": "83246e2cc909be7ebd808ee6ebd94b54de82e72372ff6358f4f0861ef66a80f6",
+        "read_coverage": "Full body read"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HealersHawk.java",
+        "sha256": "4effcb730ab6df3ccc7000fe676639e967cf42cce0973c76ccf2f07bf529ee85",
+        "read_coverage": "Full body read"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/w/Wastes.java",
+        "sha256": "b88fdb0875bdfae3d9fa96f32839f670ac4dfb849de97ca4df856e19cee96b2f",
+        "read_coverage": "Full body read"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+        "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5",
+        "read_coverage": "Full body read"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseColorEffect.java",
+        "sha256": "bbc363d77d1883e5473b95e94ecb24c6d33f8c03a85dd2c6d570c56d112dcba6",
+        "read_coverage": "Full body read"
+      }
+    ],
+    "primary_rules": [
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "facts": "Red Hulk and Spider-Man choose targets only for the separate post-action trigger. Red Hulk must survive to receive the counter. Grim Reaper independently chooses the returned attacker defender and finality applies to any permanent."
+      },
+      {
+        "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf",
+        "rules": [
+          "603.12: reflexive triggers inspect the action during the creating resolution, then announce targets separately.",
+          "603.12a: one reflexive trigger follows one-or-more repeated cost payments.",
+          "603.7e: delayed/reflexive trigger retains source and creating ability controller.",
+          "603.2g: prevented/replaced events do not themselves trigger.",
+          "508.4: entry attacking chooses eligible defender and is not a declared attack.",
+          "118.12 concerns if-you-do cost clauses; do not confuse it with when-you-do reflexive event success."
+        ],
+        "limit": "Primary rules consulted for disputed semantics; local full Oracle/XMage sources remain frozen to project pins."
+      }
+    ]
+  },
+  "printed_obligation_evidence": {
+    "Red Hulk": {
+      "body_reach_trample": "Paid4RR gives6/7, actual Reach blocks paid flying Hawk, natural attack/trample assigns lethal2 to Bear and excess5 to player.",
+      "actual_damage": "SelfDamaged reuses completed damage observer before SBA, groups positive damage once per exact recipient, aggregates multiple dealers, ignores other victim, zero and actually prevented damage. Queued trigger survives later ability loss; suppression before event does not queue it.",
+      "counter_success": "PutSourceCounterReflexive carries an owned optional completion through central CounterBatch. Only actual nonzero matching-kind placement on exact live source creates one child, after all replacement ordering/commit. Two Seasons double it to4 yet one child; placement may affect an exact noncreature permanent. Departed/blinked/lethal source and explicit zero action create none. Successful +1/-1 cancellation still creates child with live quantity0.",
+      "later_target_and_quantity": "Union preserves players plus other damageable permanents; original exact source/land rejected, both players/PW/creature tested, opponent hexproof enforced. Child own source-counter facts initialize from selected child program, not parent walker. Damage amount reads live total at child resolution, then latest exact departure LKI after counter/control changes, never rebound incarnation.",
+      "independent_packets": "Source control changes preserve original ability actor and counter placer; damage source current/latest-departure controller receives lifelink. Explicit copied parent packets each place once; copied child packets deal independently without placing. Source reentry may be another target; stale target reentry fizzles."
+    },
+    "Grim Reaper, Lethal Legionnaire": {
+      "body_attack_and_payment": "Paid3B gives3/4; ordinary attack triggers untargeted optional3B, decline and shortage reject early target. Actual Swamp and Wastes production funds real resolution payment before child targets. Captured controller persists after source theft/departure/blink and before payment.",
+      "later_target": "Independent reflexive child selects exact own graveyard creature card after success; foreign grave/noncreature/live/stale targets rejected; target departure/reentry fizzles without refund, copied exact child cannot return it twice.",
+      "entry_transaction": "Exact target enters under captured controller, forced tapped, with finality in pre-entry counter transaction. Two Seasons yield4 finality counters with owned replacement-order pause. Diamond Mare owns pending as-entry color choice; old target remains in graveyard until commit. Returned sick creature attacks immediately without declared-attack trigger.",
+      "defender": "Separate truthful public defender menu independent of Grim original player defender, choose opponent PW with exact reference; own player and stale PW incarnation rejected atomically. Defender departure during a bounded pending-entry probe yields no invalid attacker. Outside combat/with nonactive controller it enters tapped with counter, without attacking. Shared entry commit checks current creature/current combat/legal exact defender.",
+      "finality": "Actual paid Murder exiles finality recipient instead of graveyard. Counter removal or bounce/reentry clears replacement; ability loss leaves finality replacement intact."
+    }
+  },
+  "legality_privacy_owned": "All scenario mutations use existing checked raw/index/restore helpers. Owned payment, target, defender, entry-value and competing counter-replacement pauses drop parent, compare full both-seat snapshots/views, restore and reject stale indices. Illegal actions preserve snapshot/revision/state_bytes. Hidden opponent hand substitution leaves full actor observation and legal actions equal; targeted GY/defender info remains public, no private hand chooser masquerade.",
+  "unchanged_exact_base_files": {
+    "data/catalogue-identities.json": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+    "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+    "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+    "src/policy.rs": "93702545f58aa2d9f4b50c1011b08c4696764de7934faab67889113e38df5dea",
+    "src/assurance/regressions.rs": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185",
+    "scripts/link_catalogue.py": "ae307ab7648f782f77a070ce79e0fb56f14462caaf9d8e8640b4b2eeee6214a4"
+  },
+  "new_ids_tokens_recipes": [],
+  "validation": {
+    "jobs": [
+      {
+        "report": "<cache>/rustmage-msh-red-grim-focus-1.guard.json",
+        "log": "<cache>/rustmage-msh-red-grim-focus-1.log",
+        "report_sha256": "a7d0e47234078e163a5bc0bd74fc524ffc5ef454925e0900d523baf07134fee6",
+        "metrics": {
+          "command": [
+            "env",
+            "CARGO_TARGET_DIR=<cache>/rustmage-msh-red-grim-target",
+            "cargo",
+            "test",
+            "--lib",
+            "msh_red_grim",
+            "--",
+            "--test-threads=1"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 21.044614195998292,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 1924968448,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "result": "Compile stopped on fixture trait import and Option argument; no runtime compiler error."
+      },
+      {
+        "report": "<cache>/rustmage-msh-red-grim-focus-2.guard.json",
+        "log": "<cache>/rustmage-msh-red-grim-focus-2.log",
+        "report_sha256": "5ee8b5493dea2a418ff650450ac7c4d20a5749e7258fac2e1ed64164ebb72f06",
+        "metrics": {
+          "command": [
+            "env",
+            "CARGO_TARGET_DIR=<cache>/rustmage-msh-red-grim-target",
+            "cargo",
+            "test",
+            "--lib",
+            "msh_red_grim",
+            "--",
+            "--test-threads=1"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 374.79674536403036,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2590195712,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "result": "22 rules groups passed; six fixture failures: unset PW loyalty, absent fixture name, off-turn nonflash cast, settling through a second mandatory copied child."
+      },
+      {
+        "report": "<cache>/rustmage-msh-red-grim-native-record-3.guard.json",
+        "log": "<cache>/rustmage-msh-red-grim-native-record-3.log",
+        "report_sha256": "7689988ee4ec0778dee006bb1766618cc79effb48a1e8993c6196f9ad199d887",
+        "metrics": {
+          "command": [
+            "env",
+            "CARGO_TARGET_DIR=<cache>/rustmage-msh-red-grim-target",
+            "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage-msh-red-grim-traces.json",
+            "RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=148",
+            "cargo",
+            "test",
+            "--lib",
+            "--",
+            "--test-threads=1"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 144.00809200003278,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2590384128,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "result": "1446 passed; expected admission trace count and explicit Wastes mana action fixture failed. All inherited full traces exact before acceptance."
+      },
+      {
+        "report": "<cache>/rustmage-msh-red-grim-strict-4.guard.json",
+        "log": "<cache>/rustmage-msh-red-grim-strict-4.log",
+        "report_sha256": "5b0713fac6b539e107065e42baf02a734e56199d2ea60312a89c3167e35394f5",
+        "metrics": {
+          "command": [
+            "env",
+            "CARGO_TARGET_DIR=<cache>/rustmage-msh-red-grim-target",
+            "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage-msh-red-grim-traces-final.json",
+            "RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=148",
+            "bash",
+            "-c",
+            "cargo test --lib -- --test-threads=1 && cargo clippy --all-targets -- -D warnings && cargo fmt --check"
+          ],
+          "terminal": true,
+          "exit_code": 0,
+          "seconds": 339.66966011194745,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2589179904,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "result": "1448 native passed in9.22s, all-target Clippy -D warnings and cargo fmt check passed; actual terminal0."
+      }
+    ],
+    "source_checks": {
+      "definitions": 5403,
+      "source_blobs": 1274,
+      "catalogue_version": "0357646bf381588625ae0ec2244828393a3b9feb153c85afa1a2c050b375e42e",
+      "commands": [
+        "python3 scripts/check_sources.py",
+        "python3 scripts/link_catalogue.py --check",
+        "rustfmt --edition 2024 --check src/card_definitions/msh/red_hulk.rs src/card_definitions/msh/grim_reaper_lethal_legionnaire.rs",
+        "git diff --check"
+      ]
+    },
+    "fixed_inputs": {
+      "path": "<cache>/rustmage-msh-red-grim-fixed-inputs.json",
+      "sha256": "9387488a3482c51cd7beb3dbdd76ed0aa6ca3e429c657dc2494e4a57de8cab52",
+      "files": 11793,
+      "qualification": "Cache-only snapshot after terminal with no intervening source edits. All consuming inputs remained fixed until each actual terminal; same sessions polled."
+    },
+    "trace_proof": {
+      "base": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+      "normal_schema": 149,
+      "comparison_schema": 148,
+      "base_rows": 2516,
+      "normal_rows": 2518,
+      "previous_rows": 2518,
+      "all_inherited_full_Trace_structs_exact": 2516,
+      "changed": [],
+      "missing": [],
+      "added": [
+        "Grim Reaper, Lethal Legionnaire",
+        "Red Hulk"
+      ],
+      "base_sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+      "normal_sha256": "2a8b12a2923f4bd74673f081c6ca549f15e5a971f604fa45b251d58d9c08f8ec",
+      "previous_sha256": "d0c09026a1e8b0b5e46c6173bdaab0c0d24b71debc2c931674892e5fb7ca9f26",
+      "recording": "Existing opt-in prior-schema exporter only; no field stripping or recorder changes.",
+      "final_normal_sha256": "2a8b12a2923f4bd74673f081c6ca549f15e5a971f604fa45b251d58d9c08f8ec",
+      "final_previous_sha256": "d0c09026a1e8b0b5e46c6173bdaab0c0d24b71debc2c931674892e5fb7ca9f26",
+      "final_export_byte_identical_accepted": true,
+      "final_all_inherited_full_Trace_structs_exact": 2516
+    },
+    "trace_proof_path": "<cache>/rustmage-msh-red-grim-trace-proof.json",
+    "trace_proof_sha256": "6d4d688e94980f71ac80b2dda559bdaba238b3878ae064972bff394b38fc74ea",
+    "final_exports": [
+      "<cache>/rustmage-msh-red-grim-traces-final.json",
+      "<cache>/rustmage-msh-red-grim-traces-final.previous-schema.json"
+    ],
+    "full_release_ci_and_two_fresh_independent_reviews": "Final combined integrator owns these gates; no redundant child release validator or review receipt."
+  },
+  "cleanup": {
+    "active_fd_maps_exe_cwd_matches": [],
+    "unreadable_proc_maps": 47,
+    "files_removed": 1019,
+    "bytes_freed": 122439331,
+    "all_prior_required_artifacts_exact": 577,
+    "prior_preservation_manifest": "<cache>/rustmage-msh-twelfth-preservation.json",
+    "prior_preservation_manifest_sha256": "e1dc2a3f7b4d55b9ccd113c572cfe738fb984d85e39a01fc999af3baeef4bddd",
+    "missing_prior": [],
+    "changed_prior": [],
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-red-grim-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "1fbb30e8fa0940e5ff7db94ab9174ddb5e78ab5107cc70321d8e35f634987570"
+      },
+      {
+        "path": "<cache>/rustmage-msh-red-grim-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ],
+    "preserved_prebaseline_native": {
+      "path": "<cache>/rustmage-msh-red-grim-native-before-baseline",
+      "sha256": "1213b61b125203fa85a1e591c7afd941eaed664a2b5d80a4151fb6a038284576"
+    },
+    "required_shared_libraries": [
+      {
+        "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<existing-worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-coulson/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-hideout-falcon/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-under-siege/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-baron/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-eleventh-combined-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-reflexive-tap-haste-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-twelfth-combined-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-red-grim-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T06:38:06+00:00",
+    "end_utc": "2026-10-25T07:07:37.938567+00:00",
+    "elapsed_seconds": 1771.938567,
+    "whole_cards": 2,
+    "whole_cards_per_elapsed_hour": 4.063346288686542,
+    "scope": "Authorship, shared rules,32both-seat groups, queued guarded builds, fixture corrections, source/trace/static verification and cleanup. Earlier read-only49Java/33Rust audit excluded. Not a gameplay benchmark."
+  },
+  "remaining_limits": [
+    "Frozen Standard catalogue has no Battle entries; existing any-target/combat defender model covers all reachable supported types. Battle target/defender support remains a latent prerequisite before any Battle admission, not silently certified by this batch.",
+    "No supported counter-placement prevention/retyping producer or graveyard entry-prohibition producer was found in current typed inventory. Central completion explicitly tests final replacement output positive/exact; an explicit zero action and actual +1/-1 cancellation cover distinct no-action/success cases. No invented replacement producer is admitted.",
+    "Simultaneous multi-dealer damage, copied ability packets, source type/control changes and defender departure during an entry pause include labelled production boundary fixtures. No new copy producer or naturally funded Standard full-game claim is made for those probes.",
+    "Hawkeye Master Marksman remains gated for its larger payment-count/modal framework; no dependent expansion. Full MSH/all-Standard behavior, games and performance acceptance remain open."
+  ]
+}

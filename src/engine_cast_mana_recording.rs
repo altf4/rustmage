@@ -73,7 +73,8 @@ impl Game {
         match *action {
             Action::TapMana { card } => {
                 let mut production = [0; 6];
-                production[self.state.objects[card as usize].card.mana_color().unwrap()] = 1;
+                production[ability_world::CharacteristicWorld::intrinsic_mana_color(self, card)
+                    .unwrap()] = 1;
                 self.start_cast_mana_capture(
                     actor,
                     ManaEventKind::Basic {

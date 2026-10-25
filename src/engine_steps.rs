@@ -45,14 +45,12 @@ impl Game {
             self.queue_delayed_returns();
             self.queue_warp_exiles();
         }
-        let sources: Vec<_> = self
-            .state
-            .step_sources
-            .iter()
-            .map(|&id| self.object_view(id))
-            .collect();
-        for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+        let sources = self.indexed_trigger_sources(&self.state.step_sources);
+        for (source, grant) in sources {
+            let definition = grant
+                .as_ref()
+                .map_or(source.card, |event| event.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
                 if let TriggerCondition::AtStep {
                     step: wanted,
                     relation,
@@ -75,7 +73,7 @@ impl Game {
                         CastRelation::Any => true,
                     };
                     if matches_step && related {
-                        self.queue_trigger(&source, index);
+                        self.queue_trigger_from(&source, index, grant.map(Box::new));
                     }
                 }
             }
@@ -152,6 +150,10 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
+            StepGuard::HeroEnteredOrAttackedThisTurn => {
+                return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;
+            }
             StepGuard::AttachedControllerTurn => {
                 return attached_controller_turn(self, source, self.state.active);
             }

@@ -10,37 +10,60 @@ pub(super) struct PaymentContinuation<'g> {
 }
 #[derive(Clone)]
 pub(super) struct EntryProjection {
+    /// Opt-in restoration origins; these are copy changes, never entry history.
+    pub copy_origins: Vec<(ObjectRef, Option<u64>)>,
     pub static_sources: Vec<CardId>,
     pub attachment_sources: Vec<CardId>,
     pub roles: roles::RoleState,
+    pub hand_size: hand_size::HandSizeState,
     pub controls: continuous_control::ControlState,
     pub entry_values: Vec<entry_choices::ChoiceRow>,
     pub order: Vec<ObjectRef>,
+    /// Every committed entry, independent of whether it provides a timestamped
+    /// continuous effect. Power-up and public entry facts use this exact history.
+    pub entered: Vec<ObjectRef>,
     pub consumed: Vec<ObjectRef>,
     pub counter: Option<replacements::CounterPreview>,
 }
 impl EntryProjection {
     fn from_world(w: &FundingState<'_>) -> Self {
+        let mut hand_size = w
+            .game
+            .state
+            .hand_size
+            .as_deref()
+            .cloned()
+            .unwrap_or_default();
+        hand_size.sources.retain(|row| {
+            w.reference(row.source.card) == row.source
+                && w.object(row.source.card).zone == Zone::Battlefield
+        });
         Self {
+            copy_origins: Vec::new(),
             static_sources: w.static_sources().to_vec(),
             attachment_sources: w.attachment_sources().to_vec(),
             roles: w.roles().cloned().unwrap_or_default(),
+            hand_size,
             controls: w.controls().cloned().unwrap_or_default(),
             entry_values: w.entry_values().to_vec(),
             order: Vec::new(),
+            entered: Vec::new(),
             consumed: Vec::new(),
             counter: None,
         }
     }
     fn register(&mut self, source: ObjectRef, card: Card) -> u64 {
         self.order.push(source);
+        let timestamp = self.roles.next_timestamp();
+        self.register_at(source, card, timestamp)
+    }
+    pub(super) fn register_at(&mut self, source: ObjectRef, card: Card, timestamp: u64) -> u64 {
         if !self.static_sources.contains(&source.card) {
             self.static_sources.push(source.card);
         }
         if card.attachment_bonus().is_some() && !self.attachment_sources.contains(&source.card) {
             self.attachment_sources.push(source.card);
         }
-        let timestamp = self.roles.next_timestamp();
         if let Some(spec) = card.base_stat_setter() {
             self.roles.base_stats.push(BaseStatsEffectView {
                 recipient: source,
@@ -176,6 +199,10 @@ impl FundingState<'_> {
         };
         match guard {
             StepGuard::Always => true,
+            StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
+            StepGuard::HeroEnteredOrAttackedThisTurn => {
+                state.turn_facts.hero_entered || state.turn_facts.hero_attacked
+            }
             StepGuard::AttachedControllerTurn => {
                 steps::attached_controller_turn(self, source, self.active)
             }
@@ -446,7 +473,7 @@ impl FundingState<'_> {
             let o = self.object(id);
             if o.zone == Zone::Battlefield
                 && o.controller == m.controller
-                && o.card.controlled_entry_untapped() & m.before.card.kind_mask() != 0
+                && o.card.controlled_entry_untapped() & m.before.kinds != 0
                 && self.fragment_available(id, |f| {
                     matches!(
                         f,
@@ -469,7 +496,7 @@ impl FundingState<'_> {
                 let o = self.object(id);
                 o.zone == Zone::Battlefield
                     && o.controller != m.controller
-                    && o.card.opponent_entry_tapped() & m.before.card.kind_mask() != 0
+                    && o.card.opponent_entry_tapped() & m.before.kinds != 0
                     && self.printed_abilities_available(id)
             })
             .collect::<Vec<_>>();
@@ -500,7 +527,7 @@ impl FundingState<'_> {
         }
         effects
     }
-    fn visit_entry_moves(
+    pub(super) fn visit_entry_moves(
         &self,
         mut moves: Vec<entries::EntryMove>,
         initial: bool,
@@ -805,7 +832,7 @@ impl FundingState<'_> {
                         owner: m.before.owner,
                         controller: m.controller,
                         subtypes: Game::entry_choice_subtypes(m),
-                        kind: m.before.card.kind_mask(),
+                        kind: m.before.kinds,
                         amount: m.counters.clone(),
                         effect: true,
                         entry_index: Some(index),
@@ -835,7 +862,11 @@ impl FundingState<'_> {
                 !prefix.contains(i)
                     && !m.skipped
                     && m.destination == Zone::Battlefield
-                    && Self::entry_has_timestamp(m)
+                    && (Self::entry_has_timestamp(m)
+                        || (moves.iter().any(|m| {
+                            Game::hand_entry(m)
+                                && m.before.card.hand_size_setting().flatten().is_some()
+                        }) && Game::hand_entry(m)))
             })
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
@@ -891,6 +922,8 @@ impl FundingState<'_> {
                 .find(|r| r.id == m.before.id)
                 .expect("entry resource retained");
             let o = &mut row.object;
+            next.game
+                .restore_projected_copy_identity(m.before.reference, o);
             o.card = if m.destination == Zone::Battlefield && m.before.zone == Zone::Stack {
                 m.before.card
             } else if !o.is_token() && !o.is_spell_copy() {
@@ -926,6 +959,7 @@ impl FundingState<'_> {
             };
             live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
             if m.destination == Zone::Battlefield {
+                next.entry_projection.as_mut().unwrap().entered.push(source);
                 if m.counters.has_any() {
                     counter_placement_history::record(
                         &mut next.counter_placement_history,
@@ -948,6 +982,7 @@ impl FundingState<'_> {
                     });
                 }
             }
+            next.project_copy_departure(m.before.reference, source);
         }
         for &i in order {
             let m = &moves[i];
@@ -956,6 +991,9 @@ impl FundingState<'_> {
             }
             let source = next.reference(m.before.id);
             let p = next.entry_projection.as_mut().unwrap();
+            if !Self::entry_has_timestamp(m) {
+                continue;
+            }
             let timestamp = p.register(source, m.before.card);
             keyword_counters::sync_effects(
                 &mut p.roles,
@@ -999,6 +1037,49 @@ impl FundingState<'_> {
             }
         }
         for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && let Some((origin, keywords)) = m.keywords_after
+            {
+                let recipient = next.reference(m.before.id);
+                let turn = next.game.state.turn;
+                let p = next.entry_projection.as_mut().unwrap();
+                let timestamp = p.roles.next_timestamp();
+                p.roles.keyword_effects.push(KeywordEffectView {
+                    recipient,
+                    origin: KeywordEffectOrigin::Resolution { source: origin },
+                    keywords: keywords.without(keywords.resolution_rules()),
+                    rules: keywords.resolution_rules(),
+                    timestamp,
+                    expires_turn: Some(turn),
+                });
+                let row = next
+                    .resources
+                    .iter_mut()
+                    .find(|r| r.id == recipient.card)
+                    .unwrap();
+                row.object.gained_keywords = row.object.gained_keywords.union(keywords);
+            }
+        }
+        for m in &moves {
+            if !m.skipped {
+                next.entry_projection
+                    .as_mut()
+                    .unwrap()
+                    .hand_size
+                    .forget(m.before.reference);
+            }
+        }
+        for i in Game::hand_entry_order_for(&moves, order, next.active) {
+            let m = &moves[i];
+            let source = next.reference(m.before.id);
+            next.entry_projection
+                .as_mut()
+                .unwrap()
+                .hand_size
+                .register(source, m.before.card);
+        }
+        for m in &moves {
             if m.skipped || m.destination != Zone::Battlefield || !m.before.card.controls_attached()
             {
                 continue;
@@ -1014,7 +1095,63 @@ impl FundingState<'_> {
                 }
             }
         }
+        for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && let Some(source) = m.blank_with_haste_after
+            {
+                let recipient = next.reference(m.before.id);
+                let p = next.entry_projection.as_mut().unwrap();
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .resolved_ability_modifications
+                    .push(ResolvedAbilityModificationView {
+                        recipient,
+                        source,
+                        keywords: Keywords::HASTE,
+                        timestamp,
+                    });
+            }
+        }
         next.entry_projection.as_mut().unwrap().counter = None;
+        next.refresh_control_projection();
+        next.prune_source_linked_projection();
+        for m in &moves {
+            if m.skipped || m.destination != Zone::Battlefield {
+                continue;
+            }
+            let Some(recipient) = m.attach_equipment_to else {
+                continue;
+            };
+            let source = next.reference(m.before.id);
+            if !equipment::can_attach(&next, source, recipient) {
+                continue;
+            }
+            next.resources
+                .iter_mut()
+                .find(|r| r.id == source.card)
+                .unwrap()
+                .object
+                .attached_to = Some(recipient);
+            let p = next.entry_projection.as_mut().unwrap();
+            let timestamp = p.roles.next_timestamp();
+            for row in &mut p.roles.live_static {
+                if row.source == source {
+                    row.timestamp = timestamp;
+                }
+            }
+            for row in &mut p.roles.ability_timestamps {
+                if row.source == source {
+                    row.timestamp = timestamp;
+                }
+            }
+            for row in &mut p.roles.base_stats {
+                if row.static_source && row.source == source {
+                    row.timestamp = timestamp;
+                }
+            }
+            p.hand_size.assign(source);
+        }
         next.refresh_control_projection();
         emit(&next)
     }
@@ -1051,7 +1188,7 @@ impl Game {
             .and_then(|v| v.first())
             .map(|f| f.announcement.item.controller)
             .or_else(|| self.state.announcing.as_ref().map(|a| a.item.controller));
-        if self.actor() != caster {
+        if self.semantic_actor() != caster {
             return true;
         }
         self.projected_cast_entries_fundable(Some(action))
@@ -1086,7 +1223,7 @@ impl Game {
                 parent.announcement.item.kind == StackKind::Spell
                     && parent.announcement.item.source_card.has_convoke(),
             );
-            world.purpose = self.purpose_for_item(&parent.announcement.item);
+            world.set_purpose(self.purpose_for_item(&parent.announcement.item));
             world.set_payment_context(&parent.announcement);
             world.set_funding_continuation(
                 &parent.announcement,
@@ -1101,7 +1238,7 @@ impl Game {
                 &goal,
                 a.item.kind == StackKind::Spell && a.item.source_card.has_convoke(),
             );
-            world.purpose = self.purpose_for_item(&a.item);
+            world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(a);
             (world, Some(goal))
         } else {
@@ -1349,7 +1486,7 @@ impl<'g> FundingState<'g> {
                         outer,
                         parent.quality.as_ref().map(|(_, q)| q),
                     );
-                    next.purpose = self.game.purpose_for_item(&parent.announcement.item);
+                    next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
                         && parent.announcement.item.source_card.has_convoke();
                     next.set_payment_context(&parent.announcement);
@@ -1364,27 +1501,3 @@ impl<'g> FundingState<'g> {
         found
     }
 }
-
-#[cfg(test)]
-#[path = "engine_counter_history_funding_tests.rs"]
-mod counter_history_tests;
-
-#[cfg(test)]
-#[path = "engine_keyword_counter_funding_tests.rs"]
-mod keyword_counter_tests;
-
-#[cfg(test)]
-#[path = "engine_finality_funding_tests.rs"]
-mod finality_tests;
-
-#[cfg(test)]
-#[path = "engine_msh_combined_funding_tests.rs"]
-mod msh_combined_tests;
-
-#[cfg(test)]
-#[path = "engine_super_intelligence_funding_tests.rs"]
-mod super_intelligence_tests;
-
-#[cfg(test)]
-#[path = "engine_msh_skrull_funding_tests.rs"]
-mod msh_skrull_funding_tests;

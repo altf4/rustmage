@@ -1,0 +1,11 @@
+{
+  "name": "@token/msh-doombot",
+  "catalogue_id": 5397,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "8eaf3248fc13cacc687ed6965d2e3fa7c7e06dd9384b39f05f920e16986b841b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/DoombotToken.java",
+  "java_sha256": "d6676412548b7c04bd510056b0471ded56ef2fe8a2caa48e0730a1a679fb8dc7"
+}

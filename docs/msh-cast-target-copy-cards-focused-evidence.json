@@ -1,0 +1,177 @@
+{
+  "scope": "Three whole-card candidates with individual focused rules tests. Full-set integration and aggregate acceptance remain deferred under the current user request.",
+  "tested_source_commit": "0ddaca0d78ed027e075c887770c3761cea6f2763",
+  "base": "0479bb88675b8e537637448eddb4b50a37693506",
+  "complete_candidates": [
+    "Fin Fang Foom",
+    "Loki Laufeyson",
+    "Speedball, New Warrior"
+  ],
+  "shared_core": {
+    "artifact_or_land_cast_targets": "Exact current expected-zone/incarnation characteristics, per CR115.9b; a target sacrificed as a cost is ignored.",
+    "source_power_delayed_copy": "New stored-only callback compares signed current/latest-departure source power when the qualifying spell is cast, retaining exact old incarnation and creating-player control. Only this new callback refreshes source facts or queries stats.",
+    "optional_existing_spell_retarget": "Exact cast-event stack ID, existing spell controller, modes, X, target groups and divisions retained. Optional unchanged targets are distinct from mandatory Bolt Bend.",
+    "old_callback_compatibility": "Actual paid Sword/equip/combat creates the old callback. Explicitly bounded counter/controller fixture changes followed by actual opponent Disenchant leave the entire delayed SpellView unchanged; later own Shock copies normally.",
+    "historical_gated_core_evidence": "docs/msh-cast-target-copy-core-focused-evidence.json",
+    "wire": 151,
+    "new_public_payload": false,
+    "new_ids": 0
+  },
+  "printed_clause_evidence": {
+    "Fin printed 2RR, legendary Alien Dragon Villain, 3/5": "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_printed_bodies_costs_hybrid_colors_and_sorcery_timing",
+    "Fin flying combat": "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_fin_flying_rejects_ground_blocker_and_deals_combat_damage",
+    "Fin your instant/sorcery targeting artifact OR land, once per spell": [
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_fin_only_your_instant_sorcery_with_current_qualifying_target",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_fin_current_land_type_qualifies_after_paid_animation",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_fin_multigroup_duplicate_artifact_target_triggers_once",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_fin_actual_target_sacrificed_as_cost_is_ignored_without_lki"
+    ],
+    "Fin copies with optional targets, mode/X/allocations/cost facts and adds two source counters": [
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_fin_paid_artifact_modal_copy_optional_targets_and_counters",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_fin_preserves_declared_counter_division_and_target_count",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_fin_preserves_chosen_x_and_does_not_count_copy_as_cast",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_fin_copies_paid_additional_sacrifice_without_repaying_it",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_fin_copy_survives_countered_original_and_adds_counters",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_fin_actual_undying_return_never_puts_old_counters_on_new_source"
+    ],
+    "Loki printed 1R, legendary God Sorcerer Villain, 2/1": "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_printed_bodies_costs_hybrid_colors_and_sorcery_timing",
+    "Loki 1,tap registration; sickness, real mana, repeatable; 4R power-up entry discount and once limit": "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_loki_real_tap_mana_sickness_powerup_discount_once_and_repeatable_arming",
+    "Loki next qualifying own instant/sorcery this turn; dynamic signed power and old-incarnation LKI": [
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_loki_arms_dynamic_power_and_keeps_nonqualifying_cast",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_loki_latest_departure_power_does_not_rebind_reentered_source",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_loki_source_leaves_before_registration_resolves",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_loki_multiple_registrations_consume_same_cast_and_expire",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_loki_lower_power_and_suppression_do_not_revoke_delayed_ability",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_loki_negative_departure_power_is_retained_and_nonqualifying",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_loki_delayed_controller_is_independent_of_current_source_controller",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_loki_ignores_creature_and_opponent_casts_before_next_qualifying_spell",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_loki_uses_stack_x_mana_value_and_preserves_x_in_copy"
+    ],
+    "Speedball both 2U/2R payments, legendary Human Hero, 2/2": "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_printed_bodies_costs_hybrid_colors_and_sorcery_timing",
+    "Speedball any player casts any spell targeting exact source; one +2/+2 boost per spell, expires EOT": [
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_speedball_opponent_spell_retarget_preserves_controller",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_speedball_optional_no_change_survives_and_expires",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_speedball_duplicate_multigroup_targets_boost_only_once",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_speedball_can_retarget_aura_spell_without_moving_its_source",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_speedball_ignores_ability_targets_and_uncast_spell_copy"
+    ],
+    "Speedball optional retarget none/some, original caster restrictions, source/original departure, ward and invalid action atomicity": [
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_speedball_modal_retarget_keeps_mode_and_rejects_illegal_atomic",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_core_speedball_countered_original_still_boosts_no_stale_retarget",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_speedball_departed_source_still_retargets_earlier_spell",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_speedball_original_caster_controls_you_target_restrictions",
+      "src/engine_msh_cast_target_copy_tests.rs::msh_cast_copy_cards_speedball_retarget_ward_is_paid_by_original_spell_controller"
+    ]
+  },
+  "focused_validation": {
+    "command": "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-cast-target-copy-cards-optin-resource.json -- cargo test --lib msh_cast_copy_ -- --nocapture",
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "groups": 34,
+    "both_seats": true,
+    "whole_card_groups": 21,
+    "shared_core_groups": 12,
+    "affected_old_callback_groups": 1,
+    "native_seconds": 0.32,
+    "guard_seconds": 36.08874440699583,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2728038400,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "ordinary_supported_card_setup": true,
+    "fixed_inputs": 11852,
+    "input_map": "/home/altf4/.cache/rustmage-msh-cast-target-copy-cards-optin-inputs.json",
+    "input_sha256": "0f65cd89d8e3c184ebfa1b645badfce25b6ede2b3c9b110eea7641344f2bdd3a",
+    "changed": [],
+    "privacy_atomicity_owned": "Checked ordinary actions validate wrong actor, raw/index owned branching, restore and stale indices. Explicit orphan paths drop parent and compare both complete observations; invalid actions compare snapshots, owned bytes and both views.",
+    "bounded_cases": "The old callback compatibility counter/controller changes, the earlier direct departed-target predicate and physical return-to-hand LKI setup are explicitly bounded fixtures. Later whole cases use actual paid Eaten Alive sacrifice and Undying Malice return.",
+    "simulation_throughput": "Not measured by this focused rules workload.",
+    "earlier_reports": "Core compile/fixture failures and whole compile/timing-fixture failure remain preserved as failures. Gated33, supported33 and final opt-in34 each reached actual terminal success."
+  },
+  "source_provenance": {
+    "full_read_caches": {
+      "/home/altf4/.cache/rustmage-msh-cast-target-copies-design-0479bb88.json": "d874b039b53f73bcb3c555b0bfea13d2dffe65b9130463479168947be715004c",
+      "/home/altf4/.cache/rustmage-msh-cast-target-copy-core-fixture-sources.json": "4714476e91309c1e654f011d4b3ed453ec37c361b6c1009eb00615ee2f07ef5e",
+      "/home/altf4/.cache/rustmage-msh-cast-target-copy-whole-fixture-sources.json": "c97fd68430418ac4bd5576ddbc0e2eada5a46a698445e01a6a71e45773ad009a",
+      "/home/altf4/.cache/rustmage-msh-cast-target-copy-negative-fixture-sources.json": "f391aebb64f29de1ac47fbb8cbec5d80ba232e3a8ab897ac99a4c0b34791605f",
+      "/home/altf4/.cache/rustmage-msh-cast-target-copy-old-callback-sources.json": "027b4630ebfd3d014c0b4a0c112f7734dd213d96f6235d1fa28a4d8df02dda26"
+    },
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "direct_sources": [
+      {
+        "name": "Fin Fang Foom",
+        "oracle_id": "52ec472e-a745-4e25-b9a7-8e1eb8873594",
+        "facts_sha256": "bfdccb9fe4b85adab006415a71aecc2f94f0284affa5adaddb7dfae2b2d9644b",
+        "java_source": "Mage.Sets/src/mage/cards/f/FinFangFoom.java",
+        "java_sha256": "0008ff1a14d67225cec3ef1879211efce45ef0a353ea803e5277d060d64b3f83"
+      },
+      {
+        "name": "Loki Laufeyson",
+        "oracle_id": "9c78778a-6335-4949-8ade-11d0f085cb2b",
+        "facts_sha256": "23dd95859ef9b4c7aa9a3df2a8456061de8ccc9e704bc238504dd79f94bdcc41",
+        "java_source": "Mage.Sets/src/mage/cards/l/LokiLaufeyson.java",
+        "java_sha256": "30951e5df4c05c9f6052048de03b547ab8800d0e0da5f5c22743110679767f12"
+      },
+      {
+        "name": "Speedball, New Warrior",
+        "oracle_id": "53d3ef8f-8e0f-4119-8cdc-a0bf076b4e91",
+        "facts_sha256": "54099ee6b2d3a836aa845d263654fbb103bb7b45de8f41993ec0e2992c5b14c1",
+        "java_source": "Mage.Sets/src/mage/cards/s/SpeedballNewWarrior.java",
+        "java_sha256": "62d58490176e4773663294c5c8ba2601b86a7e0fd8c7b08255f8c9b5d58ec1d6"
+      }
+    ],
+    "rules": [
+      "CR115.9b",
+      "CR603.7",
+      "CR608.2h",
+      "CR707.10"
+    ],
+    "official_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "java_discrepancy": "Java targets-permanent predicate accepts departed LKI; current target qualification follows CR115.9b.",
+    "read_limits": "Complete owned Oracle/direct classes and 17 reusable complete Java classes are in the design packet. Supplementary fixture packets retain complete direct classes. Broad CardUtil/framework classes are not claimed transitively read."
+  },
+  "implementation_interval": {
+    "start_utc": "2026-10-25T15:11:17.328324+00:00",
+    "end_utc": "2026-10-25T15:49:09+00:00",
+    "boundary": "Completed pinned design-cache creation to final focused-tested runtime source commit; includes shared-core authoring, focused test development, queues and artifact custody.",
+    "seconds": 2271.672,
+    "whole_card_candidates": 3,
+    "candidates_per_hour": 4.754,
+    "acceptance_limit": "Local development interval only, not all-set implementation or simulation performance."
+  },
+  "deferred_aggregate": {
+    "all_native_static_release_ci": "Deferred until final full-set integration; none run for these admissions.",
+    "full_old_trace_export_or_acceptance": "Not performed; committed 2535-row table remains untouched.",
+    "local_supported_candidates": 2540,
+    "local_MSH_complete_candidates": 237,
+    "definitions": 5403,
+    "token_recipes": 125,
+    "new_PR_or_main_merge": false
+  },
+  "custody": {
+    "manifest": "/home/altf4/.cache/rustmage-msh-cast-target-copy-cards-optin-preservation.json",
+    "sha256": "df345b0a82d2fbfd197eeb7846646be567e3fee0c6fea3796348cb06b7735c98",
+    "required_paths": 4306,
+    "prior_paths_rehashed_exact": 4303,
+    "native": {
+      "/home/altf4/.cache/rustmage-msh-cast-target-copy-cards-optin-target/debug/deps/rustmage-55e16bd14e329fbf": "9d27cf3689b405b4ab5410a8756cb61c83b1cbe54b3bb3b470794d62bd3136e9"
+    },
+    "libraries": {
+      "/home/altf4/.cache/rustmage-msh-cast-target-copy-cards-optin-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "cleanup_report": "/home/altf4/.cache/rustmage-msh-cast-target-copy-cards-optin-cleanup.json",
+    "cleanup_sha256": "f4617265c2c70108e06d3a499ce9fc6603abea54c05bfe3693541b11b50ea136",
+    "removed_terminal_files": 165,
+    "removed_path_bytes": 39839167,
+    "own_processes_inspected": 186,
+    "target_refs": [],
+    "permission_denied_processes": [
+      "4299",
+      "4313",
+      "4688",
+      "6612",
+      "204298"
+    ]
+  }
+}

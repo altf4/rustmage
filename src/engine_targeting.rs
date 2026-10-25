@@ -16,6 +16,8 @@ pub(super) struct Announcement {
     pub activation_discount: u32,
     pub power_up_costs: Option<Box<power_up::PowerUpCosts>>,
     pub free_hand_permission: Option<Box<ObjectRef>>,
+    /// Mandatory nonmana cost belonging to the selected origin permission.
+    pub origin_counter_cost: Option<u16>,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
@@ -43,6 +45,14 @@ pub(super) struct Announcement {
 }
 
 impl Announcement {
+    pub(super) fn graveyard_origin_counter_cost(&self) -> Option<u16> {
+        self.origin_counter_cost.or_else(|| {
+            self.item
+                .cast
+                .filter(|c| c.method == CastMethod::GraveyardCounterCost)
+                .and_then(|_| self.item.source_card.graveyard_counter_cost())
+        })
+    }
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Miracle => self.miracle_cost,
@@ -62,17 +72,17 @@ impl Announcement {
         {
             return Some(spec);
         }
+        if self
+            .item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::Sneak)
+        {
+            return Some(sneak::COST);
+        }
         match self.item.kind {
-            StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost) =>
-            {
-                Some(Game::creature_counter_spec(
-                    self.item.source_card.graveyard_counter_cost().unwrap(),
-                ))
-            }
+            StackKind::Spell if self.graveyard_origin_counter_cost().is_some() => Some(
+                Game::creature_counter_spec(self.graveyard_origin_counter_cost().unwrap()),
+            ),
             StackKind::Spell if self.item.cast.is_some_and(|c| c.evidence == Some(true)) => Some(
                 evidence::cost(self.item.source_card.collect_evidence_cost().unwrap()),
             ),
@@ -122,6 +132,15 @@ impl Announcement {
                     .is_some_and(|c| c.method == CastMethod::Miracle) =>
             {
                 std::iter::once(self.miracle_cost.expect("miracle cost")).chain([].iter().copied())
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Sneak) =>
+            {
+                std::iter::once(self.item.source_card.sneak_cost().expect("Sneak cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
                 std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
@@ -182,6 +201,14 @@ impl Announcement {
         });
         options
             .flat_map(move |cost| {
+                std::iter::once(cost).chain(
+                    (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
+                        .then(|| self.item.source_card.explicit_additional_mana())
+                        .flatten()
+                        .map(|extra| Card::add_mana_cost(cost, extra)),
+                )
+            })
+            .flat_map(move |cost| {
                 const ZERO: [ManaCost; 1] = [ManaCost {
                     colored: [0; 6],
                     generic: 0,
@@ -196,7 +223,13 @@ impl Announcement {
                             reduction,
                             self.activation_discount,
                             if self.power_up_costs.is_some() {
-                                self.item.x.unwrap_or(0)
+                                u64::from(self.item.x.unwrap_or(0))
+                                    * u64::from(match self.item.kind {
+                                        StackKind::ActivatedAbility { ability } => {
+                                            self.item.source_card.activation(ability).x_symbols()
+                                        }
+                                        _ => 0,
+                                    })
                             } else {
                                 0
                             },
@@ -299,6 +332,7 @@ impl Announcement {
 struct TargetSourceCharacteristics<'a> {
     reference: ObjectRef,
     snapshot: Option<&'a DamageFacts>,
+    attachment: Option<ObjectRef>,
     spell: Option<Card>,
 }
 impl<'a> TargetSourceCharacteristics<'a> {
@@ -306,6 +340,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
         Self {
             reference: item.object,
             snapshot: Some(&item.source_facts),
+            attachment: item.source_attachment,
             spell: (item.kind == StackKind::Spell).then_some(item.source_card),
         }
     }
@@ -313,10 +348,17 @@ impl<'a> TargetSourceCharacteristics<'a> {
 
 impl Game {
     pub(super) fn target_spec(&self, item: &SpellView) -> TargetPlan {
-        let plan = item
+        let mut plan = item
             .program()
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
+        if let Some((TargetPlan::Single(mut spec), program)) = item.program()
+            && let Some(Instruction::UpToTargets(value)) = program.first()
+        {
+            assert_eq!(spec.min, 0, "optional bound requires zero minimum");
+            spec.max = usize::try_from(self.item_amount(*value, item)).unwrap_or(usize::MAX);
+            plan = TargetPlan::Single(spec);
+        }
         if item.kind == StackKind::Spell && item.source_card.targets_up_to_x() {
             let TargetPlan::Single(mut spec) = plan else {
                 panic!("X target maximum requires one homogeneous target group")
@@ -378,6 +420,7 @@ impl Game {
         let qualification = Some(TargetSourceCharacteristics {
             reference: source,
             snapshot: None,
+            attachment: None,
             spell: Some(definition),
         });
         let departing =
@@ -514,6 +557,33 @@ impl Game {
         let TargetRule::Grouped { constraint, .. } = rule else {
             return true;
         };
+        if let TargetGroupConstraint::TotalManaValueAtMost(maximum) = constraint {
+            let mut total = 0u128;
+            for bound in chosen.iter().filter(|b| b.group == group) {
+                let Target::Card(id) = bound.target else {
+                    return false;
+                };
+                total += u128::from(
+                    self.copiable_recipe(self.object_ref(id))
+                        .definition
+                        .fixed_mana_value(),
+                );
+            }
+            if !chosen
+                .iter()
+                .any(|b| b.group == group && b.target == target)
+            {
+                let Target::Card(id) = target else {
+                    return false;
+                };
+                total += u128::from(
+                    self.copiable_recipe(self.object_ref(id))
+                        .definition
+                        .fixed_mana_value(),
+                );
+            }
+            return total <= u128::from(maximum);
+        }
         if let TargetGroupConstraint::OtherThanGroup(first) = constraint {
             return chosen
                 .iter()
@@ -526,7 +596,9 @@ impl Game {
             return false;
         };
         match constraint {
-            TargetGroupConstraint::OtherThanGroup(_) => unreachable!(),
+            TargetGroupConstraint::OtherThanGroup(_) | TargetGroupConstraint::TotalManaValueAtMost(_) => unreachable!(),
+            TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
+                && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
@@ -546,6 +618,22 @@ impl Game {
         bound: BoundTarget,
         plan: TargetPlan,
     ) -> bool {
+        if let Some(TargetSpec {
+            rule:
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::ControllerOfPlayerGroup(_),
+                    ..
+                },
+            ..
+        }) = plan.group(bound.group)
+        {
+            return self.target_group_compatible(
+                plan.group(bound.group).unwrap().rule,
+                bound.group,
+                &item.targets,
+                bound.target,
+            );
+        }
         if let Some(TargetSpec {
             rule:
                 TargetRule::Grouped {
@@ -605,6 +693,38 @@ impl Game {
             })
     }
 
+    pub(super) fn retain_resolution_target_budgets(&self, item: &mut SpellView, plan: TargetPlan) {
+        let failed: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::TotalManaValueAtMost(maximum),
+                    ..
+                } = plan.group(bound.group)?.rule
+                else {
+                    return None;
+                };
+                let total: u128 = item
+                    .targets
+                    .iter()
+                    .filter(|b| b.group == bound.group)
+                    .map(|b| match b.target {
+                        Target::Card(id) => u128::from(
+                            self.copiable_recipe(self.object_ref(id))
+                                .definition
+                                .fixed_mana_value(),
+                        ),
+                        _ => u128::MAX,
+                    })
+                    .fold(0u128, u128::saturating_add);
+                (total > u128::from(maximum)).then_some(bound.group)
+            })
+            .collect();
+        if !failed.is_empty() {
+            item.targets.retain(|b| !failed.contains(&b.group));
+        }
+    }
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
         let cost = a.cost_options().nth(index as usize).unwrap();
@@ -613,6 +733,20 @@ impl Game {
     }
 
     pub(super) fn choose_mode(&mut self, mode: u16) {
+        if self
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .item
+            .bounded_mode_count(usize::from(mode))
+            == Some(0)
+        {
+            // CR700.2b/603.3c: choosing no modes removes the triggered ability.
+            assert!(self.state.announcing.take().unwrap().trigger);
+            self.continue_trigger_order();
+            return;
+        }
         let plan = self
             .state
             .announcing
@@ -646,6 +780,11 @@ impl Game {
             self.state.pending = Pending::TeamworkIntent { player };
         } else if needs_mode || a.item.modes().is_some() && a.item.mode.is_none() {
             self.state.pending = Pending::Modes { player };
+        } else if a.pay_window
+            && a.item.source_counter_cost().is_some()
+            && a.item.source_counter_payment.is_none()
+        {
+            self.state.pending = Pending::SourceCounterAmount { player };
         } else if a.pay_window && a.has_x_cost() && a.item.x.is_none() {
             self.state.pending = Pending::X { player };
         } else if a.needs_offspring() {
@@ -673,11 +812,15 @@ impl Game {
         {
             self.state.pending = Pending::Casualty { player };
         } else {
+            let improvise = improvise::potential(
+                self,
+                self.state.announcing.as_ref().unwrap().item.source_card,
+            );
             self.state
                 .announcing
                 .as_mut()
                 .unwrap()
-                .initialize_cast_costs();
+                .initialize_cast_costs(improvise);
             self.state.pending = Pending::Targets { player };
             self.advance_target_groups();
         }
@@ -913,8 +1056,10 @@ impl Game {
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
+                    | TargetGroupConstraint::ControllerOfPlayerGroup(_)
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
-                    TargetGroupConstraint::OtherThanGroup(_) => None,
+                    TargetGroupConstraint::OtherThanGroup(_)
+                    | TargetGroupConstraint::TotalManaValueAtMost(_) => None,
                 };
                 return zone.is_none_or(|zone| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone)))
                     && self.target_matches_without_hand(
@@ -956,14 +1101,35 @@ impl Game {
                 let object = &self.state.objects[id as usize];
                 return match *predicate {
                     TargetPredicate::OwnedByController => object.owner == controller,
+                    TargetPredicate::EnteredGraveyardThisTurn => {
+                        object.zone == Zone::Graveyard
+                            && !object.is_token()
+                            && self.graveyard_entry_this_turn(self.object_ref(id))
+                    }
                     TargetPredicate::ManaValueAtMostLifeGained => {
                         u128::from(object.card.fixed_mana_value())
                             <= self.state.players[controller.index()].life_gained_this_turn
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
+                    TargetPredicate::OtherThanSourceAttachment => {
+                        let attached = if self.on_battlefield(source.card)
+                            && self.object_ref(source.card) == source
+                        {
+                            self.state.objects[source.card as usize].attached_to
+                        } else {
+                            qualification.and_then(|q| q.attachment)
+                        };
+                        attached.is_some_and(|r| self.object_ref(id) != r)
+                    }
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
+                    TargetPredicate::Nonattacking => {
+                        !self.state.attackers.iter().any(|a| a.card == id)
+                    }
+                    TargetPredicate::AttackingAlone => {
+                        self.state.attackers.len() == 1 && self.state.attackers[0].card == id
+                    }
                     TargetPredicate::AttackingOrBlocking => {
                         self.state.attackers.iter().any(|a| a.card == id)
                             || self.state.blocking.contains(&id)
@@ -997,7 +1163,9 @@ impl Game {
                     TargetPredicate::Permanent => {
                         self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
-                    TargetPredicate::Legendary => object.card.info().legendary,
+                    TargetPredicate::Legendary => {
+                        ability_world::CharacteristicWorld::legendary(self, id)
+                    }
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
@@ -1276,13 +1444,16 @@ impl Game {
             gift: None,
             source_move: None,
             borrowed_slot: None,
+            self_granted_activation: None,
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            cast_creature_subjects: None,
             copy_event: None,
             captured_artifact_copy: None,
             source_copy_recipe: None,
+            source_ability_origin: None,
             target_allocations: None,
             mana_copy_sources: None,
             is_copy: false,
@@ -1302,6 +1473,7 @@ impl Game {
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
+                sneak_defender: None,
                 flash_surcharge: false,
                 offspring: None,
                 kicker: None,
@@ -1325,7 +1497,11 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            source_counter_payment: None,
+            exiled_symbol_cards: None,
             source_counter_lki: None,
+            source_quantity_lki: None,
+            event_object: None,
             sacrificed_toughness: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
@@ -1384,6 +1560,7 @@ impl Game {
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
+            origin_counter_cost: None,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
@@ -1416,8 +1593,27 @@ impl Game {
         counters: Counters,
         production: Option<Mana>,
     ) {
+        self.open_payment_announcement_with_origin_cost(item, counters, production, None);
+    }
+
+    pub(super) fn open_payment_announcement_with_origin_cost(
+        &mut self,
+        mut item: SpellView,
+        counters: Counters,
+        production: Option<Mana>,
+        origin_counter_cost: Option<u16>,
+    ) {
         if item.cast.is_some_and(|cast| cast.face == CastFace::Back) {
             self.state.objects[item.card as usize].card = item.source_card;
+        }
+        // A copied card becomes a genuine token when its permanent spell resolves.
+        // Freeze the selected face now, after face choice and before any zone move.
+        if self.state.objects[item.card as usize].copy_kind == CopyKind::Card
+            && item.source_card.kind_mask() & (1 | 16 | 32 | 64 | 256) != 0
+        {
+            let recipe = CopyRecipe::new(item.source_card);
+            self.set_copy_recipe(item.object, recipe);
+            item.source_copy_recipe = Some(Box::new(recipe));
         }
         if production.is_some() {
             self.suspend_mana_announcement();
@@ -1445,6 +1641,7 @@ impl Game {
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
+            origin_counter_cost,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
@@ -1484,6 +1681,21 @@ impl Game {
             && announcement.pay_window
             && matches!(self.state.pending, Pending::Targets { .. })
         {
+            if let StackKind::ActivatedAbility { ability } = announcement.item.kind
+                && announcement
+                    .item
+                    .source_card
+                    .activation_target_reduction(ability)
+                    .is_some()
+                && announcement.total_cost.is_none()
+            {
+                let base = announcement.cost.unwrap_or_else(|| {
+                    announcement.cost_options().next().expect("activation cost")
+                });
+                let total = self.selected_activation_target_cost(&announcement.item, base);
+                self.state.announcing.as_mut().unwrap().total_cost = Some(total);
+            }
+            let announcement = self.state.announcing.as_ref().unwrap();
             if announcement.item.kind == StackKind::Spell && announcement.total_cost.is_none() {
                 let base = Self::announcement_base_cost(announcement);
                 let total = if announcement.item.source_card.x_symbols() > 0 {
@@ -1550,13 +1762,7 @@ impl Game {
         if announcement.cast_costs.is_none()
             && let Some(frame) = announcement.convoke.take()
         {
-            self.tap_objects(
-                &frame
-                    .selected
-                    .iter()
-                    .map(|s| s.object.card)
-                    .collect::<Vec<_>>(),
-            );
+            self.tap_objects(&frame.objects().iter().map(|s| s.card).collect::<Vec<_>>());
         }
         announcement
             .item

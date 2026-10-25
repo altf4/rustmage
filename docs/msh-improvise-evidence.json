@@ -1,0 +1,1329 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T04:46:49.913462+00:00",
+  "scope": "Two whole-card candidates and one shared Improvise payment/grant prerequisite; full MSH/Standard acceptance remains open.",
+  "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+  "validated_runtime_and_trace_head": "73661baa3f37c55477fcba95b5cc6c3f2401c042",
+  "branch": "codex/msh-improvise-payment",
+  "parent_issue": 478,
+  "delivery": "Source branch only. Root integrates final draft PR #516, full release validation and two fresh independent nonauthor reviews. No child PR, main merge or published review receipt.",
+  "cards": [
+    {
+      "name": "Arc Reactor",
+      "definition": "src/card_definitions/msh/arc_reactor.rs",
+      "definition_sha256": "99c41ffa0a30756cf5b8b8e87ec92ea72c51fdf641d0263b9a955edb7aa52d5c",
+      "full_frozen_oracle": {
+        "oracle_id": "55f7b005-31ea-4865-a8f3-460d15bed795",
+        "name": "Arc Reactor",
+        "layout": "normal",
+        "mana_cost": "{5}",
+        "cmc": 5.0,
+        "type_line": "Artifact",
+        "oracle_text": "Improvise (Your artifacts can help cast this spell. Each artifact you tap after you're done activating mana abilities pays for {1}.)\nThis artifact enters tapped.\n{T}: Add {C}{C}{C}.",
+        "colors": [],
+        "color_identity": [],
+        "keywords": [
+          "Improvise"
+        ],
+        "produced_mana": [
+          "C"
+        ],
+        "reference_printing": {
+          "id": "339acb17-4b8e-4836-9cc5-8a0a946ebc73",
+          "set": "msh",
+          "collector_number": "243",
+          "released_at": "2026-06-26"
+        }
+      },
+      "provenance": {
+        "name": "Arc Reactor",
+        "catalogue_id": 202,
+        "oracle_id": "55f7b005-31ea-4865-a8f3-460d15bed795",
+        "facts_sha256": "575bc86c583030420434419df1bb1c6294e6097369239c5a2913d74b19e88130",
+        "complete": true,
+        "typed_lift": {
+          "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+          "definition_sha256": "aa099d01607582a4218377cb2cc959986d2cec49bb61f9cd33e7c7bb5b139441"
+        },
+        "physical_metadata_sha256": "ada26a765817dc403e395ce5147f222547529d2f962342dbe9ea66c4380d6ce8",
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/a/ArcReactor.java",
+        "java_sha256": "70264154e4c2f7d30b044f5c14e88c9bd31f890e14a1651e9e21a2c35286c02a",
+        "xmage_dependencies": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/ImproviseAbility.java",
+            "sha256": "ea13d4ad02980b200fea9a3516144eebdb43571b66b9b6028619b1bfa958b529"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/AlternateManaPaymentAbility.java",
+            "sha256": "a23a31a88b076ed73aef4f2cc234e2c7b1d5e424f67d50020f7be5715678002a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ActivationManaAbilityStep.java",
+            "sha256": "0ede5ae9ad1389f6997693209dfb3a5e735b7e159fce5de560f4713a4c43e671"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+            "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceEffect.java",
+            "sha256": "a912f8d2328afba2be2060a9b044621afd2d83bf48f05489962eec2ee29cff0d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+            "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+            "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+            "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+            "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+            "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/mana/ManaEffect.java",
+            "sha256": "9332af88b954f2fdab1b7fc0bc71ac41d534eeb5ba12dceb4bd924b08f8f88e3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledSpellsEffect.java",
+            "sha256": "fe96f9ccb2dbf72b35b14b2fa8c2e131e1e8e4e399b9cfd55ad6d4a198741227"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+            "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+            "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+            "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+            "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+            "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/SpecialAction.java",
+            "sha256": "4969e4f9662cdd9af5edeed34dde4aed12d64d49e9b834ddadfd1c955f6d8ded"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/mana/ManaOptions.java",
+            "sha256": "92cfbd396b66b6147d700c36843d32d1a5bbb0fced6ce2dadd77b7e87d72e9c7"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCost.java",
+            "sha256": "f74fa94645e0467ed63fa6f09c2af9c038dc8dad7a15dc81ca169dd6d6f13273"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+            "sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+            "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/common/FilterNonlandCard.java",
+            "sha256": "84443dc244a44b44937d5ba9e4e51ff0b34e73795c11f2e985820daaed5b46ae"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+            "sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+            "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+            "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetObject.java",
+            "sha256": "04f411662058b88bb5feeaec7aa4c29d20b934da2f073731cf8af29f7ecd25f3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetImpl.java",
+            "sha256": "4366d56a414e29c40704e8b734f760d1ec6657d57b0abf8998f51f50d566f915"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+            "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+            "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+            "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+            "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+            "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/constants/CardType.java",
+            "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/players/ManaPool.java",
+            "sha256": "7a4fe599d203edd8bcd673fad994303fa055ae37c2f9a1986b8cbf9fcbb7d1f4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/game/stack/Spell.java",
+            "sha256": "7613dc12a6650f28f30cddca34bc409021108489792961eb4a7a7bcf9e747099"
+          }
+        ]
+      },
+      "obligations": {
+        "Improvise": "All optional 0..5 artifact counts; both seats; raw generic/colored/C/substitution, fresh grant, mixed Convoke, mana before contributions, exact effective membership and owned transactional tests.",
+        "Enters tapped": "Paid spell resolution, no tap history for entry, rejected tapped activation and real subsequent untap.",
+        "T: Add CCC": "Real paid cost/tap, exact CCC increase, no stack item after real untap."
+      }
+    },
+    {
+      "name": "Ironheart, Clever Champion",
+      "definition": "src/card_definitions/msh/ironheart_clever_champion.rs",
+      "definition_sha256": "ae3d30559df2ea9e41acb3c714a2f27a17daef3228e07c40fb41c1c150657773",
+      "full_frozen_oracle": {
+        "oracle_id": "df3d5b86-7b75-4df9-8985-7159cde12261",
+        "name": "Ironheart, Clever Champion",
+        "layout": "normal",
+        "mana_cost": "{4}{U}",
+        "cmc": 5.0,
+        "type_line": "Legendary Artifact Creature \u2014 Human Hero",
+        "oracle_text": "Improvise (Your artifacts can help cast this spell. Each artifact you tap after you're done activating mana abilities pays for {1}.)\nFlying\nNoncreature spells you cast have improvise.",
+        "power": "3",
+        "toughness": "4",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Flying",
+          "Improvise"
+        ],
+        "reference_printing": {
+          "id": "395e477a-861f-4661-b329-6c1ad5343ed5",
+          "set": "msh",
+          "collector_number": "60",
+          "released_at": "2026-06-26"
+        }
+      },
+      "provenance": {
+        "name": "Ironheart, Clever Champion",
+        "catalogue_id": 2235,
+        "oracle_id": "df3d5b86-7b75-4df9-8985-7159cde12261",
+        "facts_sha256": "480ed6c3652fcf0ba55341b46df73ab5330500363a95e2ef3125745bc61496d5",
+        "complete": true,
+        "typed_lift": {
+          "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+          "definition_sha256": "312e2d57f27186c47dd927a876f5008dd463fd0e7b8006c2b01a46d44fa3289b"
+        },
+        "physical_metadata_sha256": "67a6c9206f4f4290680abe1f80ed96101fa038da46f747a0c32d70ccfe542b64",
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/i/IronheartCleverChampion.java",
+        "java_sha256": "29a654bbd604682b1fd095da6bfd4b5e594d764b75ba1dad0853aa14720f4cc3",
+        "xmage_dependencies": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/ImproviseAbility.java",
+            "sha256": "ea13d4ad02980b200fea9a3516144eebdb43571b66b9b6028619b1bfa958b529"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/AlternateManaPaymentAbility.java",
+            "sha256": "a23a31a88b076ed73aef4f2cc234e2c7b1d5e424f67d50020f7be5715678002a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ActivationManaAbilityStep.java",
+            "sha256": "0ede5ae9ad1389f6997693209dfb3a5e735b7e159fce5de560f4713a4c43e671"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+            "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceEffect.java",
+            "sha256": "a912f8d2328afba2be2060a9b044621afd2d83bf48f05489962eec2ee29cff0d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+            "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+            "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+            "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+            "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+            "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/mana/ManaEffect.java",
+            "sha256": "9332af88b954f2fdab1b7fc0bc71ac41d534eeb5ba12dceb4bd924b08f8f88e3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledSpellsEffect.java",
+            "sha256": "fe96f9ccb2dbf72b35b14b2fa8c2e131e1e8e4e399b9cfd55ad6d4a198741227"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+            "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+            "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+            "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+            "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+            "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/SpecialAction.java",
+            "sha256": "4969e4f9662cdd9af5edeed34dde4aed12d64d49e9b834ddadfd1c955f6d8ded"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/mana/ManaOptions.java",
+            "sha256": "92cfbd396b66b6147d700c36843d32d1a5bbb0fced6ce2dadd77b7e87d72e9c7"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCost.java",
+            "sha256": "f74fa94645e0467ed63fa6f09c2af9c038dc8dad7a15dc81ca169dd6d6f13273"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+            "sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+            "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/common/FilterNonlandCard.java",
+            "sha256": "84443dc244a44b44937d5ba9e4e51ff0b34e73795c11f2e985820daaed5b46ae"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+            "sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+            "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+            "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetObject.java",
+            "sha256": "04f411662058b88bb5feeaec7aa4c29d20b934da2f073731cf8af29f7ecd25f3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetImpl.java",
+            "sha256": "4366d56a414e29c40704e8b734f760d1ec6657d57b0abf8998f51f50d566f915"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+            "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+            "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+            "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+            "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+            "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/constants/CardType.java",
+            "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/players/ManaPool.java",
+            "sha256": "7a4fe599d203edd8bcd673fad994303fa055ae37c2f9a1986b8cbf9fcbb7d1f4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/game/stack/Spell.java",
+            "sha256": "7613dc12a6650f28f30cddca34bc409021108489792961eb4a7a7bcf9e747099"
+          }
+        ]
+      },
+      "obligations": {
+        "Improvise": "Actual4U spell with four artifact credits; artifacts alone cannot payU; intrinsic plus granted instance redundant; generic only even with Vizier substitution.",
+        "Flying and3/4 legendary artifact Human Hero body": "Runtime characteristics, paid actual attack/ground-block illegality/3 damage, real legend choice preserving only new incarnation.",
+        "Noncreature spells you cast have improvise": "Current source controller, suppression/removal/departure/redundancy; actual Divination payments; creature exclusion; qualified mana; ward/activation exclusion; supported Candy Grapple bargain restores grant before mana after sacrificing Witness Protection; actual and virtual provider departure."
+      }
+    }
+  ],
+  "shared_mechanics": [
+    "Intrinsic has_improvise and layer-six SpellImprovise(Noncreature) provider, registered in the shared static-source index. Query actual caster/selected definition and current effective provider in actual and speculative worlds.",
+    "New actor-owned BeginImprovise/ChooseImproviser and optional ImproviseChoiceView; exact reservations never tap, make mana or emit events. Mana window closes first; combined Convoke and Improvise taps commit as one central tap_objects batch.",
+    "Raw generic-only credits precede actual mana substitution. Colored and explicitC always require eligible real mana or legitimate colored Convoke, never artifact credits. Artifact creatures are one matching resource across both methods.",
+    "Existing ordered cost transaction also handles simple additional costs with contributions. A grant may be lost/restored by paying earlier costs; actual selection rechecks the live grant and effective Artifact type. A contributor may subsequently be sacrificed as a nonmana cost.",
+    "Exact32-mask Hall feasibility rejects impossible mana clauses before helper assignment. A final mana clause uses exact matching directly; when later costs remain, successful original resource assignment/order walk is retained."
+  ],
+  "wire": {
+    "base": 146,
+    "current": 147,
+    "actual_changes": [
+      "Action::BeginImprovise",
+      "Action::ChooseImproviser{object}",
+      "Optional actor-only improvise_choice payload and phase string"
+    ],
+    "old_convoke_payload_unchanged": true,
+    "recorder_unchanged": true
+  },
+  "ids": {
+    "allocated": [],
+    "tokens_added": [],
+    "catalogue_identities_byte_equal_to_base": true
+  },
+  "existing_convoke_consumers": [
+    {
+      "path": "src/card_definitions/ecl/appeal_to_eirdu.rs",
+      "name": "Appeal to Eirdu",
+      "implemented": true
+    },
+    {
+      "path": "src/card_definitions/ecl/disruptor_of_currents.rs",
+      "name": "Disruptor of Currents",
+      "implemented": true
+    },
+    {
+      "path": "src/card_definitions/ecl/lofty_dreams.rs",
+      "name": "Lofty Dreams",
+      "implemented": true
+    },
+    {
+      "path": "src/card_definitions/ecl/merrow_skyswimmer.rs",
+      "name": "Merrow Skyswimmer",
+      "implemented": true
+    },
+    {
+      "path": "src/card_definitions/ecl/protective_response.rs",
+      "name": "Protective Response",
+      "implemented": true
+    },
+    {
+      "path": "src/card_definitions/ecl/sun_dappled_celebrant.rs",
+      "name": "Sun-Dappled Celebrant",
+      "implemented": true
+    },
+    {
+      "path": "src/card_definitions/ecl/unexpected_assistance.rs",
+      "name": "Unexpected Assistance",
+      "implemented": true
+    },
+    {
+      "path": "src/card_definitions/eoe/vote_out.rs",
+      "name": "Vote Out",
+      "implemented": true
+    },
+    {
+      "path": "src/card_definitions/fra/winter_team_player.rs",
+      "name": "Winter, Team Player",
+      "implemented": true
+    }
+  ],
+  "consumer_evidence": "All 9 complete Rust and direct pinned Java bodies audited. All inherited rules executed and all 2,501 full trace structs preserved. Vote Out has paid actual mixed-method scenarios; Unexpected Assistance has focused coupled funding scenarios. Traces alone do not certify every remaining printed obligation.",
+  "rules": [
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "effective": "2026-09-25",
+      "rules": [
+        "702.126a-c",
+        "601.2f-h"
+      ],
+      "paraphrase": "Improvise pays only generic from untapped controlled artifacts after total cost locked; not additional/alternative cost; redundant instances. Mana abilities precede cost payment, costs can otherwise be ordered."
+    },
+    {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "section": "Arc Reactor / Ironheart",
+      "paraphrase": "MV unchanged; alternative/additional total first; cannot pay colored/C/ward; an artifact already tapped or sacrificed for mana cannot contribute; equipment and creature tap separately."
+    },
+    {
+      "url": "https://magic.wizards.com/en/news/feature/commander-masters-release-notes",
+      "section": "Inspiring Statuary",
+      "paraphrase": "May tap an artifact for Improvise before sacrificing it as a nonmana additional cost. This differs from sacrifice to activate a mana ability, which precedes contributor tapping."
+    }
+  ],
+  "tests": {
+    "groups": {
+      "src/engine_msh_improvise_tests.rs": [
+        "msh_improvise_arc_all_optional_counts_paid_tapped_entry_real_untap_and_ccc",
+        "msh_improvise_ironheart_real_colored_payment_body_and_grant",
+        "msh_improvise_membership_control_exact_types_and_duplicate_rejection",
+        "msh_improvise_mana_first_and_closed_window_never_double_uses_artifact",
+        "msh_improvise_any_mana_substitution_does_not_turn_artifacts_into_blue_or_colorless",
+        "msh_improvise_noncreature_grant_current_controller_suppression_and_departure",
+        "msh_improvise_creature_spell_does_not_gain_grant_and_intrinsic_is_redundant",
+        "msh_improvise_convoke_union_counts_each_artifact_creature_once",
+        "msh_improvise_equipment_separate_taps_bow_and_one_simultaneous_plan_event",
+        "msh_improvise_first_tap_trigger_waits_until_commit_then_untaps_without_refunding",
+        "msh_improvise_orphan_raw_index_restore_and_actor_owned_choice_privacy",
+        "msh_improvise_ordered_casualty_can_use_artifact_before_sacrifice_not_after",
+        "msh_improvise_source_sacrificed_for_mana_removes_grant_before_helpers",
+        "msh_improvise_casualty_of_grant_provider_uses_current_cost_payment_order",
+        "msh_improvise_effective_artifact_loss_and_flying_ground_block_legality",
+        "msh_improvise_legend_current_incarnation_retains_grant_and_old_object_is_ineligible",
+        "msh_improvise_does_not_pay_ward_or_activation_costs",
+        "msh_improvise_bargain_restores_suppressed_grant_before_its_mana_clause",
+        "msh_improvise_qualified_mana_cannot_pay_wrong_spell_but_artifact_can_contribute"
+      ],
+      "src/engine_msh_improvise_funding_tests.rs": [
+        "msh_improvise_funding_small_exhaustive_generic_and_colored_oracle",
+        "msh_improvise_funding_union_deduplicates_artifact_creature",
+        "msh_improvise_funding_current_grant_recomputed_after_virtual_departure_and_restore"
+      ],
+      "src/engine_msh_improvise_ordered_tests.rs": [
+        "msh_improvise_ordered_hall_small_oracle_and_forty_artifact_fail_first"
+      ]
+    },
+    "new_groups": 23,
+    "paid_groups": 19,
+    "funding_groups": 4,
+    "both_seats": true,
+    "checked_helper": "assurance::big_helpers::checked: wrong actor/atomic snapshot, raw/index owned orphan, stale revision, restore/replay equality on each paid mutation.",
+    "bounded_oracle": "294 small funding configurations; additional mixed-resource/departure matrices; ordered 0..3 and 40 artifact Hall cases with scalar u32::MAX generic requirements. Large case added only after fail-first matching; no allocation/OOM probe.",
+    "recording_native": {
+      "total": 1208,
+      "rules_passed": 1207,
+      "expected_only_failure": "2,503 versus 2,501 accepted row count",
+      "execution_seconds": 5.71,
+      "log": "<cache>/rustmage/msh-improvise/native-record-6.log"
+    },
+    "strict_native": {
+      "passed": 1208,
+      "failed": 0,
+      "execution_seconds": 5.24,
+      "log": "<cache>/rustmage/msh-improvise/native-strict-7.log"
+    },
+    "clippy": {
+      "all_targets": true,
+      "deny_warnings": true,
+      "exit": 0,
+      "log": "<cache>/rustmage/msh-improvise/clippy-strict-7.log"
+    }
+  },
+  "trace_proof": {
+    "schema": 1,
+    "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+    "recording_job": "native-and-clippy-6",
+    "base_rows": 2501,
+    "normal_rows": 2503,
+    "previous_rows": 2503,
+    "all_inherited_full_trace_structs_equal": true,
+    "new_rows": [
+      "Arc Reactor",
+      "Ironheart, Clever Champion"
+    ],
+    "normal_non_observation_fields_unchanged": true,
+    "normal_schema": 147,
+    "previous_schema": 146,
+    "projection": "Existing opt-in recorder changes only view.schema at 146; no field removal, no recorder changes, ordinary validation stays strict.",
+    "file_sha256": {
+      "card-traces-147.json": "2a4954b2456fbec7ca8a2f0217aa1218d4063f7d2b26163e1c34a26ba67826fc",
+      "card-traces-147.previous-schema.json": "987ffb633bc1fda94124dd9ff76aaaeb3bf9450a4eab4c2b9187d293bd92cd34"
+    },
+    "new_full_traces": {
+      "Arc Reactor": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "bdc89f9863097122",
+        "observations": "dc0023d01b20355f"
+      },
+      "Ironheart, Clever Champion": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "87c199e3b586e2a2",
+        "observations": "c1de4473c19b3ef8"
+      }
+    }
+  },
+  "source_checks": {
+    "definitions": 5399,
+    "source_blobs": 1240,
+    "java_verified": true,
+    "catalogue_version": "6848432f19b183c60339d0759325ce1eca52d774298a630219f5c4bdd45879a8"
+  },
+  "link_check": {
+    "schema": 1,
+    "catalogue_version": "6848432f19b183c60339d0759325ce1eca52d774298a630219f5c4bdd45879a8",
+    "standard_legal_cards": 5164,
+    "implemented_standard_cards": 2497,
+    "implemented_total": 2503,
+    "token_definitions": 121,
+    "emblem_definitions": 3,
+    "adventure_definitions": 40,
+    "omen_definitions": 13
+  },
+  "format": "All authored changed Rust passes rustfmt --edition 2024 --check. Generated catalogue is checked byte-for-byte by link_catalogue.py --check and never manually reformatted.",
+  "source_audit": {
+    "design_cache": {
+      "path": "<cache>/msh-improvise-design-a496faea.json",
+      "sha256": "55554701472161c024b1d48a9d8b00d5e61ab136ef82efa26cd9f70baaedb06e"
+    },
+    "fixture_cache": {
+      "path": "<cache>/msh-improvise-fixture-sources.json",
+      "sha256": "56728085b28af919fe237c107a5a479708243835662a46887c780c1e8fc7805a"
+    },
+    "fixture_oracles": {
+      "path": "<cache>/msh-improvise-fixture-oracles.json",
+      "sha256": "1fb0b6499dbf02aa21a511bd9d930fb913bd75af28fba6930c9cd5c1cdda7999"
+    },
+    "read_limits": "Complete direct card classes and concrete reusable Improvise/payment/grant/tap/mana/filter/target helpers read. Whole generic engine/ManaPool/Spell files are retained with explicit relevant ranges, not represented as a full recursive runtime audit. No test/build/performance measurement executed.",
+    "pins": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LotusRing.java",
+        "sha256": "cf20312c465fc2e6c5991186414c5ac66da446ba4a573f6622f3246243c7b80d"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+        "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+        "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+        "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+        "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+        "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+        "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/v/VizierOfTheMenagerie.java",
+        "sha256": "caaadf7b9d864566f91db7dda1acaa7c77b8359a6552a11e788ad8d568a3e23e"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+        "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+        "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CaptainAmericaLivingLegend.java",
+        "sha256": "7820b996cdcbd92dcf44512508c955f77a0c1969647dbd7066e70c28ac0dbbe4"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+        "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+        "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+        "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+        "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+        "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+        "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HawkeyesBow.java",
+        "sha256": "29bf4c5e4d1632be7d08bcb274efb6f8607910fff1fb86aa83934165413c4d4b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedAttachedTriggeredAbility.java",
+        "sha256": "437845d7520e40e660b9c27bea14d88149bb47b3433bb3d25e8b0b4686848a23"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+        "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/EvolveAbility.java",
+        "sha256": "45b783000395b9c77421dad33a72b7bf48fb9d9b5a1fa1dfd6901e1cd952d809"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+        "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+        "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+        "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+        "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+        "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+        "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+        "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+        "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/EffectImpl.java",
+        "sha256": "ee3f353b168c7f692cd213ea864d15861a9121c8b5aa72a1df2aeaadfd54fb78"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+        "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/AbilityImpl.java",
+        "sha256": "7c70aa5739de67e806ff96174bde87f22457c5627fbacdd57075222b46c530af"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/GameImpl.java",
+        "sha256": "592ad774bce5257b688c0f54e1e9e586c3d984d4ff2b2b2782f5b0154a78657c"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/PermanentImpl.java",
+        "sha256": "5b72e235e1fe716b7337ffe76539d7fd79a5a9de1c54e6f343426126aeec6fe1"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RewriteHistory.java",
+        "sha256": "22ca8ca5374c4fb36191874149cc55581fd7ec504db3256371f59a3b54b47b3e"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedOneOrMoreTriggeredAbility.java",
+        "sha256": "a32ffd4da700a57a9d54a0a701a915784376cc9528aff15f4892e62efe475c28"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/BatchTriggeredAbility.java",
+        "sha256": "e2891aafe6a447fbb1347f9b0a52cf2b8f79bc566e7518933f12bd4ed503ad86"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/events/TappedBatchEvent.java",
+        "sha256": "fc2ab95e92dde4f8a627f73cac98de6caac6e7f6b4598a48eb3bc48d0b8d41bd"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/events/TappedEvent.java",
+        "sha256": "7fdcd2e4d88f40a81b34d5e7f4cec736edd641efd0e64a28e4683da5233af925"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/PlanCounterThresholdTriggeredAbility.java",
+        "sha256": "9081361555320e1e265feafc3221203563702110e9af1527fcd8f8f307dd0317"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+        "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+        "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+        "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+        "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+        "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterInstantOrSorceryCard.java",
+        "sha256": "db9067aef3b3de09992c261f493c6a4bee2e08850f8b9eec9a8a05f92674abfc"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+        "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/events/BatchEvent.java",
+        "sha256": "31e487f04d83fc372363d55b2641e021dee5d26ddd94047a8fa36ed180ac663c"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/w/WitnessProtection.java",
+        "sha256": "e9dcfaa2fb47550f2adb77fc7d370677fab8e7234a7b593550b0539c93047e54"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+        "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+        "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HedronArchive.java",
+        "sha256": "409e1911b22c205817c660ccf8ccaf58b28a94088b76c9bfc93a890251a22f26"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/Divination.java",
+        "sha256": "b6110df47ec64c6c5e69ac3a00c12dc883c816ebd3d2ccb5a13a46bf0e8661a5"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/v/VoteOut.java",
+        "sha256": "b29891a8a069e5002fe183c5bb1adced35a318b722dd4af4bb44ca78afaa5943"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/u/UnexpectedAssistance.java",
+        "sha256": "20387d67769664174bced631be163f02b7b5480fbca8a4ab71611e82c919c971"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/u/Unsummon.java",
+        "sha256": "c028a1fb0b06c9fe68c9a4465d78dbf4fd3ab7100517c4057cf545a191654580"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/v/VampireNighthawk.java",
+        "sha256": "7ae363e0f6a307c04e72e541b2ea155196feaaf500e61ea9454d25d653fc90d7"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SilverquillTheDisputant.java",
+        "sha256": "639c1512ce8f822ee3b3664b09668adb849dcd32404a63adc40842966eda8c93"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HulkingRaptor.java",
+        "sha256": "2337ffe06ccfe67ea110f0f00ec0be95a3c6e16a2daa2bd26fb1b28bea736534"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CandyGrapple.java",
+        "sha256": "d1a51b331cf0dd14d6f93508204d2d22f017651b3cce17fcc5a1290343bbd559"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CastleDoom.java",
+        "sha256": "97f4e8b9ed71fcc4713d6885a15f9d15b6b7bb360491809f82e1cd7bf8094de1"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+        "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+        "sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/CasualtyAbility.java",
+        "sha256": "ecbf1546eec8ff4af7f2894c6057b468a4fd9eadd2fce5fae741d9a90ca625f3"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+        "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/AppealToEirdu.java",
+        "sha256": "814fa652aec60582d5d457564ad74d3c769d1c9aa813747fe41508522e9048cb"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DisruptorOfCurrents.java",
+        "sha256": "8130d5184fc8ecaf045587885a0aeaafbd955ce732c86eec516c128c7dfab261"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LoftyDreams.java",
+        "sha256": "eab46859a9c7fc99649a2116121c0f3f70452a873fb99f239d803cc645ac2cc5"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MerrowSkyswimmer.java",
+        "sha256": "242461da71a8718aca69a5dd853ab41184ee28b1757f3c39601ec4d8b32e4468"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/p/ProtectiveResponse.java",
+        "sha256": "788f99e221d11a18865c8707873530adf299a42ebf0e3eea9a2932c982c497d6"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SunDappledCelebrant.java",
+        "sha256": "e5b41e4bca75ed38428e1b4a3240fb2708c588790e09e80e86606f55b1252ce1"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/w/WinterTeamPlayer.java",
+        "sha256": "70011d831fa3a7000495a7558d9c4b0cb3c863c7a2b633b14da3bacae49a9708"
+      }
+    ]
+  },
+  "resources": {
+    "all_consumers_terminal": true,
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "zero_oom": true,
+    "peak_bytes": 2549846016,
+    "reports": [
+      {
+        "path": "<cache>/rustmage/msh-improvise/focused-1.guard.json",
+        "command": [
+          "env",
+          "CARGO_TARGET_DIR=<cache>/rustmage/msh-improvise/target",
+          "cargo",
+          "test",
+          "--lib",
+          "msh_improvise",
+          "--",
+          "--test-threads=1"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 175.82590519596124,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2549846016,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/focused-2.guard.json",
+        "command": [
+          "env",
+          "CARGO_TARGET_DIR=<cache>/rustmage/msh-improvise/target",
+          "cargo",
+          "test",
+          "--lib",
+          "msh_improvise",
+          "--",
+          "--test-threads=1"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 226.46747767401394,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2508431360,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/native-and-clippy-5.guard.json",
+        "command": [
+          "python3",
+          "<cache>/rustmage/msh-improvise/native-and-clippy-5.py"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 71.23366642103065,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1813397504,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/native-and-clippy-6.guard.json",
+        "command": [
+          "python3",
+          "<cache>/rustmage/msh-improvise/native-and-clippy-6.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 171.4545313960407,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2522902528,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/native-record-3.guard.json",
+        "command": [
+          "env",
+          "CARGO_TARGET_DIR=<cache>/rustmage/msh-improvise/target",
+          "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage/msh-improvise/card-traces-147.json",
+          "RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=146",
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--test-threads=1"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 202.85200172301847,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1804197888,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/native-record-4.guard.json",
+        "command": [
+          "env",
+          "CARGO_TARGET_DIR=<cache>/rustmage/msh-improvise/target",
+          "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage/msh-improvise/card-traces-147.json",
+          "RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=146",
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--test-threads=1"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 251.23530514299637,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2511458304,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/strict-and-clippy-7.guard.json",
+        "command": [
+          "python3",
+          "<cache>/rustmage/msh-improvise/strict-and-clippy-7.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 158.851393910998,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2527248384,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    ],
+    "cleanup": {
+      "active_matches": [],
+      "files_removed": 1019,
+      "bytes_freed": 122234701,
+      "preserved_target_files": [
+        {
+          "path": "<cache>/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage/msh-improvise/target/debug/deps/rustmage-b764cd26223fba2c",
+          "sha256": "58b1b72b4a464d8865f98b46c85830242853817bc42afcb7ed7fcf579d7f891c"
+        }
+      ],
+      "required_shared_libraries": [
+        {
+          "path": "<worktree:msh-power-up>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<worktree:msh-existing-cards>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage/msh-coulson/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage/msh-hideout-falcon/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage/msh-under-siege/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage/msh-baron/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        }
+      ]
+    },
+    "preserved_native": [
+      {
+        "path": "<cache>/rustmage/msh-improvise/target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "58b1b72b4a464d8865f98b46c85830242853817bc42afcb7ed7fcf579d7f891c"
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/native-before-baseline",
+        "sha256": "68f9164043df073d7b4f22c60e1e36cf602cedba2bfb01f69c4c4d3effa7c8d8"
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/native-before-hall",
+        "sha256": "b87b756d0cc96600512c0292a429748198347177cdf2b97784266882e723f786"
+      }
+    ],
+    "prior_required_native": [
+      {
+        "path": "<cache>/rustmage/msh-baron/target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "f16200aba0e7c33acae80a3fb9fcd53b1484bb1efe0bfbad3a43354289e3053b"
+      },
+      {
+        "path": "<cache>/rustmage/msh-baron/native-before-baseline",
+        "sha256": "0f6dc927b0e9692e5975ec1d76c2eedd6ed602d8958b42f70e538ce698eb8d7c"
+      },
+      {
+        "path": "<cache>/rustmage/msh-baron/native-before-trigger-order-fix",
+        "sha256": "a3b7559483d72eec28777394e3443aeb6fac2d60009a2f7a941108d62dddf073"
+      }
+    ]
+  },
+  "behavior_file_hashes": {
+    "data/observation-schema.txt": "5c862790153d23a72dd410bb8b36819d51ac248cbaec4f6742efd8e75f20b175",
+    "src/ability_layers.rs": "96c5319981f73714ab01fb6d2cc94c0b674e12901a4d0e1152a13d2fea3f38f5",
+    "src/card_definitions/mod.rs": "4089f74e33ffdde419631689a742d17af3e52e1473fe048b41567af9fdd5dbb1",
+    "src/card_definitions/msh/arc_reactor.rs": "99c41ffa0a30756cf5b8b8e87ec92ea72c51fdf641d0263b9a955edb7aa52d5c",
+    "src/card_definitions/msh/ironheart_clever_champion.rs": "ae3d30559df2ea9e41acb3c714a2f27a17daef3228e07c40fb41c1c150657773",
+    "src/cards.rs": "01c0b923651351511c2ee36757ac111ff83dea0f2b9acbe9317161c40700a470",
+    "src/engine.rs": "63d6fc4d226d86e437f9c37386b6690ef8c77d754d81382003efa9090b7a753f",
+    "src/engine_additional_costs.rs": "9532b9f50890fa940625ffffb0c9a947ffd0dbd8fb07b929a0fc0dc8f577e68e",
+    "src/engine_cast_cost_planning.rs": "2bd4f061c82f0452db70f5b3b1a0e462a6a07ef57df043339c7ed22484b87ef9",
+    "src/engine_cast_costs.rs": "87ab13475b940da8d49622a3d7e8ec99c446c31e02c1c3fa03a05f6c26aca16b",
+    "src/engine_convoke.rs": "d7cdd6c69cd0e4e08c6408299c07131a6ac1c673ee55eced26aaf9b8535bafc3",
+    "src/engine_funding.rs": "a3e7246b614155734da578d3c4b07aeddde25299b6a8ba33a3958323e06d819e",
+    "src/engine_funding_entries.rs": "3737559a1261f262a32cc1ce58887dd28ef6feef807f333cd2dd5605493bda34",
+    "src/engine_improvise.rs": "3e0eab054f22d47dfd88140efc28b3a7254358473ca30c27f09f58874fd8cbeb",
+    "src/engine_msh_improvise_funding_tests.rs": "7f90f416a32959d3f13fab3f9ba9b241c0218e3a6b683d61c1a0b8a1a8d3ed54",
+    "src/engine_msh_improvise_ordered_tests.rs": "82681479494e9d047946aeff39bed4de2815943358c29eedc3dbf28f290756e2",
+    "src/engine_msh_improvise_tests.rs": "eb3ff949fd8b2ac669004de6a9cd5678e0376b8bddd077ddc456831e9624f388",
+    "src/engine_stats.rs": "0e68c8e72f57bc6879f2b1e0a11a29538cd66ef853612ed7371f46f3df8f0fed",
+    "src/engine_targeting.rs": "63dc1f52b543b75aa9e4e783ccb9e575b3d648aa4d1e6ec4d08d2fb2d2970f14",
+    "src/engine_teamwork.rs": "c939c842445edfe30c2fc74690974a6820c768c7f62274174fedaacde02e10d1",
+    "src/generated/catalogue.rs": "f1c35f3369d9ed65504927f2adaf2ffd7b19cf0c247eeabb54ee91e89b992f51",
+    "src/policy.rs": "93702545f58aa2d9f4b50c1011b08c4696764de7934faab67889113e38df5dea"
+  },
+  "throughput": {
+    "scope_started_utc": "2026-10-25T04:00:10+00:00",
+    "measured_to_utc": "2026-10-25T04:46:49.913462+00:00",
+    "elapsed_seconds": 2799.913462,
+    "whole_card_candidates": 2,
+    "candidates_per_hour": 2.571508047558364,
+    "note": "Includes shared core authoring, guarded builds/waits and fixes; excludes prior read-only design audit. Native tests/second is not a simulation benchmark. No simulation throughput measured here."
+  },
+  "limits": [
+    "No missing selected-card obligation is known after the terminal native/funding suite. Final independent review and aggregate release/performance gates remain root-owned and pending.",
+    "This branch has 200/281 candidate MSH admissions and 81 gated; it does not claim full-set acceptance or a main merge.",
+    "Synthetic production animation rows create the artifact-land and artifact-creature fixtures; no test-only runtime query hook or synthetic card admission."
+  ]
+}

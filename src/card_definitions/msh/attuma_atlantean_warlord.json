@@ -3,10 +3,36 @@
   "catalogue_id": 260,
   "oracle_id": "e3b70a85-4296-411f-a673-7992b0c8a9aa",
   "facts_sha256": "d49bbe6b99b26145c18fcc8d25d2cb970639a2b54bd1ad22c8021101cc872312",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "e638b53aac52183a35b52b037ed698351107370f10c79d471560be3bdabf5188"
-  },
-  "physical_metadata_sha256": "a1aa1d8bb77e2ca857c56e6fa22221a3cf821cf933d9125ea385cf7061f9c401"
+  "complete": true,
+  "physical_metadata_sha256": "a1aa1d8bb77e2ca857c56e6fa22221a3cf821cf933d9125ea385cf7061f9c401",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AttumaAtlanteanWarlord.java",
+  "java_sha256": "af270b8d59154af49ced11cbbd12dd90cb96e624159331a8a63ba89eea900656",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksPlayerWithCreaturesTriggeredAbility.java",
+      "sha256": "fa6b8f8e8f89c9f1958a0b57504d2dafb2e7abcb0936ef0fb09d182e49a1de49"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

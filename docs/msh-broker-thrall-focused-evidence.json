@@ -1,0 +1,109 @@
+{
+  "scope": "Two complete individual cards and directly affected counter/control interactions. Aggregate tests deferred until final full-set integration.",
+  "base": "218f01375a3f49aa17c67a9dbef7116e2e777d5f",
+  "source_content_commit": "e776e0414c6691fc0cc35d46b61a09fa7799b558",
+  "cards": [
+    "Powerful Broker",
+    "Evil's Thrall"
+  ],
+  "complete": true,
+  "source": {
+    "audit": "<cache>/rustmage-msh-broker-thrall-design-218f0137.json",
+    "sha256": "e46b35a5e7236c1e1ab8ea9653a1a72672baa8338646a1979060f8a635530267",
+    "full_oracle": 2,
+    "full_direct_java": 2,
+    "full_semantic_helpers_read": 16,
+    "verified_pins": 18,
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "primary": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "rules": "CR122,611.2 and514.2; frozen2026-09-25 CR",
+    "discrepancy": "Oracle conditional checks a controlled Villain permanent, without adding Java\u2019s creature-only filter. Battlefield X is0."
+  },
+  "implementation": {
+    "Broker": "Ordinary3/3, free tap activation only as sorcery, one permanent-or-player target. Snapshot kinds at resolution, add exactly1 each through standard counter placement/replacement. Player poison uses existing checked player counter storage; no other player counter kind is represented in this pool.",
+    "Thrall": "Live controlled Villain with strictly greater current mana value selects longer duration at resolution; current copy mana value is used. Exact-object control follows existing layer-two timestamps and speculative projection. Untap/haste remain ordinary EOT.",
+    "duration": "NextTurnControlExpiry captures controller and creation turn. Cleanup expires only at that player\u2019s later actual turn; intervening extra opponent turns do not expire it. No guessed turn+2.",
+    "wire": 152,
+    "actual_public_change": "TemporaryControlView.expires_turn is optional; existing EOT Some serializes the same old number. Only long rows add expires_after_next_turn with player/created_turn. Old rows omit that field.",
+    "new_ids": 0,
+    "new_actions": 0,
+    "policy_change": false
+  },
+  "focused": {
+    "groups": 19,
+    "both_seats": true,
+    "pass": 19,
+    "fail": 0,
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "command": "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-broker-thrall-final-focus-resource.json -- python3 <temp>/msh-broker-thrall-focus.py (runs cargo test --lib msh_broker_thrall_ -- --nocapture)",
+    "native_seconds": 0.32,
+    "guard_seconds": 45.2920520400512,
+    "memory_peak_bytes": 2709798912,
+    "memory_max_bytes": 6442450944,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "fixed_inputs": 11854,
+    "input_map": "<cache>/rustmage-msh-broker-thrall-final-focus-inputs.json",
+    "input_sha256": "56e38463afc3ceb362b55695dedbb7296e346b609610ac806cbd40fba8807548",
+    "changed": [],
+    "source_content_note": "Final supported rerun executed with HEAD2d31efa7 and the complete admission changes present in its fixed-input map. A prior git-add path error left them unstaged. After actual terminal0, all11,854 inputs were rechecked exact before and after saving commit e776e041; source contents are identical.",
+    "earlier_runs": "Gated16green, extended19 had one missing Harmless Offering player-target fixture failure, corrected19green, ordinary supported19green. Failed run retained as failure.",
+    "ownership_privacy": "Checked actions verify wrong actor, raw/index equivalence and restore; explicit orphan target, attack and replacement choices dispose parent and compare full public/private observations. Illegal targets/cost/timing compare snapshot, state_bytes and both views. Funding query and virtual Aura departure leave parent snapshot and both observations unchanged.",
+    "bounded_cases": "Initial mixed counters/poison, exact target reincarnation and future cleanup clocks are explicit bounded rule preconditions. All main casts/activations and actual copy/control/Aura interactions are paid ordinary supported actions. Extra-turn producer is not claimed."
+  },
+  "tests": [
+    "msh_broker_thrall_broker_paid_body_tap_sickness_sorcery_and_stack_timing",
+    "msh_broker_thrall_broker_each_hot_cold_keyword_kind_adds_one_not_current_quantity",
+    "msh_broker_thrall_broker_empty_artifact_and_enchantment_are_legal_no_op_targets",
+    "msh_broker_thrall_broker_player_poison_counts_increment_one_and_ten_loses",
+    "msh_broker_thrall_broker_source_departure_and_replaced_counter_kind_set_are_owned",
+    "msh_broker_thrall_broker_live_counter_set_snapshot_and_stale_target_incarnation",
+    "msh_broker_thrall_broker_illegal_targets_and_hexproof_are_atomic",
+    "msh_broker_thrall_thrall_paid_short_control_untaps_haste_allows_attack_then_expires",
+    "msh_broker_thrall_thrall_greater_villain_locks_control_through_next_own_cleanup",
+    "msh_broker_thrall_thrall_equal_lower_foreign_and_suppressed_villain_do_not_extend",
+    "msh_broker_thrall_thrall_condition_is_live_at_resolution_not_cast_and_target_itself_not_greater",
+    "msh_broker_thrall_thrall_illegal_target_on_resolution_has_no_control_or_haste",
+    "msh_broker_thrall_thrall_source_independent_control_competes_by_timestamps_and_departure",
+    "msh_broker_thrall_thrall_deadline_tracks_actual_next_own_turn_not_guessed_plus_two",
+    "msh_broker_thrall_thrall_paid_target_selection_color_timing_and_owned_resolution",
+    "msh_broker_thrall_thrall_later_short_control_expires_back_to_long_control",
+    "msh_broker_thrall_thrall_later_fixed_control_supersedes_and_removes_long_deadline",
+    "msh_broker_thrall_thrall_uses_real_current_copy_mana_value",
+    "msh_broker_thrall_funding_long_control_resumes_after_virtual_and_actual_aura_departure"
+  ],
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-broker-thrall-preservation.json",
+    "sha256": "01b958be188aed3195dd4637b5863c4a6571562710f1bc1735867c88eccb62f7",
+    "required_paths": 4303,
+    "parent_rehashed_exact": 4297,
+    "retained": {
+      "<cache>/rustmage-msh-broker-thrall-dev-target/debug/deps/rustmage-55e16bd14e329fbf": "edd01abac0a615481f9875ae7695b4caafcc48a7f33a7488aa5a3b408b2871e2",
+      "<cache>/rustmage-msh-broker-thrall-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "removed_files": 165,
+    "removed_path_allocated_bytes": 40366080,
+    "accessible_target_references": [],
+    "own_processes_inspected": 185,
+    "denied_inspection_count": 169,
+    "cleaned_target_must_not_be_reused": true
+  },
+  "measured_implementation_interval": {
+    "from": "durable design packet (earlier source reading excluded)",
+    "start_utc": "2026-10-25T15:36:32.014252+00:00",
+    "end": "final supported focused result",
+    "end_utc": "2026-10-25T15:46:02.242201+00:00",
+    "hours": 0.15839665249999998,
+    "cards": 2,
+    "cards_per_hour": 12.626529465324403,
+    "scope": "Includes implementation, test authoring, serial resource queue and development compilation. Not simulation throughput."
+  },
+  "deferred": [
+    "Full integration/default native tests",
+    "Historical full-trace migrations",
+    "Required release validation and CI",
+    "Final two independent nonauthor PR-wide reviews",
+    "Entire281-card clause reconciliation and set-only legal game/performance acceptance"
+  ],
+  "main_merged": false,
+  "pr": "https://github.com/altf4/rustmage/pull/516"
+}

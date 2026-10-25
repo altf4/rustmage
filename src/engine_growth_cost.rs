@@ -72,6 +72,7 @@ impl Game {
                     expires_turn: self.state.turn,
                     permanent: true,
                     timestamp,
+                    origin: item.source_ability_origin.map(|_| timestamp),
                 });
         }
     }
@@ -118,7 +119,12 @@ impl Game {
                     &self.state.objects[recipient.card as usize],
                     self.counter_amounts(recipient.card),
                     self.current_kinds(recipient.card),
-                    || self.keywords(recipient.card),
+                    || {
+                        ability_world::CharacteristicWorld::activation_keywords(
+                            self,
+                            recipient.card,
+                        )
+                    },
                     self.state.players[actor.index()].life,
                     ability,
                     index,
@@ -156,12 +162,14 @@ impl Game {
         let actor = self.state.objects[recipient.card as usize].controller;
         let mut item = self.activation_item(actor, recipient.card, ability);
         item.source_card = giver;
+        item.source_ability_origin = self.copied_grant_origin(grantor);
         item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
             grantor,
             granting_card: giver,
             recipient,
             defender: None,
             granted: true,
+            origin: item.source_ability_origin,
         }));
         self.open_payment_announcement(item, Counters::default(), None);
     }
@@ -205,7 +213,7 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        let amount = a.item.source_card.graveyard_counter_cost().unwrap();
+        let amount = a.graveyard_origin_counter_cost().unwrap();
         let mut selected = a
             .creature_counter_cost
             .as_ref()
@@ -238,7 +246,7 @@ impl Game {
     }
     pub(super) fn choose_creature_counter_cost(&mut self, object: ObjectRef, kind: CounterKind) {
         let a = self.state.announcing.as_mut().unwrap();
-        let amount = a.item.source_card.graveyard_counter_cost().unwrap();
+        let amount = a.graveyard_origin_counter_cost().unwrap();
         let selected = a
             .creature_counter_cost
             .get_or_insert_with(|| Box::new(Vec::new()));

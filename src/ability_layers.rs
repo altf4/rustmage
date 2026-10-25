@@ -51,7 +51,10 @@ pub(crate) enum StaticAbilityFragment {
     },
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
+    PlayLandFromLibraryTop,
+    PlayLandFromGraveyard,
     SpendAnyManaForCreatures,
+    SpellImprovise(CastFilter),
     GraveyardPermanentTypes,
     ForeignStashPlay,
     ControlAttached,
@@ -60,6 +63,13 @@ pub(crate) enum StaticAbilityFragment {
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
     PlayerHexproof,
+    ActivateControlledCreaturesAsHaste,
+    PlayerHexproofIfSourceCounter {
+        kind: CounterKind,
+        minimum: u64,
+    },
+    /// Real immutable trigger template, present only on the harnessed source.
+    HarnessedTrigger(u16),
     CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
@@ -70,6 +80,7 @@ pub(crate) enum StaticAbilityFragment {
     LifeGainAdditional(u16),
     CantGainLife,
     NoMaximumHandSize,
+    MaximumHandSize(u16),
     AdditionalLandPlays(u16),
     IntrinsicKeywords(Keywords),
     Changeling,
@@ -80,6 +91,11 @@ pub(crate) enum StaticAbilityFragment {
     SelfUntap(UntapRestriction),
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),
+    /// Source-only ability grant whose earlier-layer condition remains live.
+    SourceConditionalKeywords {
+        condition: StatValue,
+        keywords: Keywords,
+    },
     /// Current matching recipients with exact +1/+1 placement history by this controller.
     PlusOnePlacedKeywords {
         filter: CountFilter,
@@ -107,6 +123,7 @@ pub(crate) enum StaticAbilityFragment {
         stats: Stats,
     },
     AttachedSubtype(&'static str),
+    AttachedLegendary,
     AttachmentStats(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),
@@ -151,6 +168,8 @@ pub(crate) enum StaticAbilityFragment {
     CombatRestriction(u16, CombatRestriction),
     /// Source attacks every combat when independently able to attack.
     AttacksEachCombat,
+    /// Flying creatures cannot attack this controller or block their creatures.
+    FlyingCombatRestriction,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
     /// Rules restriction evaluated after all derived power modifications.

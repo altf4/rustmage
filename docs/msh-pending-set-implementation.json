@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Finish remaining complete card behaviors and full-set acceptance in this one review branch",
+  "base_main": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+  "frozen_oracle_identities": 281,
+  "frozen_printings": 448,
+  "merged_admission_flags_at_base": 180,
+  "remaining_gated_at_base": 101,
+  "tracking_issue": 478,
+  "integration_policy": "Keep existing main merges. All further implementation integrates into codex/msh-complete-set-implementation. Do not merge this PR into main; the user will approve the whole remaining implementation at the end.",
+  "review_policy": "Two independent nonauthor reviews of each final published prerequisite batch before dependent expansion; final complete published-head reviews and full release validation remain required.",
+  "acceptance": "Every printed obligation for all 281 identities, complete legal MSH-only games across colors/mechanics/choices/natural terminal outcomes, deterministic replay, hidden information, legality, transactional failures, owned raw/index branches and restore, and measured performance. Admission flags or bounded smoke alone do not certify acceptance.",
+  "entire_pool_acceptance": false
+}

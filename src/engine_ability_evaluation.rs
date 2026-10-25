@@ -117,6 +117,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
+        StaticAbilityFragment::HarnessedTrigger(ability) => {
+            if id != source.card || !world.harnessed(source.card) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::AttachmentTrigger(ability)
         | StaticAbilityFragment::AttachmentActivation(ability) => {
             if !world.attached(source, id) {
@@ -137,6 +148,15 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::PlusOnePlacedKeywords { filter, keywords } => {
             if !world.placement_history_recipient(source, filter, id) {
+                return None;
+            }
+            keywords
+        }
+        StaticAbilityFragment::SourceConditionalKeywords {
+            condition,
+            keywords,
+        } => {
+            if world.reference(id) != source || world.value(condition, source.card) == 0 {
                 return None;
             }
             keywords
@@ -221,7 +241,20 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
         || world.roles().is_some_and(|r| {
-            r.keyword_effects.iter().any(|row| {
+            r.harnessed.iter().any(|reference| {
+                world.reference(reference.card) == *reference
+                    && world.object(reference.card).zone == Zone::Battlefield
+                    && world
+                        .object(reference.card)
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(fragment, StaticAbilityFragment::HarnessedTrigger(_))
+                            })
+                        })
+            }) || r.keyword_effects.iter().any(|row| {
                 (matches!(
                     world.object(row.recipient.card).zone,
                     Zone::Battlefield | Zone::Stack
@@ -253,12 +286,12 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 keywords: if object.zone == Zone::Stack {
                     game.effective_spell_card(i as CardId).keywords()
                 } else {
-                    object
-                        .card
-                        .keywords()
-                        .union(game.copied_keywords(world.reference(i as CardId)))
+                    world
+                        .intrinsic_keywords(i as CardId)
+                        .union(world.copied_keywords(i as CardId))
                 },
                 grants: Vec::new(),
+                self_grants: Vec::new(),
                 mana: Vec::new(),
             }
         })
@@ -282,10 +315,12 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     f,
                     StaticAbilityFragment::SourcePlusOnePlacedKeywords(..)
                         | StaticAbilityFragment::PlusOnePlacedKeywords { .. }
+                        | StaticAbilityFragment::SourceConditionalKeywords { .. }
                         | StaticAbilityFragment::SourceCounterKeywords { .. }
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
+                        | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)
@@ -351,6 +386,35 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         }
     }
     if let Some(state) = world.roles() {
+        for row in &state.resolved_ability_modifications {
+            if return_ability_modification::active(world, row) {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: row.timestamp,
+                    recipients: vec![row.recipient.card],
+                    action: LayerSixAction::RemoveAndGrant(vec![LayerSixGrant {
+                        recipient: row.recipient.card,
+                        keywords: row.keywords,
+                        abilities: Vec::new(),
+                        mana: Vec::new(),
+                    }]),
+                });
+            }
+        }
+        for row in &state.source_linked_effects {
+            if row.kind == SourceLinkedEffectKind::RemoveAbilities
+                && source_linked_effects::active(world, row)
+            {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: row.timestamp,
+                    recipients: vec![row.recipient.card],
+                    action: LayerSixAction::Remove,
+                });
+            }
+        }
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
             if (matches!(object.zone, Zone::Battlefield | Zone::Stack)
@@ -413,6 +477,22 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                             timestamp: grant.timestamp,
                         }],
                     },
+                });
+            }
+        }
+    }
+    if let Some(grants) = &game.state.self_granted_abilities {
+        for grant in grants.iter() {
+            if world.object(grant.recipient.card).zone == Zone::Battlefield
+                && world.reference(grant.recipient.card) == grant.recipient
+                && grant.expires_turn == game.state.turn
+            {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: grant.timestamp,
+                    recipients: vec![grant.recipient.card],
+                    action: LayerSixAction::GrantSelf(grant.timestamp),
                 });
             }
         }

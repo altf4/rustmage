@@ -47,10 +47,13 @@ impl Game {
             return false;
         }
         let keywords = self.keywords(attacker);
-        if self.source_power_forbids_block(attacker)
+        if self.flying_block_forbidden(blocker, attacker)
+            || self.source_power_forbids_block(attacker)
             || self.blocker_subtype_excluded(attacker, blocker)
             || self.live_static_forbids_block(blocker, attacker)
             || keywords.contains(Keywords::CANT_BE_BLOCKED)
+            || keywords.contains(Keywords::ONLY_HASTE_BLOCKERS)
+                && !self.keywords(blocker).contains(Keywords::HASTE)
             || keywords.contains(Keywords::PROTECTION_EVERYTHING)
             || keywords.contains(Keywords::NO_HUMAN_BLOCKERS) && self.has_subtype(blocker, "Human")
             || keywords.contains(Keywords::NO_TOKEN_BLOCKERS) && b.is_token()

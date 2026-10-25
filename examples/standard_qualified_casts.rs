@@ -314,7 +314,9 @@ impl SurveilWitness {
                 let group = match destination {
                     LibraryDestination::Top => &partial.top,
                     LibraryDestination::Graveyard => &partial.graveyard,
-                    LibraryDestination::Bottom | LibraryDestination::Shuffle => {
+                    LibraryDestination::Bottom
+                    | LibraryDestination::Shuffle
+                    | LibraryDestination::SecondFromTop => {
                         panic!("invalid surveil destination")
                     }
                 };

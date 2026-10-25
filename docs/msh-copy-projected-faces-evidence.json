@@ -1,0 +1,129 @@
+{
+  "scope": "World-aware physical copy face observations after projected cost departures. No card admissions. Full-set acceptance remains open.",
+  "base": "f798abe6c25f7df572915beccd0cae6355d9a77e",
+  "tested_runtime_head": "7494faba46d3e70a17e8923c154360eba30fced5",
+  "schema": {
+    "normal": 149,
+    "previous": 148,
+    "changed": false
+  },
+  "cause": "The real-game face helper falls back to raw immutable metadata when a projected object has a new generation. The speculative world already retains the correct private Single/Double recipe, but that fallback discarded it.",
+  "correction": "CharacteristicQuery builds FaceView directly from the current CharacteristicWorld recipe. A pure FaceView::from_faces builder reads the frozen physical structure, and the existing exact-ref transform serial is used only on the battlefield. No added state, hot Object fields or public wire fields.",
+  "rules": {
+    "source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+    "rule": "707.8a",
+    "meaning": "A token copy retains the actual source permanent physical face structure independently of the current copied definition."
+  },
+  "regressions": {
+    "before_fix": "Two meaningful paid-producer tests failed complete projected-versus-actual ObjectView equality. The only difference was face: Single Taskmaster/Monica token incorrectly gained a back face in projection; Double Arc/Arc token lost its faces. Explicit private recipe equality already passed.",
+    "after_fix": "Both complete view matrices pass.",
+    "new_groups": 2,
+    "cases": 12,
+    "matrix": "Both seats, each Single/Double paid-produced token, requested graveyard/exile and Rest in Peace replacement to exile.",
+    "paid_setup": "Taskmaster plus Monica and Molten; or actual Monica/Molten DFC token, paid Shuri Arc overlay, then second paid Molten. Real printed costs, target groups and public legend choices use the existing checked helper. Rest in Peace is paid.",
+    "bounded_departure": "Actual move_object_raw is compared to FundingState::cost_departures before token SBA cessation; these final departure primitives are bounded core continuations, not a claim that an extra sacrifice-card activation was played.",
+    "ownership_privacy": "Funding source resources and retained private recipes are asserted. Complete both-player observations and parent snapshot stay unchanged. Actual branch survives parent disposal and restores its snapshot; paid setup actions use existing raw/index/wrong-actor/restore checks.",
+    "file": "src/engine_temporary_copy_funding_tests.rs",
+    "functions": [
+      "msh_copy_projected_faces_paid_single_token_full_departure_views_match_actual",
+      "msh_copy_projected_faces_paid_double_token_full_departure_views_match_actual"
+    ],
+    "shared_fixture_file": "src/engine_msh_copy_identity_regression_tests.rs"
+  },
+  "sources": {
+    "prior_full_source_cache": "<cache>/rustmage-msh-copy-correction-sources-a41.json",
+    "sha256": "fc520297f1e61d8aabce72ac546a96ed52e703bcbdb402d517751d29d62ac703",
+    "coverage": "Prior full14 Java bodies,12 frozen Oracle records,26 card/provenance bodies retained. All26 Rust/provenance source pins rehashed exact at this correction. Existing direct-copy source facts and primary rule remain unchanged.",
+    "prior_portable_evidence": "docs/msh-copy-correction-evidence.json"
+  },
+  "validation": {
+    "profile": "Repository defaults for final native/export/Clippy; profile0 only for labeled focused red/green.",
+    "native": 1592,
+    "execution_seconds": 12.18,
+    "focused": 44,
+    "commands": {
+      "native": {
+        "exit": 0,
+        "seconds": 160.53399801254272
+      },
+      "clippy": {
+        "exit": 0,
+        "seconds": 38.800408601760864
+      },
+      "format": {
+        "exit": 0,
+        "seconds": 1.6029798984527588
+      },
+      "card-format": {
+        "exit": 0,
+        "seconds": 0.9559111595153809
+      },
+      "source": {
+        "exit": 0,
+        "seconds": 0.6213347911834717
+      },
+      "link": {
+        "exit": 0,
+        "seconds": 0.45934128761291504
+      },
+      "runner-contracts": {
+        "exit": 0,
+        "seconds": 0.4306609630584717
+      }
+    },
+    "source_inputs": 11814,
+    "changed_inputs": [],
+    "input_manifest": "<cache>/rustmage-msh-copy-projected-faces-default-inputs.json",
+    "input_manifest_sha256": "a0541f7f55b4af334f788e43d37244298049e52737fdae1309f42d32387ea4af",
+    "driver_seconds": 203.57124519348145,
+    "memory_peak_bytes": 2731868160,
+    "memory_max_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n"
+  },
+  "trace_proof": {
+    "artifact": "<cache>/rustmage-msh-copy-projected-faces-proof.json",
+    "sha256": "82e9681748ac627aab467c0c4ef5aaac7ed37a8538906f9266dc55001ffb1c7b",
+    "rows": 2525,
+    "base_full_rows_exact_both_schemas": 2525,
+    "complete_parent_tables_exact": 13,
+    "normal149_sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+    "previous148_sha256": "bacddb814caac0997ed1b3b97a1e7c7b1820531ca42efb06c617d624bba196d9",
+    "no_field_stripping": true,
+    "no_recorder_changes": true,
+    "no_rebaseline": true,
+    "metadata_ids_recipes_membership_policy_flags_card_definitions_unchanged": true
+  },
+  "preservation": {
+    "artifact": "<cache>/rustmage-msh-copy-projected-faces-preservation.json",
+    "sha256": "a8fecb0c665134263abb2a89749a7b81ead3dc962ae8300dcb7f14ff07baa9da",
+    "prior_required_exact": 2289,
+    "total_required_exact": 2297,
+    "new_libraries": {
+      "<cache>/rustmage-msh-copy-projected-faces-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-copy-projected-faces-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "useful_natives": {
+      "<cache>/rustmage-msh-copy-projected-faces-default-native-7494faba": "752b29d2ad3ee24f89bf58769511a2b25bee3b8a3acb58b07288185dcaee2b9c",
+      "<cache>/rustmage-msh-copy-projected-faces-profile0-native-44groups-7494faba": "5e645a383a565441b079734432b9b6e21c3ef8a0edc7dd9d87f0d733fbdae9f8"
+    },
+    "cleanup": "<cache>/rustmage-msh-copy-projected-faces-cleanup.json",
+    "cleanup_sha256": "4c06f46b6987b03f1e18f9c8b2bb7276df7b7e97c5db873e052105a23c8679e4",
+    "removed_terminal_files": 1186,
+    "removed_terminal_path_bytes": 262719304,
+    "own_processes_inspected": 178,
+    "denied_process_inspections": 5,
+    "accessible_target_exe_fd_maps_cwd_references": []
+  },
+  "measurement": {
+    "scope": "Two-group correction work, first regression guard start through terminal artifact cleanup. Start is derived from report completion mtime minus recorded guard duration.",
+    "start_utc": "2026-10-25T11:01:27.143290+00:00",
+    "end_utc": "2026-10-25T11:08:09.618216+00:00",
+    "elapsed_seconds": 402.475,
+    "cards_admitted": 0,
+    "new_groups": 2,
+    "simulation_scope": "1592 deterministic native rules tests; no extrapolation to complete Standard simulation throughput."
+  },
+  "integration": "Source branch only; aggregate release, CI and final published-head gates belong to the integrator. No new PR/main merge."
+}

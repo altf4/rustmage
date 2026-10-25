@@ -64,7 +64,7 @@ impl Game {
                         thresholds(*f, base, symbols, end, cuts);
                     }
                 }
-                CastFilter::Targeted { filter, .. } => {
+                CastFilter::ManaSymbols { filter, .. } | CastFilter::Targeted { filter, .. } => {
                     thresholds(*filter, base, symbols, end, cuts)
                 }
                 _ => {}
@@ -171,29 +171,32 @@ impl Game {
                 .saturating_sub(a.activation_discount),
         });
         let fundable = |value: u32| {
-            base.generic.checked_add(value).is_some_and(|generic| {
-                self.activation_can_fund(
-                    FundingGoal {
-                        reserve: None,
-                        actor: a.item.controller,
-                        required: base.colored,
-                        generic,
-                        source: Some((
-                            a.item.object,
-                            ability,
-                            a.counter_payment.clone(),
-                            a.item.source_card,
-                            a.item.borrowed_slot,
-                        )),
-                    },
-                    a.additional_cost(),
-                )
-            })
+            value
+                .checked_mul(definition.x_symbols())
+                .and_then(|x| base.generic.checked_add(x))
+                .is_some_and(|generic| {
+                    self.activation_can_fund(
+                        FundingGoal {
+                            reserve: None,
+                            actor: a.item.controller,
+                            required: base.colored,
+                            generic,
+                            source: Some((
+                                a.item.object,
+                                ability,
+                                a.counter_payment.clone(),
+                                a.item.source_card,
+                                a.item.borrowed_slot,
+                            )),
+                        },
+                        a.additional_cost(),
+                    )
+                })
         };
         if !fundable(0) {
             return Vec::new();
         }
-        let (mut low, mut high) = (0u32, u32::MAX - base.generic);
+        let (mut low, mut high) = (0u32, (u32::MAX - base.generic) / definition.x_symbols());
         while low < high {
             let middle = low + (high - low).div_ceil(2);
             if fundable(middle) {
@@ -231,7 +234,11 @@ impl Game {
     pub fn x_choice(&self) -> Option<XChoiceView> {
         if let Pending::ResolutionX { player } = self.state.pending {
             let mut lo = 0u64;
-            let mut hi = u64::from(u32::MAX) + 1;
+            let resolving = self.state.resolving.as_ref().unwrap();
+            let mut hi = match resolving.program.get(resolving.pc.saturating_sub(1)) {
+                Some(Instruction::PayXReflexiveLimited { maximum, .. }) => u64::from(*maximum) + 1,
+                _ => u64::from(u32::MAX) + 1,
+            };
             while lo + 1 < hi {
                 let mid = lo + (hi - lo) / 2;
                 if self.can_fund(FundingGoal {
@@ -292,6 +299,11 @@ impl Game {
                 .cast_event
                 .as_ref()
                 .map_or(0, |e| u128::from(e.mana_value)),
+            AmountValue::CastSpellManaSymbols(color) => {
+                item.cast_event.as_ref().map_or(0, |event| {
+                    u128::from(event.card.mana_symbols_of_color(color))
+                })
+            }
             AmountValue::SpellColors => item
                 .cast_event
                 .as_ref()
@@ -312,6 +324,10 @@ impl Game {
                     .amount
             }
             AmountValue::DamageEventAmount => item.damage_event.expect("saved damage event").amount,
+            AmountValue::PaidSourceCounterQuantity(kind) => item
+                .source_counter_payment
+                .filter(|payment| payment.paid && payment.kind == kind)
+                .map_or(0, |payment| u128::from(payment.amount)),
             AmountValue::SourceCounterQuantity(kind) => self
                 .source_counter_quantity_live(item.object, kind)
                 .map(u128::from)
@@ -321,6 +337,8 @@ impl Game {
                         .and_then(|facts| facts.iter().find(|fact| fact.kind == kind))
                         .map_or(0, |fact| u128::from(fact.count))
                 }),
+            AmountValue::SourceToughness => self.source_toughness(item),
+            AmountValue::SourceEquipmentCount => self.source_equipment_quantity(item),
             AmountValue::SourcePower => {
                 if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
                     self.stats(item.card).power.max(0) as u128

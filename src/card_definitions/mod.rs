@@ -54,6 +54,22 @@ impl CardRules {
             );
             power_up_index += 1;
         }
+        let mut reduction_index = 0;
+        while reduction_index < self.extras.activation_target_reductions.len() {
+            let (slot, _) = self.extras.activation_target_reductions[reduction_index];
+            assert!(
+                (slot as usize) < self.activated.len(),
+                "target reduction lacks activated slot"
+            );
+            match self.activated[slot as usize].targets {
+                TargetPlan::Single(spec) => assert!(
+                    spec.min == 1 && spec.max == 1,
+                    "target activation reduction requires one mandatory target"
+                ),
+                _ => panic!("target activation reduction requires one target group"),
+            }
+            reduction_index += 1;
+        }
         // A printed mana component opens the mana-ability payment window.
         // Reject zero-mana template flags copied into newly authored paid abilities.
         let mut index = 0;
@@ -133,6 +149,8 @@ pub(super) struct CardExtras {
     pub enters_prepared: bool,
     pub prepared_identity: Option<&'static str>,
     pub borrows_exiled_activations: bool,
+    /// Immutable activated templates acquired only through an explicit grant.
+    pub self_granted_activation_templates: &'static [u16],
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
@@ -144,6 +162,7 @@ pub(super) struct CardExtras {
     /// Other equivalents of the printed mana cost, for hybrid reduction choices.
     /// These are not alternative casting costs.
     pub power_up_mana_cost_alternatives: &'static [ManaCost],
+    pub activation_target_reductions: &'static [(u16, TargetActivationReduction)],
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
@@ -165,6 +184,7 @@ pub(super) struct CardExtras {
     pub omen_spell: Option<Card>,
     pub omen_parent: Option<Card>,
     pub warp_cost: Option<ManaCost>,
+    pub sneak_cost: Option<ManaCost>,
     pub vehicle_stats: Option<Stats>,
     pub replacement_effects: &'static [ReplacementSpec],
     pub attached_subtype: Option<&'static str>,
@@ -198,6 +218,8 @@ pub(super) struct CardExtras {
     pub cost_alternatives: &'static [ManaCost],
     pub cost_alternative_guard: Option<StepGuard>,
     pub mana_alternative_replaces_additional: bool,
+    /// Independent additional mana route crossed with every printed hybrid base.
+    pub additional_mana_alternative: Option<ManaCost>,
     pub kicked_targets: Option<TargetPlan>,
     pub cast_entry_counters: &'static [(CounterKind, u64)],
     pub hand_cast_entry_counters: &'static [(CounterKind, u64)],
@@ -205,6 +227,7 @@ pub(super) struct CardExtras {
     pub starting_loyalty: u64,
     pub exhaust_mask: u64,
     pub has_convoke: bool,
+    pub has_improvise: bool,
     pub static_cast_restriction: u8,
     pub uncounterable: bool,
     pub enchanted_modifiers: &'static [EnchantedModifier],
@@ -219,12 +242,14 @@ impl CardExtras {
         enters_prepared: false,
         prepared_identity: None,
         borrows_exiled_activations: false,
+        self_granted_activation_templates: &[],
         zone_replacement: None,
         opening_hand_battlefield: false,
         power_up_abilities: &[],
         power_up_additional_uses: 0,
         power_up_other_creature_reduction: 0,
         power_up_mana_cost_alternatives: &[],
+        activation_target_reductions: &[],
         activation_counter_discounts: &[],
         activation_put_counters: &[],
         fixed_entry_counters: &[],
@@ -249,6 +274,7 @@ impl CardExtras {
         omen_spell: None,
         omen_parent: None,
         warp_cost: None,
+        sneak_cost: None,
         vehicle_stats: None,
         replacement_effects: &[],
         attached_subtype: None,
@@ -282,11 +308,13 @@ impl CardExtras {
         cost_alternatives: &[],
         cost_alternative_guard: None,
         mana_alternative_replaces_additional: false,
+        additional_mana_alternative: None,
         kicked_targets: None,
         entry_counter_rules: &[],
         starting_loyalty: 0,
         exhaust_mask: 0,
         has_convoke: false,
+        has_improvise: false,
         static_cast_restriction: 0,
         uncounterable: false,
         enchanted_modifiers: &[],

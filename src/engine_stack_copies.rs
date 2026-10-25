@@ -11,7 +11,7 @@ struct Retarget {
     item: SpellView,
     template: SpellView,
     remaining: u64,
-    victim: Option<u64>,
+    victim: Option<(u64, bool)>,
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct RetargetView {
@@ -38,6 +38,14 @@ pub(super) fn owned_bytes(state: &Option<Box<CopyState>>) -> usize {
             })
     })
 }
+fn delayed_copy_reads_source_power(item: &SpellView) -> bool {
+    matches!(
+        item.kind,
+        StackKind::TriggeredAbility { ability }
+            if item.trigger_definition().triggers()[usize::from(ability)]
+                .condition.event() == TriggerCondition::DelayedSpellCastSourcePower
+    )
+}
 impl Game {
     pub(super) fn stack_target_rule_matches(
         &self,
@@ -46,6 +54,11 @@ impl Game {
         controller: Player,
     ) -> bool {
         match rule {
+            TargetRule::YourAbilityFromSourceKinds { kinds } => {
+                item.kind != StackKind::Spell
+                    && item.controller == controller
+                    && self.ability_source_kinds(item) & kinds != 0
+            }
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
             TargetRule::Spell => item.kind == StackKind::Spell,
             TargetRule::YourSpellKinds { kinds } => {
@@ -128,6 +141,7 @@ impl Game {
         if let Some(r) = choice
             && r.victim.is_none()
             && r.item.is_copy
+            && r.item.kind == StackKind::Spell
             && self.object_ref(r.item.card) == r.item.object
             && self.state.objects[r.item.card as usize].zone == Zone::Stack
             && !self.state.stack.iter().any(|s| s.id == r.item.id)
@@ -190,6 +204,8 @@ impl Game {
                 trigger.gift = None;
                 trigger.cast_event = None;
                 trigger.source_counter_lki = None;
+                trigger.source_quantity_lki = None;
+                trigger.event_object = None;
                 trigger.target_controller_lki = None;
                 trigger.is_copy = false;
                 trigger.targets.clear();
@@ -211,14 +227,17 @@ impl Game {
         let prior = self.state.players[spell.controller.index()].instant_sorcery_cast_this_turn - 1;
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
             if let Some((_, program)) = trigger.program()
-                && let Some(prior_spells) = program.iter().find_map(|i| match i {
-                    Instruction::CopyCastSpell { prior_spells } => Some(*prior_spells),
+                && let Some(amount) = program.iter().find_map(|i| match i {
+                    Instruction::CopyCastSpell { prior_spells } => {
+                        Some(if *prior_spells { prior } else { 1 })
+                    }
+                    Instruction::CopyCastSpellChosenX => Some(u64::from(spell.x.unwrap_or(0))),
                     _ => None,
                 })
             {
                 trigger.copy_event = Some(Box::new(CopyEvent {
                     spell: spell.clone(),
-                    amount: if prior_spells { prior } else { 1 },
+                    amount,
                 }));
             }
         }
@@ -228,7 +247,18 @@ impl Game {
         let mut delayed = std::mem::take(&mut state.delayed);
         let mut retained = Vec::new();
         for mut trigger in delayed.drain(..) {
-            if trigger.controller == spell.controller {
+            if trigger.controller == spell.controller
+                && (!delayed_copy_reads_source_power(&trigger) || {
+                    let power = if self.on_battlefield(trigger.object.card)
+                        && self.object_ref(trigger.object.card) == trigger.object
+                    {
+                        self.stats(trigger.object.card).power
+                    } else {
+                        trigger.source_facts.power
+                    };
+                    i128::from(spell.mana_value()) <= power
+                })
+            {
                 trigger.id = self.next_stack_id();
                 trigger.copy_event = Some(Box::new(CopyEvent {
                     spell: spell.clone(),
@@ -333,7 +363,7 @@ impl Game {
                 .as_deref()
                 .copied()
                 .unwrap_or_else(|| CopyRecipe::new(copy.source_card));
-            recipe.exceptions = recipe.exceptions.union(exceptions);
+            recipe = recipe.with_exceptions(exceptions);
             self.set_copy_recipe(copy.object, recipe);
             copy.source_copy_recipe = Some(Box::new(recipe));
             if exceptions.sacrifice_abilities != 0 {
@@ -353,6 +383,40 @@ impl Game {
             self.release_stack_copy_state();
             false
         }
+    }
+    /// Copy an ability packet, never its physical source. All declared choices,
+    /// paid-cost facts and immutable program/origin contexts remain owned.
+    pub(super) fn copy_target_ability(&mut self, item: &SpellView, group: u16) -> bool {
+        let Some(template) = item
+            .targets
+            .iter()
+            .find(|bound| bound.group == group)
+            .and_then(|bound| self.bound_stack_item(bound))
+            .filter(|candidate| candidate.kind != StackKind::Spell)
+            .cloned()
+        else {
+            return false;
+        };
+        let mut copy = template.clone();
+        copy.id = self.next_stack_id();
+        copy.controller = item.controller;
+        copy.is_copy = true;
+        self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
+            item: copy,
+            template,
+            remaining: 0,
+            victim: None,
+        });
+        self.advance_copy_targets()
+    }
+    fn ability_source_kinds(&self, item: &SpellView) -> u16 {
+        self.state
+            .objects
+            .get(item.object.card as usize)
+            .filter(|source| source.generation == item.object.generation)
+            .map_or(item.source_facts.kinds, |_| {
+                self.current_kinds(item.object.card)
+            })
     }
     pub(super) fn copy_captured_spell(&mut self, item: &SpellView) -> bool {
         let Some(event) = &item.copy_event else {
@@ -401,7 +465,43 @@ impl Game {
             item: victim.clone(),
             template: victim,
             remaining: 0,
-            victim: Some(id),
+            victim: Some((id, false)),
+        });
+        self.advance_copy_targets()
+    }
+    /// Only callbacks that read source power opt into its latest-departure facts.
+    /// Other delayed programs keep their original packet observations unchanged.
+    pub(super) fn capture_delayed_copy_source_departure(&mut self, before: &ObjectView) {
+        if let Some(state) = &mut self.state.stack_copy_data {
+            for item in &mut state.delayed {
+                if item.object == before.reference && delayed_copy_reads_source_power(item) {
+                    item.source_facts = DamageFacts::from_view(before);
+                    item.source_keywords = before.keywords;
+                    item.source_tapped = before.tapped;
+                }
+            }
+        }
+    }
+    pub(super) fn change_cast_spell_targets(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = item
+            .cast_event
+            .as_ref()
+            .and_then(|event| {
+                self.state
+                    .stack
+                    .iter()
+                    .find(|spell| spell.kind == StackKind::Spell && spell.id == event.stack_id)
+            })
+            .cloned()
+        else {
+            return false;
+        };
+        let id = victim.id;
+        self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
+            item: victim.clone(),
+            template: victim,
+            remaining: 0,
+            victim: Some((id, true)),
         });
         self.advance_copy_targets()
     }
@@ -416,7 +516,7 @@ impl Game {
         Some(RetargetView {
             item: r.item.clone(),
             original: r.template.targets.clone(),
-            victim: r.victim,
+            victim: r.victim.map(|(id, _)| id),
             remaining_copies: r.remaining,
         })
     }
@@ -467,7 +567,7 @@ impl Game {
             .iter()
             .zip(&r.template.targets)
             .any(|(a, b)| a != b);
-        if r.victim.is_some() && !changed {
+        if r.victim.is_some_and(|(_, optional)| !optional) && !changed {
             return false;
         }
         let plan = self.target_spec(&r.item);
@@ -570,27 +670,14 @@ impl Game {
             .as_ref()
             .unwrap()
             .clone();
-        if let Some(id) = r.victim {
+        if let Some((id, _)) = r.victim {
             if let Some(index) = self.state.stack.iter().position(|s| s.id == id) {
                 let previous = self.state.stack[index].clone();
-                for bound in &r.item.targets {
-                    if !previous
-                        .targets
-                        .iter()
-                        .any(|old| old.target == bound.target)
-                    {
-                        self.target_becomes_bound(&previous, *bound);
-                    }
-                }
+                self.acquire_stack_target_set(&r.item, &previous.targets);
                 self.state.stack[index] = r.item.clone();
             }
         } else {
-            let mut empty = r.item.clone();
-            empty.targets.clear();
-            for bound in &r.item.targets {
-                self.target_becomes_bound(&empty, *bound);
-                empty.targets.push(*bound);
-            }
+            self.acquire_stack_target_set(&r.item, &[]);
             self.state.stack.push(r.item.clone());
         }
         let state = self.state.stack_copy_data.as_mut().unwrap();

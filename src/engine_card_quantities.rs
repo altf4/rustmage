@@ -34,27 +34,34 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                     }
                 }
             }
-            Instruction::Modal(modes) | Instruction::ModalOnce(modes) => {
+            Instruction::Modal(modes)
+            | Instruction::ModalOnce(modes)
+            | Instruction::ModalOncePerTurn(modes)
+            | Instruction::ModalUpToX { modes, .. } => {
                 for mode in modes {
                     read_counter_kinds(mode.program, kinds);
                 }
             }
-            Instruction::SelectLibraryTo(effect) => {
+            Instruction::SelectLibraryTo(effect)
+            | Instruction::SelectLibraryThenMayTransform(effect) => {
                 if let Some(value) = effect.maximum_mana_value {
                     amount(value, kinds);
                 }
             }
-            Instruction::IfAmountAtLeast { value, .. }
+            Instruction::UpToTargets(value)
+            | Instruction::IfAmountAtLeast { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }
             | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
             | Instruction::SetCreatureForm { base: value, .. }
             | Instruction::MoveCountersFromSource { amount: value, .. }
+            | Instruction::RevealTargetHandSubsetDiscard(value)
             | Instruction::DrawScaled(_, value)
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)
             | Instruction::DrainLifeScaled(value)
+            | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
             | Instruction::AddColorlessScaled(value)
             | Instruction::AddCombatRedScaled(value)
@@ -64,6 +71,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }
+            | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
             | Instruction::CreateTokensWithCounters {
                 counters: value, ..

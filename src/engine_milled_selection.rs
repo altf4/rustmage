@@ -101,7 +101,7 @@ impl Game {
     }
     pub(super) fn milled_selection_view(&self, viewer: Player) -> Option<MilledSelectionView> {
         let choice = self.milled_selection()?;
-        if choice.player != viewer {
+        if !self.shares_information(viewer, choice.player) {
             return None;
         }
         let MilledCount::Range { minimum, maximum } = choice.spec.count else {

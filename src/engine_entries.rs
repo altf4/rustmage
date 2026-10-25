@@ -18,10 +18,21 @@ pub(super) struct EntryMove {
     pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
+    /// Timestamped ability grant after only this move actually enters.
+    pub keywords_after: Option<(ObjectRef, Keywords)>,
+    /// Only this surrounding return effect captures its actual public entry result.
+    pub equipment_after: bool,
+    /// Applied after entry observers freeze their facts, only on successful entry.
+    pub blank_with_haste_after: Option<ObjectRef>,
+    /// After this successful entry event, attach this Equipment to an exact recipient.
+    pub attach_equipment_to: Option<ObjectRef>,
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
+    /// A played library land is public throughout its pre-entry special action.
+    /// Its actual origin remains Library; unrelated library entries stay private.
+    pub public_origin: bool,
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
     pub cast_payment: Option<Mana>,
@@ -70,10 +81,15 @@ impl EntryMove {
             suspect_after: false,
             life_bonus: None,
             effect_counter: None,
+            keywords_after: None,
+            equipment_after: false,
+            blank_with_haste_after: None,
+            attach_equipment_to: None,
             return_modification: None,
             attacking: None,
             skipped: false,
             reveal_hand: false,
+            public_origin: false,
             life_paid: None,
             offspring_paid: false,
             cast_payment: None,
@@ -99,7 +115,11 @@ impl EntryBatch {
             + self
                 .moves
                 .iter()
-                .map(|m| m.counters.owned_bytes() + m.before.counters.owned_bytes())
+                .map(|m| {
+                    m.counters.owned_bytes()
+                        + m.before.counters.owned_bytes()
+                        + m.before.temporary_copy_bytes()
+                })
                 .sum::<usize>()
             + self
                 .tap_events
@@ -149,15 +169,19 @@ pub struct EntryLifeView {
     pub selected_attachments: Vec<AuraAttachmentView>,
 }
 pub(super) fn visible(m: &EntryMove, viewer: Player, known_hand: &[ObjectRef]) -> bool {
-    m.before.owner == viewer
+    visible_mask(m, 1 << viewer.index(), known_hand)
+}
+pub(super) fn visible_mask(m: &EntryMove, viewers: u8, known_hand: &[ObjectRef]) -> bool {
+    m.public_origin
+        || viewers & (1 << m.before.owner.index()) != 0
         || known_hand.contains(&m.before.reference)
         || !matches!(m.before.zone, Zone::Hand | Zone::Library)
 }
 impl EntryBatch {
-    fn selected_life(&self, viewer: Player, known_hand: &[ObjectRef]) -> Vec<EntryLifeSelection> {
+    fn selected_life(&self, viewers: u8, known_hand: &[ObjectRef]) -> Vec<EntryLifeSelection> {
         self.moves
             .iter()
-            .filter(|m| visible(m, viewer, known_hand))
+            .filter(|m| visible_mask(m, viewers, known_hand))
             .filter_map(|m| {
                 let EntryTapped::PayLife(cost) = m.before.card.entry_tapped() else {
                     return None;
@@ -173,12 +197,12 @@ impl EntryBatch {
     }
     fn selected_attachments(
         &self,
-        viewer: Player,
+        viewers: u8,
         known_hand: &[ObjectRef],
     ) -> Vec<AuraAttachmentView> {
         self.moves
             .iter()
-            .filter(|m| visible(m, viewer, known_hand))
+            .filter(|m| visible_mask(m, viewers, known_hand))
             .filter_map(|m| {
                 Some(AuraAttachmentView {
                     aura: m.before.reference,
@@ -257,8 +281,10 @@ impl Game {
             let mut effects = self.entry_tap_effects(movement);
             if effects.is_empty() {
                 movement.tapped |= intrinsic_tapped
-                    || self
-                        .opponent_entry_requires_tapped(movement.before.card, movement.controller);
+                    || self.opponent_entry_kinds_require_tapped(
+                        movement.before.kinds,
+                        movement.controller,
+                    );
             } else {
                 // The incoming event retains instruction-level tapped entry;
                 // intrinsic/global tapped replacements have not yet applied.
@@ -383,7 +409,13 @@ impl Game {
                             .card
                             .replacement_effects()
                             .iter()
-                            .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                            .any(|e| {
+                                matches!(
+                                    e,
+                                    crate::cards::ReplacementSpec::Counters { .. }
+                                        | crate::cards::ReplacementSpec::CountersPlacedByController
+                                )
+                            })
                     }))
         });
         if batch.choices.is_empty()
@@ -401,17 +433,25 @@ impl Game {
             || (card.enters_counters().total() > 0
                 || !card.entry_counter_rules().is_empty()
                 || card.x_complement_entry_counters().is_some())
-                && (card
-                    .replacement_effects()
-                    .iter()
-                    .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
-                    || self.state.static_sources.iter().any(|&id| {
-                        self.state.objects[id as usize]
-                            .card
-                            .replacement_effects()
-                            .iter()
-                            .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
-                    }))
+                && (card.replacement_effects().iter().any(|e| {
+                    matches!(
+                        e,
+                        crate::cards::ReplacementSpec::Counters { .. }
+                            | crate::cards::ReplacementSpec::CountersPlacedByController
+                    )
+                }) || self.state.static_sources.iter().any(|&id| {
+                    self.state.objects[id as usize]
+                        .card
+                        .replacement_effects()
+                        .iter()
+                        .any(|e| {
+                            matches!(
+                                e,
+                                crate::cards::ReplacementSpec::Counters { .. }
+                                    | crate::cards::ReplacementSpec::CountersPlacedByController
+                            )
+                        })
+                }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
         self.pre_entry_counters_with_payment(before, destination, None, before.controller, 0)
@@ -490,8 +530,16 @@ impl Game {
         batch.timestamp_order = timestamp_order.clone();
         batch.timestamps_ready = true;
         self.record_cast_mana_entries(&batch);
+        let hand_cards: Vec<_> = Self::hand_entry_order(&batch, self.state.active)
+            .iter()
+            .map(|&i| batch.moves[i].before.id)
+            .collect();
+        if !hand_cards.is_empty() {
+            self.state.hand_size.get_or_insert_default().deferred = true;
+        }
         let timestamp_cards: Vec<_> = timestamp_order
             .iter()
+            .filter(|&&i| Self::entry_has_timestamp(&batch.moves[i]))
             .map(|&i| batch.moves[i].before.id)
             .collect();
         if !timestamp_cards.is_empty() {
@@ -502,6 +550,11 @@ impl Game {
         }
         // Apply quantities captured before this event's replacement choices.
         // No incoming permanent or same-event life payment changes those values.
+        let equipment_origin = batch
+            .moves
+            .iter()
+            .find(|m| m.equipment_after)
+            .map(|m| m.before.reference);
         let moves: Vec<_> = batch
             .moves
             .into_iter()
@@ -516,16 +569,29 @@ impl Game {
                 (m, counters)
             })
             .collect();
+        let returned_hand_observers = if moves
+            .iter()
+            .any(|(m, _)| m.before.zone == Zone::Battlefield && m.destination == Zone::Hand)
+        {
+            self.freeze_returned_hand_observers()
+        } else {
+            None
+        };
         let graveyard_observers = if moves.iter().any(|(m, _)| m.before.zone == Zone::Graveyard) {
             self.freeze_graveyard_observers()
         } else {
             None
         };
+        self.capture_event_object_facts(moves.iter().map(|(movement, _)| &movement.before));
+        self.capture_source_quantities(moves.iter().map(|(movement, _)| &movement.before));
         let mut events = Vec::new();
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();
         let mut suspect_results = Vec::new();
         let mut life_results = Vec::new();
+        let mut equipment_results = Vec::new();
+        let mut keyword_results = Vec::new();
+        let mut ability_results = Vec::new();
         for (movement, counters) in moves {
             let rules = self.freeze_zone_rules(&movement.before, movement.destination, None);
             let plan = self.plan_zone_move(&movement.before, movement.destination, rules);
@@ -535,7 +601,10 @@ impl Game {
                 movement.tapped,
                 counters,
                 Some(movement.controller),
-                graveyard_observers.clone(),
+                ZoneObservers {
+                    graveyard: graveyard_observers.clone(),
+                    returned_hand: returned_hand_observers.clone(),
+                },
             );
             if event.moved
                 && event.destination == Zone::Battlefield
@@ -561,6 +630,21 @@ impl Game {
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
                 if event.destination == Zone::Battlefield
+                    && let Some((source, keywords)) = movement.keywords_after
+                {
+                    keyword_results.push((event.after, source, keywords));
+                }
+                if event.destination == Zone::Battlefield
+                    && let Some(source) = movement.blank_with_haste_after
+                {
+                    ability_results.push((event.after, source));
+                }
+                if event.destination == Zone::Battlefield
+                    && let Some(recipient) = movement.attach_equipment_to
+                {
+                    equipment_results.push((event.after, recipient));
+                }
+                if event.destination == Zone::Battlefield
                     && let Some((controller, subtype, amount)) = movement.life_bonus
                 {
                     life_results.push((event.after, controller, subtype, amount));
@@ -575,6 +659,18 @@ impl Game {
                 }
                 if event.destination == Zone::Battlefield
                     && let Some(defender) = movement.attacking
+                    && self.is_creature(event.after.card)
+                    && self.attacking_return_combat(movement.controller)
+                    && match defender {
+                        CombatDefender::Player(p) => p == movement.controller.other(),
+                        CombatDefender::Planeswalker(r) => {
+                            self.on_battlefield(r.card)
+                                && self.object_ref(r.card) == r
+                                && self.state.objects[r.card as usize].controller
+                                    == movement.controller.other()
+                                && self.current_kinds(r.card) & 64 != 0
+                        }
+                    }
                 {
                     self.state.attackers.push(Attacker {
                         card: event.after.card,
@@ -622,6 +718,17 @@ impl Game {
                 }
             }
         }
+        if !hand_cards.is_empty() {
+            self.state.hand_size.as_mut().unwrap().deferred = false;
+            for id in hand_cards {
+                if let Some(event) = events
+                    .iter()
+                    .find(|e| e.before.id == id && e.moved && e.destination == Zone::Battlefield)
+                {
+                    self.retimestamp_hand_size_source(event.after);
+                }
+            }
+        }
         self.refresh_controllers();
         if let Some(item) = &batch.temporary_copy {
             let tokens = events
@@ -633,11 +740,29 @@ impl Game {
                 self.finish_temporary_copy(item, tokens);
             }
         }
+        if let Some(origin) = equipment_origin {
+            self.capture_return_attachment_entry(origin, &events);
+        }
+        self.capture_selected_library_entry(&events);
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);
         } else {
             self.finish_zone_events(&events, &[]);
         }
+        // The entry event and its frozen trigger facts precede this subsequent
+        // attachment. Packets cannot be stacked until the surrounding resolution ends.
+        for (recipient, source, keywords) in keyword_results {
+            if self.object_ref(recipient.card) == recipient && self.on_battlefield(recipient.card) {
+                self.grant_keyword_effects(&[recipient.card], source, keywords);
+            }
+        }
+        for (recipient, source) in ability_results {
+            self.blank_and_grant_haste(recipient, source);
+        }
+        for (equipment, recipient) in equipment_results {
+            self.attach_equipment(equipment, recipient);
+        }
+        self.refresh_controllers();
         for (reference, controller, subtype, amount) in life_results {
             if self.object_ref(reference.card) == reference
                 && self.on_battlefield(reference.card)
@@ -757,7 +882,7 @@ impl Game {
                     owner: m.before.owner,
                     controller: m.controller,
                     subtypes: Self::entry_choice_subtypes(m),
-                    kind: m.before.card.kind_mask(),
+                    kind: m.before.kinds,
                     amount: m.counters.clone(),
                     effect: true,
                     entry_index: Some(index),
@@ -845,7 +970,11 @@ impl Game {
         } else {
             batch.moves.get(*batch.choices.get(batch.next)?)?
         };
-        if !visible(movement, viewer, &self.state.known_hand) {
+        if !visible_mask(
+            movement,
+            self.information_mask(viewer),
+            &self.state.known_hand,
+        ) {
             return None;
         }
         let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
@@ -856,8 +985,9 @@ impl Game {
             card: movement.before.card,
             cost,
             already_tapped: movement.tapped,
-            selected: batch.selected_life(viewer, &self.state.known_hand),
-            selected_attachments: batch.selected_attachments(viewer, &self.state.known_hand),
+            selected: batch.selected_life(self.information_mask(viewer), &self.state.known_hand),
+            selected_attachments: batch
+                .selected_attachments(self.information_mask(viewer), &self.state.known_hand),
         })
     }
     pub(super) fn aura_entry_view(&self, viewer: Player) -> Option<AuraEntryView> {
@@ -870,7 +1000,11 @@ impl Game {
         } else {
             batch.moves.get(*batch.choices.get(batch.next)?)?
         };
-        if !visible(movement, viewer, &self.state.known_hand) {
+        if !visible_mask(
+            movement,
+            self.information_mask(viewer),
+            &self.state.known_hand,
+        ) {
             return None;
         }
         Some(AuraEntryView {
@@ -884,8 +1018,10 @@ impl Game {
                 .map(|(i, _)| self.object_ref(i as CardId))
                 .filter(|&r| self.entry_candidate(r))
                 .collect(),
-            selected: batch.selected_attachments(viewer, &self.state.known_hand),
-            selected_life: batch.selected_life(viewer, &self.state.known_hand),
+            selected: batch
+                .selected_attachments(self.information_mask(viewer), &self.state.known_hand),
+            selected_life: batch
+                .selected_life(self.information_mask(viewer), &self.state.known_hand),
         })
     }
 }
@@ -904,7 +1040,7 @@ pub struct EntryTimestampView {
     pub selected: Vec<EntryTimestampObjectView>,
 }
 impl Game {
-    fn entry_has_timestamp(m: &EntryMove) -> bool {
+    pub(super) fn entry_has_timestamp(m: &EntryMove) -> bool {
         m.destination == Zone::Battlefield
             && m.before.zone != Zone::Battlefield
             && (!m.before.is_token()
@@ -930,17 +1066,23 @@ impl Game {
             .moves
             .iter()
             .enumerate()
-            .filter_map(|(i, m)| Self::entry_has_timestamp(m).then_some(i))
+            .filter_map(|(i, m)| {
+                (Self::entry_has_timestamp(m)
+                    || (batch.moves.iter().any(|m| {
+                        Self::hand_entry(m) && m.before.card.hand_size_setting().flatten().is_some()
+                    }) && Self::hand_entry(m)))
+                .then_some(i)
+            })
             .collect();
         ids.sort_by_key(|&i| batch.moves[i].controller != self.state.active);
         ids
     }
     fn entry_needs_timestamp_choice(&self, batch: &EntryBatch) -> bool {
+        let indices = self.entry_timestamp_indices(batch);
         [Player::P0, Player::P1].iter().any(|&p| {
-            batch
-                .moves
+            indices
                 .iter()
-                .filter(|m| m.controller == p && Self::entry_has_timestamp(m))
+                .filter(|&&i| batch.moves[i].controller == p)
                 .count()
                 > 1
         })
@@ -1021,7 +1163,13 @@ impl Game {
         };
         // Entry remains a single transaction. Ordering continuous sources must
         // not publish cards that are still selected in a private library/hand.
-        let visible_index = |&i: &usize| visible(&batch.moves[i], viewer, &self.state.known_hand);
+        let visible_index = |&i: &usize| {
+            visible_mask(
+                &batch.moves[i],
+                self.information_mask(viewer),
+                &self.state.known_hand,
+            )
+        };
         let candidates: Vec<_> = self
             .remaining_timestamp_indices()
             .into_iter()

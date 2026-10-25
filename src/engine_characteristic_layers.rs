@@ -85,16 +85,9 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     } else {
         object.card.kind_mask()
     };
-    if let Some(recipe) = world.game().copy_recipe(world.reference(id)) {
-        if recipe.exceptions.artifact {
-            result |= 16;
-        }
-        if recipe.exceptions.golem {
-            result |= 17;
-        }
-        if recipe.exceptions.fractal {
-            result |= 1;
-        }
+    let recipe = world.recipe(id);
+    if recipe.exceptions != CopyExceptions::NONE || recipe.overrides.is_some() {
+        result = recipe.kinds();
     }
     if object.zone != Zone::Battlefield {
         return result;
@@ -166,7 +159,7 @@ pub(super) fn name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'
         return if object.zone == Zone::Stack {
             world.game().effective_spell_card(id).name()
         } else {
-            object.card.name()
+            world.copiable_name(id)
         };
     }
     changed_name(world, id)
@@ -176,7 +169,7 @@ fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'sta
         .into_iter()
         .filter_map(|(t, s)| s.name.map(|name| (t, name)))
         .max_by_key(|e| e.0)
-        .map_or_else(|| world.object(id).card.name(), |e| e.1)
+        .map_or_else(|| world.copiable_name(id), |e| e.1)
 }
 #[inline]
 pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
@@ -313,6 +306,30 @@ impl Game {
             .timestamp;
         self.grant_source_permanent_trigger(item, ability, timestamp);
     }
+    pub(super) fn animate_source_with_ability_if_noncreature(
+        &mut self,
+        item: &SpellView,
+        spec: AnimationSpec,
+        kind: SelfGrantedAbilityKind,
+    ) {
+        if !self.on_battlefield(item.card)
+            || self.object_ref(item.card) != item.object
+            || self.is_creature(item.card)
+        {
+            return;
+        }
+        self.animate_source(item, spec);
+        let timestamp = self
+            .state
+            .roles
+            .as_ref()
+            .unwrap()
+            .animations
+            .last()
+            .unwrap()
+            .timestamp;
+        self.grant_self_ability_at(item, kind, timestamp);
+    }
     pub(super) fn animate_source(&mut self, item: &SpellView, spec: AnimationSpec) {
         self.change_source_form(item, spec, AnimationTypeMode::AddCreature);
     }
@@ -322,12 +339,29 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
-        if !self.on_battlefield(item.card) || self.object_ref(item.card) != item.object {
+        self.change_object_form(item.object, spec, type_mode);
+    }
+    pub(super) fn animate_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
+        for target in &item.targets {
+            if self.same_target_object(*target)
+                && let Some(object) = target.object
+            {
+                self.change_object_form(object, spec, AnimationTypeMode::AddCreature);
+            }
+        }
+    }
+    pub(super) fn change_object_form(
+        &mut self,
+        object: ObjectRef,
+        spec: AnimationSpec,
+        type_mode: AnimationTypeMode,
+    ) {
+        if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }
         let timestamp = self.next_role_timestamp();
         let row = AnimationView {
-            object: item.object,
+            object,
             timestamp,
             artifact: spec.artifact,
             preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),

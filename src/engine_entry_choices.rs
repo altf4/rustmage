@@ -25,12 +25,7 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
 impl Game {
     #[cfg(test)]
     pub(super) fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
-        self.state
-            .entry_values
-            .as_ref()?
-            .iter()
-            .find(|row| row.object == object)
-            .map(|row| row.value)
+        CharacteristicWorld::entry_value(self, object)
     }
     pub(super) fn set_entry_value(&mut self, object: ObjectRef, value: EntryChoiceValue) {
         self.clear_entry_value(object);
@@ -139,14 +134,18 @@ impl Game {
         }
         let batch = self.state.entry_batch.as_ref()?;
         let movement = &batch.moves[*batch.choices.get(batch.next)?];
-        if !entries::visible(movement, viewer, &self.state.known_hand) {
+        if !entries::visible_mask(
+            movement,
+            self.information_mask(viewer),
+            &self.state.known_hand,
+        ) {
             return None;
         }
         Some(EntryChoiceView {
             object: movement.before.reference,
             card: movement.before.card,
             kind: movement.before.card.entry_choice()?,
-            opponent_hand: (viewer == movement.controller
+            opponent_hand: (self.shares_information(viewer, movement.controller)
                 && movement.before.card.entry_choice()
                     == Some(EntryChoiceKind::CardNameAfterOpponentHand))
             .then(|| {
@@ -154,14 +153,16 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
-                    .filter(|(_, o)| o.zone == Zone::Hand && o.owner == viewer.other())
+                    .filter(|(_, o)| o.zone == Zone::Hand && o.owner == movement.controller.other())
                     .map(|(id, _)| self.object_view(id as CardId))
                     .collect()
             }),
             selected: batch
                 .moves
                 .iter()
-                .filter(|m| entries::visible(m, viewer, &self.state.known_hand))
+                .filter(|m| {
+                    entries::visible_mask(m, self.information_mask(viewer), &self.state.known_hand)
+                })
                 .filter_map(|m| Some((m.before.reference, m.choice?)))
                 .collect(),
         })
@@ -250,6 +251,7 @@ impl Game {
             source.zone == Zone::Battlefield
                 && self.object_ref(row.object.card) == row.object
                 && source.card.named_activation_lock()
+                && self.copy_ability_origin(row.object).is_none()
                 && self.printed_abilities_available(row.object.card)
                 && matches!(row.value, EntryChoiceValue::CardName(chosen) if chosen.matches(name))
         })

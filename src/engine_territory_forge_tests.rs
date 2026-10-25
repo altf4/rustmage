@@ -15,7 +15,7 @@ fn reject(g: &mut Game, action: Action) {
     assert_eq!(g.snapshot(), before);
     assert_eq!(g.revision(), revision);
 }
-fn finish(g: &mut Game) {
+pub(super) fn finish(g: &mut Game) {
     for _ in 0..30 {
         if g.state.announcing.is_none() {
             return;
@@ -59,7 +59,7 @@ fn settle_target(g: &mut Game, target: CardId) {
     }
     panic!("unsettled {:?}", g.state.pending);
 }
-fn forge(g: &mut Game, p: Player, target: CardId) -> CardId {
+pub(super) fn forge(g: &mut Game, p: Player, target: CardId) -> CardId {
     let id = fixture(g, p, "Territory Forge", Zone::Hand);
     cast(g, id, None, &[]);
     settle_target(g, target);
@@ -286,6 +286,7 @@ fn territory_forge_more_than_sixty_four_acquired_abilities_never_alias_usage() {
                 .get_or_insert_default()
                 .push(borrowed_activations::Link {
                     source,
+                    origin: None,
                     exiled,
                     first_slot: slot,
                     width: 1,

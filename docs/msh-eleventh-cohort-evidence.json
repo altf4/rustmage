@@ -1,0 +1,317 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+  "tested_source_head": "6c0bb7dd8b3461dff7dc155f7f70ee6b7c8a317c",
+  "membership_identities": 281,
+  "printings": 448,
+  "main_admitted": 180,
+  "main_gated": 101,
+  "candidate_admitted": 205,
+  "candidate_gated": 76,
+  "whole_cards": [
+    "The Coming of Galactus",
+    "U.S.Agent, John Walker",
+    "Iron Lad, Diverging Destiny",
+    "Daredevil, Man Without Fear",
+    "Arc Reactor",
+    "Ironheart, Clever Champion",
+    "Heroic Feast"
+  ],
+  "parents": {
+    "galactus_us_agent": {
+      "head": "407ceb0f1d8e1a1e0ab1ab94fe5fe321b1ededc6",
+      "evidence": "docs/msh-galactus-us-agent-evidence.json",
+      "evidence_sha256": "069d8a1d5e530982383960093f987e59d5bab5aa2c09842348c236d5847ca030",
+      "new_groups": 34,
+      "whole_cards": 2
+    },
+    "library_top": {
+      "head": "31252f5a2c2dd9b51ba34b6afbad519688bc34be",
+      "evidence": "docs/msh-library-top-evidence.json",
+      "evidence_sha256": "35e24361423fa22c317de2c1c1d983182ec797aa08592aa1291d60bd70136ede",
+      "new_groups": 33,
+      "whole_cards": 2
+    },
+    "improvise": {
+      "head": "e41916ed462e123aa3e20a8ecba9a9af9473ed87",
+      "evidence": "docs/msh-improvise-evidence.json",
+      "evidence_sha256": "41c975b777d142e3c4a73623a77c846f1052b535db121628874b30960f03a98d",
+      "new_groups": 23,
+      "whole_cards": 2
+    },
+    "feast": {
+      "head": "2078223d5da6f1ff8a5cf715132eef56e56f70ff",
+      "evidence": "docs/msh-feast-evidence.json",
+      "evidence_sha256": "150672fdac270b5dd51ec9c75669089c53eaba66383316c4e7cab407de4da9b2",
+      "new_groups": 21,
+      "whole_cards": 1
+    },
+    "legal_games": {
+      "head": "02f9d72b4960505dcb2dc69aeae0d128e356a184",
+      "evidence": "docs/msh-legal-games-evidence.json",
+      "evidence_sha256": "878b1a6dc4402fd55a26f9634fd5d1fbd239344073ec41d6bb5582cd23745ce0",
+      "new_groups": 1,
+      "whole_cards": 0
+    },
+    "combined": {
+      "head": "7a0f38b39b9a0cf2186dcc6fd6c7ff5b828e83ba",
+      "evidence": "docs/msh-eleventh-combined-evidence.json",
+      "evidence_sha256": "06dc37eb30ebf06caf4be9318478bc16cdea26d4e824b2d45d1ac621e867621e",
+      "new_groups": 2,
+      "whole_cards": 0
+    }
+  },
+  "parent_new_groups": 112,
+  "combined_new_groups": 2,
+  "total_new_groups": 114,
+  "expected_native_tests": 1299,
+  "combined_scope": "Paid seven-card both-seat interaction through natural scenario winner; separate paid Plot changed-top continuation uses explicit production-movement phase fixture, not naturally fundable library change or a full game. Both include full observations, illegal-action atomicity and orphan raw/index/restore. No runtime changes.",
+  "integrated_trace_proof": {
+    "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+    "parents": {
+      "tenth": {
+        "head": "7d958ebdae306935a8dcf5b907a84743815538d2",
+        "schema": 146,
+        "full_Trace_exact_matches": 2501,
+        "trace_sha256": "4ff88e0fa4f9018f16702429281addbcbe56800707d77d86d06d717f687f338e",
+        "changed": [],
+        "removed": []
+      },
+      "games": {
+        "head": "02f9d72b4960505dcb2dc69aeae0d128e356a184",
+        "schema": 146,
+        "full_Trace_exact_matches": 2501,
+        "trace_sha256": "4ff88e0fa4f9018f16702429281addbcbe56800707d77d86d06d717f687f338e",
+        "changed": [],
+        "removed": []
+      },
+      "galactus_us_agent": {
+        "head": "407ceb0f1d8e1a1e0ab1ab94fe5fe321b1ededc6",
+        "schema": 146,
+        "full_Trace_exact_matches": 2503,
+        "trace_sha256": "0e142b168425207cdb162b171c7c1ba6ec526b18812a532e5642531d6d008a88",
+        "changed": [],
+        "removed": []
+      },
+      "library_top": {
+        "head": "31252f5a2c2dd9b51ba34b6afbad519688bc34be",
+        "schema": 147,
+        "full_Trace_exact_matches": 2503,
+        "trace_sha256": "57224b9113327cdb1bcb5d8eaf04099a28d09eecdae7e9337dfd14ae8620cdfa",
+        "changed": [],
+        "removed": []
+      },
+      "improvise": {
+        "head": "e41916ed462e123aa3e20a8ecba9a9af9473ed87",
+        "schema": 147,
+        "full_Trace_exact_matches": 2503,
+        "trace_sha256": "2a4954b2456fbec7ca8a2f0217aa1218d4063f7d2b26163e1c34a26ba67826fc",
+        "changed": [],
+        "removed": []
+      },
+      "feast": {
+        "head": "2078223d5da6f1ff8a5cf715132eef56e56f70ff",
+        "schema": 146,
+        "full_Trace_exact_matches": 2502,
+        "trace_sha256": "d35aa09090afde6c23d9836766577e981ddf8bd316dd173b1d41cdddaf9264c8",
+        "changed": [],
+        "removed": []
+      }
+    },
+    "normal_schema": 147,
+    "comparison_schema": 146,
+    "normal_sha256": "8b0cb3dfdc9cee46637c0c43b639a917135357f1a8de32f0ba1fc5805351b478",
+    "previous146_sha256": "6c5543b673e77a34041837292299c184291eb865425b46ab3f6e52713f64f322",
+    "new_rows": {
+      "Arc Reactor": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "bdc89f9863097122",
+        "observations": "dc0023d01b20355f"
+      },
+      "Daredevil, Man Without Fear": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "7cf9667d9239e4fd",
+        "observations": "8628321a4b9c97ac"
+      },
+      "Heroic Feast": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 6,
+        "zone": "Battlefield",
+        "journal": "34d9b2b58f992ebc",
+        "observations": "c38ca9f379decf86"
+      },
+      "Iron Lad, Diverging Destiny": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "5a37305467443acc",
+        "observations": "eff22b7e2c672338"
+      },
+      "Ironheart, Clever Champion": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "87c199e3b586e2a2",
+        "observations": "c1de4473c19b3ef8"
+      },
+      "The Coming of Galactus": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Battlefield",
+        "journal": "1fa2e414f0dfe395",
+        "observations": "18477abd36e8f59b"
+      },
+      "U.S.Agent, John Walker": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Battlefield",
+        "journal": "c788bd6ffad9aa32",
+        "observations": "ecea6523364f8122"
+      }
+    },
+    "rows": 2508,
+    "metadata_sha256": "504e5898b107e869e75afb89ff24c3a13e139a3fad02ce875224fe500c7ab768",
+    "metadata_exact_galactus_parent": true,
+    "old_metadata_rows_exact": true,
+    "catalogue_definitions": 5401,
+    "token_recipes": 123,
+    "new_ids": [
+      {
+        "id": 5399,
+        "identity": "@token/msh-galactus"
+      },
+      {
+        "id": 5400,
+        "identity": "@token/msh-sturdy-shield"
+      }
+    ],
+    "old_fields_stripped": false,
+    "recorder_changed": false,
+    "membership_unchanged": true,
+    "policy_exact_improvise_parent": true,
+    "policy_change_scope": "Existing smoke policy assigns new BeginImprovise/ChooseImproviser actions the same scores as their Convoke counterparts; all prior arms unchanged, no new bot",
+    "fixed_input_files": 11771,
+    "fixed_input_changes": [],
+    "native_rules_passed": 1296,
+    "sole_preacceptance_failure": "Expected row count2508 vs2503"
+  },
+  "integrated_checks_before_trace_acceptance": {
+    "native": 101,
+    "clippy": 0,
+    "format": 0,
+    "sources": 0,
+    "link": 0,
+    "changed": [],
+    "files": 11771,
+    "terminal": true
+  },
+  "integrated_checks_guard": {
+    "command": [
+      "python3",
+      "<temp>/msh-eleventh-export-checks.py"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 186.15998318296624,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2597924864,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "integrated_focused_cleanup": {
+    "terminal": true,
+    "no_active_target_consumers": true,
+    "accessible_proc_fd_maps_exe_scan_clear": true,
+    "root": "<cache>/rustmage-msh-eleventh-target",
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 125632512,
+    "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+    "preserved_shared_libraries": {
+      "<cache>/rustmage-msh-eleventh-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_native_binary": {
+      "path": "<cache>/rustmage-msh-eleventh-target/debug/deps/rustmage-b764cd26223fba2c",
+      "sha256": "d78cd22a8277d265a4beecc4029aad21c86f50af326ed48b9d4f4b3becf1c443"
+    }
+  },
+  "new_shared_mechanics": [
+    "Effective Saga subtype and available printed chapters govern automatic lore and final sacrifice",
+    "Owned token-entry completion attaches every actually created Equipment to exact source through central attachment legality",
+    "CR401.5 owned library-top visibility operation across announcements, nested mana and special-action continuations; public historical one-card reveal and known draw",
+    "Improvise with Convoke union matching, actor-owned reservations, actual/speculative dynamic noncreature grant and ordered costs; commit one tap event batch",
+    "First-program typed optional homogeneous target bound captures actual life-event scalar while retaining target-rule specialization"
+  ],
+  "wire_schema": 147,
+  "wire_change_scope": "Real Improvise action/choice fields and public historical library reveal payload; no artificial schema change for private helpers",
+  "bounded_complete_games": {
+    "ordinary_msh_only_standard_games": 52,
+    "five_color_games": 20,
+    "feast_wg_mirror_games": 32,
+    "decisions": 27514,
+    "all_natural_winners": true,
+    "all_complete_replays_exact": true,
+    "feast_paid_casts": 35,
+    "feast_observed_targeted_life_packets": 40,
+    "both_feast_controllers_selected_targets": true,
+    "scope": "Bounded supported pools and existing observation-only smoke policy; not full-set acceptance, no injected game setup/progress and no concessions. Improvise adds only two new-action score aliases matching Convoke; prior smoke policy arms unchanged."
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T03:58:32+00:00",
+    "end_utc": "2026-10-25T05:06:47.307249+00:00",
+    "seconds": 4095.307249,
+    "whole_cards": 7,
+    "cards_per_hour": 6.153384463681787,
+    "scope": "Concurrent authoring interval through integrated evidence preparation, including queues, fixture fixes, focused checks, trace proof, combined work and cleanup. Excludes earlier cached designs, final release/CI gates and subsequent implementation. Not a simulation benchmark."
+  },
+  "remaining": "76 gated identities plus full281-member printed-obligation, rules-interaction, all-mechanic complete-game, legality/privacy/transactional, owned search/replay/restore and measured performance acceptance remain open. All remaining work stays in draft PR516 for final human approval; no main merge authorized.",
+  "final_gates": "Final exact published-head release validation, CI and two independent nonauthor reviews are required after this source evidence commit. Review text and outcomes are retained locally only.",
+  "release_preflight_correction": {
+    "source_head": "402d8f9d7186a12d5ed5317fc6944afbaa3c0555",
+    "report": "<cache>/rustmage-validation-og8l2lac/report/result.json",
+    "terminal": true,
+    "source_pins_exit": 0,
+    "cargo_format_exit": 0,
+    "authored_card_format_exit": 1,
+    "changed": [],
+    "active_processes": [],
+    "seconds": 3.3711748490459286,
+    "scope": "Only explicit authored-card rustfmt differences in two Top parent definitions, corrected by rustfmt. Non-whitespace content is identical except an optional trailing array comma. No native compilation had run. Final full release must rerun at the corrected published head.",
+    "corrections": {
+      "src/card_definitions/msh/daredevil_man_without_fear.rs": {
+        "before_sha256": "a67a14ae4de6ecbcd74b90cf6287a14d4f8c62166c5a653b39b013361b76a68a",
+        "after_sha256": "d936d24e2c77c9b332c732f946ec65edf794ec171beee166414822d349974474",
+        "only_whitespace_and_optional_trailing_array_comma": true
+      },
+      "src/card_definitions/msh/iron_lad_diverging_destiny.rs": {
+        "before_sha256": "b415865848060bd8280a5ec5b6d147d2c2cd4a67a8952ed50e6bb5ad60df117f",
+        "after_sha256": "81c5f9c170677014d2f661613e4d0f60c7528bb755b63dbdc8437c4338d48aaf",
+        "only_whitespace_and_optional_trailing_array_comma": true
+      }
+    },
+    "regenerated_links": {
+      "schema": 1,
+      "catalogue_version": "72c062a6bcc32e9862ed1ac37479cb9ef3da93fe693a6c24aed4308465059c01",
+      "standard_legal_cards": 5164,
+      "implemented_standard_cards": 2502,
+      "implemented_total": 2508,
+      "token_definitions": 123,
+      "emblem_definitions": 3,
+      "adventure_definitions": 40,
+      "omen_definitions": 13
+    },
+    "note": "Catalogue version authenticates authored source bytes; linker regeneration follows formatting even though the definitions retain identical behavior."
+  }
+}

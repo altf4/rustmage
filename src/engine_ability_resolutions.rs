@@ -8,6 +8,8 @@ pub struct AbilityResolutionView {
     pub source: ObjectRef,
     pub definition: Card,
     pub kind: StackKind,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<u64>,
     pub count: u64,
 }
 pub(super) type Rows = Option<SharedVec<AbilityResolutionView>>;
@@ -31,6 +33,7 @@ impl Game {
             r.source == item.object
                 && r.kind == item.kind
                 && r.definition == item.trigger_definition()
+                && r.origin == item.source_ability_origin
         }) {
             row.count = row
                 .count
@@ -41,6 +44,7 @@ impl Game {
                 source: item.object,
                 definition: item.trigger_definition(),
                 kind: item.kind,
+                origin: item.source_ability_origin,
                 count: 1,
             });
         }
@@ -54,6 +58,7 @@ impl Game {
                     r.source == item.object
                         && r.kind == item.kind
                         && r.definition == item.trigger_definition()
+                        && r.origin == item.source_ability_origin
                 })
             })
             .map_or(0, |r| r.count)

@@ -21,6 +21,8 @@ pub(super) struct EffectChoice {
     pub discard_mana_value_life: Option<Player>,
     pub hand_defender: Option<CombatDefender>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
+    pub hand_entry_filter: Option<crate::SearchFilter>,
+    pub equipment_recipient: Option<ObjectRef>,
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
@@ -31,12 +33,68 @@ impl EffectChoice {
     }
 }
 impl Game {
+    pub(super) fn start_ward_discard_choice(&mut self, item: &SpellView, payer: Player) {
+        let mut required = [0; 2];
+        required[payer.index()] = 1;
+        self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
+            discard_draw: None,
+            discarded: None,
+            kind: EffectChoiceKind::Discard,
+            filter: evidence::cost(0).filter,
+            amount: 1,
+            source: item.object,
+            required,
+            selected: std::array::from_fn(|_| Vec::new()),
+            skip_to: None,
+            greatest_value: [None; 2],
+            discard_mana_value_life: None,
+            hand_defender: None,
+            entry_life_bonus: None,
+            hand_entry_filter: None,
+            equipment_recipient: None,
+        }));
+    }
+    pub(super) fn start_resolution_counter_payment(&mut self, item: &SpellView) -> bool {
+        if !self.visit_resolution_counter_payments(item.controller, &mut |_| true) {
+            return false;
+        }
+        let mut required = [0; 2];
+        required[item.controller.index()] = 1;
+        self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
+            discard_draw: None,
+            discarded: None,
+            kind: EffectChoiceKind::RemoveCreatureCounters(1),
+            filter: Self::creature_counter_spec(1).filter,
+            amount: 1,
+            source: item.object,
+            required,
+            selected: std::array::from_fn(|_| Vec::new()),
+            skip_to: None,
+            greatest_value: [None; 2],
+            discard_mana_value_life: None,
+            hand_defender: None,
+            entry_life_bonus: None,
+            hand_entry_filter: None,
+            equipment_recipient: None,
+        }));
+        self.state.pending = Pending::EffectChoice {
+            player: item.controller,
+        };
+        true
+    }
     pub(super) fn effect_choice_candidate(
         &self,
         choice: &EffectChoice,
         player: Player,
         object: ObjectRef,
     ) -> bool {
+        if choice.kind == EffectChoiceKind::RemoveCreatureCounters(1) {
+            return self.resolution_counter_candidate(player, object)
+                && self.counter_amounts(object.card).has_any();
+        }
+        if matches!(choice.kind, EffectChoiceKind::TargetAttackingReturn { .. }) {
+            return false;
+        }
         let o = &self.state.objects[object.card as usize];
         if matches!(choice.kind, EffectChoiceKind::DiscardedLand { .. }) {
             return self.state.resolving.as_ref().unwrap().item.controller == player
@@ -69,6 +127,7 @@ impl Game {
         }
         if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
             return o.zone == Zone::Battlefield
+                && self.untap_allowed(object.card, untap_rules::UntapCause::Effect)
                 && self.current_kinds(object.card) & 2 != 0
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object)
@@ -132,6 +191,10 @@ impl Game {
                     EffectChoiceKind::HandPermanent { maximum, .. } => {
                         o.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
                             && o.card.fixed_mana_value() <= u64::from(maximum)
+                            && choice.hand_entry_filter.is_none_or(|filter| {
+                                filter.matches(o.card)
+                                    && self.hand_entry_payment_legal(player, object)
+                            })
                     }
                     EffectChoiceKind::HandExileCopy => o.card.is_creature() || o.card.is_artifact(),
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
@@ -179,6 +242,8 @@ impl Game {
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
+            equipment_recipient: None,
         };
         // Freeze both quotas before either player chooses. The following printed
         // instruction computes new quotas after this entire event and its replacements.
@@ -251,6 +316,8 @@ impl Game {
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.advance_effect_choice()
     }
@@ -287,6 +354,45 @@ impl Game {
             false,
             None,
         )
+    }
+    fn hand_entry_payment_legal(&self, player: Player, object: ObjectRef) -> bool {
+        let o = &self.state.objects[object.card as usize];
+        o.zone == Zone::Hand
+            && o.owner == player
+            && self.object_ref(object.card) == object
+            && !o.is_token()
+            && (o.card.aura().is_none()
+                || self.state.objects.iter().enumerate().any(|(id, _)| {
+                    self.aura_can_enchant(o.card, player, self.object_ref(id as CardId))
+                }))
+    }
+    pub(super) fn start_filtered_hand_entry(
+        &mut self,
+        item: &SpellView,
+        filter: crate::SearchFilter,
+        skip: usize,
+    ) -> bool {
+        // HandPermanent always retains its private optional phase even when empty.
+        // Eligibility never changes the public phase or mandatory choice quota.
+        let pending = self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::HandPermanent {
+                maximum: u32::MAX,
+                tapped: false,
+            },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            Some(0),
+            false,
+            None,
+        );
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let choice = resolution.choice.as_mut().expect("private hand phase");
+        choice.hand_entry_filter = Some(filter);
+        choice.skip_to = Some(resolution.pc.checked_add(skip).expect("program offset"));
+        assert!(choice.skip_to.unwrap() <= resolution.program.len());
+        pending
     }
     pub(super) fn start_hand_creature(&mut self, item: &SpellView) -> bool {
         self.start_effect_choice_inner(
@@ -376,6 +482,8 @@ impl Game {
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.state.pending = Pending::EffectChoice { player };
     }
@@ -389,9 +497,16 @@ impl Game {
             .take()
             .unwrap();
         if matches!(choice.kind, EffectChoiceKind::UntapLands { .. }) {
-            for object in choice.selected.iter().flatten() {
-                self.state.objects[object.card as usize].tapped = false;
-            }
+            let ids: Vec<_> = choice
+                .selected
+                .iter()
+                .flatten()
+                .filter(|object| {
+                    self.on_battlefield(object.card) && self.object_ref(object.card) == **object
+                })
+                .map(|object| object.card)
+                .collect();
+            self.untap_objects(&ids, untap_rules::UntapCause::Effect);
             return;
         }
         let (tapped, discarded) = match choice.kind {
@@ -426,6 +541,108 @@ impl Game {
         }
     }
 
+    pub(super) fn attacking_return_combat(&self, player: Player) -> bool {
+        self.state.active == player
+            && matches!(
+                self.state.step,
+                Step::BeginCombat
+                    | Step::Attackers
+                    | Step::Blockers
+                    | Step::FirstStrikeDamage
+                    | Step::CombatDamage
+                    | Step::EndCombat
+            )
+    }
+    pub(super) fn start_target_attacking_return(
+        &mut self,
+        item: &SpellView,
+        counter: CounterKind,
+    ) -> bool {
+        let Some(bound) = item
+            .targets
+            .iter()
+            .copied()
+            .find(|&b| self.same_target_object(b) && matches!(b.target, Target::Card(_)))
+        else {
+            return false;
+        };
+        let Target::Card(id) = bound.target else {
+            unreachable!()
+        };
+        let reference = self.object_ref(id);
+        let player = item.controller;
+        self.state.resolving.as_mut().unwrap().choice = Some(Box::new(EffectChoice {
+            discard_draw: None,
+            discarded: None,
+            kind: EffectChoiceKind::TargetAttackingReturn { counter },
+            filter: evidence::cost(0).filter,
+            amount: 1,
+            source: item.object,
+            required: [0; 2],
+            selected: std::array::from_fn(|i| {
+                if i == player.index() {
+                    vec![reference]
+                } else {
+                    Vec::new()
+                }
+            }),
+            skip_to: None,
+            greatest_value: [None; 2],
+            discard_mana_value_life: None,
+            hand_defender: None,
+            entry_life_bonus: None,
+            hand_entry_filter: None,
+            equipment_recipient: None,
+        }));
+        self.advance_target_attacking_return()
+    }
+    fn advance_target_attacking_return(&mut self) -> bool {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let choice = resolution.choice.as_ref().unwrap();
+        let EffectChoiceKind::TargetAttackingReturn { counter } = choice.kind else {
+            unreachable!()
+        };
+        let player = resolution.item.controller;
+        let reference = choice.selected[player.index()][0];
+        if self.object_ref(reference.card) != reference
+            || self.state.objects[reference.card as usize].zone != Zone::Graveyard
+        {
+            self.state.resolving.as_mut().unwrap().choice = None;
+            return false;
+        }
+        let combat = self.attacking_return_combat(player);
+        if combat
+            && choice.hand_defender.is_none()
+            && self.state.objects.iter().enumerate().any(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == player.other()
+                    && self.current_kinds(id as CardId) & 64 != 0
+            })
+        {
+            self.state.pending = Pending::HandDefender { player };
+            return true;
+        }
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .take()
+            .unwrap();
+        let mut movement = self.entry_move(reference.card, Zone::Battlefield, true);
+        movement.controller = player;
+        movement.effect_counter = Some((counter, 1));
+        if combat {
+            movement.attacking = Some(
+                choice
+                    .hand_defender
+                    .unwrap_or(CombatDefender::Player(player.other())),
+            );
+        }
+        self.stage_entries(vec![movement], None);
+        false
+    }
     pub(super) fn choose_hand_defender(&mut self, defender: CombatDefender) {
         self.state
             .resolving
@@ -497,6 +714,8 @@ impl Game {
             discard_mana_value_life,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
+            equipment_recipient: None,
             source: item.object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
@@ -586,6 +805,18 @@ impl Game {
     }
 
     pub(super) fn advance_effect_choice(&mut self) -> bool {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .is_some_and(|c| matches!(c.kind, EffectChoiceKind::TargetAttackingReturn { .. }))
+        {
+            return self.advance_target_attacking_return();
+        }
+
         let choice = self
             .state
             .resolving
@@ -722,6 +953,7 @@ impl Game {
                 forced_tapped || enchantment,
             );
             movement.controller = player;
+            movement.attach_equipment_to = choice.equipment_recipient;
             movement.attacking = choice.hand_defender;
             movement.life_bonus = choice
                 .entry_life_bonus
@@ -855,7 +1087,7 @@ impl Game {
     }
 
     pub(super) fn decline_effect_payment(&mut self) {
-        let player = self.actor().expect("effect choice actor");
+        let player = self.semantic_actor().expect("effect choice actor");
         if let Some(draw) = self
             .state
             .resolving
@@ -887,7 +1119,7 @@ impl Game {
 
     pub(super) fn effect_choice_view(&self, viewer: Player) -> Option<EffectChoiceView> {
         let choice = self.state.resolving.as_ref()?.choice.as_ref()?;
-        let actor = self.actor()?;
+        let actor = self.semantic_actor()?;
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
@@ -897,12 +1129,12 @@ impl Game {
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
-        ) && viewer != actor
+        ) && !self.shares_information(viewer, actor)
         {
             return None;
         }
-        let public_only =
-            viewer != actor && matches!(choice.kind, EffectChoiceKind::LandCards { .. });
+        let public_only = !self.shares_information(viewer, actor)
+            && matches!(choice.kind, EffectChoiceKind::LandCards { .. });
         let candidates = self
             .state
             .objects
@@ -922,7 +1154,13 @@ impl Game {
             selected: std::array::from_fn(|index| {
                 choice.selected[index]
                     .iter()
-                    .filter(|_| choice.kind != EffectChoiceKind::Discard || index == viewer.index())
+                    .filter(|_| {
+                        choice.kind != EffectChoiceKind::Discard
+                            || self.shares_information(
+                                viewer,
+                                if index == 0 { Player::P0 } else { Player::P1 },
+                            )
+                    })
                     .copied()
                     .filter(|object| {
                         !public_only

@@ -67,6 +67,7 @@ impl Game {
             | Action::AnnounceExile { card }
             | Action::AnnounceFlashSurcharge { card }
             | Action::AnnounceWarp { card }
+            | Action::AnnounceSneak { card, .. }
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
             | Action::AnnounceBack { card }
@@ -210,6 +211,12 @@ impl Game {
                     .position(|&id| id == spell)
                     .map(|at| (p, player.library.len() - 1 - at))
             });
+        let before: Vec<_> = retained
+            .iter()
+            .map(|(id, _)| self.object_view(*id))
+            .collect();
+        self.capture_event_object_facts(before.iter());
+        self.capture_source_quantities(before.iter());
         for (id, object) in retained {
             let before = self.object_view(id);
             if before.zone != Zone::Library {
@@ -222,7 +229,7 @@ impl Game {
                     false,
                     Counters::default(),
                     None,
-                    None,
+                    ZoneObservers::default(),
                 );
             }
             let temporary = self.object_ref(id);

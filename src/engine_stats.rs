@@ -33,6 +33,7 @@ impl Game {
         self.register_static_base_stats(id);
         self.register_live_static_source(id);
         self.register_ability_source(id);
+        self.register_hand_size_source(id);
         if self.state.objects[id as usize]
             .card
             .attachment_bonus()
@@ -40,6 +41,7 @@ impl Game {
         {
             self.state.attachment_sources.push(id);
         }
+        self.register_ability_target_source(id);
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers.iter().any(|a| {
             matches!(
@@ -56,7 +58,8 @@ impl Game {
         if triggers.iter().any(|a| {
             matches!(
                 a.condition.event(),
-                TriggerCondition::ControlledCreaturesBecomeTapped
+                TriggerCondition::AttachedCreatureBecomesTapped
+                    | TriggerCondition::ControlledCreaturesBecomeTapped
                     | TriggerCondition::ControlledCreatureFirstTapOwnTurn
             )
         }) {
@@ -82,7 +85,9 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
+                    | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
             self.state.attack_sources.push(id);
@@ -108,6 +113,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::CreatureDamaged { .. }
+                    | TriggerCondition::SelfDamaged
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
@@ -126,7 +132,9 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::DamagedCreatureDies
+                TriggerCondition::CreatureCardsEnterYourGraveyard
+                    | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
+                    | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
                     | TriggerCondition::SelfLeaves
@@ -180,17 +188,23 @@ impl Game {
                     matches!(
                         fragment,
                         crate::cards::StaticAbilityFragment::LandMana { .. }
+                            | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
+                            | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
+                            | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
+                            | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
+                            | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::ControlledSpellsCasualty { .. }
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
+                            | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)

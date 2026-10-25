@@ -1,0 +1,531 @@
+{
+  "schema": 1,
+  "scope": "Two complete MSH cards and their individual/directly affected focused rules tests; final set integration deferred.",
+  "base": "1c065a5c32a473057f6ffe7d8bcefb8d5a7c7234",
+  "gated_core_checkpoint": "73a56ef7",
+  "scheduler_dependency": {
+    "source": "5bed850cb149492e5c41a50e0e2495f9ba6cd41e",
+    "tested_runtime": "1a46e89d4eb02543dff9c20702760c41844530e9",
+    "merge": "fe74fa64",
+    "description": "Completed scheduler source and its Tony/attachment/sting/Serum ancestry retained; additive module/state/dispatch constraints merged together. No changes to scheduler semantics."
+  },
+  "tested_runtime": "b1bb4171",
+  "complete_cards": [
+    "Cosmic Cube",
+    "Construct a Cosmic Cube"
+  ],
+  "source_audit": {
+    "cache": {
+      "path": "<cache>/rustmage-msh-cosmic-cube-source-design.json",
+      "sha256": "fbabfe7c1970710ecec9c9f59d743f529cdb68ae6853014b480276d539c91b56"
+    },
+    "oracle": [
+      {
+        "oracle_id": "369aa9a6-af8a-432c-adff-ced2bb203dc7",
+        "name": "Construct a Cosmic Cube",
+        "layout": "normal",
+        "mana_cost": "{2}{B}",
+        "cmc": 3.0,
+        "type_line": "Enchantment \u2014 Plan",
+        "oracle_text": "Whenever you draw your second card each turn, create a 2/1 black Villain creature token with menace and put a plan counter on this enchantment.\nWhen the seventh plan counter is put on this enchantment, sacrifice it. When you do, you control target opponent during their next turn. (You see all cards that player could see and make all decisions for them.)",
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "keywords": [],
+        "all_parts": [
+          {
+            "id": "248b4c86-163b-46eb-9949-e8d8e5875294",
+            "component": "combo_piece",
+            "name": "Construct a Cosmic Cube",
+            "type_line": "Enchantment \u2014 Plan"
+          },
+          {
+            "id": "cd76092f-0f5e-4890-996c-33f4f47c659c",
+            "component": "token",
+            "name": "Villain",
+            "type_line": "Token Creature \u2014 Villain"
+          }
+        ],
+        "reference_printing": {
+          "id": "448de757-ac16-4529-b851-1a1331b821a5",
+          "set": "msh",
+          "collector_number": "90",
+          "released_at": "2026-06-26"
+        }
+      },
+      {
+        "oracle_id": "0866a630-d962-4aa9-a15f-08b2947540ef",
+        "name": "Cosmic Cube",
+        "layout": "normal",
+        "mana_cost": "{5}",
+        "cmc": 5.0,
+        "type_line": "Artifact",
+        "oracle_text": "Ward {2}\nWhenever you attack, look at the top six cards of your library. You may cast a spell from among them with mana value less than or equal to the greatest power among attacking creatures you control without paying its mana cost. Put the rest on the bottom of your library in a random order.",
+        "colors": [],
+        "color_identity": [],
+        "keywords": [
+          "Ward"
+        ],
+        "reference_printing": {
+          "id": "d1cf1ead-fe91-4328-89ab-6d0bc9ff6cbe",
+          "set": "msh",
+          "collector_number": "245",
+          "released_at": "2026-06-26"
+        }
+      }
+    ],
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "full_java_bodies": 18,
+    "additional_complete_method_scopes": "CardUtil getCastableComponents and castSpellWithAttributesForFree/castSpellWithAttributes helper methods; not claimed as a full utility-file read.",
+    "pins": [
+      {
+        "path": "Mage.Sets/src/mage/cards/c/CosmicCube.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "93cf8db52b6599315b8ffad02422c0c61a2bbabdf251ede2627422d06a526793",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/c/ConstructACosmicCube.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a3d441b48cbc84c6cacaee829886594178b41ca4caa8c0969b09000ce8ddf1b2",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/PlanCounterThresholdTriggeredAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "9081361555320e1e265feafc3221203563702110e9af1527fcd8f8f307dd0317",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/turn/ControlTargetPlayerNextTurnEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a9007f2b299554e30b369cca080680d3c1f575a7626194ae679f2fb2dc38f79b",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/game/turn/TurnMod.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "f15213fe573eb67e7650c78d93726021700267839219ff022dd72fb304826698",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/game/permanent/token/VillainToken.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "d394e2f25d7167371b6e384d1dc54f6bb52f8b018a55ce922d8c04264347dc46",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/util/CardUtil.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+        "read_scope": "scoped complete getCastableComponents and castSpellWithAttributes/ForFree overloads, not full utility file"
+      }
+    ],
+    "all19_source_file_hashes_rechecked": true,
+    "primary": [
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "sections": [
+          "Construct a Cosmic Cube",
+          "Cosmic Cube"
+        ],
+        "paraphrase": "Construct second draw/late reflexive target; active player and object controllers unchanged; information and decisions controlled with only victim resources; latest effect wins and waits for actual taken turn. Cube casts immediately during resolution ignoring ordinary type-based timing, cannot choose alternate cost, mandatory additional costs still paid and X0."
+      },
+      {
+        "path": "<cache>/rustmage-MagicCompRules-20260925.txt",
+        "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+        "rules": [
+          "723.1",
+          "723.1a",
+          "723.1b",
+          "723.3",
+          "723.4",
+          "723.5",
+          "723.5a",
+          "723.6",
+          "723.8",
+          "723.9",
+          "603.12",
+          "608.2"
+        ]
+      }
+    ]
+  },
+  "obligations": {
+    "Cosmic Cube": [
+      {
+        "clause": "Artifact, cost {5}, ward {2}. Opponent targeting triggers the separate counter-unless-payment packet.",
+        "evidence": [
+          "msh_cosmic_cube_paid_body_ward_and_decline_short_or_empty_library",
+          "msh_cosmic_cube_ward_two_paid_and_declined_counter"
+        ]
+      },
+      {
+        "clause": "Whenever you attack: one trigger per declared attack batch, not one per attacker; none for no attackers.",
+        "evidence": [
+          "msh_cosmic_cube_trigger_once_per_attack_batch_and_no_attack_no_offer"
+        ]
+      },
+      {
+        "clause": "Privately look at up to six actual top cards; short and empty libraries, exact references, current attacking power inclusive bound including negative and zero.",
+        "evidence": [
+          "msh_cosmic_cube_paid_body_ward_and_decline_short_or_empty_library",
+          "msh_cosmic_cube_top_six_exact_one_success_and_random_remainder",
+          "msh_cosmic_cube_power_is_current_signed_and_inclusive_not_trigger_time",
+          "msh_cosmic_cube_greatest_only_current_controlled_attackers_and_source_departure",
+          "msh_cosmic_cube_private_look_counterfactual_and_exact_stale_object"
+        ]
+      },
+      {
+        "clause": "Optional one immediate spell cast without mana cost, ordinary targeting and mandatory additional costs, X=0, one committed cast only.",
+        "evidence": [
+          "msh_cosmic_cube_free_target_proposal_invalid_atomic_quota_and_owned_restore",
+          "msh_cosmic_cube_mandatory_additional_cost_and_free_x_zero",
+          "msh_cosmic_cube_top_six_exact_one_success_and_random_remainder"
+        ]
+      },
+      {
+        "clause": "Exact remaining looked cards go to the bottom in random order after the immediate cast offer, excluding successfully cast or otherwise moved incarnations.",
+        "evidence": [
+          "msh_cosmic_cube_top_six_exact_one_success_and_random_remainder",
+          "msh_cosmic_cube_private_look_counterfactual_and_exact_stale_object"
+        ]
+      }
+    ],
+    "Construct a Cosmic Cube": [
+      {
+        "clause": "Cost {2}{B}; each second own draw on each turn makes an exact black2/1 Villain menace token and places a plan counter; third and opponent draws do not.",
+        "evidence": [
+          "msh_cosmic_cube_construct_second_draw_exact_recipe_and_each_turn",
+          "msh_cosmic_cube_construct_entry_after_first_draw_and_counter_replacements",
+          "msh_cosmic_cube_construct_seven_actual_paid_draw_spells_natural_turns"
+        ]
+      },
+      {
+        "clause": "Source/control/incarnation and suppression checked at trigger event; queued packet remains independent, replacements applied centrally.",
+        "evidence": [
+          "msh_cosmic_cube_construct_draw_trigger_captured_player_after_source_gone",
+          "msh_cosmic_cube_construct_copied_draw_packet_keeps_exact_old_source",
+          "msh_cosmic_cube_construct_suppression_at_draw_and_queued_independence",
+          "msh_cosmic_cube_construct_entry_after_first_draw_and_counter_replacements"
+        ]
+      },
+      {
+        "clause": "Crossing seven plan counters sacrifices exact source, then only successful sacrifice creates separately targeted opponent child; crossing past seven and source failure preserved.",
+        "evidence": [
+          "msh_cosmic_cube_construct_seventh_crossing_sacrifice_then_late_target",
+          "msh_cosmic_cube_construct_cross_past_seven_but_no_sacrifice_no_child",
+          "msh_cosmic_cube_construct_threshold_target_fizzle_leaves_no_control"
+        ]
+      },
+      {
+        "clause": "Source-independent next actually taken opponent turn control; latest effect wins, skipped turns do not consume, extra-turn scheduler respects normal successor.",
+        "evidence": [
+          "msh_cosmic_cube_construct_seven_actual_paid_draw_spells_natural_turns",
+          "msh_cosmic_cube_control_latest_pending_waits_for_actual_not_skipped_turn",
+          "msh_cosmic_cube_control_actual_kang_extra_turn_then_normal_turn",
+          "msh_cosmic_cube_control_real_extra_turn_skip_does_not_consume_control",
+          "msh_cosmic_cube_control_owned_index_restore_and_normal_successor_expiry"
+        ]
+      },
+      {
+        "clause": "Decision controller sees union of own/victim game information and makes victim decisions using victim resources; active player and object controllers remain victim.",
+        "evidence": [
+          "msh_cosmic_cube_control_resources_active_player_and_both_private_hands",
+          "msh_cosmic_cube_control_cannot_spend_controller_resources_wrong_actor_atomic",
+          "msh_cosmic_cube_control_private_look_delegates_without_leaking_other_library",
+          "msh_cosmic_cube_control_private_scry_union_and_actual_discard_cost",
+          "msh_cosmic_cube_control_private_selection_union",
+          "msh_cosmic_cube_control_worlds_private_hand_and_entry_apnap_choices"
+        ]
+      },
+      {
+        "clause": "Controller still makes own decisions; each player may concede only themself; control and information last through all cleanup, ending only at next actual turn.",
+        "evidence": [
+          "msh_cosmic_cube_control_controller_keeps_own_priority_and_resources",
+          "msh_cosmic_cube_control_concessions_always_only_caller_self",
+          "msh_cosmic_cube_control_cleanup_retains_decider_until_real_begin_turn",
+          "msh_cosmic_cube_control_survives_repeated_cleanup_priority",
+          "msh_cosmic_cube_control_information_entitlement_expires_after_actual_turn"
+        ]
+      }
+    ]
+  },
+  "shared_core": {
+    "private_instructions": [
+      "CastLibraryTopUpToAttackingPower(u16)",
+      "BottomLookedLibraryRandom",
+      "ControlTargetPlayerNextTurn"
+    ],
+    "decision_boundary": "Game::actor() and Observation.actor identify external decider; Game::semantic_actor() and all internal rules/resource queries retain original pending player. apply validates caller then executes using semantic player, except Concede always acts for caller. Indexed actions retain external actor/revision validation.",
+    "information_boundary": "Existing per-player entitlements are unioned for the current controlling player only: hands, permitted library top, look/scry/search/selection, hand/entry/additional-cost/forage/evidence/mana/rollback/private replacement views. The victim retains own information but receives no delegated decision actions. No opponent controller/resource substitution.",
+    "turn_boundary": "begin_player_control_turn is called at actual begin_turn after scheduler/skip selection. It clears old current control, consumes latest pending row for the real active player, and preserves current control across cleanup priority repeats.",
+    "cast_boundary": "Existing resolution cast engine handles legal faces, targets, X, mandatory costs and committed-child quota. Original looked exact refs are kept separately for random bottom completion; non-entitled observers receive neither looked identities nor origin-Library resolution-free-cast refs."
+  },
+  "public_wire": {
+    "schema": 152,
+    "allocation": "Existing coordinated unpublished cohort; no additional increment.",
+    "additions": [
+      "Optional serde-skipped Observation.player_control with public pending/current captured-player rows and semantic_actor.",
+      "Optional serde-skipped actor-entitled Observation.library_cast_look with current bound and remaining visible looked ObjectViews."
+    ],
+    "absent_behavior": "Both fields omitted when absent. Old menus/actions retain their shapes. Existing origin-Library resolution-free-cast payload is private to entitled viewers. Actor identity differs only while real player control is active.",
+    "new_actions": 0
+  },
+  "token": {
+    "new_ids": 0,
+    "new_recipes": 0,
+    "reused_id": 5312,
+    "identity": "@token/cf0227c0984ee9114e6c311f",
+    "recipe": "2/1 black Creature\u2014Villain, menace; not the colorless artifact Robot Villain."
+  },
+  "focused": {
+    "new_groups": 33,
+    "directly_affected_groups": 75,
+    "total_groups": 108,
+    "tests": [
+      "msh_cosmic_cube_paid_body_ward_and_decline_short_or_empty_library",
+      "msh_cosmic_cube_top_six_exact_one_success_and_random_remainder",
+      "msh_cosmic_cube_power_is_current_signed_and_inclusive_not_trigger_time",
+      "msh_cosmic_cube_greatest_only_current_controlled_attackers_and_source_departure",
+      "msh_cosmic_cube_trigger_once_per_attack_batch_and_no_attack_no_offer",
+      "msh_cosmic_cube_free_target_proposal_invalid_atomic_quota_and_owned_restore",
+      "msh_cosmic_cube_mandatory_additional_cost_and_free_x_zero",
+      "msh_cosmic_cube_private_look_counterfactual_and_exact_stale_object",
+      "msh_cosmic_cube_ward_two_paid_and_declined_counter",
+      "msh_cosmic_cube_construct_second_draw_exact_recipe_and_each_turn",
+      "msh_cosmic_cube_construct_entry_after_first_draw_and_counter_replacements",
+      "msh_cosmic_cube_construct_draw_trigger_captured_player_after_source_gone",
+      "msh_cosmic_cube_construct_seventh_crossing_sacrifice_then_late_target",
+      "msh_cosmic_cube_construct_cross_past_seven_but_no_sacrifice_no_child",
+      "msh_cosmic_cube_control_resources_active_player_and_both_private_hands",
+      "msh_cosmic_cube_control_cannot_spend_controller_resources_wrong_actor_atomic",
+      "msh_cosmic_cube_control_concessions_always_only_caller_self",
+      "msh_cosmic_cube_control_owned_index_restore_and_normal_successor_expiry",
+      "msh_cosmic_cube_control_latest_pending_waits_for_actual_not_skipped_turn",
+      "msh_cosmic_cube_control_actual_kang_extra_turn_then_normal_turn",
+      "msh_cosmic_cube_control_private_look_delegates_without_leaking_other_library",
+      "msh_cosmic_cube_control_cleanup_retains_decider_until_real_begin_turn",
+      "msh_cosmic_cube_control_private_scry_union_and_actual_discard_cost",
+      "msh_cosmic_cube_control_private_selection_union",
+      "msh_cosmic_cube_construct_threshold_target_fizzle_leaves_no_control",
+      "msh_cosmic_cube_construct_suppression_at_draw_and_queued_independence",
+      "msh_cosmic_cube_control_real_extra_turn_skip_does_not_consume_control",
+      "msh_cosmic_cube_construct_copied_draw_packet_keeps_exact_old_source",
+      "msh_cosmic_cube_construct_seven_actual_paid_draw_spells_natural_turns",
+      "msh_cosmic_cube_control_worlds_private_hand_and_entry_apnap_choices",
+      "msh_cosmic_cube_control_information_entitlement_expires_after_actual_turn",
+      "msh_cosmic_cube_control_controller_keeps_own_priority_and_resources",
+      "msh_cosmic_cube_control_survives_repeated_cleanup_priority"
+    ],
+    "commands": [
+      "CARGO_TARGET_DIR=<cache>/rustmage-msh-cosmic-cube-dev-target CARGO_PROFILE_TEST_OPT_LEVEL=0 python3 scripts/resource_guard.py --report <cache>/rustmage-msh-cosmic-cube-final-guard.json -- python3 <cache>/rustmage-msh-cosmic-cube-final-driver.py"
+    ],
+    "filters": [
+      {
+        "filter": "msh_cosmic_cube_",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_bruce_kang_",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_widow_worlds_",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_hand_choices_",
+        "exit_code": 0
+      }
+    ],
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development",
+    "new_rules_seconds": 0.2,
+    "affected_seconds": [
+      0.22,
+      0.1,
+      0.14
+    ],
+    "sum_checked_execution_seconds": 0.66,
+    "measurement": "Test execution includes scenario setup, legal-action validation, both-view assertions and owned raw/index/restore replay; not pure gameplay simulation.",
+    "driver_seconds": 31.94728820101591,
+    "guard_seconds": 32.09075184800895,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2804764672,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "fixed_inputs": 11176,
+    "changed_inputs": [],
+    "artifacts": [
+      {
+        "path": "<cache>/rustmage-msh-cosmic-cube-final.log",
+        "sha256": "b2a1be23149a09c38f165b619a379cf1bead0c3d561a23b4cc1915e47322feee"
+      },
+      {
+        "path": "<cache>/rustmage-msh-cosmic-cube-final-checks.json",
+        "sha256": "5c67e80d680954490e5a7128c2749141d99773eb6676ee326de031d4e31a5019"
+      },
+      {
+        "path": "<cache>/rustmage-msh-cosmic-cube-final-guard.json",
+        "sha256": "47e7bbb4147f6daad2d0bf385690f2fd7c21357a74e81b47673fd9abacb7f6f4"
+      },
+      {
+        "path": "<cache>/rustmage-msh-cosmic-cube-final-inputs.json",
+        "sha256": "bba073323a5ba7277cdbe1bacaa84d09a216375486a53b2e3aa29be32c10e466"
+      }
+    ]
+  },
+  "development_history": [
+    "First guarded compile: three test API mismatches (private Card constructor and ObjectRef control helpers), no runtime execution.",
+    "First executable matrix17/22 passed. Corrected only fixture assumptions: artifact kind mask, unavailable zero-MV fixture, explicit ward payment selection, Titania cost menu and cleanup phase entry.",
+    "Expanded28 groups:27passed, sole menu expectation omitted always-available own Concede. Corrected fixture;31/31 gated typed producer groups passed.",
+    "Enabled both flags, removed gated metadata fixture fallback; added own-priority and repeated-cleanup boundaries; final33own+75affected ordinary supported groups passed."
+  ],
+  "fixture_qualifications": [
+    "All final producer casts use supported immutable definitions and actual colored/generic payment. Scene setup may seed mana, objects, phase or continuous modifiers; these are bounded rules scenarios, not legal full games.",
+    "Direct draw_many calls test event boundaries; one end-to-end group separately casts seven paid Divinations across natural turns to the actual seventh-counter sacrifice and controlled opponent turn.",
+    "Copied draw packet is a bounded copied-trigger executor probe. It is not claimed as a paid copy-spell scenario.",
+    "Source moves/type suppression during queued/suspended resolution, direct current-player rows, skip counters and signed power/cleanup modifiers are explicit executor seams, not claimed response-priority windows.",
+    "The real paid Kang activation creates an extra turn in scheduler tests; deliberately seeded skip counters test the shared actual-turn boundary.",
+    "Focused privacy assertions cover new look, hands, scry/selection, discard/additional payment and APNAP hand/entry surfaces. Other updated view gates are source-audited entitlement projections, not claimed as individually paid instances of every Standard card."
+  ],
+  "metadata": {
+    "command": "python3 scripts/link_catalogue.py",
+    "scope": "Metadata-only typed definition admission and links after flags changed; no aggregate engine execution.",
+    "own_new_ids": 0,
+    "own_policy_changes": false,
+    "membership_changes": false,
+    "recorder_changes": false,
+    "accepted_trace_changes": false,
+    "existing_trace": {
+      "path": "<worktree>/src/assurance/card_traces.json",
+      "sha256": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3"
+    }
+  },
+  "cleanup": {
+    "report": {
+      "path": "<cache>/rustmage-msh-cosmic-cube-cleanup.json",
+      "sha256": "c409b466ed3a50a702c4fa397a41039a2b0e94df1b39d22f0eb22d50a72858e2"
+    },
+    "preservation": {
+      "path": "<cache>/rustmage-msh-cosmic-cube-preservation.json",
+      "sha256": "1bffc40018cbdc762ad4bd66b3788605d59c57b231b4def76a37ad3adc37f515"
+    },
+    "required_artifacts": 4498,
+    "details": {
+      "created_utc": "2026-10-25T17:52:56.399980+00:00",
+      "terminal": true,
+      "known_guarded_consumers_terminal": true,
+      "own_user_processes_scanned": 255,
+      "accessible_fd_maps_exe_cwd_target_refs": [],
+      "denied_inspections": 202,
+      "target": "<cache>/rustmage-msh-cosmic-cube-dev-target",
+      "parent_manifest": "<cache>/rustmage-msh-ultron-preservation.json",
+      "parent_manifest_sha256": "b2435cf763b7cf207ad8b295c02a97d4a3a8c7928fa05d51f0e498d52aa0880b",
+      "prior_required": 4491,
+      "all_prior_paths_and_hashes_exact": true,
+      "missing_prior": [],
+      "changed_prior": [],
+      "removed_files": 165,
+      "removed_path_allocated_bytes": 40370176,
+      "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation.",
+      "preserved_target_files": [
+        {
+          "path": "<cache>/rustmage-msh-cosmic-cube-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage-msh-cosmic-cube-dev-target/debug/deps/rustmage-55e16bd14e329fbf",
+          "sha256": "e4482db4dd957e6ae13c02269eba45c9d846166cdc7b182a711095b2a387d29e"
+        }
+      ]
+    }
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T17:25:54.116395+00:00",
+    "end_utc": "2026-10-25T17:54:44.252651+00:00",
+    "elapsed_seconds": 1730.136256,
+    "complete_cards": 2,
+    "scope": "Full source audit, shared and typed authoring, focused development, supported paid confirmation, provenance/evidence and terminal cleanup. Not a simulation benchmark or full-set extrapolation."
+  },
+  "deferred": [
+    "No DEFAULT/all-native, aggregate Clippy/static, full old Trace exports, release/CI, main merge or additional PR in this scope. Those are deferred under the current individual-card priority.",
+    "Final281-card behavior, interactions, legal games and performance acceptance remain open."
+  ]
+}

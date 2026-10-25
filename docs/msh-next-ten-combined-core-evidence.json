@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T12:49:12.748369+00:00",
+  "scope": "Combined four gated cores only; zero new complete cards; all ten producers remain gated at this checkpoint.",
+  "tested_runtime": "0e9a1b65c728269868a97fbef51325a125a38acb",
+  "candidate_complete_flags": 222,
+  "denominator": 281,
+  "new_core_groups": 70,
+  "groups_by_family": {
+    "hand_entry_transform": 12,
+    "counter_quantities_funding": 26,
+    "copy_return_ability_target": 22,
+    "parity_library": 10
+  },
+  "native_passed": 1662,
+  "native_failed": 0,
+  "native_execution_seconds": 14.82,
+  "default_profile": true,
+  "phases": [
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "seconds": 51.86784169601742,
+      "log": "<cache>/rustmage-msh-next10-four-core-default-1/00.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 2.10595373500837,
+      "log": "<cache>/rustmage-msh-next10-four-core-default-1/01.log"
+    },
+    {
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2024",
+        "--check",
+        "src/card_definitions/msh/thanos_the_mad_titan.rs",
+        "src/card_definitions/msh/trickster_s_stratagem.rs"
+      ],
+      "exit": 0,
+      "seconds": 0.014754251053091139,
+      "log": "<cache>/rustmage-msh-next10-four-core-default-1/02.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_sources.py"
+      ],
+      "exit": 0,
+      "seconds": 0.797312482027337,
+      "log": "<cache>/rustmage-msh-next10-four-core-default-1/03.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/link_catalogue.py",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.5794182129902765,
+      "log": "<cache>/rustmage-msh-next10-four-core-default-1/04.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/test_assurance_runner.py"
+      ],
+      "exit": 0,
+      "seconds": 0.4471268090419471,
+      "log": "<cache>/rustmage-msh-next10-four-core-default-1/05.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "--",
+        "--test-threads=1"
+      ],
+      "exit": 0,
+      "seconds": 204.9478821399971,
+      "log": "<cache>/rustmage-msh-next10-four-core-default-1/06.log"
+    }
+  ],
+  "fixed_inputs": 11829,
+  "changed_inputs": [],
+  "full_trace_proof": {
+    "rows": 2525,
+    "previous_rows": 2525,
+    "full_previous149_exact_e5": true,
+    "normal150_exact_accepted": true,
+    "summary": [
+      "test result: ok. 1662 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 14.82s"
+    ]
+  },
+  "guard": {
+    "command": [
+      "python3",
+      "<temp>/msh-next10-four-core-default1-driver.py"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 403.2825583399972,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2889920512,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "report": "<cache>/rustmage-msh-next10-four-core-default-1/result.json",
+  "report_sha256": "141e43b35123e3d70c3b6429c5d69cec2dc5911ecf4f034794039aa830eee414",
+  "guard_report": "<cache>/rustmage-msh-next10-four-core-default-1-resource.json",
+  "guard_sha256": "2fb2763f3c3bec02300f350949ac96dd2a756866b5960e935d6564ea93155622",
+  "integration_detail": "Disjoint instruction and test module lists retained; generated catalogue rerun; new counter resolution EffectChoice initializes the hand-entry filter None introduced by the hand-entry core.",
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-next10-four-core-preservation.json",
+    "sha256": "67842a54947b3c9e4ed0d70d52d74b623199729a1c186508abb7fb43a638d172",
+    "required": 3988,
+    "all_prior3973_plus_parity3985_preserved": true
+  },
+  "limits": "No whole-card admission, whole-pool acceptance or pure gameplay throughput claim. Whole producer and final release/CI gates follow."
+}

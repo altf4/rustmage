@@ -36,6 +36,22 @@ pub(super) fn graveyard_cards_at_least<W: ability_world::CharacteristicWorld + ?
         .count()
         >= usize::from(minimum)
 }
+/// Starting guard: a payment may later remove the witness without invalidating activation.
+pub(super) fn controls_tough_creature<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    minimum: u16,
+) -> bool {
+    let query = characteristic_query::CharacteristicQuery::in_world(world);
+    (0..world.game().state.objects.len()).any(|id| {
+        let id = id as CardId;
+        let object = world.object(id);
+        object.zone == Zone::Battlefield
+            && object.controller == actor
+            && world.kinds(id) & 1 != 0
+            && query.stats(id).toughness >= i128::from(minimum)
+    })
+}
 impl Game {
     pub(super) fn activation_generic_discount(
         &self,
@@ -112,6 +128,13 @@ impl Game {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::SourceAttackedThisTurn => self
+                .state
+                .attacked_this_turn
+                .contains(&self.object_ref(source)),
+            ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
+                activations::controls_tough_creature(self, actor, minimum)
+            }
             ActivationGuard::GraveyardCardsAtLeast { kind, minimum } => {
                 graveyard_cards_at_least(self, actor, kind, minimum)
             }
@@ -173,7 +196,7 @@ impl Game {
                 &self.state.objects[card as usize],
                 self.counter_amounts(card),
                 self.current_kinds(card),
-                || self.keywords(card),
+                || ability_world::CharacteristicWorld::activation_keywords(self, card),
                 self.state.players[actor.index()].life,
                 ability,
                 index,
@@ -241,7 +264,8 @@ impl Game {
             || object.tapped
             || (self.is_creature(card)
                 && object.summoning_sick
-                && !self.keywords(card).contains(Keywords::HASTE))
+                && !ability_world::CharacteristicWorld::activation_keywords(self, card)
+                    .contains(Keywords::HASTE))
         {
             return false;
         }
@@ -268,7 +292,9 @@ impl Game {
     ) -> bool {
         let object = &self.state.objects[card as usize];
         for (index, ability) in object.card.activations().iter().enumerate() {
-            if object.card.grants_activation(index as u16) {
+            if object.card.grants_activation(index as u16)
+                || object.card.self_granted_activation_template(index as u16)
+            {
                 continue;
             }
             if !self.activation_cost_available(card, ability, index, actor, sorcery) {
@@ -305,7 +331,7 @@ impl Game {
                     let fundable = || {
                         self.activation_mana_costs(card, object.card, index as u16, 0)
                             .any(|cost| {
-                                self.activation_can_fund(
+                                self.initial_activation_target_fundable(
                                     FundingGoal {
                                         reserve: None,
                                         actor,
@@ -319,7 +345,7 @@ impl Game {
                                             None,
                                         )),
                                     },
-                                    ability.cost.additional,
+                                    ability.targets,
                                 )
                             })
                     };
@@ -356,9 +382,25 @@ impl Game {
                             return true;
                         }
                     }
+                    if object
+                        .card
+                        .activation_target_reduction(index as u16)
+                        .is_some()
+                    {
+                        return self.visit_target_cost_direct_actions(
+                            card,
+                            index as u16,
+                            actor,
+                            &counter_payment,
+                            emit,
+                        );
+                    }
                     // A modal activation must choose its mode before targets and
                     // costs. Legacy direct actions cannot encode that declaration.
-                    if modes.is_some() || ability.has_x_cost() {
+                    if modes.is_some()
+                        || ability.has_x_cost()
+                        || ability.source_counter_cost().is_some()
+                    {
                         return false;
                     }
                     // Direct actions have no owned external-cost selection.
@@ -475,18 +517,25 @@ impl Game {
         SpellView {
             source_move: None,
             borrowed_slot: None,
+            self_granted_activation: None,
             target_controller_lki: None,
             gift: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            cast_creature_subjects: None,
             copy_event: None,
             target_allocations: None,
             captured_artifact_copy: None,
             source_copy_recipe: self
                 .copy_recipe(self.object_ref(card))
-                .filter(|r| r.exceptions != CopyExceptions::NONE)
+                .filter(|r| {
+                    r.exceptions != CopyExceptions::NONE
+                        || r.overrides.is_some()
+                        || r.faces.is_some()
+                })
                 .map(Box::new),
+            source_ability_origin: self.copy_ability_origin(self.object_ref(card)),
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
@@ -516,6 +565,8 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            source_counter_payment: None,
+            exiled_symbol_cards: None,
             source_counter_lki: self.state.objects[card as usize]
                 .card
                 .activations()
@@ -526,6 +577,8 @@ impl Game {
                             .expect("live activated source")
                     })
                 }),
+            source_quantity_lki: None,
+            event_object: None,
             sacrificed_toughness: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
@@ -576,13 +629,22 @@ impl Game {
             );
             return;
         }
-        if let Some(slot) = item.borrowed_slot {
-            self.record_borrowed_use(item.object, slot, definition.exhaust);
-        } else {
-            object.used_abilities |= 1u64 << ability;
+        if item.self_granted_activation.is_none() {
+            if let Some(slot) = item.borrowed_slot {
+                self.record_borrowed_use(item.object, slot, definition.exhaust);
+            } else {
+                self.record_copy_activation_use(item, ability);
+            }
+            self.record_power_up_use(item, ability);
         }
-        self.record_power_up_use(item, ability);
         self.pay_counters(item.card, &counter_payment);
+        if let Some(kind) = definition.source_counter_cost() {
+            item.source_counter_payment = Some(SourceCounterPaymentView {
+                kind,
+                amount: counter_payment.get(kind),
+                paid: true,
+            });
+        }
         let object = &mut self.state.objects[item.card as usize];
         if let Some(change) = cost.loyalty {
             if change < 0 {
@@ -611,6 +673,15 @@ impl Game {
             self.activation_cost_counters(item.object, kind, amount, item.controller);
         }
         self.refresh_local_source_counter_quantities(item);
+        if cost.exile_self || cost.discard || cost.sacrifice {
+            // The local announcement is temporarily outside State while costs
+            // commit. Freeze its post-payment source facts before departure too.
+            let source = self.object_view(item.card);
+            item.source_facts = DamageFacts::from_view(&source);
+            item.source_keywords = source.keywords;
+            item.source_tapped = source.tapped;
+            item.source_attachment = source.attached_to;
+        }
         if cost.exile_self {
             self.move_object(item.card, Zone::Exile);
         } else if cost.discard {

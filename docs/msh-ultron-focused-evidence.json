@@ -1,0 +1,189 @@
+{
+  "scope": "One complete Ultron candidate with individual focused rules tests. Secret Invasion remains gated for subsequent source-bound copy work; aggregate validation and full-set acceptance deferred.",
+  "base": "c2f812fd42820f97d077122132576ca60dc984d0",
+  "tested_source_commit": "079219b2907eed94e1b7a90a0bbbd90461c8ac5b",
+  "complete_candidates": [
+    "Ultron, Artificial Malevolence"
+  ],
+  "wire": 152,
+  "ids_allocated": 0,
+  "printed_clause_evidence": {
+    "paid3 legendary artifact Robot Villain2/4 and timing/cost": "msh_ultron_paid_body_cost_timing_and_self_entry_excluded",
+    "another nontoken artifact controlled on entry": [
+      "msh_ultron_enemy_nonartifact_and_token_entries_do_not_trigger",
+      "msh_ultron_bounded_new_observer_and_artifacts_enter_one_simultaneous_batch",
+      "msh_ultron_source_suppression_then_restoration_controls_new_entries"
+    ],
+    "optional actual2 payment; decline, mana abilities and copied-trigger independence": [
+      "msh_ultron_decline_and_unfunded_payment_are_atomic",
+      "msh_ultron_resolution_mana_abilities_pay_real_cost_and_reserve_taps",
+      "msh_ultron_copied_trigger_owns_independent_resolution_payment_without_extra_entry"
+    ],
+    "current or latest-departure copiable values, source and exact incarnation": [
+      "msh_ultron_latest_departure_copiable_recipe_survives_destroyed_original",
+      "msh_ultron_current_changed_copy_recipe_and_departure_lki_override_entry_recipe",
+      "msh_ultron_bounded_departure_reentry_does_not_rebind_old_entrant_recipe",
+      "msh_ultron_source_departure_does_not_cancel_independent_paid_trigger",
+      "msh_ultron_copied_single_face_structure_is_preserved_in_current_and_departure_recipe",
+      "msh_ultron_noncopiable_animation_and_counters_are_excluded_from_blueprint"
+    ],
+    "ordinary token creation, as-entry choices, replacements and creature branch": [
+      "msh_ultron_paid_optional_copy_enters_tapped_then_animates_permanently",
+      "msh_ultron_artifact_creature_entry_and_token_keep_original_creature_values",
+      "msh_ultron_replacement_added_map_is_also_actual_post_entry_recipient",
+      "msh_ultron_competing_token_replacement_orders_preserve_creature_entry_status",
+      "msh_ultron_actual_entry_color_choice_defers_animation_and_is_owned"
+    ],
+    "post-entry permanent2/2 Robot Villain animation excluded from further copies": [
+      "msh_ultron_artifact_entry_observers_precede_noncreature_animation",
+      "msh_ultron_actual_copy_of_animated_token_does_not_inherit_post_entry_animation"
+    ],
+    "full nonactor privacy, transactional failures, orphan raw/index/restore": [
+      "msh_ultron_owned_optional_payment_and_full_nonactor_privacy",
+      "msh_ultron_actual_entry_color_choice_defers_animation_and_is_owned",
+      "msh_ultron_competing_token_replacement_orders_preserve_creature_entry_status"
+    ]
+  },
+  "shared_mechanics": [
+    "Opt-in EventObjectFacts::Copiable(CopyRecipe) retains exact current/latest-departure entrant blueprints, including private physical token-face structure. Unrelated old event facts keep their existing variants.",
+    "TokenCompletion::AnimateNoncreatures carries an owned exact-created-reference continuation through real replacement and entry choices. Entry observers are queued before animation.",
+    "The animation is an ordinary source-independent permanent AnimationView using current post-entry creature status. It does not modify copiable recipe exceptions."
+  ],
+  "java_discrepancy": "Official MSH notes require post-entry animation; direct Java applies token-copy modifications before entry and tests original permanent creature status. Rust follows the official ruling.",
+  "focused_validation": {
+    "command": "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-ultron-supported-resource.json -- cargo test --lib msh_ultron_ -- --nocapture",
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "new_groups": 21,
+    "both_seats": true,
+    "ordinary_supported_setup": true,
+    "native_seconds": 0.25,
+    "guard_seconds": 34.103711432020646,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2716590080,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "input_count": 11865,
+    "input_sha256": "de4fabfdcad2cf5b17232d3f27ea4c6feb3acc52f7005bc89f9ec70221fb6a11",
+    "inputs_changed": [],
+    "input_map": "<cache>/rustmage-msh-ultron-supported-inputs.json",
+    "log": "<cache>/rustmage-msh-ultron-supported.log",
+    "log_sha256": "e4e711b0856a8a283f52ca45f4ecd2360551845a4b61ac72089ef5e0561938c2",
+    "resource": "<cache>/rustmage-msh-ultron-supported-resource.json",
+    "resource_sha256": "b0f38db0eee9c3dcc07df167030c46993200e58a4484253c0b18da39488be33f",
+    "test_module": "src/engine_msh_entering_copy_tests.rs",
+    "test_module_sha256": "d8b7987f2fa84e234d26b4b30bfea926a27989d956c8edd41050b55ee0e14b09",
+    "test_functions": [
+      "msh_ultron_paid_body_cost_timing_and_self_entry_excluded",
+      "msh_ultron_paid_optional_copy_enters_tapped_then_animates_permanently",
+      "msh_ultron_decline_and_unfunded_payment_are_atomic",
+      "msh_ultron_enemy_nonartifact_and_token_entries_do_not_trigger",
+      "msh_ultron_artifact_entry_observers_precede_noncreature_animation",
+      "msh_ultron_artifact_creature_entry_and_token_keep_original_creature_values",
+      "msh_ultron_actual_copy_of_animated_token_does_not_inherit_post_entry_animation",
+      "msh_ultron_source_departure_does_not_cancel_independent_paid_trigger",
+      "msh_ultron_latest_departure_copiable_recipe_survives_destroyed_original",
+      "msh_ultron_current_changed_copy_recipe_and_departure_lki_override_entry_recipe",
+      "msh_ultron_noncopiable_animation_and_counters_are_excluded_from_blueprint",
+      "msh_ultron_source_suppression_then_restoration_controls_new_entries",
+      "msh_ultron_replacement_added_map_is_also_actual_post_entry_recipient",
+      "msh_ultron_competing_token_replacement_orders_preserve_creature_entry_status",
+      "msh_ultron_actual_entry_color_choice_defers_animation_and_is_owned",
+      "msh_ultron_resolution_mana_abilities_pay_real_cost_and_reserve_taps",
+      "msh_ultron_owned_optional_payment_and_full_nonactor_privacy",
+      "msh_ultron_copied_trigger_owns_independent_resolution_payment_without_extra_entry",
+      "msh_ultron_bounded_new_observer_and_artifacts_enter_one_simultaneous_batch",
+      "msh_ultron_bounded_departure_reentry_does_not_rebind_old_entrant_recipe",
+      "msh_ultron_copied_single_face_structure_is_preserved_in_current_and_departure_recipe"
+    ],
+    "authored_card_module_rustfmt_and_diff_check": true
+  },
+  "affected_validation": {
+    "command": "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-ultron-affected-resource.json -- cargo test --lib msh_event_objects_ -- --nocapture",
+    "actual_terminal_exit": 0,
+    "groups": 33,
+    "native_seconds": 0.23,
+    "log": "<cache>/rustmage-msh-ultron-affected.log",
+    "log_sha256": "e99f069d497678d6bae90256e8a2bc7bb244b82cdfa96cffa71d1159c2db24cb",
+    "resource": "<cache>/rustmage-msh-ultron-affected-resource.json",
+    "resource_sha256": "09ac0b2954127649b39e0cd32b14b4be4cd32a3b7689d42fa607746b9355b2cd",
+    "inputs": "same frozen supported input map; unchanged"
+  },
+  "development_failures": [
+    "Initial compile failed on missing AnimationSpec/trait imports and typed color values; no rules tests ran.",
+    "Expanded21 run20pass/one fixture failure: copied legendary Monica required the actual public KeepLegend(new token) choice and ObjectView rules-name lookup. Corrected; gated21 and supported21 passed."
+  ],
+  "sources": {
+    "full_family_design": "<cache>/rustmage-msh-secret-ultron-design-c2f812fd.json",
+    "design_sha256": "b67b2750f7e67c9a9d0292858e11c2c5fc94ade413635662eebaabcae7111521",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "family_java_records": 23,
+    "read_coverage": "22 full direct/helper bodies plus explicitly bounded CardUtil exile-zone method read; full surrounding CardUtil captured but not claimed read.",
+    "fixture_cache": "<cache>/rustmage-msh-ultron-fixture-sources.json",
+    "fixture_sha256": "776c1e8e5e0bad447814b1cc2c892b50e03101cce45784ee00c4a374764e0546",
+    "fixture_records": 17,
+    "release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "primary_rules": [
+      "707.2",
+      "707.8a",
+      "611.2a",
+      "611.2e"
+    ]
+  },
+  "tested_source_pins": {
+    "data/standard/coverage.json": "c300773812d82d2c2f5b2614c0a5a3edbb579f28f2fece6e2375562483c4d1dc",
+    "src/card_definitions/msh/ultron_artificial_malevolence.json": "dbdccef1a434d6077eeb4afb45c09849fdffa246ba28c4806af696f6a2e309b2",
+    "src/card_definitions/msh/ultron_artificial_malevolence.rs": "516ec257c1de09f5e021de110f1625fc2e062271f6fad4ee2166e5c0b40ac7f2",
+    "src/cards.rs": "82e5819e73f207cb42c90ae7c1dfc84fd086d4a70f3907492d6c15c578bc3521",
+    "src/engine.rs": "803514e9937467196e0f1483d5ed88d2b27c4317677ffa73f05df79d7532d1f8",
+    "src/engine_characteristic_layers.rs": "c23d8222d6181225e22f890fd883d7fc6a0df7088e5c4bbed9c58208c7b86db6",
+    "src/engine_entering_copies.rs": "bbb5f9b1e47b1c8d8a65303868826773c6192927a7977fd1f118b82a697255be",
+    "src/engine_event_objects.rs": "d75f1bc2ee6478f123cae22d730dad6de5b41bf5a352b7c50d6187803a4ec323",
+    "src/engine_msh_entering_copy_tests.rs": "d8b7987f2fa84e234d26b4b30bfea926a27989d956c8edd41050b55ee0e14b09",
+    "src/engine_programs.rs": "1edcf4ccbff1fc9cbe35ed3b64ef860236783e58ffffb72086ac312d2b3d5d68",
+    "src/engine_replacements.rs": "e9326c9e3f25462a1f8c57aaaefa5d91696a92a4f91d9122e2d2a99ad5019b16",
+    "src/generated/catalogue.rs": "ef12dfd385c2a91b6b074899a25e21b8b49348e2b21c0e987b0d62dbefbb1eca"
+  },
+  "compatibility": {
+    "old_trace_table": "2535 rows byte-identical to base; no exports/rebaseline",
+    "metadata_membership": "unchanged",
+    "definitions": 5403,
+    "token_recipes": 125,
+    "secret_invasion": "gated/paired sources unchanged"
+  },
+  "qualifications": [
+    "Simultaneous entry, temporary original copy/type effects and departure/reentry supplements are explicitly bounded shared helper transitions; actual payment, token creation, replacement and public choices use ordinary actions.",
+    "No claim of a supported printed nontoken artifact-land producer in the current branch; the entry-kind matcher uses effective artifact kinds generically.",
+    "Full-set games, aggregate/default/static/release/CI and final published-head acceptance remain deferred."
+  ],
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-ultron-preservation.json",
+    "sha256": "b2435cf763b7cf207ad8b295c02a97d4a3a8c7928fa05d51f0e498d52aa0880b",
+    "required_paths": 4491,
+    "parent_exact": 4482,
+    "cleanup": "<cache>/rustmage-msh-ultron-cleanup.json",
+    "cleanup_sha256": "3075e4321d3c70568239cc24fb2263a4389a4531c244040a9c8e572727927307",
+    "processes_inspected": 451,
+    "denied_process_count": 217,
+    "target_refs": [],
+    "removed_files": 165,
+    "removed_bytes": 39839231,
+    "preserved_natives": {
+      "/home/altf4/.cache/rustmage-msh-ultron-gated21-native": "e4d1df1f9acf6be56c297410a57812dc9c3c7c522e07bb4e20ceb46840ceb8c1",
+      "/home/altf4/.cache/rustmage-msh-ultron-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "1ff4ebcdf2c97f85fc570747bdaf398648b4ac79b80e9517dbfea22d896403c8"
+    },
+    "preserved_libraries": {
+      "/home/altf4/.cache/rustmage-msh-ultron-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "terminal_resource_reports": 6
+  },
+  "measured_implementation_interval": {
+    "start_utc": "2026-10-25T17:24:49.947114+00:00",
+    "end_utc": "2026-10-25T17:42:38.061887+00:00",
+    "elapsed_seconds": 1068.114773,
+    "scope": "One Ultron whole card plus entry-copy/animation core and21new focused groups; includes development iterations, excludes earlier family source reading.",
+    "cards_per_hour": 3.3704243130059206
+  },
+  "publication": "Source branch only; no PR/main merge or private review contents."
+}

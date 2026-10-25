@@ -36,14 +36,109 @@ pub(super) trait CharacteristicWorld {
             .as_deref()
             .map_or(&[], |rows| rows.as_slice())
     }
-    fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
+    fn raw_entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
         self.entry_values()
             .iter()
             .find(|r| r.object == object)
             .map(|r| r.value)
     }
+    fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
+        // A copied linked ability does not inherit choices made for an earlier
+        // ability instance, even when its printed definition is identical.
+        self.ability_origin(object.card)
+            .is_none()
+            .then(|| self.raw_entry_value(object))
+            .flatten()
+    }
 
     fn object(&self, id: CardId) -> &Object;
+    /// The immutable layer-one definition is materialized in both actual and
+    /// speculative objects; physical identity lives separately while copying.
+    fn definition(&self, id: CardId) -> Card {
+        self.object(id).card
+    }
+    fn ability_origin(&self, id: CardId) -> Option<u64> {
+        (self.object(id).zone == Zone::Battlefield)
+            .then(|| self.game().copy_ability_origin(self.reference(id)))
+            .flatten()
+    }
+    fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
+        self.game().temporary_copy_view(object)
+    }
+    fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
+        self.game().copy_recipe(self.reference(id))
+    }
+    fn is_aura(&self, id: CardId) -> bool {
+        self.kinds(id) & 32 != 0 && self.subtypes(id).has(self.definition(id), "Aura")
+    }
+    fn is_equipment(&self, id: CardId) -> bool {
+        self.kinds(id) & 16 != 0 && self.subtypes(id).has(self.definition(id), "Equipment")
+    }
+    fn recipe(&self, id: CardId) -> CopyRecipe {
+        self.stored_recipe(id)
+            .unwrap_or_else(|| CopyRecipe::new(self.definition(id)))
+    }
+    fn copiable_name(&self, id: CardId) -> &'static str {
+        self.recipe(id)
+            .overrides
+            .and_then(|value| value.name)
+            .unwrap_or_else(|| self.definition(id).name())
+    }
+    fn intrinsic_keywords(&self, id: CardId) -> Keywords {
+        self.recipe(id).intrinsic_keywords()
+    }
+    fn copied_keywords(&self, id: CardId) -> Keywords {
+        let recipe = self.recipe(id);
+        let keywords = recipe
+            .overrides
+            .map_or(Keywords::NONE, |value| value.keywords);
+        if recipe.exceptions.sacrifice_abilities != 0 {
+            keywords.union(Keywords::HASTE)
+        } else {
+            keywords
+        }
+    }
+    fn legendary(&self, id: CardId) -> bool {
+        let intrinsic = self
+            .recipe(id)
+            .overrides
+            .and_then(|value| value.legendary)
+            .unwrap_or_else(|| self.definition(id).is_legendary());
+        intrinsic
+            || self.object(id).zone == Zone::Battlefield
+                && self.attachment_sources().iter().any(|&source| {
+                    let aura = self.object(source);
+                    aura.zone == Zone::Battlefield
+                        && self.kinds(source) & 1 == 0
+                        && aura.attached_to == Some(self.reference(id))
+                        && aura.card.static_ability_groups().iter().any(|group| {
+                            group.first_layer == crate::cards::AbilityLayer::Type
+                                && group.fragments.iter().any(|fragment| {
+                                    matches!(
+                                        fragment,
+                                        crate::cards::StaticAbilityFragment::AttachedLegendary
+                                    )
+                                })
+                        })
+                })
+    }
+    fn intrinsic_mana_color(&self, id: CardId) -> Option<usize> {
+        let card = self.definition(id);
+        let color = card.mana_color()?;
+        // CR305.6 belongs to the current basic land subtype. The same shortcut
+        // also represents printed mana on Llanowar Elves, which survives losing Elf.
+        if card.is_basic_land()
+            && (self.kinds(id) & 2 == 0
+                || !self.subtypes(id).has(
+                    card,
+                    ["Plains", "Island", "Swamp", "Mountain", "Forest"][color],
+                ))
+        {
+            None
+        } else {
+            Some(color)
+        }
+    }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
             &self.game().state.named_counters,
@@ -80,6 +175,40 @@ pub(super) trait CharacteristicWorld {
                 })
             })
     }
+    /// Activation-only permission: never grants the haste keyword or attack permission.
+    fn activation_keywords(&self, id: CardId) -> Keywords {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        let keywords = query.keywords(id);
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield
+            || self.kinds(id) & 1 == 0
+            || !object.summoning_sick
+            || keywords.contains(Keywords::HASTE)
+        {
+            return keywords;
+        }
+        let grants = |f: &crate::cards::StaticAbilityFragment| {
+            matches!(
+                f,
+                crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
+            )
+        };
+        if self.static_sources().iter().any(|&source| {
+            let provider = self.object(source);
+            provider.zone == Zone::Battlefield
+                && provider.controller == object.controller
+                && provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|g| g.fragments.iter().any(grants))
+                && query.continuous_fragment_available(source, grants)
+        }) {
+            keywords.union(Keywords::HASTE)
+        } else {
+            keywords
+        }
+    }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield
@@ -92,6 +221,12 @@ pub(super) trait CharacteristicWorld {
                     && provider.card.static_cast_restriction() & 2 != 0
                     && self.printed_abilities_available(source)
             })
+    }
+    fn harnessed(&self, id: CardId) -> bool {
+        self.object(id).zone == Zone::Battlefield
+            && self
+                .roles()
+                .is_some_and(|state| state.harnessed.contains(&self.reference(id)))
     }
     fn is_token(&self, id: CardId) -> bool {
         self.object(id).is_token()
@@ -145,6 +280,30 @@ pub(super) trait CharacteristicWorld {
             })
     }
 
+    fn source_conditional_keywords(&self, id: CardId) -> Keywords {
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield {
+            return Keywords::NONE;
+        }
+        object
+            .card
+            .static_ability_groups()
+            .iter()
+            .flat_map(|group| group.fragments)
+            .fold(Keywords::NONE, |result, fragment| {
+                if let crate::cards::StaticAbilityFragment::SourceConditionalKeywords {
+                    condition,
+                    keywords,
+                } = *fragment
+                    && self.value(condition, id) != 0
+                {
+                    result.union(keywords)
+                } else {
+                    result
+                }
+            })
+    }
+
     fn counter_subtype_keywords(&self, id: CardId) -> Keywords {
         let object = self.object(id);
         if object.zone != Zone::Battlefield || self.kinds(id) & 1 == 0 {
@@ -183,10 +342,18 @@ pub(super) trait CharacteristicWorld {
     }
     fn has_ability_removal(&self) -> bool {
         self.roles().is_some_and(|state| {
-            state.ability_removal_sources.iter().any(|&source| {
-                self.object(source.card).zone == Zone::Battlefield
-                    && self.reference(source.card) == source
-            })
+            state
+                .resolved_ability_modifications
+                .iter()
+                .any(|row| return_ability_modification::active(self, row))
+                || state.source_linked_effects.iter().any(|row| {
+                    row.kind == SourceLinkedEffectKind::RemoveAbilities
+                        && source_linked_effects::active(self, row)
+                })
+                || state.ability_removal_sources.iter().any(|&source| {
+                    self.object(source.card).zone == Zone::Battlefield
+                        && self.reference(source.card) == source
+                })
         })
     }
     fn fragment_available(
@@ -211,6 +378,19 @@ pub(super) trait CharacteristicWorld {
             })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
+        if self.roles().is_some_and(|state| {
+            state.resolved_ability_modifications.iter().any(|row| {
+                row.recipient == self.reference(id)
+                    && return_ability_modification::active(self, row)
+            }) || state.source_linked_effects.iter().any(|row| {
+                row.recipient == self.reference(id)
+                    && row.kind == SourceLinkedEffectKind::RemoveAbilities
+                    && source_linked_effects::active(self, row)
+            })
+        }) {
+            return ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
+                .printed;
+        }
         // Only an exact attached removal provider can remove printed abilities.
         // Unrelated sources need no whole-world layer-six evaluation. Keep the
         // full evaluator for candidates: competing effects may blank a provider.
@@ -258,6 +438,8 @@ pub(super) trait CharacteristicWorld {
             &|id, _| self.kinds(id),
             &|id| self.name(id),
             &|id| self.colors(id),
+            &|id| self.legendary(id),
+            &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
@@ -360,6 +542,7 @@ pub(super) trait CharacteristicWorld {
     }
     fn attached(&self, source: ObjectRef, recipient: CardId) -> bool {
         self.attachment_link(source, self.reference(recipient))
+            && (self.is_aura(source.card) || self.is_equipment(source.card))
             && self.kinds(source.card) & 1 == 0
             && self.kinds(recipient) & 1 != 0
     }
@@ -438,6 +621,15 @@ impl ManaProduction {
     ) -> Self {
         match self {
             Self::Tagged { production, .. } => production.in_world(world, source),
+            Self::TapSourcePowerChoice { mask } => {
+                let amount = u32::try_from(power_after_source_tap(world, source).max(0))
+                    .capacity("mana representation exhausted");
+                if amount == 0 {
+                    Self::Fixed([0; 6])
+                } else {
+                    Self::Choice { mask, amount }
+                }
+            }
             Self::SourcePower { color } => {
                 let mut mana = [0; 6];
                 mana[usize::from(color)] = u32::try_from(world.power(source).max(0))
@@ -495,4 +687,83 @@ impl ManaProduction {
             value => value,
         }
     }
+}
+
+/// Only the source tap changes in this borrowed production world. Every other
+/// fact, including virtual departures, copies, counters and entry projections,
+/// is read from the parent world. No events are emitted by a feasibility query.
+struct SourceTappedWorld<'a, W: CharacteristicWorld + ?Sized> {
+    parent: &'a W,
+    source: CardId,
+    object: Object,
+}
+impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<'_, W> {
+    fn game(&self) -> &Game {
+        self.parent.game()
+    }
+    fn object(&self, id: CardId) -> &Object {
+        if id == self.source {
+            &self.object
+        } else {
+            self.parent.object(id)
+        }
+    }
+    fn life(&self, p: Player) -> i128 {
+        self.parent.life(p)
+    }
+    fn gained_life(&self, p: Player) -> bool {
+        self.parent.gained_life(p)
+    }
+    fn attacking(&self, id: CardId) -> bool {
+        self.parent.attacking(id)
+    }
+    fn static_sources(&self) -> &[CardId] {
+        self.parent.static_sources()
+    }
+    fn attachment_sources(&self) -> &[CardId] {
+        self.parent.attachment_sources()
+    }
+    fn controls(&self) -> Option<&continuous_control::ControlState> {
+        self.parent.controls()
+    }
+    fn roles(&self) -> Option<&roles::RoleState> {
+        self.parent.roles()
+    }
+    fn entry_values(&self) -> &[entry_choices::ChoiceRow] {
+        self.parent.entry_values()
+    }
+    fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
+        self.parent.stored_recipe(id)
+    }
+    fn ability_origin(&self, id: CardId) -> Option<u64> {
+        self.parent.ability_origin(id)
+    }
+    fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
+        self.parent.counter_amounts(id)
+    }
+    fn creatures_died(&self) -> u64 {
+        self.parent.creatures_died()
+    }
+    fn card_left_graveyard(&self, p: Player) -> bool {
+        self.parent.card_left_graveyard(p)
+    }
+    fn plus_one_placed_this_turn(&self, object: ObjectRef, p: Player) -> bool {
+        self.parent.plus_one_placed_this_turn(object, p)
+    }
+    fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
+        self.parent.borrowed_activation_used(source, slot)
+    }
+    fn entered_this_turn(&self, source: ObjectRef) -> bool {
+        self.parent.entered_this_turn(source)
+    }
+}
+fn power_after_source_tap<W: CharacteristicWorld + ?Sized>(world: &W, source: CardId) -> i128 {
+    let mut object = world.object(source).clone();
+    object.tapped = true;
+    SourceTappedWorld {
+        parent: world,
+        source,
+        object,
+    }
+    .power(source)
 }

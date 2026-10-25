@@ -26,6 +26,7 @@ impl Game {
         trigger.cast = None;
         trigger.is_copy = false;
         trigger.related_stack = None;
+        trigger.source_ability_origin = grant.origin;
         trigger.attachment_trigger = Some(Box::new(grant));
         self.state.pending_triggers.push(trigger);
     }
@@ -58,6 +59,7 @@ impl Game {
                                 recipient: spell.object,
                                 defender: None,
                                 granted: true,
+                                origin: source.copied_grant_origin(),
                             },
                             ability,
                         ));
@@ -107,6 +109,8 @@ impl Game {
         }));
         if let Some(object) = eligible {
             self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+                casts_remaining: None,
+                pending_cast: None,
                 alternative_cost: None,
                 maximum_mana_value: Some(maximum),
                 origin: Zone::Exile,

@@ -1,0 +1,520 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "source_base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+  "tested_runtime_head": "44e16b15bb1028ab429c3b811ac196b6b22da3f6",
+  "scope": "Two whole-card candidates on isolated source branch for aggregate draft PR516. No main merge or additional PR. Final aggregate release validation, exact-head CI, two independent nonauthor local reviews, complete set games and human approval remain integration gates; full-set acceptance is not claimed.",
+  "complete_candidates": [
+    "Castle Doom",
+    "Doctor Doom"
+  ],
+  "wire_change": {
+    "from": 144,
+    "to": 145,
+    "reason": "New public serialized ManaRestrictionView::ArtifactSpell, coordinated with the independent Bow payload author."
+  },
+  "new_ids": [
+    5397
+  ],
+  "definitions": 5398,
+  "token_recipes": 120,
+  "catalogue_version": "f5021378a95e5b4d672a3fe6cbd0a0462e99eb9d2b69795bace997759e1ee99d",
+  "candidate_set_flags": {
+    "total": 281,
+    "admitted": 189,
+    "gated": 92,
+    "qualification": "Isolated candidate admission flags, not independent set acceptance. Base 187 admitted, 94 gated."
+  },
+  "oracle": {
+    "path": "data/standard/cards.json",
+    "sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+    "cards": [
+      {
+        "oracle_id": "9bd013df-ad75-4099-940b-1765c58faf26",
+        "name": "Castle Doom",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Land",
+        "oracle_text": "{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast an artifact spell.\n{3}, {T}, Sacrifice an artifact: Create a 3/3 colorless Robot Villain artifact creature token named Doombot. Activate only as a sorcery.",
+        "colors": [],
+        "color_identity": [],
+        "keywords": [],
+        "produced_mana": [
+          "B",
+          "C",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "all_parts": [
+          {
+            "id": "452680b5-5032-413a-bb5a-3fc8cfe88be9",
+            "component": "token",
+            "name": "Doombot",
+            "type_line": "Token Artifact Creature \u2014 Robot Villain"
+          },
+          {
+            "id": "daaf180d-074d-4ade-8954-0b3a90d56ce5",
+            "component": "combo_piece",
+            "name": "Castle Doom",
+            "type_line": "Land"
+          }
+        ],
+        "reference_printing": {
+          "id": "6b39d7a6-ca2d-4376-a18e-efd0138e83bc",
+          "set": "msh",
+          "collector_number": "263",
+          "released_at": "2026-06-26"
+        }
+      },
+      {
+        "oracle_id": "9e4fa592-71f8-4c71-8c91-78e6326cd736",
+        "name": "Doctor Doom",
+        "layout": "normal",
+        "mana_cost": "{4}{B}{B}",
+        "cmc": 6.0,
+        "type_line": "Legendary Creature \u2014 Human Scientist Villain",
+        "oracle_text": "When Doctor Doom enters, create two 3/3 colorless Robot Villain artifact creature tokens named Doombot.\nAs long as you control an artifact creature or a Plan, Doctor Doom has indestructible.\nAt the beginning of your end step, you draw a card and lose 1 life.",
+        "power": "3",
+        "toughness": "3",
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "keywords": [],
+        "all_parts": [
+          {
+            "id": "452680b5-5032-413a-bb5a-3fc8cfe88be9",
+            "component": "token",
+            "name": "Doombot",
+            "type_line": "Token Artifact Creature \u2014 Robot Villain"
+          },
+          {
+            "id": "06255e9e-5395-41ed-ad89-1e7b2b5478d3",
+            "component": "combo_piece",
+            "name": "Doctor Doom",
+            "type_line": "Legendary Creature \u2014 Human Scientist Villain"
+          }
+        ],
+        "reference_printing": {
+          "id": "9b1f213a-e1d4-4a0f-954b-c83915698d98",
+          "set": "msh",
+          "collector_number": "95",
+          "released_at": "2026-06-26"
+        }
+      }
+    ]
+  },
+  "printed_obligations": {
+    "Castle Doom": [
+      "Land with ordinary land-play legality and no entry-tapped text.",
+      "Tap to add exactly C, unrestricted.",
+      "Tap to add exactly one of W/U/B/R/G, with spending permitted only on an artifact SPELL. This excludes every activation, including artifact activations and Castle own third ability; it excludes ward/resolution costs, plot payments and land plays.",
+      "Pay3, tap Castle and sacrifice one controlled artifact permanent to activate a nontargeting sorcery-speed ability creating one untapped 3/3 colorless named Doombot artifact creature Robot Villain token. Self sacrifice is legal if Castle is an artifact. Mana production and nonmana costs cannot double-spend the same resource. Source departure after paid activation does not stop the token."
+    ],
+    "Doctor Doom": [
+      "Legendary 3/3 Human Scientist Villain for4BB.",
+      "ETB creates two shared exact Doombots for the captured trigger controller; the trigger survives departure/control changes and resolves independently of whether Doom remains.",
+      "Live source-only indestructible iff its current controller controls at least one permanent that is both artifact AND creature, OR a permanent with Plan subtype. This includes Doom himself if he is an artifact creature and includes tokens. It is neither a CDA nor a frozen entry condition.",
+      "At beginning of its current controller own end step, capture that controller; mandatory draw1 then lose1 life, no targets or optional choice. Source departure/control changes after triggering do not redirect it. Empty draw or life0 loss is checked after the entire resolution."
+    ]
+  },
+  "source_evidence": {
+    "direct_java_and_helpers_read_in_full": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CastleDoom.java",
+        "sha256": "97f4e8b9ed71fcc4713d6885a15f9d15b6b7bb360491809f82e1cd7bf8094de1"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DoctorDoom.java",
+        "sha256": "ce39be6d8b5c0205f0555a12e142401165be457adb2f547f25934c411df91b1b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/ConditionalMana.java",
+        "sha256": "047e59c2853d61ed76b254b80e44971604ed2a3d022bdbb201255aaf1ed91276"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+        "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+        "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+        "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+        "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+        "sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/conditional/ManaCondition.java",
+        "sha256": "77289b6566dab4372ae2b7e7133b8ee8d32463672475820d61883ba829795369"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaOfAnyColorEffect.java",
+        "sha256": "e9ae10c4ad12c5a3280946079ff7c3278e879af65f0a3afdb6f8841861797bed"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+        "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+        "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/CostImpl.java",
+        "sha256": "ac24e04444dec48d936fed7a03970a8b7e765ef7f368c7b4024747e6fdd83df7"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+        "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+        "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+        "sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/permanent/CanBeSacrificedPredicate.java",
+        "sha256": "66d9ed795337db25bde47c82a196d6be997bc30a5df7d82774868b7cbcbbc592"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+        "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostImpl.java",
+        "sha256": "22993c90f4047d015504922f5fe38d98de760d1a89755ec8ce40f127b4e3274a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+        "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ColoredManaCost.java",
+        "sha256": "9b862bbf8a95520da3bc4798bc253cdf263e9637290c865f5e2dc4726080b928"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/token/DoombotToken.java",
+        "sha256": "d6676412548b7c04bd510056b0471ded56ef2fe8a2caa48e0730a1a679fb8dc7"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+        "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+        "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+        "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+        "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+        "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+        "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+        "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+        "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+        "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+        "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/permanent/ControllerIdPredicate.java",
+        "sha256": "3e6dddd03c3d0b8025f5988d804acf40a090f03c51e7836507a8a79f8a55589f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+        "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/constants/CardType.java",
+        "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+        "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+      }
+    ],
+    "token": {
+      "name": "@token/msh-doombot",
+      "catalogue_id": 5397,
+      "oracle_id": null,
+      "facts_sha256": null,
+      "complete": true,
+      "physical_metadata_sha256": "8eaf3248fc13cacc687ed6965d2e3fa7c7e06dd9384b39f05f920e16986b841b",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage/src/main/java/mage/game/permanent/token/DoombotToken.java",
+      "java_sha256": "d6676412548b7c04bd510056b0471ded56ef2fe8a2caa48e0730a1a679fb8dc7"
+    },
+    "all_pins_revalidated_against_exact_base": true,
+    "java_verified": true,
+    "source_blobs": 1191
+  },
+  "authoritative_sources": [
+    {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "relevant": "Doctor Doom entry: ordinary lethal marked damage remains tracked, while deathtouch destruction is checked only at the first SBA check after its event. No Castle-specific note found."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+      "rules": [
+        "106 mana restrictions and payment purposes",
+        "205.3 subtype/type compatibility",
+        "305.9 artifact lands are played as lands and cannot be cast",
+        "601.2 and 602 additional costs are locked/paid before completion, no priority during payment",
+        "603.3 captured trigger controller and source-independent resolution",
+        "613.1d type before 613.1f ability grants",
+        "614.1 token replacement effects",
+        "701.17 sacrifice is not destruction",
+        "702.12 indestructible applies to permanents, not only creatures",
+        "704.5f/g/h toughness, ordinary lethal damage and deathtouch intervals"
+      ]
+    }
+  ],
+  "shared_mechanics": [
+    "Exact artifact-SPELL-only mana quality, independently captured from producer and excluding activation/other purposes; old ExceptNonArtifactSpells behavior unchanged.",
+    "Per-object conjunction CountAllKinds adds no fields to existing CountFilter and preserves ordinary Count union semantics.",
+    "SourceConditionalKeywords grants through actual and speculative earlier-layer types/control, including noncreature permanent source, using ordered ability evaluation plus ordinary/funding query paths.",
+    "One canonical exact Doombot token recipe shared by both cards: actual name Doombot, 3/3, colorless artifact creature Robot Villain; old token recipes unchanged."
+  ],
+  "meaningful_tests": {
+    "new_groups": 25,
+    "actual_groups": 21,
+    "funding_groups": 4,
+    "both_seats": true,
+    "named_groups": [
+      "msh_doom_castle_land_and_both_mana_routes_exact_colors",
+      "msh_doom_castle_real_funding_announces_artifact_but_not_other_spell",
+      "msh_doom_castle_restriction_survives_source_departure_and_cannot_pay_activations",
+      "msh_doom_castle_sacrifice_paid_exact_artifact_and_sorcery_only",
+      "msh_doom_castle_artifact_source_can_sacrifice_itself_after_tapping",
+      "msh_doom_castle_costs_stay_paid_after_source_theft_departure_or_counter",
+      "msh_doom_castle_sacrifice_stolen_artifact_and_replaced_destination",
+      "msh_doom_castle_ordinary_and_restricted_mana_are_not_interchangeable_for_own_cost",
+      "msh_doom_castle_mana_artifact_can_fund_then_be_sacrificed",
+      "msh_doom_doctor_exact_paid_body_and_shared_token_recipe",
+      "msh_doom_doctor_etb_and_doubling_survive_old_source_departure",
+      "msh_doom_doctor_per_object_and_type_or_plan_condition_truth_table",
+      "msh_doom_doctor_live_control_witness_and_source_suppression",
+      "msh_doom_doctor_marked_lethal_damage_and_consumed_deathtouch_differ",
+      "msh_doom_doctor_paid_destroy_is_prevented_but_exile_is_not",
+      "msh_doom_doctor_end_step_retains_captured_controller_after_theft_or_departure",
+      "msh_doom_doctor_failed_draw_still_loses_life_before_sba",
+      "msh_doom_doctor_hidden_draw_does_not_disclose_card_identity",
+      "msh_doom_doctor_conditional_self_keyword_applies_to_noncreature_permanent",
+      "msh_doom_doctor_paid_copied_creature_spell_creates_two_independent_etb_batches",
+      "msh_doom_doombot_copy_preserves_rules_name_not_factory_identity",
+      "msh_doom_funding_restricted_castle_paths_require_artifact_spell_purpose",
+      "msh_doom_funding_virtual_last_witness_departure_matches_actual_owned_branch",
+      "msh_doom_funding_projected_doctor_entry_registers_conditional_provider",
+      "msh_doom_funding_control_source_departure_rechecks_new_controller_witness"
+    ],
+    "legal_action_harness": "Existing checked/cast/settle helpers verify illegal/wrong-actor atomicity, full observations, owned raw/index branches, parent disposal and restore at each checked action.",
+    "covered": "Printed colors and costs; real prefunding; restricted lots after producer exile/blink/theft; illegal nonartifact spell/artifact activation/own Castle cost; sorcery timing; exact artifact ownership/type and token sacrifice; source self sacrifice after tap; mana artifact funding then sacrifice; paid cost source theft/departure/counter; replaced sacrifice destination; shared token name/stats/types/color; paid Doctor and copied spell; independent ETB and token doublers; artifact AND creature on same permanent OR Plan; live controllers and source suppression; ordinary damage/deathtouch SBA interval; paid destroy versus exile; captured-controller end step draw then life loss including failed draw; full nonactor hidden draw observation equality; noncreature-source condition through full layer and ordinary query paths; self artifact-creature witness; virtual witness/control-source cost departures and projected entry provider.",
+    "bounded_fixtures": "Noncreature source semantics use a borrowed earlier-layer world because no admitted type-changing card currently leaves this ability on a noncreature Doctor; copied recipe test uses existing staged copy core. These do not admit other cards."
+  },
+  "trace_proof": {
+    "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+    "base_wire": 144,
+    "candidate_previous_wire": 144,
+    "candidate_wire": 145,
+    "full_inherited_rows_compared": 2490,
+    "every_full_struct_equal": true,
+    "fields_removed": [],
+    "added_only": [
+      "Castle Doom",
+      "Doctor Doom"
+    ],
+    "normal_rows": 2492,
+    "normal_sha256": "dfbad35e2873ce2866d49a4bb18d31da419b47c6debbc04c72cb6935c699635c",
+    "previous_sha256": "3f664c2089b3af5dbf670c31b2591d001e52eda72fcdad22403d784a0712ccdb",
+    "normal_file": "rustmage-msh-doom-traces.json",
+    "previous_file": "rustmage-msh-doom-traces.previous-schema.json",
+    "checked_utc": "2026-10-25T02:42:18.895808+00:00"
+  },
+  "metadata_proof": {
+    "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+    "all_prior_metadata_equal": true,
+    "authorized_append_id": 5397,
+    "definitions_before": 5397,
+    "definitions_after": 5398,
+    "tokens_before": 119,
+    "tokens_after": 120,
+    "physical_count_unchanged": 5183,
+    "old_token_recipes_unchanged": true,
+    "added_factory": "@token/msh-doombot",
+    "added_rules_name": "Doombot",
+    "manifest_sha256": "4d95450061275c456e39e129a5d3680e24e4d1ffe49ff1c1fea4de839c0091b9"
+  },
+  "validation": {
+    "native_tests": 1034,
+    "clippy_all_targets_deny_warnings": true,
+    "source_pins": true,
+    "linker_check": true,
+    "rustfmt_check": true,
+    "git_diff_check": true,
+    "resource_runs": [
+      {
+        "log": "<cache>/rustmage-msh-doom-native-final-3.log",
+        "log_sha256": "6fc09c3067b564ffd241c25ec2dadf6fd11eb655110ba33ce3ecba767e66fed0",
+        "report": "<cache>/rustmage-build-reports/68c96ac7643a4d0daef453d71d011882.json",
+        "command": [
+          "cargo",
+          "test",
+          "--lib"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 360.0072966989828,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2382651392,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "log": "<cache>/rustmage-msh-doom-clippy-final-3.log",
+        "log_sha256": "1d8d670b9dbb88529ec6909b7c9690fd940db912272130e78395fe073d1b508c",
+        "report": "<cache>/rustmage-build-reports/73d7e8b12c654d8e9f191bb57a09e1dd.json",
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 370.9918028470129,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1775550464,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    ],
+    "resource_cap_bytes": 6442450944,
+    "no_oom_probe": true,
+    "source_inputs_fixed_until_actual_terminal": true
+  },
+  "development_corrections": [
+    "Initial compile fixed two test fixture expressions (artifact query and match arm return), without runtime core change.",
+    "First full export exposed missing actual/funding keyword fast-path support for new conditional fragment. Both paths and funding resource retention were corrected before final success.",
+    "Exact token sacrifice assertion now follows incarnation across reusable slot allocation. Inactive-turn sorcery fixture now advances real turn priority to the caster Main1 and produces blue mana from an actual Island using intrinsic TapMana after step mana drains.",
+    "Expected +2 trace-count check was resolved only after full inherited previous144 equality and exact additions were independently established."
+  ],
+  "cleanup": {
+    "terminal_inputs_only": true,
+    "proc_fd_maps_exe_scan_clear": true,
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 125050880,
+    "qualification": "Path-allocated total, not deduplicated physical disk reclaim.",
+    "preserved": [
+      {
+        "path": "<cache>/rustmage-msh-doom-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "2e5793e7dbf717efbf2eaed1e423d74135e35247c2b29cc2f69c64bd329efbb3"
+      },
+      {
+        "path": "<cache>/rustmage-msh-doom-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T02:07:04+00:00",
+    "end_utc": "2026-10-25T02:42:21.133459+00:00",
+    "elapsed_seconds": 2117.133459,
+    "whole_card_candidates": 2,
+    "candidate_cards_per_hour": 3.4008248130946,
+    "scope": "Preparation, implementation, development fixes, guarded build queues, native/Clippy/source validation and evidence cleanup cutoff; excludes final aggregate integration/reviews/release/CI and full-set games.",
+    "simulation": "No simulation throughput measured or full-set gameplay claim in this scoped author batch."
+  },
+  "remaining_blockers": "No known printed obligation missing for these two candidates after native checks. Root must complete aggregate-head independent review and release/CI validation. Remaining 92 gated identities and complete MSH-only legal deck games/performance still block set acceptance."
+}

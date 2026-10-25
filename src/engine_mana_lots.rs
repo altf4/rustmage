@@ -7,6 +7,7 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
+    ArtifactSpell,
     ExceptNonArtifactSpells,
     SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
@@ -14,6 +15,8 @@ pub enum ManaRestrictionView {
     Unavailable,
     SpellSubtype(&'static str),
     CreatureSpellOrActivation(CreatureType),
+    EquipmentSpellOrEquip,
+    CreatureActivation,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaSpellBonusView {
@@ -95,6 +98,11 @@ impl Quality {
     ) -> Self {
         Self {
             restriction: match quality.restriction {
+                ManaRestriction::EquipmentSpellOrEquip => {
+                    ManaRestrictionView::EquipmentSpellOrEquip
+                }
+                ManaRestriction::CreatureActivation => ManaRestrictionView::CreatureActivation,
+                ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
                 ManaRestriction::ExceptNonArtifactSpells => {
                     ManaRestrictionView::ExceptNonArtifactSpells
                 }
@@ -142,6 +150,17 @@ impl Quality {
     }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
+            ManaRestrictionView::EquipmentSpellOrEquip => match purpose {
+                Purpose::Spell(facts) => facts.has_subtype("Equipment"),
+                Purpose::Activation(facts) => facts.equip,
+                Purpose::Other => false,
+            },
+            ManaRestrictionView::CreatureActivation => {
+                matches!(purpose, Purpose::Activation(facts) if facts.kinds & CREATURE_KIND != 0)
+            }
+            ManaRestrictionView::ArtifactSpell => {
+                matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
+            }
             ManaRestrictionView::ExceptNonArtifactSpells => {
                 !matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 == 0)
             }
@@ -184,8 +203,13 @@ pub(super) struct Source {
     pub subtypes: GrantedSubtypes,
     pub foreign_stash: bool,
     pub spend_any_mana: bool,
+    pub equip: bool,
 }
 impl Source {
+    pub(super) fn with_activation(mut self, ability: &ActivatedAbility) -> Self {
+        self.equip = ability.is_equip();
+        self
+    }
     pub(super) fn in_world<W: ability_world::CharacteristicWorld + ?Sized>(
         world: &W,
         id: CardId,
@@ -196,6 +220,7 @@ impl Source {
             subtypes: world.subtypes(id),
             foreign_stash: false,
             spend_any_mana: false,
+            equip: false,
         }
     }
     fn has_subtype(self, subtype: &str) -> bool {
@@ -208,6 +233,7 @@ impl Source {
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
             spend_any_mana: false,
+            equip: false,
         }
     }
 }
@@ -219,6 +245,7 @@ impl From<DamageFacts> for Source {
             subtypes: facts.granted_subtypes,
             foreign_stash: false,
             spend_any_mana: false,
+            equip: false,
         }
     }
 }
@@ -604,7 +631,7 @@ impl Game {
             self.state.mana_lots.as_mut().unwrap().choice = None;
             return self.apply_transaction(actor, action);
         }
-        if self.actor() != Some(actor) {
+        if self.semantic_actor() != Some(actor) {
             return Err(Error::WrongActor);
         }
         let Action::ChooseManaLotSpend { amount } = action else {
@@ -644,7 +671,7 @@ impl Game {
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
             source.spend_any_mana = item.cast.is_some_and(|c| c.spend_any_mana);
             Purpose::Spell(source)
-        } else if matches!(item.kind, StackKind::ActivatedAbility { .. }) {
+        } else if let StackKind::ActivatedAbility { ability } = item.kind {
             let source = if self
                 .state
                 .objects
@@ -656,7 +683,7 @@ impl Game {
             } else {
                 item.source_facts.into()
             };
-            Purpose::Activation(source)
+            Purpose::Activation(source.with_activation(item.source_card.activation(ability)))
         } else {
             // Costs of triggered abilities (including ward) are not activations.
             Purpose::Other
@@ -781,7 +808,7 @@ impl Game {
     /// Concrete color payments still use the established public actions. Their
     /// eligibility depends on what is being paid for, including raw shortcuts.
     pub(super) fn mana_action_payable(&self, action: &Action) -> bool {
-        let Some(actor) = self.actor() else {
+        let Some(actor) = self.semantic_actor() else {
             return false;
         };
         let (payment, purpose) = match action {
@@ -789,9 +816,26 @@ impl Game {
                 *payment,
                 self.spell_mana_purpose_for_card(actor, *card, self.effective_spell_card(*card)),
             ),
-            Action::Activate { card, payment, .. }
-            | Action::BeginActivate { card, payment, .. }
-            | Action::ActivateMana { card, payment, .. }
+            Action::Activate {
+                card,
+                ability,
+                payment,
+                ..
+            }
+            | Action::BeginActivate {
+                card,
+                ability,
+                payment,
+                ..
+            } => {
+                (
+                    *payment,
+                    Purpose::Activation(Source::in_world(self, *card).with_activation(
+                        self.state.objects[*card as usize].card.activation(*ability),
+                    )),
+                )
+            }
+            Action::ActivateMana { card, payment, .. }
             | Action::ActivateBorrowedMana { card, payment, .. } => {
                 (*payment, Purpose::Activation(Source::in_world(self, *card)))
             }
@@ -903,7 +947,10 @@ impl Game {
                 && self.state.objects[source.card as usize].zone
                     == definition.activation(*ability).source_zone()
             {
-                Purpose::Activation(Source::in_world(self, source.card))
+                Purpose::Activation(
+                    Source::in_world(self, source.card)
+                        .with_activation(definition.activation(*ability)),
+                )
             } else {
                 Purpose::Other
             };

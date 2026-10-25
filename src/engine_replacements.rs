@@ -1,6 +1,6 @@
 //! Owned, event-local replacement ordering. Immutable programs stay in the catalogue.
 use super::*;
-use crate::cards::{ReplacementFilter, ReplacementSpec};
+use crate::cards::{AnimationSpec, ReplacementFilter, ReplacementSpec};
 use std::collections::VecDeque;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -14,6 +14,26 @@ pub struct ReplacementEffectView {
     pub source: ObjectRef,
     pub source_card: Card,
     pub ability: u16,
+}
+/// Actual intrinsic prevention effects, separate from printed replacement slots.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum DamagePreventionKind {
+    ShieldCounter,
+    CombatBySource,
+    CombatToRecipient,
+    ProtectionEverything,
+    ProtectionInstantSorcery,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct DamagePreventionView {
+    pub source: ObjectRef,
+    pub source_card: Card,
+    pub kind: DamagePreventionKind,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct DamageEventOrderView {
+    pub index: u32,
+    pub event: DamageEvent,
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct ReplacementChoiceView {
@@ -30,6 +50,13 @@ pub struct ReplacementChoiceView {
     /// Current public damage event, before the next chosen replacement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub damage: Option<DamageEvent>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub damage_preventions: Vec<DamagePreventionView>,
+    /// Exact pending heals applied before the simultaneous final damage batch.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub heals_before_damage: Vec<ObjectRef>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub damage_event_order: Vec<DamageEventOrderView>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct CounterPlacement {
@@ -47,9 +74,16 @@ pub(super) struct CounterPlacement {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct CounterBatch {
+    completion: Option<Box<CounterReflexiveCompletion>>,
     placements: Vec<CounterPlacement>,
     next: usize,
     used: Vec<(ObjectRef, u16)>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct CounterReflexiveCompletion {
+    item: SpellView,
+    kind: CounterKind,
+    ability: u16,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TokenGroupView {
@@ -74,6 +108,7 @@ pub(super) enum TokenCompletion {
     },
     CounterSet(Box<Counters>),
     TemporaryCopy(Box<SpellView>),
+    AnimateNoncreatures(AnimationSpec),
     Keywords {
         source: ObjectRef,
         keywords: Keywords,
@@ -83,6 +118,8 @@ pub(super) enum TokenCompletion {
         ability: u16,
     },
     JobAttach(ObjectRef),
+    /// Creation precedes attachment; an absent/illegal recipient leaves tokens intact.
+    AttachCreatedTo(ObjectRef),
     RoleAttach(ObjectRef),
     RoleReflexive(Box<RoleReflexiveCompletion>),
     /// One mass creation event; original group indices retain exact recipients.
@@ -100,17 +137,21 @@ struct TokenBatch {
 }
 impl TokenBatch {
     fn artifact_at(&self, index: usize) -> bool {
-        self.groups[index].token.is_artifact()
-            || self
-                .recipes
-                .get(index)
-                .and_then(|r| *r)
-                .is_some_and(|r| r.exceptions.artifact || r.exceptions.golem)
+        self.recipes
+            .get(index)
+            .and_then(|recipe| *recipe)
+            .map_or_else(
+                || self.groups[index].token.is_artifact(),
+                |recipe| recipe.kinds() & 16 != 0,
+            )
     }
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct DamageBatch {
     events: Vec<DamageEvent>,
+    heals: Vec<ObjectRef>,
+    used_preventions: Vec<(ObjectRef, DamagePreventionKind)>,
+    ordered_event: bool,
     next: usize,
     used: Vec<(ObjectRef, u16)>,
 }
@@ -122,6 +163,10 @@ enum Event {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
+    AnimateCreated {
+        created: Vec<ObjectRef>,
+        spec: AnimationSpec,
+    },
     CreatedCounters {
         player: Player,
         created: Vec<ObjectRef>,
@@ -157,6 +202,9 @@ impl ReplacementState {
                     .map(|p| p.amount.owned_bytes())
                     .sum::<usize>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                + b.completion.as_ref().map_or(0, |c| {
+                    std::mem::size_of::<CounterReflexiveCompletion>() + c.item.owned_bytes()
+                })
         };
         let token_bytes = |b: &TokenBatch| {
             b.groups.len() * std::mem::size_of::<TokenGroupView>()
@@ -185,8 +233,14 @@ impl ReplacementState {
                 .work
                 .iter()
                 .map(|w| match w {
+                    Work::AnimateCreated { created, .. } => {
+                        created.len() * std::mem::size_of::<ObjectRef>()
+                    }
                     Work::Damage(b) => {
                         b.events.len() * std::mem::size_of::<DamageEvent>()
+                            + b.heals.len() * std::mem::size_of::<ObjectRef>()
+                            + b.used_preventions.len()
+                                * std::mem::size_of::<(ObjectRef, DamagePreventionKind)>()
                             + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                     }
                     Work::Counters(b) => counter_bytes(b),
@@ -209,6 +263,9 @@ impl ReplacementState {
                 match b {
                     Event::Damage(b) => {
                         b.events.len() * std::mem::size_of::<DamageEvent>()
+                            + b.heals.len() * std::mem::size_of::<ObjectRef>()
+                            + b.used_preventions.len()
+                                * std::mem::size_of::<(ObjectRef, DamagePreventionKind)>()
                             + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                     }
                     Event::Counters(b) => counter_bytes(b),
@@ -233,25 +290,29 @@ fn matches_filter(filter: ReplacementFilter, p: &CounterPlacement) -> bool {
     }
 }
 fn counter_applies(spec: ReplacementSpec, p: &CounterPlacement) -> bool {
-    let ReplacementSpec::Counters {
-        filter,
-        kind,
-        effects_only,
-        ..
-    } = spec
-    else {
-        return false;
+    let (filter, kind, effects_only) = match spec {
+        ReplacementSpec::Counters {
+            filter,
+            kind,
+            effects_only,
+            ..
+        } => (filter, kind, effects_only),
+        ReplacementSpec::CountersPlacedByController if p.placed_by == p.controller => {
+            (ReplacementFilter::Permanent, None, false)
+        }
+        _ => return false,
     };
     matches_filter(filter, p)
         && (!effects_only || p.effect)
         && kind.map_or_else(|| p.amount.has_any(), |k| p.amount.get(k) > 0)
 }
 fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
-    let ReplacementSpec::Counters {
-        kind, factor, add, ..
-    } = spec
-    else {
-        unreachable!()
+    let (kind, factor, add) = match spec {
+        ReplacementSpec::Counters {
+            kind, factor, add, ..
+        } => (kind, factor, add),
+        ReplacementSpec::CountersPlacedByController => (None, 1, 1),
+        _ => unreachable!(),
     };
     let mut result = Counters::default();
     for k in CounterKind::ALL {
@@ -275,11 +336,14 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     used: &[(ObjectRef, u16)],
 ) -> Vec<ReplacementEffectView> {
     let mut out = Vec::new();
-    let mut add = |reference: ObjectRef, card: Card, controller: Player| {
+    let mut add = |reference: ObjectRef, card: Card, controller: Player, incoming: bool| {
         if controller != p.controller {
             return;
         }
         for (index, &spec) in card.replacement_effects().iter().enumerate() {
+            if incoming && matches!(spec, ReplacementSpec::CountersPlacedByController) {
+                continue; // CR614.12: this is general, not a self-entry replacement.
+            }
             if world.object(reference.card).zone == Zone::Battlefield && world.reference(reference.card) == reference
                     && !world.fragment_available(reference.card, |fragment| matches!(fragment,
                         crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
@@ -296,13 +360,13 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     for &id in world.static_sources() {
         let o = world.object(id);
         if o.zone == Zone::Battlefield {
-            add(world.reference(id), o.card, o.controller);
+            add(world.reference(id), o.card, o.controller, false);
         }
     }
     // CR614.12: only the incoming permanent's own effects may affect its entry;
     // a different member of this simultaneous entry batch is not yet a source.
     if p.entry_index.is_some() {
-        add(p.object, p.card, p.controller);
+        add(p.object, p.card, p.controller, true);
     }
     out
 }
@@ -382,8 +446,13 @@ impl Game {
         self.state.players[player.index()].hexproof_until_end_turn
             || self.state.static_sources.iter().any(|&id| {
                 self.state.objects[id as usize].controller == player
-                    && self.active_rule_fragment(id, |f| {
-                        matches!(f, crate::cards::StaticAbilityFragment::PlayerHexproof)
+                    && self.active_rule_fragment(id, |f| match *f {
+                        crate::cards::StaticAbilityFragment::PlayerHexproof => true,
+                        crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter {
+                            kind,
+                            minimum,
+                        } => self.counter_count(id, kind) >= minimum,
+                        _ => false,
                     })
             })
     }
@@ -425,6 +494,22 @@ impl Game {
                         event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
                     }
+                    ReplacementSpec::NoncombatDamagePlusSourcePower => {
+                        !event.combat
+                            && event.source.controller == object.controller
+                            && self.damage_recipient_controller(event) != object.controller
+                    }
+                    ReplacementSpec::DoubleEquippedDamage => {
+                        object.attached_to.is_some_and(|recipient| {
+                            recipient == event.source.reference
+                                && self.on_battlefield(recipient.card)
+                                && self.object_ref(recipient.card) == recipient
+                                && self.is_creature(recipient.card)
+                        })
+                    }
+                    ReplacementSpec::HealPreviousDamageToSelf => {
+                        matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.object_ref(target) == source)
+                    }
                     ReplacementSpec::PreventAllDamageToSelf => {
                         event.preventable
                             && !self.state.damage_prevention_prohibited
@@ -449,13 +534,85 @@ impl Game {
         }
         out
     }
-    fn modify_damage(choice: ReplacementEffectView, event: &mut DamageEvent) {
+    fn damage_preventions(
+        &self,
+        event: &DamageEvent,
+        used: &[(ObjectRef, DamagePreventionKind)],
+    ) -> Vec<DamagePreventionView> {
+        if event.amount <= 0 {
+            return Vec::new();
+        }
+        let mut out = Vec::new();
+        if let Target::Card(id) = event.target
+            && self.counter_count(id, CounterKind::Shield) > 0
+            && !used.contains(&(self.object_ref(id), DamagePreventionKind::ShieldCounter))
+        {
+            out.push(DamagePreventionView {
+                source: self.object_ref(id),
+                source_card: self.state.objects[id as usize].card,
+                kind: DamagePreventionKind::ShieldCounter,
+            });
+        }
+        if !event.preventable || self.state.damage_prevention_prohibited {
+            return out;
+        }
+        if event.combat && event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY) {
+            out.push(DamagePreventionView {
+                source: event.source.reference,
+                source_card: event.source.facts.card,
+                kind: DamagePreventionKind::CombatBySource,
+            });
+        }
+        if let Target::Card(id) = event.target {
+            let keywords = self.keywords(id);
+            let mut add = |kind| {
+                out.push(DamagePreventionView {
+                    source: self.object_ref(id),
+                    source_card: self.state.objects[id as usize].card,
+                    kind,
+                })
+            };
+            if event.combat && keywords.contains(Keywords::PREVENT_COMBAT_TO) {
+                add(DamagePreventionKind::CombatToRecipient);
+            }
+            if keywords.contains(Keywords::PROTECTION_EVERYTHING) {
+                add(DamagePreventionKind::ProtectionEverything);
+            }
+            if keywords.contains(Keywords::PROTECTION_INSTANT_SORCERY)
+                && event.source.facts.kinds & (4 | 8) != 0
+            {
+                add(DamagePreventionKind::ProtectionInstantSorcery);
+            }
+        }
+        out
+    }
+    fn modify_damage(
+        &self,
+        choice: ReplacementEffectView,
+        event: &mut DamageEvent,
+        heals: &mut Vec<ObjectRef>,
+    ) {
         match choice.source_card.replacement_effects()[usize::from(choice.ability)] {
-            ReplacementSpec::DoubleCreatureDamage | ReplacementSpec::DoubleOpponentDamage => {
+            ReplacementSpec::DoubleCreatureDamage
+            | ReplacementSpec::DoubleOpponentDamage
+            | ReplacementSpec::DoubleEquippedDamage => {
                 event.amount = event
                     .amount
                     .checked_mul(2)
                     .capacity("damage replacement quantity exhausted")
+            }
+            ReplacementSpec::NoncombatDamagePlusSourcePower => {
+                // CR107.1b uses signed intermediate values and clamps the final damage result.
+                event.amount = event
+                    .amount
+                    .checked_add(self.stats(choice.source.card).power)
+                    .capacity("damage replacement quantity exhausted")
+                    .max(0);
+            }
+            ReplacementSpec::HealPreviousDamageToSelf => {
+                if !heals.contains(&choice.source) {
+                    heals.push(choice.source);
+                }
             }
             ReplacementSpec::PreventOtherCreatureNoncombatDamage
             | ReplacementSpec::PreventAllDamageToSelf => event.amount = 0,
@@ -463,9 +620,10 @@ impl Game {
         }
     }
     pub(super) fn damage_replacement_candidates_exist(&self, events: &[DamageEvent]) -> bool {
-        events
-            .iter()
-            .any(|event| !self.damage_replacements(event, &[]).is_empty())
+        events.iter().any(|event| {
+            !self.damage_replacements(event, &[]).is_empty()
+                || !self.damage_preventions(event, &[]).is_empty()
+        })
     }
     pub(super) fn stage_damage_replacements(&mut self, events: &[DamageEvent]) {
         let resume = if self.state.resolving.is_some() {
@@ -491,6 +649,9 @@ impl Game {
         });
         state.work.push_back(Work::Damage(DamageBatch {
             events,
+            heals: Vec::new(),
+            used_preventions: Vec::new(),
+            ordered_event: false,
             next: 0,
             used: Vec::new(),
         }));
@@ -502,7 +663,20 @@ impl Game {
     ) -> Vec<ReplacementEffectView> {
         counter_replacements(self, p, used)
     }
-    fn commit_counter_placements(&mut self, placements: Vec<CounterPlacement>) {
+    fn commit_counter_placements(
+        &mut self,
+        placements: Vec<CounterPlacement>,
+        completion: Option<Box<CounterReflexiveCompletion>>,
+    ) {
+        let completed = completion.as_ref().is_some_and(|c| {
+            placements.iter().any(|p| {
+                p.entry_index.is_none()
+                    && p.object == c.item.object
+                    && p.amount.get(c.kind) > 0
+                    && self.on_battlefield(p.object.card)
+                    && self.object_ref(p.object.card) == p.object
+            })
+        });
         let mut lore = Vec::new();
         // Commit the complete world before any placement observer sees it.
         for p in &placements {
@@ -541,11 +715,23 @@ impl Game {
         for (object, before) in lore {
             self.lore_counters_added(object, before);
         }
+        if completed {
+            let completion = completion.unwrap();
+            self.queue_reflexive(&completion.item, completion.ability, None);
+        }
     }
     pub(super) fn stage_counter_placements(
         &mut self,
+        placements: Vec<CounterPlacement>,
+        mode: ResumeMode,
+    ) {
+        self.stage_counter_placements_inner(placements, mode, None);
+    }
+    fn stage_counter_placements_inner(
+        &mut self,
         mut placements: Vec<CounterPlacement>,
         mode: ResumeMode,
+        completion: Option<Box<CounterReflexiveCompletion>>,
     ) {
         placements.retain(|p| p.amount.has_any());
         if placements.is_empty() {
@@ -557,7 +743,7 @@ impl Game {
                 .iter()
                 .all(|p| self.counter_replacements(p, &[]).is_empty())
         {
-            self.commit_counter_placements(placements);
+            self.commit_counter_placements(placements, completion);
             return;
         }
         let state = self.state.replacements.get_or_insert_with(|| {
@@ -574,10 +760,48 @@ impl Game {
             "one owned replacement continuation at a time"
         );
         state.work.push_back(Work::Counters(CounterBatch {
+            completion,
             placements,
             next: 0,
             used: Vec::new(),
         }));
+    }
+    pub(super) fn put_source_counter_reflexive(
+        &mut self,
+        item: &SpellView,
+        kind: CounterKind,
+        amount: u64,
+        ability: u16,
+    ) {
+        if amount == 0
+            || !self.on_battlefield(item.card)
+            || self.object_ref(item.card) != item.object
+        {
+            return;
+        }
+        let o = &self.state.objects[item.card as usize];
+        let placement = CounterPlacement {
+            placed_by: item.controller,
+            object: item.object,
+            card: o.card,
+            owner: o.owner,
+            controller: o.controller,
+            subtypes: self.granted_subtypes(item.card),
+            kind: self.current_kinds(item.card),
+            amount: Counters::of(kind, amount),
+            effect: true,
+            entry_index: None,
+            private: false,
+        };
+        self.stage_counter_placements_inner(
+            vec![placement],
+            ResumeMode::Program,
+            Some(Box::new(CounterReflexiveCompletion {
+                item: item.clone(),
+                kind,
+                ability,
+            })),
+        );
     }
     pub(super) fn activation_cost_counters(
         &mut self,
@@ -680,7 +904,13 @@ impl Game {
                     .card
                     .replacement_effects()
                     .iter()
-                    .any(|e| matches!(e, ReplacementSpec::Counters { .. }))
+                    .any(|e| {
+                        matches!(
+                            e,
+                            ReplacementSpec::Counters { .. }
+                                | ReplacementSpec::CountersPlacedByController
+                        )
+                    })
             })
         {
             let before = self.state.objects[id as usize].counters.lore;
@@ -831,6 +1061,31 @@ impl Game {
             used: Vec::new(),
             completion,
         };
+        self.stage_copy_token_batch(batch);
+    }
+    /// A single creation event may contain many unrelated frozen copy recipes.
+    pub(super) fn stage_copy_recipes(&mut self, player: Player, recipes: Vec<CopyRecipe>) {
+        if recipes.is_empty() {
+            return;
+        }
+        let groups = recipes
+            .iter()
+            .map(|recipe| TokenGroupView {
+                token: recipe.definition,
+                amount: 1,
+                tapped: false,
+            })
+            .collect();
+        self.stage_copy_token_batch(TokenBatch {
+            recipes: recipes.into_iter().map(Some).collect(),
+            player,
+            groups,
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::None,
+        });
+    }
+    fn stage_copy_token_batch(&mut self, batch: TokenBatch) {
         if matches!(
             batch.completion,
             TokenCompletion::None | TokenCompletion::TemporaryCopy(_)
@@ -841,7 +1096,7 @@ impl Game {
                 TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()),
                 _ => None,
             };
-            self.create_copy_groups_inner(player, &batch.groups, &batch.recipes, temporary);
+            self.create_copy_groups_inner(batch.player, &batch.groups, &batch.recipes, temporary);
             return;
         }
         let state = self.state.replacements.get_or_insert_with(|| {
@@ -988,6 +1243,10 @@ impl Game {
             }
             if state.active.is_none() {
                 match state.work.pop_front() {
+                    Some(Work::AnimateCreated { created, spec }) => {
+                        self.animate_created_noncreatures(&created, spec);
+                        continue;
+                    }
                     Some(Work::CreatedCounters {
                         player,
                         created,
@@ -997,6 +1256,7 @@ impl Game {
                             self.created_token_counter_placements(player, &created, &counters);
                         if !placements.is_empty() {
                             state.work.push_front(Work::Counters(CounterBatch {
+                                completion: None,
                                 placements,
                                 next: 0,
                                 used: Vec::new(),
@@ -1030,7 +1290,7 @@ impl Game {
                                 && let Target::Card(id) = bound.target
                             {
                                 let player = self.state.objects[id as usize].controller;
-                                if !self.keywords(id).contains(Keywords::INDESTRUCTIBLE) {
+                                if !self.effect_destruction_prevented(id) {
                                     self.move_target_batch(&[bound], Zone::Graveyard);
                                 }
                                 state.work.push_front(Work::Tokens(TokenBatch {
@@ -1076,19 +1336,49 @@ impl Game {
                         let Some(Event::Damage(batch)) = state.active.take() else {
                             unreachable!()
                         };
+                        for reference in batch.heals {
+                            if self.on_battlefield(reference.card)
+                                && self.object_ref(reference.card) == reference
+                            {
+                                // Healing removes marked damage, not damage history or deathtouch facts.
+                                self.state.objects[reference.card as usize].damage = 0;
+                            }
+                        }
                         self.commit_damage_batch(&batch.events);
                         continue;
                     }
                     let event = batch.events[batch.next];
+                    if !self.damage_event_order(batch).is_empty() {
+                        self.state.pending = Pending::Replacement {
+                            player: self.damage_recipient_controller(&event),
+                        };
+                        self.state.replacements = Some(state);
+                        return true;
+                    }
                     let choices = self.damage_replacements(&event, &batch.used);
-                    match choices.as_slice() {
-                        [] => {
+                    let preventions = self.damage_preventions(&event, &batch.used_preventions);
+                    match choices.len() + preventions.len() {
+                        0 => {
                             batch.next += 1;
                             batch.used.clear();
+                            batch.used_preventions.clear();
+                            batch.ordered_event = false;
                         }
-                        [only] => {
-                            Self::modify_damage(*only, &mut batch.events[batch.next]);
-                            batch.used.push((only.source, only.ability));
+                        1 => {
+                            if let Some(only) = choices.first() {
+                                self.modify_damage(
+                                    *only,
+                                    &mut batch.events[batch.next],
+                                    &mut batch.heals,
+                                );
+                                batch.used.push((only.source, only.ability));
+                            } else {
+                                self.apply_damage_prevention(
+                                    preventions[0],
+                                    &mut batch.events[batch.next],
+                                    &mut batch.used_preventions,
+                                );
+                            }
                         }
                         _ => {
                             self.state.pending = Pending::Replacement {
@@ -1104,7 +1394,7 @@ impl Game {
                         let Some(Event::Counters(batch)) = state.active.take() else {
                             unreachable!()
                         };
-                        self.commit_counter_placements(batch.placements);
+                        self.commit_counter_placements(batch.placements, batch.completion);
                         continue;
                     }
                     let p = &batch.placements[batch.next];
@@ -1148,6 +1438,13 @@ impl Game {
                                     &batch.recipes,
                                     temporary,
                                 );
+                                if let TokenCompletion::AnimateNoncreatures(spec) = batch.completion
+                                {
+                                    state.work.push_front(Work::AnimateCreated {
+                                        created: created.clone(),
+                                        spec,
+                                    });
+                                }
                                 let counters = match &batch.completion {
                                     TokenCompletion::Counters { kind, amount } => {
                                         Some(Counters::of(*kind, *amount))
@@ -1177,6 +1474,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::JobAttach(_)
+                                        | TokenCompletion::AttachCreatedTo(_)
                                         | TokenCompletion::Counters { .. }
                                         | TokenCompletion::CounterSet(_)
                                         | TokenCompletion::Keywords { .. }
@@ -1227,6 +1525,7 @@ impl Game {
                                     );
                                     if !placements.is_empty() {
                                         state.work.push_front(Work::Counters(CounterBatch {
+                                            completion: None,
                                             placements,
                                             next: 0,
                                             used: Vec::new(),
@@ -1253,6 +1552,13 @@ impl Game {
                                     })
                                 {
                                     self.queue_reflexive(&c.item, c.ability, Some(c.recipient));
+                                }
+                                if let TokenCompletion::AttachCreatedTo(recipient) =
+                                    batch.completion
+                                {
+                                    for &equipment in &created {
+                                        self.attach_equipment(equipment, recipient);
+                                    }
                                 }
                                 if let TokenCompletion::JobAttach(source) = batch.completion {
                                     let eligible = created
@@ -1321,6 +1627,11 @@ impl Game {
         })
     }
     pub(super) fn choose_replacement(&mut self, source: ObjectRef, ability: u16) {
+        if self.state.replacements.is_none() {
+            self.apply_connive_replacement(source, ability);
+            self.run_program();
+            return;
+        }
         let mut state = self.state.replacements.take().unwrap();
         match state.active.as_mut().unwrap() {
             Event::Damage(batch) => {
@@ -1329,7 +1640,7 @@ impl Game {
                     .into_iter()
                     .find(|c| c.source == source && c.ability == ability)
                     .unwrap();
-                Self::modify_damage(choice, &mut batch.events[batch.next]);
+                self.modify_damage(choice, &mut batch.events[batch.next], &mut batch.heals);
                 batch.used.push((source, ability));
             }
             Event::Counters(batch) => {
@@ -1357,7 +1668,102 @@ impl Game {
         self.state.replacements = Some(state);
         self.advance_replacements(true);
     }
+    pub(super) fn choose_damage_prevention(
+        &mut self,
+        source: ObjectRef,
+        kind: DamagePreventionKind,
+    ) {
+        let mut state = self.state.replacements.take().unwrap();
+        let Event::Damage(batch) = state.active.as_mut().unwrap() else {
+            unreachable!()
+        };
+        assert!(
+            self.damage_preventions(&batch.events[batch.next], &batch.used_preventions)
+                .iter()
+                .any(|choice| choice.source == source && choice.kind == kind)
+        );
+        let choice = self
+            .damage_preventions(&batch.events[batch.next], &batch.used_preventions)
+            .into_iter()
+            .find(|choice| choice.source == source && choice.kind == kind)
+            .unwrap();
+        self.apply_damage_prevention(
+            choice,
+            &mut batch.events[batch.next],
+            &mut batch.used_preventions,
+        );
+        self.state.replacements = Some(state);
+        self.advance_replacements(true);
+    }
+    fn apply_damage_prevention(
+        &mut self,
+        choice: DamagePreventionView,
+        event: &mut DamageEvent,
+        used: &mut Vec<(ObjectRef, DamagePreventionKind)>,
+    ) {
+        if choice.kind == DamagePreventionKind::ShieldCounter {
+            self.remove_shield(choice.source.card);
+        }
+        if event.preventable && !self.state.damage_prevention_prohibited {
+            event.amount = 0;
+        }
+        used.push((choice.source, choice.kind));
+    }
+    fn damage_event_order(&self, batch: &DamageBatch) -> Vec<DamageEventOrderView> {
+        if batch.ordered_event {
+            return Vec::new();
+        }
+        let event = batch.events[batch.next];
+        if event.amount <= 0 {
+            return Vec::new();
+        }
+        let Target::Card(id) = event.target else {
+            return Vec::new();
+        };
+        if self.counter_count(id, CounterKind::Shield) == 0 {
+            return Vec::new();
+        }
+        let choices: Vec<_> = batch
+            .events
+            .iter()
+            .enumerate()
+            .skip(batch.next)
+            .filter(|(_, candidate)| candidate.target == event.target && candidate.amount > 0)
+            .map(|(index, &event)| DamageEventOrderView {
+                index: u32::try_from(index).expect("owned damage event index"),
+                event,
+            })
+            .collect();
+        if choices.len() > 1 {
+            choices
+        } else {
+            Vec::new()
+        }
+    }
+    pub(super) fn choose_damage_event(&mut self, index: u32) {
+        let mut state = self.state.replacements.take().unwrap();
+        let Event::Damage(batch) = state.active.as_mut().unwrap() else {
+            unreachable!()
+        };
+        assert!(
+            self.damage_event_order(batch)
+                .iter()
+                .any(|choice| choice.index == index)
+        );
+        batch.events.swap(batch.next, index as usize);
+        batch.ordered_event = true;
+        self.state.replacements = Some(state);
+        self.advance_replacements(true);
+    }
     pub(super) fn visit_replacement_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        if self.state.replacements.is_none() {
+            return self.connive_replacements().into_iter().any(|c| {
+                emit(Action::ChooseReplacement {
+                    source: c.source,
+                    ability: c.ability,
+                })
+            });
+        }
         let active = self
             .state
             .replacements
@@ -1366,40 +1772,88 @@ impl Game {
             .active
             .as_ref()
             .unwrap();
+        if let Event::Damage(batch) = active {
+            let choices = self.damage_event_order(batch);
+            if !choices.is_empty() {
+                return choices.into_iter().any(|choice| {
+                    emit(Action::ChooseDamageEvent {
+                        index: choice.index,
+                    })
+                });
+            }
+        }
         let choices = match active {
             Event::Damage(b) => self.damage_replacements(&b.events[b.next], &b.used),
             Event::Counters(b) => self.counter_replacements(&b.placements[b.next], &b.used),
             Event::Tokens(b) => self.token_replacements(b),
         };
-        choices.into_iter().any(|c| {
+        if choices.into_iter().any(|c| {
             emit(Action::ChooseReplacement {
                 source: c.source,
                 ability: c.ability,
             })
-        })
+        }) {
+            return true;
+        }
+        if let Event::Damage(batch) = active {
+            return self
+                .damage_preventions(&batch.events[batch.next], &batch.used_preventions)
+                .into_iter()
+                .any(|choice| {
+                    emit(Action::ChooseDamagePrevention {
+                        source: choice.source,
+                        prevention: choice.kind,
+                    })
+                });
+        }
+        false
     }
     pub(super) fn replacement_choice(&self, viewer: Player) -> Option<ReplacementChoiceView> {
         if !matches!(self.state.pending, Pending::Replacement { .. }) {
             return None;
         }
+        if self.state.replacements.is_none() {
+            return self.connive_replacement_choice();
+        }
         match self.state.replacements.as_ref()?.active.as_ref()? {
             Event::Damage(batch) => Some(ReplacementChoiceView {
-                kind: "Damage",
+                kind: if self.damage_event_order(batch).is_empty() {
+                    "Damage"
+                } else {
+                    "DamageEvent"
+                },
                 object: None,
                 counters: None,
                 tokens: Vec::new(),
                 copy_recipes: Vec::new(),
                 role_attachments: Vec::new(),
-                effects: self.damage_replacements(&batch.events[batch.next], &batch.used),
-                damage: Some(batch.events[batch.next]),
+                effects: if self.damage_event_order(batch).is_empty() {
+                    self.damage_replacements(&batch.events[batch.next], &batch.used)
+                } else {
+                    Vec::new()
+                },
+                damage: self
+                    .damage_event_order(batch)
+                    .is_empty()
+                    .then_some(batch.events[batch.next]),
+                damage_preventions: if self.damage_event_order(batch).is_empty() {
+                    self.damage_preventions(&batch.events[batch.next], &batch.used_preventions)
+                } else {
+                    Vec::new()
+                },
+                heals_before_damage: batch.heals.clone(),
+                damage_event_order: self.damage_event_order(batch),
             }),
             Event::Counters(batch) => {
                 let p = &batch.placements[batch.next];
-                if p.private && viewer != p.owner {
+                if p.private && !self.shares_information(viewer, p.owner) {
                     return None;
                 }
                 Some(ReplacementChoiceView {
                     damage: None,
+                    damage_preventions: Vec::new(),
+                    heals_before_damage: Vec::new(),
+                    damage_event_order: Vec::new(),
                     kind: "Counters",
                     object: Some(p.object),
                     counters: Some(p.amount.clone()),
@@ -1411,6 +1865,9 @@ impl Game {
             }
             Event::Tokens(batch) => Some(ReplacementChoiceView {
                 damage: None,
+                damage_preventions: Vec::new(),
+                heals_before_damage: Vec::new(),
+                damage_event_order: Vec::new(),
                 kind: "Tokens",
                 object: None,
                 counters: None,

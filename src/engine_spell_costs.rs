@@ -33,6 +33,9 @@ impl Game {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Miracle) {
                 return a.miracle_cost.expect("miracle cost");
             }
+            if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
+                return a.item.source_card.sneak_cost().expect("Sneak cost");
+            }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.item.source_card.warp_cost().expect("fixed Warp cost");
             }
@@ -321,7 +324,7 @@ impl Game {
         };
         // Raw scalar requirements fit u64; discounts above u64::MAX are
         // equivalent and impose no artificial reducer-count limit.
-        let mut reduction = 0u64;
+        let mut reduction = self.turn_artifact_spell_reduction(actor, definition);
         for rule in definition.cost_reductions() {
             if rule.source_only && applies(rule, id) {
                 reduction = reduction.saturating_add(amount(rule, id));

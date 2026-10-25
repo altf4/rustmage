@@ -200,7 +200,7 @@ impl Game {
         false
     }
     fn forage_route_available(&self, route: ForageRoute) -> bool {
-        let p = self.actor().unwrap();
+        let p = self.semantic_actor().unwrap();
         if let Some(a) = &self.state.announcing {
             let mut goal = self.funding_goal(a);
             // The current total already includes the black choice after declaration.
@@ -230,7 +230,7 @@ impl Game {
             return false;
         };
         let f = self.forage_selection();
-        let p = self.actor().unwrap();
+        let p = self.semantic_actor().unwrap();
         if self.object_ref(r.card) != r || f.selected.contains(&r) {
             return false;
         }
@@ -315,7 +315,7 @@ impl Game {
         }
         if self.state.announcing.is_some() {
             self.state.pending = Pending::PayCosts {
-                player: self.actor().unwrap(),
+                player: self.semantic_actor().unwrap(),
             };
             self.resume_cast_cost_selection();
         } else {
@@ -327,7 +327,7 @@ impl Game {
                 .forage
                 .take()
                 .unwrap();
-            self.commit_forage(self.actor().unwrap(), &selection);
+            self.commit_forage(self.semantic_actor().unwrap(), &selection);
             self.run_program();
         }
     }
@@ -401,13 +401,14 @@ impl Game {
         }
     }
     pub(super) fn forage_view(&self, viewer: Player) -> Option<ForageView> {
+        let viewer = self.choice_information_player(viewer);
         let player = self
             .state
             .announcing
             .as_ref()
             .map(|a| a.item.controller)
             .or_else(|| self.state.resolving.as_ref().map(|r| r.item.controller))?;
-        if self.actor() != Some(viewer) || viewer != player {
+        if self.semantic_actor() != Some(viewer) || viewer != player {
             return None;
         }
         let method = matches!(self.state.pending, Pending::ForageMethod { .. });

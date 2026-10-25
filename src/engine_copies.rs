@@ -7,23 +7,157 @@ pub struct CopyRecipe {
     /// The complete immutable copiable definition, including fixed token exceptions.
     pub definition: Card,
     pub exceptions: CopyExceptions,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub overrides: Option<CopyOverrides>,
+    // Physical token face structure is independent of the active copiable
+    // definition (CR707.8a). Ordinary recipes derive it from their definition.
+    #[serde(skip)]
+    pub(super) faces: Option<CopyFaces>,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum CopyFaces {
+    Single,
+    Double {
+        physical_front: Card,
+        front: Card,
+        back: Card,
+        back_up: bool,
+    },
+}
+impl CopyFaces {
+    fn for_definition(definition: Card) -> Self {
+        match definition.other_face() {
+            Some(_) => Self::Double {
+                physical_front: definition.front_face(),
+                front: definition.front_face(),
+                back: definition.front_face().other_face().unwrap(),
+                back_up: definition.face_parent().is_some(),
+            },
+            None => Self::Single,
+        }
+    }
+    pub(super) fn turned(self) -> Option<(Self, Card)> {
+        match self {
+            Self::Single => None,
+            Self::Double {
+                physical_front,
+                front,
+                back,
+                back_up,
+            } => Some((
+                Self::Double {
+                    physical_front,
+                    front,
+                    back,
+                    back_up: !back_up,
+                },
+                if back_up { front } else { back },
+            )),
+        }
+    }
 }
 impl CopyRecipe {
+    pub(super) fn face_structure(self) -> CopyFaces {
+        self.faces
+            .unwrap_or_else(|| CopyFaces::for_definition(self.definition))
+    }
+    pub(super) fn with_faces(mut self, faces: CopyFaces) -> Self {
+        self.faces = (faces != CopyFaces::for_definition(self.definition)).then_some(faces);
+        self
+    }
+    pub(super) fn with_copy_effect_faces(self, mut faces: CopyFaces) -> Self {
+        if let CopyFaces::Double { front, back, .. } = &mut faces {
+            // A copy effect applies to the permanent, including both faces.
+            *front = self.definition;
+            *back = self.definition;
+        }
+        self.with_faces(faces)
+    }
+    pub(super) fn turn_face(&mut self) -> Option<Card> {
+        let (faces, definition) = self.face_structure().turned()?;
+        self.definition = definition;
+        *self = self.with_faces(faces);
+        Some(definition)
+    }
+    /// CR707.9d: a replacement subtype set excludes the copied subtype CDA.
+    /// Later copied exceptions and external keyword grants are separate effects.
+    pub(super) fn intrinsic_keywords(self) -> Keywords {
+        let keywords = self.definition.keywords();
+        if self.copy_types().replace {
+            keywords.without(Keywords::CHANGELING)
+        } else {
+            keywords
+        }
+    }
+    pub(super) fn kinds(self) -> u16 {
+        let mut kinds = self.definition.kind_mask();
+        if self.exceptions.artifact {
+            kinds |= 16;
+        }
+        if self.exceptions.golem {
+            kinds |= 17;
+        }
+        if self.exceptions.fractal {
+            kinds |= 1;
+        }
+        self.overrides
+            .and_then(|value| value.kinds)
+            .unwrap_or(kinds)
+    }
+    pub(super) fn copy_types(self) -> CopyTypes {
+        self.overrides
+            .and_then(|value| value.types)
+            .unwrap_or(CopyTypes {
+                nightmare: self.exceptions.nightmare,
+                golem: self.exceptions.golem,
+                fractal: self.exceptions.fractal,
+                ..CopyTypes::default()
+            })
+    }
+    /// A later copy exception is applied after the already flattened blueprint.
+    /// Keep ordinary preexisting recipes in their original representation.
+    pub(super) fn with_exceptions(mut self, exceptions: CopyExceptions) -> Self {
+        if let Some(overrides) = &mut self.overrides {
+            if let Some(kinds) = &mut overrides.kinds {
+                if exceptions.artifact {
+                    *kinds |= 16;
+                }
+                if exceptions.golem {
+                    *kinds |= 17;
+                }
+                if exceptions.fractal {
+                    *kinds |= 1;
+                }
+            }
+            if let Some(types) = &mut overrides.types {
+                types.nightmare |= exceptions.nightmare;
+                types.golem |= exceptions.golem;
+                types.fractal |= exceptions.fractal;
+            }
+        }
+        self.exceptions = self.exceptions.union(exceptions);
+        self
+    }
     pub const fn new(definition: Card) -> Self {
         Self {
             definition,
             exceptions: CopyExceptions::NONE,
+            overrides: None,
+            faces: None,
         }
     }
 
     pub const fn factory_identity(self) -> &'static str {
         "Copy"
     }
-    fn token_info(self) -> TokenInfo {
+    pub(super) fn token_info(self) -> TokenInfo {
         let card = self.definition;
         TokenInfo {
             factory_identity: self.factory_identity(),
-            name: card.name(),
+            name: self
+                .overrides
+                .and_then(|v| v.name)
+                .unwrap_or_else(|| card.name()),
             subtypes: card
                 .info()
                 .type_line
@@ -64,24 +198,6 @@ impl Game {
             .capacity("copy recipe allocation exhausted");
         let index = rows.partition_point(|row| row.object.card < object.card);
         rows.insert(index, CopyRow { object, recipe });
-    }
-    pub(super) fn object_token_info(&self, id: CardId) -> Option<TokenInfo> {
-        let object = &self.state.objects[id as usize];
-        if object.is_copy_token() {
-            Some(
-                // Ceasing releases the sparse recipe, but the reusable Outside
-                // slot retains token identity so it cannot move as a physical
-                // card. Live copies still require their exact-incarnation recipe.
-                self.copy_recipe(self.object_ref(id))
-                    .or_else(|| {
-                        (object.zone == Zone::Outside).then(|| CopyRecipe::new(object.card))
-                    })
-                    .expect("runtime copy recipe")
-                    .token_info(),
-            )
-        } else {
-            object.card.token_info().copied()
-        }
     }
     pub(super) fn clear_copy_recipe(&mut self, object: ObjectRef) {
         let Some(index) = self.copy_recipe_index(object) else {

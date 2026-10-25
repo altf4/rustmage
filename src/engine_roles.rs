@@ -19,6 +19,8 @@ pub(super) struct RoleState {
     clock: u64,
     /// Only true while an entry transaction assigns one simultaneous timestamp group.
     pub deferred_timestamps: bool,
+    /// Rule effect on players, independent of a fixed creature set or its source.
+    pub toughness_combat_damage: [bool; 2],
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
     pub live_static: Vec<LiveStaticSourceView>,
@@ -27,8 +29,11 @@ pub(super) struct RoleState {
     pub creature_types: Vec<subtypes::CreatureTypesEffectView>,
     pub animations: Vec<AnimationView>,
     pub keyword_effects: Vec<KeywordEffectView>,
+    pub source_linked_effects: Vec<SourceLinkedEffectView>,
+    pub resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
+    pub harnessed: Vec<ObjectRef>,
 }
 impl RoleState {
     pub(super) fn next_timestamp(&mut self) -> u64 {
@@ -51,8 +56,12 @@ impl RoleState {
             + self.creature_types.len() * std::mem::size_of::<subtypes::CreatureTypesEffectView>()
             + self.animations.len() * std::mem::size_of::<AnimationView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
+            + self.source_linked_effects.len() * std::mem::size_of::<SourceLinkedEffectView>()
+            + self.resolved_ability_modifications.len()
+                * std::mem::size_of::<ResolvedAbilityModificationView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self.harnessed.len() * std::mem::size_of::<ObjectRef>()
     }
 }
 impl Game {
@@ -65,11 +74,48 @@ impl Game {
         let mut reflexive = item.clone();
         reflexive.id = self.next_stack_id();
         reflexive.kind = StackKind::TriggeredAbility { ability };
+        reflexive.is_copy = false;
         reflexive.targets.clear();
         reflexive.mode = None;
+        if let Some((_, program)) = reflexive.program()
+            && let Some(facts) = card_quantities::counter_quantity_facts(program, |kind| {
+                self.source_counter_quantity_live(reflexive.object, kind)
+                    .unwrap_or_else(|| {
+                        item.source_counter_lki
+                            .as_ref()
+                            .and_then(|rows| rows.iter().find(|row| row.kind == kind))
+                            .map_or(0, |row| row.count)
+                    })
+            })
+        {
+            reflexive.source_counter_lki = Some(facts);
+        }
         reflexive.reflexive_subject =
             subject.map(|object| Box::new(ReflexiveSubjectView { object }));
         self.state.pending_triggers.push(reflexive);
+    }
+    pub(super) fn exact_source_can_tap(&self, item: &SpellView) -> bool {
+        self.on_battlefield(item.card)
+            && self.object_ref(item.card) == item.object
+            && !self.state.objects[item.card as usize].tapped
+    }
+    pub(super) fn complete_optional_tap_reflexive(&mut self) {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let Some(Instruction::MayTapSourceReflexive { ability }) =
+            resolution.program.get(resolution.pc.saturating_sub(1))
+        else {
+            return;
+        };
+        let (item, ability) = (resolution.item.clone(), *ability);
+        if self.exact_source_can_tap(&item) {
+            self.tap_objects(&[item.card]);
+            if self.on_battlefield(item.card)
+                && self.object_ref(item.card) == item.object
+                && self.state.objects[item.card as usize].tapped
+            {
+                self.queue_reflexive(&item, ability, None);
+            }
+        }
     }
     pub(super) fn resolve_role_reflexive(&mut self, item: &SpellView, token: Card, ability: u16) {
         assert!(
@@ -147,6 +193,9 @@ impl Game {
         self.next_role_timestamp()
     }
     pub(super) fn assign_static_source_timestamp(&mut self, source: ObjectRef) {
+        if self.retimestamp_temporary_copy(source) {
+            return;
+        }
         let timestamp = self.next_role_timestamp();
         if let Some(r) = &mut self.state.roles {
             for row in &mut r.keyword_effects {
@@ -187,6 +236,7 @@ impl Game {
                 }
             }
         }
+        self.retimestamp_self_granted_statics(source);
     }
     pub(super) fn record_role(&mut self, aura: ObjectRef, recipient: ObjectRef, timestamp: u64) {
         let r = self.state.roles.get_or_insert_with(Default::default);

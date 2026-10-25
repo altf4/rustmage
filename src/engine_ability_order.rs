@@ -21,6 +21,8 @@ pub(super) struct LayerSixObject {
     pub printed: bool,
     pub keywords: Keywords,
     pub grants: Vec<GrantedAbilityKey>,
+    /// Independently acquired self-owned static/activated ability instances.
+    pub self_grants: Vec<u64>,
     pub mana: Vec<GrantedManaAbility>,
 }
 #[derive(Clone, Debug)]
@@ -33,6 +35,7 @@ pub(super) struct LayerSixGrant {
 #[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
     Remove,
+    GrantSelf(u64),
     RemoveAndGrant(Vec<LayerSixGrant>),
     GrantEach(Vec<LayerSixGrant>),
     Grant {
@@ -175,6 +178,7 @@ pub(super) fn apply_layer_six(
                 object.printed = false;
                 object.keywords = Keywords::NONE;
                 object.grants.clear();
+                object.self_grants.clear();
                 object.mana.clear();
             }
         }
@@ -197,8 +201,10 @@ pub(super) fn apply_layer_six(
                     object.printed = false;
                     object.keywords = Keywords::NONE;
                     object.grants.clear();
+                    object.self_grants.clear();
                     object.mana.clear();
                 }
+                LayerSixAction::GrantSelf(timestamp) => object.self_grants.push(*timestamp),
                 LayerSixAction::Grant {
                     keywords,
                     abilities,

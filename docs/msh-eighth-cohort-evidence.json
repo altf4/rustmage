@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Seven complete candidates staged into the single remaining-set draft PR516; no main merge authorized",
+  "base_main": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+  "tested_runtime_head": "882ee62933bbd7c19d823d9e2fc313667fdb6b4b",
+  "cards": [
+    "Attuma, Atlantean Warlord",
+    "Captain America, Wings of Freedom",
+    "Crowd of True Believers",
+    "S.H.I.E.L.D. Spy Kit",
+    "The Mighty Thor, Jane Foster",
+    "Titania, Rugged Rumbler",
+    "Whiplash, Vengeful Engineer"
+  ],
+  "membership": {
+    "frozen_identities": 281,
+    "frozen_printings": 448,
+    "merged_flags_at_base": 180,
+    "candidate_flags": 187,
+    "candidate_gated": 94,
+    "entire_pool_acceptance": false
+  },
+  "parent_evidence": {
+    "Titania": {
+      "head": "13ab5435d64ba8c44c69877115fd1a27c5ddb260",
+      "evidence": "docs/msh-titania-evidence.json",
+      "sha256": "9f3059560f1508111f9cd18b2a3f70ecc061f9102a3ec6b3f24ddbc67b9efb8c",
+      "new_native_groups": 19
+    },
+    "Thor": {
+      "head": "f37607565f488fb58e7cb2d4491591a2e94d7011",
+      "evidence": "docs/msh-thor-tapped-return-evidence.json",
+      "sha256": "4b5d0cc331752a0ad8755198d417a044aeb24cbe41fb0249a8eba5bed796d4cf",
+      "new_native_groups": 15
+    },
+    "quantities": {
+      "head": "466da8e03313a2ef9649d090dcd27da771f06232",
+      "evidence": "docs/msh-source-quantities-evidence.json",
+      "sha256": "26752a79b17f0a22ab1d41627ad9c2fa73c7d7672d0a52e086cb5eb7c3b9d2ca",
+      "new_native_groups": 24
+    },
+    "declaration": {
+      "head": "0acaf55add27c9682fa9cb582753c76f177b2b09",
+      "evidence": "docs/msh-declaration-core-evidence.json",
+      "sha256": "6847be659e228248119a258f81b849108b2c896013259e1b964e6e21c04a3011",
+      "new_native_groups": 18
+    }
+  },
+  "scenarios": {
+    "parent_new_groups": 76,
+    "combined_new_groups": 1,
+    "new_groups": 77,
+    "expected_final_native": 1009,
+    "both_seats": true,
+    "combined_source": "src/engine_msh_eighth_combined_tests.rs",
+    "combined": "Paid Titania discard cost and opponent ward; Spy Kit attacks-alone untap/private scry; Crowd live attacking-alone target; Wings departure toughness after Murder with live Hero/Merfolk Skrull conversion; Thor exact tapped Equipment blink invalidates Whiplash intervening equipped guard while Thor and Attuma each draw once; checked failures and orphan raw/index branches with restore."
+  },
+  "shared_mechanics": [
+    "Distinct hybrid-base and additional discard-or-generic casting contributions; captured private ward discard-or-mana payment with exact associated stack identity",
+    "Instruction-level tapped immediate owner-return retained through choice-bearing departure/entry and replacements; false defaults preserve inherited return links",
+    "Opt-in boxed source quantity facts captured before complete movement batches, current/latest-departure toughness and effective Equipment count, frozen amount and affected set",
+    "Exact equipped-recipient attacks-alone event; live own attacking-alone targeting across selection/resolution; per-player Merfolk declaration trigger and actual/funding Merfolk lord"
+  ],
+  "source": {
+    "definitions": 5397,
+    "source_blobs": 1186,
+    "java_verified": true,
+    "catalogue_version": "edd02b3c316549be2f71f33084e9c3868fd56c8ae292d00f32333f335e7381c7"
+  },
+  "trace_proof": {
+    "base": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+    "parents": {
+      "main": {
+        "head": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+        "schema": 143,
+        "full_Trace_exact_matches": 2483,
+        "trace_sha256": "d74b7400e84e85e6d845b5dd38e2eedf9321f15f9198efa80b4d516d4d6b0ed5",
+        "changed": [],
+        "removed": []
+      },
+      "Titania": {
+        "head": "13ab5435d64ba8c44c69877115fd1a27c5ddb260",
+        "schema": 143,
+        "full_Trace_exact_matches": 2484,
+        "trace_sha256": "4a34ed076d5b3dfd8aa75a38d008f622edaf10df282cebdd6d6fada84c71c2aa",
+        "changed": [],
+        "removed": []
+      },
+      "Thor": {
+        "head": "f37607565f488fb58e7cb2d4491591a2e94d7011",
+        "schema": 144,
+        "full_Trace_exact_matches": 2484,
+        "trace_sha256": "9b3b8f44f0049f7fafb8e224b1b41f33e78f3f76f3df931ad5253e7f2641c134",
+        "changed": [],
+        "removed": []
+      },
+      "quantities": {
+        "head": "466da8e03313a2ef9649d090dcd27da771f06232",
+        "schema": 144,
+        "full_Trace_exact_matches": 2485,
+        "trace_sha256": "7da8bb05a5a1dad265616039fcf7d486477ddf59c1353adda07fe19d95d77a4c",
+        "changed": [],
+        "removed": []
+      },
+      "declaration": {
+        "head": "0acaf55add27c9682fa9cb582753c76f177b2b09",
+        "schema": 143,
+        "full_Trace_exact_matches": 2486,
+        "trace_sha256": "ebbaf93b51bbe7f7d6be2131d619ed48509420474cf37997c47a6076109a4f4b",
+        "changed": [],
+        "removed": []
+      }
+    },
+    "normal_schema": 144,
+    "comparison_schema": 143,
+    "normal_sha256": "88275144dc386ddf37a71d78fd2d81ade6d08697d7e8e1ec0a5a7124b4427c80",
+    "previous143_sha256": "a8ee216d81a89f57e394e76663dab5c8b1659f1868c9afc60878c6921d647f75",
+    "new_rows": {
+      "Attuma, Atlantean Warlord": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "9fb8f9361b7adf8f",
+        "observations": "c3b0488b9f6d72d2"
+      },
+      "Captain America, Wings of Freedom": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "3ad6d4893695dc9c",
+        "observations": "616eda7a01df468a"
+      },
+      "Crowd of True Believers": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "97f197e40a843eee",
+        "observations": "8880d39b082f8b3e"
+      },
+      "S.H.I.E.L.D. Spy Kit": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "97f197e40a843eee",
+        "observations": "459b06595f2337fe"
+      },
+      "The Mighty Thor, Jane Foster": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "e625fc58634bfdee",
+        "observations": "49112b5adddb7426"
+      },
+      "Titania, Rugged Rumbler": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 6,
+        "zone": "Battlefield",
+        "journal": "5c2b79d05dd290ea",
+        "observations": "b8193cf5f5937c77"
+      },
+      "Whiplash, Vengeful Engineer": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "7def026c1597d7ae",
+        "observations": "5e62493ea174b940"
+      }
+    },
+    "rows": 2490,
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "metadata_byte_identical": true,
+    "catalogue_definitions": 5397,
+    "token_recipes": 119,
+    "new_ids": [],
+    "old_fields_stripped": false,
+    "recorder_changed": false,
+    "fixed_input_files": 11719,
+    "fixed_input_changes": []
+  },
+  "identity": {
+    "wire_schema": 144,
+    "new_public_payloads": [
+      "SpellView.source_quantity_lki optional boxed facts",
+      "ReturnLinkView.tapped true exposed, false omitted"
+    ],
+    "new_ids": [],
+    "definitions": 5397,
+    "token_recipes": 119,
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "metadata_byte_identical": true
+  },
+  "validation": {
+    "combined": "Pass before fresh full trace export",
+    "full_release": "Pending exact final published aggregate head",
+    "two_independent_nonauthor_reviews": "Required on exact final published aggregate head; local receipts only",
+    "ci": "Pending exact final published aggregate head"
+  },
+  "resource_safety": {
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "fixed_inputs_through_actual_terminal": true,
+    "recorded_files": 11719,
+    "fixed_input_changes": []
+  },
+  "throughput": {
+    "scope": "Seven candidate whole cards and parent/combined preparation through fresh integrated trace proof; includes serialized queues and fixture corrections, excludes final published-head release/CI/reviews and human approval",
+    "start_utc": "2026-10-25T01:06:22+00:00",
+    "evidence_cutoff_utc": "2026-10-25T01:59:20.437455+00:00",
+    "elapsed_seconds": 3178.437455,
+    "candidate_cards_per_hour": 7.928424062697184,
+    "simulation_claim": false
+  },
+  "publication_policy": "Keep all existing main merges. All remaining work stays in draft PR516; user approves the full remaining implementation at the end. No automatic main merge.",
+  "remaining_scope": "94 candidate-gated identities plus full-pool rules/game/performance acceptance; main remains180/281 with101 gated until final approval."
+}

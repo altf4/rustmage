@@ -1,0 +1,537 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "source_base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+  "tested_runtime_content_head": "48eee0f9b872398ce6feff71c289bcf8a59dc964",
+  "scope": "Two complete candidates on isolated source branch for aggregate draft PR516. No extra PR or main merge. Aggregate release/CI, independent nonauthor review and whole-set gameplay acceptance remain integrator gates. No whole-set acceptance claimed.",
+  "complete_candidates": [
+    "Iron Man, Master of Machines",
+    "Avengers Assemble!"
+  ],
+  "wire": {
+    "base": 147,
+    "candidate": 148,
+    "reason": "New public optional Observation.turn_facts contains three frozen facts per player. Presence depends only on public battlefield observer definitions or captured visible trigger packets; absent when irrelevant. Private facts always record before observer arrival. No hidden hand/library definition scan; suppression does not conceal a publicly known definition. No recorder normalization or field stripping."
+  },
+  "new_ids": [],
+  "metadata": {
+    "definitions": 5401,
+    "token_recipes": 123,
+    "all_manifest_bytes_unchanged": true,
+    "manifest_sha256": "504e5898b107e869e75afb89ff24c3a13e139a3fad02ce875224fe500c7ab768"
+  },
+  "candidate_set_flags": {
+    "total": 281,
+    "admitted": 207,
+    "gated": 74,
+    "qualification": "Isolated candidate flags only. Base205/281; other concurrent source branches excluded. Full-set acceptance remains open."
+  },
+  "oracle": [
+    {
+      "oracle_id": "3477e1cc-46af-46f4-9ea2-bdf0bf1f880e",
+      "name": "Avengers Assemble!",
+      "layout": "normal",
+      "mana_cost": "{4}{W}",
+      "cmc": 5.0,
+      "type_line": "Enchantment",
+      "oracle_text": "Flash\nHeroes you control get +2/+2.\nAt the beginning of each end step, if you attacked with a Hero this turn or a Hero entered the battlefield under your control this turn, draw a card.",
+      "colors": [
+        "W"
+      ],
+      "color_identity": [
+        "W"
+      ],
+      "keywords": [
+        "Flash"
+      ],
+      "reference_printing": {
+        "id": "bf736399-af74-4f52-9159-67ea67d0cf83",
+        "set": "msh",
+        "collector_number": "6",
+        "released_at": "2026-06-26"
+      }
+    },
+    {
+      "oracle_id": "94bc796d-8c04-4835-8a99-7e5dce9540ee",
+      "name": "Iron Man, Master of Machines",
+      "layout": "normal",
+      "mana_cost": "{2}{U}{R}",
+      "cmc": 4.0,
+      "type_line": "Legendary Artifact Creature \u2014 Human Hero",
+      "oracle_text": "Flying, vigilance\nIron Man gets +1/+0 for each other artifact you control.\nWhenever Iron Man attacks, if an artifact entered the battlefield under your control this turn, draw a card.",
+      "power": "1",
+      "toughness": "4",
+      "colors": [
+        "R",
+        "U"
+      ],
+      "color_identity": [
+        "R",
+        "U"
+      ],
+      "keywords": [
+        "Flying",
+        "Vigilance"
+      ],
+      "reference_printing": {
+        "id": "8f84ab0a-bf6e-4f28-9da8-998512a224ed",
+        "set": "msh",
+        "collector_number": "216",
+        "released_at": "2026-06-26"
+      }
+    }
+  ],
+  "printed_obligations": {
+    "Iron Man, Master of Machines": [
+      "Pay 2UR; legendary artifact creature Human Hero1/4; flying and vigilance.",
+      "Live layer7c +1/+0 per OTHER artifact YOU currently control, including artifact lands, noncreatures and tokens. Exclude exact self, use effective artifact kind/current controller.",
+      "Whenever exact source attacks, intervening-if an artifact entered under captured trigger controller this turn: draw one for that captured controller.",
+      "Self-entry counts as an artifact entry, so haste can allow same-turn trigger; older source cannot manufacture a fresh entry next turn.",
+      "Artifact need not survive, remain artifact or remain controlled; source can leave/change control after queued ability. No trigger if condition false at event, even if it later becomes true."
+    ],
+    "Avengers Assemble!": [
+      "Pay4W; enchantment with flash, legal instant-speed casting through existing priority/permission rules.",
+      "Heroes YOU control get live+2/+2; implement existing Hero CreatureFilter static modifier at Modify layer, not counters or dynamic base-setting.",
+      "At beginning of EACH end step, intervening-if your Hero attack OR Hero entry happened this turn: draw one. Both conditions true still one trigger per source.",
+      "Facts record before Avengers exists, including earlier Hero dying, type change, control transfer or blink. Multiple Avengers produce independent triggers.",
+      "Hero-entry condition includes noncreature Kindred Hero characteristics; Hero attack requires actually declaring an attacker, not merely entering attacking.",
+      "Current controller at step event chooses whose turn history; queued draw and guard use captured controller after source removal/control transfer. Reset both players history at new turn, including opponent-turn flash entry."
+    ]
+  },
+  "source_evidence": {
+    "direct_java_and_helpers_read_in_full": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/i/IronManMasterOfMachines.java",
+        "sha256": "e3e0b3e2ccbb1ae7b00f7fcb67ca51877390c23d89b7d4319833d3c4c9d14f5e",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/AvengersAssemble.java",
+        "sha256": "eb449f1a27316a712ab52da494291953d2d96c2f272f942316f31cba5aa76be3",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/watchers/common/ArtifactEnteredControllerWatcher.java",
+        "sha256": "a1f364da559cfe59d73e34963271cd4aebcb3780e727886dfcd56b57926b3339",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/condition/common/ArtifactEnteredUnderYourControlCondition.java",
+        "sha256": "dd5f36d0ec21da7009bb16253902186e50db2e60aa79c99584b8f368f8d9886d",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/watchers/common/AttackedThisTurnWatcher.java",
+        "sha256": "6c5e923e07c20b5532156598d59f92869d578f7fba9e42c238240b2dcd9b13df",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/watchers/common/PermanentsEnteredBattlefieldWatcher.java",
+        "sha256": "5179d8e5329c11f2d83e74aa2699a92a98d7952ed766ebd4f9532ddf050bfa77",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+        "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+        "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+        "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+        "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+        "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+        "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+        "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+        "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+        "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+        "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+        "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+        "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+        "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+        "sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+        "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb",
+        "read_coverage": "complete body read in this preparation, including every card-specific class and its relevant watcher/effect/cost/filter/trigger helpers"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+        "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66",
+        "read_coverage": "complete generic helper read in prior Galactus/John audit; cached full body hash revalidated against that same pin now",
+        "prior_read_cache": "<cache>/rustmage-msh-galactus-us-agent-design-a496faea.json"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789",
+        "read_coverage": "complete generic helper read in prior Galactus/John audit; cached full body hash revalidated against that same pin now",
+        "prior_read_cache": "<cache>/rustmage-msh-galactus-us-agent-design-a496faea.json"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+        "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397",
+        "read_coverage": "complete generic helper read in prior Galactus/John audit; cached full body hash revalidated against that same pin now",
+        "prior_read_cache": "<cache>/rustmage-msh-galactus-us-agent-design-a496faea.json"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+        "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139",
+        "read_coverage": "complete generic helper read in prior Galactus/John audit; cached full body hash revalidated against that same pin now",
+        "prior_read_cache": "<cache>/rustmage-msh-galactus-us-agent-design-a496faea.json"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+        "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc",
+        "read_coverage": "complete generic helper read in prior Galactus/John audit; cached full body hash revalidated against that same pin now",
+        "prior_read_cache": "<cache>/rustmage-msh-galactus-us-agent-design-a496faea.json"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+        "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98",
+        "read_coverage": "complete generic helper read in prior Galactus/John audit; cached full body hash revalidated against that same pin now",
+        "prior_read_cache": "<cache>/rustmage-msh-galactus-us-agent-design-a496faea.json"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/constants/CardType.java",
+        "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+        "read_coverage": "complete generic helper read in prior Galactus/John audit; cached full body hash revalidated against that same pin now",
+        "prior_read_cache": "<cache>/rustmage-msh-galactus-us-agent-design-a496faea.json"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+        "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47",
+        "read_coverage": "complete helper read in preceding temporary-copy audit; full body hash revalidated now",
+        "prior_read_cache": "<cache>/rustmage-msh-temporary-copy-design-a29274fe.json"
+      }
+    ],
+    "rust_full_snapshot_read_count": 27,
+    "local_design_cache": "<cache>/rustmage-msh-iron-man-avengers-history-design-edb82bf7.json",
+    "local_design_sha256": "e39cdfccf62c5bbcd03e967a15191bef8d04d8388c5db442442ce889850d4131",
+    "base_revalidation": "Compared affected runtime paths between staged edb82bf7 and frozen0c; only unrelated engine.rs test-module ordering/addition differed. Source verifier checks 5401 definitions and1258 source blobs with Java verification true.",
+    "frozen_cards_sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+    "design_supersession": "Earlier read-only proposal for always-visible history was superseded by the public-source opt-in design. Exact parent trace proof uses the real wire payload and no recorder change."
+  },
+  "authoritative_sources": [
+    {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "published": "2026-06-12",
+      "document_modified": "2026-05-14",
+      "full_entries_read": [
+        "Iron Man, Master of Machines",
+        "Avengers Assemble!"
+      ],
+      "summary": "Iron Man requires an earlier artifact entry when he attacks. Later artifact entry cannot create a missed trigger. Avengers checks at each end-step beginning; a later Hero entry cannot create that missed trigger. Relevant earlier permanents need not remain on the battlefield or under the same control."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+      "effective": "2026-09-25",
+      "sections_read": [
+        "508.1f",
+        "508.1k",
+        "508.1m",
+        "508.2a-b",
+        "508.3a-c",
+        "603.4",
+        "608.2a",
+        "603.6a-b"
+      ],
+      "summary": "Declaration tapping precedes becoming an attacker and attack triggers; later characteristic changes do not retroactively trigger an attack. Permanents have continuous modifications immediately on entry. Intervening-if conditions are checked when triggering and resolving."
+    }
+  ],
+  "java_discrepancy_and_limits": [
+    "ArtifactEnteredControllerWatcher captures effective artifact/controller at entry, useful evidence for immutable flags; watcher registration must not restrict Rust recording to battlefield source presence.",
+    "AttackedThisTurnWatcher retains Permanent references rather than explicitly copying them; do not adopt mutable live-object history. Event-time effective subtype/controller must be frozen from primary declaration rules. Exact Java mutation consequences are not newly certified here.",
+    "PermanentsEnteredBattlefieldWatcher copies Permanent at entry, but Avengers later calls hasSubtype(...,game); Rust must not reevaluate a mutable historical object under later continuous effects. Use frozen fact.",
+    "Avengers static Java creature filter and unrestricted Hero entry history are intentionally distinct. Do not substitute live AttackingSubtype, generic Attacked bool or NonlandEntriesThisTurn for any filtered fact."
+  ],
+  "shared_mechanics": [
+    "Three inline per-player turn facts record actual effective artifact/Hero entries only after the whole final entry batch, providers, controllers and attachments are installed, before observers. Zero/prevented entry does not count. Facts survive later type/control/zone changes and are recorded even before an observer exists.",
+    "Hero attack history samples actual declared attackers after declaration taps/costs, at the attack-trigger event (CR508.1f/k/m). Put-attacking does not count. Both players reset each new turn.",
+    "Typed history guards use captured trigger controller and existing intervening-if queue/resolution checks. Captured packets retain public visibility after source departure/control change.",
+    "Existing additive7c scaling counts OTHER current artifacts, including lands/tokens, and shares actual/funding characteristics. Existing Hero CREATURE lord, Flash, flying, vigilance and draw semantics reused."
+  ],
+  "meaningful_tests": {
+    "new_groups": 30,
+    "actual_groups": 28,
+    "funding_groups": 2,
+    "both_seats": true,
+    "named_groups": [
+      "msh_turn_facts_iron_paid_cost_keywords_and_illegal_cost_atomic",
+      "msh_turn_facts_iron_self_entry_paid_haste_attack_draw_and_vigilance",
+      "msh_turn_facts_iron_old_source_no_entry_and_late_artifact_no_retroactive_trigger",
+      "msh_turn_facts_iron_prior_entry_survives_departure_and_control_transfer",
+      "msh_turn_facts_iron_queued_source_departure_keeps_captured_player_and_view",
+      "msh_turn_facts_iron_live_other_artifact_count_is_additive_not_cda",
+      "msh_turn_facts_paid_molten_copy_is_artifact_hero_entry_and_public_observer",
+      "msh_turn_facts_avengers_paid_flash_after_prior_departed_hero_entry",
+      "msh_turn_facts_avengers_after_hero_attack_and_death_without_entry_fact",
+      "msh_turn_facts_avengers_no_fact_no_trigger_and_entry_after_end_is_late",
+      "msh_turn_facts_avengers_enters_after_end_begins_no_retroactive_trigger",
+      "msh_turn_facts_avengers_or_is_one_draw_multiple_sources_each_trigger",
+      "msh_turn_facts_avengers_lord_live_hero_types_controls_and_source_leave",
+      "msh_turn_facts_avengers_captured_controller_survives_source_departure",
+      "msh_turn_facts_controller_at_event_does_not_borrow_previous_controllers_history",
+      "msh_turn_facts_public_optin_never_tests_hidden_hand_or_library",
+      "msh_turn_facts_orphan_raw_indexed_end_trigger_restore_full_observations",
+      "msh_turn_facts_new_turn_resets_both_players_not_source_departures",
+      "msh_turn_facts_bounded_noncreature_kindred_changeling_entry_qualifies",
+      "msh_turn_facts_simultaneous_entries_raw_return_and_artifact_land_fixture",
+      "msh_turn_facts_zero_tokens_and_impossible_aura_do_not_count_entry",
+      "msh_turn_facts_bounded_posttap_effective_type_and_put_attacking_distinction",
+      "msh_turn_facts_iron_paid_from_actual_land_funding",
+      "msh_turn_facts_avengers_flash_from_actual_land_funding",
+      "msh_turn_facts_avengers_lord_enables_actual_crew_four_cost",
+      "msh_turn_facts_suppressed_public_observer_stays_visible_but_no_lord_or_trigger",
+      "msh_turn_facts_simultaneous_control_aura_captures_final_entry_controller",
+      "msh_turn_facts_actual_artifact_spell_only_funding_accepts_iron_rejects_avengers_atomically",
+      "msh_turn_facts_funding_iron_virtual_artifact_sacrifice_matches_actual",
+      "msh_turn_facts_funding_avengers_virtual_lord_departure_matches_actual"
+    ],
+    "paid_routes": "Exact colored-cost legality and atomic missing-color rejection; admitted Impolite Entrance haste and Iron attack/draw/vigilance/flying block legality; Molten Duplication of admitted Barkform Harvester; opponent-turn Agent Venom then flash Avengers; actual land-funded casts; admitted Dependable Quinjet Crew4 enabled by lord-enhanced Human Torch; Castle Doom artifact-spell-only mana accepts Iron and rejects Avengers atomically.",
+    "history_and_queue": "Self-entry; old source after turn reset; earlier artifacts/Heroes leaving or transferring control; prior attack without entry; late entry/observer cannot create missed trigger; each end step, OR once and multiple independent sources; captured controller/source LKI; source suppression and public payload retention; simultaneous control Aura entry; staged/raw returns and copied tokens; live artifact/lord type/control changes and7c base-setter order.",
+    "privacy_and_owned_branching": "Full serialized nonactor observations with hidden observer hand/library; real optional payload only from public providers; failed actions leave snapshots unchanged; owned raw and indexed branches after parent disposal; restore full observations with documented protocol revision normalization; actual/funding full characteristic-view equality and unchanged parent snapshot.",
+    "bounded_fixtures": "Firdoch Core Kindred/changeling metadata and Scene of the Crime artifact-land metadata remain explicitly gated characteristic fixtures, not playable admissions. Post-tap type-change fixture establishes the event boundary. Suppression uses bounded creature animation followed by actual paid Frozen in Ice. Baxter Building is untouched and not used as playable evidence."
+  },
+  "trace_proof": {
+    "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+    "parent_rows": 2508,
+    "normal_schema": 148,
+    "previous_schema": 147,
+    "candidate_rows": 2510,
+    "added": [
+      "Avengers Assemble!",
+      "Iron Man, Master of Machines"
+    ],
+    "changed_full_parent_rows": [],
+    "trace_fields_compared": [
+      "decisions",
+      "journal",
+      "observations",
+      "root",
+      "status",
+      "zone"
+    ],
+    "recorder_modified": false,
+    "field_stripping": false,
+    "parent_sha256": "8b0cb3dfdc9cee46637c0c43b639a917135357f1a8de32f0ba1fc5805351b478",
+    "fresh_normal_sha256": "3e80a01d47b13ffc7e355f05f5a11251595eed6a38e8c907fecd5312a5db766e",
+    "fresh_previous147_sha256": "b5bb54cc821cecd34eeacfb1a472b82c02dcb03f5530e9ff1fde6fe0a5838d0d"
+  },
+  "validation": {
+    "native_tests": 1329,
+    "strict_clippy_all_targets": true,
+    "cargo_fmt_check": true,
+    "explicit_authored_card_rustfmt_check": true,
+    "source_pins": true,
+    "linker_check": true,
+    "git_diff_check": true,
+    "resource_runs": [
+      {
+        "log": "<cache>/rustmage-msh-history-native-final.log",
+        "log_sha256": "ddbeb9360079f085ba9a793cf3733e62b852e22aa812bff9134ffa7ebd934716",
+        "report": "<cache>/rustmage-build-reports/84c4bf150ee84262b1f36b6a119251e9.json",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--nocapture"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 139.63446583400946,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2551259136,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "log": "<cache>/rustmage-msh-history-clippy.log",
+        "log_sha256": "4dac62ac0ffd0eae5be921178ac5bbb6582d830b56441b0ae99447d5b98d0f8c",
+        "report": "<cache>/rustmage-build-reports/85452c06327c4a0c965bd8ce9711d8da.json",
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 38.42310150398407,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1970839552,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "log": "<cache>/rustmage-msh-history-checks-final.log",
+        "log_sha256": "65263a41a90a74a18d482c76672882ceb8a4f12bcb69b60bcf25f93e7903461d",
+        "report": "<cache>/rustmage-build-reports/01a24f0e9ccc4f689e5b7b434803fb87.json",
+        "command": [
+          "cargo",
+          "fmt",
+          "--",
+          "--check"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 1.5170835069729947,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 114552832,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    ],
+    "cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_probe": false,
+    "inputs_fixed_through_actual_terminal": true,
+    "qualification": "Author native/lint/source/link gates. Integrator runs final combined release, CI and independent reviews."
+  },
+  "development_corrections": [
+    "Compile-only test fixture fields/imports corrected before execution.",
+    "Tests corrected API sequencing, exact token lookup, phase-cleared pools, bounded type fixture, old-source entry marker and legend-rule copy recipient. Restore comparison documents revision advancement.",
+    "Removed gated Baxter Building scenario; paid admitted Quinjet crew uses current power4 from Avengers lord. Opponent-turn Flash sequence uses paid Agent Venom before Avengers. No runtime workaround or baseline drift accepted.",
+    "Initial full-native export had1328 passing tests and only stale trace cardinality failure; the new normal table was installed only after every full inherited previous147 row exactly matched the committed parent."
+  ],
+  "cleanup": {
+    "active_fd_maps_exe_cwd_matches": [],
+    "unreadable_proc_maps": 47,
+    "files_removed": 1019,
+    "allocated_bytes_freed": 125673472,
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-history-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      {
+        "path": "<cache>/rustmage-msh-history-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "28ffb3301f71536891b615c0a1444b0542561f8c421fe9da54257a22ab8a8aee",
+        "bytes": 35338896
+      }
+    ],
+    "prior_artifacts_reverified": 559,
+    "prior_missing": [],
+    "prior_changed": [],
+    "scan_qualification": "No matching readable FD/maps/exe/cwd consumer.47 proc maps were unreadable; all owned consuming sessions were separately observed at actual terminal before cleanup. Allocated bytes are summed per removed path, not deduplicated physical reclamation.",
+    "additional_root_artifacts_reverified": [
+      {
+        "path": "<cache>/rustmage-msh-recent-targets-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "4dc10f188665b6346c391623d81cca6f16b80a1a1953ac223fb24b95dd5392c6"
+      },
+      {
+        "path": "<cache>/rustmage-msh-recent-targets-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T05:18:36+00:00",
+    "end_utc": "2026-10-25T06:06:32.590013+00:00",
+    "elapsed_seconds": 2876.590013,
+    "whole_card_candidates": 2,
+    "candidate_cards_per_hour": 2.5029635670921033,
+    "scope": "Branch creation through implementation, fixture fixes, guarded shared build queues, native/lint/source checks and cleanup/evidence cutoff. Excludes prior read-only design and later aggregate integration/reviews/release/CI/full-set games.",
+    "native_suite_wall_seconds": 7.84,
+    "simulation": "No new simulation throughput measured; native rules-suite execution time is not an all-set simulation benchmark."
+  },
+  "remaining_blockers": "No known unimplemented printed obligation for this pair after author checks. Aggregate integration assurance and full MSH acceptance remain open;74 other frozen identities remain gated on this isolated branch."
+}

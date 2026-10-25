@@ -3,17 +3,17 @@ use super::*;
 
 impl Game {
     pub(super) fn copiable_recipe(&self, object: ObjectRef) -> CopyRecipe {
-        self.copy_recipe(object)
-            .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card))
-    }
-    pub(super) fn copied_keywords(&self, object: ObjectRef) -> Keywords {
-        if self
+        let recipe = self
             .copy_recipe(object)
-            .is_some_and(|r| r.exceptions.sacrifice_abilities != 0)
+            .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card));
+        let faces = self.physical_copy_faces(object);
+        if self
+            .temporary_copy_row(object)
+            .is_some_and(|row| !row.layers.is_empty())
         {
-            Keywords::HASTE
+            recipe.with_copy_effect_faces(faces)
         } else {
-            Keywords::NONE
+            recipe.with_faces(faces)
         }
     }
     pub(super) fn recipe_for_subject(

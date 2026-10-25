@@ -31,6 +31,7 @@ impl DiscardContext {
                 .iter()
                 .map(|s| {
                     s.counters.owned_bytes()
+                        + s.temporary_copy_bytes()
                         + s.abilities.as_ref().map_or(0, |a| {
                             std::mem::size_of::<AbilityAvailabilityView>()
                                 + a.grants.len() * std::mem::size_of::<GrantedAbilityView>()
@@ -187,10 +188,13 @@ impl Game {
                     let cycling = cycled.is_some_and(|reference| {
                         self.state.objects[reference.card as usize].owner == player
                     });
-                    if ability
-                        .program
-                        .contains(&Instruction::ExileDiscardedWithStash)
-                    {
+                    if ability.program.iter().any(|instruction| {
+                        matches!(
+                            instruction,
+                            Instruction::ExileDiscardedWithStash
+                                | Instruction::MayExileDiscardedPlay { .. }
+                        )
+                    }) {
                         for discarded in events
                             .iter()
                             .filter(|event| event.moved && event.before.owner == player)

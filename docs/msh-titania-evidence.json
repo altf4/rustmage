@@ -1,0 +1,306 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "source_base": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+  "tested_runtime_head": "50b4b4de8b3fb00cb009805ddbd3083a76da02c1",
+  "scope": "One whole Titania candidate with its hybrid/additional cast composition and captured-payer discard-or-mana ward core. Prepared for the single aggregate implementation PR; main is not merged. Full release validation, two independent nonauthor final published aggregate-head reviews, CI, complete set games and user approval remain integration gates. Full-set acceptance is not claimed.",
+  "complete_candidates": [
+    "Titania, Rugged Rumbler"
+  ],
+  "new_ids": [],
+  "observation_schema_unchanged": 143,
+  "physical_metadata_unchanged_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+  "definitions": 5397,
+  "token_recipes": 119,
+  "catalogue_version": "0b0712e4142484c0ef7c7c06ebd9e3693835b489f16dbf830cefd45ccefe8e69",
+  "candidate_set_flags": {
+    "total": 281,
+    "admitted": 181,
+    "gated": 100,
+    "qualification": "Isolated branch only; base has 180 admission flags and 101 gated. Admission is not independent whole-set acceptance."
+  },
+  "printed_obligations": [
+    "Legendary 5/5 Human Villain for {2}{B/G}; either hybrid color is legal and retains both printed colors and mana value 3.",
+    "Every actual cast additionally discards one own hand card, including lands, or contributes {2} before reductions. Free casts still choose and pay one route. Stack copies pay neither again.",
+    "Ward triggers once per opponent-controlled spell or ability becoming a target, including retargeted copies and separate granted ward instances; own targeting and unavailable printed abilities do not trigger it.",
+    "Ward offers the captured targeting player one owned discard-or-mana resolution request. Paying either route preserves the exact related spell or ability. Decline counters only that exact related stack ID, respecting uncounterability.",
+    "Queued ward retains its captured payer, controller/discard cause and exact victim through source departure/blink/control changes and victim control changes. Replaced discards still pay once, with no false priority window."
+  ],
+  "oracle": {
+    "oracle_id": "e380e37d-926b-4a4b-a275-7844bf4956d5",
+    "name": "Titania, Rugged Rumbler",
+    "layout": "normal",
+    "mana_cost": "{2}{B/G}",
+    "cmc": 3.0,
+    "type_line": "Legendary Creature \u2014 Human Villain",
+    "oracle_text": "As an additional cost to cast this spell, discard a card or pay {2}.\nWard\u2014Discard a card or pay {2}. (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player discards a card or pays {2}.)",
+    "power": "5",
+    "toughness": "5",
+    "colors": [
+      "B",
+      "G"
+    ],
+    "color_identity": [
+      "B",
+      "G"
+    ],
+    "keywords": [
+      "Ward"
+    ],
+    "reference_printing": {
+      "id": "c281e0ee-155b-4022-b921-ebc391535aad",
+      "set": "msh",
+      "collector_number": "235",
+      "released_at": "2026-06-26"
+    }
+  },
+  "source_evidence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "direct": {
+      "path": "Mage.Sets/src/mage/cards/t/TitaniaRuggedRumbler.java",
+      "sha256": "678d2d66bbebf714ce506b3fe93cf95933c29ff78cccab2445f27812cc70a8ec"
+    },
+    "helpers_read_in_full": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+        "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/CostImpl.java",
+        "sha256": "ac24e04444dec48d936fed7a03970a8b7e765ef7f368c7b4024747e6fdd83df7"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+        "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+        "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+        "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+        "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+        "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+        "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostImpl.java",
+        "sha256": "22993c90f4047d015504922f5fe38d98de760d1a89755ec8ce40f127b4e3274a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/HybridManaCost.java",
+        "sha256": "75a83ce4be6ff11778f6f32c6782df9c68250cc55d04e22b03a5efec27de8ee6"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+        "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ColoredManaCost.java",
+        "sha256": "9b862bbf8a95520da3bc4798bc253cdf263e9637290c865f5e2dc4726080b928"
+      }
+    ],
+    "oracle_facts_sha256": "d76ccf9f1a39ba35d0d18f9a954f94cdb35320ca31877cda3dd8fea036c6fa88",
+    "rules_sources": [
+      "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf"
+    ],
+    "rules_notes": [
+      "CR 118.9d: free and alternative casts still choose the mandatory discard or additive {2}; hybrid equivalents are distinct base costs, never waivers. The unreduced selected composition remains owned through reductions and payment.",
+      "CR 702.21a: ward captures the targeting player. XMage CounterUnlessPaysEffect rereads the victim current controller; Rust retains the triggering-event payer, including later spell control changes. The discard cause remains the ward packet controller.",
+      "CR 118.11: replaced discards still pay the cost. Resolution uses the exact related stack ID and survives source departure or control changes.",
+      "Official rules: https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf; release notes: https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes."
+    ]
+  },
+  "shared_core": [
+    "Immutable additional_mana_alternative is independent of cost_alternatives, which retain hybrid bases. Legal cast preflight and owned announcements cross each base with discard or the additive mana contribution. The exact unreduced selected composition stays in Announcement.cost through all reductions and payment; reduced totals do not classify the chosen route.",
+    "Legacy mana_alternative_replaces_additional behavior remains guarded by membership in its existing alternative table. Independent hybrid equivalents cannot waive the mandatory discard route. Existing free/Plot/Miracle contribution composition reuses the explicit amount without mixed-color subtraction.",
+    "Private CounterRelatedUnlessDiscardOrPay reuses existing ResolutionMana, PayResolutionMana, DeclineResolutionMana and actor-private EffectChoice/Discard views and actions. A private request flag joins both options; mana or discard completion clears both once. No new public shape, action or schema is introduced.",
+    "The new ward instruction preflights the captured exact related ID before requesting payment. It uses StackLink.controller from the targeting event, while discard cause is the resolving ward packet controller. Countering remains centralized and respects uncounterability.",
+    "Actual discard uses existing cause-aware replacement/entry continuations. All initialized choice/request payloads remain owned and included in state_bytes; existing scenario helpers verify wrong actor, transactional rejection, raw/index branches after parent disposal, and restore at the decisions."
+  ],
+  "verification": {
+    "new_scenario_groups": 19,
+    "parameter_combinations_both_seats": 74,
+    "test_names": [
+      "msh_titania_both_hybrid_equivalents_cross_both_paid_additional_routes",
+      "msh_titania_black_hybrid_never_waives_mandatory_additional_cost",
+      "msh_titania_cost_reductions_preserve_selected_route_even_when_totals_coincide",
+      "msh_titania_omniscience_free_cast_still_chooses_discard_or_two",
+      "msh_titania_free_cast_no_hand_or_mana_is_atomic_and_stack_copy_pays_nothing",
+      "msh_titania_restricted_villain_spell_mana_pays_additional_cast_mana",
+      "msh_titania_ward_discard_mana_and_decline_paid_both_seats",
+      "msh_titania_ward_mana_window_activates_real_producers_without_priority",
+      "msh_titania_ward_rejects_spell_only_restricted_mana_but_keeps_discard_route",
+      "msh_titania_ward_hidden_hands_have_equal_full_nonactor_observations",
+      "msh_titania_ward_retains_payer_cause_after_source_and_spell_control_changes",
+      "msh_titania_ward_exact_related_departure_skips_request_and_uncounterable_survives_decline",
+      "msh_titania_ward_own_targeting_and_suppressed_ability_are_quiet",
+      "msh_titania_independent_intrinsic_and_attachment_wards_each_require_payment",
+      "msh_titania_ward_discard_replacements_pay_once_with_owned_suspension",
+      "msh_titania_ward_opposing_paid_activated_ability_survives_its_source_sacrifice",
+      "msh_titania_retargeted_spell_copy_creates_its_own_exact_ward_association",
+      "msh_titania_zero_resource_ward_still_presents_union_and_can_decline",
+      "msh_titania_cast_discard_replacements_keep_additional_paid_through_suspension"
+    ],
+    "native_total": 951,
+    "native": {
+      "log": "<cache>/rustmage-msh-titania-native-final.log",
+      "report": "<cache>/rustmage-build-reports/2d56c285e6534f1c9480c8b53d3d679d.json",
+      "sha256": "b1a4f8a2fd167d06f1e643827791668a070bcb39a2c509d10e0c02bc4b2b3977",
+      "command": [
+        "cargo",
+        "test",
+        "--lib"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 335.5476390470285,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2348347392,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "clippy_all_targets_deny_warnings": {
+      "log": "<cache>/rustmage-msh-titania-clippy.log",
+      "report": "<cache>/rustmage-build-reports/3880b47dc81b4a59879895c1f51ece02.json",
+      "sha256": "7166c1207acc37c53fd8b7edc7120089440852844855ff6c0fff838e44848425",
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 349.5993952580029,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1836216320,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "source_check": {
+      "definitions": 5397,
+      "source_blobs": 1172,
+      "java_verified": true,
+      "catalogue_version": "0b0712e4142484c0ef7c7c06ebd9e3693835b489f16dbf830cefd45ccefe8e69"
+    },
+    "link_and_rustfmt": "pass",
+    "full_inherited_traces": {
+      "base": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+      "schema": 143,
+      "inherited": 2483,
+      "candidate": 2484,
+      "all_full_trace_structs_equal": true,
+      "changed": {},
+      "removed": [],
+      "added": [
+        "Titania, Rugged Rumbler"
+      ],
+      "base_sha256": "d74b7400e84e85e6d845b5dd38e2eedf9321f15f9198efa80b4d516d4d6b0ed5",
+      "candidate_sha256": "4a34ed076d5b3dfd8aa75a38d008f622edaf10df282cebdd6d6fada84c71c2aa",
+      "new_rows": {
+        "Titania, Rugged Rumbler": {
+          "root": "main",
+          "status": "completed",
+          "decisions": 6,
+          "zone": "Battlefield",
+          "journal": "5c2b79d05dd290ea",
+          "observations": "c1b07ef71d78e01f"
+        }
+      },
+      "recorder_changed": false,
+      "projection_or_field_stripping": false
+    },
+    "full_native_export_before_accepting_new_row": {
+      "log": "<cache>/rustmage-msh-titania-all-native.log",
+      "report": "<cache>/rustmage-build-reports/91a7472f8c91432c88e363de0c4086ea.json",
+      "sha256": "486ad1e34e8c3b0478c517aab927aa7a2ae5333696fa2c1309e401fcc2ca344d",
+      "command": [
+        "cargo",
+        "test",
+        "--lib"
+      ],
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 300.5107344780117,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2342854656,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "export_qualification": "950 runtime scenarios passed; the only failure was the expected old trace count, 2484 versus 2483. All inherited full structs were independently compared before adding only Titania. The final strict full suite passes all 951."
+  },
+  "development_failures_retained": [
+    {
+      "log": "<cache>/rustmage-msh-titania-focused.log",
+      "result": "Terminal compile-only failure: one nonexistent test helper plus three test borrow conflicts; corrected sequentially after termination."
+    },
+    {
+      "log": "<cache>/rustmage-msh-titania-focused-2.log",
+      "result": "11 of 15 first runtime scenarios passed. A new cast-route classification grouping defect left the old alternative-membership check attached to the independent contribution branch. Corrected the grouping, preserved the old legacy gate, and added four further interaction groups."
+    },
+    {
+      "log": "<cache>/rustmage-msh-titania-focused-3.log",
+      "result": "Explicitly stopped while queued because a known replacement-fixture return guard had not applied; polled that same process to terminal before editing. No observation-timeout restart or pass claim."
+    }
+  ],
+  "cleanup": {
+    "terminal_inputs_only": true,
+    "proc_fd_maps_exe_scan_clear": true,
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 124882944,
+    "qualification": "Path-allocated total, not deduplicated physical disk reclaim.",
+    "preserved": [
+      {
+        "path": "<cache>/rustmage-msh-titania-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "0aa41adbea2022cb5a048135c9e61a08c894881cb52b0090864d666cd250afd7"
+      },
+      {
+        "path": "<cache>/rustmage-msh-titania-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T01:07:37+00:00",
+    "prepared_evidence_cutoff_utc": "2026-10-25T01:28:14.964614+00:00",
+    "elapsed_seconds": 1237.964614,
+    "whole_candidates": 1,
+    "candidates_per_hour": 2.907999113454466,
+    "qualification": "Includes shared build queue, fixture corrections, runtime repair, full native verification, Clippy, provenance and trace comparison. Excludes prior read-only design cache, final aggregate reviews/release/CI, full-set games and user approval. Not simulation throughput."
+  },
+  "remaining_gates": [
+    "Integrate this isolated commit into the authorized aggregate implementation branch only, never main without final user approval.",
+    "Two independent nonauthor reviews of the exact final published aggregate head, kept locally.",
+    "Full aggregate release validation and CI.",
+    "All remaining set cards and complete MSH-only games with deterministic replay, privacy, owned branching and measured simulation throughput."
+  ]
+}

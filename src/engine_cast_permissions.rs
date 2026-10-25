@@ -200,6 +200,30 @@ impl Game {
         sorcery: bool,
         flash_surcharge: bool,
     ) -> bool {
+        self.permitted_cast_with_origin_cost(
+            actor,
+            card,
+            method,
+            face,
+            sorcery,
+            flash_surcharge,
+            None,
+        )
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Mana alternative and mandatory origin cost are independent"
+    )]
+    pub(super) fn permitted_cast_with_origin_cost(
+        &self,
+        actor: Player,
+        card: CardId,
+        method: CastMethod,
+        face: CastFace,
+        sorcery: bool,
+        flash_surcharge: bool,
+        origin_counter_cost: Option<u16>,
+    ) -> bool {
         let object = &self.state.objects[card as usize];
         if object.zone == Zone::Hand && self.hand_play_prohibited() {
             return false;
@@ -216,6 +240,7 @@ impl Game {
             return false;
         }
         if !sorcery
+            && method != CastMethod::Sneak
             && !flash_surcharge
             && !definition.is_instant()
             && !definition.info().keywords.contains(Keywords::FLASH)
@@ -262,6 +287,7 @@ impl Game {
             activation_discount: 0,
             power_up_costs: None,
             free_hand_permission: None,
+            origin_counter_cost,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,

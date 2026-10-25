@@ -33,7 +33,7 @@ pub struct EntryTapView {
 }
 impl Game {
     pub(super) fn entry_tap_effects(&self, movement: &entries::EntryMove) -> Vec<EntryTapEffect> {
-        let kinds = movement.before.card.kind_mask();
+        let kinds = movement.before.kinds;
         let mut effects = Vec::new();
         for &id in &self.state.static_sources {
             let source = &self.state.objects[id as usize];
@@ -163,7 +163,11 @@ impl Game {
         let batch = self.state.entry_batch.as_ref()?;
         let event = batch.tap_events.get(batch.tap_next)?;
         let movement = &batch.moves[event.index];
-        if !entries::visible(movement, viewer, &self.state.known_hand) {
+        if !entries::visible_mask(
+            movement,
+            self.information_mask(viewer),
+            &self.state.known_hand,
+        ) {
             return None;
         }
         Some(EntryTapView {

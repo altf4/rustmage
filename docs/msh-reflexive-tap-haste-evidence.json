@@ -1,0 +1,844 @@
+{
+  "schema": 1,
+  "scope": "Two whole MSH cards and their narrow shared rules; source-branch candidate for parent PR #516, no child PR or main merge.",
+  "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+  "tested_source_commit": "6115413970271a315633ca442fc827cb7fbe4dbf",
+  "branch": "codex/msh-reflexive-tap-haste",
+  "complete_cards": [
+    "Spider-Man, To the Rescue",
+    "Speed, Young Avenger"
+  ],
+  "new_groups": 23,
+  "base_native_groups": 1299,
+  "final_native_groups": 1322,
+  "all_new_groups_both_seats": true,
+  "groups": [
+    "msh_reflexive_spider_hybrid_paid_decline_and_no_early_target",
+    "msh_reflexive_spider_success_target_rules_owned_and_real_destroy_cleanup",
+    "msh_reflexive_spider_source_failure_before_offer_and_during_optional_is_exact",
+    "msh_reflexive_spider_tapped_entry_replacement_and_departure_before_resolution_skip_offer",
+    "msh_reflexive_spider_control_changes_and_source_departure_preserve_child_controller",
+    "msh_reflexive_spider_new_incarnation_is_another_and_old_child_ignores_suppression",
+    "msh_reflexive_spider_target_rechecks_current_attack_control_type_and_incarnation",
+    "msh_reflexive_spider_blocker_target_flash_reach_and_vigilance_paid_combat",
+    "msh_reflexive_spider_real_tap_observer_and_no_target_still_pays",
+    "msh_reflexive_speed_paid_haste_and_optional_payment_has_no_early_target",
+    "msh_reflexive_speed_real_mana_window_and_shortage_owned_success",
+    "msh_reflexive_speed_keyword_target_legality_and_later_loss_fizzles",
+    "msh_reflexive_speed_rule_survives_recipient_ability_loss_and_live_blocker_haste",
+    "msh_reflexive_speed_other_players_target_control_source_departure_and_blink_cleanup",
+    "msh_reflexive_speed_suppression_spell_filter_and_stack_copy_does_not_cast",
+    "msh_reflexive_targets_retarget_and_copy_independently_after_real_paid_actions",
+    "msh_reflexive_private_decisions_preserve_full_hidden_observations_and_legal_actions",
+    "msh_reflexive_speed_restricted_lots_cannot_pay_trigger_or_enable_a_mana_window",
+    "msh_reflexive_spider_copied_parent_only_taps_once",
+    "msh_reflexive_spider_torpor_orb_suppresses_only_entry_trigger_not_paid_body",
+    "msh_reflexive_speed_actual_block_declaration_checks_haste_then_keeps_legal_block",
+    "msh_reflexive_spider_flash_after_real_attack_rejects_attacking_target",
+    "msh_reflexive_spider_granted_indestructible_obeys_later_layer_six_removal"
+  ],
+  "wire": {
+    "base": 147,
+    "candidate": 147,
+    "reason": "No new public field or pending/action payload. Existing KeywordEffectView rules mask truthfully carries a named resolved blocker restriction bit. Parent history scope independently owns wire148."
+  },
+  "ownership": [
+    "Two paired MSH definitions",
+    "Small private optional-tap reflexive instruction, Nonattacking predicate, resolved blocker-haste rule and dispatch",
+    "Unique rules test module and appended engine module hook",
+    "Script-generated catalogue and coverage plus audited trace baseline; no IDs, recipes, aliases or physical metadata changes"
+  ],
+  "full_oracle": [
+    {
+      "membership": {
+        "name": "Spider-Man, To the Rescue",
+        "oracle_id": "85dec6cf-6f27-4eb0-834b-5f6fbbe25fc8",
+        "facts_sha256": "bd024708a94e8ca29fe664ea2eff543f445cc895a55a777f1a3b49972bcbda75",
+        "printings": [
+          "228",
+          "335"
+        ]
+      },
+      "full_frozen_oracle": {
+        "oracle_id": "85dec6cf-6f27-4eb0-834b-5f6fbbe25fc8",
+        "name": "Spider-Man, To the Rescue",
+        "layout": "normal",
+        "mana_cost": "{2}{G/W}",
+        "cmc": 3.0,
+        "type_line": "Legendary Creature \u2014 Spider Human Hero",
+        "oracle_text": "Flash\nReach, vigilance\nNo One Dies! \u2014 When Spider-Man enters, you may tap him. When you do, another target nonattacking creature you control gains indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)",
+        "power": "3",
+        "toughness": "2",
+        "colors": [
+          "G",
+          "W"
+        ],
+        "color_identity": [
+          "G",
+          "W"
+        ],
+        "keywords": [
+          "Reach",
+          "Vigilance",
+          "Flash",
+          "No One Dies!"
+        ],
+        "reference_printing": {
+          "id": "e5db6968-1ca3-46bd-8cf9-e2c411ab29c1",
+          "set": "msh",
+          "collector_number": "228",
+          "released_at": "2026-06-26"
+        }
+      },
+      "coverage": {
+        "name": "Spider-Man, To the Rescue",
+        "standard_legal": true,
+        "implemented": false,
+        "implementation": null,
+        "definition": "src/card_definitions/msh/spider_man_to_the_rescue.rs",
+        "set": "msh"
+      },
+      "current_blocker": "May tap exact source as a cost and queue distinct reflexive trigger only when successfully tapped, targeting another nonattacking own creature, needs tap-success reflexive instruction.",
+      "status": "gated_first_blocking_obligation",
+      "audit_limit": "Full frozen Oracle read. Only shortlist classes/helpers and explicitly recorded Rust APIs were fully inspected in this pass; blocker is the first concrete API gap, not an exhaustive newly reviewed implementation or a runtime admission.",
+      "current_pair_sha256": {
+        ".rs": "8fbc5bd96e166dddcfcb5ec0ec1140c1ff4e85edb0417d9e9b8758539b390f75",
+        ".json": "bbb07571042aae1ca610931d9bb4da1e00c7222a6edf32b9380c73f87096b453"
+      }
+    },
+    {
+      "membership": {
+        "name": "Speed, Young Avenger",
+        "oracle_id": "2fb0f2d2-ed1f-4181-91f2-684a71c34998",
+        "facts_sha256": "237ecf7a4f3d7b72d24ce73141b9ed38e98bbf0b711da39be840efe6dfb013de",
+        "printings": [
+          "152",
+          "448"
+        ]
+      },
+      "full_frozen_oracle": {
+        "oracle_id": "2fb0f2d2-ed1f-4181-91f2-684a71c34998",
+        "name": "Speed, Young Avenger",
+        "layout": "normal",
+        "mana_cost": "{1}{R}",
+        "cmc": 2.0,
+        "type_line": "Legendary Creature \u2014 Mutant Hero",
+        "oracle_text": "Haste\nWhenever you cast a noncreature spell, you may pay {1}. When you do, target creature with haste can't be blocked this turn except by creatures with haste.",
+        "power": "2",
+        "toughness": "2",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Haste"
+        ],
+        "reference_printing": {
+          "id": "d15d187b-dc5d-482d-a79a-b9b98193ad7a",
+          "set": "msh",
+          "collector_number": "152",
+          "released_at": "2026-06-26"
+        }
+      },
+      "coverage": {
+        "name": "Speed, Young Avenger",
+        "standard_legal": true,
+        "implemented": false,
+        "implementation": null,
+        "definition": "src/card_definitions/msh/speed_young_avenger.rs",
+        "set": "msh"
+      },
+      "current_blocker": "Reflexive target gets blocker restriction based on HAS haste; ordinary unblockable/menace grants differ and no exact haste-only blocker rule exists.",
+      "status": "gated_first_blocking_obligation",
+      "audit_limit": "Full frozen Oracle read. Only shortlist classes/helpers and explicitly recorded Rust APIs were fully inspected in this pass; blocker is the first concrete API gap, not an exhaustive newly reviewed implementation or a runtime admission.",
+      "current_pair_sha256": {
+        ".rs": "412359124aac6730561722490be7b6ef388980c12d444ecfcb9dbd3d3e4c7101",
+        ".json": "0caa347577f537878ce6bd4a0d4bdd56e4771d03d197c2be7d4165917e3d5f3e"
+      }
+    }
+  ],
+  "whole_printed_obligations": [
+    {
+      "name": "Spider-Man, To the Rescue",
+      "rank": 1,
+      "whole_card_obligations": [
+        "Printed 3/2, legendary, Spider Human Hero, flash, reach and vigilance; pay either 2G or 2W through existing hybrid alternatives.",
+        "Untargeted self-entry trigger; may tap the exact source only if it is still a live untapped permanent.",
+        "Only actual successful tap creates separate mandatory target announcement: another nonattacking creature controlled by the original ability controller; indestructible through EOT."
+      ],
+      "existing": [
+        "SelfEnters, May skip branch, tap_objects, queue_reflexive, OtherThanSource exact reference, own creature target base, GrantKeywords(INDESTRUCTIBLE), existing hybrid/flash/layer-six/cleanup machinery."
+      ],
+      "missing": [
+        "Narrow typed TapSourceReflexive success gate; tap_objects currently returns void. Check exact live source and untapped state, then call central tap_objects and queue only after actual transition. No summoning-sickness test for tapping by effect.",
+        "Nonattacking target predicate (or generic predicate negation); current enum has Attacking without negation."
+      ],
+      "critical_semantics": [
+        "A later control change does not change original trigger controller: that player may tap the now opponent-controlled source and protects their own creature. Do not require source controller equals packet controller.",
+        "Source tapped already, gone, or blinked before original resolution cannot supply the tap and queues no child.",
+        "After successful tap, original source may leave or change controller; child still resolves independently. Reentered Spider-Man is another object relative to old child source and may be a legal target.",
+        "Indestructible is an EOT granted ability with timestamps: later ability removal can suppress it, later grant can restore it, cleanup removes it."
+      ],
+      "test_design": [
+        "Pay both hybrid routes and flash during opponent combat; vigilance attack stays untapped; reach blocks flying.",
+        "No targets until accept and actual tap; already tapped and departure/blink before first resolution -> no child; decline -> untapped/no child.",
+        "Control source away before tap: old controller makes optional choice and targets their own nonattacking creature.",
+        "Tap source creates Bow/tap observers once; child independent ordering and ordinary response window.",
+        "Reject self old ref, opponent creature, attacking creature, land; blocking own creature is eligible; animated noncreature current type qualifies only while creature.",
+        "Child target becomes attacking, loses creature type, changes controller, gains hexproof/protection, or leaves/blinks before child resolution -> correct target recheck/fizzle; no untap/refund.",
+        "Source departs/reenters after child creation: old child can target new Spider incarnation, indestructible survives old source departure and expires at cleanup."
+      ]
+    },
+    {
+      "name": "Speed, Young Avenger",
+      "rank": 2,
+      "whole_card_obligations": [
+        "Printed 2/2 legendary Mutant Hero and haste.",
+        "Your actual noncreature spell cast queues untargeted trigger; optional pay1 during resolution.",
+        "Successful payment creates separate targeted child; target any creature with current haste, regardless of controller.",
+        "Resolved restriction lasts EOT and permits blockers only if they currently have haste. This is a restriction effect, not a keyword ability granted to attacker."
+      ],
+      "existing": [
+        "SpellCast(You,Noncreature), MayPayMana(cost1,skip1) followed by Reflexive(child), ResolutionMana full mana-ability window, target Keyword(HASTE), exact-bound target and queue_reflexive already available."
+      ],
+      "missing": [
+        "A sparse exact-target resolved combat restriction based on blocker effective keyword. Existing live_static_forbids_block only supports static source-dependent subtype restriction, and CANT_BE_BLOCKED/CANT_BLOCK masks are not equivalent."
+      ],
+      "critical_semantics": [
+        "Payment branch can be accepted even if source leaves or later loses its abilities. Packet payer remains original controller.",
+        "Target must have haste at announcement and child resolution. Once restriction resolves, attacker later losing haste does not erase restriction; blocker haste remains dynamically queried at declaration.",
+        "Restriction survives ability removal from the subject, unlike a granted evasion keyword. It persists through source departure/control change and is removed at EOT or exact target departure.",
+        "Filtered(Any,OtherThanSource) is not suitable for any-target use because current Filtered rejects players, but this Speed target is Creature so existing filtered rule is correct."
+      ],
+      "test_design": [
+        "Pay real1R and immediately attack by haste. Trigger with paid noncreature spell; creature cast/opponent cast/stack spell copy must not trigger.",
+        "Original trigger has no targets. Decline, unavailable mana and invalid payment -> no child or spending; pay with actual mana-ability window; subtype/artifact-spell-only lots cannot fund resolution payment.",
+        "Pay then target own, opponent or source Speed with current haste; reject nonhaste, land, hexproof/protection as applicable.",
+        "Child target loses haste before resolving -> no restriction; target gains haste before child announcement becomes eligible.",
+        "Resolve restriction, then target loses all abilities/haste -> still excludes nonhaste blockers; blockers gain/lose haste dynamically before declarations.",
+        "No removal from combat if blocker loses haste after legal block; layer-six source suppression before initial cast trigger prevents event, later suppression does not erase queued child.",
+        "Cleanup, blinked target and copied independent child, source departure/reentry/control-change, legal block action list plus actual combat outcome."
+      ]
+    }
+  ],
+  "mechanics": {
+    "spider": "An untargeted ETB offers tapping only the exact live untapped source. On acceptance revalidate, central tap_objects performs the actual action; only successful tap queues a separately targeted independent child with original controller/source facts. Control and card-type changes do not prevent this non-cost tap. Child targets another current own nonattacking creature and grants indestructible through EOT.",
+    "speed": "Reuse existing noncreature cast trigger and MayPayMana generic1/skip1 before queue_reflexive. Child targets any current creature with haste. The resolved restriction is stored among existing resolution rules, applied after layer six, so later ability removal from its recipient does not erase it; actual blocker current haste is checked when blocking is declared."
+  },
+  "scenario_evidence": {
+    "payment_timing": "Both Spider hybrid alternatives, off-turn flash and all printed keywords; Speed printed payment, real basic mana activation window, shortage, decline, restricted Villain mana rejection. No child targets before successful optional action.",
+    "actual_interactions": "Bow observes exactly one actual Spider tap, Torpor Orb suppresses its ETB, Authority makes the source enter tapped, paid Murder is stopped by granted indestructible; Moon/control/departure and exact reentry boundaries, paid Bolt Bend changes new child targets, real production spell copy does not fire Speed cast trigger.",
+    "combat_layers": "Natural attack membership excludes attacking Spider targets; own blockers remain legal nonattacking recipients. Reach and vigilance operate in paid combat. Speed blocker current haste/ability removal, restriction retained after target ability loss, already committed blocks remain after blocker loses haste, EOT cleanup.",
+    "owned_privacy_atomicity": "Checked actions, invalid target/payment/tap rejection with exact snapshots/revision/state_bytes, full both-seat observations and legal actions under hidden clones; raw/index branch and parent disposal, restore with stale-index rejection and equivalent replay.",
+    "copies": "Production spell copy plus explicitly scoped copied parent/child packet fixtures, independent target/controller/source context; two Spider parent packets can tap exact source only once."
+  },
+  "source_audit": {
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "design_cache": {
+      "path": "<cache>/msh-reflexive-future-design-0c1f30dd.json",
+      "sha256": "8ab2e6a1c7ebea5b4107297513404bd52e46c8661bf89ba4ecac614cd5664ebf",
+      "full_java_snapshots": 49,
+      "rust_snapshots": 33,
+      "read_coverage_limits": [
+        "All five complete direct Java classes, nested concrete effects and listed concrete helpers were read. Large generic CardImpl, AbilityImpl, GameImpl, PermanentImpl and StaticFilters are retained in full but audited only at explicit relevant ranges.",
+        "Rust snapshots retain complete fixed inputs, but large engines were read at recorded relevant ranges; this is a design audit, not a new runtime verification or full recursive engine audit.",
+        "No new rule code, tests, generated artifacts, branches, IDs or schema were authored; no Cargo or game simulation ran. All five remain gated in fixed base."
+      ]
+    },
+    "fixture_cache": {
+      "path": "<cache>/msh-reflexive-fixture-sources-0c1f30dd.json",
+      "sha256": "7fa373ec865daa10708ce1c605b7f53718bdf9b410542b74e0262b11bf0cea7e",
+      "full_fixture_oracle_and_direct_java_rows": 14
+    },
+    "java_pins_and_read_coverage": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SpiderManToTheRescue.java",
+        "sha256": "b823e6546f267f2aecffe38938dfd8539ee38921e6f3c365e5d356fd48a7d9bc",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SpeedYoungAvenger.java",
+        "sha256": "4b04ef39d5205da8e4683d16ec08f268984c440f071d5e999e8c6a0457e99afd",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RedHulk.java",
+        "sha256": "91ad718d2e2f464abff57c5d278e6d62f2b65ff919e962f87ebbc751f720f2f1",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/g/GrimReaperLethalLegionnaire.java",
+        "sha256": "0a841e62f9e2d464766a12937e3562c2738ce4dc00a3fff68a4499b5024c4bff",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HawkeyeMasterMarksman.java",
+        "sha256": "70edf7fcc2e5cfd8f82fd62e908bc780546e68508ec30855d810bd19ebeaa2ff",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+        "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+        "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+        "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+        "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+        "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+        "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+        "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+        "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+        "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostImpl.java",
+        "sha256": "22993c90f4047d015504922f5fe38d98de760d1a89755ec8ce40f127b4e3274a",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+        "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/DealtDamageToSourceTriggeredAbility.java",
+        "sha256": "97485da3564c3e9e3b6355947a03b4480cd40bd32fc00a0f3b4e6c8d5e166b79",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+        "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+        "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+        "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+        "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayer.java",
+        "sha256": "f43a3bbef4f7d2f923cddf063aa48211aad59848ccefcdace9b08a40b5cd67ab",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+        "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+        "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+        "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+        "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterAnyTarget.java",
+        "sha256": "39d309804844b705a2400ce7086858449831db75048e836f777b66d5d0af18e5",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+        "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+        "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+        "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AbilityPredicate.java",
+        "sha256": "6e8ecc0108fde867fbb47c3afbc24e5dd30a0e9de97efc5e06950498f0b32dda",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java",
+        "sha256": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+        "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+        "sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+        "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+        "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+        "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+        "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+        "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+        "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+        "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+        "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+        "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235",
+        "read_coverage": "Full body read, including nested classes"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/GameImpl.java",
+        "sha256": "592ad774bce5257b688c0f54e1e9e586c3d984d4ff2b2b2782f5b0154a78657c",
+        "read_coverage": {
+          "relevant_ranges_read": [
+            [
+              2348,
+              2401
+            ]
+          ],
+          "limit": "Full source retained; only these concrete methods/constants audited, not all generic runtime callers."
+        }
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/AbilityImpl.java",
+        "sha256": "7c70aa5739de67e806ff96174bde87f22457c5627fbacdd57075222b46c530af",
+        "read_coverage": {
+          "relevant_ranges_read": [
+            [
+              1732,
+              1758
+            ]
+          ],
+          "limit": "Full source retained; only these concrete methods/constants audited, not all generic runtime callers."
+        }
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/cards/CardImpl.java",
+        "sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54",
+        "read_coverage": {
+          "relevant_ranges_read": [
+            [
+              742,
+              822
+            ]
+          ],
+          "limit": "Full source retained; only these concrete methods/constants audited, not all generic runtime callers."
+        }
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/PermanentImpl.java",
+        "sha256": "5b72e235e1fe716b7337ffe76539d7fd79a5a9de1c54e6f343426126aeec6fe1",
+        "read_coverage": {
+          "relevant_ranges_read": [
+            [
+              641,
+              660
+            ]
+          ],
+          "limit": "Full source retained; only these concrete methods/constants audited, not all generic runtime callers."
+        }
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+        "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+        "read_coverage": {
+          "relevant_ranges_read": [
+            [
+              100,
+              114
+            ],
+            [
+              778,
+              782
+            ],
+            [
+              852,
+              856
+            ],
+            [
+              1020,
+              1033
+            ]
+          ],
+          "limit": "Full source retained; only these concrete methods/constants audited, not all generic runtime callers."
+        }
+      }
+    ],
+    "additional_full_helper_pins": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+        "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98",
+        "read_coverage": "Full body, including nested effects where present."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedAttachedTriggeredAbility.java",
+        "sha256": "437845d7520e40e660b9c27bea14d88149bb47b3433bb3d25e8b0b4686848a23",
+        "read_coverage": "Full body, including nested effects where present."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+        "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe",
+        "read_coverage": "Full body, including nested effects where present."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseNewTargetsTargetEffect.java",
+        "sha256": "8762550b9eca7d3e2b0c25d47479691b4520397965c98b7f3d8428d3a4438153",
+        "read_coverage": "Full body, including nested effects where present."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/DontCauseTriggerEffect.java",
+        "sha256": "9ff9fdb134f5884e806e3506aeff01948441d721ee84e208b32b3ace6577419e",
+        "read_coverage": "Full body, including nested effects where present."
+      }
+    ],
+    "primary_rules": [
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "facts": "Red Hulk and Spider-Man choose targets only for the separate post-action trigger. Red Hulk must survive to receive the counter. Grim Reaper independently chooses the returned attacker defender and finality applies to any permanent."
+      },
+      {
+        "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf",
+        "rules": [
+          "603.12: reflexive triggers inspect the action during the creating resolution, then announce targets separately.",
+          "603.12a: one reflexive trigger follows one-or-more repeated cost payments.",
+          "603.7e: delayed/reflexive trigger retains source and creating ability controller.",
+          "603.2g: prevented/replaced events do not themselves trigger.",
+          "508.4: entry attacking chooses eligible defender and is not a declared attack.",
+          "118.12 concerns if-you-do cost clauses; do not confuse it with when-you-do reflexive event success."
+        ],
+        "limit": "Primary rules consulted for disputed semantics; local full Oracle/XMage sources remain frozen to project pins."
+      }
+    ]
+  },
+  "validation": {
+    "terminal_jobs": [
+      {
+        "report": "<cache>/rustmage-msh-reflexive-tap-haste-focus-1.guard.json",
+        "log": "<cache>/rustmage-msh-reflexive-tap-haste-focus-1.log",
+        "report_sha256": "86a6e1086ca317538af891e9744f295071cdc7192fabf89d3dbac97d8a2968d4",
+        "result": {
+          "command": [
+            "env",
+            "CARGO_TARGET_DIR=<cache>/rustmage-msh-reflexive-tap-haste-target",
+            "cargo",
+            "test",
+            "--lib",
+            "msh_reflexive_",
+            "--",
+            "--test-threads=1"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 246.10375965200365,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2585440256,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "interpretation": "Initial focused run: 15 passed, four fixture failures; corrected combat advancement, basic land TapMana action and creation of a legal haste target before child announcement."
+      },
+      {
+        "report": "<cache>/rustmage-msh-reflexive-tap-haste-native-record-2.guard.json",
+        "log": "<cache>/rustmage-msh-reflexive-tap-haste-native-record-2.log",
+        "report_sha256": "e6a9112aa248ba19f473741e402da531bfe6537a089fcc9a25286804678e68fb",
+        "result": {
+          "command": [
+            "env",
+            "CARGO_TARGET_DIR=<cache>/rustmage-msh-reflexive-tap-haste-target",
+            "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage-msh-reflexive-tap-haste-traces.json",
+            "cargo",
+            "test",
+            "--lib",
+            "--",
+            "--test-threads=1"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 185.931786258996,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2548039680,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "interpretation": "Full native recording: 1320 passed, expected trace admission-count failure plus Torpor Orb payer fixture failure. Accepted only after inherited full-trace audit; payer corrected, block commitment made explicit and land-form source case added."
+      },
+      {
+        "report": "<cache>/rustmage-msh-reflexive-tap-haste-strict-3.guard.json",
+        "log": "<cache>/rustmage-msh-reflexive-tap-haste-strict-3.log",
+        "report_sha256": "5b78dae12cf83095cdb9fb7ae51c1d7f3ec93421ea25d2af492e9937e8c8ab55",
+        "result": {
+          "command": [
+            "env",
+            "CARGO_TARGET_DIR=<cache>/rustmage-msh-reflexive-tap-haste-target",
+            "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage-msh-reflexive-tap-haste-traces-final.json",
+            "bash",
+            "-c",
+            "cargo test --lib -- --test-threads=1 && cargo clippy --all-targets -- -D warnings && cargo fmt --check"
+          ],
+          "terminal": true,
+          "exit_code": 0,
+          "seconds": 356.4676318690181,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2550951936,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "interpretation": "Final exact-source strict run: 1322 passed, Clippy all targets -D warnings and cargo fmt --check; no later runtime or test edits."
+      }
+    ],
+    "static_checks": [
+      "python3 scripts/check_sources.py",
+      "python3 scripts/link_catalogue.py --check",
+      "rustfmt --edition 2024 --check src/card_definitions/msh/spider_man_to_the_rescue.rs src/card_definitions/msh/speed_young_avenger.rs",
+      "git diff --check"
+    ],
+    "static_results": {
+      "definitions": 5401,
+      "java_source_blobs": 1255,
+      "catalogue_sha256": "a91d296b416984534cada3f67c84ffdd65affbbf92ca533d361b2b05c228b55d"
+    },
+    "trace_proof": {
+      "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+      "schema": 147,
+      "base_rows": 2508,
+      "candidate_rows": 2510,
+      "full_old_trace_exact": 2508,
+      "changed": [],
+      "missing": [],
+      "added": [
+        "Speed, Young Avenger",
+        "Spider-Man, To the Rescue"
+      ],
+      "base_sha256": "8b0cb3dfdc9cee46637c0c43b639a917135357f1a8de32f0ba1fc5805351b478",
+      "candidate_sha256": "ba5e3fe386b4659df21d5a9c13055f1fa31c0653f0a5b38e4bd0ea37ef5326e8",
+      "projection_or_stripping": "None: ordinary full Trace structs compared exactly, including complete journals and observation hashes.",
+      "final_candidate_sha256": "ba5e3fe386b4659df21d5a9c13055f1fa31c0653f0a5b38e4bd0ea37ef5326e8",
+      "final_export_equals_accepted_bytes": true,
+      "final_full_old_trace_exact": 2508
+    },
+    "trace_proof_path": "<cache>/rustmage-msh-reflexive-tap-haste-trace-proof.json",
+    "trace_proof_sha256": "f15164ab9802dc82a867981fa36fa6ada15f874ccf80ea175d26ae2278943433",
+    "final_export": "<cache>/rustmage-msh-reflexive-tap-haste-traces-final.json",
+    "release": "Not run in child; parent owns required final combined release validation and fresh nonauthor reviews."
+  },
+  "cleanup": {
+    "active_fd_maps_exe_cwd_matches": [],
+    "unreadable_proc_maps": 49,
+    "files_removed": 1019,
+    "bytes_freed": 122336180,
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-reflexive-tap-haste-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "0c2f65f5f95109fb83322bf0032dc92275d0ddcf3409651f147d45ef2bd80d14"
+      },
+      {
+        "path": "<cache>/rustmage-msh-reflexive-tap-haste-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ],
+    "required_shared_libraries": [
+      {
+        "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<existing-worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-coulson/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-hideout-falcon/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-under-siege/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-baron/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-eleventh-combined-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-reflexive-tap-haste-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T05:24:35+00:00",
+    "end_utc": "2026-10-25T05:52:25.801719+00:00",
+    "elapsed_seconds": 1670.801719,
+    "whole_cards": 2,
+    "whole_cards_per_elapsed_hour": 4.309308470372719,
+    "scope": "Authored scope only; includes shared rules, tests, queued guarded validation and fixture corrections, source checks and cleanup. Earlier read-only full-source audit excluded. Not a simulation benchmark."
+  },
+  "limits": [
+    "No reachable frozen Standard tap-action replacement/prevention wording was found by full inventory scan; Authority is a real tapped-entry replacement fixture. The central tap pipeline is reused, without inventing a tap-action replacement producer or claiming a missing framework.",
+    "Control, source departure, copied ability packets, current combat membership and source noncreature conversion include explicitly scoped production state boundary fixtures. These are rules interaction tests, not claims of a naturally occurring Standard full game or an admitted copy producer.",
+    "Red Hulk, Grim Reaper and Hawkeye remain gated for their distinct prerequisites. No downstream expansion.",
+    "No change to frozen pool denominator; full MSH and all-Standard gameplay, entire-pool games and performance acceptance remain open."
+  ]
+}

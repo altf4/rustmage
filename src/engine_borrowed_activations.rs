@@ -5,6 +5,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Link {
     pub source: ObjectRef,
+    pub origin: Option<u64>,
     pub exiled: ObjectRef,
     pub first_slot: u64,
     pub width: u64,
@@ -57,7 +58,7 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
         .as_ref()
         .map_or(&[][..], |rows| rows.as_slice())
     {
-        if link.source != world.reference(id) {
+        if link.source != world.reference(id) || link.origin != world.ability_origin(id) {
             continue;
         }
         let card = world.object(link.exiled.card);
@@ -65,7 +66,9 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
             continue;
         }
         for (index, _) in card.card.activations().iter().enumerate() {
-            if card.card.grants_activation(index as u16) {
+            if card.card.grants_activation(index as u16)
+                || card.card.self_granted_activation_template(index as u16)
+            {
                 continue;
             }
             let slot = link.first_slot + index as u64;
@@ -134,6 +137,7 @@ impl Game {
                     .get_or_insert_default()
                     .push(Link {
                         source: item.object,
+                        origin: item.source_ability_origin,
                         exiled: event.after,
                         first_slot,
                         width,
@@ -272,7 +276,7 @@ impl Game {
                     &ready_object,
                     self.counter_amounts(card),
                     self.current_kinds(card),
-                    || self.keywords(card),
+                    || CharacteristicWorld::activation_keywords(self, card),
                     self.state.players[actor.index()].life,
                     ability,
                     0,
@@ -289,7 +293,7 @@ impl Game {
                     let fundable = self
                         .activation_mana_costs(card, descriptor.definition, descriptor.ability, 0)
                         .any(|cost| {
-                            self.activation_can_fund(
+                            self.initial_activation_target_fundable(
                                 FundingGoal {
                                     actor,
                                     required: cost.colored,
@@ -303,7 +307,7 @@ impl Game {
                                         Some(descriptor.slot),
                                     )),
                                 },
-                                ability.cost.additional,
+                                ability.targets,
                             )
                         });
                     let modes = match ability.program.first() {

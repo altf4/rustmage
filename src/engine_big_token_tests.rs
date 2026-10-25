@@ -294,6 +294,8 @@ fn fixed_golem_copy_removes_pt_cda_and_retains_other_subtypes_through_copying() 
             CopyRecipe {
                 definition,
                 exceptions: CopyExceptions::GOLEM,
+                overrides: None,
+                faces: None,
             },
             1,
         );
@@ -417,6 +419,8 @@ fn artifact_copy_exceptions_participate_in_dragon_replacement() {
                     CopyRecipe {
                         definition: factory("Bear Cub"),
                         exceptions: CopyExceptions::GOLEM,
+                        overrides: None,
+                        faces: None,
                     },
                     1,
                 );

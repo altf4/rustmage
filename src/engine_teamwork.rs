@@ -64,7 +64,7 @@ impl Game {
     pub(super) fn teamwork_intent_fundable(&self, pay: bool) -> bool {
         let mut a = self.state.announcing.as_ref().unwrap().clone();
         a.item.cast.as_mut().unwrap().teamwork = Some(pay);
-        a.initialize_cast_costs();
+        a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
         let available = if let Some(modes) = a.item.modes() {
             modes.iter().enumerate().any(|(i, m)| {
                 self.teamwork_mode_allowed(&a.item, i)
@@ -80,9 +80,13 @@ impl Game {
         self.teamwork_proposal_fundable(&a)
     }
     pub(super) fn choose_teamwork(&mut self, pay: bool) {
+        let improvise = improvise::potential(
+            self,
+            self.state.announcing.as_ref().unwrap().item.source_card,
+        );
         let a = self.state.announcing.as_mut().unwrap();
         a.item.cast.as_mut().unwrap().teamwork = Some(pay);
-        a.initialize_cast_costs();
+        a.initialize_cast_costs(improvise);
         let item = a.item.clone();
         let plan = self.target_spec(&item);
         self.state.announcing.as_mut().unwrap().plan = plan;

@@ -11,6 +11,8 @@ impl Card {
                         | StaticAbilityFragment::CascadeFromHand { .. }
                         | StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
+                        | StaticAbilityFragment::PlayLandFromLibraryTop
+                        | StaticAbilityFragment::PlayLandFromGraveyard
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
                         | StaticAbilityFragment::ForeignStashPlay
@@ -34,6 +36,24 @@ fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
                 .iter()
                 .any(|g| g.fragments.iter().any(&predicate))
             && world.printed_abilities_available(id)
+    })
+}
+/// A live rule changes only the origin of an ordinary land play. It never grants
+/// a spell cast, a per-source allowance, or an action during mana payment.
+pub(super) fn land_origin_available<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    origin: Zone,
+) -> bool {
+    has_fragment(world, player, |f| {
+        matches!(
+            (origin, f),
+            (Zone::Library, StaticAbilityFragment::PlayLandFromLibraryTop)
+                | (
+                    Zone::Graveyard,
+                    StaticAbilityFragment::PlayLandFromGraveyard
+                )
+        )
     })
 }
 pub(super) fn spends_any_type<W: ability_world::CharacteristicWorld + ?Sized>(
@@ -85,26 +105,43 @@ pub(super) fn payment_goal<W: ability_world::CharacteristicWorld + ?Sized>(
     }
 }
 impl Game {
+    pub(super) fn can_play_static_land(&self, player: Player, card: CardId) -> bool {
+        let object = &self.state.objects[card as usize];
+        object.owner == player
+            && object.card.is_land()
+            && !object.is_token()
+            && land_origin_available(self, player, object.zone)
+            && (object.zone != Zone::Library
+                || self.state.players[player.index()].library.last() == Some(&card))
+    }
     pub(super) fn can_cast_library_top(&self, player: Player, card: CardId) -> bool {
+        self.can_cast_library_face(player, card, self.state.objects[card as usize].card)
+    }
+    pub(super) fn can_cast_library_face(
+        &self,
+        player: Player,
+        card: CardId,
+        definition: Card,
+    ) -> bool {
         let object = &self.state.objects[card as usize];
         object.owner == player
             && object.zone == Zone::Library
-            && object.card.is_creature()
+            && definition.is_creature()
             && self.state.players[player.index()].library.last() == Some(&card)
             && has_fragment(self, player, |f| {
                 matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
             })
     }
+    pub(super) fn can_look_library_top(&self, player: Player) -> bool {
+        has_fragment(self, player, |f| {
+            matches!(f, StaticAbilityFragment::LookAtLibraryTop)
+        })
+    }
     pub(super) fn visible_library_top(&self, viewer: Player, owner: Player) -> Option<ObjectRef> {
-        let next_top_hidden = self.state.announcing.as_ref().is_some_and(|a| {
-            a.item.cast.is_some_and(|c| c.origin == Zone::Library) && a.item.controller == owner
-        });
-        if viewer == owner
-            && !next_top_hidden
-            && has_fragment(self, viewer, |f| {
-                matches!(f, StaticAbilityFragment::LookAtLibraryTop)
-            })
-        {
+        if self.library_top_deferred(owner) {
+            return None;
+        }
+        if self.shares_information(viewer, owner) && self.can_look_library_top(owner) {
             self.state.players[owner.index()]
                 .library
                 .last()
@@ -185,6 +222,26 @@ impl Game {
                                 false,
                             )
                     };
+                    if permanent_type != PermanentType::Land
+                        && !object.card.is_land()
+                        && !casting_prohibited
+                        && object.card.sneak_cost().is_some()
+                        && self.state.step == Step::Blockers
+                        && self.permitted_cast_available(
+                            actor,
+                            card,
+                            CastMethod::Sneak,
+                            CastFace::Normal,
+                            false,
+                            false,
+                        )
+                        && emit(Action::AnnounceSneak {
+                            card,
+                            permission: Some((permission, permanent_type)),
+                        })
+                    {
+                        return true;
+                    }
                     if available
                         && emit(Action::PlayGraveyardPermanent {
                             card,
@@ -258,6 +315,12 @@ impl Game {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
+    /// Successful spells still permitted by this immediate casting instruction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub casts_remaining: Option<u16>,
+    /// Exact proposed child; only its committed cast consumes a quota.
+    #[serde(skip)]
+    pub(super) pending_cast: Option<u64>,
     pub alternative_cost: Option<ManaCost>,
     pub maximum_mana_value: Option<u64>,
     pub origin: Zone,
@@ -282,6 +345,8 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            casts_remaining: None,
+            pending_cast: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Graveyard,
@@ -308,6 +373,8 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            casts_remaining: None,
+            pending_cast: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
@@ -331,6 +398,9 @@ impl Game {
         let Some(free) = &self.state.resolution_free_casts else {
             return false;
         };
+        if free.casts_remaining == Some(0) {
+            return false;
+        }
         for &object in &free.remaining {
             if self.object_ref(object.card) != object
                 || self.state.objects[object.card as usize].zone != free.origin
@@ -417,6 +487,11 @@ impl Game {
             .retain(|&r| r != object);
         self.reveal_hideaway_object(object);
         let mut item = self.cast_item(player, object.card, [0; 6]);
+        if let Some(free) = self.state.resolution_free_casts.as_mut()
+            && free.casts_remaining.is_some()
+        {
+            free.pending_cast = Some(item.id);
+        }
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = if alternative_cost.is_some() {
             CastMethod::Miracle
@@ -446,5 +521,72 @@ impl Game {
         if rows.is_empty() {
             self.state.graveyard_type_uses = None;
         }
+    }
+}
+
+impl Game {
+    pub(super) fn consume_resolution_cast_quota(&mut self, player: Player, stack: Option<usize>) {
+        let Some(id) = stack.map(|i| self.state.stack[i].id) else {
+            return;
+        };
+        if let Some(free) = self.state.resolution_free_casts.as_mut()
+            && free.player == player
+            && free.pending_cast == Some(id)
+            && let Some(left) = &mut free.casts_remaining
+        {
+            *left = left.checked_sub(1).expect("a legal quota cast");
+            free.pending_cast = None;
+        }
+    }
+    pub(super) fn exile_target_top_cast_free(
+        &mut self,
+        item: &SpellView,
+        amount: u16,
+        maximum_casts: u16,
+    ) -> bool {
+        let target = item
+            .targets
+            .iter()
+            .filter(|b| {
+                self.target_spec(item)
+                    .group(b.group)
+                    .is_some_and(|spec| self.item_target_matches(item, spec.rule, b.target))
+            })
+            .find_map(|b| {
+                if let Target::Player(p) = b.target {
+                    Some(p)
+                } else {
+                    None
+                }
+            });
+        let Some(owner) = target else {
+            return false;
+        };
+        let ids = exile::top_library_cards(
+            &self.state.players[owner.index()].library,
+            u128::from(amount),
+        );
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let remaining = events
+            .iter()
+            .filter(|e| e.moved && e.destination == Zone::Exile)
+            .map(|e| e.after)
+            .collect();
+        self.finish_zone_events(&events, &[]);
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            casts_remaining: Some(maximum_casts),
+            pending_cast: None,
+            alternative_cost: None,
+            maximum_mana_value: None,
+            origin: Zone::Exile,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player: item.controller,
+            remaining,
+        }));
+        self.state.pending = Pending::ResolutionCasts {
+            player: item.controller,
+        };
+        true
     }
 }
