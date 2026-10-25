@@ -2034,3 +2034,264 @@ fn msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies() {
     );
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
 }
+
+#[test]
+fn msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let plan = spell(&mut g, p, "Claim the Kingdom", [0, 0, 0, 0, 1, 1], None);
+    resolved(&mut g);
+    g.add_counter(plan, CounterKind::Plan, 3);
+    let land = put(&mut g, p, "Forest", Zone::Hand);
+    act(&mut g, Action::PlayLand { card: land });
+    until(&mut g, |g| {
+        g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(bear),
+        })
+    });
+    target(&mut g, Target::Card(bear));
+    finish_targets(&mut g);
+    until(&mut g, |g| {
+        g.object_view(plan).zone == Zone::Graveyard
+            && g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(bear),
+            })
+    });
+    assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 1);
+    target(&mut g, Target::Card(bear));
+    finish_targets(&mut g);
+    resolved(&mut g);
+    assert_eq!(g.counter_count(bear, CounterKind::Indestructible), 1);
+    let mut g = scenario(p);
+    let bear = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+    let plan = spell(&mut g, p, "Death to Our Enemies", [0, 0, 0, 1, 0, 2], None);
+    resolved(&mut g);
+    g.add_counter(plan, CounterKind::Plan, 3);
+    spell(&mut g, p, "Mox Jasper", [0; 6], None);
+    until(&mut g, |g| {
+        g.object_view(plan).zone == Zone::Graveyard
+            && g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            })
+    });
+    target(&mut g, Target::Player(p.other()));
+    act(&mut g, Action::AllocateTargetAmount { amount: 4 });
+    target(&mut g, Target::Card(bear));
+    act(&mut g, Action::AllocateTargetAmount { amount: 3 });
+    finish_targets(&mut g);
+    resolved(&mut g);
+    assert_eq!(g.state.players[p.other().index()].life, 16);
+    assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+    let treasure = g
+        .state
+        .objects
+        .iter()
+        .find(|o| o.zone == Zone::Battlefield && o.card.has_subtype("Treasure"))
+        .unwrap();
+    assert!(treasure.tapped);
+    let mut g = scenario(p);
+    let hidden = put(&mut g, p.other(), "Shock", Zone::Hand);
+    let plan = spell(
+        &mut g,
+        p,
+        "Construct a Cosmic Cube",
+        [0, 0, 1, 0, 0, 2],
+        None,
+    );
+    resolved(&mut g);
+    g.add_counter(plan, CounterKind::Plan, 6);
+    assert!(!g.observe(p).objects.iter().any(|o| o.id == hidden));
+    spell(&mut g, p, "Divination", [0, 1, 0, 0, 0, 2], None);
+    until(&mut g, |g| {
+        g.object_view(plan).zone == Zone::Graveyard
+            && g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            })
+    });
+    target(&mut g, Target::Player(p.other()));
+    finish_targets(&mut g);
+    resolved(&mut g);
+    assert_eq!(g.hand_count(p), 2);
+    let villains = creatures(&g, p);
+    assert_eq!(villains.len(), 1);
+    assert_eq!(stats(&g, villains[0]), (2, 1));
+    assert!(g.keywords(villains[0]).contains(Keywords::MENACE));
+    g.finish_cleanup();
+    assert_eq!(g.state.active, p.other());
+    assert_eq!(g.actor(), Some(p));
+    assert_eq!(g.semantic_actor(), Some(p.other()));
+    assert!(g.observe(p).objects.iter().any(|o| o.id == hidden));
+    let mut g = scenario(p);
+    let top = library(
+        &mut g,
+        p.other(),
+        &[
+            "Agent Maria Hill",
+            "Agent of Atlas",
+            "Borough Backup",
+            "Forest",
+            "Forest",
+        ],
+    );
+    let plan = spell(&mut g, p, "Doom Reigns Supreme", [0, 0, 1, 0, 0, 1], None);
+    resolved(&mut g);
+    g.add_counter(plan, CounterKind::Plan, 4);
+    spell(&mut g, p, "Agents of HYDRA", [0, 0, 1, 0, 0, 1], None);
+    until(&mut g, |g| {
+        g.object_view(plan).zone == Zone::Graveyard
+            && g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            })
+    });
+    target(&mut g, Target::Player(p.other()));
+    finish_targets(&mut g);
+    until(&mut g, |g| {
+        g.legal_actions().contains(&Action::FinishResolutionCasts)
+    });
+    for &id in &top {
+        assert_eq!(g.object_view(id).zone, Zone::Exile);
+    }
+    for &id in &top[..2] {
+        let object = g.object_ref(id);
+        act(
+            &mut g,
+            Action::CastExiledDuringResolution {
+                object,
+                face: CastFace::Normal,
+            },
+        );
+        if g.state.announcing.is_some() {
+            pay(&mut g);
+        }
+    }
+    assert!(
+        !g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::CastExiledDuringResolution { .. })),
+        "third eligible spell exceeds quota two"
+    );
+    if g.legal_actions().contains(&Action::FinishResolutionCasts) {
+        act(&mut g, Action::FinishResolutionCasts);
+    }
+    resolved(&mut g);
+    for &id in &top[..2] {
+        assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(id).controller, p);
+        assert_eq!(g.object_view(id).owner, p.other());
+    }
+    assert_eq!(g.object_view(top[2]).zone, Zone::Exile);
+    assert_eq!(g.state.players[p.index()].life, 21);
+    assert_eq!(g.state.players[p.other().index()].life, 19);
+}
+
+#[test]
+fn msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let top = library(
+        &mut g,
+        p,
+        &[
+            "Agent Maria Hill",
+            "Doctor Doom",
+            "Forest",
+            "Forest",
+            "Forest",
+            "Forest",
+            "Mountain",
+        ],
+    );
+    put(&mut g, p, "Cosmic Cube", Zone::Battlefield);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    attack(&mut g, &[bear]);
+    until(&mut g, |g| {
+        g.legal_actions().contains(&Action::FinishResolutionCasts)
+    });
+    let allowed = Action::CastExiledDuringResolution {
+        object: g.object_ref(top[0]),
+        face: CastFace::Normal,
+    };
+    let forbidden = Action::CastExiledDuringResolution {
+        object: g.object_ref(top[1]),
+        face: CastFace::Normal,
+    };
+    assert!(g.legal_actions().contains(&allowed));
+    assert!(!g.legal_actions().contains(&forbidden));
+    for id in &top[..6] {
+        assert!(g.observe(p).objects.iter().any(|o| o.id == *id));
+        assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == *id));
+    }
+    act(&mut g, allowed);
+    if g.state.announcing.is_some() {
+        pay(&mut g);
+    }
+    if g.legal_actions().contains(&Action::FinishResolutionCasts) {
+        act(&mut g, Action::FinishResolutionCasts);
+    }
+    resolved(&mut g);
+    assert_eq!(g.object_view(top[0]).zone, Zone::Battlefield);
+    assert_eq!(g.state.players[p.index()].library.last(), Some(&top[6]));
+    let mut remaining = g.state.players[p.index()].library.to_vec();
+    remaining.sort_unstable();
+    let mut expected = top[1..].to_vec();
+    expected.sort_unstable();
+    assert_eq!(remaining, expected);
+}
+
+#[test]
+fn msh_avengers_disassembled_modes_damage_land_and_optional_basic_search() {
+    let p = Player::P0;
+    for both in [false, true] {
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let giant = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let land = put(&mut g, p.other(), "Forest", Zone::Battlefield);
+        let basic = put(&mut g, p.other(), "Island", Zone::Library);
+        let card = put(&mut g, p, "Avengers Disassembled", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 2, 0, 1];
+        act(&mut g, Action::AnnounceCast { card });
+        select_mode(&mut g, if both { "both" } else { "deals 3" });
+        if both {
+            target(&mut g, Target::Card(land));
+        }
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        if both {
+            until(&mut g, |g| {
+                g.legal_actions()
+                    .contains(&Action::ChooseOptional { accept: true })
+            });
+            assert_eq!(g.actor(), Some(p.other()));
+            act(&mut g, Action::ChooseOptional { accept: true });
+            act(&mut g, Action::ChooseSearch { card: basic });
+            if g.legal_actions().contains(&Action::FinishSearch) {
+                act(&mut g, Action::FinishSearch);
+            }
+        }
+        resolved(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(giant).zone, Zone::Graveyard);
+        assert_eq!(
+            g.object_view(land).zone,
+            if both {
+                Zone::Graveyard
+            } else {
+                Zone::Battlefield
+            }
+        );
+        assert_eq!(
+            g.object_view(basic).zone,
+            if both {
+                Zone::Battlefield
+            } else {
+                Zone::Library
+            }
+        );
+        if both {
+            assert!(g.object_view(basic).tapped);
+        }
+    }
+}
