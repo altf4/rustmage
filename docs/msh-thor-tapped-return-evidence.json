@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Whole Mighty Thor and typed instruction-level tapped owner return; candidate in single draft PR516, no main merge authorized",
+  "base_main": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+  "tested_runtime_head": "0312fdbfef19f90e7f5e1eb7f74c8066272af93b",
+  "cards": [
+    "The Mighty Thor, Jane Foster"
+  ],
+  "membership": {
+    "frozen_identities": 281,
+    "frozen_printings": 448,
+    "merged_flags_at_base": 180,
+    "candidate_flags": 181,
+    "candidate_gated": 100,
+    "entire_pool_acceptance": false
+  },
+  "shared_rule": "Immutable BlinkImmediately explicitly carries tapped. Each owned exact ReturnLinkView retains that instruction through choice-bearing departure and entry staging, returning under the old owner via the existing entry replacement path. The actual public continuation exposes tapped=true; false is omitted for all existing death/delayed/Daydream/All Aboard links.",
+  "printed_obligations": [
+    "1WU legendary Human God Hero3/3 with flying",
+    "Actual attack, optional zero or one nontoken artifact OR creature of either controller, including an animated land; unchanged exact-incarnation target validation",
+    "Exile only actual resulting physical cards, then return tapped under their owner, independent of source lifetime, through suspended choices and entry replacements; new incarnation clears counters, attachments, temporary control/effects and restores front face",
+    "Each Equipment permanent entry controlled by current Thor controller queues one mandatory draw, including noncreature/token-copy Equipment; no ordinary Thor self-entry draw, nonEquipment or opposing entry"
+  ],
+  "scenarios": {
+    "new_groups": 15,
+    "both_seats": true,
+    "focused": 17,
+    "focused_scope": "13 first-revision new groups plus four inherited Thor card scenarios",
+    "final_native": 947,
+    "final_native_execution_seconds": 4.73,
+    "meaningful_interactions": [
+      "Exact paid body, sickness, real flying blocker legality and optional zero",
+      "Paid target/equipment/token creation, illegal token/land/enchantment/extra target, wrong actors and atomic failures",
+      "Real Involuntary Employment/Giant Growth/Snakeskin Veil cleared on owner return; own and opposing creatures/noncreature artifacts",
+      "Source removal, suppression and control changes before versus after queue; stale target Daydream cast through paid Mar-Vell opposing-spell timing",
+      "Actual Captain first-tap ignores entry tapped; paid equipment token copy draws; queued draws retain old controller after source departure/suppression/theft",
+      "Henchbots releases a choice-bearing Adaptive Automaton while its own exact tapped return remains publicly owned; raw/index branches after parent disposal and restore during both departure/entry choices",
+      "Paid animated Crawling Barrens returns as a land through real Spelunking untapped replacement; actual transformed Photon returns front Monica tapped",
+      "Full nonactor observation equality with distinct private drawn top cards after parent disposal"
+    ]
+  },
+  "source": {
+    "definitions": 5397,
+    "source_blobs": 1171,
+    "java_verified": true,
+    "catalogue_version": "415d90e07a138cfcbacbdd0af4bfeba08aed88e8927b1c0f8b7f7f6b12ff724b"
+  },
+  "trace_proof": {
+    "base": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+    "inherited_full_Trace_exact_matches": 2483,
+    "changed": [],
+    "removed": [],
+    "new_rows": {
+      "The Mighty Thor, Jane Foster": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "e625fc58634bfdee",
+        "observations": "49112b5adddb7426"
+      }
+    },
+    "normal_schema": 144,
+    "comparison_schema": 143,
+    "normal_sha256": "9b3b8f44f0049f7fafb8e224b1b41f33e78f3f76f3df931ad5253e7f2641c134",
+    "previous143_sha256": "b879ed6b4d13becab5463b0cd02e52e439d9487e00d4d9c63818e8e0b5e950f0",
+    "base_sha256": "d74b7400e84e85e6d845b5dd38e2eedf9321f15f9198efa80b4d516d4d6b0ed5",
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "metadata_byte_identical": true,
+    "catalogue_definitions": 5397,
+    "token_recipes": 119,
+    "new_ids": [],
+    "old_fields_stripped": false,
+    "recorder_changed": false,
+    "fixed_input_files": 11708,
+    "fixed_input_changes": []
+  },
+  "identity": {
+    "wire_schema": 144,
+    "new_public_payload": "ReturnLinkView.tapped=true for a suspended instruction-tapped return; false omitted",
+    "new_ids": [],
+    "definitions": 5397,
+    "token_recipes": 119,
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "all_metadata_byte_identical": true
+  },
+  "validation": {
+    "source_link_format": "Pass",
+    "native": "947 passed including all15 new groups and strict2484 traces",
+    "clippy_all_targets": "Pass with -D warnings",
+    "guarded_reports": {
+      "focused": {
+        "report": "<cache>/rustmage-build-reports/bac52553364f4f5abee5bc9902ac615b.json",
+        "seconds_including_queue": 302.69008327502524,
+        "peak_bytes": 2344833024,
+        "memory_max_bytes": 6442450944,
+        "cargo_jobs": 1,
+        "test_threads": 1,
+        "oom_events": 0
+      },
+      "native": {
+        "report": "<cache>/rustmage-build-reports/e9acafcd53d94daf858f1f6fe2a72fce.json",
+        "seconds_including_queue": 144.26916694501415,
+        "peak_bytes": 2348191744,
+        "memory_max_bytes": 6442450944,
+        "cargo_jobs": 1,
+        "test_threads": 1,
+        "oom_events": 0
+      },
+      "clippy": {
+        "report": "<cache>/rustmage-build-reports/1324f10d92094e908108a553aa1bcaf5.json",
+        "seconds_including_queue": 159.59650298696943,
+        "peak_bytes": 1834651648,
+        "memory_max_bytes": 6442450944,
+        "cargo_jobs": 1,
+        "test_threads": 1,
+        "oom_events": 0
+      }
+    },
+    "full_release": "Pending combined final published draft PR head",
+    "independent_nonauthor_reviews": "Pending combined final published draft PR head",
+    "ci": "Pending combined final published draft PR head"
+  },
+  "resource_safety": {
+    "fixed_inputs_through_actual_terminal": true,
+    "recorded_files": 11708,
+    "all_export_input_hashes_verified_unchanged": true,
+    "oom_events": 0,
+    "memory_cap_bytes": 6442450944
+  },
+  "cleanup": {
+    "terminal": true,
+    "no_active_target_consumers": true,
+    "root": "<cache>/rustmage-msh-thor-target",
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 124678144,
+    "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+    "preserved_shared_libraries": {
+      "<cache>/rustmage-msh-thor-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_native_binary": {
+      "path": "<cache>/rustmage-msh-thor-target/debug/deps/rustmage-b764cd26223fba2c",
+      "sha256": "a949dd90827fd8533f161003926ef1870c5733a965f65e1260bf4005f9417703"
+    }
+  },
+  "throughput": {
+    "scope": "One complete candidate, shared core,15 new groups,947 native tests,source/format/Clippy,trace proof and cleanup; includes serialized queues and sorcery fixture corrections, excludes prior cached read-only design and final combined review/release/CI/user approval",
+    "start_utc": "2026-10-25T01:06:43+00:00",
+    "evidence_cutoff_utc": "2026-10-25T01:39:08.155907+00:00",
+    "elapsed_seconds": 1945.155907,
+    "candidate_cards_per_hour": 1.8507513906955941,
+    "simulation_claim": false
+  },
+  "publication_policy": "One aggregate draft PR516; preserve existing main180/281; final main merge requires user approval",
+  "remaining_scope": "100 other gated identities in this isolated child; aggregate full-set acceptance remains open"
+}
