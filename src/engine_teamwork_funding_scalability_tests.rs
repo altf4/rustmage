@@ -773,3 +773,124 @@ fn msh_teamwork_funding_scalability_conservative_class_declines_mutating_routes_
         assert!(!w.pure_tap_teamwork_deficit(&goal));
     }
 }
+
+#[test]
+fn msh_teamwork_funding_scalability_ordinary_nay_fixed_equipment_and_empty_board() {
+    for p in [Player::P0, Player::P1] {
+        for team in [false, true] {
+            let mut g = setup(p);
+            let helper = if team {
+                let id = named(&mut g, p, "Agent Maria Hill", Zone::Hand);
+                g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 0];
+                cast(&mut g, id, None, &[]);
+                settle(&mut g);
+                Some(id)
+            } else {
+                None
+            };
+            let harness = named(&mut g, p, "Falcon's Wing Harness", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 1];
+            cast(&mut g, harness, None, &[]);
+            settle(&mut g);
+            if let Some(id) = helper {
+                assert_eq!(
+                    g.state.objects[harness as usize].attached_to,
+                    Some(g.object_ref(id))
+                );
+                assert_eq!(g.stats(id).power, 3);
+            }
+            let shield = named(&mut g, p, "Captain America's Shield", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+            cast(&mut g, shield, None, &[]);
+            settle(&mut g);
+            let islands: Vec<_> = (0..12)
+                .map(|_| named(&mut g, p, "Island", Zone::Battlefield))
+                .collect();
+            let victim = named(&mut g, p, "Captain America's Shield", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+            cast(&mut g, victim, None, &[]);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            let spell = named(&mut g, p, "We Say Thee Nay!", Zone::Hand);
+            let funding = FundingBudget::new(128);
+            let teamwork = Budget::new(256);
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            let before = g.snapshot();
+            let actions = g.legal_actions();
+            assert!(actions.contains(&Action::ChooseTeamwork { pay: false }));
+            assert_eq!(
+                actions.contains(&Action::ChooseTeamwork { pay: true }),
+                team
+            );
+            assert_eq!(g.snapshot(), before);
+            if !team {
+                reject(&mut g, Action::ChooseTeamwork { pay: true });
+            }
+            crate::engine::msh_thirteenth_combined_tests::hidden_information_contract(&g, p);
+            g = orphan(g, Action::ChooseTeamwork { pay: team });
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Spell(victim),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                checked(&mut g, Action::FinishTargets);
+            }
+            for &card in &islands[..2] {
+                checked(&mut g, Action::TapMana { card });
+            }
+            let payment = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            g = orphan(g, payment);
+            if let Some(id) = helper {
+                clause(&mut g, CastCostClause::Teamwork(2));
+                let object = g.object_ref(id);
+                checked(&mut g, Action::ChooseTeammate { object });
+                g = orphan(g, Action::FinishTeamwork);
+                assert!(g.object_view(id).tapped);
+            }
+            drop(teamwork);
+            drop(funding);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(
+                g.state
+                    .stack
+                    .iter()
+                    .find(|s| s.card == spell)
+                    .unwrap()
+                    .cast
+                    .unwrap()
+                    .teamwork,
+                Some(team)
+            );
+            for _ in 0..30 {
+                if matches!(g.state.pending, Pending::ResolutionMana { .. }) {
+                    break;
+                }
+                let action = if g.state.pending == Pending::Priority {
+                    Action::Pass
+                } else {
+                    g.legal_actions()
+                        .into_iter()
+                        .find(|a| !matches!(a, Action::Concede))
+                        .unwrap()
+                };
+                checked(&mut g, action);
+            }
+            assert_eq!(
+                g.observe(p).resolution_payment.unwrap().cost.generic,
+                if team { 4 } else { 2 }
+            );
+            checked(&mut g, Action::DeclineResolutionMana);
+            settle(&mut g);
+            assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            if let Some(id) = helper {
+                assert_eq!(g.counter_count(id, CounterKind::PlusOne), 1);
+            }
+        }
+    }
+}

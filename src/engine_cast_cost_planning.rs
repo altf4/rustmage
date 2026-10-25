@@ -484,15 +484,14 @@ impl FundingState<'_> {
             return false;
         };
         let mut minimum = None;
-        let mut has_mana = false;
         for row in c.clauses.iter().filter(|row| !row.paid) {
             match row.clause {
                 CastCostClause::Teamwork(n) => minimum = Some(minimum.unwrap_or(0).max(n)),
-                CastCostClause::Mana => has_mana = true,
+                CastCostClause::Mana => (),
                 _ => return false,
             }
         }
-        let Some(minimum) = minimum.filter(|_| has_mana) else {
+        let Some(minimum) = minimum else {
             return false;
         };
         let mut upper = saddle::PowerSum::default();
@@ -553,7 +552,6 @@ impl FundingState<'_> {
                 || !card.static_modifiers().is_empty()
                 || !card.enchanted_modifiers().is_empty()
                 || card.base_stat_setter().is_some()
-                || card.attachment_bonus().is_some()
                 || card
                     .static_ability_groups()
                     .iter()
@@ -563,6 +561,9 @@ impl FundingState<'_> {
                             f,
                             crate::cards::StaticAbilityFragment::IntrinsicKeywords(_)
                                 | crate::cards::StaticAbilityFragment::Changeling
+                                | crate::cards::StaticAbilityFragment::AttachmentStats(_)
+                                | crate::cards::StaticAbilityFragment::AttachmentKeywords(_)
+                                | crate::cards::StaticAbilityFragment::AttachmentTrigger(_)
                                 | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                                 | crate::cards::StaticAbilityFragment::LandMana { .. }
                                 | crate::cards::StaticAbilityFragment::NoMaximumHandSize
@@ -574,6 +575,9 @@ impl FundingState<'_> {
                 return false;
             }
         }
+        // Ordinary Teamwork keeps its mana in FundingGoal rather than an ordered
+        // Mana row. Fixed attachment bonuses/keywords/trigger grants do not
+        // change from pure tap/AddMana moves; no attachment can move here.
         // In this flat class base exceptions, fixed animation/base values,
         // counters, growth, choices and copy layers remain immutable. No mana
         // step changes turn/combat/attachment state. Further taps can only
