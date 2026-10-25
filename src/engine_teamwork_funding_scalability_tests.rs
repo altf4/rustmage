@@ -953,6 +953,11 @@ fn msh_improvise_performance_filters_unrelated_providers_before_availability() {
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
         cast(&mut g, shield, None, &[]);
         settle(&mut g);
+        let avengers = named(&mut g, p, "Avengers Assemble!", Zone::Hand);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 4];
+        cast(&mut g, avengers, None, &[]);
+        settle(&mut g);
+        assert!(g.state.static_sources.contains(&avengers));
         // Bounded keyword-counter placement activates the genuine shared layer evaluator.
         g.set_counters(agent, Counters::of(CounterKind::Flying, 1));
         assert!(ability_evaluation::evaluate_if_needed(&g).is_some());
@@ -973,7 +978,7 @@ fn msh_improvise_performance_filters_unrelated_providers_before_availability() {
         assert!(!improvise::available(&foreign, p.other(), definition));
         assert_eq!(foreign.checks.get(), 0);
         let aura = named(&mut g, p, "Witness Protection", Zone::Hand);
-        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 0];
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
         cast(&mut g, aura, None, &[Target::Card(iron)]);
         settle(&mut g);
         let probe = AvailabilityProbe::new(&g);
