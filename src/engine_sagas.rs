@@ -5,11 +5,11 @@ impl Game {
     /// The admitted chapter set is its immutable definition, subject to live removal.
     fn live_saga_final_chapter(&self, id: CardId) -> Option<u16> {
         let object = &self.state.objects[id as usize];
+        let final_chapter = object.card.saga_final_chapter()?;
         (object.zone == Zone::Battlefield
             && self.has_subtype(id, "Saga")
             && self.printed_abilities_available(id))
-        .then(|| object.card.saga_final_chapter())
-        .flatten()
+        .then_some(final_chapter)
     }
     pub(super) fn lore_counters_added(&mut self, object: ObjectRef, before: u64) {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {

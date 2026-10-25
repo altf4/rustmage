@@ -1,6 +1,6 @@
 //! Complete hybrid creature and every-created-Equipment exact-source continuation.
 use super::assurance::big_helpers::{cast, checked, named, settle, setup};
-use super::msh_galactus_tests::{animate, finish, paid, reject, tokens, until};
+use super::msh_galactus_tests::{finish, paid, reject, tokens, until};
 use super::*;
 const NAME: &str = "U.S.Agent, John Walker";
 fn start(g: &mut Game, p: Player, color: usize) -> CardId {
@@ -450,12 +450,8 @@ fn msh_us_agent_live_shield_power_funds_actual_crew_four() {
             },
         );
         finish(&mut g);
-        checked(
-            &mut g,
-            Action::ChooseCrewer {
-                object: g.object_ref(s),
-            },
-        );
+        let object = g.object_ref(s);
+        checked(&mut g, Action::ChooseCrewer { object });
         checked(&mut g, Action::FinishCrew);
         settle(&mut g);
         assert!(g.is_creature(vehicle));

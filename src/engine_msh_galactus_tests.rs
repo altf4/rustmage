@@ -511,7 +511,7 @@ fn msh_galactus_saga_chapter_suppression_preserves_subtype_no_lore_no_sacrifice(
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let s = saga(&mut g, p);
-        animate(&mut g, s, true);
+        animate(&mut g, s, false);
         let aura = paid(&mut g, p, "Frozen in Ice", &[Target::Card(s)]);
         assert!(g.has_subtype(s, "Saga"));
         assert!(!g.printed_abilities_available(s));
@@ -533,11 +533,13 @@ fn msh_galactus_suppressed_queued_iv_resolves_then_restoration_sacrifices() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let s = saga(&mut g, p);
-        animate(&mut g, s, true);
+        animate(&mut g, s, false);
         g.effect_counter(s, CounterKind::Lore, 3, replacements::ResumeMode::Pending);
         chapter(&mut g, s, 3);
-        g.state.players[p.index()].mana = [30; 6];
-        let aura = paid(&mut g, p, "Frozen in Ice", &[Target::Card(s)]);
+        // Bounded ordinary Aura attachment while IV is queued; no sorcery cast.
+        let aura = named(&mut g, p, "Frozen in Ice", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(s));
+        settle(&mut g);
         assert!(g.on_battlefield(s));
         assert_eq!(tokens(&g, p, Card::MshGalactusToken).len(), 1);
         g.move_object(aura, Zone::Graveyard);
