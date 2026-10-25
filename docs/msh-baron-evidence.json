@@ -6,7 +6,7 @@
   "validated_runtime_and_trace_head": "f4677f37eedd8dab77a69a708998745d94dbe17a",
   "branch": "codex/msh-baron-entering-conniver",
   "parent_issue": 478,
-  "delivery": "Source branch push only; no child PR, main merge, review receipt or release claim. Root owns final draftPR516 and combined release/two nonauthor reviews.",
+  "delivery": "Source branch push only; no child PR, main merge, review receipt or release claim. Root owns final draft PR #516 and combined release/two nonauthor reviews.",
   "complete_card": {
     "name": "Baron Strucker, HYDRA Overlord",
     "catalogue_id": 334,
@@ -162,7 +162,7 @@
   },
   "obligations": [
     {
-      "oracle": "Legendary black Human Villain 2/2 for2B.",
+      "oracle": "Legendary black Human Villain 2/2 for {2}{B}.",
       "evidence": [
         "msh_baron_paid_body_discount_and_generic_colored_floor",
         "msh_baron_copied_packet_shared_once_and_copied_source_independent"
@@ -170,7 +170,7 @@
       "scope": "Real paid cast, insufficient mana rejection, exact body/keywords, copied source in other controller; central legend machinery unchanged."
     },
     {
-      "oracle": "Villain spells you cast cost1 generic less.",
+      "oracle": "Villain spells you cast cost {1} generic less.",
       "evidence": [
         "msh_baron_paid_body_discount_and_generic_colored_floor",
         "msh_baron_discount_current_controller_suppression_other_spells_and_funding"
@@ -261,7 +261,7 @@
       "rules_passed": 1113,
       "groups_new": 14,
       "inherited_rules_passed": 1099,
-      "recording_only_failure": "Exactly one expected2498vs2497 trace-count assertion before acceptance. No rules failures on final native run.",
+      "recording_only_failure": "Exactly one expected 2,498 vs 2,497 trace-count assertion before acceptance. No rules failures on final native run.",
       "seconds": 5.61
     },
     "strict_trace": {
@@ -271,7 +271,7 @@
       "seconds": 0.77,
       "accepted_rows": 2498
     },
-    "clippy": "All targets with-Dwarnings passed on final test source before baseline-only update.",
+    "clippy": "All targets with -D warnings passed on final test source before baseline-only update.",
     "format": "cargo fmt --all --check passed after baseline update.",
     "link": "link_catalogue.py generation/check passed; generated artifacts came from script only.",
     "source": {
@@ -281,7 +281,7 @@
       "catalogue_version": "1c13873e83897e737d2f38524b06b2d0b17c351f20d7830896048b01055eb033"
     },
     "full_release": "Not run in child per parent direction; required final combined release remains with root.",
-    "earlier_runs": "First run compile-only fixture production type error; second run two fixture ordering failures, both corrected by declining legitimate fresh entrant packets before old exact recipient. All evidence retained; final14 groups pass."
+    "earlier_runs": "First run compile-only fixture production type error; second run two fixture ordering failures, both corrected by declining legitimate fresh entrant packets before old exact recipient. All evidence retained; final 14 groups pass."
   },
   "trace_proof": {
     "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
@@ -295,7 +295,7 @@
     "normal_journal_differences": [],
     "current_schema": 146,
     "previous_schema": 145,
-    "comparison": "All2497 complete prior Trace structs compared directly to existing opt-in145 export; no field stripping, recorder edits, or custom projection.",
+    "comparison": "All 2,497 complete prior Trace structs compared directly to existing opt-in145 export; no field stripping, recorder edits, or custom projection.",
     "base_sha256": "860abacedbca501847d01ee19254fdacb2b4b656bcd1d40123028af6392f41b1",
     "candidate_sha256": "cd8dd7670ca28f7ddfef6cb1b70783f11f26ecf46fe5199ca3a1d82d22eeb595",
     "previous_sha256": "d8802daf3abcfba34147cd1a437c9dba369f885f4b176e2817cab09815a96995",
@@ -455,7 +455,7 @@
     "isolated_gated": 86,
     "new_whole_cards": 1,
     "main_unchanged_by_child": true,
-    "entire_set_game_and_performance_acceptance": "Open; admission flags and bounded traces do not certify all281 games."
+    "entire_set_game_and_performance_acceptance": "Open; admission flags and bounded traces do not certify all 281 games."
   },
   "throughput": {
     "start_utc": "2026-10-25T02:53:43+00:00",
@@ -464,11 +464,11 @@
     "whole_cards": 1,
     "cards_per_hour": 1.5567317064057147,
     "interval": "Branch creation through evidence preparation, including shared guard waits and fixture repair; source audit before branch creation excluded.",
-    "simulation": "No simulation benchmark run;5.61s is native rules-suite time, not game/search throughput."
+    "simulation": "No simulation benchmark run;5.61 seconds is native rules-suite time, not game/search throughput."
   },
   "remaining_blockers": [
     "Final aggregate release and two fresh independent nonauthor reviews required; no final set acceptance claimed.",
-    "Galactus deferred; portable complete source design at<cache>/msh-galactus-design-a8e6f458.json SHA9d26df207737c4810a73b0a70a8131d4d380bba67aa1b6843d092631aacae963, no ID allocated.",
+    "Galactus deferred; portable complete source design at<cache>/msh-galactus-design-a8e6f458.json SHA256 9d26df207737c4810a73b0a70a8131d4d380bba67aa1b6843d092631aacae963, no ID allocated.",
     "Latent effective-Saga subtype/Main1 lore issue remains separately tracked with synthetic-only reachability limits; unchanged by this scope."
   ]
 }
