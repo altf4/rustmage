@@ -351,7 +351,7 @@ fn msh_namor_source_theft_departure_and_blink_do_not_redirect_tokens() {
             let n = namor(&mut g, p);
             let spell = xspell(&mut g, p, 0);
             trigger(&mut g, n);
-            let original = event(&g, n).clone();
+            let original = *event(&g, n);
             match change {
                 0 => {
                     let r = g.object_ref(n);
@@ -402,7 +402,7 @@ fn msh_namor_same_physical_spell_recast_has_separate_frozen_packets() {
         let spell = named(&mut g, p, "Negate", Zone::Hand);
         cast(&mut g, spell, None, &[Target::Spell(victim)]);
         trigger(&mut g, n);
-        let first = event(&g, n).clone();
+        let first = *event(&g, n);
         // Bounded public bounce fixture; recasting this instant is legal above
         // the still-pending old Namor packet and original Shock.
         g.move_object(spell, Zone::Hand);

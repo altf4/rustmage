@@ -2,7 +2,7 @@
 use super::{Card, ChoiceColor};
 
 pub(super) fn count(cost: &str, color: ChoiceColor) -> u64 {
-    let wanted = [b'W', b'U', b'B', b'R', b'G'][color.index()];
+    let wanted = b"WUBRG"[color.index()];
     cost.split('{')
         .skip(1)
         .filter(|part| {
