@@ -1,0 +1,167 @@
+{
+  "scope": "Two complete individual cards plus directly affected shield, damage, counter, blink and destruction rules. Development evidence; no aggregate/full-set acceptance.",
+  "base": "3b54af35",
+  "tested_source": "28777f6a4cf85b1ea2e08040ad8113281f01f827",
+  "cards": [
+    "Captain America, Super-Soldier",
+    "The Mind Stone"
+  ],
+  "complete": true,
+  "sources": {
+    "full_oracle": 2,
+    "full_direct_java": 2,
+    "full_read_semantic_helpers": 31,
+    "audit": "<cache>/rustmage-msh-shield-harness-design-3b54af35.json",
+    "audit_sha256": "2773872a3981b01fd1acca77861dfb327ad31d085f2a6925647ac6cb46a8a0e8",
+    "design_packet_qualification": "Preserved pre-implementation full-source/design snapshot; subsequent implemented behavior is described here, including simultaneous damage-event selection and source-counter stat expression.",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "primary_release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "primary_mechanics": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-mechanics",
+    "primary_rules": [
+      "CR122.1c: one shield replacement and one prevention regardless of number of shields; counter is not a keyword ability",
+      "CR615.12/615.12a: additional counter removal still applies once for unpreventable damage",
+      "CR615.5 and CR616: prevention and affected-player replacement ordering"
+    ],
+    "scoped_exact_java_pins_rehashed": 33
+  },
+  "implementation": {
+    "Captain_America": "Printed3/2 first strike with one shield through ordinary entry-counter replacements. Live source-counter threshold gives its current controller and other current controlled Heroes hexproof. It does not grant itself hexproof. Actual and speculative worlds use the same counter and provider-availability query.",
+    "shield_counter": "Append CounterKind::Shield after Finality without changing previous ordinals or eleven keyword kinds. Intrinsic prevention consumes exactly one counter per event even when damage cannot be prevented. Shared destruction helper preserves indestructibility first and applies to effect destruction, while sacrifice, exile and state-based zero-toughness/lethal destruction retain their rules.",
+    "simultaneous_damage": "When simultaneous positive damage events compete for one shield, affected current controller chooses the event to process first. Own exact pending events, used-prevention rows and event-order flag; no invented printed ability index.",
+    "Mind_Stone": "Real tap-for-white mana ability and instant5W tap harness activation, legal repeatedly. Harness is an exact-incarnation designation in owned cold state, survives control/copy/transform and clears on movement. It is not copied. The infinity own-end trigger is an actual granted template present only while harnessed and available. Optional other nonland controlled permanent is immediately blinked under its physical owner through ordinary entry continuations.",
+    "wire": 152,
+    "actual_new_action": "ChooseDamageEvent{index}",
+    "actual_new_views": [
+      "ObjectView.harnessed (omit when absent)",
+      "DamageEventOrderView",
+      "ReplacementChoiceView.damage_event_order (omit when empty)"
+    ],
+    "typed_stat_expression": "SourceCounters(CounterKind) uses the exact live source in actual and funding worlds.",
+    "new_catalogue_ids": 0,
+    "scoped_authored_rustfmt_files": 27
+  },
+  "focused": {
+    "groups": 60,
+    "new_individual_groups": 32,
+    "directly_affected_existing_groups": 28,
+    "both_seats": true,
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "new_rules_seconds": 0.84,
+    "summed_rules_seconds": 1.24,
+    "guard_seconds": 30.811551860999316,
+    "driver_seconds": 30.63334321975708,
+    "memory_peak_bytes": 2737651712,
+    "memory_max_bytes": 6442450944,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "fixed_inputs": 11863,
+    "changed": [],
+    "input_map": "<cache>/rustmage-msh-shield-harness-final-focus-inputs.json",
+    "input_map_sha256": "611a694442653c2bbb083afa9ffba5ea4655f521b5d4366a6d51e4f11f06ecf8",
+    "runs": [
+      {
+        "filter": "msh_shield_harness_",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_damage_",
+        "exit_code": 0
+      },
+      {
+        "filter": "keyword_counters_all_eleven_append_stably_and_obey_loss_refresh_partial_and_final_removal",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_broker_thrall_broker_each_hot_cold_keyword_kind_adds_one_not_current_quantity",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_parity_paid_thanos_untargeted_destruction_ignores_ward_and_hexproof",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_wiccan_excludes_self_lands_tokens_and_blinks_stolen_card_to_owner",
+        "exit_code": 0
+      },
+      {
+        "filter": "big_sword_protection_prevents_targeting_and_damage_and_delays_one_spell_copy",
+        "exit_code": 0
+      }
+    ],
+    "tests": [
+      "msh_shield_harness_captain_paid_body_current_hero_player_hexproof_and_shield_damage",
+      "msh_shield_harness_captain_destroy_replaces_once_then_actual_mass_destroy",
+      "msh_shield_harness_captain_unpreventable_consumes_one_of_multiple_shields",
+      "msh_shield_harness_captain_shield_survives_ability_loss_but_conditional_grants_do_not",
+      "msh_shield_harness_captain_indestructible_preserves_shield_and_zero_toughness_still_dies",
+      "msh_shield_harness_captain_entry_replacements_and_noncopiable_counters",
+      "msh_shield_harness_captain_actual_first_strike_does_not_need_shield",
+      "msh_shield_harness_captain_simultaneous_sources_choose_which_shield_prevents_owned",
+      "msh_shield_harness_mind_paid_mana_indestructible_and_inactive_ability",
+      "msh_shield_harness_mind_harness_costs_opponent_turn_and_repeatable_designation",
+      "msh_shield_harness_mind_actual_granted_end_trigger_targets_and_owned_blink",
+      "msh_shield_harness_mind_blinks_stolen_recipient_to_actual_owner",
+      "msh_shield_harness_mind_source_departure_before_harness_resolution_does_not_mark_new_object",
+      "msh_shield_harness_mind_queued_blink_survives_source_departure",
+      "msh_shield_harness_captain_current_control_moves_both_conditional_grants",
+      "msh_shield_harness_mind_decline_optional_blink_keeps_exact_recipient",
+      "msh_shield_harness_mind_designation_is_not_copied_but_persists_through_copy_layers",
+      "msh_shield_harness_captain_real_lands_pay_colored_and_generic_cost",
+      "msh_shield_harness_captain_paid_sacrifice_and_exile_do_not_use_destroy_shield",
+      "msh_shield_harness_captain_destroy_and_create_still_creates_for_unchanged_controller",
+      "msh_shield_harness_captain_live_hero_types_and_changeling_receive_grant",
+      "msh_shield_harness_captain_unpreventable_deathtouch_still_causes_state_based_death",
+      "msh_shield_harness_shield_prevention_can_be_saved_by_fog_bank_effect_order",
+      "msh_shield_harness_mind_reserved_tap_cannot_fund_itself_real_land_payment_is_nonmutating",
+      "msh_shield_harness_mind_grant_tracks_current_controller_end_step",
+      "msh_shield_harness_mind_real_copy_harness_suppression_restoration_and_blink_reset",
+      "msh_shield_harness_mind_blink_owns_entry_choice_pause",
+      "msh_shield_harness_mind_blinks_noncreature_equipment_and_detaches_it",
+      "msh_shield_harness_mind_blinked_token_ceases_and_does_not_return",
+      "msh_shield_harness_mind_blinked_aura_has_owned_nontarget_entry_attachment_choice",
+      "msh_shield_harness_funding_counter_removal_and_source_departure_do_not_mutate_parent",
+      "msh_shield_harness_funding_virtual_harnessed_departure_has_no_stale_designation"
+    ],
+    "paid_rules_matrix": [
+      "All printed clauses, actual land/color/tap costs, optional choices, first-strike combat, controller changes and source departure",
+      "Shield damage, destroy-once/destroy-twice, mass destroy, indestructible, sacrifice, exile, zero toughness, simultaneous deathtouch ordering, unpreventable damage and deathtouch, ability removal, counter doubling and copy noninheritance",
+      "Mind inactive/granted trigger, repeated harness, current controller, copy persistence and noninheritance, suppression/restoration, blink reset, stolen ownership, source departure, optional decline",
+      "Creature entry choice, token ceasing, noncreature Equipment detach/reentry, Aura nontarget entry-attachment continuation",
+      "Counter-reservation and virtual-departure world equality, legal-action query nonmutation, owned raw/index branches with parent disposal and restore, invalid action atomicity, both observations and action JSON round-trip"
+    ],
+    "bounded_fixtures": "Initial selected counters, Fog Bank shield ordering and selected virtual funding reservations are explicitly bounded. Main payment, casts, equipment, suppression, copy, combat and movement use real supported definitions/actions.",
+    "prior_attempts": "First development consumer had a compile-only u8 target-kind-mask mismatch. TargetRule uses its existing zero wildcard plus nonland restriction. Subsequent17,28,32 gated groups and final60 ordinary-supported/affected groups all passed. No gameplay failure was hidden by admission."
+  },
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-shield-harness-preservation.json",
+    "sha256": "0cc25f93c4b3e28cd3fad9f5345ddfd650f89e6fe43037b23e7522c60b820345",
+    "required_paths": 4505,
+    "prior_paths_rehashed_exact": 4498,
+    "retained": {
+      "<cache>/rustmage-msh-shield-harness-dev-target/debug/deps/rustmage-55e16bd14e329fbf": "adcbccf986c33a1912002943eb72b2076953a65936685ea0ddd52bf8d3758d6c",
+      "<cache>/rustmage-msh-shield-harness-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "removed_files": 165,
+    "removed_path_allocated_bytes": 40366080,
+    "own_processes_inspected": 253,
+    "accessible_target_refs": [],
+    "denied_inspections": 202,
+    "cleaned_target_must_not_be_reused": true
+  },
+  "implementation_interval": {
+    "start_utc": "2026-10-25T17:11:35.322897+00:00",
+    "end_utc": "2026-10-25T17:45:54.234298+00:00",
+    "hours": 0.5719198336111111,
+    "cards": 2,
+    "cards_per_hour": 3.4969936037573093,
+    "scope": "Full-source design snapshot through final ordinary-supported focused result; authoring, compiles and serialized resource queue included. Not simulation throughput."
+  },
+  "deferred": [
+    "Cross-family interactions after final source integration",
+    "Full native/default/trace migration/release/CI",
+    "Two independent nonauthor final published-PR reviews",
+    "Entire281-card clause/game/performance acceptance"
+  ],
+  "main_merged": false,
+  "pr": "https://github.com/altf4/rustmage/pull/516"
+}
