@@ -1,0 +1,772 @@
+{
+  "methodology_pr": 468,
+  "replaces": "All MSH development-era tests, including repeated legal-game batches and repeated per-action owned contracts.",
+  "status": "Fresh independent bounded assurance in progress; previous MSH test receipts do not certify the replacement.",
+  "removed_files": [
+    {
+      "path": "src/assurance/msh_games.rs",
+      "test_functions": 1,
+      "lines": 237
+    },
+    {
+      "path": "src/engine_msh_ability_copy_core_tests.rs",
+      "test_functions": 32,
+      "lines": 1688
+    },
+    {
+      "path": "src/engine_msh_animation_death_tests.rs",
+      "test_functions": 22,
+      "lines": 647
+    },
+    {
+      "path": "src/engine_msh_armor_hulk_sagas_tests.rs",
+      "test_functions": 22,
+      "lines": 835
+    },
+    {
+      "path": "src/engine_msh_armor_tony_funding_tests.rs",
+      "test_functions": 3,
+      "lines": 101
+    },
+    {
+      "path": "src/engine_msh_armor_tony_tests.rs",
+      "test_functions": 24,
+      "lines": 1017
+    },
+    {
+      "path": "src/engine_msh_attachment_core_tests.rs",
+      "test_functions": 16,
+      "lines": 783
+    },
+    {
+      "path": "src/engine_msh_attack_alone_tests.rs",
+      "test_functions": 10,
+      "lines": 479
+    },
+    {
+      "path": "src/engine_msh_baron_tests.rs",
+      "test_functions": 14,
+      "lines": 702
+    },
+    {
+      "path": "src/engine_msh_baxter_raft_funding_tests.rs",
+      "test_functions": 3,
+      "lines": 114
+    },
+    {
+      "path": "src/engine_msh_baxter_raft_tests.rs",
+      "test_functions": 27,
+      "lines": 1051
+    },
+    {
+      "path": "src/engine_msh_broad_legal_games_tests.rs",
+      "test_functions": 5,
+      "lines": 942
+    },
+    {
+      "path": "src/engine_msh_broker_thrall_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 61
+    },
+    {
+      "path": "src/engine_msh_broker_thrall_tests.rs",
+      "test_functions": 18,
+      "lines": 606
+    },
+    {
+      "path": "src/engine_msh_bruce_kang_tests.rs",
+      "test_functions": 24,
+      "lines": 885
+    },
+    {
+      "path": "src/engine_msh_cast_target_copy_tests.rs",
+      "test_functions": 34,
+      "lines": 1265
+    },
+    {
+      "path": "src/engine_msh_civil_war_tests.rs",
+      "test_functions": 14,
+      "lines": 563
+    },
+    {
+      "path": "src/engine_msh_combined_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 98
+    },
+    {
+      "path": "src/engine_msh_combined_tests.rs",
+      "test_functions": 1,
+      "lines": 85
+    },
+    {
+      "path": "src/engine_msh_conditional_lands_funding_tests.rs",
+      "test_functions": 3,
+      "lines": 146
+    },
+    {
+      "path": "src/engine_msh_conditional_lands_tests.rs",
+      "test_functions": 5,
+      "lines": 241
+    },
+    {
+      "path": "src/engine_msh_controlled_policy_tests.rs",
+      "test_functions": 1,
+      "lines": 101
+    },
+    {
+      "path": "src/engine_msh_copy_identity_regression_tests.rs",
+      "test_functions": 5,
+      "lines": 399
+    },
+    {
+      "path": "src/engine_msh_cosmic_cube_tests.rs",
+      "test_functions": 33,
+      "lines": 1136
+    },
+    {
+      "path": "src/engine_msh_coulson_tests.rs",
+      "test_functions": 6,
+      "lines": 348
+    },
+    {
+      "path": "src/engine_msh_counter_batch_tests.rs",
+      "test_functions": 10,
+      "lines": 426
+    },
+    {
+      "path": "src/engine_msh_counter_quantity_core_tests.rs",
+      "test_functions": 22,
+      "lines": 841
+    },
+    {
+      "path": "src/engine_msh_counter_quantity_funding_tests.rs",
+      "test_functions": 4,
+      "lines": 149
+    },
+    {
+      "path": "src/engine_msh_counter_three_tests.rs",
+      "test_functions": 17,
+      "lines": 619
+    },
+    {
+      "path": "src/engine_msh_damage_replacement_tests.rs",
+      "test_functions": 23,
+      "lines": 941
+    },
+    {
+      "path": "src/engine_msh_declaration_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 63
+    },
+    {
+      "path": "src/engine_msh_declaration_tests.rs",
+      "test_functions": 17,
+      "lines": 750
+    },
+    {
+      "path": "src/engine_msh_doom_funding_tests.rs",
+      "test_functions": 4,
+      "lines": 140
+    },
+    {
+      "path": "src/engine_msh_doom_tests.rs",
+      "test_functions": 21,
+      "lines": 680
+    },
+    {
+      "path": "src/engine_msh_eighth_combined_tests.rs",
+      "test_functions": 1,
+      "lines": 258
+    },
+    {
+      "path": "src/engine_msh_elektra_hellcat_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 44
+    },
+    {
+      "path": "src/engine_msh_elektra_hellcat_tests.rs",
+      "test_functions": 28,
+      "lines": 953
+    },
+    {
+      "path": "src/engine_msh_eleventh_combined_tests.rs",
+      "test_functions": 2,
+      "lines": 531
+    },
+    {
+      "path": "src/engine_msh_entering_copy_tests.rs",
+      "test_functions": 21,
+      "lines": 721
+    },
+    {
+      "path": "src/engine_msh_event_objects_tests.rs",
+      "test_functions": 33,
+      "lines": 1205
+    },
+    {
+      "path": "src/engine_msh_existing_seventh_tests.rs",
+      "test_functions": 15,
+      "lines": 710
+    },
+    {
+      "path": "src/engine_msh_existing_tests.rs",
+      "test_functions": 24,
+      "lines": 1255
+    },
+    {
+      "path": "src/engine_msh_faces_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 109
+    },
+    {
+      "path": "src/engine_msh_faces_tests.rs",
+      "test_functions": 13,
+      "lines": 539
+    },
+    {
+      "path": "src/engine_msh_feast_tests.rs",
+      "test_functions": 21,
+      "lines": 703
+    },
+    {
+      "path": "src/engine_msh_fifth_combined_tests.rs",
+      "test_functions": 1,
+      "lines": 108
+    },
+    {
+      "path": "src/engine_msh_final_copy_interactions_tests.rs",
+      "test_functions": 4,
+      "lines": 392
+    },
+    {
+      "path": "src/engine_msh_final_shared_interactions_tests.rs",
+      "test_functions": 3,
+      "lines": 262
+    },
+    {
+      "path": "src/engine_msh_first_tap_tests.rs",
+      "test_functions": 13,
+      "lines": 399
+    },
+    {
+      "path": "src/engine_msh_forms_tests.rs",
+      "test_functions": 9,
+      "lines": 586
+    },
+    {
+      "path": "src/engine_msh_four_existing_tests.rs",
+      "test_functions": 17,
+      "lines": 791
+    },
+    {
+      "path": "src/engine_msh_fourteenth_combined_tests.rs",
+      "test_functions": 2,
+      "lines": 276
+    },
+    {
+      "path": "src/engine_msh_galactus_funding_tests.rs",
+      "test_functions": 2,
+      "lines": 74
+    },
+    {
+      "path": "src/engine_msh_galactus_tests.rs",
+      "test_functions": 17,
+      "lines": 628
+    },
+    {
+      "path": "src/engine_msh_graveyard_plans_tests.rs",
+      "test_functions": 24,
+      "lines": 809
+    },
+    {
+      "path": "src/engine_msh_hand_choices_tests.rs",
+      "test_functions": 23,
+      "lines": 776
+    },
+    {
+      "path": "src/engine_msh_hand_entry_core_tests.rs",
+      "test_functions": 12,
+      "lines": 549
+    },
+    {
+      "path": "src/engine_msh_hand_exile_tests.rs",
+      "test_functions": 21,
+      "lines": 667
+    },
+    {
+      "path": "src/engine_msh_hawkeye_wrecking_tests.rs",
+      "test_functions": 27,
+      "lines": 881
+    },
+    {
+      "path": "src/engine_msh_hideout_falcon_tests.rs",
+      "test_functions": 10,
+      "lines": 521
+    },
+    {
+      "path": "src/engine_msh_hideout_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 85
+    },
+    {
+      "path": "src/engine_msh_improvise_funding_tests.rs",
+      "test_functions": 3,
+      "lines": 127
+    },
+    {
+      "path": "src/engine_msh_improvise_ordered_tests.rs",
+      "test_functions": 1,
+      "lines": 68
+    },
+    {
+      "path": "src/engine_msh_improvise_tests.rs",
+      "test_functions": 19,
+      "lines": 816
+    },
+    {
+      "path": "src/engine_msh_incursion_justice_loki_cards_tests.rs",
+      "test_functions": 10,
+      "lines": 563
+    },
+    {
+      "path": "src/engine_msh_incursion_justice_loki_core_tests.rs",
+      "test_functions": 22,
+      "lines": 1033
+    },
+    {
+      "path": "src/engine_msh_inherited_tests.rs",
+      "test_functions": 62,
+      "lines": 2752
+    },
+    {
+      "path": "src/engine_msh_jennifer_tests.rs",
+      "test_functions": 19,
+      "lines": 960
+    },
+    {
+      "path": "src/engine_msh_king_tests.rs",
+      "test_functions": 9,
+      "lines": 478
+    },
+    {
+      "path": "src/engine_msh_kingpin_tests.rs",
+      "test_functions": 21,
+      "lines": 648
+    },
+    {
+      "path": "src/engine_msh_land_origins_funding_tests.rs",
+      "test_functions": 2,
+      "lines": 88
+    },
+    {
+      "path": "src/engine_msh_land_origins_tests.rs",
+      "test_functions": 37,
+      "lines": 1251
+    },
+    {
+      "path": "src/engine_msh_leader_tests.rs",
+      "test_functions": 21,
+      "lines": 756
+    },
+    {
+      "path": "src/engine_msh_library_top_tests.rs",
+      "test_functions": 33,
+      "lines": 1068
+    },
+    {
+      "path": "src/engine_msh_linked_copy_tests.rs",
+      "test_functions": 26,
+      "lines": 863
+    },
+    {
+      "path": "src/engine_msh_mandatory_union_tests.rs",
+      "test_functions": 12,
+      "lines": 590
+    },
+    {
+      "path": "src/engine_msh_marvell_tests.rs",
+      "test_functions": 6,
+      "lines": 170
+    },
+    {
+      "path": "src/engine_msh_namor_funding_tests.rs",
+      "test_functions": 3,
+      "lines": 110
+    },
+    {
+      "path": "src/engine_msh_namor_tests.rs",
+      "test_functions": 26,
+      "lines": 915
+    },
+    {
+      "path": "src/engine_msh_ninth_combined_tests.rs",
+      "test_functions": 1,
+      "lines": 251
+    },
+    {
+      "path": "src/engine_msh_origin_nick_cards_tests.rs",
+      "test_functions": 23,
+      "lines": 964
+    },
+    {
+      "path": "src/engine_msh_parity_library_paid_tests.rs",
+      "test_functions": 12,
+      "lines": 650
+    },
+    {
+      "path": "src/engine_msh_photon_barrage_tests.rs",
+      "test_functions": 8,
+      "lines": 366
+    },
+    {
+      "path": "src/engine_msh_placement_funding_tests.rs",
+      "test_functions": 2,
+      "lines": 83
+    },
+    {
+      "path": "src/engine_msh_placement_tests.rs",
+      "test_functions": 12,
+      "lines": 521
+    },
+    {
+      "path": "src/engine_msh_political_triumph_tests.rs",
+      "test_functions": 3,
+      "lines": 146
+    },
+    {
+      "path": "src/engine_msh_power_up_cards_tests.rs",
+      "test_functions": 16,
+      "lines": 920
+    },
+    {
+      "path": "src/engine_msh_punch_zola_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 76
+    },
+    {
+      "path": "src/engine_msh_punch_zola_tests.rs",
+      "test_functions": 12,
+      "lines": 513
+    },
+    {
+      "path": "src/engine_msh_recent_targets_tests.rs",
+      "test_functions": 23,
+      "lines": 700
+    },
+    {
+      "path": "src/engine_msh_red_grim_tests.rs",
+      "test_functions": 32,
+      "lines": 1092
+    },
+    {
+      "path": "src/engine_msh_reflexive_tap_haste_tests.rs",
+      "test_functions": 23,
+      "lines": 1032
+    },
+    {
+      "path": "src/engine_msh_restricted_creatures_funding_tests.rs",
+      "test_functions": 2,
+      "lines": 88
+    },
+    {
+      "path": "src/engine_msh_restricted_creatures_tests.rs",
+      "test_functions": 25,
+      "lines": 812
+    },
+    {
+      "path": "src/engine_msh_self_granted_activation_tests.rs",
+      "test_functions": 28,
+      "lines": 840
+    },
+    {
+      "path": "src/engine_msh_self_granted_static_tests.rs",
+      "test_functions": 24,
+      "lines": 855
+    },
+    {
+      "path": "src/engine_msh_sentry_alien_tests.rs",
+      "test_functions": 10,
+      "lines": 474
+    },
+    {
+      "path": "src/engine_msh_serum_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 47
+    },
+    {
+      "path": "src/engine_msh_serum_tests.rs",
+      "test_functions": 15,
+      "lines": 578
+    },
+    {
+      "path": "src/engine_msh_seventh_combined_tests.rs",
+      "test_functions": 1,
+      "lines": 167
+    },
+    {
+      "path": "src/engine_msh_sixth_combined_tests.rs",
+      "test_functions": 1,
+      "lines": 279
+    },
+    {
+      "path": "src/engine_msh_skrull_funding_tests.rs",
+      "test_functions": 4,
+      "lines": 156
+    },
+    {
+      "path": "src/engine_msh_skrull_tests.rs",
+      "test_functions": 9,
+      "lines": 321
+    },
+    {
+      "path": "src/engine_msh_source_linked_sting_tests.rs",
+      "test_functions": 13,
+      "lines": 575
+    },
+    {
+      "path": "src/engine_msh_source_quantities_tests.rs",
+      "test_functions": 24,
+      "lines": 969
+    },
+    {
+      "path": "src/engine_msh_stature_tests.rs",
+      "test_functions": 13,
+      "lines": 531
+    },
+    {
+      "path": "src/engine_msh_storm_tests.rs",
+      "test_functions": 27,
+      "lines": 935
+    },
+    {
+      "path": "src/engine_msh_super_adaptoid_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 54
+    },
+    {
+      "path": "src/engine_msh_super_adaptoid_tests.rs",
+      "test_functions": 11,
+      "lines": 407
+    },
+    {
+      "path": "src/engine_msh_tap_batch_tests.rs",
+      "test_functions": 14,
+      "lines": 603
+    },
+    {
+      "path": "src/engine_msh_teamwork_cards_tests.rs",
+      "test_functions": 15,
+      "lines": 905
+    },
+    {
+      "path": "src/engine_msh_temporary_copy_cards_tests.rs",
+      "test_functions": 36,
+      "lines": 1297
+    },
+    {
+      "path": "src/engine_msh_ten_rings_funding_tests.rs",
+      "test_functions": 2,
+      "lines": 100
+    },
+    {
+      "path": "src/engine_msh_ten_rings_tests.rs",
+      "test_functions": 24,
+      "lines": 683
+    },
+    {
+      "path": "src/engine_msh_tenth_combined_tests.rs",
+      "test_functions": 1,
+      "lines": 201
+    },
+    {
+      "path": "src/engine_msh_thirst_tests.rs",
+      "test_functions": 10,
+      "lines": 355
+    },
+    {
+      "path": "src/engine_msh_thirteenth_combined_tests.rs",
+      "test_functions": 2,
+      "lines": 1156
+    },
+    {
+      "path": "src/engine_msh_thor_tests.rs",
+      "test_functions": 15,
+      "lines": 574
+    },
+    {
+      "path": "src/engine_msh_titania_tests.rs",
+      "test_functions": 19,
+      "lines": 753
+    },
+    {
+      "path": "src/engine_msh_turn_cast_grants_tests.rs",
+      "test_functions": 27,
+      "lines": 918
+    },
+    {
+      "path": "src/engine_msh_turn_facts_funding_tests.rs",
+      "test_functions": 2,
+      "lines": 70
+    },
+    {
+      "path": "src/engine_msh_turn_facts_tests.rs",
+      "test_functions": 28,
+      "lines": 624
+    },
+    {
+      "path": "src/engine_msh_twelfth_combined_tests.rs",
+      "test_functions": 2,
+      "lines": 558
+    },
+    {
+      "path": "src/engine_msh_under_siege_tests.rs",
+      "test_functions": 10,
+      "lines": 478
+    },
+    {
+      "path": "src/engine_msh_us_agent_tests.rs",
+      "test_functions": 15,
+      "lines": 496
+    },
+    {
+      "path": "src/engine_msh_vision_quest_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 36
+    },
+    {
+      "path": "src/engine_msh_vision_quest_tests.rs",
+      "test_functions": 19,
+      "lines": 574
+    },
+    {
+      "path": "src/engine_msh_vision_tests.rs",
+      "test_functions": 14,
+      "lines": 446
+    },
+    {
+      "path": "src/engine_msh_widow_worlds_tests.rs",
+      "test_functions": 28,
+      "lines": 909
+    },
+    {
+      "path": "src/engine_msh_zemo_tests.rs",
+      "test_functions": 22,
+      "lines": 1140
+    },
+    {
+      "path": "src/engine_parity_library_core_tests.rs",
+      "test_functions": 10,
+      "lines": 554
+    },
+    {
+      "path": "src/engine_shield_harness_funding_tests.rs",
+      "test_functions": 2,
+      "lines": 108
+    },
+    {
+      "path": "src/engine_shield_harness_tests.rs",
+      "test_functions": 30,
+      "lines": 997
+    },
+    {
+      "path": "src/engine_super_intelligence_funding_tests.rs",
+      "test_functions": 1,
+      "lines": 50
+    },
+    {
+      "path": "src/engine_super_intelligence_tests.rs",
+      "test_functions": 8,
+      "lines": 293
+    },
+    {
+      "path": "src/engine_teamwork_funding_scalability_tests.rs",
+      "test_functions": 12,
+      "lines": 1002
+    },
+    {
+      "path": "src/engine_teamwork_tests.rs",
+      "test_functions": 10,
+      "lines": 383
+    },
+    {
+      "path": "src/engine_temporary_copy_dispatch_tests.rs",
+      "test_functions": 9,
+      "lines": 497
+    },
+    {
+      "path": "src/engine_temporary_copy_funding_tests.rs",
+      "test_functions": 7,
+      "lines": 415
+    },
+    {
+      "path": "src/engine_temporary_copy_grant_tests.rs",
+      "test_functions": 7,
+      "lines": 425
+    },
+    {
+      "path": "src/engine_counter_history_funding_tests.rs",
+      "test_functions": 3,
+      "lines": 116
+    },
+    {
+      "path": "src/engine_counter_history_tests.rs",
+      "test_functions": 10,
+      "lines": 443
+    },
+    {
+      "path": "src/engine_finality_funding_tests.rs",
+      "test_functions": 5,
+      "lines": 268
+    },
+    {
+      "path": "src/engine_finality_tests.rs",
+      "test_functions": 13,
+      "lines": 522
+    },
+    {
+      "path": "src/engine_keyword_counter_funding_tests.rs",
+      "test_functions": 2,
+      "lines": 127
+    },
+    {
+      "path": "src/engine_keyword_counter_tests.rs",
+      "test_functions": 12,
+      "lines": 710
+    },
+    {
+      "path": "src/engine_milled_recovery_tests.rs",
+      "test_functions": 5,
+      "lines": 273
+    },
+    {
+      "path": "src/engine_plan_threshold_tests.rs",
+      "test_functions": 11,
+      "lines": 407
+    },
+    {
+      "path": "src/engine_power_up_tests.rs",
+      "test_functions": 9,
+      "lines": 538
+    },
+    {
+      "path": "src/engine_resolution_alternative_cost_tests.rs",
+      "test_functions": 11,
+      "lines": 380
+    },
+    {
+      "path": "src/engine_restricted_mana_tests.rs",
+      "test_functions": 14,
+      "lines": 694
+    }
+  ],
+  "removed_inline_test_modules_from": [
+    "src/engine_temporary_copy.rs",
+    "src/card_mana_symbols.rs"
+  ],
+  "trace_policy": "Preserve existing broad cast/entry regression harness and accepted baseline; traces do not prove independent card correctness.",
+  "limits": {
+    "native_per_test_seconds": 10,
+    "native_total_seconds": 30,
+    "python_seconds": 5
+  }
+}

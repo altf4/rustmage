@@ -5,7 +5,6 @@ pub(super) mod big_helpers;
 mod cards;
 mod contracts;
 mod interactions;
-mod msh_games;
 mod regressions;
 
 fn scenario(p: Player) -> Game {
@@ -176,17 +175,8 @@ mod sos_evidence_funding;
 
 mod sos_mana_rollback;
 
-#[path = "../engine_teamwork_tests.rs"]
-mod teamwork_tests;
-
-#[path = "../engine_msh_teamwork_cards_tests.rs"]
-mod msh_teamwork_cards;
-
-#[path = "../engine_msh_conditional_lands_tests.rs"]
-mod msh_conditional_lands;
-
-#[path = "../engine_msh_political_triumph_tests.rs"]
-mod msh_political_triumph;
-
-#[path = "../engine_msh_attack_alone_tests.rs"]
-mod msh_attack_alone;
+mod msh_a;
+mod msh_b;
+mod msh_c;
+mod msh_contracts;
+mod msh_d;

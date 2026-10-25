@@ -20,22 +20,3 @@ impl Card {
         count(self.info().mana_cost, color)
     }
 }
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn msh_namor_printed_colored_symbol_components_are_independent_of_payment() {
-        for (cost, expected) in [
-            ("{U}{U}", 2),
-            ("{W/U}{2/U}{U/P}", 3),
-            ("{W/U/P}", 1),
-            ("{C/U}", 1),
-            ("{X}{5}{C}{S}", 0),
-            ("", 0),
-        ] {
-            assert_eq!(count(cost, ChoiceColor::Blue), expected);
-        }
-        assert_eq!(count("{W/U}{2/U}{U/P}", ChoiceColor::White), 1);
-        assert_eq!(count("{R}{R}", ChoiceColor::Blue), 0);
-    }
-}
