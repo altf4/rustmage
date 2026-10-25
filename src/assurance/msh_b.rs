@@ -652,6 +652,8 @@ fn msh_b_equipment_attaches_pays_and_animates() {
             }
         }
         if name == "Iron Man Armor" {
+            go(&mut g, p.other(), Step::Main1);
+            go(&mut g, p, Step::Main1);
             mana(&mut g, p, [0, 0, 0, 0, 0, 2]);
             activate(&mut g, eq, 0, &[]);
             settle(&mut g);
@@ -667,6 +669,24 @@ fn msh_b_equipment_attaches_pays_and_animates() {
                 (2, 2),
                 "already-creature Equipment does not acquire the bonus twice"
             );
+            let ground = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            attacks(&mut g, &[eq]);
+            for _ in 0..4 {
+                if g.state.pending == Pending::Blockers {
+                    break;
+                }
+                act(&mut g, Action::Pass);
+            }
+            reject(
+                &mut g,
+                Action::Block {
+                    blocker: ground,
+                    attacker: eq,
+                },
+            );
+            act(&mut g, Action::FinishBlockers);
+            go(&mut g, p, Step::Main2);
+            assert_eq!(g.life(p.other()), 18);
             go(&mut g, p.other(), Step::Main1);
             assert!(!g.is_creature(eq));
         }
@@ -1055,6 +1075,21 @@ fn msh_b_life_counters_optional_wall_and_once_limit() {
     assert_eq!(stats(&g, a), (3, 3));
     assert_eq!(stats(&g, b), (4, 4));
     assert_eq!(g.state.objects[food as usize].zone, Zone::Outside);
+    go(&mut g, p.other(), Step::Main1);
+    go(&mut g, p, Step::Main1);
+    let tower = put(&mut g, p, "Fisk Tower", Zone::Hand);
+    act(&mut g, Action::PlayLand { card: tower });
+    decision(&mut g);
+    target(&mut g, a);
+    finish_targets(&mut g);
+    settle(&mut g);
+    assert_eq!(g.life(p), 24);
+    assert_eq!(
+        stats(&g, a),
+        (4, 4),
+        "permanent Feast still triggers next turn for the one life gained"
+    );
+    assert_eq!(stats(&g, b), (4, 4));
     let mut g = fresh(p);
     let sue = put(&mut g, p, "Invisible Woman, Sue Storm", Zone::Battlefield);
     let hero = put(&mut g, p, "Iron Lad, Diverging Destiny", Zone::Battlefield);
@@ -1269,6 +1304,15 @@ fn msh_b_cast_target_events_copy_and_grant_without_recasting() {
         1,
         "own ability targeting a player triggers Loki"
     );
+    go(&mut g, p.other(), Step::Main1);
+    go(&mut g, p, Step::Main1);
+    assert!(!g.state.objects[fist as usize].tapped);
+    assert!(
+        !g.legal_actions()
+            .iter()
+            .any(|a| matches!(a, Action::AnnounceSelfGrantedAbility { .. })),
+        "Iron Fist's granted tap activation must expire after cleanup"
+    );
     let mut g = fresh(p);
     let mischief = put(&mut g, p, "Loki, God of Mischief", Zone::Battlefield);
     let bow = put(&mut g, p, "Hawkeye's Bow", Zone::Battlefield);
@@ -1363,24 +1407,30 @@ fn msh_b_sacrifice_discard_and_reflexive_targets() {
         settle(&mut g);
         assert_eq!(g.state.objects[enemy as usize].zone, Zone::Graveyard);
     }
-    let mut g = fresh(p);
-    let enforcer = put(&mut g, p, "Kingpin's Enforcers", Zone::Battlefield);
-    let artifact = put(&mut g, p, "Futurist Forge", Zone::Battlefield);
-    mana(&mut g, p, [0, 0, 3, 0, 0, 0]);
-    act(
-        &mut g,
-        Action::AnnounceActivate {
-            card: enforcer,
-            ability: 0,
-            counter_payment: Counters::default(),
-        },
-    );
-    let object = reference(&g, artifact);
-    act(&mut g, Action::ChooseAdditionalCost { object });
-    pay(&mut g);
-    settle(&mut g);
-    assert_eq!(g.hand_count(p), 1);
-    assert_eq!(g.state.objects[artifact as usize].zone, Zone::Graveyard);
+    for cost_name in ["Futurist Forge", "Grizzly Bears"] {
+        let mut g = fresh(p);
+        let enforcer = put(&mut g, p, "Kingpin's Enforcers", Zone::Battlefield);
+        let sacrifice = put(&mut g, p, cost_name, Zone::Battlefield);
+        mana(&mut g, p, [0, 0, 3, 0, 0, 0]);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: enforcer,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        let object = reference(&g, sacrifice);
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), 1, "{cost_name}");
+        assert_eq!(
+            g.state.objects[sacrifice as usize].zone,
+            Zone::Graveyard,
+            "{cost_name}"
+        );
+    }
     let mut g = fresh(p);
     put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
     let sacrifice = put(&mut g, p, "Hill Giant", Zone::Battlefield);
@@ -1909,6 +1959,20 @@ fn msh_b_damage_replacement_arrows_and_alone_attack() {
     assert_eq!(g.life(p.other()), 18);
     assert!(g.keywords(blocker).contains(Keywords::CANT_BLOCK));
     assert_eq!(g.hand_count(p), 1);
+    for _ in 0..4 {
+        if g.state.pending == Pending::Blockers {
+            break;
+        }
+        act(&mut g, Action::Pass);
+    }
+    reject(
+        &mut g,
+        Action::Block {
+            blocker,
+            attacker: marksman,
+        },
+    );
+    act(&mut g, Action::FinishBlockers);
 }
 
 #[test]
