@@ -130,7 +130,13 @@ fn msh_thirst_decline_allows_any_two_including_two_artifacts_as_one_private_batc
                 g.state.pending,
                 Pending::EffectDiscard { remaining: 2, .. }
             ));
+            let mut alternate = g.clone();
             checked(&mut g, Action::Discard { card: a });
+            checked(&mut alternate, Action::Discard { card: b });
+            assert_eq!(
+                serde_json::to_value(g.observe(p.other())).unwrap(),
+                serde_json::to_value(alternate.observe(p.other())).unwrap()
+            );
             assert_eq!(g.object_view(a).zone, Zone::Hand);
             assert_eq!(g.state.players[p.index()].cards_discarded_this_turn, 0);
             // The changing remaining quota is public, but the selected identity is not.

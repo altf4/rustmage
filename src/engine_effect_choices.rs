@@ -506,7 +506,11 @@ impl Game {
         if let Some(skip_to) = choice.skip_to {
             assert!(skip_to <= self.state.resolving.as_ref().unwrap().program.len());
         }
-        let private_optional_discard = kind == EffectChoiceKind::Discard && optional_skip.is_some();
+        // Unfiltered affordability follows the public hand count. A typed
+        // restriction makes eligibility private, so retain its phase and quota.
+        let private_optional_discard = kind == EffectChoiceKind::Discard
+            && optional_skip.is_some()
+            && filter != evidence::cost(0).filter;
         for player in self.program_players(players, item) {
             if greatest || kind == EffectChoiceKind::ExileGreatestManaValue {
                 choice.greatest_value[player.index()] = self
