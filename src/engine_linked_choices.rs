@@ -431,6 +431,8 @@ impl Game {
             return;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            casts_remaining: None,
+            pending_cast: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,

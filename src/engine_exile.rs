@@ -217,6 +217,7 @@ impl Game {
         death_sources: &[ObjectView],
     ) {
         self.record_entry_turn_facts(events);
+        self.creature_cards_enter_graveyard_triggers(events);
         self.graveyard_departure_triggers(events, death_sources);
         self.returned_hand_triggers(events);
         for event in events {

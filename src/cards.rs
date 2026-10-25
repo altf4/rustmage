@@ -975,6 +975,10 @@ pub(crate) enum Instruction {
         next_turn: bool,
     },
     ExileEachLibraryTopCastFree,
+    ExileTargetLibraryTopCastFree {
+        amount: u16,
+        maximum_casts: u16,
+    },
     CastTargetedGraveyardFree,
     CounterRelatedUnlessPayLife(u32),
     /// One captured ward payer may discard a card or pay this mana cost.
@@ -2677,6 +2681,8 @@ pub(crate) enum TriggerCondition {
     /// The physical source spell itself was cast; stack copies never dispatch it.
     SelfCast,
     CardsLeaveGraveyard,
+    /// One post-event batch of creature cards entering the controller's graveyard.
+    CreatureCardsEnterYourGraveyard,
     ReturnDeath(ReturnDeathFilter),
     /// Delayed ability carried by a produced mana unit, independent of its source.
     ManaSpentForSpell,

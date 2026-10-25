@@ -109,6 +109,8 @@ impl Game {
         }));
         if let Some(object) = eligible {
             self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+                casts_remaining: None,
+                pending_cast: None,
                 alternative_cost: None,
                 maximum_mana_value: Some(maximum),
                 origin: Zone::Exile,

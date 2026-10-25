@@ -677,6 +677,7 @@ impl Game {
                     | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
                     | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CardsLeaveGraveyard
+                    | TriggerCondition::CreatureCardsEnterYourGraveyard
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::CreatureExploresCardYou { .. }
                     | TriggerCondition::Foraged
@@ -1212,6 +1213,7 @@ impl Game {
     }
 
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
+        self.consume_resolution_cast_quota(caster, stack);
         self.consume_turn_cast_grants(caster, card);
         let first_trigger = self.state.pending_triggers.len();
         let spell_owner =
@@ -2755,6 +2757,14 @@ impl Game {
                 }
                 Instruction::CastTargetedGraveyardFree => {
                     if self.offer_targeted_graveyard_free_cast(&item) {
+                        return;
+                    }
+                }
+                Instruction::ExileTargetLibraryTopCastFree {
+                    amount,
+                    maximum_casts,
+                } => {
+                    if self.exile_target_top_cast_free(&item, amount, maximum_casts) {
                         return;
                     }
                 }

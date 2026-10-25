@@ -8100,3 +8100,7 @@ mod msh_ability_copy_core_tests;
 #[cfg(test)]
 #[path = "engine_msh_armor_hulk_sagas_tests.rs"]
 mod msh_armor_hulk_sagas_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_graveyard_plans_tests.rs"]
+mod msh_graveyard_plans_tests;

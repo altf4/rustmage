@@ -216,6 +216,8 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            casts_remaining: None,
+            pending_cast: None,
             alternative_cost: Some(cost),
             maximum_mana_value: None,
             origin: Zone::Hand,
