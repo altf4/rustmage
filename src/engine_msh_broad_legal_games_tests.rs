@@ -29,10 +29,39 @@ struct Match {
 fn msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_evidence() {
     let frozen: Pool =
         serde_json::from_str(include_str!("../data/assurance/msh-broad-legal-games.json")).unwrap();
+    run_pool(
+        frozen,
+        17,
+        132,
+        "RUSTMAGE_RECORD_MSH_BROAD_GAMES",
+        "Fixed natural Standard60 MSH-only games from132 planned configurations across17 frozen decks; unchanged smoke_index; full exact replay and owned/privacy probes; bounded sampling, not full-set acceptance",
+    );
+}
+#[test]
+fn msh_fourteenth_32_fixed_natural_standard_set_only_games_owned_privacy() {
+    let frozen: Pool = serde_json::from_str(include_str!(
+        "../data/assurance/msh-fourteenth-legal-games.json"
+    ))
+    .unwrap();
+    run_pool(
+        frozen,
+        1,
+        32,
+        "RUSTMAGE_RECORD_MSH_FOURTEENTH_GAMES",
+        "Fixed32 natural Standard60 MSH-only mirror games covering the ten newly admitted candidates; unchanged smoke_index; exact replay and owned/privacy probes; bounded sampling, not full-set acceptance",
+    );
+}
+fn run_pool(
+    frozen: Pool,
+    expected_decks: usize,
+    expected_games: usize,
+    record_variable: &str,
+    scope: &str,
+) {
     assert_eq!(frozen.schema, 1);
     assert_eq!(frozen.decision_cap, 30000);
-    assert_eq!(frozen.decks.len(), 17);
-    assert_eq!(frozen.games.len(), 132);
+    assert_eq!(frozen.decks.len(), expected_decks);
+    assert_eq!(frozen.games.len(), expected_games);
     let membership: serde_json::Value =
         serde_json::from_str(include_str!("../data/sets/msh.json")).unwrap();
     let members: BTreeSet<_> = membership["cards"]
@@ -64,7 +93,7 @@ fn msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_e
     let mut paid = BTreeMap::<String, usize>::new();
     let mut paid_positive = BTreeMap::<String, usize>::new();
     let mut nonterminal = Vec::new();
-    let full_ledger = std::env::var_os("RUSTMAGE_RECORD_MSH_BROAD_GAMES").is_some();
+    let full_ledger = std::env::var_os(record_variable).is_some();
     // Exact diagnostic selection retains the planned configuration and seed.
     let only = std::env::var("RUSTMAGE_MSH_BROAD_CONFIG")
         .ok()
@@ -72,9 +101,8 @@ fn msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_e
     assert!(only.is_none_or(|index| index < frozen.games.len()));
     let mut progress =
         if std::env::var_os("RUSTMAGE_MSH_BROAD_DIAGNOSTIC").is_some() {
-            let path =
-                std::path::PathBuf::from(std::env::var("RUSTMAGE_RECORD_MSH_BROAD_GAMES").unwrap())
-                    .with_extension("progress.jsonl");
+            let path = std::path::PathBuf::from(std::env::var(record_variable).unwrap())
+                .with_extension("progress.jsonl");
             assert!(path.starts_with(
                 std::path::PathBuf::from(std::env::var("HOME").unwrap()).join(".cache")
             ));
@@ -190,11 +218,14 @@ fn msh_broad_132_fixed_standard_set_only_games_owned_privacy_and_paid_identity_e
         let public = g.observe(game.starting_player);
         records.push(serde_json::json!({"config_index":game_index,"phase":game.phase,"decks":game.decks,"deck_configuration_sha256":[hashes[&game.decks[0]],hashes[&game.decks[1]]],"seed":game.seed,"starting_player":game.starting_player,"decisions":ledger.len(),"turn":g.state.turn,"outcome":g.outcome(),"pending_at_end":public.decision,"owned_privacy_checkpoints":checkpoints,"successful_spell_cast_commits":commits,"observed_successful_actions":events,"ledger":if full_ledger{serde_json::to_value(&ledger).unwrap()}else{serde_json::Value::Null}}));
     }
-    assert_eq!(records.len(), if only.is_some() { 1 } else { 132 });
+    assert_eq!(
+        records.len(),
+        if only.is_some() { 1 } else { expected_games }
+    );
     let deck_records:Vec<_>=frozen.decks.iter().map(|d|serde_json::json!({"id":d.id,"ordered_cards":d.cards,"configuration_sha256":d.configuration_sha256})).collect();
     write_cache_record(
-        "RUSTMAGE_RECORD_MSH_BROAD_GAMES",
-        serde_json::json!({"schema":1,"scope":"Fixed natural Standard60 MSH-only games from132 planned configurations across17 frozen decks; unchanged smoke_index; full exact replay and owned/privacy probes; bounded sampling, not full-set acceptance","planned_configurations":132,"selected_configuration":only,"diagnostic_progress_enabled":progress.is_some(),"design_sha256":frozen.design_sha256,"decklists":deck_records,"games":records,"decisions":decisions,"paid_spell_commits_by_physical_identity":paid,"positive_mana_paid_spell_commits_by_physical_identity":paid_positive,"nonterminal_configuration_indices":nonterminal,"decision_cap":frozen.decision_cap,"checked_seconds_including_replay_assertions_and_record_preparation":start.elapsed().as_secs_f64(),"limits":"A payment is not a resolved effect. Announced activations and target choices are separate successful-action metrics. Bounded nonterminal policy/workload gaps stay explicit; no forced progress, concession, seed substitution or claim that a cap alone is a rules defect. Uses only the132 preselected phase1/2 configurations; selected_configuration identifies a diagnostic subset. Optional24 late followups are not run."}),
+        record_variable,
+        serde_json::json!({"schema":1,"scope":scope,"planned_configurations":expected_games,"selected_configuration":only,"diagnostic_progress_enabled":progress.is_some(),"design_sha256":frozen.design_sha256,"decklists":deck_records,"games":records,"decisions":decisions,"paid_spell_commits_by_physical_identity":paid,"positive_mana_paid_spell_commits_by_physical_identity":paid_positive,"nonterminal_configuration_indices":nonterminal,"decision_cap":frozen.decision_cap,"checked_seconds_including_replay_assertions_and_record_preparation":start.elapsed().as_secs_f64(),"limits":"A payment is not a resolved effect. Announced activations and target choices are separate successful-action metrics. Bounded nonterminal policy/workload gaps stay explicit; no forced progress, concession, seed substitution or claim that a cap alone is a rules defect. Uses only this report's frozen configurations; selected_configuration identifies a diagnostic subset. Other optional design followups are not run."}),
     );
 }
 
