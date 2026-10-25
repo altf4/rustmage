@@ -145,38 +145,94 @@ fn priority(g: &mut Game, p: Player) {
     assert_eq!(g.actor(), Some(p));
 }
 
-// Neither the policy nor these checks receives an opponent's hidden identities.
-// The counterfactual changes only unobserved cards and below-top library order.
-pub(super) fn hidden_information_contract(game: &Game, viewer: Player) {
+// The external decision maker may see another player's private information.
+// Counterfactuals alter only identities/order absent from that viewer's full view.
+#[derive(Clone, Copy, Debug, Default, serde::Serialize)]
+pub(super) struct PrivacyProbeCounts {
+    pub hand_identity_swaps: usize,
+    pub library_positions_changed: usize,
+}
+fn observed_references(value: &serde_json::Value, refs: &mut BTreeSet<ObjectRef>) {
+    match value {
+        serde_json::Value::Object(fields) => {
+            if fields.get("card").is_some_and(serde_json::Value::is_u64)
+                && fields
+                    .get("generation")
+                    .is_some_and(serde_json::Value::is_u64)
+            {
+                refs.insert(serde_json::from_value(value.clone()).unwrap());
+            }
+            for nested in fields.values() {
+                observed_references(nested, refs);
+            }
+        }
+        serde_json::Value::Array(values) => {
+            for nested in values {
+                observed_references(nested, refs);
+            }
+        }
+        _ => (),
+    }
+}
+pub(super) fn hidden_information_contract(game: &Game, viewer: Player) -> PrivacyProbeCounts {
     let observation = serde_json::to_value(game.observe(viewer)).unwrap();
+    let mut visible = BTreeSet::new();
+    observed_references(&observation, &mut visible);
     let mut alternative = game.clone();
+    let mut counts = PrivacyProbeCounts::default();
     let hidden: Vec<_> = game
         .state
         .objects
         .iter()
         .enumerate()
         .filter_map(|(i, o)| {
-            let id = i as CardId;
-            (o.owner == viewer.other()
-                && o.zone == Zone::Hand
-                && !game.state.known_hand.contains(&game.object_ref(id)))
+            let reference = game.object_ref(i as CardId);
+            (o.zone == Zone::Hand
+                && !game.shares_information(viewer, o.owner)
+                && !game.state.known_hand.contains(&reference)
+                && !visible.contains(&reference))
             .then_some(i)
         })
-        .take(2)
         .collect();
-    if hidden.len() == 2 {
-        let first = alternative.state.objects[hidden[0]].card;
-        alternative.state.objects[hidden[0]].card = alternative.state.objects[hidden[1]].card;
-        alternative.state.objects[hidden[1]].card = first;
+    if let Some(&first) = hidden.first()
+        && let Some(&second) = hidden
+            .iter()
+            .skip(1)
+            .find(|&&id| game.state.objects[id].card != game.state.objects[first].card)
+    {
+        let card = alternative.state.objects[first].card;
+        alternative.state.objects[first].card = alternative.state.objects[second].card;
+        alternative.state.objects[second].card = card;
+        counts.hand_identity_swaps = 1;
     }
-    let library = &mut alternative.state.players[viewer.other().index()].library;
-    let below_top = library.len().saturating_sub(1);
-    library[..below_top].reverse();
+    let owner = viewer.other();
+    let before = &game.state.players[owner.index()].library;
+    // Keep every currently visible exact reference at its old position, including
+    // private selections/searches revealed through player control. Always retain
+    // the top card, matching the existing below-top counterfactual scope.
+    let slots: Vec<_> = before
+        .iter()
+        .enumerate()
+        .filter_map(|(index, &id)| {
+            (index + 1 < before.len() && !visible.contains(&game.object_ref(id))).then_some(index)
+        })
+        .collect();
+    let library = &mut alternative.state.players[owner.index()].library;
+    for (&slot, &opposite) in slots.iter().zip(slots.iter().rev()) {
+        library[slot] = before[opposite];
+        counts.library_positions_changed += usize::from(slot != opposite);
+    }
+    for (index, &id) in before.iter().enumerate() {
+        if visible.contains(&game.object_ref(id)) || index + 1 == before.len() {
+            assert_eq!(library[index], id);
+        }
+    }
     assert_eq!(
         observation,
         serde_json::to_value(alternative.observe(viewer)).unwrap()
     );
     assert_eq!(game.legal_actions(), alternative.legal_actions());
+    counts
 }
 
 pub(super) fn owned_checked_step(
