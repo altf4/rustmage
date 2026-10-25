@@ -68,11 +68,12 @@ impl FundingState<'_> {
         {
             // A contributor is reserved during selection and becomes tapped in
             // the speculative world. The live group commits only with payment.
-            for selected in &frame.selected {
-                if let Some(r) = self.resources.iter_mut().find(|r| {
-                    r.id == selected.object.card
-                        && r.object.generation == selected.object.generation
-                }) {
+            for selected in frame.objects() {
+                if let Some(r) = self
+                    .resources
+                    .iter_mut()
+                    .find(|r| r.id == selected.card && r.object.generation == selected.generation)
+                {
                     r.object.tapped = true;
                 }
             }
@@ -82,7 +83,7 @@ impl FundingState<'_> {
         if a.cast_costs.is_none() && a.additional_cost().is_some() {
             let mut shadow = a.clone();
             shadow.cast_costs = Some(Box::default());
-            shadow.initialize_cast_costs();
+            shadow.initialize_cast_costs(matches!(self.purpose, mana_lots::Purpose::Spell(spell) if improvise::potential(self, spell.card)));
             self.set_cost_context(Some(&shadow));
         } else {
             self.set_cost_context(Some(a));
@@ -451,6 +452,23 @@ impl FundingState<'_> {
             return false;
         };
         let pool = mana_lots::available(self.mana, &self.lots, self.purpose);
+        // Fail before assigning individual helpers when the current mana clause
+        // cannot be paid at all. If it is last, exact Hall matching is the whole
+        // obligation; later nonmana costs still use the original assignment walk.
+        if !convoke::payable_in(
+            self,
+            c.actor,
+            self.purpose,
+            pool,
+            cost.colored,
+            cost.generic,
+            &self.convoke_masks(),
+        ) {
+            return false;
+        }
+        if rest.is_empty() {
+            return true;
+        }
         let (required, generic) = cast_origins::payment_requirements(
             self,
             c.actor,
@@ -465,12 +483,19 @@ impl FundingState<'_> {
             if resource.object.zone != Zone::Battlefield
                 || resource.object.controller != c.actor
                 || resource.object.tapped
-                || CharacteristicWorld::kinds(self, resource.id) & 1 == 0
             {
                 continue;
             }
             let colors = CharacteristicWorld::colors(self, resource.id);
-            for contribution in convoke::contributions() {
+            let kinds = CharacteristicWorld::kinds(self, resource.id);
+            let choices: &[ConvokeContribution] = if self.convoke && kinds & 1 != 0 {
+                &convoke::contributions()
+            } else if self.improvise_available() && kinds & 16 != 0 {
+                &[ConvokeContribution::Generic]
+            } else {
+                continue;
+            };
+            for &contribution in choices {
                 let mut remaining = cost;
                 if !contribution.apply(colors, &mut remaining) {
                     continue;
@@ -531,6 +556,27 @@ impl FundingState<'_> {
         if !contribution.apply(colors, cost) {
             return false;
         }
+        self.resources[index].object.tapped = true;
+        true
+    }
+    pub(in crate::engine) fn project_improviser(&mut self, object: ObjectRef) -> bool {
+        if !self.improvise_available() || !improvise::eligible(self, self.actor, object) {
+            return false;
+        }
+        let Some(index) = self
+            .resources
+            .iter()
+            .position(|r| r.id == object.card && r.object.generation == object.generation)
+        else {
+            return false;
+        };
+        let Some(cost) = self.cast_costs.as_mut().and_then(|c| c.mana.as_mut()) else {
+            return false;
+        };
+        let Some(generic) = cost.generic.checked_sub(1) else {
+            return false;
+        };
+        cost.generic = generic;
         self.resources[index].object.tapped = true;
         true
     }
@@ -773,7 +819,7 @@ impl Game {
                 &goal,
                 choice.item.source_card.has_convoke(),
             );
-            world.purpose = self.purpose_for_item(&choice.item);
+            world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
             world.reachable(&goal, &mut HashSet::new())
         })
@@ -796,7 +842,9 @@ impl Game {
             reserve: None,
             source: None,
         };
-        let mut world = FundingState::from_game(self, &goal);
+        let mut world =
+            FundingState::from_game_with_convoke(self, &goal, a.item.source_card.has_convoke());
+        world.set_purpose(self.purpose_for_item(&a.item));
         world.set_cost_context(Some(a));
         world
     }
@@ -890,10 +938,10 @@ impl Game {
             .unwrap();
         row.pay = pay;
         row.declared = true;
-        a.initialize_cast_costs();
+        a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
         if a.cast_costs.is_none() {
             a.cast_costs = Some(Box::default());
-            a.initialize_cast_costs();
+            a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
         }
         a.cost_options().any(|cost| {
             let mut choice = a.clone();
@@ -904,7 +952,7 @@ impl Game {
                 &goal,
                 choice.item.source_card.has_convoke(),
             );
-            world.purpose = self.purpose_for_item(&choice.item);
+            world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
             world.reachable(&goal, &mut HashSet::new())
         })
@@ -917,7 +965,7 @@ impl Game {
         life: u32,
     ) -> bool {
         let mut world = FundingState::from_game(self, &goal);
-        world.purpose = purpose;
+        world.set_purpose(purpose);
         if world.cast_costs.is_none() {
             world.install_cost_context(Some(Box::new(CostContext {
                 teammates: Vec::new(),
@@ -976,7 +1024,10 @@ impl Game {
                 && a.item.controller == goal.actor
                 && a.item.source_card == spell.card
         });
-        if extra.is_empty()
+        let ordered_additional = additional.is_some()
+            && (spell.card.has_convoke() || improvise::potential(self, spell.card));
+        if !ordered_additional
+            && extra.is_empty()
             && current.is_none_or(|a| a.casualty.is_none() && a.cast_costs.is_none())
             && !self.has_casualty(goal.actor, spell.card)
         {
@@ -986,7 +1037,11 @@ impl Game {
             .and_then(|a| a.casualty.as_deref())
             .cloned()
             .unwrap_or_else(|| self.casualty_grants(goal.actor, spell.card));
-        if grants.is_empty() && extra.is_empty() && current.is_none_or(|a| a.cast_costs.is_none()) {
+        if !ordered_additional
+            && grants.is_empty()
+            && extra.is_empty()
+            && current.is_none_or(|a| a.cast_costs.is_none())
+        {
             return None;
         }
         fn declarations(
@@ -1051,7 +1106,7 @@ impl Game {
                         paid: false,
                     });
                 }
-                if spell.card.has_convoke() {
+                if spell.card.has_convoke() || improvise::potential(self, spell.card) {
                     clauses.push(CastCostRow {
                         clause: CastCostClause::Mana,
                         paid: false,
@@ -1071,10 +1126,11 @@ impl Game {
                         .map_or_else(Vec::new, |c| c.teammates.clone()),
                     teamwork_exact: false,
                     actor: goal.actor,
-                    mana: spell.card.has_convoke().then_some(ManaCost {
-                        colored: attempt.required,
-                        generic: attempt.generic,
-                    }),
+                    mana: (spell.card.has_convoke() || improvise::potential(self, spell.card))
+                        .then_some(ManaCost {
+                            colored: attempt.required,
+                            generic: attempt.generic,
+                        }),
                     source,
                     clauses,
                     active: None,
@@ -1087,10 +1143,14 @@ impl Game {
                 };
                 let mut world =
                     FundingState::from_game_with_convoke(self, &attempt, spell.card.has_convoke());
-                world.purpose = purpose;
+                world.set_purpose(purpose);
                 world.install_cost_context(Some(Box::new(context)));
                 world.reachable(&attempt, &mut HashSet::new())
             })
         }))
     }
 }
+
+#[cfg(test)]
+#[path = "engine_msh_improvise_ordered_tests.rs"]
+mod msh_improvise_ordered_tests;

@@ -681,11 +681,15 @@ impl Game {
         {
             self.state.pending = Pending::Casualty { player };
         } else {
+            let improvise = improvise::potential(
+                self,
+                self.state.announcing.as_ref().unwrap().item.source_card,
+            );
             self.state
                 .announcing
                 .as_mut()
                 .unwrap()
-                .initialize_cast_costs();
+                .initialize_cast_costs(improvise);
             self.state.pending = Pending::Targets { player };
             self.advance_target_groups();
         }
@@ -1563,13 +1567,7 @@ impl Game {
         if announcement.cast_costs.is_none()
             && let Some(frame) = announcement.convoke.take()
         {
-            self.tap_objects(
-                &frame
-                    .selected
-                    .iter()
-                    .map(|s| s.object.card)
-                    .collect::<Vec<_>>(),
-            );
+            self.tap_objects(&frame.objects().iter().map(|s| s.card).collect::<Vec<_>>());
         }
         announcement
             .item

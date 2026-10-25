@@ -3762,6 +3762,9 @@ impl Card {
     pub(crate) fn evidence_reduction(self) -> u32 {
         generated::collect_evidence(self).map_or(0, |v| v.1)
     }
+    pub fn has_improvise(self) -> bool {
+        authored::RULES[self.index()].extras.has_improvise
+    }
     pub fn has_convoke(self) -> bool {
         generated::has_convoke(self)
     }

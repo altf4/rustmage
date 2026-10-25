@@ -54,12 +54,24 @@ pub struct ConvokePaymentView {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct ConvokeSelection {
     pub selected: Vec<ConvokePaymentView>,
+    pub improvised: Vec<ObjectRef>,
     pub remaining: ManaCost,
 }
 impl ConvokeSelection {
+    pub(super) fn objects(&self) -> Vec<ObjectRef> {
+        self.selected
+            .iter()
+            .map(|s| s.object)
+            .chain(self.improvised.iter().copied())
+            .collect()
+    }
+    pub(super) fn contains(&self, r: ObjectRef) -> bool {
+        self.selected.iter().any(|s| s.object == r) || self.improvised.contains(&r)
+    }
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.selected.len() * std::mem::size_of::<ConvokePaymentView>()
+            + self.improvised.len() * std::mem::size_of::<ObjectRef>()
     }
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -160,24 +172,18 @@ impl Game {
                 && !o.tapped
         })
     }
-    pub(super) fn convoke_masks(&self, p: Player, selected: &[ConvokePaymentView]) -> [u64; 32] {
-        let mut masks = [0; 32];
-        for (id, _) in self.state.objects.iter().enumerate() {
-            let r = self.object_ref(id as CardId);
-            if self.convoke_eligible(p, r) && !selected.iter().any(|s| s.object == r) {
-                masks[usize::from(
-                    ability_world::CharacteristicWorld::colors(self, id as CardId) & 31,
-                )] += 1;
-            }
-        }
-        masks
-    }
     pub fn convoke_choice(&self) -> Option<ConvokeChoiceView> {
-        if !matches!(self.state.pending, Pending::Convoke { .. }) {
+        if !matches!(
+            self.state.pending,
+            Pending::Convoke { .. } | Pending::Improvise { .. }
+        ) {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
         let f = a.convoke.as_ref()?;
+        if !a.item.source_card.has_convoke() {
+            return None;
+        }
         let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
         let can_pay = self.mana_payment_domain().is_some()
             && payable_in(
@@ -197,19 +203,27 @@ impl Game {
         })
     }
     pub(super) fn begin_convoke(&mut self) {
+        self.begin_contributors(false);
+    }
+    pub(super) fn begin_improvise(&mut self) {
+        self.begin_contributors(true);
+    }
+    fn begin_contributors(&mut self, artifact: bool) {
         let a = self.state.announcing.as_mut().unwrap();
-        assert!(
-            a.item.kind == StackKind::Spell
-                && a.item.source_card.has_convoke()
-                && a.convoke.is_none()
-        );
+        assert!(a.item.kind == StackKind::Spell && a.convoke.is_none());
+        a.initialize_cast_costs(artifact);
         a.convoke = Some(Box::new(ConvokeSelection {
             remaining: a.total_cost.expect("locked total"),
             selected: Vec::new(),
+            improvised: Vec::new(),
         }));
         self.state.pending = if let Some(c) = &mut a.cast_costs {
-            c.mana_closed = true; // Closing the mana window precedes all payments.
+            c.mana_closed = true;
             Pending::CastCosts {
+                player: a.item.controller,
+            }
+        } else if artifact {
+            Pending::Improvise {
                 player: a.item.controller,
             }
         } else {
@@ -239,46 +253,9 @@ impl Game {
     pub(super) fn visit_convoke_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
         let f = a.convoke.as_ref().unwrap();
-        let p = a.item.controller;
-        if a.cast_costs.is_some() {
-            let mut done = false;
-            if let Some(domain) = self.mana_payment_domain() {
-                domain.representatives(|payment| {
-                    if !done {
-                        done = emit(Action::PayCosts { payment });
-                    }
-                });
-            }
-            if done {
-                return true;
-            }
-            let world = self.cast_cost_world(a);
-            for (id, _) in self.state.objects.iter().enumerate() {
-                let object = self.object_ref(id as CardId);
-                for contribution in contributions() {
-                    let mut choice = world.clone();
-                    if choice.project_convoker(object, contribution)
-                        && choice.cost_completion()
-                        && emit(Action::ChooseConvoker {
-                            object,
-                            contribution,
-                        })
-                    {
-                        return true;
-                    }
-                }
-            }
+        if !self.tap_contributors_valid(a) {
             return false;
         }
-        // Exact selected incarnations remain reserved until this atomic cost ends.
-        if !f
-            .selected
-            .iter()
-            .all(|s| self.convoke_eligible(p, s.object))
-        {
-            return false;
-        }
-        let pool = self.available_mana(p, self.purpose_for_item(&a.item));
         let mut done = false;
         if let Some(domain) = self.mana_payment_domain() {
             domain.representatives(|payment| {
@@ -290,43 +267,75 @@ impl Game {
         if done {
             return true;
         }
-        let masks = self.convoke_masks(p, &f.selected);
-        for (id, _) in self.state.objects.iter().enumerate() {
+        for id in 0..self.state.objects.len() {
             let object = self.object_ref(id as CardId);
-            if !self.convoke_eligible(p, object) || f.selected.iter().any(|s| s.object == object) {
+            if f.contains(object) {
                 continue;
             }
-            let colors = ability_world::CharacteristicWorld::colors(self, id as CardId);
-            let mut rest = masks;
-            rest[usize::from(colors & 31)] -= 1;
-            for contribution in [
-                ConvokeContribution::Generic,
-                ConvokeContribution::White,
-                ConvokeContribution::Blue,
-                ConvokeContribution::Black,
-                ConvokeContribution::Red,
-                ConvokeContribution::Green,
-            ] {
-                let mut cost = f.remaining;
-                if contribution.apply(colors, &mut cost)
-                    && payable_in(
-                        self,
-                        p,
-                        self.purpose_for_item(&a.item),
-                        pool.map(u128::from),
-                        cost.colored,
-                        cost.generic,
-                        &rest,
-                    )
-                    && emit(Action::ChooseConvoker {
-                        object,
-                        contribution,
-                    })
-                {
-                    return true;
+            if a.item.source_card.has_convoke() && self.convoke_eligible(a.item.controller, object)
+            {
+                for contribution in contributions() {
+                    if self.contributor_fundable(object, Some(contribution))
+                        && emit(Action::ChooseConvoker {
+                            object,
+                            contribution,
+                        })
+                    {
+                        return true;
+                    }
                 }
+            }
+            if self.item_improvise(&a.item)
+                && improvise::eligible(self, a.item.controller, object)
+                && self.contributor_fundable(object, None)
+                && emit(Action::ChooseImproviser { object })
+            {
+                return true;
             }
         }
         false
+    }
+    fn contributor_fundable(
+        &self,
+        object: ObjectRef,
+        contribution: Option<ConvokeContribution>,
+    ) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let f = a.convoke.as_ref().unwrap();
+        if a.cast_costs.is_some() {
+            let mut choice = self.cast_cost_world(a);
+            return (if let Some(c) = contribution {
+                choice.project_convoker(object, c)
+            } else {
+                choice.project_improviser(object)
+            }) && choice.cost_completion();
+        }
+        let mut cost = f.remaining;
+        let colors = ability_world::CharacteristicWorld::colors(self, object.card);
+        if !contribution
+            .unwrap_or(ConvokeContribution::Generic)
+            .apply(colors, &mut cost)
+        {
+            return false;
+        }
+        let mut selected = f.objects();
+        selected.push(object);
+        let masks = improvise::masks(
+            self,
+            a.item.controller,
+            a.item.source_card.has_convoke(),
+            self.item_improvise(&a.item),
+            &selected,
+        );
+        convoke::payable_in(
+            self,
+            a.item.controller,
+            self.purpose_for_item(&a.item),
+            self.available_mana(a.item.controller, self.purpose_for_item(&a.item))
+                .map(u128::from),
+            cost.colored,
+            cost.generic,
+            &masks,
+        )
     }
 }
