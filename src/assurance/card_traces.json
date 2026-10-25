@@ -111,6 +111,14 @@
     "journal": "9a169d0d25822042",
     "observations": "41e116c7f5ec95e2"
   },
+  "Absorbing Man": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1cba658877741a8e",
+    "observations": "cda053329b782006"
+  },
   "Abstract Paintmage": {
     "root": "main",
     "status": "completed",
@@ -15263,6 +15271,14 @@
     "journal": "418dae3f0f4d70ac",
     "observations": "0cadf6000a0c927d"
   },
+  "Shuri, Wakandan Inventor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "5b9fb4dbffc1e212"
+  },
   "Silvergill Peddler": {
     "root": "main",
     "status": "completed",
@@ -17158,6 +17174,14 @@
     "zone": "Battlefield",
     "journal": "cae38838aa70fc3b",
     "observations": "edc37eaa8bb2babb"
+  },
+  "Taskmaster, Mercenary Mimic": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3c38242be96ca09d",
+    "observations": "13dedd4d70fb4906"
   },
   "Tatyova, Benthic Druid": {
     "root": "main",
