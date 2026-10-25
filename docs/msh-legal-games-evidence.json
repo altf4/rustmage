@@ -424,7 +424,7 @@
     "all_natural_winners": true,
     "concessions": 0,
     "all_complete_replays_exact": true,
-    "full_game_state_mutation": false
+    "game_setup_or_progress_injected_state": false
   },
   "contracts": [
     "Standard60-card minimum and four-copy checks enforced by ordinary Game::new; each literal card checked against frozen281-identity membership and supported Standard status",
