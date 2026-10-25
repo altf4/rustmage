@@ -643,5 +643,6 @@
     "scope": "First author-pass clock through source/test authoring, corrections, guarded build queues, native/Clippy/source checks and cleanup/evidence cutoff. Prior read-only design, final publication/integration/reviews/release/CI and set games excluded.",
     "simulation": "No simulation throughput measured; no full-pool game coverage claimed."
   },
-  "remaining_blockers": "No known unimplemented printed obligation in these two candidates after successful rules checks. Parent aggregate independent review/release/CI remain. Remaining81 gated identities plus complete MSH-only games/performance block full-set acceptance."
+  "remaining_blockers": "No known unimplemented printed obligation in these two candidates after successful rules checks. Parent aggregate independent review/release/CI remain. Remaining81 gated identities plus complete MSH-only games/performance block full-set acceptance.",
+  "trace_baseline_presentation": "After successful tests, copied the byte-exact fresh UTF-8 export into the committed baseline. Parsed full Trace values are identical to the tested baseline; this removes incidental Python Unicode escaping only. No runtime source changes or extra build needed."
 }
