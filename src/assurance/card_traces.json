@@ -15943,6 +15943,14 @@
     "journal": "a0f047f38ebb7293",
     "observations": "cfbf8b451601fdfa"
   },
+  "Stature, Size Shifter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "77fe8ec276f5ddde",
+    "observations": "c731e2301933efeb"
+  },
   "Staunch Crewmate": {
     "root": "main",
     "status": "completed",
@@ -18214,6 +18222,14 @@
     "zone": "Battlefield",
     "journal": "bb652b9252f64f35",
     "observations": "ac77bf19e5882079"
+  },
+  "Undercover Skrull": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "100cb581dd613f1f",
+    "observations": "4ba9f48169be5e36"
   },
   "Underground Mortuary": {
     "root": "main",
