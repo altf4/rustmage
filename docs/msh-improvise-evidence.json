@@ -608,19 +608,19 @@
       "rules_passed": 1207,
       "expected_only_failure": "2,503 versus 2,501 accepted row count",
       "execution_seconds": 5.71,
-      "log": "/home/altf4/.cache/rustmage/msh-improvise/native-record-6.log"
+      "log": "<cache>/rustmage/msh-improvise/native-record-6.log"
     },
     "strict_native": {
       "passed": 1208,
       "failed": 0,
       "execution_seconds": 5.24,
-      "log": "/home/altf4/.cache/rustmage/msh-improvise/native-strict-7.log"
+      "log": "<cache>/rustmage/msh-improvise/native-strict-7.log"
     },
     "clippy": {
       "all_targets": true,
       "deny_warnings": true,
       "exit": 0,
-      "log": "/home/altf4/.cache/rustmage/msh-improvise/clippy-strict-7.log"
+      "log": "<cache>/rustmage/msh-improvise/clippy-strict-7.log"
     }
   },
   "trace_proof": {
@@ -682,15 +682,15 @@
   "format": "All authored changed Rust passes rustfmt --edition 2024 --check. Generated catalogue is checked byte-for-byte by link_catalogue.py --check and never manually reformatted.",
   "source_audit": {
     "design_cache": {
-      "path": "/home/altf4/.cache/msh-improvise-design-a496faea.json",
+      "path": "<cache>/msh-improvise-design-a496faea.json",
       "sha256": "55554701472161c024b1d48a9d8b00d5e61ab136ef82efa26cd9f70baaedb06e"
     },
     "fixture_cache": {
-      "path": "/home/altf4/.cache/msh-improvise-fixture-sources.json",
+      "path": "<cache>/msh-improvise-fixture-sources.json",
       "sha256": "56728085b28af919fe237c107a5a479708243835662a46887c780c1e8fc7805a"
     },
     "fixture_oracles": {
-      "path": "/home/altf4/.cache/msh-improvise-fixture-oracles.json",
+      "path": "<cache>/msh-improvise-fixture-oracles.json",
       "sha256": "1fb0b6499dbf02aa21a511bd9d930fb913bd75af28fba6930c9cd5c1cdda7999"
     },
     "read_limits": "Complete direct card classes and concrete reusable Improvise/payment/grant/tap/mana/filter/target helpers read. Whole generic engine/ManaPool/Spell files are retained with explicit relevant ranges, not represented as a full recursive runtime audit. No test/build/performance measurement executed.",
@@ -1076,10 +1076,10 @@
     "peak_bytes": 2549846016,
     "reports": [
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/focused-1.guard.json",
+        "path": "<cache>/rustmage/msh-improvise/focused-1.guard.json",
         "command": [
           "env",
-          "CARGO_TARGET_DIR=/home/altf4/.cache/rustmage/msh-improvise/target",
+          "CARGO_TARGET_DIR=<cache>/rustmage/msh-improvise/target",
           "cargo",
           "test",
           "--lib",
@@ -1097,10 +1097,10 @@
         "test_threads": 1
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/focused-2.guard.json",
+        "path": "<cache>/rustmage/msh-improvise/focused-2.guard.json",
         "command": [
           "env",
-          "CARGO_TARGET_DIR=/home/altf4/.cache/rustmage/msh-improvise/target",
+          "CARGO_TARGET_DIR=<cache>/rustmage/msh-improvise/target",
           "cargo",
           "test",
           "--lib",
@@ -1118,10 +1118,10 @@
         "test_threads": 1
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/native-and-clippy-5.guard.json",
+        "path": "<cache>/rustmage/msh-improvise/native-and-clippy-5.guard.json",
         "command": [
           "python3",
-          "/home/altf4/.cache/rustmage/msh-improvise/native-and-clippy-5.py"
+          "<cache>/rustmage/msh-improvise/native-and-clippy-5.py"
         ],
         "terminal": true,
         "exit_code": 101,
@@ -1133,10 +1133,10 @@
         "test_threads": 1
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/native-and-clippy-6.guard.json",
+        "path": "<cache>/rustmage/msh-improvise/native-and-clippy-6.guard.json",
         "command": [
           "python3",
-          "/home/altf4/.cache/rustmage/msh-improvise/native-and-clippy-6.py"
+          "<cache>/rustmage/msh-improvise/native-and-clippy-6.py"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -1148,11 +1148,11 @@
         "test_threads": 1
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/native-record-3.guard.json",
+        "path": "<cache>/rustmage/msh-improvise/native-record-3.guard.json",
         "command": [
           "env",
-          "CARGO_TARGET_DIR=/home/altf4/.cache/rustmage/msh-improvise/target",
-          "RUSTMAGE_RECORD_CARD_TRACES=/home/altf4/.cache/rustmage/msh-improvise/card-traces-147.json",
+          "CARGO_TARGET_DIR=<cache>/rustmage/msh-improvise/target",
+          "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage/msh-improvise/card-traces-147.json",
           "RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=146",
           "cargo",
           "test",
@@ -1170,11 +1170,11 @@
         "test_threads": 1
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/native-record-4.guard.json",
+        "path": "<cache>/rustmage/msh-improvise/native-record-4.guard.json",
         "command": [
           "env",
-          "CARGO_TARGET_DIR=/home/altf4/.cache/rustmage/msh-improvise/target",
-          "RUSTMAGE_RECORD_CARD_TRACES=/home/altf4/.cache/rustmage/msh-improvise/card-traces-147.json",
+          "CARGO_TARGET_DIR=<cache>/rustmage/msh-improvise/target",
+          "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage/msh-improvise/card-traces-147.json",
           "RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=146",
           "cargo",
           "test",
@@ -1192,10 +1192,10 @@
         "test_threads": 1
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/strict-and-clippy-7.guard.json",
+        "path": "<cache>/rustmage/msh-improvise/strict-and-clippy-7.guard.json",
         "command": [
           "python3",
-          "/home/altf4/.cache/rustmage/msh-improvise/strict-and-clippy-7.py"
+          "<cache>/rustmage/msh-improvise/strict-and-clippy-7.py"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -1213,78 +1213,78 @@
       "bytes_freed": 122234701,
       "preserved_target_files": [
         {
-          "path": "/home/altf4/.cache/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<cache>/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         },
         {
-          "path": "/home/altf4/.cache/rustmage/msh-improvise/target/debug/deps/rustmage-b764cd26223fba2c",
+          "path": "<cache>/rustmage/msh-improvise/target/debug/deps/rustmage-b764cd26223fba2c",
           "sha256": "58b1b72b4a464d8865f98b46c85830242853817bc42afcb7ed7fcf579d7f891c"
         }
       ],
       "required_shared_libraries": [
         {
-          "path": "/home/altf4/.codex/worktrees/msh-power-up/rustmage/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<worktree:msh-power-up>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         },
         {
-          "path": "/home/altf4/.codex/worktrees/msh-existing-cards/rustmage/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<worktree:msh-existing-cards>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         },
         {
-          "path": "/home/altf4/.cache/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<cache>/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         },
         {
-          "path": "/home/altf4/.cache/rustmage/msh-coulson/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<cache>/rustmage/msh-coulson/target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         },
         {
-          "path": "/home/altf4/.cache/rustmage/msh-hideout-falcon/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<cache>/rustmage/msh-hideout-falcon/target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         },
         {
-          "path": "/home/altf4/.cache/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         },
         {
-          "path": "/home/altf4/.cache/rustmage/msh-under-siege/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<cache>/rustmage/msh-under-siege/target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         },
         {
-          "path": "/home/altf4/.cache/rustmage/msh-baron/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<cache>/rustmage/msh-baron/target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         },
         {
-          "path": "/home/altf4/.cache/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "path": "<cache>/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
           "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
         }
       ]
     },
     "preserved_native": [
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/target/debug/deps/rustmage-b764cd26223fba2c",
+        "path": "<cache>/rustmage/msh-improvise/target/debug/deps/rustmage-b764cd26223fba2c",
         "sha256": "58b1b72b4a464d8865f98b46c85830242853817bc42afcb7ed7fcf579d7f891c"
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/native-before-baseline",
+        "path": "<cache>/rustmage/msh-improvise/native-before-baseline",
         "sha256": "68f9164043df073d7b4f22c60e1e36cf602cedba2bfb01f69c4c4d3effa7c8d8"
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-improvise/native-before-hall",
+        "path": "<cache>/rustmage/msh-improvise/native-before-hall",
         "sha256": "b87b756d0cc96600512c0292a429748198347177cdf2b97784266882e723f786"
       }
     ],
     "prior_required_native": [
       {
-        "path": "/home/altf4/.cache/rustmage/msh-baron/target/debug/deps/rustmage-b764cd26223fba2c",
+        "path": "<cache>/rustmage/msh-baron/target/debug/deps/rustmage-b764cd26223fba2c",
         "sha256": "f16200aba0e7c33acae80a3fb9fcd53b1484bb1efe0bfbad3a43354289e3053b"
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-baron/native-before-baseline",
+        "path": "<cache>/rustmage/msh-baron/native-before-baseline",
         "sha256": "0f6dc927b0e9692e5975ec1d76c2eedd6ed602d8958b42f70e538ce698eb8d7c"
       },
       {
-        "path": "/home/altf4/.cache/rustmage/msh-baron/native-before-trigger-order-fix",
+        "path": "<cache>/rustmage/msh-baron/native-before-trigger-order-fix",
         "sha256": "a3b7559483d72eec28777394e3443aeb6fac2d60009a2f7a941108d62dddf073"
       }
     ]
