@@ -278,7 +278,12 @@ fn msh_damage_mjolnir_worthy_equip_checks_all_current_restrictions_and_atomicity
         let winter = paid(&mut g, p, "Winter Soldier, Icy Assassin", &[]);
         let invalid = [
             named(&mut g, p, "Serra Angel", Zone::Battlefield),
-            named(&mut g, p, "Doc Samson", Zone::Battlefield),
+            named(
+                &mut g,
+                p,
+                "Doc Samson, Super Psychiatrist",
+                Zone::Battlefield,
+            ),
             named(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield),
             named(
                 &mut g,
@@ -342,7 +347,12 @@ fn msh_damage_mjolnir_equip_sorcery_costs_target_rechecked_after_announcement() 
             [0, 0, 0, 0, 0, 1],
             Some(Target::Card(hawk)),
         );
-        packet(&mut g, p, "Witness Protection", &[Target::Card(hawk)]);
+        packet(
+            &mut g,
+            p,
+            "Harmless Offering",
+            &[Target::Player(p.other()), Target::Card(hawk)],
+        );
         settle(&mut g);
         assert_eq!(g.state.objects[id as usize].attached_to, None);
         next_turn(&mut g);
@@ -438,7 +448,7 @@ fn msh_damage_mjolnir_foreign_equipment_controller_still_doubles_creature_damage
             "Harmless Offering",
             &[Target::Player(p.other()), Target::Card(hammer)],
         );
-        let victim = named(&mut g, p.other(), "Colossal Dreadmaw", Zone::Battlefield);
+        let victim = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
         activate(
             &mut g,
             p,
@@ -476,7 +486,7 @@ fn msh_damage_mjolnir_channel_actual_discard_colored_generic_hand_only_and_insta
 #[test]
 fn msh_damage_wolverine_optional_other_fight_and_lethal_damage_not_prevention() {
     for p in [Player::P0, Player::P1] {
-        for victim_name in ["Bear Cub", "Colossal Dreadmaw"] {
+        for victim_name in ["Bear Cub", "Gigantosaurus"] {
             let mut g = setup(p);
             let victim = named(&mut g, p.other(), victim_name, Zone::Battlefield);
             let id = packet(&mut g, p, WOLF, &[]);
@@ -678,5 +688,106 @@ fn msh_damage_wolverine_prevention_order_exposes_owned_queued_heal_truthfully() 
             settle(&mut g);
             assert_eq!(g.object_view(id).damage, if heal_first { 0 } else { 4 });
         }
+    }
+}
+#[test]
+fn msh_damage_wolverine_healing_still_applies_when_damage_cannot_be_prevented() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid_entry(&mut g, p, WOLF, None);
+        paid(&mut g, p.other(), "Shock", &[Target::Card(id)]);
+        let sword = paid(&mut g, p, "Sword of Wealth and Power", &[]);
+        activate(
+            &mut g,
+            p,
+            sword,
+            0,
+            [0, 0, 0, 0, 0, 2],
+            Some(Target::Card(id)),
+        );
+        settle(&mut g);
+        paid(&mut g, p, "Impractical Joke", &[]);
+        assert!(g.state.damage_prevention_prohibited);
+        slagstorm(&mut g, p);
+        settle(&mut g);
+        assert_eq!(g.object_view(id).damage, 3);
+        assert!(g.state.objects[id as usize].damaged_this_turn);
+    }
+}
+#[test]
+fn msh_damage_mjolnir_trample_assigns_before_doubling_and_hawkeye_excludes_combat() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let sword = paid(&mut g, p, "Swordsman, Sharp Scoundrel", &[]);
+        let hammer = paid_entry(&mut g, p, HAMMER, None);
+        // The recipient is an actual supported trampler; a paid Villain triggers the other attachment route.
+        let attacker = paid(&mut g, p, "Savage Land Dinosaur", &[]);
+        let villain = packet(&mut g, p, "Super-Skrull", &[]);
+        let _ = villain;
+        targets(&mut g, sword);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(hammer),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(attacker),
+            },
+        );
+        finish(&mut g);
+        settle(&mut g);
+        paid(&mut g, p, HAWK, &[]);
+        next_main(&mut g, p);
+        let blocker = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let power = g.stats(attacker).power;
+        let before = g.state.players[p.other().index()].life;
+        until(&mut g, |g| g.state.pending == Pending::Attackers);
+        checked(&mut g, Action::Attack { card: attacker });
+        checked(&mut g, Action::FinishAttackers);
+        // Resolve the real equipped-attacker connive (the fixed library supplies a land), then declare blocks.
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectDiscard { .. })
+        });
+        let discard = g.state.players[p.index()]
+            .hand
+            .iter()
+            .copied()
+            .find(|&id| g.state.objects[id as usize].card == Card::from_name("Forest").unwrap())
+            .unwrap();
+        checked(&mut g, Action::Discard { card: discard });
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        checked(&mut g, Action::Block { blocker, attacker });
+        checked(&mut g, Action::FinishBlockers);
+        until(&mut g, |g| {
+            g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::AssignDamage { .. }))
+        });
+        checked(
+            &mut g,
+            Action::AssignDamage {
+                target: Target::Card(blocker),
+                amount: 2,
+            },
+        );
+        checked(
+            &mut g,
+            Action::AssignDamage {
+                target: Target::Player(p.other()),
+                amount: power - 2,
+            },
+        );
+        until(&mut g, |g| {
+            g.state.step == Step::Main2 && g.state.pending == Pending::Priority
+        });
+        assert_eq!(
+            g.state.players[p.other().index()].life,
+            before - 2 * (power - 2)
+        );
+        assert_eq!(g.object_view(blocker).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(attacker).damage, 2);
     }
 }
