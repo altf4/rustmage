@@ -1274,6 +1274,8 @@ pub(crate) enum Instruction {
     },
     /// Freeze a non-targeted battlefield group, then return it simultaneously.
     GainControlUntilEndTurn,
+    /// Lock control through your next turn when a controlled Villain has greater mana value.
+    GainControlConditionalVillainManaValue,
     /// A fixed controller for this exact permanent, with no expiry or source dependence.
     GainControl {
         subject: Subject,
@@ -1608,6 +1610,8 @@ pub(crate) enum Instruction {
         amount: u32,
     },
     DoubleCounters,
+    /// Add exactly one of every currently present kind to a permanent or player.
+    AddOneOfEachCounterKind,
     DoubleCounterKind {
         subject: Subject,
         kind: CounterKind,

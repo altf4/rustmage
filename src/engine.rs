@@ -7723,7 +7723,7 @@ mod suspect;
 
 #[path = "engine_zone_effects.rs"]
 mod zone_effects;
-pub use zone_effects::TemporaryControlView;
+pub use zone_effects::{NextTurnControlExpiry, TemporaryControlView};
 
 impl Game {
     fn no_maximum_hand_size(&self, player: Player) -> bool {
@@ -8117,3 +8117,7 @@ mod msh_turn_cast_grants_tests;
 #[cfg(test)]
 #[path = "engine_msh_ability_copy_core_tests.rs"]
 mod msh_ability_copy_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_broker_thrall_tests.rs"]
+mod msh_broker_thrall_tests;

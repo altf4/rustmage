@@ -2684,6 +2684,9 @@ impl Game {
                     self.move_battlefield_group(&item, filters, exile);
                 }
                 Instruction::GainControlUntilEndTurn => self.gain_control_until_end_turn(&item),
+                Instruction::GainControlConditionalVillainManaValue => {
+                    self.gain_control_conditional_villain_mana_value(&item)
+                }
                 Instruction::GainControl {
                     subject,
                     controller,
@@ -4315,6 +4318,36 @@ impl Game {
                     {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
+                }
+                Instruction::AddOneOfEachCounterKind => {
+                    let mut changes = Vec::new();
+                    for bound in &item.targets {
+                        if !self.same_target_object(*bound) {
+                            continue;
+                        }
+                        match bound.target {
+                            Target::Player(player) => {
+                                // Poison is the pool's represented player counter kind.
+                                let count = &mut self.state.players[player.index()].poison_counters;
+                                if *count > 0 {
+                                    *count = count
+                                        .checked_add(1)
+                                        .capacity("player poison counters exhausted");
+                                }
+                            }
+                            Target::Card(id) if self.on_battlefield(id) => {
+                                let mut add = Counters::default();
+                                for kind in CounterKind::ALL {
+                                    if self.counter_count(id, kind) > 0 {
+                                        add = add.with(kind, 1);
+                                    }
+                                }
+                                changes.push((self.object_ref(id), add));
+                            }
+                            _ => {}
+                        }
+                    }
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::DoubleCounters => {
                     // Doubling puts the existing quantity of each kind on the object.
