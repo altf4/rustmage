@@ -139,11 +139,6 @@
   "counts": {
     "main_msh_admitted": 180,
     "base_msh_admitted_candidates": 194,
-    "candidate_msh": {
-      "total": 273,
-      "complete": 187,
-      "gated": 86
-    },
     "msh_oracle_identities": 281,
     "msh_printings": 448,
     "new_candidates": 1,
@@ -152,7 +147,14 @@
     "definitions": 5398,
     "tokens": 120,
     "new_catalogue_ids": 0,
-    "new_tokens": 0
+    "new_tokens": 0,
+    "msh_definition_ownership": {
+      "total": 273,
+      "complete": 187,
+      "gated": 86
+    },
+    "candidate_msh_admitted": 195,
+    "candidate_msh_gated": 86
   },
   "wire": {
     "previous": 145,
@@ -346,6 +348,17 @@
         ],
         "exit_code": 0,
         "output": ""
+      }
+    },
+    "set_status": {
+      "report": "<cache>/rustmage-msh-ten-rings-set-status.json",
+      "sha256": "33fbe91d88f25146245114c34dd3e04b70d7e3ca7b46ea6e4300addcb1000084",
+      "result": {
+        "set": "MSH",
+        "total_cards": 281,
+        "admitted_cards": 195,
+        "gated_cards": 86,
+        "unresolved": []
       }
     }
   },
