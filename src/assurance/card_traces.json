@@ -879,6 +879,14 @@
     "journal": "a19704fa93226173",
     "observations": "dac0af317740e456"
   },
+  "Ares, God of War": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "dc0112764aa2bb2e",
+    "observations": "d051190e0213725e"
+  },
   "Ark of Hunger": {
     "root": "main",
     "status": "completed",
@@ -8342,6 +8350,14 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "674ca3c267dec72a"
+  },
+  "I Am Iron Man": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "cc857d3443c062fe",
+    "observations": "d61a9fbcdcb514e0"
   },
   "Ice Magic": {
     "root": "main",
