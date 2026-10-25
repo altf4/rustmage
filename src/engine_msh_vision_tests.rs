@@ -115,7 +115,7 @@ fn msh_vision_paid_intrinsics_and_actual_flying_vigilant_double_strike_combat() 
     for p in [Player::P0, Player::P1] {
         let (mut g, id) = body(p);
         assert_eq!((g.stats(id).power, g.stats(id).toughness), (2, 5));
-        assert!(g.object_view(id).is_artifact());
+        assert!(g.object_view(id).card.is_artifact());
         assert!(
             g.keywords(id)
                 .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
@@ -135,7 +135,7 @@ fn msh_vision_paid_intrinsics_and_actual_flying_vigilant_double_strike_combat() 
         reject(
             &mut g,
             Action::Block {
-                card: bear,
+                blocker: bear,
                 attacker: id,
             },
         );
