@@ -2026,10 +2026,11 @@ fn msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies() {
         assert_eq!(g.object_view(*id).zone, Zone::Exile);
     }
     for _ in 0..3 {
-        choose(
-            &mut g,
-            |a| matches!(a,Action::CastExiledDuringResolution{object,..}if !cards.contains(&object.card) && g.object_view(object.card).name()=="Duress"),
-        );
+        let copy = g.legal_actions().into_iter().find(|a| matches!(a,
+            Action::CastExiledDuringResolution { object, .. }
+                if !cards.contains(&object.card) && g.object_view(object.card).name() == "Duress"
+        )).expect("a Duress copy remains within the three-spell quota");
+        act(&mut g, copy);
         target(&mut g, Target::Player(p.other()));
         finish_targets(&mut g);
     }
