@@ -3,13 +3,7 @@ use super::*;
 use crate::engine::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
 const MARVEL: &str = "Ms. Marvel, Kamala Khan";
 fn hand(g: &mut Game, p: Player, name: &str) -> CardId {
-    if name == MARVEL && !Card::from_name(name).unwrap().is_supported() {
-        let id = named(g, p, "Hill Giant", Zone::Hand);
-        g.state.objects[id as usize].card = Card::from_name(name).unwrap();
-        id
-    } else {
-        named(g, p, name, Zone::Hand)
-    }
+    named(g, p, name, Zone::Hand)
 }
 fn priority(g: &mut Game, p: Player) {
     if g.actor() != Some(p) {
@@ -145,6 +139,11 @@ fn msh_self_static_paid_marvel_draws_then_dynamic_layer7b_counters_and_cleanup()
                 toughness: 4
             }
         );
+        assert!(g.object_view(m).is_legendary());
+        assert_eq!(g.object_view(m).colors, 2);
+        for subtype in ["Mutant", "Inhuman", "Hero"] {
+            assert!(g.has_subtype(m, subtype));
+        }
         named(&mut g, p, "Forest", Zone::Hand);
         let count = g.hand_count(p);
         grant_hand(&mut g, p, m);
@@ -602,5 +601,255 @@ fn msh_self_static_physical_retimestamp_moves_static_effects_without_reacquiring
                 .iter()
                 .all(|row| !row.available)
         );
+    }
+}
+
+fn age_marvel(g: &mut Game, p: Player) {
+    next_turn(g);
+    next_turn(g);
+    until(g, |g| g.state.active == p && g.state.step == Step::Main1);
+    priority(g, p);
+}
+#[test]
+fn msh_self_static_marvel_paid_vigilance_attack_and_one_damage() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = paid(&mut g, p, MARVEL);
+        age_marvel(&mut g, p);
+        until(&mut g, |g| g.state.pending == Pending::Attackers);
+        checked(&mut g, Action::Attack { card: m });
+        checked(&mut g, Action::FinishAttackers);
+        assert!(!g.object_view(m).tapped);
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        checked(&mut g, Action::FinishBlockers);
+        until(&mut g, |g| {
+            g.state.step == Step::Main2 && g.state.pending == Pending::Priority
+        });
+        assert_eq!(g.life(p.other()), 19);
+        assert!(!g.object_view(m).tapped);
+    }
+}
+#[test]
+fn msh_self_static_marvel_paid_reach_blocks_actual_flying_attacker() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = paid(&mut g, p, MARVEL);
+        let flyer = paid(&mut g, p.other(), "Serra Angel");
+        age_marvel(&mut g, p.other());
+        until(&mut g, |g| g.state.pending == Pending::Attackers);
+        checked(&mut g, Action::Attack { card: flyer });
+        checked(&mut g, Action::FinishAttackers);
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        assert!(!g.keywords(m).contains(Keywords::FLYING));
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: m,
+                attacker: flyer,
+            },
+        );
+        checked(&mut g, Action::FinishBlockers);
+        until(&mut g, |g| {
+            g.state.step == Step::Main2 && g.state.pending == Pending::Priority
+        });
+        assert_eq!(g.life(p), 20);
+        assert_eq!(g.object_view(m).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(flyer).damage, 1);
+    }
+}
+#[test]
+fn msh_self_static_marvel_no_maximum_retains_nine_through_real_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = paid(&mut g, p, MARVEL);
+        for _ in 0..9 {
+            named(&mut g, p, "Forest", Zone::Hand);
+        }
+        assert_eq!(g.maximum_hand_size(p), None);
+        next_turn(&mut g);
+        assert_eq!(g.hand_count(p), 9);
+        assert_eq!(g.object_view(m).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn msh_self_static_marvel_departure_restores_seven_and_actual_private_discard() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = paid(&mut g, p, MARVEL);
+        for _ in 0..9 {
+            named(&mut g, p, "Forest", Zone::Hand);
+        }
+        packet(&mut g, p.other(), "Murder", None, &[Target::Card(m)]);
+        settle(&mut g);
+        assert_eq!(g.maximum_hand_size(p), Some(7));
+        until(&mut g, |g| g.state.pending == Pending::Discard);
+        assert_eq!(g.actor(), Some(p));
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::Discard { .. }))
+            .unwrap();
+        g = orphan(g, action);
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::Discard { .. }))
+            .unwrap();
+        checked(&mut g, action);
+        assert_eq!(g.hand_count(p), 7);
+    }
+}
+#[test]
+fn msh_self_static_marvel_multigroup_multiple_own_targets_draw_once_and_one_grant() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = paid(&mut g, p, MARVEL);
+        let a = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let b = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let count = g.hand_count(p);
+        packet(
+            &mut g,
+            p,
+            "Epic Fight",
+            Some(2),
+            &[Target::Card(a), Target::Card(a), Target::Card(b)],
+        );
+        assert_eq!(
+            g.state
+                .pending_triggers
+                .iter()
+                .chain(&g.state.ordering_triggers)
+                .chain(&g.state.stack)
+                .filter(|i| i.card == m)
+                .count(),
+            1
+        );
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), count + 1);
+        assert_eq!(g.state.self_granted_abilities.as_ref().unwrap().len(), 1);
+    }
+}
+#[test]
+fn msh_self_static_marvel_original_counter_or_source_murder_keeps_draw_independent() {
+    for p in [Player::P0, Player::P1] {
+        for depart in [false, true] {
+            let mut g = setup(p);
+            let m = paid(&mut g, p, MARVEL);
+            let target = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let count = g.hand_count(p);
+            let shock = packet(&mut g, p, "Shock", None, &[Target::Card(target)]);
+            if depart {
+                packet(&mut g, p.other(), "Murder", None, &[Target::Card(m)]);
+            } else {
+                packet(&mut g, p.other(), "Negate", None, &[Target::Spell(shock)]);
+            }
+            settle(&mut g);
+            assert_eq!(g.hand_count(p), count + 1);
+            if depart {
+                assert_eq!(g.object_view(m).zone, Zone::Graveyard);
+                assert!(g.state.self_granted_abilities.is_none());
+            } else {
+                assert_eq!(g.object_view(target).damage, 0);
+                assert_eq!(g.stats(m).power, g.hand_count(p) as i128);
+            }
+        }
+    }
+}
+#[test]
+fn msh_self_static_marvel_interrupted_draw_precedes_static_grant_and_restores_owned() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = paid(&mut g, p, MARVEL);
+        named(&mut g, p, "Lorehold, the Historian", Zone::Battlefield);
+        let target = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        packet(&mut g, p, "Shock", None, &[Target::Card(target)]);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::MiracleReveal { .. })
+        });
+        assert!(g.state.self_granted_abilities.is_none());
+        assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+        assert!(g.observe(p.other()).miracle.is_none());
+        g = orphan(g, Action::DeclineMiracle);
+        settle(&mut g);
+        assert_eq!(g.stats(m).power, g.hand_count(p) as i128);
+        assert_eq!(g.state.self_granted_abilities.as_ref().unwrap().len(), 1);
+    }
+}
+#[test]
+fn msh_self_static_marvel_copied_trigger_draws_twice_independent_grant_instances() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = paid(&mut g, p, MARVEL);
+        let echo = paid(&mut g, p, "Echo, Perceptive Prodigy");
+        age_marvel(&mut g, p);
+        let target = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let count = g.hand_count(p);
+        packet(&mut g, p, "Shock", None, &[Target::Card(target)]);
+        until(&mut g, |g| {
+            g.state
+                .stack
+                .iter()
+                .any(|i| i.card == m && matches!(i.kind, StackKind::TriggeredAbility { .. }))
+        });
+        let original = source_packet(&g, m);
+        priority(&mut g, p);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: echo,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Stack(original.id),
+            },
+        );
+        while g.state.announcing.is_some() {
+            let a = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, a);
+        }
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), count + 2);
+        let rows = g.state.self_granted_abilities.as_ref().unwrap();
+        assert_eq!(rows.len(), 2);
+        assert_ne!(rows[0].timestamp, rows[1].timestamp);
+        assert_eq!(g.stats(m).power, g.hand_count(p) as i128);
+    }
+}
+#[test]
+fn msh_self_static_marvel_end_turn_spell_expires_grant_but_preserves_no_maximum() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = paid(&mut g, p, MARVEL);
+        grant_hand(&mut g, p, m);
+        let turn = g.state.turn;
+        packet(&mut g, p, "Time Stop", None, &[]);
+        settle(&mut g);
+        assert!(g.state.turn > turn);
+        assert!(g.state.self_granted_abilities.is_none());
+        assert_eq!(g.stats(m).power, 1);
+        assert_eq!(g.maximum_hand_size(p), None);
+    }
+}
+#[test]
+fn msh_self_static_marvel_token_creature_target_triggers_even_when_original_kills_it() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let m = paid(&mut g, p, MARVEL);
+        let token = named(&mut g, p, "@token/msh-moloid", Zone::Battlefield);
+        let count = g.hand_count(p);
+        packet(&mut g, p, "Shock", None, &[Target::Card(token)]);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), count + 1);
+        assert_eq!(g.stats(m).power, g.hand_count(p) as i128);
+        assert!(!g.on_battlefield(token));
     }
 }
