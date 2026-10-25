@@ -1,20 +1,11 @@
-//! Real typed gated consumers exercise independent paid ability packets.
+//! Whole-card paid scenarios for source-qualified independent ability copies.
 use super::ability_world::CharacteristicWorld;
 use super::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
 use super::*;
 const ECHO: &str = "Echo, Perceptive Prodigy";
 const SCIENTIST: &str = "Scientist Supreme of A.I.M.";
 fn prepared(g: &mut Game, p: Player, name: &str) -> CardId {
-    let card = Card::from_name(name).unwrap();
-    if card.is_supported() {
-        return named(g, p, name, Zone::Hand);
-    }
-    assert!([ECHO, SCIENTIST].contains(&name));
-    // Physical fixture for these two immutable typed bodies only. This does not
-    // admit either card to accepted deck construction or override its program.
-    let id = named(g, p, "Hill Giant", Zone::Hand);
-    g.state.objects[id as usize].card = card;
-    id
+    named(g, p, name, Zone::Hand)
 }
 fn priority(g: &mut Game, p: Player) {
     if g.actor() != Some(p) {
@@ -1139,7 +1130,7 @@ fn msh_ability_copy_core_copied_ability_counts_as_a_second_resolution_without_ne
         assert!(g.keywords(echo).contains(Keywords::DEATHTOUCH));
     }
 }
-// Printed-card obligations retain gated physical setup until the complete matrix passes.
+// Printed-card obligations use ordinary support-checked physical fixtures.
 fn copy_searches(g: &mut Game, p: Player, count: usize) {
     for _ in 0..count {
         until(g, |g| {
@@ -1639,5 +1630,59 @@ fn msh_ability_copy_cards_scientist_copies_noncreature_equipment_ability_without
         assert_eq!(g.object_view(pole).attached_to, Some(g.object_ref(a)));
         assert_eq!(g.object_view(pole).zone, Zone::Battlefield);
         assert_eq!(g.state.players[p.index()].mana[5], 1);
+    }
+}
+#[test]
+fn msh_ability_copy_cards_scientist_copies_real_sacrificed_clue_after_token_ceases() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let scientist = paid(&mut g, p, SCIENTIST);
+        let pounce = prepared(&mut g, p, "Panther Pounce");
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 0];
+        cast(
+            &mut g,
+            pounce,
+            None,
+            &[Target::Player(p), Target::Card(scientist)],
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        let clues: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(i, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && g.has_subtype(i as CardId, "Clue"))
+                .then_some(i as CardId)
+            })
+            .collect();
+        assert_eq!(clues.len(), 1);
+        let clue = clues[0];
+        let old = g.object_ref(clue);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        activate(&mut g, clue, None);
+        let original = g.state.stack.last().unwrap().clone();
+        assert_eq!(original.object, old);
+        assert_ne!(g.object_ref(clue), old);
+        assert!(!g.on_battlefield(clue));
+        assert!(original.source_facts.token);
+        assert_ne!(original.source_facts.kinds & 16, 0);
+        let zone = g.object_view(clue).zone;
+        let objects = g.state.objects.len();
+        let hand = g.hand_count(p);
+        activate(&mut g, scientist, Some(Target::Stack(original.id)));
+        until(&mut g, |g| {
+            g.state.stack.iter().any(|s| s.is_copy && s.object == old)
+        });
+        exact_copy(g.state.stack.last().unwrap(), &original, p);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), hand + 2);
+        assert_eq!(g.life(p), 18);
+        assert_eq!(g.state.objects.len(), objects);
+        assert_eq!(g.object_view(clue).zone, zone);
     }
 }

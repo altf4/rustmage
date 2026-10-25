@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "07932950953d80b180b93e9b8f7480b91ba26a540a5e0f3418c625818b03ec67",
+  "catalogue_version": "e3dc5e4217ef2fc42a5a876df4f4760b8026e7528ded8186b81128f4dedb1b50",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2529,
-  "implemented_total": 2535,
+  "implemented_standard_cards": 2531,
+  "implemented_total": 2537,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 224,
-      "gated": 49
+      "complete": 226,
+      "gated": 47
     },
     "one": {
       "total": 1,
@@ -10205,8 +10205,8 @@
     {
       "name": "Echo, Perceptive Prodigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/echo_perceptive_prodigy.rs",
       "set": "msh"
     },
@@ -29989,8 +29989,8 @@
     {
       "name": "Scientist Supreme of A.I.M.",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/scientist_supreme_of_a_i_m.rs",
       "set": "msh"
     },
