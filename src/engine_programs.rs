@@ -101,7 +101,9 @@ impl Game {
             LibraryDestination::Top => choice.top.push(card),
             LibraryDestination::Bottom => choice.bottom.push(card),
             LibraryDestination::Graveyard => choice.graveyard.push(card),
-            LibraryDestination::Shuffle => unreachable!("shuffle is not an arrangement action"),
+            LibraryDestination::Shuffle | LibraryDestination::SecondFromTop => {
+                unreachable!("destination is not an arrangement action")
+            }
         }
         if !choice.remaining.is_empty() {
             return;
@@ -2381,9 +2383,20 @@ impl Game {
                     self.multiply_target_stats(&item, factor)
                 }
                 Instruction::OwnerLibrary => {
-                    if self.start_target_library(&item) {
+                    if self.start_target_library(&item, false) {
                         return;
                     }
+                }
+                Instruction::OwnerLibrarySecondFromTop => {
+                    if self.start_target_library(&item, true) {
+                        return;
+                    }
+                }
+                Instruction::ChooseManaValueParityDestroyOthers => {
+                    self.state.pending = Pending::ManaValueParity {
+                        player: item.controller,
+                    };
+                    return;
                 }
                 Instruction::Forage { skip } => {
                     self.start_resolution_forage(skip);

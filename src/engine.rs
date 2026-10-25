@@ -160,9 +160,12 @@ pub use library_selection::LibrarySelectionView;
 
 #[path = "engine_forage.rs"]
 mod forage;
+#[path = "engine_mana_value_parity.rs"]
+mod mana_value_parity;
 #[path = "engine_target_library.rs"]
 mod target_library;
 pub use forage::{ForageRoute, ForageView};
+pub use mana_value_parity::ManaValueParity;
 pub use target_library::{TargetLibraryMovement, TargetLibraryView};
 #[path = "engine_combat_allocations.rs"]
 mod combat_allocations;
@@ -466,6 +469,7 @@ define_actions! {
     FinishCrew,
     FinishSaddle,
     ChooseLibraryDestination { object: ObjectRef, destination: LibraryDestination },
+    ChooseManaValueParity { parity: ManaValueParity },
     ChooseForageRoute { route: ForageRoute },
     ChooseForage { object: ObjectRef },
     DeclineForage,
@@ -680,6 +684,7 @@ pub enum LibraryDestination {
     Bottom,
     Graveyard,
     Shuffle,
+    SecondFromTop,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1505,6 +1510,9 @@ enum Pending {
         player: Player,
     },
     TargetLibrary {
+        player: Player,
+    },
+    ManaValueParity {
         player: Player,
     },
     ForageMethod {
@@ -2608,6 +2616,7 @@ impl Game {
             | Pending::Targets { player }
             | Pending::OrderTriggers { player }
             | Pending::TargetLibrary { player }
+            | Pending::ManaValueParity { player }
             | Pending::ForageMethod { player }
             | Pending::Forage { player }
             | Pending::EffectOptional { player, .. }
@@ -2992,6 +3001,13 @@ impl Game {
                     return true;
                 }
             }
+            Pending::ManaValueParity { .. } => {
+                for parity in [ManaValueParity::Odd, ManaValueParity::Even] {
+                    if emit(Action::ChooseManaValueParity { parity }) {
+                        return true;
+                    }
+                }
+            }
             Pending::TargetLibrary { .. } => {
                 let object = s
                     .resolving
@@ -3003,7 +3019,15 @@ impl Game {
                     .targets[0]
                     .object
                     .unwrap();
-                for destination in [LibraryDestination::Top, LibraryDestination::Bottom] {
+                for destination in s
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .target_library
+                    .as_ref()
+                    .unwrap()
+                    .destinations()
+                {
                     if emit(Action::ChooseLibraryDestination {
                         object,
                         destination,
@@ -4342,6 +4366,7 @@ impl Game {
                 object,
                 destination,
             } => self.choose_library_destination(object, destination),
+            Action::ChooseManaValueParity { parity } => self.choose_mana_value_parity(parity),
             Action::ChooseForageRoute { route } => self.choose_forage_route(route),
             Action::ChooseForage { object } => self.choose_forage(object),
             Action::DeclineForage => self.decline_forage(),
@@ -6738,6 +6763,7 @@ impl Game {
                 Pending::OrderTriggers { .. } => "order_triggers",
                 Pending::EffectOptional { .. } => "optional_effect",
                 Pending::TargetLibrary { .. } => "target_library",
+                Pending::ManaValueParity { .. } => "mana_value_parity",
                 Pending::ForageMethod { .. } => "forage_method",
                 Pending::Forage { .. } => "forage",
                 Pending::EffectMana { .. } => "mana_choice",
@@ -7862,3 +7888,7 @@ mod msh_thirteenth_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_copy_identity_regression_tests.rs"]
 mod msh_copy_identity_regression_tests;
+
+#[cfg(test)]
+#[path = "engine_parity_library_core_tests.rs"]
+mod parity_library_core_tests;

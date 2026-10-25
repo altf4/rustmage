@@ -4,9 +4,35 @@
   "oracle_id": "090d815b-b2c8-48cd-a0b3-dc662d5352ac",
   "facts_sha256": "a156630a92fde4f36c18652ee638a41c6a59245180ccec11e0b66545ae9644fb",
   "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "ceec054665662ed83a9c2e999c539a474cdf738301e3676af970fbea887e9ca1"
-  },
-  "physical_metadata_sha256": "1ca2f9173df6b2f5715067ed3c34a3ddf44bcecb71b4e07cab28c4767f8413f0"
+  "physical_metadata_sha256": "1ca2f9173df6b2f5715067ed3c34a3ddf44bcecb71b4e07cab28c4767f8413f0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThanosTheMadTitan.java",
+  "java_sha256": "c7c71f1e793c2357ec3d06651da140666e7eb48b2fa234aac8da2cb53a0289ba",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/choices/ChoiceImpl.java",
+      "sha256": "717314b1651bec04f9a8872b3a9e74adb8e6805e45a83a6d4b7c034b13b41811"
+    }
+  ]
 }
