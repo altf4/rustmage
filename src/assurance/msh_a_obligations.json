@@ -23,28 +23,43 @@
           "type_line": "Land",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "A.I.M. Labs",
           "kind": "printed rule",
           "rule": "This land enters tapped.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "A.I.M. Labs",
           "kind": "printed rule",
           "rule": "When this land enters, you gain 1 life.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "A.I.M. Labs",
           "kind": "printed rule",
           "rule": "{T}: Add {U} or {B}.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "A.I.M. Scientists",
@@ -66,22 +81,33 @@
           "type_line": "Creature \u2014 Human Scientist Villain",
           "power": "3",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "A.I.M. Scientists",
           "kind": "printed rule",
           "rule": "When this creature enters, it connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "A.I.M. Scientists",
           "kind": "printed rule",
           "rule": "Basic landcycling {2} ({2}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "A.I.M. Synthoids",
@@ -103,16 +129,23 @@
           "type_line": "Artifact Creature \u2014 Robot Villain",
           "power": "1",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "A.I.M. Synthoids",
           "kind": "printed rule",
           "rule": "When this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Abomination, Terrifying Titan",
@@ -134,22 +167,34 @@
           "type_line": "Legendary Creature \u2014 Gamma Villain",
           "power": "4",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Abomination, Terrifying Titan",
           "kind": "printed rule",
           "rule": "Trample",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_abomination_optional_fight_hybrid_cost_and_surviving_damage",
+            "engine::assurance::interactions::trample_with_deathtouch_assigns_one_lethal_and_the_rest_to_defender"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Abomination, Terrifying Titan",
           "kind": "printed rule",
           "rule": "Power-up \u2014 {5}{R/G}{R/G}: Put a +1/+1 counter on Abomination. He fights up to one target creature an opponent controls. (Activate each power-up ability only once. Reduce the cost by his mana cost if he entered this turn.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_abomination_optional_fight_hybrid_cost_and_surviving_damage"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Absorbing Man",
@@ -171,22 +216,35 @@
           "type_line": "Legendary Creature \u2014 Human Villain",
           "power": "4",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Absorbing Man",
           "kind": "printed rule",
           "rule": "Vigilance",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Absorbing Man",
           "kind": "printed rule",
           "rule": "At the beginning of your first main phase, until your next turn, Absorbing Man becomes a copy of up to one target artifact, non-Aura enchantment, or land, except his name is Absorbing Man, he's a legendary 4/4 Human Villain creature in addition to his other types, and he has vigilance.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Aerial Doombot",
@@ -208,22 +266,35 @@
           "type_line": "Artifact Creature \u2014 Robot Villain",
           "power": "1",
           "toughness": "1",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Aerial Doombot",
           "kind": "printed rule",
           "rule": "Flying",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Aerial Doombot",
           "kind": "printed rule",
           "rule": "Power-up \u2014 {5}{U}: Put three +1/+1 counters on this creature. (Activate each power-up ability only once. Reduce the cost by its mana cost if it entered this turn.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Agent 13, Sharon Carter",
@@ -245,16 +316,23 @@
           "type_line": "Legendary Creature \u2014 Human Spy Hero",
           "power": "3",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Agent 13, Sharon Carter",
           "kind": "printed rule",
           "rule": "Whenever a creature you control attacks alone, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Agent Maria Hill",
@@ -276,16 +354,23 @@
           "type_line": "Legendary Creature \u2014 Human Spy Hero",
           "power": "2",
           "toughness": "1",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Agent Maria Hill",
           "kind": "printed rule",
           "rule": "Whenever Agent Maria Hill becomes tapped to pay a teamwork cost, put a +1/+1 counter on her and draw a card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Agent Phil Coulson",
@@ -307,22 +392,35 @@
           "type_line": "Legendary Creature \u2014 Human Spy Hero",
           "power": "2",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Agent Phil Coulson",
           "kind": "printed rule",
           "rule": "Vigilance",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_phil_coulson_counters_other_owned_heroes_only_and_taps",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Agent Phil Coulson",
           "kind": "printed rule",
           "rule": "{T}: Put a +1/+1 counter on each other Hero you control.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_phil_coulson_counters_other_owned_heroes_only_and_taps"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Agent of Atlas",
@@ -344,16 +442,23 @@
           "type_line": "Creature \u2014 Human Spy Hero",
           "power": "2",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Agent of Atlas",
           "kind": "printed rule",
           "rule": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_prowess_family_has_real_noncreature_trigger_and_cleanup"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Agents of HYDRA",
@@ -375,16 +480,23 @@
           "type_line": "Creature \u2014 Human Spy Villain",
           "power": "1",
           "toughness": "1",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Agents of HYDRA",
           "kind": "printed rule",
           "rule": "When this creature dies, create a 2/1 black Villain creature token with menace. (It can't be blocked except by two or more creatures.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Agents of S.H.I.E.L.D.",
@@ -406,16 +518,23 @@
           "type_line": "Creature \u2014 Human Spy Hero",
           "power": "2",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Agents of S.H.I.E.L.D.",
           "kind": "printed rule",
           "rule": "Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Alien Invasion",
@@ -437,16 +556,23 @@
           "type_line": "Enchantment",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_alien_invasion_grows_next_token_and_requires_able_attack"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Alien Invasion",
           "kind": "printed rule",
           "rule": "At the beginning of combat on your turn, create a 1/1 red Alien creature token with haste and \"This token attacks each combat if able.\" Put a +1/+1 counter on it for each invasion counter on this enchantment, then put an invasion counter on this enchantment.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_alien_invasion_grows_next_token_and_requires_able_attack"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Ant-Man's Army",
@@ -468,16 +594,23 @@
           "type_line": "Creature \u2014 Insect",
           "power": "3",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Ant-Man's Army",
           "kind": "printed rule",
           "rule": "When this creature enters, create a Food token or a Treasure token. (A Food token is an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\" A Treasure token is an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Ant-Man, Colony Commander",
@@ -499,22 +632,33 @@
           "type_line": "Legendary Creature \u2014 Human Rogue Hero",
           "power": "2",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Ant-Man, Colony Commander",
           "kind": "printed rule",
           "rule": "Whenever Ant-Man attacks, you may pay {1}. When you do, put a +1/+1 counter on target creature.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_ant_man_optional_payment_reflexive_counter_and_once_each_turn_insect"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Ant-Man, Colony Commander",
           "kind": "printed rule",
           "rule": "Whenever you put a +1/+1 counter on a creature, create a 1/1 green Insect creature token. This ability triggers only once each turn.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_ant_man_optional_payment_reflexive_counter_and_once_each_turn_insect"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Arc Reactor",
@@ -536,28 +680,43 @@
           "type_line": "Artifact",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_arc_reactor_improvise_pays_generic_and_produces_three_after_untap"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Arc Reactor",
           "kind": "printed rule",
           "rule": "Improvise (Your artifacts can help cast this spell. Each artifact you tap after you're done activating mana abilities pays for {1}.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_arc_reactor_improvise_pays_generic_and_produces_three_after_untap"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Arc Reactor",
           "kind": "printed rule",
           "rule": "This artifact enters tapped.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_arc_reactor_improvise_pays_generic_and_produces_three_after_untap"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Arc Reactor",
           "kind": "printed rule",
           "rule": "{T}: Add {C}{C}{C}.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_arc_reactor_improvise_pays_generic_and_produces_three_after_untap"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Ares, God of War",
@@ -579,22 +738,33 @@
           "type_line": "Legendary Creature \u2014 God Warrior Villain",
           "power": "4",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Ares, God of War",
           "kind": "printed rule",
           "rule": "Ares attacks each combat if able.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_ares_attacking_death_returns_owner_card_after_source_departs"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Ares, God of War",
           "kind": "printed rule",
           "rule": "Whenever an attacking creature you control dies, return that card to its owner's hand.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_ares_attacking_death_returns_owner_card_after_source_departs"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Armor Wars",
@@ -616,34 +786,53 @@
           "type_line": "Enchantment \u2014 Saga",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Armor Wars",
           "kind": "printed rule",
           "rule": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Armor Wars",
           "kind": "printed rule",
           "rule": "I \u2014 You may draw a card for each artifact you control. If you do, each opponent draws a card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Armor Wars",
           "kind": "printed rule",
           "rule": "II \u2014 Artifact spells you cast this turn cost {1} less to cast.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Armor Wars",
           "kind": "printed rule",
           "rule": "III \u2014 This Saga deals X damage to target opponent, where X is the greatest mana value among artifacts you control.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Arnim Zola, Bio-Fanatic",
@@ -665,16 +854,23 @@
           "type_line": "Legendary Artifact Creature \u2014 Scientist Villain",
           "power": "2",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Arnim Zola, Bio-Fanatic",
           "kind": "printed rule",
           "rule": "{3}, {T}: Create a tapped 2/1 black Villain creature token with menace. Activate only if there are two or more creature cards in your graveyard. (It can't be blocked except by two or more creatures.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Asgardian Citadel",
@@ -696,28 +892,43 @@
           "type_line": "Land",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Asgardian Citadel",
           "kind": "printed rule",
           "rule": "This land enters tapped.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Asgardian Citadel",
           "kind": "printed rule",
           "rule": "When this land enters, you gain 1 life.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Asgardian Citadel",
           "kind": "printed rule",
           "rule": "{T}: Add {R} or {W}.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Atlantean Cavalry",
@@ -739,22 +950,35 @@
           "type_line": "Creature \u2014 Merfolk Soldier",
           "power": "3",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Atlantean Cavalry",
           "kind": "printed rule",
           "rule": "Vigilance",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Atlantean Cavalry",
           "kind": "printed rule",
           "rule": "Whenever you draw your second card each turn, put a +1/+1 counter on this creature.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Atlantis Attacks",
@@ -776,34 +1000,53 @@
           "type_line": "Sorcery",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Atlantis Attacks",
           "kind": "printed rule",
           "rule": "Teamwork 4 (As an additional cost to cast this spell, you may tap any number of creatures you control with total power 4 or more.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Atlantis Attacks",
           "kind": "printed rule",
           "rule": "Choose one. If this spell was cast using teamwork, choose both instead.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Atlantis Attacks",
           "kind": "printed rule",
           "rule": "\u2022 Target player creates a 6/5 blue Leviathan creature token with hexproof.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Atlantis Attacks",
           "kind": "printed rule",
           "rule": "\u2022 Return one or two target nonland permanents to their owners' hands.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Attuma, Atlantean Warlord",
@@ -825,22 +1068,33 @@
           "type_line": "Legendary Creature \u2014 Merfolk Warrior Villain",
           "power": "3",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Attuma, Atlantean Warlord",
           "kind": "printed rule",
           "rule": "Other Merfolk you control get +1/+1.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Attuma, Atlantean Warlord",
           "kind": "printed rule",
           "rule": "Whenever one or more Merfolk you control attack a player, draw a card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Avengers Assemble!",
@@ -862,28 +1116,43 @@
           "type_line": "Enchantment",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Avengers Assemble!",
           "kind": "printed rule",
           "rule": "Flash",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers Assemble!",
           "kind": "printed rule",
           "rule": "Heroes you control get +2/+2.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers Assemble!",
           "kind": "printed rule",
           "rule": "At the beginning of each end step, if you attacked with a Hero this turn or a Hero entered the battlefield under your control this turn, draw a card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Avengers Disassembled",
@@ -905,28 +1174,43 @@
           "type_line": "Sorcery",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_avengers_disassembled_modes_damage_land_and_optional_basic_search"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Avengers Disassembled",
           "kind": "printed rule",
           "rule": "Choose one or both \u2014",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_avengers_disassembled_modes_damage_land_and_optional_basic_search"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers Disassembled",
           "kind": "printed rule",
           "rule": "\u2022 Avengers Disassembled deals 3 damage to each creature.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_avengers_disassembled_modes_damage_land_and_optional_basic_search"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers Disassembled",
           "kind": "printed rule",
           "rule": "\u2022 Destroy target land. Its controller may search their library for a basic land card, put it onto the battlefield tapped, then shuffle.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_avengers_disassembled_modes_damage_land_and_optional_basic_search"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Avengers Hangar",
@@ -948,28 +1232,43 @@
           "type_line": "Land",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Avengers Hangar",
           "kind": "printed rule",
           "rule": "This land enters tapped.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers Hangar",
           "kind": "printed rule",
           "rule": "When this land enters, you gain 1 life.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers Hangar",
           "kind": "printed rule",
           "rule": "{T}: Add {W} or {U}.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Avengers Tower",
@@ -991,28 +1290,43 @@
           "type_line": "Land",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Avengers Tower",
           "kind": "printed rule",
           "rule": "{T}: Add {C}.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers Tower",
           "kind": "printed rule",
           "rule": "{T}: Add one mana of any color. Spend this mana only to cast a Hero spell or to activate an ability of a Hero source.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers Tower",
           "kind": "printed rule",
           "rule": "{4}, {T}: Look at the top three cards of your library. You may reveal a Hero card from among them and put it into your hand. Put the rest on the bottom of your library in any order.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Avengers: Under Siege",
@@ -1034,34 +1348,53 @@
           "type_line": "Enchantment \u2014 Saga",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Avengers: Under Siege",
           "kind": "printed rule",
           "rule": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers: Under Siege",
           "kind": "printed rule",
           "rule": "I \u2014 Create two 2/1 black Villain creature tokens with menace.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers: Under Siege",
           "kind": "printed rule",
           "rule": "II \u2014 This Saga deals 2 damage to each non-Villain creature and each opponent.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Avengers: Under Siege",
           "kind": "printed rule",
           "rule": "III \u2014 Create a Treasure token for each Villain you control.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Baron Helmut Zemo",
@@ -1083,22 +1416,33 @@
           "type_line": "Legendary Creature \u2014 Human Noble Villain",
           "power": "3",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Baron Helmut Zemo",
           "kind": "printed rule",
           "rule": "Whenever you cast a black spell from your hand, Baron Helmut Zemo connives.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Baron Helmut Zemo",
           "kind": "printed rule",
           "rule": "Boast \u2014 Exile any number of black cards from your graveyard with fifteen or more black mana symbols among their mana costs: Copy those exiled cards. You may cast up to three of the copies without paying their mana costs. (Activate only if this creature attacked this turn and only once each turn.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Baron Strucker, HYDRA Overlord",
@@ -1120,22 +1464,33 @@
           "type_line": "Legendary Creature \u2014 Human Villain",
           "power": "2",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Baron Strucker, HYDRA Overlord",
           "kind": "printed rule",
           "rule": "Villain spells you cast cost {1} less to cast.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Baron Strucker, HYDRA Overlord",
           "kind": "printed rule",
           "rule": "Whenever another Villain you control enters, you may have it connive. Do this only once each turn. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on that creature.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Baxter Building",
@@ -1157,28 +1512,51 @@
           "type_line": "Land",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_baxter_modes_and_dark_fortress_entry_or_basic_guard",
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice",
+            "engine::assurance::msh_contracts::msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_controller"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Baxter Building",
           "kind": "printed rule",
           "rule": "{T}: Add {C}.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_baxter_modes_and_dark_fortress_entry_or_basic_guard",
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice",
+            "engine::assurance::msh_contracts::msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_controller"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Baxter Building",
           "kind": "printed rule",
           "rule": "{4}, {T}: Add four mana in any combination of colors.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_baxter_modes_and_dark_fortress_entry_or_basic_guard",
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice",
+            "engine::assurance::msh_contracts::msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_controller"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Baxter Building",
           "kind": "printed rule",
           "rule": "{4}, {T}: Draw a card. Activate only if you control a creature with toughness 4 or greater.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_baxter_modes_and_dark_fortress_entry_or_basic_guard",
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice",
+            "engine::assurance::msh_contracts::msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_controller"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Beast, Erudite Aerialist",
@@ -1200,22 +1578,33 @@
           "type_line": "Legendary Creature \u2014 Mutant Scientist Hero",
           "power": "3",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Beast, Erudite Aerialist",
           "kind": "printed rule",
           "rule": "As long as you've put one or more +1/+1 counters on Beast this turn, he has flying.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Beast, Erudite Aerialist",
           "kind": "printed rule",
           "rule": "Whenever Beast deals combat damage to a player, draw a card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Birnin Zana Plaza",
@@ -1237,28 +1626,43 @@
           "type_line": "Land",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Birnin Zana Plaza",
           "kind": "printed rule",
           "rule": "This land enters tapped.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Birnin Zana Plaza",
           "kind": "printed rule",
           "rule": "When this land enters, you gain 1 life.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Birnin Zana Plaza",
           "kind": "printed rule",
           "rule": "{T}: Add {G} or {W}.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Black Panther, Vanguard",
@@ -1280,28 +1684,43 @@
           "type_line": "Legendary Creature \u2014 Human Warrior Hero",
           "power": "4",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Black Panther, Vanguard",
           "kind": "printed rule",
           "rule": "Whenever another nontoken Hero you control enters, choose one \u2014",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Black Panther, Vanguard",
           "kind": "printed rule",
           "rule": "\u2022 Create a 1/1 white Soldier creature token.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Black Panther, Vanguard",
           "kind": "printed rule",
           "rule": "\u2022 Creatures you control get +1/+1 until end of turn.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Black Widow, Double Agent",
@@ -1323,22 +1742,35 @@
           "type_line": "Legendary Creature \u2014 Human Hero Villain",
           "power": "3",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Black Widow, Double Agent",
           "kind": "printed rule",
           "rule": "Deathtouch",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Black Widow, Double Agent",
           "kind": "printed rule",
           "rule": "Whenever a creature you control attacks alone, it gains first strike and menace until end of turn. (It can't be blocked except by two or more creatures.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Black Widow, Super Spy",
@@ -1360,22 +1792,35 @@
           "type_line": "Legendary Creature \u2014 Human Spy Hero",
           "power": "2",
           "toughness": "1",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Black Widow, Super Spy",
           "kind": "printed rule",
           "rule": "Menace",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::indestructible_survives_destroy_and_menace_requires_two_blockers"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Black Widow, Super Spy",
           "kind": "printed rule",
           "rule": "Whenever Black Widow deals combat damage to a player, that player exiles cards from the top of their library until they exile a nonland card. You may put a +1/+1 counter on Black Widow. If you don't, you may cast the exiled nonland card until end of turn and mana of any type can be spent to cast that spell.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Blazing Crescendo",
@@ -1397,22 +1842,33 @@
           "type_line": "Instant",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Blazing Crescendo",
           "kind": "printed rule",
           "rule": "Target creature gets +3/+1 until end of turn.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Blazing Crescendo",
           "kind": "printed rule",
           "rule": "Exile the top card of your library. Until the end of your next turn, you may play that card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Bold Biochemist",
@@ -1434,16 +1890,23 @@
           "type_line": "Creature \u2014 Human Scientist",
           "power": "1",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Bold Biochemist",
           "kind": "printed rule",
           "rule": "Power-up \u2014 {5}{U}: Put a +1/+1 counter on this creature and draw two cards. (Activate each power-up ability only once. Reduce the cost by its mana cost if it entered this turn.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Borough Backup",
@@ -1465,22 +1928,36 @@
           "type_line": "Sorcery",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens",
+            "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Borough Backup",
           "kind": "printed rule",
           "rule": "Create two 3/2 white Hero creature tokens with vigilance.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens",
+            "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Borough Backup",
           "kind": "printed rule",
           "rule": "Basic landcycling {2} ({2}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens",
+            "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Brave Brawler",
@@ -1502,22 +1979,35 @@
           "type_line": "Creature \u2014 Human Warrior Hero",
           "power": "2",
           "toughness": "1",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Brave Brawler",
           "kind": "printed rule",
           "rule": "Lifelink",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Brave Brawler",
           "kind": "printed rule",
           "rule": "Power-up \u2014 {4}{W}: Put two +1/+1 counters on this creature. (Activate each power-up ability only once. Reduce the cost by its mana cost if it entered this turn.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Bruce Banner // The Incredible Hulk",
@@ -1539,19 +2029,30 @@
           "type_line": "Legendary Creature \u2014 Human Scientist Hero",
           "power": "1",
           "toughness": "1",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Bruce Banner",
           "kind": "printed rule",
           "rule": "{X}{X}, {T}: Draw X cards. Activate only as a sorcery.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Bruce Banner",
           "kind": "printed rule",
           "rule": "{2}{R}{R}{G}{G}: Transform Bruce Banner. Activate only as a sorcery.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "The Incredible Hulk",
@@ -1560,22 +2061,36 @@
           "type_line": "Legendary Creature \u2014 Gamma Berserker Hero",
           "power": "8",
           "toughness": "8",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "The Incredible Hulk",
           "kind": "printed rule",
           "rule": "Reach, trample",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat",
+            "engine::assurance::interactions::trample_with_deathtouch_assigns_one_lethal_and_the_rest_to_defender"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "The Incredible Hulk",
           "kind": "printed rule",
           "rule": "Enrage \u2014 Whenever The Incredible Hulk is dealt damage, put a +1/+1 counter on him. If he's attacking, untap him and there is an additional combat phase after this phase.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Bullseye, Death Dealer",
@@ -1597,22 +2112,33 @@
           "type_line": "Legendary Creature \u2014 Human Assassin Villain",
           "power": "2",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Bullseye, Death Dealer",
           "kind": "printed rule",
           "rule": "When Bullseye enters, you may sacrifice an artifact or discard a nonland card. When you do, Bullseye deals 2 damage to any target.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_bullseye_optional_entry_and_both_activated_alternative_costs"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Bullseye, Death Dealer",
           "kind": "printed rule",
           "rule": "{3}, {T}, Sacrifice an artifact or discard a nonland card: Bullseye deals 2 damage to any target.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_bullseye_optional_entry_and_both_activated_alternative_costs"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Call Damage Control",
@@ -1634,40 +2160,63 @@
           "type_line": "Sorcery",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Call Damage Control",
           "kind": "printed rule",
           "rule": "Choose up to two. Return those cards from your graveyard to your hand.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Call Damage Control",
           "kind": "printed rule",
           "rule": "\u2022 Target artifact card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Call Damage Control",
           "kind": "printed rule",
           "rule": "\u2022 Target creature card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Call Damage Control",
           "kind": "printed rule",
           "rule": "\u2022 Target enchantment card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Call Damage Control",
           "kind": "printed rule",
           "rule": "\u2022 Target land card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Captain America's Shield",
@@ -1689,34 +2238,55 @@
           "type_line": "Legendary Artifact \u2014 Equipment",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Captain America's Shield",
           "kind": "printed rule",
           "rule": "Indestructible",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::indestructible_survives_destroy_and_menace_requires_two_blockers"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain America's Shield",
           "kind": "printed rule",
           "rule": "Equipped creature gets +0/+8 and has vigilance.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain America's Shield",
           "kind": "printed rule",
           "rule": "Whenever equipped creature attacks, tap target creature defending player controls.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain America's Shield",
           "kind": "printed rule",
           "rule": "Equip {2}",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Captain America, Living Legend",
@@ -1738,22 +2308,35 @@
           "type_line": "Legendary Creature \u2014 Human Soldier Hero",
           "power": "3",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Captain America, Living Legend",
           "kind": "printed rule",
           "rule": "Vigilance",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain America, Living Legend",
           "kind": "printed rule",
           "rule": "Whenever a creature you control becomes tapped during your turn, if it's the first time that creature has become tapped this turn, untap it.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Captain America, Super-Soldier",
@@ -1775,28 +2358,45 @@
           "type_line": "Legendary Creature \u2014 Human Soldier Hero",
           "power": "3",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Captain America, Super-Soldier",
           "kind": "printed rule",
           "rule": "First strike",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::first_strike_removes_blocker_before_it_deals_damage"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain America, Super-Soldier",
           "kind": "printed rule",
           "rule": "Captain America enters with a shield counter on him. (If he would be dealt damage or destroyed, remove a shield counter from him instead.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain America, Super-Soldier",
           "kind": "printed rule",
           "rule": "As long as Captain America has a shield counter on him, you and other Heroes you control have hexproof.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Captain America, Wings of Freedom",
@@ -1818,22 +2418,33 @@
           "type_line": "Legendary Creature \u2014 Human Soldier Hero",
           "power": "3",
           "toughness": "1",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Captain America, Wings of Freedom",
           "kind": "printed rule",
           "rule": "Flying, first strike, ward {1}",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain America, Wings of Freedom",
           "kind": "printed rule",
           "rule": "Whenever Captain America attacks, each other Hero you control gets +X/+X until end of turn, where X is Captain America's toughness.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Captain Mar-Vell, Space-Born",
@@ -1855,22 +2466,35 @@
           "type_line": "Legendary Creature \u2014 Kree Soldier Hero",
           "power": "4",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Captain Mar-Vell, Space-Born",
           "kind": "printed rule",
           "rule": "Flying, vigilance",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_window",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain Mar-Vell, Space-Born",
           "kind": "printed rule",
           "rule": "Cosmic Awareness \u2014 As long as an opponent has cast a spell this turn, you may cast spells as though they had flash.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_window"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Captain Marvel, Earth's Protector",
@@ -1892,28 +2516,46 @@
           "type_line": "Legendary Creature \u2014 Human Kree Hero",
           "power": "5",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Captain Marvel, Earth's Protector",
           "kind": "printed rule",
           "rule": "Flash",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain Marvel, Earth's Protector",
           "kind": "printed rule",
           "rule": "Flying, lifelink",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat",
+            "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Captain Marvel, Earth's Protector",
           "kind": "printed rule",
           "rule": "Power-up \u2014 {5}{W}{W}: Put a +1/+1 counter and an indestructible counter on Captain Marvel. (Activate each power-up ability only once. Reduce the cost by her mana cost if she entered this turn.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Castle Doom",
@@ -1935,28 +2577,43 @@
           "type_line": "Land",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Castle Doom",
           "kind": "printed rule",
           "rule": "{T}: Add {C}.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Castle Doom",
           "kind": "printed rule",
           "rule": "{T}: Add one mana of any color. Spend this mana only to cast an artifact spell.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Castle Doom",
           "kind": "printed rule",
           "rule": "{3}, {T}, Sacrifice an artifact: Create a 3/3 colorless Robot Villain artifact creature token named Doombot. Activate only as a sorcery.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Claim the Kingdom",
@@ -1978,22 +2635,33 @@
           "type_line": "Enchantment \u2014 Plan",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Claim the Kingdom",
           "kind": "printed rule",
           "rule": "Landfall \u2014 Whenever a land you control enters, put a +1/+1 counter on target creature you control and a plan counter on this enchantment.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Claim the Kingdom",
           "kind": "printed rule",
           "rule": "When the fourth plan counter is put on this enchantment, sacrifice it. When you do, put an indestructible counter on target creature you control.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Cloak and Dagger, Entwined",
@@ -2015,22 +2683,35 @@
           "type_line": "Legendary Creature \u2014 Human Hero",
           "power": "2",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Cloak and Dagger, Entwined",
           "kind": "printed rule",
           "rule": "Deathtouch, lifelink",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_cloak_hand_or_creature_exile_returns_to_original_zone_and_may_decline",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Cloak and Dagger, Entwined",
           "kind": "printed rule",
           "rule": "When Cloak and Dagger enter, choose target opponent and up to one target creature they control. They reveal their hand. You may exile a nonland card from their hand or the chosen creature until Cloak and Dagger leave the battlefield.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_cloak_hand_or_creature_exile_returns_to_original_zone_and_may_decline"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Colleen Wing, Street Samurai",
@@ -2052,16 +2733,23 @@
           "type_line": "Legendary Creature \u2014 Human Samurai Hero",
           "power": "2",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Colleen Wing, Street Samurai",
           "kind": "printed rule",
           "rule": "Whenever you cast a spell that targets a creature you control, put a +1/+1 counter on Colleen Wing. Scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_window"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Construct a Cosmic Cube",
@@ -2083,22 +2771,33 @@
           "type_line": "Enchantment \u2014 Plan",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Construct a Cosmic Cube",
           "kind": "printed rule",
           "rule": "Whenever you draw your second card each turn, create a 2/1 black Villain creature token with menace and put a plan counter on this enchantment.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Construct a Cosmic Cube",
           "kind": "printed rule",
           "rule": "When the seventh plan counter is put on this enchantment, sacrifice it. When you do, you control target opponent during their next turn. (You see all cards that player could see and make all decisions for them.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Cosmic Cube",
@@ -2120,22 +2819,33 @@
           "type_line": "Artifact",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Cosmic Cube",
           "kind": "printed rule",
           "rule": "Ward {2}",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Cosmic Cube",
           "kind": "printed rule",
           "rule": "Whenever you attack, look at the top six cards of your library. You may cast a spell from among them with mana value less than or equal to the greatest power among attacking creatures you control without paying its mana cost. Put the rest on the bottom of your library in a random order.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Crimson Operative",
@@ -2157,22 +2867,35 @@
           "type_line": "Artifact Creature \u2014 Human Villain",
           "power": "3",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Crimson Operative",
           "kind": "printed rule",
           "rule": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_prowess_family_has_real_noncreature_trigger_and_cleanup",
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Crimson Operative",
           "kind": "printed rule",
           "rule": "When this creature enters, exile the top card of your library. Until the end of your next turn, you may play that card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_prowess_family_has_real_noncreature_trigger_and_cleanup",
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Crossbones, Malicious Mercenary",
@@ -2194,22 +2917,35 @@
           "type_line": "Legendary Creature \u2014 Human Mercenary Villain",
           "power": "3",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Crossbones, Malicious Mercenary",
           "kind": "printed rule",
           "rule": "Deathtouch",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Crossbones, Malicious Mercenary",
           "kind": "printed rule",
           "rule": "Whenever another Villain you control enters, put a +1/+1 counter on Crossbones. He deals 2 damage to each opponent. This ability triggers only once each turn.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Crowd of True Believers",
@@ -2231,16 +2967,23 @@
           "type_line": "Creature \u2014 Human Citizen",
           "power": "1",
           "toughness": "2",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Crowd of True Believers",
           "kind": "printed rule",
           "rule": "{T}: Target creature you control that's attacking alone gets +1/+0 until end of turn. You gain 1 life.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Cruel Alliance",
@@ -2262,22 +3005,33 @@
           "type_line": "Sorcery",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Cruel Alliance",
           "kind": "printed rule",
           "rule": "Teamwork 2 (As an additional cost to cast this spell, you may tap any number of creatures you control with total power 2 or more.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Cruel Alliance",
           "kind": "printed rule",
           "rule": "Exile target creature with mana value 3 or less. If this spell was cast using teamwork, instead exile target creature and you gain 3 life.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Daredevil, Man Without Fear",
@@ -2299,28 +3053,43 @@
           "type_line": "Legendary Creature \u2014 Human Hero",
           "power": "3",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Daredevil, Man Without Fear",
           "kind": "printed rule",
           "rule": "Vigilance, haste",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Daredevil, Man Without Fear",
           "kind": "printed rule",
           "rule": "Radar Sense \u2014 You may look at the top card of your library any time.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Daredevil, Man Without Fear",
           "kind": "printed rule",
           "rule": "Whenever you attack, you may exile the top card of your library. If that card is a Hero card, Daredevil gets +2/+1 until end of turn. You may play that card this turn.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Dark Deed",
@@ -2342,16 +3111,23 @@
           "type_line": "Instant",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Dark Deed",
           "kind": "printed rule",
           "rule": "Target creature gets -4/-4 until end of turn.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Dark Fortress",
@@ -2373,22 +3149,36 @@
           "type_line": "Land",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_baxter_modes_and_dark_fortress_entry_or_basic_guard",
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Dark Fortress",
           "kind": "printed rule",
           "rule": "{T}: Add {C}.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_baxter_modes_and_dark_fortress_entry_or_basic_guard",
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Dark Fortress",
           "kind": "printed rule",
           "rule": "{T}: Add {B} or {R}. Activate only if this land entered this turn or if you control a basic land.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_baxter_modes_and_dark_fortress_entry_or_basic_guard",
+            "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Death to Our Enemies",
@@ -2410,22 +3200,33 @@
           "type_line": "Enchantment \u2014 Plan",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Death to Our Enemies",
           "kind": "printed rule",
           "rule": "Whenever you cast a noncreature spell, create a tapped Treasure token and put a plan counter on this enchantment.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Death to Our Enemies",
           "kind": "printed rule",
           "rule": "When the fourth plan counter is put on this enchantment, sacrifice it. When you do, it deals 7 damage divided as you choose among one or two targets.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Decoy Ploy",
@@ -2447,28 +3248,43 @@
           "type_line": "Instant",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Decoy Ploy",
           "kind": "printed rule",
           "rule": "Choose one or both \u2014",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Decoy Ploy",
           "kind": "printed rule",
           "rule": "\u2022 Return target Villain card from your graveyard to your hand.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Decoy Ploy",
           "kind": "printed rule",
           "rule": "\u2022 Return target Hero card from your graveyard to your hand.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Dependable Quinjet",
@@ -2490,28 +3306,45 @@
           "type_line": "Artifact \u2014 Vehicle",
           "power": "3",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_quinjet_any_color_and_crew_threshold_animate_only_until_cleanup"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Dependable Quinjet",
           "kind": "printed rule",
           "rule": "Flying",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_quinjet_any_color_and_crew_threshold_animate_only_until_cleanup",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Dependable Quinjet",
           "kind": "printed rule",
           "rule": "{T}: Add one mana of any color.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_quinjet_any_color_and_crew_threshold_animate_only_until_cleanup"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Dependable Quinjet",
           "kind": "printed rule",
           "rule": "Crew 4 (Tap any number of creatures you control with total power 4 or more: This Vehicle becomes an artifact creature until end of turn.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_quinjet_any_color_and_crew_threshold_animate_only_until_cleanup"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Depower",
@@ -2533,28 +3366,43 @@
           "type_line": "Instant",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Depower",
           "kind": "printed rule",
           "rule": "This spell costs {2} less to cast if it targets an attacking creature.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Depower",
           "kind": "printed rule",
           "rule": "Target creature gets -4/-0 until end of turn.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Depower",
           "kind": "printed rule",
           "rule": "Draw a card.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Doc Samson, Super Psychiatrist",
@@ -2576,22 +3424,33 @@
           "type_line": "Legendary Creature \u2014 Gamma Doctor Hero",
           "power": "3",
           "toughness": "6",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Doc Samson, Super Psychiatrist",
           "kind": "printed rule",
           "rule": "If you would put one or more counters on a permanent you control, put that many plus one of each of those kinds of counters on that permanent instead.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Doc Samson, Super Psychiatrist",
           "kind": "printed rule",
           "rule": "{T}: Add X mana of any one color, where X is Doc Samson's power.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Doctor Doom",
@@ -2613,28 +3472,43 @@
           "type_line": "Legendary Creature \u2014 Human Scientist Villain",
           "power": "3",
           "toughness": "3",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Doctor Doom",
           "kind": "printed rule",
           "rule": "When Doctor Doom enters, create two 3/3 colorless Robot Villain artifact creature tokens named Doombot.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_doctor_doom_tokens_conditional_indestructibility_and_own_end_step"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Doctor Doom",
           "kind": "printed rule",
           "rule": "As long as you control an artifact creature or a Plan, Doctor Doom has indestructible.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_doctor_doom_tokens_conditional_indestructibility_and_own_end_step"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Doctor Doom",
           "kind": "printed rule",
           "rule": "At the beginning of your end step, you draw a card and lose 1 life.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_doctor_doom_tokens_conditional_indestructibility_and_own_end_step"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Doom Reigns Supreme",
@@ -2656,22 +3530,33 @@
           "type_line": "Enchantment \u2014 Plan",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Doom Reigns Supreme",
           "kind": "printed rule",
           "rule": "Whenever a Villain you control enters, each opponent loses 1 life and you gain 1 life. Put a plan counter on this enchantment.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Doom Reigns Supreme",
           "kind": "printed rule",
           "rule": "When the fifth plan counter is put on this enchantment, sacrifice it. When you do, target opponent exiles the top five cards of their library. You may cast up to two spells from among the exiled cards without paying their mana costs.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Earth's Mightiest Heroes",
@@ -2693,22 +3578,33 @@
           "type_line": "Sorcery",
           "power": null,
           "toughness": null,
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Earth's Mightiest Heroes",
           "kind": "printed rule",
           "rule": "Teamwork 5 (As an additional cost to cast this spell, you may tap any number of creatures you control with total power 5 or more.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Earth's Mightiest Heroes",
           "kind": "printed rule",
           "rule": "Reveal the top eight cards of your library. You may put a creature card from among them onto the battlefield. If this spell was cast using teamwork, put any number of creature cards from among them onto the battlefield instead. Put the rest into your graveyard.",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     },
     {
       "name": "Echo, Perceptive Prodigy",
@@ -2730,25 +3626,48 @@
           "type_line": "Legendary Creature \u2014 Human Hero",
           "power": "1",
           "toughness": "4",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios"
+          ],
+          "evidence_scope": "Independent paid cost/base body table for creatures; literal paid cost/land mana in focused families for other cards. Type-line facts are source expectations, not a substitute for behavior assertions."
         },
         {
           "face": "Echo, Perceptive Prodigy",
           "kind": "printed rule",
           "rule": "Vigilance",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires",
+            "engine::assurance::msh_a::msh_echo_copies_creature_ability_and_changes_only_the_copys_target",
+            "engine::assurance::msh_a::msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs",
+            "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
+          ],
+          "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         },
         {
           "face": "Echo, Perceptive Prodigy",
           "kind": "printed rule",
           "rule": "{1}, {T}: Copy target activated or triggered ability you control from a creature source. You may choose new targets for the copy. (Mana abilities can't be targeted.)",
-          "tests": []
+          "tests": [
+            "engine::assurance::msh_a::msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires",
+            "engine::assurance::msh_a::msh_echo_copies_creature_ability_and_changes_only_the_copys_target"
+          ],
+          "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
+          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
         }
       ],
-      "coverage_status": "in progress; unassigned obligations are gaps"
+      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
     }
   ],
   "known_xmage_discrepancies": [
     "Beast Oracle is per source permanent; its Java watcher keys by player, so the Oracle per-object requirement controls expectations."
+  ],
+  "behavior_obligations": 160,
+  "characteristic_records": 72,
+  "remaining_coverage_gaps": [],
+  "limitations": [
+    "Bounded scenarios do not exhaust all card cross-products, action trees, optional target subsets or multiple turns.",
+    "Cast/entry traces are separately retained regression evidence and are not independent rules proof.",
+    "Focused OPT0 execution is development evidence; ordinary final validation must pass unchanged 10/30/5-second budgets."
   ]
 }
