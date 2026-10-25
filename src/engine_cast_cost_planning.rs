@@ -391,6 +391,8 @@ impl FundingState<'_> {
         selected: &mut Vec<ObjectRef>,
         exact: bool,
     ) -> bool {
+        #[cfg(test)]
+        teamwork_scalability_tests::visit_teamwork_node();
         let mut sum = saddle::PowerSum::default();
         for r in selected.iter() {
             sum.add(self.power(r.card));
@@ -1157,3 +1159,7 @@ impl Game {
 #[cfg(test)]
 #[path = "engine_msh_improvise_ordered_tests.rs"]
 mod msh_improvise_ordered_tests;
+
+#[cfg(test)]
+#[path = "engine_teamwork_funding_scalability_tests.rs"]
+mod teamwork_scalability_tests;
