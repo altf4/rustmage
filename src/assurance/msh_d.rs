@@ -1583,6 +1583,7 @@ fn vision_quest_search_and_drone_scry_choices() {
 
         let mut g = scenario(p);
         let donor = put(&mut g, p, "Ultron Drone", Zone::Library);
+        let rng_before = g.state.rng.0;
         let spell = put(&mut g, p, "Vision Quest", Zone::Hand);
         g.state.players[p.index()].mana = [0, 1, 0, 1, 0, 4];
         act(&mut g, Action::AnnounceCast { card: spell });
@@ -1608,6 +1609,7 @@ fn vision_quest_search_and_drone_scry_choices() {
         settle(&mut g);
         assert_eq!(g.object_view(donor).zone, Zone::Battlefield);
         assert_eq!(stats(&g, donor), (6, 7));
+        assert_ne!(g.state.rng.0, rng_before);
     }
 }
 

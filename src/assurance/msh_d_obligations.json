@@ -4481,7 +4481,7 @@
           "oracle": "Search your library and/or graveyard for an artifact creature card with mana value X or less and put it onto the battlefield with X additional +1/+1 counters on it. If X is 4 or greater, it gains haste until end of turn. If you search your library this way, shuffle.",
           "assertions": [
             "declare/pay X4UR; search own graveyard or library artifact-creature MV3 and put on battlefield with4 additional counters: Drone6/7, haste at X4",
-            "library/graveyard selection uses explicit zone menu"
+            "library/graveyard selection uses explicit zone menu; library route advances shuffle RNG"
           ],
           "scenario_tests": [
             "engine::assurance::msh_d::vision_quest_search_and_drone_scry_choices"
