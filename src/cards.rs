@@ -1113,6 +1113,11 @@ pub(crate) enum Instruction {
     PayXReflexive {
         ability: u16,
     },
+    /// One reflexive trigger after one or more unit generic payments, with a finite bound.
+    PayXReflexiveLimited {
+        ability: u16,
+        maximum: u32,
+    },
     MayPayMana {
         cost: ManaCost,
         skip: usize,
@@ -1239,6 +1244,11 @@ pub(crate) enum Instruction {
     },
     /// Definition-only triggered header whose modes may each be chosen once per source incarnation.
     ModalOnce(&'static [SpellMode]),
+    /// Finite, nonrepeating combinations bounded by the packet's captured X.
+    ModalUpToX {
+        modes: &'static [SpellMode],
+        counts: &'static [u8],
+    },
     /// Triggered modes each available once during the current actual turn.
     ModalOncePerTurn(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.

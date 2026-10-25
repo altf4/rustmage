@@ -1185,7 +1185,8 @@ impl SpellView {
                 Some(
                     Instruction::Modal(modes)
                     | Instruction::ModalOnce(modes)
-                    | Instruction::ModalOncePerTurn(modes),
+                    | Instruction::ModalOncePerTurn(modes)
+                    | Instruction::ModalUpToX { modes, .. },
                 ) => Some(modes),
                 _ => None,
             },
@@ -1200,6 +1201,18 @@ impl SpellView {
             | StackKind::CopyEndStepSacrifice
             | StackKind::CasualtyCopy
             | StackKind::DelayedReturn => None,
+        }
+    }
+    pub(crate) fn bounded_mode_count(&self, mode: usize) -> Option<u8> {
+        let StackKind::TriggeredAbility { ability } = self.kind else {
+            return None;
+        };
+        match self.trigger_definition().triggers()[ability as usize]
+            .program
+            .first()
+        {
+            Some(Instruction::ModalUpToX { counts, .. }) => Some(counts[mode]),
+            _ => None,
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
@@ -5075,14 +5088,24 @@ impl Game {
                     r.item.x = Some(value);
                     r.item.clone()
                 };
-                self.start_optional_resolution_payment(
-                    &item,
-                    ManaCost {
-                        colored: [0; 6],
-                        generic: value,
-                    },
-                    0,
-                );
+                let resolving = self.state.resolving.as_ref().unwrap();
+                if value == 0
+                    && matches!(
+                        resolving.program.get(resolving.pc.saturating_sub(1)),
+                        Some(Instruction::PayXReflexiveLimited { .. })
+                    )
+                {
+                    self.run_program();
+                } else {
+                    self.start_optional_resolution_payment(
+                        &item,
+                        ManaCost {
+                            colored: [0; 6],
+                            generic: value,
+                        },
+                        0,
+                    );
+                }
             }
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
@@ -8204,3 +8227,7 @@ mod msh_armor_tony_tests;
 #[cfg(test)]
 #[path = "engine_msh_bruce_kang_tests.rs"]
 mod msh_bruce_kang_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_hawkeye_wrecking_tests.rs"]
+mod msh_hawkeye_wrecking_tests;

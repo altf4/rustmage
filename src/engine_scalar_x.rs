@@ -234,7 +234,11 @@ impl Game {
     pub fn x_choice(&self) -> Option<XChoiceView> {
         if let Pending::ResolutionX { player } = self.state.pending {
             let mut lo = 0u64;
-            let mut hi = u64::from(u32::MAX) + 1;
+            let resolving = self.state.resolving.as_ref().unwrap();
+            let mut hi = match resolving.program.get(resolving.pc.saturating_sub(1)) {
+                Some(Instruction::PayXReflexiveLimited { maximum, .. }) => u64::from(*maximum) + 1,
+                _ => u64::from(u32::MAX) + 1,
+            };
             while lo + 1 < hi {
                 let mid = lo + (hi - lo) / 2;
                 if self.can_fund(FundingGoal {

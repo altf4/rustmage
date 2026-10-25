@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "cb34d2bc0989a27dfd6111ae9bfaf7f733b4d50519ec7837dec22619a7ced495",
+  "catalogue_version": "7c49e369e584b680bd49a64db7a1efcd3af2ac86ed4cb430b4d8e5c38077eed2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2541,
-  "implemented_total": 2547,
+  "implemented_standard_cards": 2543,
+  "implemented_total": 2549,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 236,
-      "gated": 37
+      "complete": 238,
+      "gated": 35
     },
     "one": {
       "total": 1,
@@ -15941,8 +15941,8 @@
     {
       "name": "Hawkeye, Master Marksman",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hawkeye_master_marksman.rs",
       "set": "msh"
     },
@@ -36141,8 +36141,8 @@
     {
       "name": "The Ruinous Wrecking Crew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_ruinous_wrecking_crew.rs",
       "set": "msh"
     },

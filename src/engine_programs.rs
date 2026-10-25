@@ -2517,7 +2517,8 @@ impl Game {
                 }
                 Instruction::Modal(_)
                 | Instruction::ModalOnce(_)
-                | Instruction::ModalOncePerTurn(_) => {
+                | Instruction::ModalOncePerTurn(_)
+                | Instruction::ModalUpToX { .. } => {
                     unreachable!("unselected modal ability executed")
                 }
                 Instruction::Explore(subject) => {
@@ -3515,7 +3516,7 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::PayXReflexive { .. } => {
+                Instruction::PayXReflexive { .. } | Instruction::PayXReflexiveLimited { .. } => {
                     self.state.pending = Pending::ResolutionX {
                         player: item.controller,
                     };

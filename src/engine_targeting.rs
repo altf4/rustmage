@@ -712,6 +712,20 @@ impl Game {
     }
 
     pub(super) fn choose_mode(&mut self, mode: u16) {
+        if self
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .item
+            .bounded_mode_count(usize::from(mode))
+            == Some(0)
+        {
+            // CR700.2b/603.3c: choosing no modes removes the triggered ability.
+            assert!(self.state.announcing.take().unwrap().trigger);
+            self.continue_trigger_order();
+            return;
+        }
         let plan = self
             .state
             .announcing
