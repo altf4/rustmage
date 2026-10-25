@@ -1,0 +1,443 @@
+{
+  "schema": 1,
+  "scope": "Gated source-qualified independent ability-copy core; both prospective consumers remain complete:false and are rejected by accepted-pool deck construction. Deliberately seeded physical fixtures execute their immutable typed bodies through ordinary paid actions.",
+  "runtime_head": "8050e7c43c1d6360fa54fb527e5439c5cca83592",
+  "base": "570a494ac3d4fadd710594b2914817af5f8557a6",
+  "admissions": [],
+  "card_sources": [
+    {
+      "name": "Echo, Perceptive Prodigy",
+      "oracle_id": "1091c83a-a4b9-457f-a69a-9a44a7e10759",
+      "facts_sha256": "0e21244bc3a6c7def060ba621accf0b30b5757ddfe48983f2b1c71b9c0a5f02f",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/e/EchoPerceptiveProdigy.java",
+      "java_sha256": "a29c1ebf533a5c1b511ba6810c3750bf8dcb2ddac9d27bff91e9bb36844dbcf6"
+    },
+    {
+      "name": "Scientist Supreme of A.I.M.",
+      "oracle_id": "c09c424b-6aba-4190-9f55-f0307d746386",
+      "facts_sha256": "a2de9144bc1feb734f813829b4bf2b72027795f73775a2949dc978ac4d2ddf79",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/s/ScientistSupremeOfAIM.java",
+      "java_sha256": "7cc0e81dad774404b249108b1a98a37f04d0cc5fbc799c261961fb5bc86b8196"
+    }
+  ],
+  "shared_mechanics": [
+    "Qualified targets are controlled activated or triggered stack abilities whose exact source is currently a creature/artifact, or whose latest departure facts satisfy that type. Physical source control is independent of ability control.",
+    "Copy the complete owned ability packet, assign one fresh stack ID and copied controller, retain physical source/program/origin/mode/X/groups/divisions/paid and linked contexts. No physical source object is allocated or moved.",
+    "Reuse existing optional target editing and exact committed target acquisition. New choices remain legal and groups retain their cardinality; inherited illegal targets may remain. Loki observes final acquisition for retained and changed targets.",
+    "Copied abilities do not pay activation costs again. Later resolution choices remain independent. New reflexive triggers are fresh triggered abilities, and ability-copy abandonment cannot exile a physical source.",
+    "A local activation announcement freezes post-payment source facts before its source leaves during payment; packets use exact incarnation identity."
+  ],
+  "gated_whole_obligations_pending": [
+    "Echo printed vigilance combat and complete own-cost/timing/suppression matrix.",
+    "Scientist own-turn, once-per-turn, life-payment boundary, control/origin and turn-reset matrix.",
+    "Final whole-card admission, cross-card aggregate and natural-game/performance acceptance."
+  ],
+  "rules_authority": [
+    {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "sections": [
+        "Echo, Perceptive Prodigy",
+        "Scientist Supreme of A.I.M."
+      ],
+      "coverage": "Complete relevant official release-note sections read."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+      "rules": [
+        "113.7/113.7a",
+        "115.7",
+        "400.7/400.7j",
+        "608.2h",
+        "707.10/707.10b/707.10c"
+      ],
+      "coverage": "Relevant primary rules read; exact source/current-or-LKI qualifications and independent choices are applied."
+    }
+  ],
+  "source_read_receipts": [
+    {
+      "path": "<cache>/rustmage-msh-echo-scientist-design-c0994f29.json",
+      "sha256": "5050f5267b8c46ba813e4e00be714b7541b575006c0b0ef714349d8dec6cef97"
+    },
+    {
+      "path": "<cache>/rustmage-msh-echo-scientist-design-570a494a.json",
+      "sha256": "da2f1c4c4566a7396002187ff319b7654f8daa94efba9ea57146cc465553c2b6"
+    },
+    {
+      "path": "<cache>/rustmage-msh-echo-scientist-fixture-full-sources-570a494a.json",
+      "sha256": "a753f6511663432f084ca4f1890db6a1b918e91917614815432b5d1b8d477d37"
+    }
+  ],
+  "source_read_limits": "Prepared source audit contains 38 complete direct/reusable classes and three explicitly ranged broad framework snapshots. Supplemental fixture packet contains 30 complete Java bodies and 19 full frozen Oracle records. Imported broad framework is not transitively claimed.",
+  "tests": {
+    "file": "src/engine_msh_ability_copy_core_tests.rs",
+    "new_groups": 20,
+    "both_seats": true,
+    "functions": [
+      "msh_ability_copy_core_paid_echo_retargets_raft_without_source_allocation_or_second_cost",
+      "msh_ability_copy_core_paid_x_is_preserved_and_original_power_up_use_not_repeated",
+      "msh_ability_copy_core_actual_kree_cycling_has_independent_private_searches_for_both_copiers",
+      "msh_ability_copy_core_live_type_departure_lki_and_new_incarnation_do_not_rebind_source",
+      "msh_ability_copy_core_triggered_surveil_choices_are_private_and_independent",
+      "msh_ability_copy_core_modal_targets_are_frozen_with_transactional_distinct_retargeting",
+      "msh_ability_copy_core_committed_copy_acquires_retained_or_changed_targets_for_loki_once",
+      "msh_ability_copy_core_type_revalidation_fizzles_without_refunding_paid_cost",
+      "msh_ability_copy_core_stack_source_cascade_copy_never_moves_physical_source",
+      "msh_ability_copy_core_copy_of_copy_keeps_full_paid_packet_and_three_private_searches",
+      "msh_ability_copy_core_granted_ability_qualifies_recipient_and_keeps_exact_equipment_link",
+      "msh_ability_copy_core_linked_exile_copies_share_physical_source_but_choose_independently",
+      "msh_ability_copy_core_source_control_is_independent_from_ability_controller",
+      "msh_ability_copy_core_copied_modal_targets_may_retain_illegal_but_cannot_select_it_again",
+      "msh_ability_copy_core_spell_foreign_resolved_and_mana_targets_are_rejected_atomically",
+      "msh_ability_copy_core_copied_red_parent_creates_fresh_uncopied_reflexive_trigger",
+      "msh_ability_copy_core_actual_countered_stack_source_uses_lki_without_copy_cleanup_move",
+      "msh_ability_copy_core_real_shuri_two_groups_keep_cardinality_and_allow_cross_group_same_object",
+      "msh_ability_copy_core_bounded_artifact_chandra_keeps_declared_divisions_and_loyalty_cost",
+      "msh_ability_copy_core_copied_ability_counts_as_a_second_resolution_without_new_entry"
+    ],
+    "bounded_contexts": [
+      "Current-kind copy layers, source control/departure transitions and late Loki observer setup are explicitly labeled in their functions.",
+      "Artifact Chandra is a bounded source-kind setup. Its immutable loyalty ability, declared division, actual loyalty payment, copy and target edits are real; no supported producer of that artifact form is claimed."
+    ],
+    "owned_privacy_atomicity": "Checked paid actions use existing raw/index replay and restore helpers. Independent search/surveil choices hide actor-only information. Explicit orphan branches drop the parent, compare complete observations (only restore revision normalized), check stale index rejection and replay. Illegal actions compare snapshot, owned bytes and both complete observations."
+  },
+  "validation": {
+    "profile": "Repository defaults for full native and strict checks; opt-level0 is development focus only.",
+    "native_passed": 1732,
+    "native_filtered_out": 1,
+    "excluded_selector": "msh_broad_132 only, the known old funding-solver stall; aggregate owner retains natural-game/performance acceptance.",
+    "native_execution_seconds": 12.08,
+    "default_driver_seconds": 211.03956508636475,
+    "default_resource": {
+      "path": "<cache>/rustmage-msh-echo-scientist-core-default2-resource.json",
+      "sha256": "71de37432fb033c4d290751c282ccad78628a380dafadb2b02a6bf7dfbb9ebca"
+    },
+    "commands": {
+      "native": {
+        "exit": 0,
+        "seconds": 167.0693678855896
+      },
+      "clippy": {
+        "exit": 0,
+        "seconds": 39.70680499076843
+      },
+      "format": {
+        "exit": 0,
+        "seconds": 1.658921718597412
+      },
+      "card-format": {
+        "exit": 0,
+        "seconds": 0.9505558013916016
+      },
+      "source": {
+        "exit": 0,
+        "seconds": 0.6095316410064697
+      },
+      "link": {
+        "exit": 0,
+        "seconds": 0.4493420124053955
+      },
+      "runner-contracts": {
+        "exit": 0,
+        "seconds": 0.42960071563720703
+      }
+    },
+    "fixed_source_inputs": 11839,
+    "changed_inputs": [],
+    "source_inputs_manifest": {
+      "path": "<cache>/rustmage-msh-echo-scientist-core-default2-inputs.json",
+      "sha256": "0bd83761b0e9a528b9c9fda1254f5bb3f4c4dcfa0b7924371c02aa7fa1b8aa31"
+    },
+    "development_focus_final": {
+      "groups": 20,
+      "execution_seconds": 0.38,
+      "profile": "opt-level0; no simulation-performance claim"
+    },
+    "cancelled_submission": "Initial default unit was intentionally terminated during compilation after authorization to exclude the one known-stalling sampler arrived. Its resource stop exit0 is explicitly not a native test result; distinct local logs and cancellation record are retained."
+  },
+  "trace_proof": {
+    "rows": {
+      "150": 2533,
+      "149": 2533,
+      "148": 2533
+    },
+    "exports": {
+      "rustmage-msh-echo-scientist-core-default2-traces.json": "5285a5d9309891f7ee66e72c6030fe435e4436c1d556a7122535cfbeb2f3b9df",
+      "rustmage-msh-echo-scientist-core-default2-traces.previous-schema.json": "0a3f2fcb7f4930338072239106181da9239d03ce7cbba48cee8bf0dea74d8c17",
+      "rustmage-msh-echo-scientist-core-historical148-traces.previous-schema.json": "ecf602e0551cc5626bc50929a74aadc979d85d6d279c2aed83f7e2f61afa73be"
+    },
+    "parents": [
+      {
+        "head": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+        "schema": 148,
+        "rows": 2516,
+        "sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "9fb8a5f44aced128411250f4662a9e2c9dd05f1c",
+        "schema": 149,
+        "rows": 2518,
+        "sha256": "2a8b12a2923f4bd74673f081c6ca549f15e5a971f604fa45b251d58d9c08f8ec",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "8fb9c4fde96afb72f5ab37af453eca59ca7913b4",
+        "schema": 148,
+        "rows": 2518,
+        "sha256": "19575053e0252530881ddb758d0850e1d33140417001c0da50d281228d5c3226",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "03d01f448a04a06083397ce440cfbaadd22c079a",
+        "schema": 148,
+        "rows": 2518,
+        "sha256": "e83465e157f8790accd1cf9fef0fbb4162c4ee1b58908c9d8db9ca173d8d4d1f",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "530c5205465b05d9f70c5f69313b152358ba5d4c",
+        "schema": 149,
+        "rows": 2522,
+        "sha256": "6e496077cc408eb84e3a877884a06473e6bf08dcfa540e78031e2bf866070cf6",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "d2dd845c92654eedc5ba402bb1c3b014f78ddcc1",
+        "schema": 149,
+        "rows": 2516,
+        "sha256": "960a1397e96079bdd75d9c45c71c6628c83870d05b87d761d070920685361728",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "057ecbb5f83acda151accd472b5ea0e3d37ee5ce",
+        "schema": 149,
+        "rows": 2522,
+        "sha256": "6e496077cc408eb84e3a877884a06473e6bf08dcfa540e78031e2bf866070cf6",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "7a34fe15aab80980edd6f6481e319bb9ea4876f9",
+        "schema": 149,
+        "rows": 2519,
+        "sha256": "e24f5a5d73bd8076d8d3373eec9dcb0e754f4ca43e4454bb7ebf91f860fe7480",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "6cb1ab8009ea2d03134cec2607bda0928e1930c6",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "48966258a9a28e4974261d8469e1dcd2a9f3dc91",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "a41d2a700ba0064c210b5342528580d7398a096a",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "d6c2ecda905c12fb7a3cecad6ddc85ececcb33b7",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "f798abe6c25f7df572915beccd0cae6355d9a77e",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "04d0de61e6c9752d867b98b92951fb524013b943",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "e5f576b58e0c98fd430fc7932b56530339e4d088",
+        "schema": 149,
+        "rows": 2525,
+        "sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "f57178b70cfaad32ab04cbb0ca06cbaef0540ab3",
+        "schema": 150,
+        "rows": 2525,
+        "sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "d7a8ac35a08bf07992d1862286aeb1212ce015f2",
+        "schema": 150,
+        "rows": 2525,
+        "sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "e6b62361fa4336cc1545163324077d9af42917de",
+        "schema": 150,
+        "rows": 2525,
+        "sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "cc194981f97f585d8f3e25e7c23fb104dda31600",
+        "schema": 150,
+        "rows": 2525,
+        "sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "d7161bd17b47d4f15c1490c2031906bac7dc8e3c",
+        "schema": 150,
+        "rows": 2528,
+        "sha256": "451b4885e18b1cfe4af459e9996df9e22ed270e0c19d594a6e5769e69c62930f",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "e98c479e15b76cdd5f12850cfd1c61d78ec012eb",
+        "schema": 150,
+        "rows": 2528,
+        "sha256": "f4defcbeb3e549aca9e561cb07de68ca4dbeb8a88506d93033bc67c469b85f85",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "198ea60d7c7675c7a3ab9c842b17ffa626a02c37",
+        "schema": 150,
+        "rows": 2527,
+        "sha256": "9079ef0ccc91c94eb006a5802dc0607d4b1a4164ad923172d8139522aa5e4438",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "head": "570a494ac3d4fadd710594b2914817af5f8557a6",
+        "schema": 150,
+        "rows": 2533,
+        "sha256": "5285a5d9309891f7ee66e72c6030fe435e4436c1d556a7122535cfbeb2f3b9df",
+        "full_structs_exact": true,
+        "changed": [],
+        "removed": []
+      }
+    ],
+    "all_full_structs_exact": true,
+    "field_stripping": false,
+    "recorder_changed": false,
+    "table_rebaseline": false,
+    "source_lki_inherited_row_drift": [],
+    "receipt": {
+      "path": "<cache>/rustmage-msh-echo-scientist-core-proof.json",
+      "sha256": "5d86462e8e00f14f2e91803c56c10cb1e8cfe01d2320b7a811e6d90ab97beebc"
+    }
+  },
+  "metadata": {
+    "definitions": 5403,
+    "token_recipes": 125,
+    "new_ids": [],
+    "coverage_membership_and_flags_unchanged": true,
+    "new_wire_payloads": [],
+    "wire_schema": 150,
+    "wire_note": "Existing coordinated cohort schema; this private core adds no public payload or version change."
+  },
+  "cleanup": {
+    "own_user_processes_inspected": 195,
+    "permission_denied_processes": [
+      "4299",
+      "4313",
+      "4688",
+      "6612",
+      "204298"
+    ],
+    "target_executable_mapping_fd_cwd_references": [],
+    "removed_files": 1184,
+    "removed_bytes": 163241589,
+    "prior_required_rehashed_exact": 4105,
+    "total_required_rehashed_exact": 4118,
+    "preserved_libraries": {
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-core-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-core-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_useful_natives": {
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-core-default-target/debug/deps/rustmage-b764cd26223fba2c": "fd7003b158ce8fa42a1fd5ee55be33d9773d432ff732a9cd8f14be0ab54a4524",
+      "/home/altf4/.cache/rustmage-msh-echo-scientist-core-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "8c448a85998d3b7f576ae999a69c31913d172f24ee532236f7a3c44c3d380c01"
+    },
+    "terminal_resource_reports": 9,
+    "preservation_manifest_sha256": "7075753ca1be022318bcf812f4840a30fe228a6623c3564d78975511f637ce35"
+  },
+  "custody_manifest": {
+    "path": "<cache>/rustmage-msh-ability-copy-core-preservation.json",
+    "sha256": "7075753ca1be022318bcf812f4840a30fe228a6623c3564d78975511f637ce35"
+  },
+  "source_pins": {
+    "data/standard/coverage.json": "1fb1281b278e4ce8059926bf5566b428cc9cae00e1b8769a7225d1e7208dfcc0",
+    "src/card_definitions/msh/echo_perceptive_prodigy.json": "1169ceda63ddbbe4348c64478ab6c936d4de31b8ceca92496ee90acbfee3156d",
+    "src/card_definitions/msh/echo_perceptive_prodigy.rs": "55fa2f044e87d4b59850b3a0aa0eb80465cf128364c94e9cc721d9e626367e1c",
+    "src/card_definitions/msh/scientist_supreme_of_a_i_m.json": "64efea40101c936c0099dc78c56c8b06f8d887957327c107d71141ada1bf595c",
+    "src/card_definitions/msh/scientist_supreme_of_a_i_m.rs": "72c43577dd829c571b04ba702f75c67ed945caed84a969aa927806afeb30ee12",
+    "src/cards.rs": "916ab5cccbc32f66ac9f863dbe12745b1b4bfc4b6d4402bc31c482af5977f0c6",
+    "src/engine.rs": "c9338bf5c22c503fc0757ea733481aeeb7bd7c17c9356422107a1efde79464f2",
+    "src/engine_activations.rs": "452d8c31434c536acbae0dbf6df5de0f4f7aeb517a7c46fbb4740575fbbf653d",
+    "src/engine_msh_ability_copy_core_tests.rs": "e1071e28bf6ab7e7940daec834d84ca17ca510a7916e0c9ca4ffc99180f0d2ff",
+    "src/engine_programs.rs": "b03a3d6a98cabd20fd39a34dbedf4a98e62bfbcc0eb08a57f25b5a920afed132",
+    "src/engine_roles.rs": "a010de4ccd9dc8a50358a88cc894cfbb09d80e8d02a08ddc602e413e1cd4f64c",
+    "src/engine_stack_copies.rs": "d5e0f60e4fd4b000e7aa656e9835751a9911598d3543093e384c8023326cf566",
+    "src/generated/catalogue.rs": "49a021eea5394daabaa9e3b10c71328016d280db4df7438edb0faf4d6effcbcd"
+  },
+  "limits": "Twenty new shared-core groups and default/static/full-Trace evidence are complete. Both prospective card admissions and aggregate full-set/performance acceptance remain open."
+}
