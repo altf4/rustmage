@@ -133,7 +133,7 @@ fn msh_sixth_combined_discard_enables_guard_tap_loot_recovers_punch_before_recei
                 o.zone == Zone::Battlefield
                     && o.controller == p
                     && o.is_token()
-                    && o.card == Card(5312)
+                    && o.card == Card::from_name("@token/cf0227c0984ee9114e6c311f").unwrap()
             })
             .collect();
         assert_eq!(villains.len(), 1);
