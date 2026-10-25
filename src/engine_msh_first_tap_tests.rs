@@ -210,29 +210,35 @@ fn msh_first_tap_paid_two_target_effect_queues_each_and_stun_replaces_untap() {
 #[test]
 fn msh_first_tap_crew_group_interacts_with_single_rewrite_event() {
     for p in [Player::P0, Player::P1] {
-        let mut g = setup(p);
-        captain(&mut g, p);
-        let plan = paid(&mut g, p, "Rewrite History", &[]);
-        let a = named(&mut g, p, "Bear Cub", Zone::Battlefield);
-        let b = named(&mut g, p, "Bear Cub", Zone::Battlefield);
-        let v = named(&mut g, p, "Detention Chariot", Zone::Battlefield);
-        checked(
-            &mut g,
-            Action::AnnounceActivate {
-                card: v,
-                ability: 0,
-                counter_payment: Counters::default(),
-            },
-        );
-        for id in [a, b] {
-            let object = g.object_ref(id);
-            checked(&mut g, Action::ChooseCrewer { object });
+        for source_crews in [false, true] {
+            let mut g = setup(p);
+            let source = captain(&mut g, p);
+            let plan = paid(&mut g, p, "Rewrite History", &[]);
+            let a = if source_crews {
+                source
+            } else {
+                named(&mut g, p, "Bear Cub", Zone::Battlefield)
+            };
+            let b = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let v = named(&mut g, p, "Detention Chariot", Zone::Battlefield);
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: v,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            for id in [a, b] {
+                let object = g.object_ref(id);
+                checked(&mut g, Action::ChooseCrewer { object });
+            }
+            checked(&mut g, Action::FinishCrew);
+            settle(&mut g);
+            assert!(!g.object_view(a).tapped && !g.object_view(b).tapped);
+            assert!(g.is_creature(v));
+            assert_eq!(g.counter_count(plan, CounterKind::Plan), 1);
         }
-        checked(&mut g, Action::FinishCrew);
-        settle(&mut g);
-        assert!(!g.object_view(a).tapped && !g.object_view(b).tapped);
-        assert!(g.is_creature(v));
-        assert_eq!(g.counter_count(plan, CounterKind::Plan), 1);
     }
 }
 #[test]

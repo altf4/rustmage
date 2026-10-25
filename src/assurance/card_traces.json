@@ -2591,6 +2591,22 @@
     "journal": "e9faa30ff25cc76d",
     "observations": "5a107dfb9fc67e91"
   },
+  "Captain America, Living Legend": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e625fc58634bfdee",
+    "observations": "2e953ce950d63dba"
+  },
+  "Captain Mar-Vell, Space-Born": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "db7b0f4bd7e53672",
+    "observations": "b34ce2936873785a"
+  },
   "Captain Marvel, Earth's Protector": {
     "root": "main",
     "status": "completed",
