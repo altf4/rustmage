@@ -40,6 +40,7 @@ fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
                         | Action::FinishTargets
                         | Action::FinishAttackers
                         | Action::FinishBlockers
+                        | Action::ChooseReplacement { .. }
                 )
             })
             .unwrap_or_else(|| panic!("unexpected {:?}", g.state.pending));
