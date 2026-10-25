@@ -15719,6 +15719,14 @@
     "journal": "0d39482255511c19",
     "observations": "e47114bfca9a1cb6"
   },
+  "Speed, Young Avenger": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "8b879a2d177dcb3a"
+  },
   "Spell Pierce": {
     "root": "stack",
     "status": "completed",
@@ -15806,6 +15814,14 @@
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
     "observations": "43780f884f8903ce"
+  },
+  "Spider-Man, To the Rescue": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 11,
+    "zone": "Battlefield",
+    "journal": "43e402f78de7c2e8",
+    "observations": "a67e3794631a5b4a"
   },
   "Spider-Rex, Daring Dino": {
     "root": "main",

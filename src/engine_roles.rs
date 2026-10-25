@@ -71,6 +71,29 @@ impl Game {
             subject.map(|object| Box::new(ReflexiveSubjectView { object }));
         self.state.pending_triggers.push(reflexive);
     }
+    pub(super) fn exact_source_can_tap(&self, item: &SpellView) -> bool {
+        self.on_battlefield(item.card)
+            && self.object_ref(item.card) == item.object
+            && !self.state.objects[item.card as usize].tapped
+    }
+    pub(super) fn complete_optional_tap_reflexive(&mut self) {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let Some(Instruction::MayTapSourceReflexive { ability }) =
+            resolution.program.get(resolution.pc.saturating_sub(1))
+        else {
+            return;
+        };
+        let (item, ability) = (resolution.item.clone(), *ability);
+        if self.exact_source_can_tap(&item) {
+            self.tap_objects(&[item.card]);
+            if self.on_battlefield(item.card)
+                && self.object_ref(item.card) == item.object
+                && self.state.objects[item.card as usize].tapped
+            {
+                self.queue_reflexive(&item, ability, None);
+            }
+        }
+    }
     pub(super) fn resolve_role_reflexive(&mut self, item: &SpellView, token: Card, ability: u16) {
         assert!(
             token.role().is_some(),
