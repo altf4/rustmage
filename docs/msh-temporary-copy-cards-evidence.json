@@ -1,0 +1,416 @@
+{
+  "scope": "Complete candidate implementations of Absorbing Man, Shuri, Wakandan Inventor, and Taskmaster, Mercenary Mimic, using the previously gated-only in-place temporary-copy core.",
+  "created_utc": "2026-10-25T09:52:46.659594+00:00",
+  "runtime_head": "bbcd2adf726d4da6423f1bdbde02b97f041b3cd4",
+  "producer_runtime_head": "ff616b159b482c876d22a6f1a6edc22fd5d26962",
+  "core_dependency": "d2dd845c92654eedc5ba402bb1c3b014f78ddcc1",
+  "base": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+  "branch": "codex/msh-temporary-copy",
+  "status": {
+    "new_complete_candidates": [
+      "Absorbing Man",
+      "Shuri, Wakandan Inventor",
+      "Taskmaster, Mercenary Mimic"
+    ],
+    "dedicated_whole_card_groups": 30,
+    "inherited_core_groups": 47,
+    "native_tests": 1493,
+    "definitions": 5403,
+    "token_recipes": 125,
+    "new_ids": [],
+    "wire_schema": 149,
+    "aggregate_release_CI_and_final_published_batch_reviews": "Pending aggregate integration; source-child checks do not establish final batch acceptance."
+  },
+  "core_checkpoint": {
+    "path": "docs/msh-temporary-copy-core-evidence.json",
+    "sha256": "9081196a63492217e11f50a0b8f7dfbed4ec8e07cd0299d310a8cae78167d641",
+    "historical_scope": "The checkpoint correctly records all three cards as gated at that earlier head. This producer evidence supersedes only their admission status; no shared runtime source changed after the core checkpoint.",
+    "source_provenance": "All25 full pinned Java enclosing bodies and read coverage, three frozen Oracle bodies, authoritative rules, and explicit ability-acquisition inference remain recorded there and in the paired card provenance."
+  },
+  "cards": [
+    {
+      "name": "Absorbing Man",
+      "catalogue_id": 38,
+      "oracle_id": "ec8e310f-e871-498f-8d80-c3617c5e1433",
+      "facts_sha256": "c76253acf1b3305b8cee40daf9c7d8b567cfcb2fc46624b7aed34fe62a99a9ac",
+      "physical_metadata_sha256": "6c87ae2ff249e53e6b19cd39edc48a394a89d531ffa17a8c1faf6d5942d8568b",
+      "definition": {
+        "path": "src/card_definitions/msh/absorbing_man.rs",
+        "sha256": "e379cc579e0375a974117795b71e396feaaf9bcb4b2a87034960e5ef81c0360f"
+      },
+      "provenance": {
+        "path": "src/card_definitions/msh/absorbing_man.json",
+        "sha256": "629e2a6f32cd10321d1fcece31e149a92ac6d262fc276e1731b9af315e1ffb0b"
+      },
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/a/AbsorbingMan.java",
+      "java_sha256": "e2d325401ded31301eb5ebe249a909fa4e07c198936844b74d665ca7562db89e",
+      "rules_authority": {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "rules": "Complete frozen Oracle and official Absorbing Man notes; CR707.2/707.9 fixed power and toughness exclude a copied P/T characteristic-defining ability, retain additive Human/Villain/Creature types and vigilance, and freeze a flat blueprint. Any artifact (including an Aura), non-Aura enchantment or land can be targeted, regardless of controller. Optional first-main copy lasts until the captured ability controller next turn, with physical identity preserved. CR613.7 static timestamps remain distinct from intrinsic/granted ability acquisition; creature Aura copies follow CR303.4d/704.5 SBA rules."
+      }
+    },
+    {
+      "name": "Shuri, Wakandan Inventor",
+      "catalogue_id": 3857,
+      "oracle_id": "a8c047fc-20a9-4c62-b8a6-9ead56d60ad0",
+      "facts_sha256": "1b1a01aa93f76b274780a05339bc540a20699318a6f15728097d3e5f1ee8b92c",
+      "physical_metadata_sha256": "2c3d011a32770355410020eb03758c753702f805870946e6d7682e38bdd0ddca",
+      "definition": {
+        "path": "src/card_definitions/msh/shuri_wakandan_inventor.rs",
+        "sha256": "b24fa496c1711982358fc99865e123ef54a456100751fd1ba47a58187509cbdf"
+      },
+      "provenance": {
+        "path": "src/card_definitions/msh/shuri_wakandan_inventor.json",
+        "sha256": "52f14e503711471d5537cc09e8a8d9e4c151ce297cb06dca4892db66356a1b47"
+      },
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/s/ShuriWakandanInventor.java",
+      "java_sha256": "568babeaeb6a5916538fc1f3e1532e9ee3fccfaa1fe29b8e68d0721a9a1fb379",
+      "rules_authority": {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "rules": "Full Shuri Oracle and official rulings; CR115.3 permits one object for both independent target groups. CR608.2b makes the effect do nothing if either target is illegal and prevents resolution when both are illegal. Pinned Java AnotherTargetPredicate conflicts with Oracle/rules; departed blueprint LKI cannot bypass target legality. Exact source-independent artifact copy except nonlegendary lasts through cleanup. Artifact spell reduction affects generic cast mana only."
+      }
+    },
+    {
+      "name": "Taskmaster, Mercenary Mimic",
+      "catalogue_id": 4342,
+      "oracle_id": "dcd97730-b793-4c0c-b158-625ac3656b4a",
+      "facts_sha256": "901c65769a029dfe6af658c0715fb2ab2caa86bb233a0c30ad4ab7805f5ed5a0",
+      "physical_metadata_sha256": "c3d0034206dbc5c9930b1b05445d8ad8c660276d5b453032f1eebedc426bf3f8",
+      "definition": {
+        "path": "src/card_definitions/msh/taskmaster_mercenary_mimic.rs",
+        "sha256": "42595e09d4e45d2d4f84ebfbcfea2e290767f174d2ff6b90d7befc3df8390a28"
+      },
+      "provenance": {
+        "path": "src/card_definitions/msh/taskmaster_mercenary_mimic.json",
+        "sha256": "5a5193c6e25fad715c2cb3ce998851d1f35c7ca59aace015f7d8346ab88dad60"
+      },
+      "xmage_absence": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "oracle_id": "dcd97730-b793-4c0c-b158-625ac3656b4a",
+        "inventory_path": "data/standard/xmage-inventory.json",
+        "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7"
+      },
+      "rules_authority": {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "rules": "Complete frozen Oracle and Taskmaster release notes; direct Java class absent from frozen inventory/tree. CR707.2/707.9: flat copied blueprint; replacement Human Mercenary Villain Creature types and name/legendary override, copied power/toughness and relevant P/T CDA retained. Creature card in any graveyard uses current physical card face, not prior battlefield LKI or token facts. Copy duration uses the triggered ability controller next turn and preserves physical object incarnation."
+      }
+    }
+  ],
+  "printed_obligations": {
+    "Absorbing Man": [
+      "Pay printed 1GU; legendary Human Villain 4/4 with vigilance.",
+      "Trigger at beginning of YOUR FIRST main phase; optional zero or one target.",
+      "Target union: any artifact OR non-Aura enchantment OR land. Artifact Aura qualifies via artifact branch. Controller unrestricted.",
+      "Until captured controller next turn, exact source becomes snapshot copy; source must remain same incarnation.",
+      "Name exactly Absorbing Man; legendary 4/4 Human Villain creature IN ADDITION to copied types; vigilance added. Preserve unrelated copiable characteristics.",
+      "Duration survives control changes; copy changes and expiry do not fabricate ETB/LTB; reindex copied providers."
+    ],
+    "Taskmaster, Mercenary Mimic": [
+      "Pay printed 2UB; legendary Human Mercenary Villain 3/5.",
+      "Photographic Reflexes is an ability word; first-main trigger optional zero or one target.",
+      "Target creature permanent OR creature CARD in any graveyard; latter uses card face values, not former battlefield LKI or tokens.",
+      "Until captured controller next turn, exact source becomes snapshot copy.",
+      "Name Taskmaster, Mercenary Mimic; legendary Human Mercenary Villain CREATURE, with replacement-type wording rather than in-addition wording. Preserve copied P/T and applicable P/T CDA; omit overwritten-type CDA.",
+      "All copied activated/static/triggered abilities and relevant CDAs work; same-incarnation, expiry and physical reversion required."
+    ],
+    "Shuri, Wakandan Inventor": [
+      "Pay printed 1U; legendary Human Artificer Hero 2/1.",
+      "Artifact spells YOU CAST cost generic1 less; stack calculation, alternate/free casts, increases and actual/funding share live reducer. Does not reduce activated ability cost.",
+      "Pay generic1 and tap exact source, including summoning sickness/haste and cost atomicity. Activate only as sorcery.",
+      "First controlled artifact target becomes copy of second controlled artifact target EOT, except not legendary; SAME object allowed.",
+      "Recheck both target groups, captured target incarnations and control/type/protection; source departure does not cancel a valid queued activation.",
+      "Snapshot before self-copy; overlapping copy timestamps, full abilities, cleanup restoration and legend SBA correct."
+    ]
+  },
+  "source_provenance": {
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "design_cache": {
+      "path": "<cache>/rustmage-msh-temporary-copy-design-a29274fe.json",
+      "sha256": "a3c34d39e09d818e0a1703b227150b16a4c4ee64b0cc5f4e63a9dbceac73177b",
+      "contains": "Full three Oracle bodies, full25 Java enclosing bodies and prior runtime snapshots; read coverage is stated per pin."
+    },
+    "java_pins_reference": "docs/msh-temporary-copy-core-evidence.json#/source_provenance/java_pins",
+    "taskmaster": "No direct Java class exists in the frozen tree/inventory. Paired provenance records honest absence and primary rules/shared-helper sources.",
+    "read_coverage": "Full direct Shuri and Absorbing Man implementations and relevant helpers were read. GameImpl coverage is its exact copyPermanent methods, with the full enclosing body cached; no claim to have read every unrelated GameImpl method."
+  },
+  "primary_backed_inference": {
+    "statement": "A new copy effect, even of an identical blueprint, creates a fresh intrinsic ability acquisition. Suppression/control changes do not reset an uninterrupted instance. Expiry restores the older intrinsic origin/history, whereas a restored static grant creates a new recipient grant instance. Queued packets retain their captured origin/program.",
+    "status": "Explicit inference from primary rules and official analogous rulings; no primary ruling directly states the entire Vision-trigger acquisition case. CR602.5c is not applied directly as a triggered-ability rule.",
+    "authorities": [
+      {
+        "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+        "rules": [
+          "113.2c",
+          "113.7/113.7a",
+          "113.10",
+          "115.3",
+          "205.1a",
+          "303.4d",
+          "305.6",
+          "602.5b-c",
+          "607.5/607.5a",
+          "608.2b",
+          "613.1a/f",
+          "613.7a/b/e/g",
+          "707.2",
+          "707.9",
+          "714.3c/714.4"
+        ]
+      },
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "entries": [
+          "Absorbing Man",
+          "Shuri, Wakandan Inventor",
+          "Taskmaster, Mercenary Mimic",
+          "The Vision"
+        ]
+      },
+      {
+        "url": "https://media.wizards.com/2023/downloads/WOE_Release_Notes_9S5bvPQTjRwh/EN_MTGWOE_ReleaseNotes_20230518.pdf",
+        "entry": "Likeness Looter new restricted activated-ability instance after recopying"
+      }
+    ]
+  },
+  "source_discrepancies": [
+    "Shuri may choose one artifact for both target groups (CR115.3); the pinned Java AnotherTargetPredicate incorrectly prohibits that. If either target becomes illegal the copy has no effect; both illegal means the ability does not resolve.",
+    "Absorbing Man retains copied types and adds Human/Villain/Creature, fixed4/4 excludes a copied P/T CDA. Taskmaster replaces types and preserves copied P/T/CDA as applicable.",
+    "The generic Java CopyPermanentEffect Aura reattachment branch does not bypass the creature-Aura detach/SBA rule for an Absorbing-style copy."
+  ],
+  "whole_card_test_matrix": {
+    "path": "src/engine_msh_temporary_copy_cards_tests.rs",
+    "sha256": "37f6851b12e8606b64529c3b20ffb61402b213e4ac7ac3ee2641903070c79b90",
+    "groups": [
+      "msh_copy_cards_paid_printed_bodies_and_no_cast_turn_first_main_retrotrigger",
+      "msh_copy_cards_absorbing_optional_no_target_keeps_its_printed_body",
+      "msh_copy_cards_absorbing_target_union_any_controller_additive_types_and_fixed_body",
+      "msh_copy_cards_absorbing_excludes_plain_aura_and_creature_targets_atomically",
+      "msh_copy_cards_absorbing_source_departure_before_resolution_does_not_copy_new_zone",
+      "msh_copy_cards_absorbing_target_departure_fizzles_without_last_known_blueprint",
+      "msh_copy_cards_absorbing_captured_next_turn_expires_under_actual_confiscate_control",
+      "msh_copy_cards_shuri_paid_activation_summoning_sickness_timing_and_mana_atomicity",
+      "msh_copy_cards_shuri_same_artifact_both_groups_and_eot_restore_preserves_incarnation",
+      "msh_copy_cards_shuri_either_target_illegal_means_no_copy_even_when_other_survives",
+      "msh_copy_cards_taskmaster_battlefield_and_either_graveyard_use_replacement_types_and_copied_pt",
+      "msh_copy_cards_taskmaster_optional_none_and_noncreature_graveyard_targets_are_rejected",
+      "msh_copy_cards_shuri_reduction_actual_artifact_payment_and_unaffected_activation_costs",
+      "msh_copy_cards_shuri_reduction_respects_controller_suppression_and_zero_floor",
+      "msh_copy_cards_taskmaster_retains_copied_power_cda_and_actual_new_controller_counts",
+      "msh_copy_cards_taskmaster_copies_current_token_recipe_but_remains_physical_nontoken",
+      "msh_copy_cards_taskmaster_opposing_ward_requires_real_payment_or_counters_copy_ability",
+      "msh_copy_cards_absorbing_copied_forest_mana_is_actual_and_speculatively_fundable",
+      "msh_copy_cards_absorbing_bounded_artifact_aura_qualifies_then_creature_aura_sba_restores_physical_card",
+      "msh_copy_cards_absorbing_bounded_artifact_power_cda_is_replaced_by_fixed_four",
+      "msh_copy_cards_shuri_source_departure_owned_orphan_raw_index_restore_and_full_nonactor_privacy",
+      "msh_copy_cards_shuri_copy_has_no_enter_trigger_but_keeps_copied_death_program_and_physical_identity",
+      "msh_copy_cards_shuri_bounded_target_control_change_is_rechecked_for_both_groups",
+      "msh_copy_cards_taskmaster_graveyard_uses_physical_face_instead_of_prior_shuri_copy_lki",
+      "msh_copy_cards_shuri_sorcery_timing_and_controlled_artifact_groups_are_actual",
+      "msh_copy_cards_shuri_artifact_reduction_combines_with_real_improvise_payment",
+      "msh_copy_cards_taskmaster_graveyard_dfc_front_and_copied_transform_keep_physical_single_face",
+      "msh_copy_cards_first_main_triggers_neither_opponents_main_nor_second_main",
+      "msh_copy_cards_shuri_reduces_only_generic_part_of_colored_artifact_spell",
+      "msh_copy_cards_shuri_copies_runtime_token_blueprint_without_its_noncopyable_haste_or_delayed_exile"
+    ],
+    "both_seats": "Every dedicated group loops over both seats; cases use actual paid casts, activations, normal phase actions and target selections through existing scenario helpers.",
+    "paid_and_funding": [
+      "Printed costs and bodies; actual first-main triggers with no retroactive cast-turn trigger, no opponent-main or second-main trigger.",
+      "Shuri generic-only artifact reduction including zero floor, colored mana, controller/suppression, ordinary and Improvise payment; activated costs unchanged.",
+      "Shuri actual generic1/tap activation, sickness, sorcery/stack restriction, both target groups, same artifact in both groups, either/both illegal resolution, source gone, exact incarnation, EOT.",
+      "Absorbing Man any-controller artifact/non-Aura enchantment/land union, optional none, target/source departure, captured-controller next-turn deadline through actual Confiscate, additive types/fixed4/4/vigilance, copied Forest actual and speculative mana.",
+      "Taskmaster battlefield/own/opponent graveyard, optional none, current physical graveyard face, replacement types/copied P/T CDA, actual token recipe without physical token conversion, ward pay/decline, copied DFC transform on physical single-face source.",
+      "Actual copied Solemn death trigger without fabricated ETB; actual Molten Duplication blueprint without noncopiable haste/delayed exile."
+    ],
+    "privacy_atomicity_owned": "Existing checked-action helpers exercise wrong-actor rejection, full observations, indexed ownership and restore. Dedicated source-departure test retains raw and indexed owned branches after parent disposal and checks both full nonactor views. Rejected actions preserve snapshot/state bytes and both full views.",
+    "bounded_fixtures": [
+      "Artifact-tagged Witness Protection Aura tests the artifact branch and resulting creature-Aura SBA; the additional artifact tag is a labeled fixture rather than a claimed playable producer.",
+      "Artifact-tagged Namor tests Absorbing Man fixed P/T excluding a copied P/T CDA; the tag is a labeled fixture.",
+      "Direct controller mutation after paid Shuri target selection tests relation revalidation; labeled separately from the actual Confiscate duration case."
+    ],
+    "staging": "All30 dedicated groups passed with the three complete flags still false, using a narrow fixture installer for their real immutable typed definitions. Only then were all three promoted and the default full suite/export/static checks run. No unsupported effect was executed.",
+    "core_coverage": "The47 inherited bounded core groups cover overlapping layers, timestamps, hand chronology, acquisition/grant origins, suppression, queued packets/LKI, attachments/SBAs, physical identity/DFC, virtual funding and owned branching. Their matrix is in the core evidence."
+  },
+  "validation": {
+    "profile": "repository defaults for full native, dual exports and all static gates; profile0 used only for labeled focused development, with no simulation performance claim.",
+    "checks": {
+      "terminal": true,
+      "head": "bbcd2adf726d4da6423f1bdbde02b97f041b3cd4",
+      "profile": "repository defaults",
+      "commands": {
+        "native": {
+          "exit": 0,
+          "seconds": 145.29034996032715
+        },
+        "clippy": {
+          "exit": 0,
+          "seconds": 16.17645812034607
+        },
+        "format": {
+          "exit": 0,
+          "seconds": 1.5500905513763428
+        },
+        "card-format": {
+          "exit": 0,
+          "seconds": 0.955441951751709
+        },
+        "source": {
+          "exit": 0,
+          "seconds": 0.6118521690368652
+        },
+        "link": {
+          "exit": 0,
+          "seconds": 0.46025729179382324
+        },
+        "runner-contracts": {
+          "exit": 0,
+          "seconds": 0.4314141273498535
+        }
+      },
+      "files": 11799,
+      "changed": [],
+      "seconds": 165.63993167877197
+    },
+    "native_execution_seconds": 9.41,
+    "resource_guard": {
+      "path": "<cache>/rustmage-build-reports/d513e2fee2c8422ab8dd5a23e3ae0f76.json",
+      "sha256": "45c3c0016240c1770cd1737038fe596a779bab0e19256de09c55e8b136bbf5d9",
+      "command": [
+        "python3",
+        "/tmp/msh-temporary-copy-producers-strict-checks.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 165.792298602988,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2643714048,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "full_input_manifest": {
+      "path": "<cache>/rustmage-msh-temporary-copy-producers-strict-inputs.json",
+      "sha256": "0cbb4d994f505ac0328d56d6b343ef9bf51934249330aa9f73fa9da55f5748de",
+      "files": 11799,
+      "changed": []
+    },
+    "commands": "cargo test --lib; cargo clippy --all-targets -- -D warnings; cargo fmt --all --check; explicit rustfmt --edition2024 --check on all5403 authored card Rust files; check_sources.py; link_catalogue.py --check; test_assurance_runner.py. All Cargo ran under resource_guard, one job/thread and shared6GiB; all consumers reached actual terminal before cleanup."
+  },
+  "trace_proof": {
+    "head": "bbcd2adf726d4da6423f1bdbde02b97f041b3cd4",
+    "base": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+    "core_checkpoint": "d2dd845c92654eedc5ba402bb1c3b014f78ddcc1",
+    "normal_schema": 149,
+    "previous_schema": 148,
+    "rows": 2519,
+    "new_complete_candidates": [
+      "Absorbing Man",
+      "Shuri, Wakandan Inventor",
+      "Taskmaster, Mercenary Mimic"
+    ],
+    "inherited_full_structs": 2516,
+    "parents": [
+      {
+        "head": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+        "schema": 148,
+        "rows": 2516,
+        "sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": true
+      },
+      {
+        "head": "d2dd845c92654eedc5ba402bb1c3b014f78ddcc1",
+        "schema": 149,
+        "rows": 2516,
+        "sha256": "960a1397e96079bdd75d9c45c71c6628c83870d05b87d761d070920685361728",
+        "changed": [],
+        "removed": [],
+        "full_Trace_structs": true
+      }
+    ],
+    "normal_sha256": "e24f5a5d73bd8076d8d3373eec9dcb0e754f4ca43e4454bb7ebf91f860fe7480",
+    "previous_sha256": "2a66489b637a6e4cbeef2ca54993c4344900075e79beaa9e5d608a297c192079",
+    "no_field_stripping": true,
+    "recorder_unchanged": true,
+    "metadata_membership_policy_exact_core": true,
+    "definitions": 5403,
+    "token_recipes": 125,
+    "native_expected": 1493,
+    "native_status": "1493/1493 strict green",
+    "new_whole_card_groups": 30,
+    "new_core_groups": 47,
+    "fixed_input_files": 11799,
+    "fixed_input_changes": [],
+    "all_static_green": true,
+    "profile": "repository defaults",
+    "acceptance": false
+  },
+  "trace_acceptance": {
+    "new_keys_only": [
+      "Absorbing Man",
+      "Shuri, Wakandan Inventor",
+      "Taskmaster, Mercenary Mimic"
+    ],
+    "preaccept": "Default native1492 rules passed; sole expected2519-vs2516 trace cardinality failure. All inherited full structs were proved unchanged before the three new rows were accepted.",
+    "strict": "Fresh default native1493/1493 and both exports passed after trace acceptance. No field stripping, recorder changes, or blind rebaseline.",
+    "proof_cache": {
+      "path": "<cache>/rustmage-msh-temporary-copy-producers-strict-proof.json",
+      "sha256": "46784fd09b4a0d843bdef0a4df3ed19b67d47457548955be570d8b091f711b0d"
+    }
+  },
+  "cleanup": {
+    "created_utc": "2026-10-25T09:51:23.851896+00:00",
+    "own_user_processes_inspected": 184,
+    "permission_denied_processes": [
+      "4299",
+      "4313",
+      "4688",
+      "6612",
+      "204298"
+    ],
+    "target_executable_mapping_fd_cwd_references": [],
+    "removed_files": 1186,
+    "removed_bytes": 258657463,
+    "prior_required_rehashed_exact": 628,
+    "total_required_rehashed_exact": 642,
+    "preserved_libraries": {
+      "<cache>/rustmage-msh-temporary-copy-producers-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-temporary-copy-producers-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_useful_natives": {
+      "<cache>/rustmage-msh-temporary-copy-producers-default-native-bbcd2adf": "3f02029550488a72ef5c8046250d674c7c2587d7750a7162247da590c3d856da",
+      "<cache>/rustmage-msh-temporary-copy-producers-prepromotion-profile0-native-30groups": "2f465abfe32e8fc28cc5c57c00cf4f932bd7210b0d03a7e89fb80e215217ceb5"
+    },
+    "terminal_resource_reports": 10,
+    "preservation_manifest_sha256": "e4de7b00ee3f5fb13fa060e8d995b37c00242a7ca717d7295e562ebc761e086a"
+  },
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-temporary-copy-producers-preservation.json",
+    "sha256": "e4de7b00ee3f5fb13fa060e8d995b37c00242a7ca717d7295e562ebc761e086a",
+    "parent_manifest": "rustmage-msh-thirteenth-copy-core-integration-preservation.json",
+    "parent_manifest_sha256": "0104b6bd8c2d6f325ef8836eb019f98c151affc0c5fd1c535853a586ae198ff1",
+    "prior_required_exact": 628,
+    "total_required_exact": 642,
+    "new_terminal_resource_reports": 10,
+    "required_libraries_retained_at_original_paths": true,
+    "useful_default_native_retained": true,
+    "scope": "Only terminal disposable files in the two isolated producer targets were deleted after accessible own-user exe/cwd/fd/maps inspection. Five denied process inspections are explicitly recorded; no claim of inspecting inaccessible processes."
+  },
+  "throughput": {
+    "native_tests_per_second": 158.66,
+    "native_execution_seconds": 9.41,
+    "native_tests": 1493,
+    "measurement": "Default native test-harness execution only, not whole-game simulation or all-Standard throughput.",
+    "producer_validation_window_seconds": 1744.598,
+    "window_start_utc": "2026-10-25T09:20:50.912195+00:00",
+    "window_end_utc": "2026-10-25T09:49:55.510098+00:00",
+    "window_measurement": "Observed first dedicated paid-fixture guard start through final strict guard report mtime, derived from terminal resource reports. Includes iterative fixture corrections/builds and three candidate completions; excludes earlier shared-core design/implementation and final aggregate acceptance.",
+    "three_candidates_per_observed_validation_hour": 6.191
+  },
+  "remaining": [
+    "Aggregate integration release/CI and two fresh independent nonauthor reviews of the final published batch remain parent responsibilities.",
+    "Other MSH cards remain gated until their entire printed behavior and interactions are implemented. No additional temporary-copy consumers were admitted."
+  ]
+}
