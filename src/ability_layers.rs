@@ -51,6 +51,8 @@ pub(crate) enum StaticAbilityFragment {
     },
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
+    PlayLandFromLibraryTop,
+    PlayLandFromGraveyard,
     SpendAnyManaForCreatures,
     SpellImprovise(CastFilter),
     GraveyardPermanentTypes,

@@ -3267,7 +3267,10 @@ impl Game {
                     let authorized_origin = match obj.zone {
                         Zone::Battlefield => obj.controller == actor,
                         Zone::Hand | Zone::Graveyard => obj.owner == actor,
-                        Zone::Library => self.can_cast_library_top(actor, card),
+                        Zone::Library => {
+                            self.can_cast_library_top(actor, card)
+                                || self.can_play_static_land(actor, card)
+                        }
                         Zone::Exile => {
                             self.can_play_exiled(actor, card)
                                 || self.plotted_cast_available(actor, card)
@@ -3330,7 +3333,8 @@ impl Game {
                             && sorcery
                             && (obj.zone == Zone::Hand
                                 || self.can_play_exiled(actor, card)
-                                || self.has_graveyard_cast(actor, card, GraveyardCastKind::Play))
+                                || self.has_graveyard_cast(actor, card, GraveyardCastKind::Play)
+                                || self.can_play_static_land(actor, card))
                             && (!s.land_played
                                 || self
                                     .continuous_land_plays(actor)
@@ -3518,9 +3522,12 @@ impl Game {
                         continue;
                     }
                     let exile = obj.zone == Zone::Exile && self.can_play_exiled(actor, card);
-                    let library = self.can_cast_library_top(actor, card);
+                    let library = self.can_cast_library_top(actor, card)
+                        || (obj.zone == Zone::Library && self.can_play_static_land(actor, card));
                     let graveyard_land = obj.card.is_land()
-                        && self.has_graveyard_cast(actor, card, GraveyardCastKind::Play);
+                        && (self.has_graveyard_cast(actor, card, GraveyardCastKind::Play)
+                            || (obj.zone == Zone::Graveyard
+                                && self.can_play_static_land(actor, card)));
                     if (obj.zone != Zone::Hand
                         && !flashback
                         && !exile
@@ -4381,6 +4388,9 @@ impl Game {
                     free.remaining.retain(|reference| reference.card != card);
                     self.reveal_hideaway_object(self.object_ref(card));
                 }
+                if self.state.objects[card as usize].zone == Zone::Library {
+                    self.remember_library_top(actor, self.object_ref(card));
+                }
                 if matches!(
                     self.state.objects[card as usize].card.entry_tapped(),
                     EntryTapped::PayLife(_)
@@ -4399,10 +4409,12 @@ impl Game {
                     }
                     let mut movement = self.entry_move(card, Zone::Battlefield, false);
                     movement.controller = actor;
+                    movement.public_origin = movement.before.zone == Zone::Library;
                     self.stage_entries(vec![movement], None);
                 } else {
                     let mut movement = self.entry_move(card, Zone::Battlefield, false);
                     movement.controller = actor;
+                    movement.public_origin = movement.before.zone == Zone::Library;
                     self.stage_entries(vec![movement], None);
                 }
                 if self.state.land_played {
@@ -7729,3 +7741,7 @@ mod msh_library_top_tests;
 #[cfg(test)]
 #[path = "engine_msh_eleventh_combined_tests.rs"]
 mod msh_eleventh_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_land_origins_tests.rs"]
+mod msh_land_origins_tests;

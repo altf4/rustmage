@@ -9111,6 +9111,14 @@
     "journal": "3d3ee93213b6a8c8",
     "observations": "87fe6f2c7e5d0e12"
   },
+  "Ka-Zar of the Savage Land": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "1707eabb445652c2",
+    "observations": "09ddb03210262656"
+  },
   "Kaito, Cunning Infiltrator": {
     "root": "main",
     "status": "completed",
@@ -11078,6 +11086,14 @@
     "zone": "Battlefield",
     "journal": "d96ad4ca883f316e",
     "observations": "2da5e612d8a2364a"
+  },
+  "Mole Man, Moloid Master": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "65650efe5f58aac2"
   },
   "Molecular Modifier": {
     "root": "main",

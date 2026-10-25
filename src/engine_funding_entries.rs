@@ -1442,3 +1442,7 @@ mod msh_namor_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_galactus_funding_tests.rs"]
 mod msh_galactus_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_land_origins_funding_tests.rs"]
+mod msh_land_origins_funding_tests;

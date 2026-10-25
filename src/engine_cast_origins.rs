@@ -11,6 +11,8 @@ impl Card {
                         | StaticAbilityFragment::CascadeFromHand { .. }
                         | StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
+                        | StaticAbilityFragment::PlayLandFromLibraryTop
+                        | StaticAbilityFragment::PlayLandFromGraveyard
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
                         | StaticAbilityFragment::ForeignStashPlay
@@ -34,6 +36,24 @@ fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
                 .iter()
                 .any(|g| g.fragments.iter().any(&predicate))
             && world.printed_abilities_available(id)
+    })
+}
+/// A live rule changes only the origin of an ordinary land play. It never grants
+/// a spell cast, a per-source allowance, or an action during mana payment.
+pub(super) fn land_origin_available<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    origin: Zone,
+) -> bool {
+    has_fragment(world, player, |f| {
+        matches!(
+            (origin, f),
+            (Zone::Library, StaticAbilityFragment::PlayLandFromLibraryTop)
+                | (
+                    Zone::Graveyard,
+                    StaticAbilityFragment::PlayLandFromGraveyard
+                )
+        )
     })
 }
 pub(super) fn spends_any_type<W: ability_world::CharacteristicWorld + ?Sized>(
@@ -85,6 +105,15 @@ pub(super) fn payment_goal<W: ability_world::CharacteristicWorld + ?Sized>(
     }
 }
 impl Game {
+    pub(super) fn can_play_static_land(&self, player: Player, card: CardId) -> bool {
+        let object = &self.state.objects[card as usize];
+        object.owner == player
+            && object.card.is_land()
+            && !object.is_token()
+            && land_origin_available(self, player, object.zone)
+            && (object.zone != Zone::Library
+                || self.state.players[player.index()].library.last() == Some(&card))
+    }
     pub(super) fn can_cast_library_top(&self, player: Player, card: CardId) -> bool {
         let object = &self.state.objects[card as usize];
         object.owner == player
