@@ -3,7 +3,7 @@
   "catalogue_id": 5113,
   "oracle_id": "8c4da760-8913-46ca-b00c-bba6d877d482",
   "facts_sha256": "b9e36eaae63f89e42bd788dc2985ced360daf8d608555ca1f6ee948cf2308f7f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3842e016a3d54d36f65a0fad739e7acea671cf323aa847c94521696e8cc5cc30"
@@ -179,7 +179,10 @@
       "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
     }
   ],
-  "remaining_obligations": [
-    "Whole chapters II/III, Saga progression and complete producer proof remain gated."
+  "implementation_notes": [
+    "Complete directly authored typed Rust chapter programs; no English translation at runtime.",
+    "Paid both-seat chapter and interaction evidence: src/engine_msh_armor_hulk_sagas_tests.rs; shared turn-casting rules: src/engine_msh_turn_cast_grants_tests.rs.",
+    "Aggregate validation and complete-set acceptance are deferred to final integration.",
+    "Chapter I creates a source-independent captured-player grant consumed by the next successful qualifying cast, including paid casts; II uses central counter replacement; III freezes signed current P/T into the existing EOT layer7c modifier and grants EOT trample."
   ]
 }

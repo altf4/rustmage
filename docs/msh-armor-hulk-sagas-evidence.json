@@ -1,0 +1,320 @@
+{
+  "scope": "Two complete Saga producers; focused individual-card and directly affected shared-mechanic tests. Aggregate integration deferred by the current task priority.",
+  "base": "c8cb03a69fa666b9a7c24c984e787738d68a3efe",
+  "tested_runtime": "842160e196935ef455a7ccc0e82116442b89f46a",
+  "new_complete_cards": 2,
+  "cards": [
+    {
+      "name": "Armor Wars",
+      "oracle_id": "1ad83cac-2c85-477b-ab00-1369f9683db5",
+      "catalogue_id": 225,
+      "complete": true,
+      "oracle_facts_sha256": "ebf5f4db2ee4a0d7c4bdb6c933c3b519ffd2dcbbe90cdae638d2cf91023de288",
+      "rust": "src/card_definitions/msh/armor_wars.rs",
+      "rust_sha256": "bb354a1fee0fb9e01aa588f205c8f5bea710bb7345c2091895e3860c3f73bc1e",
+      "provenance": "src/card_definitions/msh/armor_wars.json",
+      "provenance_sha256": "680488833d60a091459b6e887d972af8b2a934c5ff84b3ef464aa3524acdfe1b",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/a/ArmorWars.java",
+      "java_sha256": "c5211be3a669190fe5f470b59bb4b404f3f3f423f466ce7d85d9074ca020348f"
+    },
+    {
+      "name": "World War Hulk",
+      "oracle_id": "8c4da760-8913-46ca-b00c-bba6d877d482",
+      "catalogue_id": 5113,
+      "complete": true,
+      "oracle_facts_sha256": "b9e36eaae63f89e42bd788dc2985ced360daf8d608555ca1f6ee948cf2308f7f",
+      "rust": "src/card_definitions/msh/world_war_hulk.rs",
+      "rust_sha256": "2877e573f1c3d311a7fe4b6dd11a7e76a60e861c9732544fe748fe8216ff7891",
+      "provenance": "src/card_definitions/msh/world_war_hulk.json",
+      "provenance_sha256": "e50d0d103bf06deacc694ad0c8ee9b1d511a4b6a283709ce1a40a8e123260fd7",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/w/WorldWarHulk.java",
+      "java_sha256": "343a25e3eb0b15686fbab6d6fe03caca7e4d2df47e5c7ef81a15fdf2f3ccc055"
+    }
+  ],
+  "shared_mechanics": {
+    "new_runtime_changes": [],
+    "dependencies": [
+      "Source-independent captured-player artifact spell reduction and next red/green creature free-cast grant from the integrated core.",
+      "Ordinary chapter packets, optional choices, paused sequential draw continuation, CountFilter/GreatestManaValue, central damage and counter replacements, signed layer7c snapshot multiplication and EOT keywords."
+    ],
+    "test_migration": "Existing 27 shared-core groups now cast the ordinary supported producers. Armor II index is 1 in the full chapter set; Hulk departure is explicit rather than inferred from an incomplete one-chapter fixture."
+  },
+  "printed_obligations": {
+    "Armor Wars": {
+      "Saga entry/lore/final sacrifice": [
+        "paid_armor_natural_three_chapters_discount_and_final_damage",
+        "saga_entry_crosses_two_chapters_but_main_lore_is_not_effect_doubled",
+        "saga_final_source_waits_for_targeted_packet_then_sacrifices"
+      ],
+      "I optional current artifact count, zero accepted/declined, draws complete before opponent draw": [
+        "armor_zero_draw_accepts_or_declines_without_java_positive_guard",
+        "armor_counts_resolution_control_and_artifact_creatures_not_ownership",
+        "armor_effective_artifacts_include_food_and_animated_land",
+        "armor_draw_pause_freezes_count_and_defers_opponent_draw",
+        "armor_optional_hidden_draw_and_queued_controller_survive_departure"
+      ],
+      "II artifact generic reduction this turn": [
+        "paid_armor_natural_three_chapters_discount_and_final_damage",
+        "existing turn_cast_grants_* groups cover stacking, generic-only, funding, legal origins, costs and cleanup"
+      ],
+      "III target opponent/current greatest artifact MV/current-or-LKI source actor": [
+        "armor_greatest_mana_value_is_current_and_zero_without_artifacts",
+        "armor_target_is_opponent_not_source_controller_or_creature",
+        "armor_target_gaining_hexproof_fizzles_bound_damage",
+        "armor_damage_source_current_and_departed_controller_lifelink",
+        "armor_damage_uses_actual_replacement_actor"
+      ]
+    },
+    "World War Hulk": {
+      "Saga and I next qualifying free alternative this turn": [
+        "paid_hulk_natural_three_chapters_free_cast_counters_double_and_cleanup",
+        "existing turn_cast_grants_* groups cover paid-next consumption, copies not cast, actual selected face/colors, mandatory costs, zone/timing and cleanup"
+      ],
+      "II target own current creature and three replaced +1/+1 counters": [
+        "hulk_chapters_require_own_current_creature_and_fail_atomically",
+        "hulk_counter_replacement_uses_recipient_and_captured_ability_controller",
+        "hulk_bound_recipient_control_change_and_blink_do_not_rebind",
+        "hulk_live_noncreature_target_is_illegal_on_resolution",
+        "hulk_queued_chapters_survive_source_control_departure_and_reentry"
+      ],
+      "III fixed signed current P/T doubling and EOT trample": [
+        "hulk_fixed_signed_snapshot_does_not_double_later_growth",
+        "hulk_resolution_snapshots_after_paid_response",
+        "hulk_trample_is_used_in_real_blocked_combat",
+        "paid_hulk_natural_three_chapters_free_cast_counters_double_and_cleanup"
+      ]
+    }
+  },
+  "test_name_rule": "Unqualified names in the printed-obligation matrix have prefix msh_armor_hulk_ in src/engine_msh_armor_hulk_sagas_tests.rs.",
+  "whole_test_functions": [
+    "msh_armor_hulk_paid_armor_natural_three_chapters_discount_and_final_damage",
+    "msh_armor_hulk_armor_zero_draw_accepts_or_declines_without_java_positive_guard",
+    "msh_armor_hulk_armor_counts_resolution_control_and_artifact_creatures_not_ownership",
+    "msh_armor_hulk_armor_draw_pause_freezes_count_and_defers_opponent_draw",
+    "msh_armor_hulk_armor_optional_hidden_draw_and_queued_controller_survive_departure",
+    "msh_armor_hulk_armor_greatest_mana_value_is_current_and_zero_without_artifacts",
+    "msh_armor_hulk_armor_target_is_opponent_not_source_controller_or_creature",
+    "msh_armor_hulk_armor_damage_source_current_and_departed_controller_lifelink",
+    "msh_armor_hulk_armor_damage_uses_actual_replacement_actor",
+    "msh_armor_hulk_paid_hulk_natural_three_chapters_free_cast_counters_double_and_cleanup",
+    "msh_armor_hulk_hulk_chapters_require_own_current_creature_and_fail_atomically",
+    "msh_armor_hulk_hulk_bound_recipient_control_change_and_blink_do_not_rebind",
+    "msh_armor_hulk_hulk_queued_chapters_survive_source_control_departure_and_reentry",
+    "msh_armor_hulk_hulk_counter_replacement_uses_recipient_and_captured_ability_controller",
+    "msh_armor_hulk_hulk_fixed_signed_snapshot_does_not_double_later_growth",
+    "msh_armor_hulk_hulk_resolution_snapshots_after_paid_response",
+    "msh_armor_hulk_saga_entry_crosses_two_chapters_but_main_lore_is_not_effect_doubled",
+    "msh_armor_hulk_saga_final_source_waits_for_targeted_packet_then_sacrifices",
+    "msh_armor_hulk_armor_effective_artifacts_include_food_and_animated_land",
+    "msh_armor_hulk_armor_target_gaining_hexproof_fizzles_bound_damage",
+    "msh_armor_hulk_hulk_live_noncreature_target_is_illegal_on_resolution",
+    "msh_armor_hulk_hulk_trample_is_used_in_real_blocked_combat"
+  ],
+  "focused_results": {
+    "terminal": true,
+    "whole_groups": 22,
+    "affected_shared_groups": 27,
+    "whole_rule_execution_seconds": 0.03,
+    "shared_rule_execution_seconds": 0.05,
+    "checks": {
+      "terminal": true,
+      "checks": [
+        {
+          "name": "whole",
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "msh_armor_hulk_",
+            "--",
+            "--nocapture"
+          ],
+          "seconds": 159.77708661201177,
+          "exit_code": 0,
+          "log": "<cache>/rustmage-msh-armor-hulk-sagas-final-focus-whole.log"
+        },
+        {
+          "name": "shared",
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "turn_cast_grants_",
+            "--",
+            "--nocapture"
+          ],
+          "seconds": 0.09720948099857196,
+          "exit_code": 0,
+          "log": "<cache>/rustmage-msh-armor-hulk-sagas-final-focus-shared.log"
+        }
+      ],
+      "fixed_inputs": 11150,
+      "changed_inputs": []
+    },
+    "guard": {
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 160.07975020899903,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2815176704,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "profile": "Existing optimized test profile; no development-profile override in this completed stage. Timings are checked rules scenarios, not pure simulation throughput."
+  },
+  "earlier_runs": [
+    {
+      "stage": "first gated whole run",
+      "result": "17/18 green; sole fixture failure unwrapped the correctly absent empty grant row after successful consumption. No runtime defect.",
+      "rules_seconds": 0.03
+    },
+    {
+      "stage": "gated full chapter matrix",
+      "result": "22 whole +27 directly affected groups green before enabling support."
+    }
+  ],
+  "decision_evidence": {
+    "both_seats": true,
+    "actual_paid_casts": true,
+    "raw_index_owned_parent_disposal_restore": true,
+    "illegal_action_atomicity": "Snapshot, revision, state_bytes and both observations stay exact on selected invalid target/damage/optional decisions.",
+    "privacy": "Nonowner cannot observe hidden replacement library cards or the actor-only first-draw miracle menu; raw/index branches compare both complete observations.",
+    "bounded_fixtures": [
+      "Production zone/control transitions after queuing exercise controller/LKI/exact-incarnation boundaries; no claim those transitions were independently paid spells.",
+      "A positive-timestamp production form row makes a Forest an artifact creature for effective-type count testing.",
+      "Crystal Barricade and Imprisoned in the Moon are supported bounded battlefield/static fixtures after target binding.",
+      "A signed ordinary growth modifier supplies the negative-power snapshot case.",
+      "Most isolated adversarial chapter cases use queue_trigger after an actual paid producer; two full chapter scenarios use ordinary intervening turns."
+    ]
+  },
+  "sources": {
+    "audit": "<cache>/rustmage-msh-armor-hulk-sagas-source-audit.json",
+    "audit_sha256": "75e02bdab1d1d7012b19b1598536f9779205e71b32e3095cb77eaa00742ec81d",
+    "java_bodies": 68,
+    "full_selected_oracle": true,
+    "full_direct_java": true,
+    "prior_full_helper_audit": {
+      "path": "<cache>/rustmage-msh-turn-cast-grants-core-source-audit.json",
+      "sha256": "f1ef507c4afa0a9143e864a1adf41e61754faf53b0a85d42303deefa40a9cf20"
+    },
+    "absence": "Lorehold has no direct class at the pinned XMage revision; its immutable Oracle/provenance and reusable Miracle helpers are retained in the audit.",
+    "discrepancy": "Pinned Armor Wars Java excludes zero artifacts. CR118.12 and the official Sanctum of Calm Waters optional-zero ruling support accepting draw zero and executing the if-you-do draw. This is an explicit rules inference, not an Armor-specific ruling.",
+    "primary_recheck": "Frozen 20260925 CR714.3c and714.4 both require chapter abilities. The initial suppression concern was withdrawn after checking those actual rules; no source change resulted."
+  },
+  "unchanged_bytes": [
+    {
+      "path": "data/catalogue-identities.json",
+      "sha256": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1"
+    },
+    {
+      "path": "data/sets/msh.json",
+      "sha256": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361"
+    },
+    {
+      "path": "data/observation-schema.txt",
+      "sha256": "6d57b664a1e6a401b8352095ad40cb5f8a5b95f32786bed036895569bcbdf2b8"
+    },
+    {
+      "path": "src/assurance/card_traces.json",
+      "sha256": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3"
+    },
+    {
+      "path": "src/assurance/regressions.rs",
+      "sha256": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185"
+    },
+    {
+      "path": "src/policy.rs",
+      "sha256": "42ad15b08931d607956682555e602c7be4c4e57cd28be73f98ad241acfb97984"
+    }
+  ],
+  "generated": "Only scripts/link_catalogue.py regenerated catalogue and coverage after the two paired complete flags. No IDs, recipes, membership, wire, policy or recorder changes.",
+  "deferred_integration": [
+    "Full DEFAULT/native suite",
+    "Fresh normal/previous full inherited Trace exports and acceptance of exactly two new rows",
+    "Aggregate Clippy/format/source/link validation and release/CI",
+    "Final independent whole-batch audits and complete-pool acceptance"
+  ],
+  "baseline_status": {
+    "committed_rows": 2535,
+    "schema": 151,
+    "unchanged_from_base": true,
+    "expected_rows_after_final_recording": 2537,
+    "current_stage_exported_or_rebased": false
+  },
+  "implementation_measurement": {
+    "started_utc": "2026-10-25T14:40:54+00:00",
+    "through_cleanup_utc": "2026-10-25T15:02:37.654645+00:00",
+    "elapsed_seconds": 1303.654645,
+    "complete_cards": 2,
+    "cards_per_hour_for_this_measured_stage": 5.522935102187282,
+    "qualification": "Whole producer stage only, including guard waits, compilation, fixture correction, source refresh and terminal cleanup; excludes earlier shared-core engineering. No extrapolation to all-Standard performance."
+  },
+  "artifacts": [
+    {
+      "path": "<cache>/rustmage-msh-armor-hulk-sagas-focus-guard.json",
+      "sha256": "048d3bdfc5ab6d17e76572f6d2abb96f9419d66907646982986e5dc9c6b26ffe"
+    },
+    {
+      "path": "<cache>/rustmage-msh-armor-hulk-sagas-focus2-guard.json",
+      "sha256": "e2e781daa213959335d746bb9655044fe545948ca2414bb252fc3440b787712f"
+    },
+    {
+      "path": "<cache>/rustmage-msh-armor-hulk-sagas-final-focus-guard.json",
+      "sha256": "a42b6b4104cf8cb55a1d29961dda5e1d65af74b5df9d12059db9a268dc4cd277"
+    },
+    {
+      "path": "<cache>/rustmage-msh-armor-hulk-sagas-final-focus-whole.log",
+      "sha256": "66194622028728b9488cec406fe13b7a29b330613db4eca605241aa9860bb885"
+    },
+    {
+      "path": "<cache>/rustmage-msh-armor-hulk-sagas-final-focus-shared.log",
+      "sha256": "6bb01d8b7156134a41dc3807c73aabe674fa7107f10852463767af654a3fca55"
+    },
+    {
+      "path": "<cache>/rustmage-msh-armor-hulk-sagas-final-focus-checks.json",
+      "sha256": "2df28d13260957cf0bbee0cb449d2aff4dc90dae1485ed6073a75d924efb7033"
+    },
+    {
+      "path": "<cache>/rustmage-msh-armor-hulk-sagas-final-focus-inputs.json",
+      "sha256": "fcc06db0c125bf0dc218b66e6ba68ddd7f57b7c4fa7c2381de8b36d993629e84"
+    }
+  ],
+  "cleanup": {
+    "report": "<cache>/rustmage-msh-armor-hulk-sagas-cleanup.json",
+    "sha256": "9733edb787106f6a93941ab0bd78a400570daca27700d497c5d3dadfdd0d8167",
+    "terminal": true,
+    "known_guarded_consumers_terminal": true,
+    "own_user_processes_scanned": 190,
+    "accessible_fd_maps_exe_cwd_target_refs": [],
+    "denied_inspections": 169,
+    "removed_files": 165,
+    "removed_path_allocated_bytes": 40062976,
+    "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation.",
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-armor-hulk-sagas-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-armor-hulk-sagas-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "b9c2bbfaec4382d5ae31272caedebf7dbc3d128b8c3f77693ed1cb1489054b15"
+      }
+    ]
+  },
+  "preservation": {
+    "parent": "<cache>/rustmage-msh-teamwork-funding-preservation.json",
+    "parent_sha256": "8d4e1980af8ef1e4f3830c1c332af5c46b21f174511188e32a82e1a3745d0a05",
+    "prior_required": 4220,
+    "manifest": "<cache>/rustmage-msh-armor-hulk-sagas-preservation.json",
+    "manifest_sha256": "32f5ea1dcb9b822543c6ae3ad3b78e3198a33e1a836aa6ff951b12e6d213297a",
+    "total_required": 4225,
+    "all_prior_exact": true
+  },
+  "remaining_limits": [
+    "Only these two card bodies completed in this source child; no new shared rule or dependent expansion.",
+    "Focused success does not certify full MSH or all-Standard behavior, interactions or performance."
+  ]
+}

@@ -53,6 +53,7 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
             | Instruction::SetCreatureForm { base: value, .. }
             | Instruction::MoveCountersFromSource { amount: value, .. }
+            | Instruction::RevealTargetHandSubsetDiscard(value)
             | Instruction::DrawScaled(_, value)
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)

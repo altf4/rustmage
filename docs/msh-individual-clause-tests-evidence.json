@@ -1,0 +1,114 @@
+{
+  "scope": "Additional focused individual-card tests for three already implemented MSH cards; no new card admission, aggregate run or full-set acceptance.",
+  "tested_source": "43cc314779ccffe544cea7f61b0766e1a508e3d5",
+  "source_pins": [
+    {
+      "name": "Helicarrier Strike",
+      "definition_sha256": "2de7221c0246a3b2a20a5ff66dd1792b6e7e8e5255155beb760f48488a08acea",
+      "provenance_sha256": "40c16b17c4072724761d1135c6355686f7ddf892bc7a48f5bea5a5b2e77b4742",
+      "full_direct_java_read": true,
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/h/HelicarrierStrike.java",
+      "java_sha256": "442c017bc7807b9224d0ee9d5f226ae390ccb71b5e5b0deed6f211699c282d00",
+      "behavior_changed": false
+    },
+    {
+      "name": "Hercules, Prince of Power",
+      "definition_sha256": "b7c881c52b113950f0089dcdeb15bd38c9b3bfec940187b086804a34ce91a6d8",
+      "provenance_sha256": "c4cc23ee2ed980281414d2b7e3fbf6e5d261004b6308d4b65a2e5b80275a1700",
+      "full_direct_java_read": true,
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/h/HerculesPrinceOfPower.java",
+      "java_sha256": "49c2211986e980dd800039455373dd208194a77c6b74ecf6b633ebdbd71c337e",
+      "behavior_changed": false
+    },
+    {
+      "name": "Hulk, Gamma Goliath",
+      "definition_sha256": "f9da0a5958c163cfd8ae5a6ad9f046979c83a1e1b627be564f49acb346047234",
+      "provenance_sha256": "ad47ca96b4374f35ead0b43f09233802a5d13921afe4e05a3351f57c9e14ada1",
+      "full_direct_java_read": true,
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/h/HulkGammaGoliath.java",
+      "java_sha256": "f66728ddc1d1704a024a1c449d0778957a61a0bd47afe2bc077430cf26ee1f1e",
+      "behavior_changed": false
+    }
+  ],
+  "tests": {
+    "new_groups": 4,
+    "unique_passed_groups": 32,
+    "filter_invocations": 48,
+    "both_seats": true,
+    "new_test_functions": [
+      "engine::msh_power_up_cards_tests::individual_clause_gaps::msh_older_gaps_helicarrier_natural_attacker_and_blocker_teamwork_both_seats",
+      "engine::msh_power_up_cards_tests::individual_clause_gaps::msh_older_gaps_hercules_full_price_lifetime_and_paid_reentry",
+      "engine::msh_power_up_cards_tests::individual_clause_gaps::msh_older_gaps_hulk_actual_reach_block_and_trample_combat",
+      "engine::msh_power_up_cards_tests::individual_clause_gaps::msh_older_gaps_hulk_paid_body_full_price_does_not_reduce_self_lifetime"
+    ],
+    "all_passed_functions": [
+      "engine::assurance::msh_teamwork_cards::msh_teamwork_helicarrier_replaces_damage_and_requires_combatant",
+      "engine::assurance::msh_teamwork_cards::msh_teamwork_power_up_and_plan_crossing_share_paid_cast_and_resolution",
+      "engine::msh_ability_copy_core_tests::msh_ability_copy_core_paid_x_is_preserved_and_original_power_up_use_not_repeated",
+      "engine::msh_four_existing_tests::msh_four_torch_power_up_discount_once_reentry_full_cost_and_counter_replacement",
+      "engine::msh_fourteenth_combined_tests::msh_fourteenth_paid_power_up_counters_feed_hyde_origin_entry_and_strat_connive",
+      "engine::msh_power_up_cards_tests::individual_clause_gaps::msh_older_gaps_helicarrier_natural_attacker_and_blocker_teamwork_both_seats",
+      "engine::msh_power_up_cards_tests::individual_clause_gaps::msh_older_gaps_hercules_full_price_lifetime_and_paid_reentry",
+      "engine::msh_power_up_cards_tests::individual_clause_gaps::msh_older_gaps_hulk_actual_reach_block_and_trample_combat",
+      "engine::msh_power_up_cards_tests::individual_clause_gaps::msh_older_gaps_hulk_paid_body_full_price_does_not_reduce_self_lifetime",
+      "engine::msh_power_up_cards_tests::msh_power_cards_abomination_hybrid_cast_and_reduction_optional_fight",
+      "engine::msh_power_up_cards_tests::msh_power_cards_abomination_invalid_target_counters_whole_packet_and_departed_source_cannot_fight",
+      "engine::msh_power_up_cards_tests::msh_power_cards_biochemist_draw_survives_blink_and_keeps_hand_private",
+      "engine::msh_power_up_cards_tests::msh_power_cards_counter_boosted_lifelink_deathtouch_haste_flying_and_reach_combat",
+      "engine::msh_power_up_cards_tests::msh_power_cards_hercules_haste_vigilance_indestructible_expire_counters_remain",
+      "engine::msh_power_up_cards_tests::msh_power_cards_ninja_discard_is_opponents_private_choice_even_after_departure",
+      "engine::msh_power_up_cards_tests::msh_power_cards_paid_entry_costs_counters_keywords_and_lifetime",
+      "engine::msh_power_up_cards_tests::msh_power_cards_pet_and_ultron_tokens_are_exact_recipes_and_trigger_villain_observer",
+      "engine::msh_power_up_cards_tests::msh_power_cards_she_hulk_optional_artifact_enchantment_target_and_invalid_packet",
+      "engine::msh_power_up_cards_tests::msh_power_cards_unliving_optional_own_creature_return_public_identity_and_invalid_packet",
+      "engine::msh_power_up_cards_tests::msh_power_cards_viv_attacks_check_resolution_power_live_and_departure_lki",
+      "engine::msh_power_up_cards_tests::msh_power_cards_white_tiger_token_name_legend_rule_and_one_blocker",
+      "engine::msh_stature_tests::msh_stature_copy_recipe_and_incarnation_own_independent_power_up_uses",
+      "engine::power_up_tests::power_up_aerial_paid_entry_discount_once_control_blink_and_owned_replay",
+      "engine::power_up_tests::power_up_entry_turn_expires_and_copy_has_independent_use",
+      "engine::power_up_tests::power_up_funds_with_real_land_mana_and_preserves_the_entry_discount",
+      "engine::power_up_tests::power_up_hulk_other_creatures_generic_only_suppression_and_locked_payment",
+      "engine::power_up_tests::power_up_inherited_ability_uses_its_own_slot_and_the_actual_source_mana_cost",
+      "engine::power_up_tests::power_up_mixed_teamwork_payment_uses_the_new_live_power",
+      "engine::power_up_tests::power_up_source_departure_does_not_rebind_the_old_packet",
+      "engine::power_up_tests::power_up_typed_reduction_hybrid_choices_excess_colorless_and_x_order",
+      "engine::power_up_tests::power_up_wonder_man_counts_uses_without_refreshing_replacement_providers",
+      "engine::temporary_copy::restricted_origin_tests::msh_temporary_copy_bounded_paid_power_up_and_exhaust_belong_to_independent_origins"
+    ],
+    "printed_branches": [
+      "Helicarrier Strike: natural attack and block declarations, attacking/blocking target branches, ordinary2 versus teamwork4 damage, exactwhitecost versus blue-onlyrejection, noncombatanttargetrejection, power1teamworkfinishrejected before addingpower2teammate",
+      "Hercules: actualprintedcast, later-turn full4G versus3Gshortage, counterand3/3to4/4 tuple, lifetimeuse rejection onlaterturn, paidUnsummon/recast resets exactincarnation andentrydiscount2",
+      "Hulk: actual3RGcast6/5, laterturn6RG versus5RGshortage, no self3discount, fivecountersto11/10, lifetime rejection; actualnaturalreachblock againstSerraAngel, actualtrample throughBearfor4playerdamage"
+    ],
+    "scenario_boundaries": "Both players start with the existing bounded scenario and seeded hidden cards/mana; focal casts and activations use exact printed payments. Combat and turn transitions use legal actions. Checked actions exercise wrong actor, owned raw/index branches, snapshot restore, stale revisions and replay. This is not natural deckplay.",
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; focused development only",
+    "terminal_exit": 0,
+    "fixed_inputs": 11869,
+    "changed_inputs": [],
+    "new_rules_seconds": 0.08,
+    "summed_filter_seconds": 0.45,
+    "build_and_first_run_guard_seconds": 36.25895391096128,
+    "build_peak_bytes": 2799345664,
+    "memory_max_bytes": 6442450944,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "input_map": "<cache>/rustmage-msh-individual-gaps-confirm-inputs.json",
+    "input_sha256": "f4c712448fcefac17f565f28a1d49c0e3b0c36986866ec1ee5cb735b87709381"
+  },
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-individual-gaps-preservation.json",
+    "sha256": "2cd56b0700e142baea6290a25f9579bce109734beb2ab61904352ad178a42fc7",
+    "required_paths": 4626,
+    "cleaned_target_must_not_be_reused": true
+  },
+  "main_merged": false,
+  "pr": "https://github.com/altf4/rustmage/pull/516",
+  "deferred": [
+    "Final complete-source integration",
+    "Aggregate native tests and release validator",
+    "Final set-only natural games, replay/privacy and performance",
+    "Two independent nonauthor final published-head reviews"
+  ]
+}

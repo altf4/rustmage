@@ -149,6 +149,8 @@ pub(super) struct CardExtras {
     pub enters_prepared: bool,
     pub prepared_identity: Option<&'static str>,
     pub borrows_exiled_activations: bool,
+    /// Immutable activated templates acquired only through an explicit grant.
+    pub self_granted_activation_templates: &'static [u16],
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
@@ -240,6 +242,7 @@ impl CardExtras {
         enters_prepared: false,
         prepared_identity: None,
         borrows_exiled_activations: false,
+        self_granted_activation_templates: &[],
         zone_replacement: None,
         opening_hand_battlefield: false,
         power_up_abilities: &[],

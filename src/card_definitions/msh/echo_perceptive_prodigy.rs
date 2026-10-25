@@ -1,4 +1,4 @@
-// Direct typed ability-copy consumer; admission remains gated by paired provenance.
+// Direct typed ability-copy behavior from full frozen Oracle and pinned Java.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 4),
     keywords: Keywords::VIGILANCE,

@@ -119,7 +119,12 @@ impl Game {
                     &self.state.objects[recipient.card as usize],
                     self.counter_amounts(recipient.card),
                     self.current_kinds(recipient.card),
-                    || self.keywords(recipient.card),
+                    || {
+                        ability_world::CharacteristicWorld::activation_keywords(
+                            self,
+                            recipient.card,
+                        )
+                    },
                     self.state.players[actor.index()].life,
                     ability,
                     index,

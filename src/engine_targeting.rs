@@ -332,6 +332,7 @@ impl Announcement {
 struct TargetSourceCharacteristics<'a> {
     reference: ObjectRef,
     snapshot: Option<&'a DamageFacts>,
+    attachment: Option<ObjectRef>,
     spell: Option<Card>,
 }
 impl<'a> TargetSourceCharacteristics<'a> {
@@ -339,6 +340,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
         Self {
             reference: item.object,
             snapshot: Some(&item.source_facts),
+            attachment: item.source_attachment,
             spell: (item.kind == StackKind::Spell).then_some(item.source_card),
         }
     }
@@ -418,6 +420,7 @@ impl Game {
         let qualification = Some(TargetSourceCharacteristics {
             reference: source,
             snapshot: None,
+            attachment: None,
             spell: Some(definition),
         });
         let departing =
@@ -594,6 +597,8 @@ impl Game {
         };
         match constraint {
             TargetGroupConstraint::OtherThanGroup(_) | TargetGroupConstraint::TotalManaValueAtMost(_) => unreachable!(),
+            TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
+                && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
@@ -613,6 +618,22 @@ impl Game {
         bound: BoundTarget,
         plan: TargetPlan,
     ) -> bool {
+        if let Some(TargetSpec {
+            rule:
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::ControllerOfPlayerGroup(_),
+                    ..
+                },
+            ..
+        }) = plan.group(bound.group)
+        {
+            return self.target_group_compatible(
+                plan.group(bound.group).unwrap().rule,
+                bound.group,
+                &item.targets,
+                bound.target,
+            );
+        }
         if let Some(TargetSpec {
             rule:
                 TargetRule::Grouped {
@@ -1035,6 +1056,7 @@ impl Game {
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
+                    | TargetGroupConstraint::ControllerOfPlayerGroup(_)
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
                     TargetGroupConstraint::OtherThanGroup(_)
                     | TargetGroupConstraint::TotalManaValueAtMost(_) => None,
@@ -1089,6 +1111,16 @@ impl Game {
                             <= self.state.players[controller.index()].life_gained_this_turn
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
+                    TargetPredicate::OtherThanSourceAttachment => {
+                        let attached = if self.on_battlefield(source.card)
+                            && self.object_ref(source.card) == source
+                        {
+                            self.state.objects[source.card as usize].attached_to
+                        } else {
+                            qualification.and_then(|q| q.attachment)
+                        };
+                        attached.is_some_and(|r| self.object_ref(id) != r)
+                    }
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
@@ -1412,10 +1444,12 @@ impl Game {
             gift: None,
             source_move: None,
             borrowed_slot: None,
+            self_granted_activation: None,
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            cast_creature_subjects: None,
             copy_event: None,
             captured_artifact_copy: None,
             source_copy_recipe: None,
@@ -1464,6 +1498,7 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            exiled_symbol_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
             event_object: None,
@@ -1563,13 +1598,22 @@ impl Game {
 
     pub(super) fn open_payment_announcement_with_origin_cost(
         &mut self,
-        item: SpellView,
+        mut item: SpellView,
         counters: Counters,
         production: Option<Mana>,
         origin_counter_cost: Option<u16>,
     ) {
         if item.cast.is_some_and(|cast| cast.face == CastFace::Back) {
             self.state.objects[item.card as usize].card = item.source_card;
+        }
+        // A copied card becomes a genuine token when its permanent spell resolves.
+        // Freeze the selected face now, after face choice and before any zone move.
+        if self.state.objects[item.card as usize].copy_kind == CopyKind::Card
+            && item.source_card.kind_mask() & (1 | 16 | 32 | 64 | 256) != 0
+        {
+            let recipe = CopyRecipe::new(item.source_card);
+            self.set_copy_recipe(item.object, recipe);
+            item.source_copy_recipe = Some(Box::new(recipe));
         }
         if production.is_some() {
             self.suspend_mana_announcement();

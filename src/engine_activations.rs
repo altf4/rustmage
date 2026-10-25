@@ -128,6 +128,10 @@ impl Game {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::SourceAttackedThisTurn => self
+                .state
+                .attacked_this_turn
+                .contains(&self.object_ref(source)),
             ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
                 activations::controls_tough_creature(self, actor, minimum)
             }
@@ -192,7 +196,7 @@ impl Game {
                 &self.state.objects[card as usize],
                 self.counter_amounts(card),
                 self.current_kinds(card),
-                || self.keywords(card),
+                || ability_world::CharacteristicWorld::activation_keywords(self, card),
                 self.state.players[actor.index()].life,
                 ability,
                 index,
@@ -260,7 +264,8 @@ impl Game {
             || object.tapped
             || (self.is_creature(card)
                 && object.summoning_sick
-                && !self.keywords(card).contains(Keywords::HASTE))
+                && !ability_world::CharacteristicWorld::activation_keywords(self, card)
+                    .contains(Keywords::HASTE))
         {
             return false;
         }
@@ -287,7 +292,9 @@ impl Game {
     ) -> bool {
         let object = &self.state.objects[card as usize];
         for (index, ability) in object.card.activations().iter().enumerate() {
-            if object.card.grants_activation(index as u16) {
+            if object.card.grants_activation(index as u16)
+                || object.card.self_granted_activation_template(index as u16)
+            {
                 continue;
             }
             if !self.activation_cost_available(card, ability, index, actor, sorcery) {
@@ -510,11 +517,13 @@ impl Game {
         SpellView {
             source_move: None,
             borrowed_slot: None,
+            self_granted_activation: None,
             target_controller_lki: None,
             gift: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            cast_creature_subjects: None,
             copy_event: None,
             target_allocations: None,
             captured_artifact_copy: None,
@@ -557,6 +566,7 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            exiled_symbol_cards: None,
             source_counter_lki: self.state.objects[card as usize]
                 .card
                 .activations()
@@ -619,12 +629,14 @@ impl Game {
             );
             return;
         }
-        if let Some(slot) = item.borrowed_slot {
-            self.record_borrowed_use(item.object, slot, definition.exhaust);
-        } else {
-            self.record_copy_activation_use(item, ability);
+        if item.self_granted_activation.is_none() {
+            if let Some(slot) = item.borrowed_slot {
+                self.record_borrowed_use(item.object, slot, definition.exhaust);
+            } else {
+                self.record_copy_activation_use(item, ability);
+            }
+            self.record_power_up_use(item, ability);
         }
-        self.record_power_up_use(item, ability);
         self.pay_counters(item.card, &counter_payment);
         if let Some(kind) = definition.source_counter_cost() {
             item.source_counter_payment = Some(SourceCounterPaymentView {

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7c49e369e584b680bd49a64db7a1efcd3af2ac86ed4cb430b4d8e5c38077eed2",
+  "catalogue_version": "938acde740abc88b293e679dd8c06719ee897866c14f5cf6a479eca9766a21cc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2543,
-  "implemented_total": 2549,
+  "implemented_standard_cards": 2578,
+  "implemented_total": 2584,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,7 @@
     },
     "msh": {
       "total": 273,
-      "complete": 238,
-      "gated": 35
+      "complete": 273
     },
     "one": {
       "total": 1,
@@ -2005,8 +2004,8 @@
     {
       "name": "Armor Wars",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/armor_wars.rs",
       "set": "msh"
     },
@@ -2869,8 +2868,8 @@
     {
       "name": "Baron Helmut Zemo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/baron_helmut_zemo.rs",
       "set": "msh"
     },
@@ -3677,8 +3676,8 @@
     {
       "name": "Black Widow, Super Spy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/black_widow_super_spy.rs",
       "set": "msh"
     },
@@ -5349,8 +5348,8 @@
     {
       "name": "Captain America, Super-Soldier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/captain_america_super_soldier.rs",
       "set": "msh"
     },
@@ -6389,8 +6388,8 @@
     {
       "name": "Cloak and Dagger, Entwined",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/cloak_and_dagger_entwined.rs",
       "set": "msh"
     },
@@ -6885,8 +6884,8 @@
     {
       "name": "Construct a Cosmic Cube",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/construct_a_cosmic_cube.rs",
       "set": "msh"
     },
@@ -7077,8 +7076,8 @@
     {
       "name": "Cosmic Cube",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/cosmic_cube.rs",
       "set": "msh"
     },
@@ -9261,8 +9260,8 @@
     {
       "name": "Doom Reigns Supreme",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/doom_reigns_supreme.rs",
       "set": "msh"
     },
@@ -10205,8 +10204,8 @@
     {
       "name": "Echo, Perceptive Prodigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/echo_perceptive_prodigy.rs",
       "set": "msh"
     },
@@ -11325,8 +11324,8 @@
     {
       "name": "Evil's Thrall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/evil_s_thrall.rs",
       "set": "msh"
     },
@@ -12269,8 +12268,8 @@
     {
       "name": "Fin Fang Foom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/fin_fang_foom.rs",
       "set": "msh"
     },
@@ -15949,8 +15948,8 @@
     {
       "name": "Hawkeye, Young Avenger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hawkeye_young_avenger.rs",
       "set": "msh"
     },
@@ -17997,8 +17996,8 @@
     {
       "name": "Iron Fist, Living Weapon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/iron_fist_living_weapon.rs",
       "set": "msh"
     },
@@ -19253,8 +19252,8 @@
     {
       "name": "Klaw, Sonic Subjugator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/klaw_sonic_subjugator.rs",
       "set": "msh"
     },
@@ -19909,8 +19908,8 @@
     {
       "name": "Leader, Super-Genius",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/leader_super_genius.rs",
       "set": "msh"
     },
@@ -20509,8 +20508,8 @@
     {
       "name": "Loki Laufeyson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/loki_laufeyson.rs",
       "set": "msh"
     },
@@ -22613,8 +22612,8 @@
     {
       "name": "Mjölnir, Hammer of Thor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/mjolnir_hammer_of_thor.rs",
       "set": "msh"
     },
@@ -23157,8 +23156,8 @@
     {
       "name": "Ms. Marvel, Kamala Khan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ms_marvel_kamala_khan.rs",
       "set": "msh"
     },
@@ -25405,8 +25404,8 @@
     {
       "name": "Photon Blast Barrage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/photon_blast_barrage.rs",
       "set": "msh"
     },
@@ -25901,8 +25900,8 @@
     {
       "name": "Powerful Broker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/powerful_broker.rs",
       "set": "msh"
     },
@@ -28717,8 +28716,8 @@
     {
       "name": "Robot Domination",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/robot_domination.rs",
       "set": "msh"
     },
@@ -28853,8 +28852,8 @@
     {
       "name": "Ronin, Shadow Stalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ronin_shadow_stalker.rs",
       "set": "msh"
     },
@@ -29989,8 +29988,8 @@
     {
       "name": "Scientist Supreme of A.I.M.",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/scientist_supreme_of_a_i_m.rs",
       "set": "msh"
     },
@@ -30285,8 +30284,8 @@
     {
       "name": "Secret Invasion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/secret_invasion.rs",
       "set": "msh"
     },
@@ -30685,8 +30684,8 @@
     {
       "name": "Shang-Chi, Master of Kung Fu",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/shang_chi_master_of_kung_fu.rs",
       "set": "msh"
     },
@@ -32237,8 +32236,8 @@
     {
       "name": "Speedball, New Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/speedball_new_warrior.rs",
       "set": "msh"
     },
@@ -33557,8 +33556,8 @@
     {
       "name": "Storm, Windrider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/storm_windrider.rs",
       "set": "msh"
     },
@@ -34269,8 +34268,8 @@
     {
       "name": "Super-Adaptoid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_adaptoid.rs",
       "set": "msh"
     },
@@ -35869,8 +35868,8 @@
     {
       "name": "The Kingpin of Crime",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_kingpin_of_crime.rs",
       "set": "msh"
     },
@@ -36021,8 +36020,8 @@
     {
       "name": "The Mind Stone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_mind_stone.rs",
       "set": "msh"
     },
@@ -38189,8 +38188,8 @@
     {
       "name": "Ultron, Artificial Malevolence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ultron_artificial_malevolence.rs",
       "set": "msh"
     },
@@ -39525,8 +39524,8 @@
     {
       "name": "Vision Quest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/vision_quest.rs",
       "set": "msh"
     },
@@ -41053,8 +41052,8 @@
     {
       "name": "Wolverine, Fierce Fighter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/wolverine_fierce_fighter.rs",
       "set": "msh"
     },
@@ -41109,16 +41108,16 @@
     {
       "name": "World War Hulk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/world_war_hulk.rs",
       "set": "msh"
     },
     {
       "name": "Worlds Within Worlds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/worlds_within_worlds.rs",
       "set": "msh"
     },

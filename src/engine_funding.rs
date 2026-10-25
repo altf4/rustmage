@@ -9,6 +9,8 @@ use cast_cost_planning::CostContext;
 #[path = "engine_funding_entries.rs"]
 mod funding_entries;
 use funding_entries::{EntryProjection, PaymentContinuation};
+#[path = "engine_funding_linked_copies.rs"]
+mod funding_linked_copies;
 
 #[derive(Clone, Debug)]
 pub(super) struct FundingGoal {
@@ -54,6 +56,30 @@ pub(super) struct FundingState<'g> {
     borrowed_uses: Vec<(ObjectRef, u64)>,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn ability_origin(&self, id: CardId) -> Option<u64> {
+        if self.object(id).zone != Zone::Battlefield {
+            return None;
+        }
+        let object = self.reference(id);
+        self.entry_projection
+            .as_ref()
+            .and_then(|p| p.copy_origins.iter().find(|(source, _)| *source == object))
+            .map_or_else(
+                || self.game.copy_ability_origin(object),
+                |(_, origin)| *origin,
+            )
+    }
+    fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
+        let mut view = self.game.temporary_copy_view(object)?;
+        view.layers.retain(|layer| {
+            layer.deadline.source().is_none_or(|source| {
+                self.object(source.card).zone == Zone::Battlefield
+                    && self.reference(source.card) == source
+            })
+        });
+        view.active_origin = view.layers.last()?.origin;
+        Some(view)
+    }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         let reference = self.reference(id);
         let rows = self.copy_recipes.as_ref()?;
@@ -188,6 +214,7 @@ struct ResourceKey {
 }
 #[derive(Hash, PartialEq, Eq)]
 struct EntryFundingKey {
+    copy_origins: Vec<(ObjectRef, Option<u64>)>,
     order: Vec<ObjectRef>,
     entered: Vec<ObjectRef>,
     values: Vec<(ObjectRef, EntryChoiceValue)>,
@@ -287,6 +314,11 @@ fn reserve_obligations(
     goal.reserve.is_none_or(|(reference, spec)| {
         object.is_some_and(|o| {
             o.generation == reference.generation
+                && (spec.kind != EffectChoiceKind::SacrificeAttachedEquipment
+                    || goal
+                        .source
+                        .as_ref()
+                        .is_some_and(|(source, _, _, _, _)| o.attached_to == Some(*source)))
                 && Game::additional_object_matches(
                     spec, goal.actor, o, kinds, keywords, subtypes, name,
                 )
@@ -544,7 +576,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -648,7 +680,10 @@ impl<'g> FundingState<'g> {
         result.set_cost_context(game.state.announcing.as_ref());
         if let Some(a) = game.state.announcing.as_ref()
             && !a.additional_paid
-            && a.additional_cost().and_then(evidence::threshold).is_some()
+            && a.additional_cost().is_some_and(|s| {
+                evidence::threshold(s).is_some()
+                    || matches!(s.kind, EffectChoiceKind::ExileGraveyardSymbols { .. })
+            })
         {
             // Ordinary evidence declarations also need their selected exact
             // incarnations protected while nested mana abilities consume fuel.
@@ -760,7 +795,11 @@ impl<'g> FundingState<'g> {
                     ability_world::CharacteristicWorld::counter_amounts(self, r.id)
                 }),
                 source.map_or(0, |r| self.kinds(r)),
-                || source.map_or(Keywords::NONE, |r| self.keywords(r)),
+                || {
+                    source.map_or(Keywords::NONE, |r| {
+                        ability_world::CharacteristicWorld::activation_keywords(self, r.id)
+                    })
+                },
                 self.life,
             )
     }
@@ -894,6 +933,11 @@ impl<'g> FundingState<'g> {
                 self.game.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
             ActivationGuard::Always => true,
+            ActivationGuard::SourceAttackedThisTurn => self
+                .game
+                .state
+                .attacked_this_turn
+                .contains(&self.reference(source)),
             ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
                 activations::controls_tough_creature(self, actor, minimum)
             }
@@ -957,7 +1001,10 @@ impl<'g> FundingState<'g> {
             .activations()
             .iter()
             .enumerate()
-            .filter(|(_, ability)| ability.mana_production().is_some())
+            .filter(|(index, ability)| {
+                !object.card.self_granted_activation_template(*index as u16)
+                    && ability.mana_production().is_some()
+            })
             .map(|(index, ability)| (index as u16, ability, None))
             .chain(
                 borrowed_activations::abilities(self, id)
@@ -980,7 +1027,8 @@ impl<'g> FundingState<'g> {
             if !object.tapped
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
-                    || self.keywords(entry).contains(Keywords::HASTE))
+                    || ability_world::CharacteristicWorld::activation_keywords(self, entry.id)
+                        .contains(Keywords::HASTE))
             {
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, entry.id) {
                     let quality = match grant.production {
@@ -1016,7 +1064,8 @@ impl<'g> FundingState<'g> {
             if !object.tapped
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
-                    || self.keywords(entry).contains(Keywords::HASTE))
+                    || ability_world::CharacteristicWorld::activation_keywords(self, entry.id)
+                        .contains(Keywords::HASTE))
                 && let Some(color) =
                     ability_world::CharacteristicWorld::intrinsic_mana_color(self, entry.id)
             {
@@ -1065,7 +1114,7 @@ impl<'g> FundingState<'g> {
                         &ready_object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
                         self.kinds(entry),
-                        || self.keywords(entry),
+                        || ability_world::CharacteristicWorld::activation_keywords(self, entry.id),
                         self.life,
                         ability,
                         if borrowed.is_some() {
@@ -1116,6 +1165,7 @@ impl<'g> FundingState<'g> {
                             card: object.card,
                             foreign_stash: false,
                             spend_any_mana: false,
+                            equip: ability.is_equip(),
                             kinds: self.kinds(entry),
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
                         });
@@ -1188,6 +1238,7 @@ impl<'g> FundingState<'g> {
         moves
     }
     fn refresh_control_projection(&mut self) {
+        self.refresh_source_bound_copies();
         for row in continuous_control::controllers(self) {
             if let Some(resource) = self
                 .resources
@@ -1489,6 +1540,7 @@ impl<'g> FundingState<'g> {
                 self.other_life,
             )),
             entries: self.entry_projection.as_ref().map(|p| EntryFundingKey {
+                copy_origins: p.copy_origins.clone(),
                 order: p.order.clone(),
                 entered: p.entered.clone(),
                 values: p.entry_values.iter().map(|r| (r.object, r.value)).collect(),
@@ -1766,7 +1818,8 @@ impl<'g> FundingState<'g> {
             let tap_ready = !object.tapped
                 && (self.kinds(resource) & 1 == 0
                     || !object.summoning_sick
-                    || self.keywords(resource).contains(Keywords::HASTE));
+                    || ability_world::CharacteristicWorld::activation_keywords(self, resource.id)
+                        .contains(Keywords::HASTE));
             if tap_ready {
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, resource.id) {
                     grant.production.visit(|mana| {
@@ -1799,7 +1852,12 @@ impl<'g> FundingState<'g> {
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.kinds(resource),
-                        || self.keywords(resource),
+                        || {
+                            ability_world::CharacteristicWorld::activation_keywords(
+                                self,
+                                resource.id,
+                            )
+                        },
                         self.life,
                         ability,
                         if borrowed.is_some() {
@@ -1894,15 +1952,17 @@ impl<'g> FundingState<'g> {
                 .iter()
                 .find(|(source, _)| source == object)
             {
-                return mana_lots::Purpose::Activation(*facts);
+                return mana_lots::Purpose::Activation(
+                    (*facts).with_activation(definition.activation(*ability)),
+                );
             }
             if self.reference(object.card) == *object
                 && self.object(object.card).zone == definition.activation(*ability).source_zone()
             {
-                return mana_lots::Purpose::Activation(mana_lots::Source::in_world(
-                    self,
-                    object.card,
-                ));
+                return mana_lots::Purpose::Activation(
+                    mana_lots::Source::in_world(self, object.card)
+                        .with_activation(definition.activation(*ability)),
+                );
             }
         }
         self.purpose
@@ -2157,7 +2217,10 @@ impl Game {
             }),
             || {
                 object.map_or(Keywords::NONE, |_| {
-                    self.keywords(goal.source.as_ref().unwrap().0.card)
+                    ability_world::CharacteristicWorld::activation_keywords(
+                        self,
+                        goal.source.as_ref().unwrap().0.card,
+                    )
                 })
             },
             self.state.players[goal.actor.index()].life,
@@ -2246,7 +2309,8 @@ impl Game {
         &self,
         viewer: Player,
     ) -> Option<PaymentRequestView> {
-        if self.actor() != Some(viewer)
+        let viewer = self.choice_information_player(viewer);
+        if self.semantic_actor() != Some(viewer)
             || matches!(
                 self.state.pending,
                 Pending::Saddle { .. } | Pending::Crew { .. }
@@ -2882,7 +2946,9 @@ impl Game {
         let Action::ActivateMana { payment, .. } = action else {
             return;
         };
-        let Some(actor) = self.actor() else { return };
+        let Some(actor) = self.semantic_actor() else {
+            return;
+        };
         if *payment == [0; 6]
             || self.mana_lots(actor).is_empty()
             || self
@@ -3164,6 +3230,22 @@ mod msh_counter_quantity_funding_tests;
 mod msh_attachment_core_tests;
 
 #[cfg(test)]
+#[path = "engine_msh_broker_thrall_funding_tests.rs"]
+mod msh_broker_thrall_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_super_adaptoid_funding_tests.rs"]
+mod msh_super_adaptoid_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_shield_harness_funding_tests.rs"]
+mod shield_harness_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_restricted_creatures_funding_tests.rs"]
+mod msh_restricted_creatures_funding_tests;
+
+#[cfg(test)]
 #[path = "engine_msh_serum_funding_tests.rs"]
 mod msh_serum_funding_tests;
 
@@ -3176,5 +3258,17 @@ mod msh_self_granted_static_tests;
 mod msh_armor_tony_funding_tests;
 
 #[cfg(test)]
+#[path = "engine_msh_vision_quest_funding_tests.rs"]
+mod msh_vision_quest_funding_tests;
+
+#[cfg(test)]
 #[path = "engine_msh_elektra_hellcat_funding_tests.rs"]
 mod msh_elektra_hellcat_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_self_granted_activation_tests.rs"]
+mod msh_self_granted_activation_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_linked_copy_tests.rs"]
+mod msh_linked_copy_tests;

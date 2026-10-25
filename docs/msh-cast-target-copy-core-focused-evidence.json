@@ -1,0 +1,101 @@
+{
+  "scope": "Gated shared core, individual focused scenarios only. No aggregate validation or admission.",
+  "tested_source": "074139cf29bcfea71dfa475581d27f10e94c07e6",
+  "base": "0479bb88675b8e537637448eddb4b50a37693506",
+  "gated_cards": [
+    "Fin Fang Foom",
+    "Loki Laufeyson",
+    "Speedball, New Warrior"
+  ],
+  "staging": "Real immutable typed creature/program bodies; paired complete flags remain false. Explicitly seeded physical gated fixtures use ordinary paid actions but are not accepted legal-deck games.",
+  "core": {
+    "current_cast_target_kinds": "CastTarget::PermanentKinds queries current exact expected battlefield target; no target LKI per CR115.9b.",
+    "delayed_source_power": "DelayedSpellCastSourcePower is a stored-only callback, not a passive battlefield observer. Registered CopyNextInstantSorcery checks signed current source power or latest-departure DamageFacts.power against qualifying cast mana value. Other delayed callbacks retain their old behavior.",
+    "optional_cast_retarget": "ChangeCastSpellTargets captures exact existing CastPaymentEvent.stack_id, keeps the original spell controller and allocations, and privately distinguishes optional unchanged targets from mandatory Bolt Bend changes. No new public field.",
+    "wire": 151,
+    "new_ids": 0
+  },
+  "primary_sources": {
+    "full_oracle_and_java_cache": "/home/altf4/.cache/rustmage-msh-cast-target-copies-design-0479bb88.json",
+    "sha256": "d874b039b53f73bcb3c555b0bfea13d2dffe65b9130463479168947be715004c",
+    "full_java_files": 20,
+    "snapshot_note": "Full Rust snapshots are retained; targeted runtime functions and complete owned definitions were read, not every unrelated function in each broad module.",
+    "fixture_cache": "/home/altf4/.cache/rustmage-msh-cast-target-copy-core-fixture-sources.json",
+    "fixture_sha256": "4714476e91309c1e654f011d4b3ed453ec37c361b6c1009eb00615ee2f07ef5e",
+    "fixture_full_oracle": 12,
+    "fixture_full_direct_java": 13,
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "rules": [
+      "CR115.9b",
+      "CR603.7",
+      "CR608.2h",
+      "CR707.10"
+    ],
+    "official_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "discrepancy": "Java TargetsPermanentPredicate accepts departed target LKI; contextual cast-target qualification follows CR115.9b and ignores a departed target."
+  },
+  "focused_test": {
+    "file": "src/engine_msh_cast_target_copy_tests.rs",
+    "functions": [
+      "msh_cast_copy_core_fin_paid_artifact_modal_copy_optional_targets_and_counters",
+      "msh_cast_copy_core_fin_current_land_type_qualifies_after_paid_animation",
+      "msh_cast_copy_core_fin_only_your_instant_sorcery_with_current_qualifying_target",
+      "msh_cast_copy_core_loki_arms_dynamic_power_and_keeps_nonqualifying_cast",
+      "msh_cast_copy_core_loki_latest_departure_power_does_not_rebind_reentered_source",
+      "msh_cast_copy_core_loki_source_leaves_before_registration_resolves",
+      "msh_cast_copy_core_loki_multiple_registrations_consume_same_cast_and_expire",
+      "msh_cast_copy_core_speedball_opponent_spell_retarget_preserves_controller",
+      "msh_cast_copy_core_speedball_optional_no_change_survives_and_expires",
+      "msh_cast_copy_core_speedball_countered_original_still_boosts_no_stale_retarget",
+      "msh_cast_copy_core_speedball_modal_retarget_keeps_mode_and_rejects_illegal_atomic",
+      "msh_cast_copy_core_bolt_bend_still_requires_changed_target"
+    ],
+    "groups": 12,
+    "both_seats": true,
+    "passed": 12,
+    "failed": 0,
+    "command": "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-cast-target-copy-core-focus4-resource.json -- cargo test --lib msh_cast_copy_ -- --nocapture",
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "native_seconds": 0.15,
+    "guard_seconds": 29.718320753017906,
+    "memory_peak_bytes": 2653057024,
+    "memory_max_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "input_map": "/home/altf4/.cache/rustmage-msh-cast-target-copy-core-focus4-inputs.json",
+    "input_sha256": "1e517097e0637a1b7951d13a51936be1f71c8c7bdb167dc3140f5cac066d21c3",
+    "fixed_inputs": 11851,
+    "changed": [],
+    "earlier_attempts": "focus1 did not compile due test assertion method; focus2 six fixture failures, focus3 one fixture lookup failure. Those reports remain failures and are preserved.",
+    "privacy_atomicity_ownership": "Paid action helpers check wrong actor, owned raw/index equality and restore. Explicit orphan checks drop parent, compare full both-seat observations, reject stale indices and restore/replay. Invalid retargets compare snapshot, owned bytes and both observations.",
+    "bounded_cases": "Physical hand seeding for three gated definitions; departed-target predicate and physical graveyard-to-hand return are explicitly bounded core checks. No unsupported producer behavior is claimed."
+  },
+  "deferred": "No full native, full old trace export, aggregate static checks, release or CI executed for this checkpoint. Full-card matrix and admissions remain pending; all aggregate work deferred until final full-set integration.",
+  "custody": {
+    "manifest": "/home/altf4/.cache/rustmage-msh-cast-target-copy-core-preservation.json",
+    "sha256": "55d2a240a41f575abfe80c8e7c61a991e9be60f89053cd52e1f382aa704a8327",
+    "required_paths": 4284,
+    "prior_paths_rehashed_exact": 4278,
+    "native": {
+      "/home/altf4/.cache/rustmage-msh-cast-target-copy-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "d7167be2974a89dcf78d6376c7ee36d79db08afaf4dbcbcc5e966ae288a2a5d7"
+    },
+    "libraries": {
+      "/home/altf4/.cache/rustmage-msh-cast-target-copy-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "cleanup_report": "/home/altf4/.cache/rustmage-msh-cast-target-copy-core-cleanup.json",
+    "cleanup_sha256": "e3349a087754ac0ea3a232f30f91377672f777b69ae4f8d21994c2096741b348",
+    "removed_terminal_files": 165,
+    "removed_path_bytes": 39838747,
+    "own_processes_inspected": 187,
+    "target_refs": [],
+    "permission_denied_processes": [
+      "4299",
+      "4313",
+      "4688",
+      "6612",
+      "204298"
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "scope": "Shared static self-grant core checkpoint only. Ms. Marvel has a real typed gated producer; her complete flag remains false. Iron Fist is unchanged and gated. Armor consumer is authored separately.",
+  "tested_source_commit": "684880d49686fcff406cb3c0c32909dc8cfc0ddf",
+  "base": "e41dc34bc119f23c8d081720060c630023cce438",
+  "api": {
+    "instruction": "GrantSelfAbility(SelfGrantedAbilityKind::{ControllerHandPower,ControllerArtifactBonus})",
+    "allocating_helper": "Game::grant_self_ability(item,kind)",
+    "same_effect_helper": "Game::grant_self_ability_at(item,kind,timestamp)",
+    "identity": "Exact recipient incarnation and frozen granting definition; stable acquisition timestamp, independent of copies, controller changes and generated static chronology.",
+    "layer6": "Separate GrantSelf marker, distinct from old indexed trigger/activation grants; later removal removes the instance, and leaving removal restores the old instance.",
+    "layer7b": "ControllerHandPower dynamically uses current recipient controller hand count in actual and speculative worlds; it is not a CDA (CR604.3a).",
+    "layer7c": "ControllerArtifactBonus dynamically counts current recipe-effective controlled artifacts, including the recipient and artifact lands; independent grants stack.",
+    "chronology": "effect_timestamp follows physical transform/reattach CR613.7a, preserving relative static order without reacquiring the layer6 ability.",
+    "expiry": "Exact source departure removes rows; all cleanup paths clear EOT grants before cleanup SBA.",
+    "wire": 152,
+    "new_public_payload": "Optional Observation.self_granted_abilities; omitted when absent, with typed kind, availability and both timestamps.",
+    "ids_allocated": 0
+  },
+  "source_cache": {
+    "path": "<cache>/rustmage-msh-self-static-design-e41dc34b.json",
+    "sha256": "f17336d44c2ac4110777b2d14d8de7c565443f1fe1266930a82d05148bbb4da9",
+    "full_direct_helper_records": 28,
+    "rules": [
+      "604.3a",
+      "611.2c",
+      "613.1f",
+      "613.1g",
+      "613.4b",
+      "613.4c",
+      "613.7a",
+      "613.7b",
+      "613.7d",
+      "613.7e",
+      "613.7g"
+    ]
+  },
+  "focused_validation": {
+    "command": "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-self-static-focus5-resource.json -- cargo test --lib msh_self_static_ -- --nocapture",
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "groups": 14,
+    "both_seats": true,
+    "actual_terminal_exit": 0,
+    "native_seconds": 0.09,
+    "guard_seconds": 40.42856109299464,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2716651520,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "input_count": 11858,
+    "input_map": "<cache>/rustmage-msh-self-static-focus5-inputs.json",
+    "input_sha256": "c7a711553849fda5ebc93c40b77b522a9fae24ea8a2065174f72a911e5fab684",
+    "inputs_changed": [],
+    "log": "<cache>/rustmage-msh-self-static-focus5.log",
+    "log_sha256": "3e542171a17067a1253ca1d25e3faeb7fbf4435a3576b4fe3cb1053d74eb415f",
+    "resource_report": "<cache>/rustmage-msh-self-static-focus5-resource.json",
+    "resource_sha256": "6e315844e5566f90549994da31ac5cca1b97f75d599d802fcb26771f9b93eb6f",
+    "test_module": "src/engine_msh_self_granted_static_tests.rs",
+    "test_module_sha256": "49a37fd1c5af14f7581fa3b56af2c7bfcca64b4fee93ad42746d799811800d15",
+    "groups_named": [
+      "msh_self_static_paid_marvel_draws_then_dynamic_layer7b_counters_and_cleanup",
+      "msh_self_static_marvel_only_own_cast_targets_current_own_creature",
+      "msh_self_static_hand_setter_orders_against_real_later_and_earlier_animation",
+      "msh_self_static_ability_removal_suppresses_then_aura_departure_restores_old_instance",
+      "msh_self_static_later_grant_survives_earlier_removal_bounded_same_effect_time",
+      "msh_self_static_grants_survive_copy_but_copiable_values_exclude_resolved_grants",
+      "msh_self_static_exact_source_departure_new_generation_and_queued_draw_independent",
+      "msh_self_static_current_controller_hand_count_and_borrowed_without_hand",
+      "msh_self_static_artifact_bonus_counts_effective_artifacts_self_and_artifact_land",
+      "msh_self_static_artifact_bonus_dynamic_control_double_instances_and_virtual_departure",
+      "msh_self_static_funding_aura_departure_restores_grant_without_parent_mutation",
+      "msh_self_static_owned_raw_index_restore_privacy_bytes_and_absent_old_payload",
+      "msh_self_static_marvel_cast_cost_timing_rejections_are_atomic",
+      "msh_self_static_physical_retimestamp_moves_static_effects_without_reacquiring_abilities"
+    ],
+    "authored_rustfmt_and_diff_check": true
+  },
+  "qualifications": [
+    "Gated Marvel fixture substitutes only her actual physical definition in Hand, then uses ordinary checked paid actions. This is not an accepted-pool deck construction claim.",
+    "ControllerArtifactBonus is exercised through an explicitly bounded helper consuming a real frozen Marvel trigger packet; no whole Armor acceptance is claimed.",
+    "Physical retimestamp uses an explicitly bounded existing primitive; it does not claim that a creature may equip or a single-faced Marvel may transform.",
+    "Actual paid casts, removal Aura/Disenchant, copied values, ownership/privacy and raw/index restore surround the focused core boundaries."
+  ],
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-self-static-preservation.json",
+    "sha256": "de17c14178750acd0633e3c8fa4b2e5d0441032919d9f94593d0416978d67c4a",
+    "required_paths": 4392,
+    "parent_exact": 4385,
+    "cleanup": "<cache>/rustmage-msh-self-static-cleanup.json",
+    "cleanup_sha256": "54964f4828e8739105b83fde00b3d1fb742a6ca3381488ed33ccbe42dca97573",
+    "own_processes_inspected": 209,
+    "target_refs": [],
+    "denied_processes": 5,
+    "removed_files": 165,
+    "removed_path_bytes": 39838933,
+    "native": {
+      "<cache>/rustmage-msh-self-static-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "046f367b2020f802c505a44dd72c17e4aac86e6635a0922f5f802abd941f90e1"
+    },
+    "libraries": {
+      "<cache>/rustmage-msh-self-static-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    }
+  },
+  "deferred": "No admissions, new IDs, old trace export/rebaseline, all-native/default, full static, release, CI or aggregate validation in this checkpoint."
+}

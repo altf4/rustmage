@@ -216,7 +216,7 @@ impl Game {
                 players: [affected, item.controller],
                 next: 0,
             }));
-        if !self.keywords(id).contains(Keywords::INDESTRUCTIBLE) {
+        if !self.effect_destruction_prevented(id) {
             self.move_target_batch(&[bound], Zone::Graveyard);
         }
     }

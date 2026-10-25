@@ -509,7 +509,7 @@ impl Game {
     }
     pub(super) fn library_selection_view(&self, viewer: Player) -> Option<LibrarySelectionView> {
         let f = self.state.resolving.as_ref()?.selection.as_ref()?;
-        if viewer != f.owner && !f.public {
+        if !self.shares_information(viewer, f.owner) && !f.public {
             return None;
         }
         Some(LibrarySelectionView {

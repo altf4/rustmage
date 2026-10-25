@@ -88,6 +88,7 @@ impl Game {
             self.state.pending_triggers.push(SpellView {
                 source_move: None,
                 borrowed_slot: None,
+                self_granted_activation: None,
                 target_controller_lki: None,
                 gift: None,
                 reflexive_subject: None,
@@ -95,6 +96,7 @@ impl Game {
                 return_link: None,
                 crew: None,
                 cast_event: None,
+                cast_creature_subjects: None,
                 copy_event: None,
                 captured_artifact_copy: None,
                 source_copy_recipe: None,
@@ -124,6 +126,7 @@ impl Game {
                 draw_event: None,
                 life_event: None,
                 source_counter_payment: None,
+                exiled_symbol_cards: None,
                 source_counter_lki: None,
                 source_quantity_lki: None,
                 event_object: None,

@@ -1087,7 +1087,7 @@ impl Game {
     }
 
     pub(super) fn decline_effect_payment(&mut self) {
-        let player = self.actor().expect("effect choice actor");
+        let player = self.semantic_actor().expect("effect choice actor");
         if let Some(draw) = self
             .state
             .resolving
@@ -1119,7 +1119,7 @@ impl Game {
 
     pub(super) fn effect_choice_view(&self, viewer: Player) -> Option<EffectChoiceView> {
         let choice = self.state.resolving.as_ref()?.choice.as_ref()?;
-        let actor = self.actor()?;
+        let actor = self.semantic_actor()?;
         if matches!(
             choice.kind,
             EffectChoiceKind::Discard
@@ -1129,12 +1129,12 @@ impl Game {
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
-        ) && viewer != actor
+        ) && !self.shares_information(viewer, actor)
         {
             return None;
         }
-        let public_only =
-            viewer != actor && matches!(choice.kind, EffectChoiceKind::LandCards { .. });
+        let public_only = !self.shares_information(viewer, actor)
+            && matches!(choice.kind, EffectChoiceKind::LandCards { .. });
         let candidates = self
             .state
             .objects
@@ -1154,7 +1154,13 @@ impl Game {
             selected: std::array::from_fn(|index| {
                 choice.selected[index]
                     .iter()
-                    .filter(|_| choice.kind != EffectChoiceKind::Discard || index == viewer.index())
+                    .filter(|_| {
+                        choice.kind != EffectChoiceKind::Discard
+                            || self.shares_information(
+                                viewer,
+                                if index == 0 { Player::P0 } else { Player::P1 },
+                            )
+                    })
                     .copied()
                     .filter(|object| {
                         !public_only

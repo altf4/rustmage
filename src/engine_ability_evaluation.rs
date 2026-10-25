@@ -117,6 +117,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
+        StaticAbilityFragment::HarnessedTrigger(ability) => {
+            if id != source.card || !world.harnessed(source.card) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::AttachmentTrigger(ability)
         | StaticAbilityFragment::AttachmentActivation(ability) => {
             if !world.attached(source, id) {
@@ -230,7 +241,20 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
         || world.roles().is_some_and(|r| {
-            r.keyword_effects.iter().any(|row| {
+            r.harnessed.iter().any(|reference| {
+                world.reference(reference.card) == *reference
+                    && world.object(reference.card).zone == Zone::Battlefield
+                    && world
+                        .object(reference.card)
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(fragment, StaticAbilityFragment::HarnessedTrigger(_))
+                            })
+                        })
+            }) || r.keyword_effects.iter().any(|row| {
                 (matches!(
                     world.object(row.recipient.card).zone,
                     Zone::Battlefield | Zone::Stack
@@ -296,6 +320,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
+                        | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)

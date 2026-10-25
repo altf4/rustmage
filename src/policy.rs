@@ -169,7 +169,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceBack { .. } => 30,
             Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
             Action::ChooseEntryTimestamp { .. } => 120,
-            Action::ChooseReplacement { .. } => 120,
+            Action::ChooseReplacement { .. }
+            | Action::ChooseDamagePrevention { .. }
+            | Action::ChooseDamageEvent { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
             Action::ChooseEndure { put_counters } => {
                 if *put_counters {
@@ -231,7 +233,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseEvidence { .. } => 50,
-            Action::FinishEvidence => 80,
+            Action::FinishEvidence | Action::FinishGraveyardSymbolCost => 80,
             Action::DeclineEvidence => -10,
             Action::ChooseBargain { sacrifice } => {
                 if sacrifice.is_some() {
@@ -253,7 +255,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 observation.aura_entry.as_ref().unwrap().card,
                 Target::Card(object.card),
             ),
-            Action::SelectMilled { .. } | Action::ChooseRevealedDiscard { .. } => 60,
+            Action::ChooseHandCard { object: Some(_) }
+            | Action::SelectMilled { .. }
+            | Action::ChooseRevealedDiscard { .. } => 60,
+            Action::ChooseHandCard { object: None } => -1,
             Action::FinishMilledSelection => 0,
             Action::RecoverMilled { object } => {
                 if object.is_some() {
@@ -262,6 +267,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
+            Action::ChooseSearchZones { .. } => 50,
             Action::Concede => -1000,
             Action::ChooseZoneReplacement { .. } => 50,
             Action::Sacrifice { .. } => 50,
@@ -298,6 +304,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnouncePlot { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
+            | Action::AnnounceSelfGrantedAbility { .. }
             | Action::AnnounceBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. } | Action::AnnounceBorrowedMana { .. } => -2,
             Action::PayCosts { .. } | Action::PayPlot { .. } => 100,

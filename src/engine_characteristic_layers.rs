@@ -350,7 +350,7 @@ impl Game {
             }
         }
     }
-    fn change_object_form(
+    pub(super) fn change_object_form(
         &mut self,
         object: ObjectRef,
         spec: AnimationSpec,

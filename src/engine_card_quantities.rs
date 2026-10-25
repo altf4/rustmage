@@ -56,6 +56,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
             | Instruction::SetCreatureForm { base: value, .. }
             | Instruction::MoveCountersFromSource { amount: value, .. }
+            | Instruction::RevealTargetHandSubsetDiscard(value)
             | Instruction::DrawScaled(_, value)
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)

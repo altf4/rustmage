@@ -6,6 +6,7 @@ fn bounded_program(game: &mut Game, item: SpellView, program: &'static [Instruct
     // Bounded continuation fixture. Production dispatch, target-group
     // selection and expiry are real.
     game.state.resolving = Some(programs::Resolution {
+        linked_copy: None,
         cascade: None,
         target_card_facts: None,
         immediate_blink_return: None,

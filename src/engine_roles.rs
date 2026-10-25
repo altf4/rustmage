@@ -19,6 +19,8 @@ pub(super) struct RoleState {
     clock: u64,
     /// Only true while an entry transaction assigns one simultaneous timestamp group.
     pub deferred_timestamps: bool,
+    /// Rule effect on players, independent of a fixed creature set or its source.
+    pub toughness_combat_damage: [bool; 2],
     pub attached: Vec<RoleTimestampView>,
     pub base_stats: Vec<BaseStatsEffectView>,
     pub live_static: Vec<LiveStaticSourceView>,
@@ -31,6 +33,7 @@ pub(super) struct RoleState {
     pub resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
+    pub harnessed: Vec<ObjectRef>,
 }
 impl RoleState {
     pub(super) fn next_timestamp(&mut self) -> u64 {
@@ -58,6 +61,7 @@ impl RoleState {
                 * std::mem::size_of::<ResolvedAbilityModificationView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self.harnessed.len() * std::mem::size_of::<ObjectRef>()
     }
 }
 impl Game {

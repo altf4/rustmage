@@ -1,0 +1,383 @@
+{
+  "scope": "Two whole Plan cards and the narrow shared grouped-graveyard/immediate-cast-quota rules; focused individual-card validation only.",
+  "base": "6ba0b5fe3c89c19fd7aafffc574b598861fabb9b",
+  "tested_runtime": "7f71218d2831f757c59cc71e5671c882bce647ff",
+  "new_complete_cards": 2,
+  "cards": [
+    {
+      "name": "Robot Domination",
+      "catalogue_id": 3564,
+      "oracle_id": "4f69d2f9-c16a-4752-9026-794a29d73af8",
+      "facts_sha256": "de2dd594ff456a6e237a8ba35477974857742943a1a937cacdd771015aaf0297",
+      "complete": true,
+      "rust": "src/card_definitions/msh/robot_domination.rs",
+      "rust_sha256": "42c614ef2f9cdcbaf1fda1f2c3571b79ffed3d25d02bfd3e82c044398238df88",
+      "provenance": "src/card_definitions/msh/robot_domination.json",
+      "provenance_sha256": "41eff7845960a8dc6a542b2f6dd624e7777e04cb999d304558e58e70cfc28069",
+      "rules_authority": {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "section": "Robot Domination"
+      },
+      "xmage_absence": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "oracle_id": "4f69d2f9-c16a-4752-9026-794a29d73af8",
+        "inventory_path": "data/standard/xmage-inventory.json",
+        "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7"
+      }
+    },
+    {
+      "name": "Doom Reigns Supreme",
+      "catalogue_id": 1132,
+      "oracle_id": "f398a742-22c1-4da9-9d49-fdce2eb93d01",
+      "facts_sha256": "b135a825c040f024441e308d1b0fad14bd315e265fb45c1da1acb960ebea0547",
+      "complete": true,
+      "rust": "src/card_definitions/msh/doom_reigns_supreme.rs",
+      "rust_sha256": "83581999714d71fa335d0cf9897a08d7f08c938ebfce4060bff5f2e1a06594aa",
+      "provenance": "src/card_definitions/msh/doom_reigns_supreme.json",
+      "provenance_sha256": "6d9cb9ffd9d078769bc12014953cb7691839111176dbf34cee3143aebb5158cd",
+      "rules_authority": {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "section": "Doom Reigns Supreme"
+      },
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/d/DoomReignsSupreme.java",
+      "java_sha256": "f2775563f697a6970039a9dda39338c44456facece8d1fda940413da5ec421c0"
+    }
+  ],
+  "shared_rules": {
+    "CreatureCardsEnterYourGraveyard": "One trigger per source for a committed actual batch, post-event live observer, final graveyard effective card kinds and owner, tokens/emblems excluded. A dying animated land does not qualify; a creature card temporarily made a land does. Reuses the sparse death-source observer index with its necessary intrinsic index arm.",
+    "ExileTargetLibraryTopCastFree": "Validate the actual targeted player, freeze up to the printed top count, retain only actual exact exile results, and reuse ordinary immediate free-cast declarations/costs.",
+    "quota": "New public optional ResolutionFreeCasts.casts_remaining is omitted for every old unbounded offer. A private serde-skipped pending_cast stack ID reserves the proposed child. Only matching successful record_cast decrements the finite quota; queries/copies/illegal targets/unfundable costs do not. Finish remains optional at0/1/2; zero quota exposes no additional casts.",
+    "wire": {
+      "schema": 152,
+      "actual_public_delta": "Optional finite casts_remaining on ResolutionFreeCasts; no new action.",
+      "private_delta": "serde-skipped pending stack ID; no wire claim for this internal reservation."
+    },
+    "unchanged_old_consumers": "Seven existing constructors initialize both fields to None; old free-cast behavior is exercised by11 BIG library cases. No policy changes."
+  },
+  "printed_obligations": {
+    "Robot Domination": [
+      "Owner-qualified creature cards in final graveyard, one trigger per actual simultaneous batch from any origin, post-event observers, tokens excluded.",
+      "Draw1, lose1, add Plan1 in order even queued source later departs.",
+      "Historical third crossing with counter replacement; sacrifice then unconditional token creation, including failed sacrifice; exact5388 recipe; controller and token replacements."
+    ],
+    "Doom Reigns Supreme": [
+      "Every current controlled Villain entry, including noncreature Kindred and source itself if relevant, drains/gains thenPlan1.",
+      "Historical fifth crossing, exact successful sacrifice, separate targeted opponent reflexive announcement.",
+      "Actual top5 exile results, short/empty libraries, optional0/1/2 immediate free spells, nonlands, chosen faces, X0, mandatory extra costs, no other alternative costs, successful committed quota only.",
+      "Abilitycontroller/source departure/controller changes, target invalidity, transaction/owned raw/index/orphan/restore and both-view privacy."
+    ]
+  },
+  "whole_test_functions": [
+    "msh_graveyard_plans_robot_paid_three_real_removals_draw_life_threshold_and_recipe",
+    "msh_graveyard_plans_robot_from_anywhere_is_one_trigger_per_committed_batch",
+    "msh_graveyard_plans_robot_uses_owner_final_card_type_not_dying_creature",
+    "msh_graveyard_plans_robot_tokens_noncreatures_and_unchanged_graveyard_do_not_trigger",
+    "msh_graveyard_plans_robot_postevent_observer_does_not_see_its_simultaneous_departure",
+    "msh_graveyard_plans_robot_actual_replacement_destination_is_not_graveyard",
+    "msh_graveyard_plans_robot_payoff_creates_even_if_sacrifice_fails",
+    "msh_graveyard_plans_robot_counter_and_token_replacements_cross_historically",
+    "msh_graveyard_plans_robot_draw_pause_preserves_later_life_and_counter_order",
+    "msh_graveyard_plans_robot_queued_trigger_uses_captured_player_after_control_change",
+    "msh_graveyard_plans_doom_paid_five_villain_entries_then_separate_opponent_target",
+    "msh_graveyard_plans_doom_each_entry_not_batch_nonvillain_and_other_controller_excluded",
+    "msh_graveyard_plans_doom_fifth_crossing_failed_sacrifice_has_no_child",
+    "msh_graveyard_plans_doom_zero_one_two_free_casts_exact_quota_owner_and_order",
+    "msh_graveyard_plans_doom_top_five_short_library_and_no_lands_or_later_permission",
+    "msh_graveyard_plans_doom_exact_cast_object_target_failures_and_success_only_count",
+    "msh_graveyard_plans_doom_free_cast_preserves_mandatory_additional_cost",
+    "msh_graveyard_plans_doom_free_x_is_zero_without_an_alternative_cost",
+    "msh_graveyard_plans_doom_unknown_top_is_private_until_exact_exile_and_old_refs_reject",
+    "msh_graveyard_plans_doom_opponent_target_becoming_illegal_exiles_nothing",
+    "msh_graveyard_plans_robot_actual_paid_mill_batch_triggers_once_before_recovery",
+    "msh_graveyard_plans_doom_noncreature_kindred_villain_entry_is_included",
+    "msh_graveyard_plans_doom_copy_is_not_a_cast_and_probes_do_not_spend_quota",
+    "msh_graveyard_plans_doom_old_child_keeps_caster_after_source_reentry_and_control_change"
+  ],
+  "obligation_evidence": {
+    "Robot draw/life/counter and third threshold": [
+      "robot_paid_three_real_removals_draw_life_threshold_and_recipe",
+      "robot_actual_paid_mill_batch_triggers_once_before_recovery",
+      "robot_counter_and_token_replacements_cross_historically",
+      "robot_draw_pause_preserves_later_life_and_counter_order"
+    ],
+    "Robot grouped final-zone filtering": [
+      "robot_from_anywhere_is_one_trigger_per_committed_batch",
+      "robot_uses_owner_final_card_type_not_dying_creature",
+      "robot_tokens_noncreatures_and_unchanged_graveyard_do_not_trigger",
+      "robot_postevent_observer_does_not_see_its_simultaneous_departure",
+      "robot_actual_replacement_destination_is_not_graveyard"
+    ],
+    "Robot unconditional payoff and controller": [
+      "robot_payoff_creates_even_if_sacrifice_fails",
+      "robot_queued_trigger_uses_captured_player_after_control_change"
+    ],
+    "Doom entry qualification and ordered life/counters": [
+      "doom_paid_five_villain_entries_then_separate_opponent_target",
+      "doom_each_entry_not_batch_nonvillain_and_other_controller_excluded",
+      "doom_noncreature_kindred_villain_entry_is_included"
+    ],
+    "Doom historical fifth/sacrifice success/reflexive target": [
+      "doom_fifth_crossing_failed_sacrifice_has_no_child",
+      "doom_opponent_target_becoming_illegal_exiles_nothing",
+      "doom_old_child_keeps_caster_after_source_reentry_and_control_change"
+    ],
+    "Doom exact top5/optional quota/casting rules": [
+      "doom_zero_one_two_free_casts_exact_quota_owner_and_order",
+      "doom_top_five_short_library_and_no_lands_or_later_permission",
+      "doom_exact_cast_object_target_failures_and_success_only_count",
+      "doom_free_cast_preserves_mandatory_additional_cost",
+      "doom_free_x_is_zero_without_an_alternative_cost",
+      "doom_copy_is_not_a_cast_and_probes_do_not_spend_quota",
+      "doom_unknown_top_is_private_until_exact_exile_and_old_refs_reject"
+    ]
+  },
+  "test_name_rule": "Matrix names have prefix msh_graveyard_plans_ in src/engine_msh_graveyard_plans_tests.rs.",
+  "focused_results": {
+    "terminal": true,
+    "whole_groups": 24,
+    "existing_threshold_groups": 11,
+    "existing_free_cast_groups": 11,
+    "total_focused_groups": 46,
+    "execution_seconds": {
+      "whole": 0.16,
+      "threshold": 0.02,
+      "free_casts": 0.05
+    },
+    "checks": {
+      "terminal": true,
+      "checks": [
+        {
+          "name": "whole",
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "msh_graveyard_plans_",
+            "--",
+            "--nocapture"
+          ],
+          "seconds": 29.890051497961394,
+          "exit_code": 0,
+          "log": "<cache>/rustmage-msh-plan-pair-final-focus-whole.log"
+        },
+        {
+          "name": "threshold",
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "engine::plan_threshold_tests::",
+            "--",
+            "--nocapture"
+          ],
+          "seconds": 0.07676551601616666,
+          "exit_code": 0,
+          "log": "<cache>/rustmage-msh-plan-pair-final-focus-threshold.log"
+        },
+        {
+          "name": "free-casts",
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "engine::big_library_tests::",
+            "--",
+            "--nocapture"
+          ],
+          "seconds": 0.08660636300919577,
+          "exit_code": 0,
+          "log": "<cache>/rustmage-msh-plan-pair-final-focus-free-casts.log"
+        }
+      ],
+      "fixed_inputs": 11151,
+      "changed_inputs": [],
+      "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development"
+    },
+    "guard": {
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 30.259659164992627,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2688421888,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development; these checked scenario timings are not a production simulation benchmark."
+  },
+  "earlier_failures": [
+    {
+      "run": "focus1",
+      "scope": "compile only",
+      "failure": "Test used inaccessible Card tuple constructor; changed to canonical token identity lookup."
+    },
+    {
+      "run": "focus2",
+      "result": "14/24 pass",
+      "failure": "Nine Doom cases exposed the new helper incorrectly using the card-only valid_library_target primitive for a player. Corrected to group target-rule validation and a boolean offer result. One Robot fixture attempted an invalid unchanged same-zone movement; corrected to leave that graveyard object untouched. No inherited defect claimed."
+    },
+    {
+      "run": "focus3",
+      "result": "All24 whole +11 threshold +11 existing free-cast cases pass before support flags enabled."
+    }
+  ],
+  "transactions_and_privacy": {
+    "both_seats": true,
+    "ordinary_supported_paid_sources_in_final_run": true,
+    "invalid_atomicity": "Snapshot/revision/state_bytes and both full observations stay exact on selected illegal target, stale exile, over-quota and unpayable-cost actions.",
+    "owned": "Raw/index clones survive disposal of the parent; snapshots restore both complete observations, stale indices reject, and replay reaches identical snapshots at target, recovery and free-cast choices.",
+    "privacy": "Unrevealed top-card identities produce equal both-player views/legal actions. Exiled actual cards become public to both. Miracle choices remain actor-only. Quota is public to both; private pending stack ID is not serialized."
+  },
+  "bounded_fixtures": [
+    "Positive-timestamp production animation/creature-type rows exercise effective earlier-layer kinds.",
+    "Boggart Mischief is an immutable gated Kindred metadata fixture only; its unsupported abilities are not cast or admitted.",
+    "Direct actual zone batches cover from-anywhere origins; separate real paid Murder and Rapid Rescue paths cover removal/milling.",
+    "A central copy executor boundary proves quota/cast counters without claiming a paid copy producer in that exact phase."
+  ],
+  "source_audit": {
+    "path": "<cache>/rustmage-msh-plan-pair-source-design.json",
+    "sha256": "45800cb66c50da4884a0ade8c5a879944d194766f698585915b8725771e272cc",
+    "pinned_java_bodies": 18,
+    "read_scope": "Full selected available direct classes and explicitly listed helper bodies. CardUtil is a scoped method excerpt, not a full-file read. Leader is next, not implemented here.",
+    "CardUtil_read_scope": "Complete getCastableComponents, castSpellWithAttributes[ForFree] overloads, cardsHasCastableParts, and castMultipleWithAttributeForFree overloads/loop; unrelated full-file bodies not claimed read.",
+    "primary": [
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "sections": {
+          "Robot Domination": [
+            1699,
+            1708
+          ],
+          "Doom Reigns Supreme": [
+            764,
+            774
+          ],
+          "Connive general": [
+            202,
+            215
+          ]
+        },
+        "read_coverage": "All card-specific bullets in the two selected sections; complete general Connive notes. Leader has no separate card-specific entry."
+      }
+    ],
+    "Robot_absence": "Frozen inventory has no class/implementation for oracle4f69d2f9. Full Oracle and official card-specific notes provide the source, with pinned real reusable helpers and existing exact token recipe."
+  },
+  "unchanged_bytes": [
+    {
+      "path": "data/catalogue-identities.json",
+      "sha256": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1"
+    },
+    {
+      "path": "data/sets/msh.json",
+      "sha256": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361"
+    },
+    {
+      "path": "src/assurance/card_traces.json",
+      "sha256": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3"
+    },
+    {
+      "path": "src/assurance/regressions.rs",
+      "sha256": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185"
+    },
+    {
+      "path": "src/policy.rs",
+      "sha256": "42ad15b08931d607956682555e602c7be4c4e57cd28be73f98ad241acfb97984"
+    }
+  ],
+  "generated": "Catalogue/coverage regenerated only by scripts/link_catalogue.py after typed edits and the two complete flags; no IDs, token recipes, membership, policy or recorder changes.",
+  "deferred_integration": [
+    "All-native DEFAULT suite and routine aggregate static checks",
+    "Fresh full inherited Trace exports and baseline acceptance",
+    "Production/release/CI and final complete-set acceptance"
+  ],
+  "baseline_status": {
+    "committed_rows": 2535,
+    "committed_schema": 151,
+    "current_schema": 152,
+    "unchanged_from_base": true,
+    "rows_expected_if_only_this_source_stack_is_recorded": 2539,
+    "explanation": "The source stack also contains the two completed Sagas; none of these four new rows has been accepted in the unchanged baseline. No trace export or rebaseline ran in this stage."
+  },
+  "implementation_measurement": {
+    "started_utc": "2026-10-25T15:14:47+00:00",
+    "through_cleanup_utc": "2026-10-25T15:37:59.389994+00:00",
+    "elapsed_seconds": 1392.389994,
+    "new_complete_cards": 2,
+    "cards_per_hour_in_measured_scope": 5.170965053631376,
+    "scope": "Includes full source/helper/primary audit, core and card authoring, focused compilation/fixes, queues and cleanup. No extrapolation to all-Standard performance."
+  },
+  "artifacts": [
+    {
+      "path": "<cache>/rustmage-msh-plan-pair-focus-guard.json",
+      "sha256": "f52154b78f6e949f443ce97192f07b0d93421c262d47d0765c1b026d6f804673"
+    },
+    {
+      "path": "<cache>/rustmage-msh-plan-pair-focus2-guard.json",
+      "sha256": "2a55e577a061e9db663115e76014f4a0f376364aee15a47d1667ce075800afc2"
+    },
+    {
+      "path": "<cache>/rustmage-msh-plan-pair-focus3-guard.json",
+      "sha256": "82555aa42fd0306599804fc8f027646575dbda0511f6713e2baacdbae5217231"
+    },
+    {
+      "path": "<cache>/rustmage-msh-plan-pair-final-focus-guard.json",
+      "sha256": "81b25c7cec45e333ab363a45cb5a0b62c848b34a331242444e6800ee9686915c"
+    },
+    {
+      "path": "<cache>/rustmage-msh-plan-pair-final-focus-inputs.json",
+      "sha256": "1567d4a65ffd91d1795eb7d789715647d31999b878a8292276d9079d22eaf994"
+    },
+    {
+      "path": "<cache>/rustmage-msh-plan-pair-final-focus-checks.json",
+      "sha256": "d06cd216d263fda8368917548521f0e98ac09698d6c7d5bb5db42e73c6459d77"
+    },
+    {
+      "path": "<cache>/rustmage-msh-plan-pair-final-focus-whole.log",
+      "sha256": "40794d55ef4690cf36b5cd306c4a87326768399cc234040e47517375ea6d77c1"
+    },
+    {
+      "path": "<cache>/rustmage-msh-plan-pair-final-focus-threshold.log",
+      "sha256": "e5926f51fafc2a48297ce4317d21fb41f70e4f6b08950b1f6251926cfbbec8cf"
+    },
+    {
+      "path": "<cache>/rustmage-msh-plan-pair-final-focus-free-casts.log",
+      "sha256": "4a5d208b43f79569aea4d5c44c656e74c144a43444a9f2ccab8d7e3532780163"
+    }
+  ],
+  "cleanup": {
+    "path": "<cache>/rustmage-msh-plan-pair-cleanup.json",
+    "sha256": "43694c9bf4e505ebfeeeff6efd4b946cc34c183a3c5cc7a68036eaecf45db593",
+    "terminal": true,
+    "known_guarded_consumers_terminal": true,
+    "own_user_processes_scanned": 185,
+    "accessible_fd_maps_exe_cwd_target_refs": [],
+    "denied_inspections": 169,
+    "removed_files": 165,
+    "removed_path_allocated_bytes": 40366080,
+    "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation.",
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-plan-pair-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-plan-pair-dev-target/debug/deps/rustmage-55e16bd14e329fbf",
+        "sha256": "df045ae47f71e9444e90d232db690dcac7ee7c2071c48a6bc60bf1f95c6a4275"
+      }
+    ]
+  },
+  "preservation": {
+    "parent": "<cache>/rustmage-msh-cast-target-copy-core-preservation.json",
+    "parent_sha256": "55d2a240a41f575abfe80c8e7c61a991e9be60f89053cd52e1f382aa704a8327",
+    "prior_required": 4284,
+    "manifest": "<cache>/rustmage-msh-plan-pair-preservation.json",
+    "manifest_sha256": "22050cdd602c1f8e01ec3234799c1967831ae41892b8722d2cc3582fe1ddf771",
+    "total_required": 4290,
+    "all_prior_exact": true
+  },
+  "remaining_limits": [
+    "Leader, Super-Genius was audited but remains gated and unimplemented in this source checkpoint.",
+    "Focused whole-card evidence does not certify entire MSH or all-Standard behavior, interactions or performance."
+  ]
+}

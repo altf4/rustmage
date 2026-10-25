@@ -1,0 +1,150 @@
+{
+  "scope": "One complete Ms. Marvel candidate with individual focused rules tests. Full-set integration, default/all native, old traces, full static, release and CI remain deferred.",
+  "base": "68dbd7bc7f1a3ebd0e07ecbddd41f9cccdc4e093",
+  "tested_source_commit": "c64ef71aa6b00aa6bc65f924cf1cc608662b0b3a",
+  "complete_candidates": [
+    "Ms. Marvel, Kamala Khan"
+  ],
+  "shared_static_core": "docs/msh-self-granted-static-core-focused-evidence.json",
+  "local_msh_candidates": 239,
+  "msh_denominator": 281,
+  "wire": 152,
+  "ids_allocated": 0,
+  "printed_clause_evidence": {
+    "2U legendary Mutant Inhuman Hero1/4 and cast timing/cost": [
+      "msh_self_static_paid_marvel_draws_then_dynamic_layer7b_counters_and_cleanup",
+      "msh_self_static_marvel_cast_cost_timing_rejections_are_atomic"
+    ],
+    "reach": "msh_self_static_marvel_paid_reach_blocks_actual_flying_attacker",
+    "vigilance": "msh_self_static_marvel_paid_vigilance_attack_and_one_damage",
+    "no maximum hand size": [
+      "msh_self_static_marvel_no_maximum_retains_nine_through_real_cleanup",
+      "msh_self_static_marvel_departure_restores_seven_and_actual_private_discard"
+    ],
+    "own spell targeting own creature, draw once per spell": [
+      "msh_self_static_marvel_only_own_cast_targets_current_own_creature",
+      "msh_self_static_marvel_multigroup_multiple_own_targets_draw_once_and_one_grant",
+      "msh_self_static_marvel_token_creature_target_triggers_even_when_original_kills_it",
+      "msh_self_static_marvel_original_counter_or_source_murder_keeps_draw_independent"
+    ],
+    "draw then self-granted dynamic base power until EOT": [
+      "msh_self_static_paid_marvel_draws_then_dynamic_layer7b_counters_and_cleanup",
+      "msh_self_static_marvel_interrupted_draw_precedes_static_grant_and_restores_owned",
+      "msh_self_static_marvel_copied_trigger_draws_twice_independent_grant_instances",
+      "msh_self_static_hand_setter_orders_against_real_later_and_earlier_animation",
+      "msh_self_static_ability_removal_suppresses_then_aura_departure_restores_old_instance",
+      "msh_self_static_current_controller_hand_count_and_borrowed_without_hand",
+      "msh_self_static_exact_source_departure_new_generation_and_queued_draw_independent",
+      "msh_self_static_marvel_end_turn_spell_expires_grant_but_preserves_no_maximum"
+    ]
+  },
+  "focused_validation": {
+    "command": "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-marvel-supported-resource.json -- cargo test --lib msh_self_static_ -- --nocapture",
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "groups": 24,
+    "shared_core_groups": 14,
+    "whole_card_groups": 10,
+    "both_seats": true,
+    "ordinary_supported_setup": true,
+    "native_seconds": 0.17,
+    "guard_seconds": 36.916244478023145,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2735067136,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "input_count": 11859,
+    "input_map": "<cache>/rustmage-msh-marvel-supported-inputs.json",
+    "input_sha256": "36f68e2e8510213f9f614b8e19897bd1f470a36ddb068db010d26af22e80d4a4",
+    "inputs_changed": [],
+    "log": "<cache>/rustmage-msh-marvel-supported.log",
+    "log_sha256": "1a1dd79666b61624a64247f9e96494b5fe0e5d18e98b43766d594213e45ad3b9",
+    "resource_report": "<cache>/rustmage-msh-marvel-supported-resource.json",
+    "resource_sha256": "e044e16cf1257ec4e134320d015f64cefaaf4a406d73cfb453c5ec83d5139098",
+    "test_module": "src/engine_msh_self_granted_static_tests.rs",
+    "test_module_sha256": "e09354a21e3bfad0b3481cff7b26fff0f0d8a0616bfc034b5b3027146379729b",
+    "all_groups": [
+      "msh_self_static_paid_marvel_draws_then_dynamic_layer7b_counters_and_cleanup",
+      "msh_self_static_marvel_only_own_cast_targets_current_own_creature",
+      "msh_self_static_hand_setter_orders_against_real_later_and_earlier_animation",
+      "msh_self_static_ability_removal_suppresses_then_aura_departure_restores_old_instance",
+      "msh_self_static_later_grant_survives_earlier_removal_bounded_same_effect_time",
+      "msh_self_static_grants_survive_copy_but_copiable_values_exclude_resolved_grants",
+      "msh_self_static_exact_source_departure_new_generation_and_queued_draw_independent",
+      "msh_self_static_current_controller_hand_count_and_borrowed_without_hand",
+      "msh_self_static_artifact_bonus_counts_effective_artifacts_self_and_artifact_land",
+      "msh_self_static_artifact_bonus_dynamic_control_double_instances_and_virtual_departure",
+      "msh_self_static_funding_aura_departure_restores_grant_without_parent_mutation",
+      "msh_self_static_owned_raw_index_restore_privacy_bytes_and_absent_old_payload",
+      "msh_self_static_marvel_cast_cost_timing_rejections_are_atomic",
+      "msh_self_static_physical_retimestamp_moves_static_effects_without_reacquiring_abilities",
+      "msh_self_static_marvel_paid_vigilance_attack_and_one_damage",
+      "msh_self_static_marvel_paid_reach_blocks_actual_flying_attacker",
+      "msh_self_static_marvel_no_maximum_retains_nine_through_real_cleanup",
+      "msh_self_static_marvel_departure_restores_seven_and_actual_private_discard",
+      "msh_self_static_marvel_multigroup_multiple_own_targets_draw_once_and_one_grant",
+      "msh_self_static_marvel_original_counter_or_source_murder_keeps_draw_independent",
+      "msh_self_static_marvel_interrupted_draw_precedes_static_grant_and_restores_owned",
+      "msh_self_static_marvel_copied_trigger_draws_twice_independent_grant_instances",
+      "msh_self_static_marvel_end_turn_spell_expires_grant_but_preserves_no_maximum",
+      "msh_self_static_marvel_token_creature_target_triggers_even_when_original_kills_it"
+    ],
+    "authored_card_rustfmt_and_diff_check": true
+  },
+  "sources": {
+    "full_static_design": "<cache>/rustmage-msh-self-static-design-e41dc34b.json",
+    "sha256": "f17336d44c2ac4110777b2d14d8de7c565443f1fe1266930a82d05148bbb4da9",
+    "direct_helper_records": 28,
+    "whole_fixture_source_cache": "<cache>/rustmage-msh-marvel-fixture-sources.json",
+    "fixture_sha256": "30039280aff03400c8a86ff0d9d9989b087faf8f85cceb11de022c8b2f8cd3f7",
+    "fixture_records": 15,
+    "rules": [
+      "604.3a",
+      "613.1f",
+      "613.4b",
+      "613.4c",
+      "613.7a"
+    ],
+    "release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+  },
+  "compatibility": {
+    "core_runtime": "unchanged from684880d4",
+    "old_trace_rows": 2535,
+    "old_trace_table_metadata_identity_membership": "unchanged",
+    "trace_export_or_rebaseline": "none",
+    "definitions": 5403,
+    "token_recipes": 125,
+    "Iron Fist": "still gated; activation-instance extension is subsequent work"
+  },
+  "qualifications": [
+    "The14 shared core groups retain explicitly labeled helper-only Armor bonus/physical-retimestamp boundaries; whole Armor acceptance is not claimed.",
+    "Whole Marvel scenarios use ordinary support-checked setup and actual paid actions with full raw/index/restore checks.",
+    "Full-set legal games, interactions, performance and final acceptance are deferred."
+  ],
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-marvel-preservation.json",
+    "sha256": "11b51aa850780e30a86c3477af54bf7ed6985e25e00d5e4fd2bbca4c39c84d38",
+    "required_paths": 4409,
+    "parent_exact": 4403,
+    "cleanup": "<cache>/rustmage-msh-marvel-cleanup.json",
+    "cleanup_sha256": "be9760c2a30d397bd6bc5a51ccbf8a9f4dadaa9c69ff6fc407b7b7e5468b2492",
+    "processes_inspected": 206,
+    "denied_count": 5,
+    "target_refs": [],
+    "removed_files": 165,
+    "removed_path_bytes": 39838587,
+    "natives": {
+      "<cache>/rustmage-msh-marvel-gated24-native": "569f45be8facffef1b5634c32bde854ea7a50ba648acaf50d6ee2940644d7d28",
+      "<cache>/rustmage-msh-marvel-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "de878657c1b6cd50235f53a7fbbd697a1457393f8b90458bb176cfe75f5ada39"
+    },
+    "libraries": {
+      "<cache>/rustmage-msh-marvel-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    }
+  },
+  "measured_interval": {
+    "start": "2026-10-25T09:41:40-07:00",
+    "end": "2026-10-25T16:49:58.662995+00:00",
+    "scope": "Whole Marvel cases after shared-core checkpoint, including development build/guard queue time; one candidate, no simulation-throughput extrapolation."
+  }
+}

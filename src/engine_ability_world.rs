@@ -62,6 +62,9 @@ pub(super) trait CharacteristicWorld {
             .then(|| self.game().copy_ability_origin(self.reference(id)))
             .flatten()
     }
+    fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
+        self.game().temporary_copy_view(object)
+    }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.game().copy_recipe(self.reference(id))
     }
@@ -172,6 +175,40 @@ pub(super) trait CharacteristicWorld {
                 })
             })
     }
+    /// Activation-only permission: never grants the haste keyword or attack permission.
+    fn activation_keywords(&self, id: CardId) -> Keywords {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        let keywords = query.keywords(id);
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield
+            || self.kinds(id) & 1 == 0
+            || !object.summoning_sick
+            || keywords.contains(Keywords::HASTE)
+        {
+            return keywords;
+        }
+        let grants = |f: &crate::cards::StaticAbilityFragment| {
+            matches!(
+                f,
+                crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
+            )
+        };
+        if self.static_sources().iter().any(|&source| {
+            let provider = self.object(source);
+            provider.zone == Zone::Battlefield
+                && provider.controller == object.controller
+                && provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|g| g.fragments.iter().any(grants))
+                && query.continuous_fragment_available(source, grants)
+        }) {
+            keywords.union(Keywords::HASTE)
+        } else {
+            keywords
+        }
+    }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield
@@ -184,6 +221,12 @@ pub(super) trait CharacteristicWorld {
                     && provider.card.static_cast_restriction() & 2 != 0
                     && self.printed_abilities_available(source)
             })
+    }
+    fn harnessed(&self, id: CardId) -> bool {
+        self.object(id).zone == Zone::Battlefield
+            && self
+                .roles()
+                .is_some_and(|state| state.harnessed.contains(&self.reference(id)))
     }
     fn is_token(&self, id: CardId) -> bool {
         self.object(id).is_token()
@@ -395,6 +438,8 @@ pub(super) trait CharacteristicWorld {
             &|id, _| self.kinds(id),
             &|id| self.name(id),
             &|id| self.colors(id),
+            &|id| self.legendary(id),
+            &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
