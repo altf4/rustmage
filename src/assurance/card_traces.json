@@ -17407,6 +17407,14 @@
     "journal": "a66fbe1473c9d196",
     "observations": "5eadc93db6397251"
   },
+  "The Ten Rings": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "8af54ec46c2d4077",
+    "observations": "a0a3764660dd57cf"
+  },
   "The Thing, Ben Grimm": {
     "root": "main",
     "status": "completed",

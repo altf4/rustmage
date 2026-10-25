@@ -771,8 +771,9 @@ impl Object {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
     hexproof_until_end_turn: bool,
-    extra_land_plays_remaining: u64,
+    /// Presence of a lasting grant; its authoritative order is in HandSizeState.
     no_maximum_hand_size: bool,
+    extra_land_plays_remaining: u64,
     extra_land_plays_granted: u64,
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
@@ -1660,6 +1661,7 @@ struct State {
     #[allow(clippy::box_collection)]
     death_exile_replacements: Option<Box<Vec<ExileDeathReplacementView>>>,
     roles: Option<Box<roles::RoleState>>,
+    hand_size: Option<Box<hand_size::HandSizeState>>,
     replacements: Option<Box<replacements::ReplacementState>>,
     // Sparse registry: keep an eight-byte pointer in the common empty state
     // rather than an inline Vec header for games with no delayed obligation.
@@ -2148,6 +2150,8 @@ pub struct Observation {
     pub live_static_sources: Vec<LiveStaticSourceView>,
     pub resolved_stat_subjects: Vec<ResolvedStatSubjectView>,
     pub ability_source_timestamps: Vec<AbilitySourceTimestampView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hand_size_timeline: Option<HandSizeTimelineView>,
     pub keyword_effects: Vec<KeywordEffectView>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
@@ -2268,8 +2272,8 @@ impl Game {
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
             hexproof_until_end_turn: false,
-            extra_land_plays_remaining: 0,
             no_maximum_hand_size: false,
+            extra_land_plays_remaining: 0,
             extra_land_plays_granted: 0,
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
@@ -2385,6 +2389,7 @@ impl Game {
                 suspected: None,
                 death_exile_replacements: None,
                 roles: None,
+                hand_size: None,
                 preparations: None,
                 adventures: None,
                 plot: None,
@@ -4956,7 +4961,7 @@ impl Game {
                     self.run_program();
                 } else {
                     self.state.cleanup_discards.push(card);
-                    if self.hand_count(actor) - self.state.cleanup_discards.len() <= 7 {
+                    if !self.above_hand_limit(actor, self.state.cleanup_discards.len()) {
                         let discarded = std::mem::take(&mut self.state.cleanup_discards);
                         self.discard_batch(&discarded, None);
                         self.finish_cleanup();
@@ -5228,6 +5233,27 @@ impl Game {
                 })
                 .count();
             assert!(count <= 1, "simultaneous timestamp entry must be staged");
+            if ids.iter().any(|&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .hand_size_setting()
+                    .flatten()
+                    .is_some()
+            }) {
+                assert!(
+                    ids.iter()
+                        .filter(
+                            |&&id| self.state.objects[id as usize].zone != Zone::Battlefield
+                                && self.state.objects[id as usize]
+                                    .card
+                                    .hand_size_setting()
+                                    .is_some()
+                        )
+                        .count()
+                        <= 1,
+                    "simultaneous hand timestamp entry must be staged"
+                );
+            }
         }
         let before: Vec<_> = ids
             .iter()
@@ -5626,6 +5652,7 @@ impl Game {
             self.forget_creature_types(before.reference);
             self.forget_live_static_source(before.reference);
             self.forget_ability_source(before.reference);
+            self.forget_hand_size_source(before.reference);
             // Abilities use the source's actual last-known keywords if it leaves,
             // including gains made after that ability was announced.
             for item in self
@@ -6014,9 +6041,7 @@ impl Game {
             }
             Step::End | Step::Cleanup => {
                 self.state.step = Step::Cleanup;
-                if !self.no_maximum_hand_size(self.state.active)
-                    && self.hand_count(self.state.active) > 7
-                {
+                if self.above_hand_limit(self.state.active, 0) {
                     self.state.pending = Pending::Discard;
                 } else {
                     self.finish_cleanup();
@@ -6754,6 +6779,7 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.stat_subjects.clone()),
+            hand_size_timeline: self.hand_size_timeline(),
             ability_source_timestamps: s
                 .roles
                 .as_ref()
@@ -7159,6 +7185,7 @@ impl Game {
             + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
             + s.replacements.as_ref().map_or(0, |f| f.bytes())
             + s.roles.as_ref().map_or(0, |r| r.bytes())
+            + s.hand_size.as_ref().map_or(0, |r| r.bytes())
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.entry_batch
                 .as_ref()
@@ -7367,22 +7394,7 @@ pub use zone_effects::TemporaryControlView;
 
 impl Game {
     fn no_maximum_hand_size(&self, player: Player) -> bool {
-        self.state.players[player.index()].no_maximum_hand_size
-            || self.state.static_sources.iter().any(|&id| {
-                self.state.objects[id as usize].controller == player
-                    && self.state.objects[id as usize]
-                        .card
-                        .static_ability_groups()
-                        .iter()
-                        .any(|g| {
-                            g.fragments.iter().any(|f| {
-                                matches!(f, crate::cards::StaticAbilityFragment::NoMaximumHandSize)
-                            })
-                        })
-                    && self.continuous_fragment_available(id, |f| {
-                        matches!(f, crate::cards::StaticAbilityFragment::NoMaximumHandSize)
-                    })
-            })
+        self.maximum_hand_size(player).is_none()
     }
     fn continuous_land_plays(&self, player: Player) -> u64 {
         self.state
@@ -7636,3 +7648,11 @@ mod msh_baron_tests;
 #[cfg(test)]
 #[path = "engine_msh_vision_tests.rs"]
 mod msh_vision_tests;
+
+#[path = "engine_hand_size.rs"]
+mod hand_size;
+pub use hand_size::{HandSizeSourceView, HandSizeTimelineView};
+
+#[cfg(test)]
+#[path = "engine_msh_ten_rings_tests.rs"]
+mod msh_ten_rings_tests;

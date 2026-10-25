@@ -3216,7 +3216,7 @@ impl Game {
                     }
                 }
                 Instruction::NoMaximumHandSize => {
-                    self.state.players[item.controller.index()].no_maximum_hand_size = true;
+                    self.grant_no_maximum_hand_size(item.controller);
                 }
                 Instruction::Paradigm { ability } => self.resolve_paradigm(&item, ability),
                 Instruction::ExileUntilManaValueCastFree(minimum) => {

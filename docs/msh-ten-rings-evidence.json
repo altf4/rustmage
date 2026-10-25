@@ -1,0 +1,497 @@
+{
+  "schema": 1,
+  "status": "Complete authored candidate; final integrated aggregate release validation, reviews and user approval remain pending",
+  "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+  "runtime_and_test_commit": "24cfdeb9be5fa8f750ea4fe6f4aa495e83f4b7e4",
+  "delivery": {
+    "branch": "codex/msh-ten-rings-hand-maximum",
+    "integration_target": "codex/msh-complete-set-implementation",
+    "aggregate_pr": 516,
+    "new_pr_created": false,
+    "main_merge_authorized": false
+  },
+  "card": {
+    "name": "The Ten Rings",
+    "catalogue_id": 4508,
+    "oracle_id": "a82d855c-50c8-43f2-99ba-a84fe84539c5",
+    "facts_sha256": "96ca3a56ea02f53d3bbedd7384d72fbf952aae75931416d1d373c0dbdc7203c3",
+    "physical_metadata_sha256": "f921998556732c366acca0f4dd016820297403535757b3f55503ac816eeff494",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_source": "Mage.Sets/src/mage/cards/t/TheTenRings.java",
+    "java_sha256": "7c86d3c5b589380dbbef98d026dc4216e66f24066b45733f3ecceb740d5fc8f2",
+    "xmage_dependencies": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+        "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/MaximumHandSizeControllerEffect.java",
+        "sha256": "2ff5efca68eea0f1ed6e2f4d8365a2f7356727abd8f3485aaf07a91e6c4ed2c1"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardsEqualToDifferenceEffect.java",
+        "sha256": "9658545a5c034cb3a1c67f037a94d78193b800a1076e565e4e8ebba2547bf93a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/condition/common/CardsInHandCondition.java",
+        "sha256": "f800994982a02a45f1ab09d9fc85d88a5159699bc87b73781d03b1c738411c25"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+        "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+        "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+        "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+        "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+        "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/constants/ComparisonType.java",
+        "sha256": "33b0abc2b4214ece7d2f842b9f000d967dd8fb4e6cb073cb34eeab7e304731ef"
+      }
+    ]
+  },
+  "frozen_oracle": {
+    "oracle_id": "a82d855c-50c8-43f2-99ba-a84fe84539c5",
+    "name": "The Ten Rings",
+    "layout": "normal",
+    "mana_cost": "{8}",
+    "cmc": 8.0,
+    "type_line": "Legendary Artifact",
+    "oracle_text": "Your maximum hand size is ten.\nAt the beginning of your end step, if you have fewer than ten cards in hand, draw cards equal to the difference.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [],
+    "reference_printing": {
+      "id": "2332bc91-b0f2-4911-844d-d1cc915cd6c8",
+      "set": "msh",
+      "collector_number": "251",
+      "released_at": "2026-06-26"
+    }
+  },
+  "rules_evidence": [
+    {
+      "url": "https://media.wizards.com/2026/downloads/MSH_Release_Notes_N6hMZoes90/zfGb4BJ8Bf_EN_MTGMSH_ReleaseNotes_20260513.pdf",
+      "location": "PDF page index57, The Ten Rings, lines2227\u20132242 in browser extraction",
+      "facts": "Hand limit matters at cleanup. Hand-limit effects use timestamp order: later Rings overrides earlier no-maximum, and vice versa. Draw replacements modify the fixed number of draws; starting from five cards, a doubling replacement produces ten new cards."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "rules": [
+        "402.2",
+        "514.1\u2013514.3a",
+        "603.4",
+        "608.2a",
+        "613.7a\u2013b",
+        "613.7d\u2013g",
+        "613.7m",
+        "613.11",
+        "121.2"
+      ],
+      "facts": "Intervening conditions check at trigger and resolution. Rules effects use timestamps after characteristics; simultaneous timestamps use APNAP and controller choice. Cleanup discards precede effect expiration and can repeat after priority. Draws occur individually."
+    },
+    {
+      "url": "https://magic.wizards.com/en/news/feature/secrets-of-strixhaven-release-notes",
+      "location": "Library of Leng, line2351 in browser extraction",
+      "facts": "Independent official example confirms latest hand-size setter wins against no maximum."
+    }
+  ],
+  "shared_mechanics": [
+    "Static MaximumHandSize(u16) and existing NoMaximumHandSize share an independent sparse owned HandSizeState clock, exact source-incarnation rows, and latest lasting infinity setter per player. Current controller and shared continuous ability availability determine which source applies; suppression/control change does not retimestamp, while departure forgets the exact row.",
+    "The existing private lasting-grant presence marker is retained for compatibility and checked against the cold lasting timestamp. It never overrides a later finite setter: maximum_hand_size chooses the newest applicable finite or infinite setting, with default seven.",
+    "Before any finite setter participates, infinity-only chronology is semantically redundant to the existing effective public bool. Once finite rules actually commit, an optional public hand_size_timeline honestly exposes every retained source/lasting row and both current maxima. This condition is ordinary observer behavior, independent of recorder/schema projection; it is never field stripping.",
+    "Existing ability_source_timestamps and RoleState clock remain unchanged for hand-only events. Mixed finite entry batches use owned APNAP/controller timestamp choices before whole commit. Physical entry order and chosen timestamp order produce the same canonical new source-vector representation. Pure infinity batches add no old-game choices; shared existing source choices retain their relative order.",
+    "Actual and projected entries use independently owned hand chronology, with hand-only entries filtered out of role timestamp registration. Virtual departures forget exact source rows and retain lasting grants; parent state is unchanged. No new mana funding loop or unrelated power/cost predicate is introduced.",
+    "One above_hand_limit query serves ordinary/repeated cleanup entry, selected-discard completion, and end-turn continuation. Discards precede end-of-turn effect expiration and remain the existing private simultaneous discard transaction.",
+    "ControllerHandDeficit(u16) captures saturating current hand difference once for the packet controller. The existing AtStep hand threshold checks both when triggering and resolving; DrawScaled feeds the existing interruptible individual-draw/ordinal/empty-library pipeline. Source movement/control/suppression never redirects the packet."
+  ],
+  "counts": {
+    "main_msh_admitted": 180,
+    "base_msh_admitted_candidates": 194,
+    "msh_oracle_identities": 281,
+    "msh_printings": 448,
+    "new_candidates": 1,
+    "new_native_scenario_groups": 26,
+    "full_native_tests": 1126,
+    "definitions": 5398,
+    "tokens": 120,
+    "new_catalogue_ids": 0,
+    "new_tokens": 0,
+    "msh_definition_ownership": {
+      "total": 273,
+      "complete": 187,
+      "gated": 86
+    },
+    "candidate_msh_admitted": 195,
+    "candidate_msh_gated": 86
+  },
+  "wire": {
+    "previous": 145,
+    "current": 146,
+    "reason": "Actual optional public hand-limit timeline; root-coordinated shared cohort version"
+  },
+  "trace_proof": {
+    "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+    "normal_schema": 146,
+    "previous_schema": 145,
+    "inherited_full_traces": 2497,
+    "candidate_full_traces": 2498,
+    "added": [
+      "The Ten Rings"
+    ],
+    "all_inherited_full_trace_structs_exact_at_previous_schema": true,
+    "compared_fields": [
+      "root",
+      "status",
+      "decisions",
+      "zone",
+      "journal",
+      "observations"
+    ],
+    "unchanged_recorder": true,
+    "field_stripping_or_normalization": false,
+    "base_trace_sha256": "860abacedbca501847d01ee19254fdacb2b4b656bcd1d40123028af6392f41b1",
+    "normal_trace_sha256": "a1bcc45a7ba725e51d1e96914019624f67d7ff1be55e460a3c8a24bab4c1266f",
+    "previous_trace_sha256": "1ccaa0243ef48411b0a85e4e8b4f14e0aa502425871a39efc13db0a00f989f43",
+    "identity_metadata_sha256": "4d95450061275c456e39e129a5d3680e24e4d1ffe49ff1c1fea4de839c0091b9",
+    "identity_metadata_equal_to_base": true
+  },
+  "validation": {
+    "native": {
+      "command": [
+        "cargo",
+        "test",
+        "--lib"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 423.7306447100127,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2463969280,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "log": "<cache>/rustmage-msh-ten-rings-native-final-2.log",
+      "log_sha256": "6451ec7ac2b9975cd03bbbfbaf358c00f6ff6eb5beab302ec642acb655f79996",
+      "resource_report": "<cache>/rustmage-build-reports/4353740bdba2425d8c2cb596f8abe0e3.json",
+      "resource_report_sha256": "de08bf74ba57d6058dd1c5f26bf7fde5ea6f37b414b8dbc4a683e3fb9272b85c",
+      "passed": 1126,
+      "execution_seconds": 5.51
+    },
+    "clippy": {
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 458.5453403859865,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1906876416,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "log": "<cache>/rustmage-msh-ten-rings-clippy-final-2.log",
+      "log_sha256": "312048327aebd8d987ffd28fc66c5124da695d6b21a72d9da46592b6d8b6e707",
+      "resource_report": "<cache>/rustmage-build-reports/ca1d85c6ec7a4a6a907034ed44c94fb0.json",
+      "resource_report_sha256": "1c297a3fd98f0260c74df8e6325689297695def8b0909fa35a38bad575cf18cf"
+    },
+    "format": {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 457.3260998670012,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 106430464,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "log": "<cache>/rustmage-msh-ten-rings-format-final-2.log",
+      "log_sha256": "d8f2197eb7e805dfcf36337f26367fb07ff8198047edcbd312531c1e836e15b6",
+      "resource_report": "<cache>/rustmage-build-reports/5fa5c9bc3a40473bac9c2ceaae81e391.json",
+      "resource_report_sha256": "332d8aba11a8b6b14158f0187c7fbdf2a5fd5773dea4314c29563097eea5d832"
+    },
+    "sources": {
+      "report": "<cache>/rustmage-msh-ten-rings-sources.json",
+      "sha256": "5a9b0c355e2bd18ec88f7047bf1a8da1b7d9f42ccd8bb172c49b2825ab92a516",
+      "result": {
+        "definitions": 5398,
+        "source_blobs": 1208,
+        "java_verified": true,
+        "catalogue_version": "4128a80fe2c7966cffe49b75019913cbcbb1f8f1c4bbba89e549f6eba93e15d4"
+      }
+    },
+    "link": {
+      "report": "<cache>/rustmage-msh-ten-rings-link.json",
+      "sha256": "b37257e98247ed4e9a05028d65de162c0d2d04e7be4d681c72f2b8f1e7ee8a14",
+      "result": {
+        "schema": 1,
+        "catalogue_version": "4128a80fe2c7966cffe49b75019913cbcbb1f8f1c4bbba89e549f6eba93e15d4",
+        "standard_legal_cards": 5164,
+        "implemented_standard_cards": 2492,
+        "implemented_total": 2498,
+        "token_definitions": 120,
+        "emblem_definitions": 3,
+        "adventure_definitions": 40,
+        "omen_definitions": 13
+      }
+    },
+    "format-authored": {
+      "report": "<cache>/rustmage-msh-ten-rings-format-authored.json",
+      "sha256": "fe5747a7373774d29b8bce01c4efbb8073f96ab6991e572f3ad9ccbbdd2fa9f1",
+      "result": {
+        "files": [
+          {
+            "path": "src/ability_layers.rs",
+            "sha256": "79d6fad645a2b7547b6c00481839b3c284679b565b0a95ea8df259d82debba6a"
+          },
+          {
+            "path": "src/card_definitions/msh/the_ten_rings.rs",
+            "sha256": "de0733ea8a620ce6958fed40b7c7235b8dffdaedf06e332aa88eda8008a39a3d"
+          },
+          {
+            "path": "src/cards.rs",
+            "sha256": "64e2afe89fef3fedc35f22e93568679bb123d028a1977da4d766e49d3d85faea"
+          },
+          {
+            "path": "src/engine.rs",
+            "sha256": "6609b0a01c8b6b1296537064e84716136b3f2f212a12521d36a5e02956523999"
+          },
+          {
+            "path": "src/engine_endgame.rs",
+            "sha256": "55d929e5caa2b6a6c5929e1b528878003cb7bec9c8fc78abf03355d302a7b45b"
+          },
+          {
+            "path": "src/engine_entries.rs",
+            "sha256": "105eb9808b8f17a46b79c931d0d6138c55d2e7658f0b3b33f531bfbe9f479c79"
+          },
+          {
+            "path": "src/engine_equipment.rs",
+            "sha256": "01107b6b3bc14dd37e4ff27625411412264b8c484f77ce1da4974f10b4e377ea"
+          },
+          {
+            "path": "src/engine_faces.rs",
+            "sha256": "7d76fa328d1afe685c7792f45a08d74e832946a5beb96590858420de429bb697"
+          },
+          {
+            "path": "src/engine_funding.rs",
+            "sha256": "31d27bfaf6234a959cbf044ea93aea5f3b11fc9e0f4335b6ec946a1c3d95787c"
+          },
+          {
+            "path": "src/engine_funding_entries.rs",
+            "sha256": "14e5fc4b59b2ff94fac25755c622cc314f7ecf6a2b1d3fb55c0eaf8686f6aa64"
+          },
+          {
+            "path": "src/engine_hand_size.rs",
+            "sha256": "f5e027ec2c502a69bde4899694c265a397ad3726d156cb434a4d303365223724"
+          },
+          {
+            "path": "src/engine_msh_ten_rings_funding_tests.rs",
+            "sha256": "194d50679025c446f98419fd01152de6a5af89aae807a6ffd0924eff23b5ee6e"
+          },
+          {
+            "path": "src/engine_msh_ten_rings_tests.rs",
+            "sha256": "c98e3584c140cc97c1bb175ff35f9c34b7fc7a0b599279d8c75139fdce1d2cc2"
+          },
+          {
+            "path": "src/engine_programs.rs",
+            "sha256": "75bee107a524d2fca490aae619abd0cfc3328a2846a1ce5ce11d6005b62d0588"
+          },
+          {
+            "path": "src/engine_stat_values.rs",
+            "sha256": "aecb6ba51b3242ff826d0d971191a9900a033ab2b0e8af3b2403e45645ce3616"
+          },
+          {
+            "path": "src/engine_stats.rs",
+            "sha256": "d399497b185db97dbbf18da811debdac7ded8a3f0a91686e5396081a71891e72"
+          }
+        ],
+        "exit_code": 0,
+        "output": ""
+      }
+    },
+    "set_status": {
+      "report": "<cache>/rustmage-msh-ten-rings-set-status.json",
+      "sha256": "33fbe91d88f25146245114c34dd3e04b70d7e3ca7b46ea6e4300addcb1000084",
+      "result": {
+        "set": "MSH",
+        "total_cards": 281,
+        "admitted_cards": 195,
+        "gated_cards": 86,
+        "unresolved": []
+      }
+    }
+  },
+  "fixed_inputs": {
+    "manifest": "<cache>/rustmage-msh-ten-rings-inputs.json",
+    "sha256": "bee65c03b04ab46b34c723688b58a2ff12c808e27716c648b56c328728e9fd1e",
+    "files": 11737,
+    "unchanged_through_all_terminal_consumers": true,
+    "final_evidence_only_commit_excluded_from_runtime_inputs": true
+  },
+  "tests": {
+    "all_groups_both_seats": true,
+    "files_and_groups": {
+      "src/engine_msh_ten_rings_tests.rs": [
+        "msh_ten_rings_paid_eight_body_and_atomic_illegal_announcements",
+        "msh_ten_rings_actual_land_funding_consumes_eight_sources",
+        "msh_ten_rings_paid_second_copy_legend_cleanup_keeps_exact_provider",
+        "msh_ten_rings_end_step_boundaries_and_opponent_step",
+        "msh_ten_rings_intervening_hand_growth_cancels_packet",
+        "msh_ten_rings_resolution_resamples_spent_card_and_no_late_trigger",
+        "msh_ten_rings_packet_controller_survives_departure_suppression_and_theft",
+        "msh_ten_rings_no_retroactive_end_step_entry",
+        "msh_ten_rings_cleanup_ten_eleven_thirteen_and_inactive_hand",
+        "msh_ten_rings_cleanup_illegal_choices_are_atomic_and_private",
+        "msh_ten_rings_static_infinity_timestamp_order_and_fallback",
+        "msh_ten_rings_lasting_infinity_order_and_repeat_real_wisdom",
+        "msh_ten_rings_finale_x_ten_creates_later_lasting_grant",
+        "msh_ten_rings_control_transfer_keeps_timestamp_blink_gets_new_incarnation",
+        "msh_ten_rings_simultaneous_entries_choose_both_orders_owned_and_private",
+        "msh_ten_rings_simultaneous_apnap_then_theft_uses_original_times",
+        "msh_ten_rings_old_infinity_only_rows_do_not_enter_public_ability_clock",
+        "msh_ten_rings_actual_suppression_restoration_does_not_retimestamp",
+        "msh_ten_rings_time_stop_skips_end_trigger_but_discards_to_ten",
+        "msh_ten_rings_repeated_cleanup_recomputes_after_actual_discard_trigger",
+        "msh_ten_rings_interruptible_first_draw_freezes_deficit_and_hides_eligibility",
+        "msh_ten_rings_partial_library_uses_successful_ordinals_and_empty_draw_loss",
+        "msh_ten_rings_owned_orphan_trigger_and_lasting_rows_restore",
+        "msh_ten_rings_owned_cleanup_selection_nonactor_privacy_and_restore"
+      ],
+      "src/engine_msh_ten_rings_funding_tests.rs": [
+        "msh_ten_rings_funding_both_entry_orders_equal_actual_without_role_clock_drift",
+        "msh_ten_rings_funding_departure_keeps_lasting_grant_and_parent_owned"
+      ]
+    },
+    "covered_matrix": [
+      "Paid exact-eight cast, insufficient cost/turn/target atomic failures, real eight-land funding, paid legend-rule replacement.",
+      "Own/opponent end-step boundaries at0/1/9/10/11, no retroactive entry trigger, actual Quick Study growth and preexisting Shock expenditure between trigger and resolution.",
+      "Packet controller survives source destruction, return, suppression and theft; current static limit follows current controller independently.",
+      "Actual ten/eleven/thirteen-card cleanup, inactive hand unaffected, private simultaneous selection, illegal card/repeated card/pass/wrong actor/index failures.",
+      "Paid Niv-Mizzet versus Rings order, lasting Wisdom/Finale X10 before/after Rings, repeat grants, departure fallback, suppression restoration and blink/control timestamp identities.",
+      "Both same-controller simultaneous orders with private hand entries and owned indexed choice; mixed-controller APNAP then theft; old NoMax-only public arrays/clock unchanged.",
+      "Actual Time Stop cleanup and end-step skip; Marauding Mako discard trigger grants cleanup priority, provider destruction then repeated cleanup recomputes seven.",
+      "Actual first-draw Lorehold interruption, fixed remaining deficit, full nonactor eligible/ineligible observation equality, successful draw ordinals and partial-library empty-draw loss.",
+      "Owned raw/index orphan trigger/cleanup/lasting chronology branches and exact snapshots/restores; alternative hidden selections compared at equal revisions with complete nonactor observations.",
+      "Actual versus projected complete owned hand chronology for both entry orders, exact source generations, unchanged role clock, projected departure retaining lasting grants and untouched parent."
+    ]
+  },
+  "limits": "The shared draw pipeline currently has no general draw replacement framework. No synthetic replacement consumer or unsupported doubling/prohibition interaction is claimed. Future complete replacement consumers must modify that shared pipeline; the printed Rings behavior uses its ordinary fixed draw request.",
+  "resource_safety": {
+    "runner": "python3 scripts/resource_guard.py -- cargo ...",
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_probes_or_cap_changes": false,
+    "all_final_consumers_terminal": true,
+    "cleanup": {
+      "created_utc": "2026-10-25T03:37:45.874116+00:00",
+      "all_consuming_jobs_terminal": true,
+      "target": "<cache>/rustmage-msh-ten-rings-target",
+      "scan": {
+        "surfaces": [
+          "executable symlinks",
+          "file descriptors",
+          "memory maps"
+        ],
+        "processes_scanned": 484,
+        "permission_denied_surfaces": 848,
+        "references": []
+      },
+      "removed_files": 1019,
+      "removed_allocated_bytes": 125227008,
+      "removed_logical_bytes": 121954755,
+      "retained_artifacts": [
+        {
+          "path": "<cache>/rustmage-msh-ten-rings-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+          "purpose": "shared library"
+        },
+        {
+          "path": "<cache>/rustmage-msh-ten-rings-target/debug/deps/rustmage-b764cd26223fba2c",
+          "sha256": "b5743599f07bf585d25184c28d1d8caf9fdc1a87aceba099b12d40fdbf9ef8db",
+          "purpose": "useful final native test executable"
+        }
+      ],
+      "preserved_prior_artifacts": [
+        {
+          "path": "<cache>/rustmage-msh-source-quantities-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage-msh-source-quantities-target/debug/deps/rustmage-b764cd26223fba2c",
+          "sha256": "8da65393061c896dccb9ad037ec849356438eade39e652ab2d8d9b81a2848c00"
+        },
+        {
+          "path": "<cache>/rustmage-msh-event-objects-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage-msh-event-objects-target/debug/deps/rustmage-b764cd26223fba2c",
+          "sha256": "706ca9d555c643ab3fe2342502133884c1f183c6dfa66ebb7865555f7710cdc5"
+        }
+      ]
+    }
+  },
+  "design_cache": {
+    "path": "<cache>/rustmage-msh-ten-rings-design-7addcbc7.json",
+    "sha256": "a0fe1dac56102d08d7e39736dfb0cb6b24e29e5664350dad315eb49305a80ff0",
+    "complete_pinned_java_bodies": 13
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T03:03:58+00:00",
+    "validation_finished_utc": "2026-10-25T03:37:18+00:00",
+    "elapsed_seconds": 2000.0,
+    "complete_candidates": 1,
+    "candidates_per_hour": 1.8,
+    "includes": "Authorized branch setup, implementation, fixture/debugging changes, shared queue waits, native/Clippy/format validation",
+    "excludes": "Earlier read-only Oracle/source/design revalidation, later aggregate integration/release/reviews and delivery bookkeeping",
+    "simulation_throughput_measured": false
+  },
+  "remaining_gates": [
+    "Aggregate integration and required release/CI validation on the published combined source",
+    "Final independent nonauthor local reviews of published aggregate head",
+    "Remaining MSH pool gameplay, interactions and measured simulation throughput",
+    "User approval of single aggregate implementation PR; no main merge"
+  ]
+}

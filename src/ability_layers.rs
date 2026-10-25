@@ -70,6 +70,7 @@ pub(crate) enum StaticAbilityFragment {
     LifeGainAdditional(u16),
     CantGainLife,
     NoMaximumHandSize,
+    MaximumHandSize(u16),
     AdditionalLandPlays(u16),
     IntrinsicKeywords(Keywords),
     Changeling,

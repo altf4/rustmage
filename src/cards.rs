@@ -1641,6 +1641,7 @@ pub(crate) struct CountFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum AmountValue {
+    ControllerHandDeficit(u16),
     /// Current hand size of the spell's surviving targeted player.
     TargetPlayerHandSize,
     Sum(&'static [AmountValue]),
