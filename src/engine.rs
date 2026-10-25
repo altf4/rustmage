@@ -10,6 +10,9 @@ pub use library_hand_exchange::HandDeploymentView;
 #[path = "engine_hand_choices.rs"]
 mod hand_choices;
 pub use hand_choices::{HandChoiceKind, HandChoiceView};
+#[path = "engine_self_granted.rs"]
+mod self_granted;
+pub use self_granted::{SelfGrantedAbilityKind, SelfGrantedAbilityView};
 #[path = "engine_hand_exile.rs"]
 mod hand_exile;
 #[path = "engine_mana_announcements.rs"]
@@ -17,6 +20,9 @@ mod mana_announcements;
 #[path = "engine_turn_facts.rs"]
 mod turn_facts;
 pub use turn_facts::TurnFactsView;
+#[path = "engine_turn_schedule.rs"]
+mod turn_schedule;
+pub use turn_schedule::{ExtraTurnView, TurnScheduleView};
 #[path = "engine_turn_skips.rs"]
 mod turn_skips;
 pub use mana_announcements::ManaAnnouncementView;
@@ -178,6 +184,9 @@ pub use evidence::{EvidenceEventView, EvidenceView};
 #[path = "engine_library_selection.rs"]
 mod library_selection;
 pub use library_selection::{EntryTransformChoiceView, LibrarySelectionView};
+#[path = "engine_return_attachment.rs"]
+mod return_attachment;
+pub use return_attachment::EquipmentAttachmentView;
 
 #[path = "engine_forage.rs"]
 mod forage;
@@ -295,6 +304,9 @@ pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
 mod ability_order;
 #[path = "engine_ability_timeline.rs"]
 mod ability_timeline;
+#[path = "engine_source_linked_effects.rs"]
+mod source_linked_effects;
+pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
 #[path = "engine_ability_world.rs"]
 mod ability_world;
 pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
@@ -686,6 +698,7 @@ define_actions! {
     ChooseSearchDestination { destination: crate::SearchDestination },
     SelectLibrary { card: CardId },
     FinishLibrarySelection,
+    ChooseEquipmentAttachment { equipment: Option<ObjectRef> },
     OrderLibraryBottom { card: CardId },
     ArrangeLibrary {
         card: CardId,
@@ -1645,6 +1658,9 @@ enum Pending {
     Legend {
         player: Player,
     },
+    EquipmentAttachment {
+        player: Player,
+    },
     EffectLibrarySelection {
         player: Player,
     },
@@ -1725,6 +1741,7 @@ struct State {
     ending_turn: bool,
     turn_skips: Option<Box<[u64; 2]>>,
     player_control: Option<Box<player_control::PlayerControlState>>,
+    turn_schedule: Option<Box<TurnScheduleView>>,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
     controls: Option<Box<continuous_control::ControlState>>,
@@ -1734,6 +1751,8 @@ struct State {
     damage_prevention_prohibited: bool,
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
+    #[allow(clippy::box_collection)]
+    self_granted_abilities: Option<Box<Vec<self_granted::Row>>>,
     #[allow(clippy::box_collection)]
     suspected: Option<Box<Vec<ObjectRef>>>,
     #[allow(clippy::box_collection)]
@@ -1892,6 +1911,9 @@ pub struct ObjectView {
     /// A temporary copy retains its physical identity in `temporary_copy`.
     pub kinds: u16,
     pub colors: u8,
+    /// Frozen layer-four supertype change, absent when the recipe is sufficient.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_legendary: Option<bool>,
     pub granted_subtypes: GrantedSubtypes,
     pub entry_choice: Option<EntryChoiceValue>,
     pub saddled: bool,
@@ -1949,10 +1971,12 @@ impl ObjectView {
         self.token.is_some()
     }
     pub fn is_legendary(&self) -> bool {
-        self.copy_recipe
-            .and_then(|recipe| recipe.overrides)
-            .and_then(|value| value.legendary)
-            .unwrap_or_else(|| self.card.is_legendary())
+        self.effective_legendary.unwrap_or_else(|| {
+            self.copy_recipe
+                .and_then(|recipe| recipe.overrides)
+                .and_then(|value| value.legendary)
+                .unwrap_or_else(|| self.card.is_legendary())
+        })
     }
     /// Captured rules name, retained even after this object changes or leaves play.
     pub fn name(&self) -> &'static str {
@@ -2223,6 +2247,8 @@ pub struct Observation {
     pub counter_placement_history: Vec<CounterPlacementHistoryView>,
     pub cast_entry_counters: Vec<CastEntryCounterView>,
     pub additional_combats: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub turn_schedule: Option<TurnScheduleView>,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
@@ -2231,6 +2257,8 @@ pub struct Observation {
     pub damage_prevention_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub self_granted_abilities: Option<Vec<SelfGrantedAbilityView>>,
     pub suspected: Vec<ObjectRef>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub zone_replacement_choice: Option<ZoneReplacementChoiceView>,
@@ -2300,6 +2328,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hand_size_timeline: Option<HandSizeTimelineView>,
     pub keyword_effects: Vec<KeywordEffectView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_linked_effects: Option<Vec<SourceLinkedEffectView>>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -2322,6 +2352,8 @@ pub struct Observation {
     pub library_selection: Option<LibrarySelectionView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entry_transform: Option<EntryTransformChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub equipment_attachment: Option<EquipmentAttachmentView>,
     pub target_library: Option<TargetLibraryView>,
     pub last_target_library_move: Option<TargetLibraryMovement>,
     pub recovery_choice: Option<RecoveryChoiceView>,
@@ -2482,6 +2514,7 @@ impl Game {
                 ending_turn: false,
                 turn_skips: None,
                 player_control: None,
+                turn_schedule: None,
                 mana_lots: None,
                 linked_choices: None,
                 zone_rules: None,
@@ -2542,6 +2575,7 @@ impl Game {
                 resolution_free_casts: None,
                 miracle: None,
                 temporary_abilities: None,
+                self_granted_abilities: None,
                 suspected: None,
                 death_exile_replacements: None,
                 roles: None,
@@ -2690,6 +2724,7 @@ impl Game {
             | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
+            | Pending::EquipmentAttachment { player }
             | Pending::EffectLibrarySelection { player }
             | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
@@ -4420,6 +4455,9 @@ impl Game {
                     }
                 }
             }
+            Pending::EquipmentAttachment { .. } => {
+                return self.visit_return_attachment_actions(emit);
+            }
             Pending::EffectLibrarySelection { .. } => {
                 let f = s.resolving.as_ref().unwrap().selection.as_ref().unwrap();
                 if f.ordering {
@@ -5189,6 +5227,7 @@ impl Game {
                     .blocking
                     .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
                 self.state.blocks.append(&mut self.state.selected_blocks);
+                self.attachment_block_triggers(actor);
                 for attacker in &mut self.state.attackers {
                     attacker.blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
                 }
@@ -5276,6 +5315,9 @@ impl Game {
                 self.choose_search_destination(actor, destination)
             }
             Action::SelectLibrary { card } => self.choose_library_selection(card),
+            Action::ChooseEquipmentAttachment { equipment } => {
+                self.choose_equipment_attachment(equipment)
+            }
             Action::FinishLibrarySelection => self.finish_library_selection(actor),
             Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
             Action::ArrangeLibrary { card, destination } => {
@@ -6400,6 +6442,7 @@ impl Game {
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_spell_copies();
         self.expire_temporary_controls();
+        self.state.self_granted_abilities = None;
         if let Some(grants) = &mut self.state.temporary_abilities {
             grants.retain(|grant| grant.permanent);
             if grants.is_empty() {
@@ -6878,6 +6921,7 @@ impl Game {
                 .temporary_controls
                 .as_ref()
                 .map_or_else(Vec::new, |v| v.as_ref().clone()),
+            self_granted_abilities: self.self_granted_ability_views(),
             temporary_abilities: s
                 .temporary_abilities
                 .as_ref()
@@ -6904,6 +6948,7 @@ impl Game {
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
             additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
+            turn_schedule: s.turn_schedule.as_deref().cloned(),
             must_be_blocked: s
                 .combat_rules
                 .as_ref()
@@ -6982,6 +7027,7 @@ impl Game {
                 Pending::Forage { .. } => "forage",
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
+                Pending::EquipmentAttachment { .. } => "equipment_attachment",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
                 Pending::HandCardChoice { .. } => "hand_card_choice",
                 Pending::RevealedDiscard { .. } => "revealed_discard",
@@ -7151,6 +7197,7 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.ability_timestamps.clone()),
             keyword_effects: self.keyword_effect_views(viewer),
+            source_linked_effects: self.source_linked_effect_views(),
             role_timestamps: s
                 .roles
                 .as_ref()
@@ -7275,6 +7322,7 @@ impl Game {
             },
             library_selection: self.library_selection_view(viewer),
             entry_transform: self.entry_transform_choice_view(),
+            equipment_attachment: self.equipment_attachment_view(),
             target_library: self.target_library_view(viewer),
             last_target_library_move: s.last_target_library_move.as_deref().copied(),
             library_choice: if owns_choice {
@@ -7468,12 +7516,14 @@ impl Game {
                 std::mem::size_of::<Vec<ObjectRef>>()
                     + rows.len() * std::mem::size_of::<ObjectRef>()
             })
+            + turn_schedule::owned_bytes(&s.turn_schedule)
             + s.turn_skips
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<[u64; 2]>())
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
             + self.control_bytes()
+            + self_granted::owned_bytes(&s.self_granted_abilities)
             + self.temporary_ability_bytes()
             + self.suspected_bytes()
             + self.death_exile_bytes()
@@ -7668,6 +7718,10 @@ impl Game {
                             })
                             .unwrap_or(0)
                         + resolution.selection.as_ref().map_or(0, |f| f.bytes())
+                        + resolution
+                            .return_attachment
+                            .as_ref()
+                            .map_or(0, |frame| frame.owned_bytes())
                         + resolution
                             .selected_discards
                             .iter()
@@ -8190,3 +8244,23 @@ mod msh_hand_choices_tests;
 #[cfg(test)]
 #[path = "engine_msh_widow_worlds_tests.rs"]
 mod msh_widow_worlds_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_source_linked_sting_tests.rs"]
+mod msh_source_linked_sting_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_civil_war_tests.rs"]
+mod msh_civil_war_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_serum_tests.rs"]
+mod msh_serum_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_armor_tony_tests.rs"]
+mod msh_armor_tony_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_bruce_kang_tests.rs"]
+mod msh_bruce_kang_tests;

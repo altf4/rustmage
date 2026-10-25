@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ce9089bdf6a3c0efe8d7257df4c4383b862441d60c351cd5c183b105a72ca075",
+  "catalogue_version": "2510968a28c909142d6d9eccb25a51b6a67e87c0a6c667a17d377d0935dc9081",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2538,
-  "implemented_total": 2544,
+  "implemented_standard_cards": 2548,
+  "implemented_total": 2554,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 233,
-      "gated": 40
+      "complete": 243,
+      "gated": 30
     },
     "one": {
       "total": 1,
@@ -4773,8 +4773,8 @@
     {
       "name": "Bruce Banner // The Incredible Hulk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/bruce_banner_the_incredible_hulk.rs",
       "set": "msh"
     },
@@ -18045,8 +18045,8 @@
     {
       "name": "Iron Man Armor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/iron_man_armor.rs",
       "set": "msh"
     },
@@ -18693,8 +18693,8 @@
     {
       "name": "Kang the Conqueror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/kang_the_conqueror.rs",
       "set": "msh"
     },
@@ -32533,8 +32533,8 @@
     {
       "name": "Spider-Woman, Secret Agent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/spider_woman_secret_agent.rs",
       "set": "msh"
     },
@@ -34285,8 +34285,8 @@
     {
       "name": "Super-Soldier Serum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_soldier_serum.rs",
       "set": "msh"
     },
@@ -34581,8 +34581,8 @@
     {
       "name": "Swordsman, Sharp Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/swordsman_sharp_scoundrel.rs",
       "set": "msh"
     },
@@ -36245,8 +36245,8 @@
     {
       "name": "The Super Hero Civil War",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_super_hero_civil_war.rs",
       "set": "msh"
     },
@@ -36365,8 +36365,8 @@
     {
       "name": "The Wondrous Wasp",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_wondrous_wasp.rs",
       "set": "msh"
     },
@@ -37253,8 +37253,8 @@
     {
       "name": "Tony Stark // The Invincible Iron Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/tony_stark_the_invincible_iron_man.rs",
       "set": "msh"
     },
@@ -40861,8 +40861,8 @@
     {
       "name": "Winter Soldier, Icy Assassin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/winter_soldier_icy_assassin.rs",
       "set": "msh"
     },

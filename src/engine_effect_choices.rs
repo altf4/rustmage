@@ -22,6 +22,7 @@ pub(super) struct EffectChoice {
     pub hand_defender: Option<CombatDefender>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
     pub hand_entry_filter: Option<crate::SearchFilter>,
+    pub equipment_recipient: Option<ObjectRef>,
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
@@ -50,6 +51,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
     }
     pub(super) fn start_resolution_counter_payment(&mut self, item: &SpellView) -> bool {
@@ -73,6 +75,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.state.pending = Pending::EffectChoice {
             player: item.controller,
@@ -124,6 +127,7 @@ impl Game {
         }
         if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
             return o.zone == Zone::Battlefield
+                && self.untap_allowed(object.card, untap_rules::UntapCause::Effect)
                 && self.current_kinds(object.card) & 2 != 0
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object)
@@ -239,6 +243,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         };
         // Freeze both quotas before either player chooses. The following printed
         // instruction computes new quotas after this entire event and its replacements.
@@ -312,6 +317,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.advance_effect_choice()
     }
@@ -477,6 +483,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.state.pending = Pending::EffectChoice { player };
     }
@@ -490,9 +497,16 @@ impl Game {
             .take()
             .unwrap();
         if matches!(choice.kind, EffectChoiceKind::UntapLands { .. }) {
-            for object in choice.selected.iter().flatten() {
-                self.state.objects[object.card as usize].tapped = false;
-            }
+            let ids: Vec<_> = choice
+                .selected
+                .iter()
+                .flatten()
+                .filter(|object| {
+                    self.on_battlefield(object.card) && self.object_ref(object.card) == **object
+                })
+                .map(|object| object.card)
+                .collect();
+            self.untap_objects(&ids, untap_rules::UntapCause::Effect);
             return;
         }
         let (tapped, discarded) = match choice.kind {
@@ -578,6 +592,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.advance_target_attacking_return()
     }
@@ -700,6 +715,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
             source: item.object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
@@ -937,6 +953,7 @@ impl Game {
                 forced_tapped || enchantment,
             );
             movement.controller = player;
+            movement.attach_equipment_to = choice.equipment_recipient;
             movement.attacking = choice.hand_defender;
             movement.life_bonus = choice
                 .entry_life_bonus

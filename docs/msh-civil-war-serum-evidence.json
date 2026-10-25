@@ -1,0 +1,325 @@
+{
+  "schema": 1,
+  "scope": "Two complete MSH cards with focused individual printed-clause and affected card tests. Final aggregate validation deferred.",
+  "base": "401f3a5f6fe1d720615786ceaa8c0e5c888e4c29",
+  "source_prerequisite": "218f01375a3f49aa17c67a9dbef7116e2e777d5f",
+  "prerequisite_merge": "7f1c7cf9",
+  "civil_checkpoint": "57ca303e",
+  "tested_runtime": "6244db8ab98532c627281f0f50d5fad00c011cae",
+  "complete_cards": [
+    "The Super Hero Civil War",
+    "Super-Soldier Serum"
+  ],
+  "wire_schema": 152,
+  "new_ids": [],
+  "source_sha256": {
+    "data/standard/coverage.json": "2c0365747df0595bc3a0e7d74ac6b509665dd6998820a4ed1a7d23f5720a25ea",
+    "src/ability_layers.rs": "c2e4806b187d45c3b1954aa3799b519ffc16e28dfe0afe24dc3b9bb20b88f056",
+    "src/card_definitions/msh/super_soldier_serum.json": "18f2582212b019f930d721425b8e1810b1f1fdafbd7d91688f56bdf862996673",
+    "src/card_definitions/msh/super_soldier_serum.rs": "ee8e419c27e794eed1eed94ceb7108decb82f54da7c00073f3ec254eb4aa77c1",
+    "src/card_definitions/msh/swordsman_sharp_scoundrel.json": "2cb71fd0a274b76973f92f2672df43e8b0532b9fbffae438f2ff84d287a58c3e",
+    "src/card_definitions/msh/swordsman_sharp_scoundrel.rs": "67f588d605777669b18f2a481579b87c2f5f05ef962065dd80b26a1548d302a4",
+    "src/card_definitions/msh/the_super_hero_civil_war.json": "4e67ddcd7136d6836d044637d329721d73b311764f5a651d8015c315179853f9",
+    "src/card_definitions/msh/the_super_hero_civil_war.rs": "a8a18812f6299d2f4186a5d4d7dfbf39493bb74915c21d632b49b0b84ac9ab4e",
+    "src/card_definitions/msh/winter_soldier_icy_assassin.json": "c5f4869fdce291a51b5d01358de261c2826439c9a0c636a157c3e66219a0a758",
+    "src/card_definitions/msh/winter_soldier_icy_assassin.rs": "11615167dbc8b1f13c34b98e2b27ea223fedaceeaa07e4be012f577ae0ab90e3",
+    "src/cards.rs": "2be0e7f82a4ef92eee296eade1990394659ac2f7476718ae3a8bcef531bf6032",
+    "src/engine.rs": "70efec17341bc84d371f9812aa39e6d13ca66aaf155eb07125b3fbc8844267ff",
+    "src/engine_ability_timeline.rs": "8b54594d5667fb92f1baacbf715b45d5a11cc5072371063b43ce70c58ff63735",
+    "src/engine_ability_world.rs": "6a571d309befa15a022c7ee7ca6a941a35aa31b18ced903ef29a76cec8fafb84",
+    "src/engine_characteristic_query.rs": "c32c3c01c2f0ea8dde479c25fda96cfc1345995e708886548a1139d17257d2ba",
+    "src/engine_connive.rs": "9b8ed6a9a15f262fcd3678062922c69e287bbfda1cfe07aec3b2dce5928195b3",
+    "src/engine_continuous_control.rs": "81a12cc433e3165e6a49e48d111f92994d89488adcc20eec76b37656cbb89f8c",
+    "src/engine_entries.rs": "6c5059e01cdd170976d9fcb6e2f0d1d4ce0b592770c5c2541b7a6ec1448505e0",
+    "src/engine_equipment.rs": "3edf8c4bbc2dd37e884bcac469ed10840629268d7cc409fc556e0a0d21fbf7c9",
+    "src/engine_event_objects.rs": "6ed80ab0cc15d8958db751d921fb6a0fc3b4386482d1fee1125d6ceffb75a3d5",
+    "src/engine_funding.rs": "7475d18f1aad178ba90e94606d68073d6d0aaa295fe5bb6b8002b7dba64e50c5",
+    "src/engine_msh_attachment_core_tests.rs": "7f12e71077d44b9a7b4e9e4b11ba0b897c80d162e8c53214c923f8a11099d7df",
+    "src/engine_msh_civil_war_tests.rs": "c2404ed6f9e86a3af5c41cf7c43d4eec81418d945ce0e39698deff56deb35a44",
+    "src/engine_msh_hand_entry_core_tests.rs": "0fe49c933139b7df75ba8737fb1bc6a09fff79f139614aff5e51a4eaaca90dee",
+    "src/engine_msh_serum_funding_tests.rs": "d4ba44ba459644932cdb63dcbaaa6b0ba1d837e66f7c191001f20f2e59f0bb9f",
+    "src/engine_msh_serum_tests.rs": "06ac59ab4d3e32a89ec7441c3a35b0a7af3f5c7e7c65265019c727bad3153837",
+    "src/engine_parity_library_core_tests.rs": "5f96578429eca2c87a0db17cf4889553d538d30ed9595b55c88b6ac6dfecd408",
+    "src/engine_programs.rs": "4826a177f362226c92f2e4e3f4c678829174c71d3ce164f4cb7a20f750fb865e",
+    "src/engine_return_attachment.rs": "2e8f065f0a9f72af172c2ed06b6a512c041fdcdce3bbb44a88598bcaab1daa8f",
+    "src/engine_source_linked_effects.rs": "1d0ba0f388ac23283dd6498b8579c44c8fd6fe5abef2296a56d1c2541551ca2c",
+    "src/engine_stat_values.rs": "c1ab430b9585f9d8b175de100bab0be2adb9968df012d75a51d92ba61d2e18a2",
+    "src/engine_stats.rs": "bec7dc2d2254fc90ee2bb80111ac14af6f6de6054e3417eb1546ae5994118b88",
+    "src/engine_subtypes.rs": "a826239a687ed5a70d49402f2d7a8a5c9f7d298f6e2f71e40eead85da56d5750",
+    "src/engine_targeting.rs": "abfdb1d05bfd81940eea170cd84ae7299ed017abf62d940892dc0c84ce6f05bb",
+    "src/engine_temporary_copy_dispatch_tests.rs": "817a709f5c3745604e76d337781c9949d422bb6331343771412dd32ed4cced69",
+    "src/generated/catalogue.rs": "5770b4e152b5647dffa16cd766b0606ba03310ffc440bac8d06916f03b3b9cd7",
+    "src/policy.rs": "ca487fe883aa929bce53079cfb1998e33f2116a9f7d36ebf57a2295e9bf07d96"
+  },
+  "unchanged_sha256": {
+    "data/catalogue-identities.json": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+    "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+    "src/assurance/msh_games.rs": "bdf8b3f53b7c3b6c509b4116b4539acc70045b8ee648987ef78c4c98b904d50d",
+    "src/assurance/card_traces.json": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3"
+  },
+  "java_pins": {
+    "The Super Hero Civil War": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/t/TheSuperHeroCivilWar.java",
+      "sha256": "02ee08b2409ffe46e10dfc3d2a23cadedc5fc7a5b5d516cc80fb19e346fecc5f",
+      "helpers": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+          "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/SourceRemainsInZoneCondition.java",
+          "sha256": "40e17b5fb441c8f670480c5ef807849b3c187ea9744165fc7510913ffdc7be10"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+          "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlTargetEffect.java",
+          "sha256": "93e055d129c924686ebca800aee72c6797220dfc56b829c70b715dd06a8c09ed"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+          "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/FightTargetsEffect.java",
+          "sha256": "e562370eb9b15a7fc0db16f44b32e8dce627719fc405b2bc09eb8dad21f8edc2"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+          "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/util/CardUtil.java",
+          "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        }
+      ]
+    },
+    "Super-Soldier Serum": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/s/SuperSoldierSerum.java",
+      "sha256": "49d36e02349fe97d336c20311dfbf214f0ec4ea8934118bf15026292f9559c1e",
+      "helpers": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksOrBlocksAttachedTriggeredAbility.java",
+          "sha256": "eea33b0730f54fd2e37d4bc405c85db6b552e40cce0903b5e9cd387b76a91562"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+          "sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+          "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+          "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+          "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        }
+      ]
+    }
+  },
+  "primary_rules": {
+    "MSH": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "CR": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "target_budget_analogue": "https://magic.wizards.com/en/news/feature/magic-the-gathering-fallout-release-notes",
+    "target_budget_status": "Inference from V.A.T.S. relational legal-target ruling: remove independently illegal targets, then check remaining current mana-value sum. No Civil War-specific ruling located."
+  },
+  "mechanics": [
+    "Exact-source continuous control in the existing layer-two actual and speculative control timeline; captured controller and timestamp survive source suppression, copy and control changes, ending on source departure",
+    "Homogeneous incremental total mana-value target budgets and two-pass resolution revalidation using current copiable mana values",
+    "Aura legendary/Soldier addition in layer four, shared by actual/funding query and state-based legend choices; optional effective_legendary view omitted when unchanged",
+    "Declared attack/block attachment packets capture the exact recipient independently of later Aura attachment or departure",
+    "Arbitrary selected Equipment attaches as a complete batch, with a mandatory resolution-time relative timestamp choice using the existing public attachment continuation; None and unselected/repeated references are illegal; no partial attachment state while choosing",
+    "Existing attachment continuation owns sparse ordering buffers and accounts initialized bytes; unchanged optional Winter return branch has no ordering marker"
+  ],
+  "tests": {
+    "civil_groups": 14,
+    "serum_groups": 16,
+    "affected_groups": 43,
+    "civil_seconds": 0.19,
+    "serum_seconds": 0.14,
+    "affected_seconds": 0.54,
+    "both_seats": true,
+    "actual_paid_actions": true,
+    "profiles": "Focused test opt-level0, guarded6GiB, one Cargo job and test thread",
+    "commands": [
+      [
+        "cargo",
+        "test",
+        "--lib",
+        "msh_serum",
+        "--",
+        "--test-threads=1",
+        "--nocapture"
+      ],
+      [
+        "<cache>/rustmage-msh-civil-war-serum-focused-target/debug/deps/rustmage-55e16bd14e329fbf",
+        "msh_civil_war",
+        "msh_sting_",
+        "msh_attachment",
+        "--test-threads=1"
+      ]
+    ],
+    "obligations": {
+      "The Super Hero Civil War": [
+        "paid3RW Saga entry and actual natural next-turn chapters",
+        "zero/one/two own/opponent targets, distinct/max2/total6 budget and atomic invalid choices",
+        "current copy changes over budget; independently illegal target then remaining legal sum; zero legal targets",
+        "source gone/blink before resolution, source copy/suppression/control changes, exact recipient incarnation, competing control timestamps",
+        "current own-creature frozen +1/+1/vigilance set, later entrant excluded, actual vigilant attack and cleanup",
+        "mandatory own/optional other fight; either target absent means no one-sided damage; source sacrificed only after final fight",
+        "controlled mana actual/funding, virtual source-cost departure and actual sacrifice, public/private, orphan raw/index parent disposal/restore"
+      ],
+      "Super-Soldier Serum": [
+        "paid1W enchant any-controller creature; atomic cost/timing/noncreature failures",
+        "+2/+2, first strike, vigilance, legendary Soldier additional types, real legend choice and copy excluding Aura overlays",
+        "actual declared attack/block with zero/one/many controlled Equipment; foreign/non-Equipment invalid",
+        "source gone/reattached before multi-Equipment resolution and ordering; exact departed/blinked recipient leaves Equipment on original creature",
+        "partial targets/control changes, hexproof recipient is not targeted, protection prevents attachment",
+        "actual first-strike combat and vigilant attack; earlier static group survives source ability loss; later recipient removal removes older keywords",
+        "mandatory resolution-time reverse timestamp order, exact selected references, no decline/duplicate/unselected action, no partial batch, owned orphan/restore during ordering",
+        "unchanged attachment retains timestamp; moved Equipment grants later ability; full actual/funding object views match before/after Aura departure"
+      ]
+    }
+  },
+  "fixed_inputs": {
+    "input_count": 11134,
+    "changed": [],
+    "scope": "src Rust, paired provenance JSON, scripts, Cargo manifest and lock",
+    "serum_focused_groups": 16,
+    "affected_regression_groups": 43
+  },
+  "owned_provenance": {
+    "complete_cards": [
+      "The Super Hero Civil War",
+      "Super-Soldier Serum"
+    ],
+    "pins_checked": 24,
+    "all_exact": true,
+    "scope": "owned paired records and referenced immutable source blobs only"
+  },
+  "resource_guard": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib",
+      "msh_serum",
+      "--",
+      "--test-threads=1",
+      "--nocapture"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 29.8451091190218,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2690330624,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T15:28:48+00:00",
+    "final_focused_terminal_utc": "2026-10-25T16:10:59.186890+00:00",
+    "seconds": 2531.18689,
+    "complete_cards": 2,
+    "cards_per_hour": 2.844515364884811,
+    "scope": "isolated pair branch creation through final focused terminal; not a set/game simulation benchmark"
+  },
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-civil-serum-preservation.json",
+    "sha256": "b2608f3ed0b99fb9372a0f2f5a2c0a942c163dbc76c38645607ff9c5eecfb41d",
+    "required_paths": 4375,
+    "parent_paths": 4320,
+    "retained": {
+      "<cache>/rustmage-msh-civil-war-serum-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-civil-war-serum-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "ee6f9b793e886f9c21cfb803e1744892cfb78cd88c9014634b19d67f86dc829f",
+      "<cache>/rustmage-msh-civil-war-final-native": "431d3ffc83fe99c1e11b191d182b91ad11603a68b6f0d92166548fec5f0861f8"
+    }
+  },
+  "cleanup": {
+    "created_utc": "2026-10-25T16:13:42.299546+00:00",
+    "target": "<cache>/rustmage-msh-civil-war-serum-focused-target",
+    "only_terminal_target": true,
+    "processes": 523,
+    "maps_denied": 48,
+    "accessible_references": [],
+    "removed_files": 165,
+    "removed_path_bytes": 39839702,
+    "preserved": {
+      "<cache>/rustmage-msh-civil-war-serum-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-civil-war-serum-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "ee6f9b793e886f9c21cfb803e1744892cfb78cd88c9014634b19d67f86dc829f",
+      "<cache>/rustmage-msh-civil-war-final-native": "431d3ffc83fe99c1e11b191d182b91ad11603a68b6f0d92166548fec5f0861f8"
+    }
+  },
+  "limits": [
+    "No DEFAULT/full native, old-trace export, release, CI or complete-set acceptance runs in this phase.",
+    "Final integrated Super-Adaptoid count with Serum and Mjolnir bypass-worthy scenario remain to run when those source prerequisites coexist.",
+    "Temporary-copy, source-type/ability-removal, timestamp and incarnation primitives used as bounded fixtures are labeled in source.",
+    "Whole-set interactions, game corpus, final aggregate validation and final published-head independent reviews remain outstanding."
+  ]
+}

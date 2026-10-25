@@ -133,8 +133,8 @@ impl Game {
             }
         }
     }
-    /// Only programs that actually connive the entrant own these facts. Other
-    /// entry packets retain their existing payload and departure work.
+    /// Only programs that connive the exact event object own controller facts.
+    /// Other packets retain their existing payload and departure work.
     pub(super) fn bind_entering_conniver(
         &mut self,
         entering: &ObjectView,

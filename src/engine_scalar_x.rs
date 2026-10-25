@@ -171,29 +171,32 @@ impl Game {
                 .saturating_sub(a.activation_discount),
         });
         let fundable = |value: u32| {
-            base.generic.checked_add(value).is_some_and(|generic| {
-                self.activation_can_fund(
-                    FundingGoal {
-                        reserve: None,
-                        actor: a.item.controller,
-                        required: base.colored,
-                        generic,
-                        source: Some((
-                            a.item.object,
-                            ability,
-                            a.counter_payment.clone(),
-                            a.item.source_card,
-                            a.item.borrowed_slot,
-                        )),
-                    },
-                    a.additional_cost(),
-                )
-            })
+            value
+                .checked_mul(definition.x_symbols())
+                .and_then(|x| base.generic.checked_add(x))
+                .is_some_and(|generic| {
+                    self.activation_can_fund(
+                        FundingGoal {
+                            reserve: None,
+                            actor: a.item.controller,
+                            required: base.colored,
+                            generic,
+                            source: Some((
+                                a.item.object,
+                                ability,
+                                a.counter_payment.clone(),
+                                a.item.source_card,
+                                a.item.borrowed_slot,
+                            )),
+                        },
+                        a.additional_cost(),
+                    )
+                })
         };
         if !fundable(0) {
             return Vec::new();
         }
-        let (mut low, mut high) = (0u32, u32::MAX - base.generic);
+        let (mut low, mut high) = (0u32, (u32::MAX - base.generic) / definition.x_symbols());
         while low < high {
             let middle = low + (high - low).div_ceil(2);
             if fundable(middle) {

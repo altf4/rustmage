@@ -52,7 +52,12 @@ impl Game {
         if !self.state.roles.as_ref().is_some_and(|r| {
             r.live_static.iter().any(|e| e.source == source)
                 || r.ability_timestamps.iter().any(|e| e.source == source)
-        }) {
+        }) && !self
+            .state
+            .self_granted_abilities
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|row| row.recipient == source))
+        {
             return;
         }
         self.assign_static_source_timestamp(source);

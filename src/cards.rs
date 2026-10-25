@@ -149,6 +149,7 @@ pub(crate) enum TargetGroupConstraint {
     AttachedToGroup(u16),
     DifferentControllers,
     OtherThanGroup(u16),
+    TotalManaValueAtMost(u64),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -1093,6 +1094,9 @@ pub(crate) enum Instruction {
         filter: SearchFilter,
         skip: usize,
     },
+    PutHandAndAttachEquipment {
+        filter: SearchFilter,
+    },
     PutHandCreature,
     PutHandPermanent {
         maximum: AmountValue,
@@ -1185,6 +1189,9 @@ pub(crate) enum Instruction {
         required_all: bool,
     },
     AdditionalCombat,
+    ExtraTurn {
+        power_up_prohibited: bool,
+    },
     TransformSource,
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.
@@ -1345,6 +1352,7 @@ pub(crate) enum Instruction {
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },
+    ReturnSourceWithCounterAndEquipment(CounterKind),
     ReturnSourceToBattlefield {
         tapped: bool,
     },
@@ -1392,6 +1400,13 @@ pub(crate) enum Instruction {
     DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
     AttachSource,
+    AttachEquipmentByGroups {
+        equipment: u16,
+        recipient: u16,
+    },
+    AttachEquipmentToAttached {
+        group: u16,
+    },
     TapAttached,
     PutGrantorCounter(CounterKind),
     PutCombatDealerCounters,
@@ -1431,6 +1446,10 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     AnimateSource(AnimationSpec),
+    AnimateSourceWithAbilityIfNoncreature {
+        spec: AnimationSpec,
+        kind: crate::engine::SelfGrantedAbilityKind,
+    },
     AnimateTargets(AnimationSpec),
     /// Change creature subtypes, base stats and keywords without adding a card type.
     ChangeSourceCreatureForm(AnimationSpec),
@@ -1547,6 +1566,8 @@ pub(crate) enum Instruction {
         counter: Option<(CounterKind, u64)>,
         role: Option<Card>,
     },
+    /// Bestow a real self-owned static ability, rather than a resolved stat modifier.
+    GrantSelfAbility(crate::engine::SelfGrantedAbilityKind),
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,
@@ -1606,6 +1627,9 @@ pub(crate) enum Instruction {
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
     Tap,
+    GainControlTargetsUntilSourceLeaves,
+    RemoveTargetAbilitiesUntilSourceLeaves,
+    PreventTargetUntapWhileSourceControlled,
     Untap,
     /// One simultaneous placement on battlefield permanents matching the count predicate.
     PutFilteredCounters {
@@ -1861,6 +1885,7 @@ pub(crate) enum StatValue {
     /// Unqualified all-player count; distinct from controller-owned attackers.
     AllAttackingCreatures,
     SourceModified,
+    SourceEquipmentCount,
     Tokens(CountFilter),
     AtLeast {
         value: &'static StatValue,
@@ -2026,6 +2051,7 @@ pub(crate) struct AuraSpec {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Subject {
+    /// Exact triggering event object, including entrants and declared attackers.
     Entering,
     Source,
     Targets,
@@ -2872,12 +2898,14 @@ pub(crate) enum TriggerCondition {
     SelfAttacksAlone,
     /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
     ControlledCreatureAttacksAlone,
+    ControlledEquippedCreatureAttacks,
     EquippedAttacks,
     /// Attachment recipient was the sole creature declared in this attack event.
     EquippedAttacksAlone,
     /// One event per player attacked by at least one declared matching creature.
     AttackPlayer(CreatureFilter),
     GrantedAttacks,
+    AttachedAttacksOrBlocks,
     SelfBecomesTapped,
     /// One event after the complete simultaneous tap group, using post-event types.
     ControlledCreaturesBecomeTapped,

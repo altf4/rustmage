@@ -67,6 +67,23 @@ pub(super) fn controllers<W: super::ability_world::CharacteristicWorld + ?Sized>
             timestamp: row.timestamp,
         })
         .collect();
+    if let Some(roles) = world.roles() {
+        effects.extend(
+            roles
+                .source_linked_effects
+                .iter()
+                .filter(|row| {
+                    row.kind == SourceLinkedEffectKind::Control
+                        && source_linked_effects::active(world, row)
+                })
+                .map(|row| AppliedControl {
+                    object: row.recipient,
+                    controller: row.controller,
+                    source: None,
+                    timestamp: row.timestamp,
+                }),
+        );
+    }
     for &id in world.attachment_sources() {
         let aura = object(id);
         let source = ObjectRef {
@@ -215,6 +232,18 @@ impl Game {
             })
             .map(|row| row.object)
             .collect();
+        let linked: Vec<_> = self
+            .state
+            .roles
+            .as_ref()
+            .into_iter()
+            .flat_map(|r| &r.source_linked_effects)
+            .filter(|row| {
+                row.kind == SourceLinkedEffectKind::Control
+                    && source_linked_effects::active(self, row)
+            })
+            .map(|row| row.recipient)
+            .collect();
         let state = self.state.controls.as_mut().unwrap();
         state.bases.retain(|row| live.contains(&row.object));
         state.effects.retain(|row| live.contains(&row.object));
@@ -224,6 +253,7 @@ impl Game {
                 .iter()
                 .any(|effect| effect.object == row.object)
                 || targets.contains(&row.object)
+                || linked.contains(&row.object)
         });
         if state.bases.is_empty() {
             self.state.controls = None;

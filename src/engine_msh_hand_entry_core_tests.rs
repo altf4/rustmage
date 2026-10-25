@@ -96,6 +96,7 @@ fn bounded(g: &mut Game, p: Player, program: &'static [Instruction]) {
         milled_selection: None,
         library: None,
         selection: None,
+        return_attachment: None,
         target_library: None,
         search: None,
         optional_searches: None,

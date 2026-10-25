@@ -1066,6 +1066,44 @@ impl FundingState<'_> {
         }
         next.entry_projection.as_mut().unwrap().counter = None;
         next.refresh_control_projection();
+        next.prune_source_linked_projection();
+        for m in &moves {
+            if m.skipped || m.destination != Zone::Battlefield {
+                continue;
+            }
+            let Some(recipient) = m.attach_equipment_to else {
+                continue;
+            };
+            let source = next.reference(m.before.id);
+            if !equipment::can_attach(&next, source, recipient) {
+                continue;
+            }
+            next.resources
+                .iter_mut()
+                .find(|r| r.id == source.card)
+                .unwrap()
+                .object
+                .attached_to = Some(recipient);
+            let p = next.entry_projection.as_mut().unwrap();
+            let timestamp = p.roles.next_timestamp();
+            for row in &mut p.roles.live_static {
+                if row.source == source {
+                    row.timestamp = timestamp;
+                }
+            }
+            for row in &mut p.roles.ability_timestamps {
+                if row.source == source {
+                    row.timestamp = timestamp;
+                }
+            }
+            for row in &mut p.roles.base_stats {
+                if row.static_source && row.source == source {
+                    row.timestamp = timestamp;
+                }
+            }
+            p.hand_size.assign(source);
+        }
+        next.refresh_control_projection();
         emit(&next)
     }
 }

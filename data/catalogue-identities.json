@@ -5408,7 +5408,9 @@
     4,
     0,
     16,
-    16
+    16,
+    10,
+    24
   ],
   "aliases": [
     [
@@ -8618,6 +8620,10 @@
     [
       "Broodspinner",
       570
+    ],
+    [
+      "Bruce Banner",
+      571
     ],
     [
       "Bruce Banner // The Incredible Hulk",
@@ -24768,8 +24774,16 @@
       4453
     ],
     [
+      "The Incredible Hulk",
+      5404
+    ],
+    [
       "The Infamous Cruelclaw",
       4454
+    ],
+    [
+      "The Invincible Iron Man",
+      5403
     ],
     [
       "The Irencrag",
@@ -25490,6 +25504,10 @@
     [
       "Tonberry",
       4630
+    ],
+    [
+      "Tony Stark",
+      4631
     ],
     [
       "Tony Stark // The Invincible Iron Man",
@@ -45360,7 +45378,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Bruce Banner",
+        "mana_cost": "{U}",
+        "type_line": "Legendary Creature — Human Scientist Hero",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": []
+      },
+      "back_face": 5404
     },
     {
       "index": 572,
@@ -161144,7 +161178,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Tony Stark",
+        "mana_cost": "{1}{U}",
+        "type_line": "Legendary Creature — Human Artificer Hero",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": []
+      },
+      "back_face": 5403
     },
     {
       "index": 4632,
@@ -182905,6 +182955,68 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5403,
+      "module": "card_5403",
+      "path": "msh/the_invincible_iron_man.rs",
+      "set": "msh",
+      "category": "back_face",
+      "name": "The Invincible Iron Man",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "{4}{U}{R}",
+      "type_line": "Legendary Artifact Creature — Human Hero",
+      "oracle_keywords": [
+        "Flying",
+        "Haste"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 4,
+      "face_parent": 4631
+    },
+    {
+      "index": 5404,
+      "module": "card_5404",
+      "path": "msh/the_incredible_hulk.rs",
+      "set": "msh",
+      "category": "back_face",
+      "name": "The Incredible Hulk",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "{2}{R}{R}{G}{G}",
+      "type_line": "Legendary Creature — Gamma Berserker Hero",
+      "oracle_keywords": [
+        "Reach",
+        "Trample"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        2,
+        2,
+        0
+      ],
+      "generic": 2,
+      "face_parent": 571
     }
   ]
 }

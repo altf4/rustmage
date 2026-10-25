@@ -10,6 +10,14 @@ pub(super) enum UntapCause {
 }
 impl Game {
     fn has_untap_rules(&self) -> bool {
+        if self.state.roles.as_ref().is_some_and(|state| {
+            state
+                .source_linked_effects
+                .iter()
+                .any(|row| row.kind == SourceLinkedEffectKind::PreventUntap)
+        }) {
+            return true;
+        }
         if self.state.attachment_sources.iter().any(|&id| {
             self.state.objects[id as usize]
                 .card
@@ -41,6 +49,15 @@ impl Game {
     }
     pub(super) fn untap_allowed(&self, id: CardId, cause: UntapCause) -> bool {
         let recipient = self.object_ref(id);
+        if self.state.roles.as_ref().is_some_and(|state| {
+            state.source_linked_effects.iter().any(|row| {
+                row.recipient == recipient
+                    && row.kind == SourceLinkedEffectKind::PreventUntap
+                    && source_linked_effects::active(self, row)
+            })
+        }) {
+            return false;
+        }
         let evaluation = self.evaluated_abilities();
         let object = &self.state.objects[id as usize];
         for (index, group) in object.card.static_ability_groups().iter().enumerate() {

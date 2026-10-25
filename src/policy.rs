@@ -357,6 +357,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     })
                     .sum()
             }
+            Action::ChooseEquipmentAttachment { equipment } => {
+                if equipment.is_some() {
+                    80
+                } else {
+                    40
+                }
+            }
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {
                 // Avoid voluntary lethal payment; the example still exercises

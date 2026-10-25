@@ -26,6 +26,7 @@ fn bounded_program(game: &mut Game, item: SpellView, program: &'static [Instruct
         milled_selection: None,
         library: None,
         selection: None,
+        return_attachment: None,
         target_library: None,
         search: None,
         optional_searches: None,

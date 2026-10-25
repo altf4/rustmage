@@ -116,6 +116,7 @@ pub(crate) enum StaticAbilityFragment {
         stats: Stats,
     },
     AttachedSubtype(&'static str),
+    AttachedLegendary,
     AttachmentStats(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),

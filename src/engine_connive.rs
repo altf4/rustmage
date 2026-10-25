@@ -37,10 +37,10 @@ impl Game {
             Subject::Entering => item
                 .entering_object
                 .map(|object| {
-                    let saved = item.event_object.as_ref().expect("entering conniver facts");
+                    let saved = item.event_object.as_ref().expect("event conniver facts");
                     assert_eq!(saved.object, object);
                     let EventObjectFacts::Controller(controller) = saved.facts else {
-                        unreachable!("entering conniver controller");
+                        unreachable!("event conniver controller");
                     };
                     ConniverView {
                         object,
