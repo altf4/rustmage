@@ -342,7 +342,8 @@ impl Game {
             AmountValue::SourceCounterQuantity(kind) => {
                 u128::from(self.source_counter_quantity_live(source, kind).unwrap_or(0))
             }
-            AmountValue::TargetPlayerHandSize
+            AmountValue::PaidSourceCounterQuantity(_)
+            | AmountValue::TargetPlayerHandSize
             | AmountValue::MilledCreatures
             | AmountValue::ChosenX
             | AmountValue::ManaSpent

@@ -314,6 +314,7 @@ fn source_obligations(
         || ability.cost.discard
         || ability.cost.exile_self
         || ability.cost.remove.is_some()
+        || ability.source_counter_cost().is_some()
         || ability.cost.loyalty.is_some();
     if let Some(object) = current {
         let mut ready_object = object.clone();
@@ -406,6 +407,10 @@ impl<'g> FundingState<'g> {
     }
     fn power_upper_production(&self, production: ManaProduction, source: CardId) -> ManaProduction {
         match production.base() {
+            ManaProduction::TapSourcePowerChoice { mask } => ManaProduction::Choice {
+                mask,
+                amount: u32::MAX,
+            },
             ManaProduction::SourcePower { color } => {
                 let mut mana = [0; 6];
                 mana[usize::from(color)] = u32::MAX;
@@ -496,8 +501,11 @@ impl<'g> FundingState<'g> {
                     .chain(inherited.into_iter().map(|a| a.rules()))
                 {
                     if let Some(production) = ability.mana_production() {
-                        power_sensitive |=
-                            matches!(production.base(), ManaProduction::SourcePower { .. });
+                        power_sensitive |= matches!(
+                            production.base(),
+                            ManaProduction::SourcePower { .. }
+                                | ManaProduction::TapSourcePowerChoice { .. }
+                        );
                         graveyard_mana_cost |= ability
                             .cost
                             .additional
@@ -1567,6 +1575,10 @@ impl<'g> FundingState<'g> {
                     ManaProduction::MonocoloredPermanentColors => {
                         ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
                     }
+                    ManaProduction::TapSourcePowerChoice { mask } => ManaProduction::Choice {
+                        mask,
+                        amount: u32::MAX,
+                    },
                     ManaProduction::SourcePower { color } => {
                         let mut mana = [0; 6];
                         mana[usize::from(color)] = u32::MAX;
@@ -3073,3 +3085,7 @@ mod msh_baxter_raft_funding_tests;
 #[cfg(test)]
 #[path = "engine_temporary_copy_funding_tests.rs"]
 mod temporary_copy_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_counter_quantity_funding_tests.rs"]
+mod msh_counter_quantity_funding_tests;

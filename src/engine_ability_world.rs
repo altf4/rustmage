@@ -537,6 +537,15 @@ impl ManaProduction {
     ) -> Self {
         match self {
             Self::Tagged { production, .. } => production.in_world(world, source),
+            Self::TapSourcePowerChoice { mask } => {
+                let amount = u32::try_from(power_after_source_tap(world, source).max(0))
+                    .capacity("mana representation exhausted");
+                if amount == 0 {
+                    Self::Fixed([0; 6])
+                } else {
+                    Self::Choice { mask, amount }
+                }
+            }
             Self::SourcePower { color } => {
                 let mut mana = [0; 6];
                 mana[usize::from(color)] = u32::try_from(world.power(source).max(0))
@@ -594,4 +603,83 @@ impl ManaProduction {
             value => value,
         }
     }
+}
+
+/// Only the source tap changes in this borrowed production world. Every other
+/// fact, including virtual departures, copies, counters and entry projections,
+/// is read from the parent world. No events are emitted by a feasibility query.
+struct SourceTappedWorld<'a, W: CharacteristicWorld + ?Sized> {
+    parent: &'a W,
+    source: CardId,
+    object: Object,
+}
+impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<'_, W> {
+    fn game(&self) -> &Game {
+        self.parent.game()
+    }
+    fn object(&self, id: CardId) -> &Object {
+        if id == self.source {
+            &self.object
+        } else {
+            self.parent.object(id)
+        }
+    }
+    fn life(&self, p: Player) -> i128 {
+        self.parent.life(p)
+    }
+    fn gained_life(&self, p: Player) -> bool {
+        self.parent.gained_life(p)
+    }
+    fn attacking(&self, id: CardId) -> bool {
+        self.parent.attacking(id)
+    }
+    fn static_sources(&self) -> &[CardId] {
+        self.parent.static_sources()
+    }
+    fn attachment_sources(&self) -> &[CardId] {
+        self.parent.attachment_sources()
+    }
+    fn controls(&self) -> Option<&continuous_control::ControlState> {
+        self.parent.controls()
+    }
+    fn roles(&self) -> Option<&roles::RoleState> {
+        self.parent.roles()
+    }
+    fn entry_values(&self) -> &[entry_choices::ChoiceRow] {
+        self.parent.entry_values()
+    }
+    fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
+        self.parent.stored_recipe(id)
+    }
+    fn ability_origin(&self, id: CardId) -> Option<u64> {
+        self.parent.ability_origin(id)
+    }
+    fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
+        self.parent.counter_amounts(id)
+    }
+    fn creatures_died(&self) -> u64 {
+        self.parent.creatures_died()
+    }
+    fn card_left_graveyard(&self, p: Player) -> bool {
+        self.parent.card_left_graveyard(p)
+    }
+    fn plus_one_placed_this_turn(&self, object: ObjectRef, p: Player) -> bool {
+        self.parent.plus_one_placed_this_turn(object, p)
+    }
+    fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
+        self.parent.borrowed_activation_used(source, slot)
+    }
+    fn entered_this_turn(&self, source: ObjectRef) -> bool {
+        self.parent.entered_this_turn(source)
+    }
+}
+fn power_after_source_tap<W: CharacteristicWorld + ?Sized>(world: &W, source: CardId) -> i128 {
+    let mut object = world.object(source).clone();
+    object.tapped = true;
+    SourceTappedWorld {
+        parent: world,
+        source,
+        object,
+    }
+    .power(source)
 }

@@ -246,25 +246,29 @@ fn matches_filter(filter: ReplacementFilter, p: &CounterPlacement) -> bool {
     }
 }
 fn counter_applies(spec: ReplacementSpec, p: &CounterPlacement) -> bool {
-    let ReplacementSpec::Counters {
-        filter,
-        kind,
-        effects_only,
-        ..
-    } = spec
-    else {
-        return false;
+    let (filter, kind, effects_only) = match spec {
+        ReplacementSpec::Counters {
+            filter,
+            kind,
+            effects_only,
+            ..
+        } => (filter, kind, effects_only),
+        ReplacementSpec::CountersPlacedByController if p.placed_by == p.controller => {
+            (ReplacementFilter::Permanent, None, false)
+        }
+        _ => return false,
     };
     matches_filter(filter, p)
         && (!effects_only || p.effect)
         && kind.map_or_else(|| p.amount.has_any(), |k| p.amount.get(k) > 0)
 }
 fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
-    let ReplacementSpec::Counters {
-        kind, factor, add, ..
-    } = spec
-    else {
-        unreachable!()
+    let (kind, factor, add) = match spec {
+        ReplacementSpec::Counters {
+            kind, factor, add, ..
+        } => (kind, factor, add),
+        ReplacementSpec::CountersPlacedByController => (None, 1, 1),
+        _ => unreachable!(),
     };
     let mut result = Counters::default();
     for k in CounterKind::ALL {
@@ -288,11 +292,14 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     used: &[(ObjectRef, u16)],
 ) -> Vec<ReplacementEffectView> {
     let mut out = Vec::new();
-    let mut add = |reference: ObjectRef, card: Card, controller: Player| {
+    let mut add = |reference: ObjectRef, card: Card, controller: Player, incoming: bool| {
         if controller != p.controller {
             return;
         }
         for (index, &spec) in card.replacement_effects().iter().enumerate() {
+            if incoming && matches!(spec, ReplacementSpec::CountersPlacedByController) {
+                continue; // CR614.12: this is general, not a self-entry replacement.
+            }
             if world.object(reference.card).zone == Zone::Battlefield && world.reference(reference.card) == reference
                     && !world.fragment_available(reference.card, |fragment| matches!(fragment,
                         crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
@@ -309,13 +316,13 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     for &id in world.static_sources() {
         let o = world.object(id);
         if o.zone == Zone::Battlefield {
-            add(world.reference(id), o.card, o.controller);
+            add(world.reference(id), o.card, o.controller, false);
         }
     }
     // CR614.12: only the incoming permanent's own effects may affect its entry;
     // a different member of this simultaneous entry batch is not yet a source.
     if p.entry_index.is_some() {
-        add(p.object, p.card, p.controller);
+        add(p.object, p.card, p.controller, true);
     }
     out
 }
@@ -756,7 +763,13 @@ impl Game {
                     .card
                     .replacement_effects()
                     .iter()
-                    .any(|e| matches!(e, ReplacementSpec::Counters { .. }))
+                    .any(|e| {
+                        matches!(
+                            e,
+                            ReplacementSpec::Counters { .. }
+                                | ReplacementSpec::CountersPlacedByController
+                        )
+                    })
             })
         {
             let before = self.state.objects[id as usize].counters.lore;

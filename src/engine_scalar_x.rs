@@ -317,6 +317,10 @@ impl Game {
                     .amount
             }
             AmountValue::DamageEventAmount => item.damage_event.expect("saved damage event").amount,
+            AmountValue::PaidSourceCounterQuantity(kind) => item
+                .source_counter_payment
+                .filter(|payment| payment.paid && payment.kind == kind)
+                .map_or(0, |payment| u128::from(payment.amount)),
             AmountValue::SourceCounterQuantity(kind) => self
                 .source_counter_quantity_live(item.object, kind)
                 .map(u128::from)

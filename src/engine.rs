@@ -262,6 +262,8 @@ mod ability_evaluation;
 mod characteristic_query;
 #[path = "engine_growth_cost.rs"]
 mod growth_cost;
+#[path = "engine_source_counter_cost.rs"]
+mod source_counter_cost;
 #[path = "engine_untap_rules.rs"]
 mod untap_rules;
 pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
@@ -485,6 +487,7 @@ define_actions! {
         sacrifice: Option<ObjectRef>,
     },
     ChooseX { value: u32 },
+    ChooseSourceCounterAmount { amount: u64 },
     ChooseKicker {
         pay: bool,
     },
@@ -905,6 +908,9 @@ pub struct ReflexiveSubjectView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    /// Declared nonmana counter cost; paid is set only by the committed cost executor.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_counter_payment: Option<SourceCounterPaymentView>,
     /// Allocated only after a targeted permanent departs; these are public facts.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
@@ -1432,6 +1438,9 @@ struct LifeGainEvent {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    SourceCounterAmount {
+        player: Player,
+    },
     ManaRollback {
         player: Player,
     },
@@ -2108,9 +2117,25 @@ impl XChoiceView {
     }
 }
 
-/// Complete action space: concrete choices, damage bounds and scalar intervals.
+/// A declared/paid amount is independent of all later source characteristics.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct SourceCounterPaymentView {
+    pub kind: CounterKind,
+    pub amount: u64,
+    pub paid: bool,
+}
+/// Every integer in the inclusive domain is a legal quantity declaration.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct SourceCounterChoiceView {
+    pub source: ObjectRef,
+    pub kind: CounterKind,
+    pub maximum: u64,
+}
+/// Complete action space: concrete choices and full numeric payment/damage domains.
 #[derive(Clone, Debug, Serialize)]
 pub struct LegalActionSpace {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_counter_choice: Option<SourceCounterChoiceView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub mana_payment: Option<ManaPaymentDomain>,
     pub choices: Vec<Action>,
@@ -2120,6 +2145,8 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_counter_choice: Option<SourceCounterChoiceView>,
     /// Frozen relevant public events; present only with a public historical observer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_facts: Option<[TurnFactsView; 2]>,
@@ -2568,6 +2595,7 @@ impl Game {
             | Pending::Explore { player }
             | Pending::Bargain { player }
             | Pending::ResolutionX { player }
+            | Pending::SourceCounterAmount { player }
             | Pending::X { player }
             | Pending::Casualty { player }
             | Pending::ManaRollback { player }
@@ -2621,6 +2649,7 @@ impl Game {
     /// Complete legal space, including damage assignments and scalar-X intervals.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
+            source_counter_choice: self.source_counter_choice(),
             mana_lot_spend: self.mana_lot_spend_range(),
             mana_payment: self.mana_payment_domain(),
             choices: self.legal_actions(),
@@ -2666,7 +2695,7 @@ impl Game {
     }
 
     /// Concrete indexed choices; large numeric domains are represented completely
-    /// by legal_action_space().damage_assignment, not enumerated in this vector.
+    /// by legal_action_space(), not enumerated in this vector.
     pub fn legal_actions(&self) -> Vec<Action> {
         let mut actions = Vec::new();
         self.legal_actions_into(&mut actions);
@@ -2797,6 +2826,9 @@ impl Game {
                         self.state.announcing.as_ref().and_then(|a| a.additional),
                         Some(*payment),
                     )
+            } else if let Action::ChooseSourceCounterAmount { amount } = &action {
+                self.source_counter_choice()
+                    .is_some_and(|domain| *amount <= domain.maximum)
             } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
@@ -3100,6 +3132,9 @@ impl Game {
             }
             Pending::EffectChoice { player } => {
                 let choice = s.resolving.as_ref().unwrap().choice.as_ref().unwrap();
+                if choice.kind == EffectChoiceKind::RemoveCreatureCounters(1) {
+                    return self.visit_resolution_counter_payments(player, &mut emit);
+                }
                 if matches!(
                     choice.kind,
                     EffectChoiceKind::LandCards { .. }
@@ -4035,6 +4070,23 @@ impl Game {
                     }
                 }
             }
+            Pending::SourceCounterAmount { .. } => {
+                if let Some(domain) = self.source_counter_choice() {
+                    if domain.maximum <= 64 {
+                        for amount in 0..=domain.maximum {
+                            if emit(Action::ChooseSourceCounterAmount { amount }) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        for amount in [0, domain.maximum / 2, domain.maximum] {
+                            if emit(Action::ChooseSourceCounterAmount { amount }) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
             Pending::X { .. } | Pending::ResolutionX { .. } => {
                 if let Some(domain) = self.x_choice() {
                     for range in domain.intervals {
@@ -4356,7 +4408,13 @@ impl Game {
             Action::ChooseCreatureCounterCost {
                 object,
                 counter: kind,
-            } => self.choose_creature_counter_cost(object, kind),
+            } => {
+                if matches!(self.state.pending, Pending::EffectChoice { .. }) {
+                    self.pay_resolution_creature_counter(object, kind);
+                } else {
+                    self.choose_creature_counter_cost(object, kind);
+                }
+            }
             Action::AnnounceCounterGraveyard { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::GraveyardCounterCost;
@@ -4855,6 +4913,9 @@ impl Game {
             Action::FinishSaddle => self.finish_saddle_payment(),
             Action::ChooseCrewer { object } => self.choose_crewer(object),
             Action::FinishCrew => self.finish_crew_payment(),
+            Action::ChooseSourceCounterAmount { amount } => {
+                self.choose_source_counter_amount(amount)
+            }
             Action::ChooseX { value }
                 if matches!(self.state.pending, Pending::ResolutionX { .. }) =>
             {
@@ -6631,6 +6692,11 @@ impl Game {
             } else {
                 None
             },
+            source_counter_choice: if owns_choice {
+                self.source_counter_choice()
+            } else {
+                None
+            },
             x_choice: if owns_choice { self.x_choice() } else { None },
             suspected: s
                 .suspected
@@ -6727,6 +6793,7 @@ impl Game {
                 Pending::Crew { .. } => "crew",
                 Pending::Explore { .. } => "explore",
                 Pending::ResolutionX { .. } => "resolution_x",
+                Pending::SourceCounterAmount { .. } => "source_counter_amount",
                 Pending::X { .. } => "x",
                 Pending::EvidenceIntent { .. } => "evidence_intent",
                 Pending::Evidence { .. } => "evidence",
@@ -7862,3 +7929,7 @@ mod msh_thirteenth_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_copy_identity_regression_tests.rs"]
 mod msh_copy_identity_regression_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_counter_quantity_core_tests.rs"]
+mod msh_counter_quantity_core_tests;
