@@ -295,6 +295,23 @@ fn msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires() {
                     .filter(|o| o.zone == Zone::Battlefield && o.card.has_subtype("Clue"))
                     .count();
                 assert_eq!(clues, usize::from(alone), "{name}");
+                if alone {
+                    let clue = g
+                        .state
+                        .objects
+                        .iter()
+                        .position(|o| o.zone == Zone::Battlefield && o.card.has_subtype("Clue"))
+                        .unwrap() as CardId;
+                    let hand = g.hand_count(p);
+                    activate(&mut g, p, clue, 0, [0, 0, 0, 0, 0, 2], &[]);
+                    resolved(&mut g);
+                    assert_eq!(
+                        g.hand_count(p),
+                        hand + 1,
+                        "Clue costs two and sacrifices to draw one"
+                    );
+                    assert_ne!(g.object_view(clue).zone, Zone::Battlefield);
+                }
             } else if benefit == 1 {
                 assert_eq!(
                     stats(&g, bear),
@@ -824,7 +841,7 @@ fn msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history() {
 #[test]
 fn msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition() {
     let p = Player::P0;
-    for hero_entered in [false, true] {
+    for condition in 0..3 {
         let mut g = scenario(p);
         let hero = put(&mut g, p, "Agent of Atlas", Zone::Battlefield);
         let nonhero = put(&mut g, p, "Bear Cub", Zone::Battlefield);
@@ -839,9 +856,13 @@ fn msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition() {
         );
         assert_eq!(stats(&g, nonhero), (2, 2));
         assert_eq!(stats(&g, enemy), (2, 2));
-        if hero_entered {
+        if condition == 1 {
             g.state.step = Step::Main1;
             spell(&mut g, p, "Agent Maria Hill", [1, 0, 0, 0, 0, 0], None);
+            resolved(&mut g);
+        }
+        if condition == 2 {
+            attack(&mut g, &[hero]);
             resolved(&mut g);
         }
         let hand = g.hand_count(p);
@@ -850,7 +871,7 @@ fn msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition() {
         resolved(&mut g);
         assert_eq!(
             g.hand_count(p),
-            hand + usize::from(hero_entered),
+            hand + usize::from(condition != 0),
             "opponent's end step, intervening condition"
         );
     }
@@ -1422,6 +1443,17 @@ fn msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires
         assert!(!g.object_view(source).card.is_land());
         assert_eq!(stats(&g, source), (4, 4));
     }
+    let mut declined = scenario(p);
+    put(&mut declined, p.other(), "A.I.M. Labs", Zone::Battlefield);
+    let unchanged = put(&mut declined, p, "Absorbing Man", Zone::Battlefield);
+    declined.begin_step(Step::Main1);
+    until(&mut declined, |g| {
+        g.legal_actions().contains(&Action::FinishTargets)
+    });
+    finish_targets(&mut declined);
+    resolved(&mut declined);
+    assert!(!declined.object_view(unchanged).card.is_land());
+    assert_eq!(stats(&declined, unchanged), (4, 4));
     let mut g = scenario(p);
     let phil = put(&mut g, p, "Agent Phil Coulson", Zone::Battlefield);
     let echo = put(&mut g, p, "Echo, Perceptive Prodigy", Zone::Battlefield);
@@ -1452,6 +1484,18 @@ fn msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat() {
     let mut g = scenario(p);
     let source = spell(&mut g, p, "Bruce Banner", [0, 1, 0, 0, 0, 0], None);
     resolved(&mut g);
+    g.state.step = Step::BeginCombat;
+    for ability in [0, 1] {
+        assert!(
+            !g.legal_actions().contains(&Action::AnnounceActivate {
+                card: source,
+                ability,
+                counter_payment: Counters::default()
+            }),
+            "Bruce activates only as a sorcery"
+        );
+    }
+    g.state.step = Step::Main1;
     g.state.turn += 1;
     g.begin_turn();
     g.state.step = Step::Main1;
@@ -2262,6 +2306,7 @@ fn msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder(
     }
     assert!(g.observe(p.other()).library_cast_look.is_none());
     assert!(g.observe(p.other()).resolution_free_casts.is_none());
+    let random_before = g.state.rng;
     act(&mut g, allowed);
     if g.state.announcing.is_some() {
         pay(&mut g);
@@ -2277,6 +2322,37 @@ fn msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder(
     let mut expected = top[1..].to_vec();
     expected.sort_unstable();
     assert_eq!(remaining, expected);
+    assert_ne!(
+        g.state.rng, random_before,
+        "unselected five cards use random bottom order"
+    );
+    let mut ward = scenario(p);
+    let cube = put(&mut ward, p, "Cosmic Cube", Zone::Battlefield);
+    spell(
+        &mut ward,
+        p.other(),
+        "Disenchant",
+        [1, 0, 0, 0, 0, 1],
+        Some(Target::Card(cube)),
+    );
+    until(&mut ward, |g| {
+        g.legal_actions().contains(&Action::DeclineResolutionMana)
+    });
+    assert_eq!(
+        ward.observe(p.other())
+            .resolution_payment
+            .unwrap()
+            .cost
+            .generic,
+        2
+    );
+    act(&mut ward, Action::DeclineResolutionMana);
+    resolved(&mut ward);
+    assert_eq!(
+        ward.object_view(cube).zone,
+        Zone::Battlefield,
+        "unpaid ward two counters removal"
+    );
 }
 
 #[test]
@@ -2339,6 +2415,26 @@ fn msh_avengers_disassembled_modes_damage_land_and_optional_basic_search() {
 #[test]
 fn msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice() {
     let p = Player::P0;
+    for name in [
+        "Baxter Building",
+        "Avengers Tower",
+        "Castle Doom",
+        "Dark Fortress",
+    ] {
+        let mut g = scenario(p);
+        let id = put(&mut g, p, name, Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        choose(
+            &mut g,
+            |a| matches!(a, Action::ActivateMana { card, ability: 0, production: [0,0,0,0,0,1], .. } if *card == id),
+        );
+        assert_eq!(
+            g.state.players[p.index()].mana,
+            [0, 0, 0, 0, 0, 1],
+            "{name}"
+        );
+        assert!(g.object_view(id).tapped, "{name}");
+    }
     for (name, qualified, unqualified, initial, production) in [
         (
             "Avengers Tower",

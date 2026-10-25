@@ -7,7 +7,7 @@ use super::*;
 fn msh_owned_teamwork_and_partial_crew_decisions_survive_branch_and_restore() {
     let p = Player::P0;
     let mut g = scenario(p);
-    let phil = put(&mut g, p, "Agent of Atlas", Zone::Battlefield);
+    let one_power = put(&mut g, p, "Aerial Doombot", Zone::Battlefield);
     put(&mut g, p, "Bear Cub", Zone::Battlefield);
     let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
     let card = put(&mut g, p, "Cruel Alliance", Zone::Hand);
@@ -30,7 +30,7 @@ fn msh_owned_teamwork_and_partial_crew_decisions_survive_branch_and_restore() {
         .position(|r| matches!(r.clause, CastCostClause::Teamwork(_)))
         .unwrap() as u16;
     act(&mut g, Action::ChooseCastCost { clause });
-    let object = g.object_ref(phil);
+    let object = g.object_ref(one_power);
     act(&mut g, Action::ChooseTeammate { object });
     assert!(
         !g.legal_actions().contains(&Action::FinishTeamwork),
