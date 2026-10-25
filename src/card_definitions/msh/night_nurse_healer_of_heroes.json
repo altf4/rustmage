@@ -3,10 +3,60 @@
   "catalogue_id": 2934,
   "oracle_id": "e3559565-0512-4525-addb-bf27903bcd13",
   "facts_sha256": "2977171d7e7391c5f15a6870facc8920fe9e69a9db234524e9ba2e578fb62159",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "692b4acaeb10fd14044763ce69cd6acbfc6147da03543ea2a7e33aaaa95c2ff4"
   },
-  "physical_metadata_sha256": "f3e30df60be2dead6a00daf8e9eaef9202f0243897390c42c24105b1ead82e51"
+  "physical_metadata_sha256": "f3e30df60be2dead6a00daf8e9eaef9202f0243897390c42c24105b1ead82e51",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NightNurseHealerOfHeroes.java",
+  "java_sha256": "c6c0b64b397726a687b0d34dc3824a85c8fb966668694f06f5e21394b5188314",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterPermanentCard.java",
+      "sha256": "2af04f95edb47547b39271ca3c5024712fa9ba1728c5e2c7249d63fa8c411033"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+      "sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/card/PutIntoGraveFromAnywhereThisTurnPredicate.java",
+      "sha256": "c2935fa1d4f1d97eb62fc90dd802089b75dd9abb516de4baafec0531d2f55c35"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CardsPutIntoGraveyardWatcher.java",
+      "sha256": "7adcba89bfd94638c279998a6175725be871324c3f70b3f05ab0b540f107b2a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    }
+  ]
 }
