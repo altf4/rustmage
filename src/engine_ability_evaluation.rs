@@ -361,6 +361,22 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         }
     }
     if let Some(state) = world.roles() {
+        for row in &state.resolved_ability_modifications {
+            if return_ability_modification::active(world, row) {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: row.timestamp,
+                    recipients: vec![row.recipient.card],
+                    action: LayerSixAction::RemoveAndGrant(vec![LayerSixGrant {
+                        recipient: row.recipient.card,
+                        keywords: row.keywords,
+                        abilities: Vec::new(),
+                        mana: Vec::new(),
+                    }]),
+                });
+            }
+        }
         for row in &state.source_linked_effects {
             if row.kind == SourceLinkedEffectKind::RemoveAbilities
                 && source_linked_effects::active(world, row)

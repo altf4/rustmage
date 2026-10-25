@@ -20,6 +20,8 @@ pub(super) struct EntryMove {
     pub effect_counter: Option<(CounterKind, u64)>,
     /// Only this surrounding return effect captures its actual public entry result.
     pub equipment_after: bool,
+    /// Applied after entry observers freeze their facts, only on successful entry.
+    pub blank_with_haste_after: Option<ObjectRef>,
     /// After this successful entry event, attach this Equipment to an exact recipient.
     pub attach_equipment_to: Option<ObjectRef>,
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
@@ -78,6 +80,7 @@ impl EntryMove {
             life_bonus: None,
             effect_counter: None,
             equipment_after: false,
+            blank_with_haste_after: None,
             attach_equipment_to: None,
             return_modification: None,
             attacking: None,
@@ -581,6 +584,7 @@ impl Game {
         let mut suspect_results = Vec::new();
         let mut life_results = Vec::new();
         let mut equipment_results = Vec::new();
+        let mut ability_results = Vec::new();
         for (movement, counters) in moves {
             let rules = self.freeze_zone_rules(&movement.before, movement.destination, None);
             let plan = self.plan_zone_move(&movement.before, movement.destination, rules);
@@ -618,6 +622,11 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
+                if event.destination == Zone::Battlefield
+                    && let Some(source) = movement.blank_with_haste_after
+                {
+                    ability_results.push((event.after, source));
+                }
                 if event.destination == Zone::Battlefield
                     && let Some(recipient) = movement.attach_equipment_to
                 {
@@ -727,6 +736,9 @@ impl Game {
             self.finish_discard_events(&events, context);
         } else {
             self.finish_zone_events(&events, &[]);
+        }
+        for (recipient, source) in ability_results {
+            self.blank_and_grant_haste(recipient, source);
         }
         // The entry event and its frozen trigger facts precede this subsequent
         // attachment. Packets cannot be stacked until the surrounding resolution ends.

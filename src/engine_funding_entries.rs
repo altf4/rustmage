@@ -1064,6 +1064,24 @@ impl FundingState<'_> {
                 }
             }
         }
+        for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && let Some(source) = m.blank_with_haste_after
+            {
+                let recipient = next.reference(m.before.id);
+                let p = next.entry_projection.as_mut().unwrap();
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .resolved_ability_modifications
+                    .push(ResolvedAbilityModificationView {
+                        recipient,
+                        source,
+                        keywords: Keywords::HASTE,
+                        timestamp,
+                    });
+            }
+        }
         next.entry_projection.as_mut().unwrap().counter = None;
         next.refresh_control_projection();
         next.prune_source_linked_projection();

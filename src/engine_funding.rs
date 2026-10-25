@@ -197,6 +197,7 @@ struct EntryFundingKey {
 struct FundingKey {
     payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
     source_linked_effects: Vec<SourceLinkedEffectView>,
+    resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     entries: Option<EntryFundingKey>,
     histories: Option<(u64, [bool; 2], i128)>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
@@ -738,6 +739,11 @@ impl<'g> FundingState<'g> {
                                 && o.controller == goal.actor
                         })
                     })
+            })
+            && goal.reserve.is_none_or(|(r, spec)| {
+                spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+                    || self.game.sneak_attacker(goal.actor, r)
+                        && ability_world::CharacteristicWorld::attacking(self, r.card)
             })
             && reserve_obligations(
                 goal,
@@ -1414,6 +1420,10 @@ impl<'g> FundingState<'g> {
                         .source_linked_effects
                         .iter()
                         .any(|row| row.source.card == r.id || row.recipient.card == r.id)
+                        || roles
+                            .resolved_ability_modifications
+                            .iter()
+                            .any(|row| row.recipient.card == r.id)
                 }) || self.power_sensitive
                     || self
                         .game
@@ -1467,6 +1477,9 @@ impl<'g> FundingState<'g> {
         });
         FundingKey {
             payment_departures: self.payment_departures.clone(),
+            resolved_ability_modifications: self
+                .roles()
+                .map_or_else(Vec::new, |r| r.resolved_ability_modifications.clone()),
             source_linked_effects: self
                 .roles()
                 .map_or_else(Vec::new, |r| r.source_linked_effects.clone()),
@@ -2373,6 +2386,18 @@ impl Game {
                 definition,
             );
         }
+        if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
+            let mut proposal = a.clone();
+            proposal.cost = Some(cost);
+            proposal.cast_costs = Some(Box::default());
+            proposal.initialize_cast_costs(improvise::potential(self, a.item.source_card));
+            let goal = self.funding_goal(&proposal);
+            let mut world =
+                FundingState::from_game_with_convoke(self, &goal, a.item.source_card.has_convoke());
+            world.set_purpose(self.purpose_for_item(&a.item));
+            world.set_payment_context(&proposal);
+            return world.reachable(&goal, &mut HashSet::new());
+        }
         if a.item.kind == StackKind::Spell
             && !self.spell_cost_option_available(a.item.controller, a.item.card, cost)
         {
@@ -3149,3 +3174,7 @@ mod msh_self_granted_static_tests;
 #[cfg(test)]
 #[path = "engine_msh_armor_tony_funding_tests.rs"]
 mod msh_armor_tony_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_elektra_hellcat_funding_tests.rs"]
+mod msh_elektra_hellcat_funding_tests;

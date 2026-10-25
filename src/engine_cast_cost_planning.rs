@@ -114,7 +114,9 @@ impl FundingState<'_> {
     fn cost_object(&self, spec: AdditionalCost, r: ObjectRef, source: ObjectRef) -> bool {
         let o = self.object(r.card);
         let spec = spec.in_zone(o.zone);
-        self.reference(r.card) == r
+        (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+            || (self.game.sneak_attacker(self.actor, r) && self.attacking(r.card)))
+            && self.reference(r.card) == r
             && (r != source
                 || !matches!(
                     spec.kind,
@@ -774,7 +776,9 @@ impl FundingState<'_> {
                 amount = usize::from(n);
                 spec.kind = EffectChoiceKind::ExileGraveyard;
             }
-            EffectChoiceKind::ReturnToHand => destination = Zone::Hand,
+            EffectChoiceKind::ReturnUnblockedAttacker | EffectChoiceKind::ReturnToHand => {
+                destination = Zone::Hand
+            }
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard

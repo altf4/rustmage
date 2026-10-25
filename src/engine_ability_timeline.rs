@@ -114,6 +114,10 @@ impl Game {
     }
     pub(super) fn forget_ability_source(&mut self, reference: ObjectRef) {
         self.forget_source_linked_effects(reference);
+        if let Some(r) = &mut self.state.roles {
+            r.resolved_ability_modifications
+                .retain(|row| row.recipient != reference);
+        }
         if let Some(state) = &mut self.state.roles {
             state
                 .ability_timestamps

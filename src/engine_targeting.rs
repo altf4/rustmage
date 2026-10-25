@@ -72,6 +72,13 @@ impl Announcement {
         {
             return Some(spec);
         }
+        if self
+            .item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::Sneak)
+        {
+            return Some(sneak::COST);
+        }
         match self.item.kind {
             StackKind::Spell if self.graveyard_origin_counter_cost().is_some() => Some(
                 Game::creature_counter_spec(self.graveyard_origin_counter_cost().unwrap()),
@@ -125,6 +132,15 @@ impl Announcement {
                     .is_some_and(|c| c.method == CastMethod::Miracle) =>
             {
                 std::iter::once(self.miracle_cost.expect("miracle cost")).chain([].iter().copied())
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Sneak) =>
+            {
+                std::iter::once(self.item.source_card.sneak_cost().expect("Sneak cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
                 std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
@@ -1409,6 +1425,7 @@ impl Game {
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
+                sneak_defender: None,
                 flash_surcharge: false,
                 offspring: None,
                 kicker: None,

@@ -29,6 +29,7 @@ impl Game {
             | EffectChoiceKind::ExileGraveyardCards(_) => o.owner == actor,
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeDifferentNames(_)
+            | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
@@ -41,6 +42,11 @@ impl Game {
                     EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_)
                 ) || spec.filter.other)
             || spec.filter.source_only && object != source
+        {
+            return false;
+        }
+        if spec.kind == EffectChoiceKind::ReturnUnblockedAttacker
+            && !self.sneak_attacker(actor, object)
         {
             return false;
         }
@@ -71,6 +77,7 @@ impl Game {
             EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_) => Zone::Hand,
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeDifferentNames(_)
+            | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
@@ -530,6 +537,15 @@ impl Game {
             }
             EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_) => {
                 self.discard_batch(&[object.card], None)
+            }
+            EffectChoiceKind::ReturnUnblockedAttacker => {
+                a.item.cast.as_mut().unwrap().sneak_defender = self
+                    .state
+                    .attackers
+                    .iter()
+                    .find(|v| v.card == object.card)
+                    .and_then(|v| v.defender);
+                self.move_object(object.card, Zone::Hand);
             }
             EffectChoiceKind::ReturnToHand => {
                 self.move_object(object.card, Zone::Hand);

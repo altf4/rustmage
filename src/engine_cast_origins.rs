@@ -222,6 +222,26 @@ impl Game {
                                 false,
                             )
                     };
+                    if permanent_type != PermanentType::Land
+                        && !object.card.is_land()
+                        && !casting_prohibited
+                        && object.card.sneak_cost().is_some()
+                        && self.state.step == Step::Blockers
+                        && self.permitted_cast_available(
+                            actor,
+                            card,
+                            CastMethod::Sneak,
+                            CastFace::Normal,
+                            false,
+                            false,
+                        )
+                        && emit(Action::AnnounceSneak {
+                            card,
+                            permission: Some((permission, permanent_type)),
+                        })
+                    {
+                        return true;
+                    }
                     if available
                         && emit(Action::PlayGraveyardPermanent {
                             card,

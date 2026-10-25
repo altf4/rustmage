@@ -240,6 +240,7 @@ impl Game {
             return false;
         }
         if !sorcery
+            && method != CastMethod::Sneak
             && !flash_surcharge
             && !definition.is_instant()
             && !definition.info().keywords.contains(Keywords::FLASH)

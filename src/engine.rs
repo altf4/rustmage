@@ -292,8 +292,16 @@ pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
 mod ability_order;
 #[path = "engine_ability_timeline.rs"]
 mod ability_timeline;
+#[path = "engine_return_ability_modification.rs"]
+mod return_ability_modification;
 #[path = "engine_source_linked_effects.rs"]
 mod source_linked_effects;
+pub use return_ability_modification::ResolvedAbilityModificationView;
+#[cfg(test)]
+#[path = "engine_msh_elektra_hellcat_tests.rs"]
+mod msh_elektra_hellcat_tests;
+#[path = "engine_sneak.rs"]
+mod sneak;
 pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
 #[path = "engine_ability_world.rs"]
 mod ability_world;
@@ -584,6 +592,9 @@ define_actions! {
     },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
+    AnnounceSneak { card: CardId,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        permission: Option<(ObjectRef, PermanentType)> },
     AnnounceAdventure { card: CardId },
     AnnounceOmen { card: CardId },
     AnnounceBack { card: CardId },
@@ -860,6 +871,7 @@ pub enum CastMethod {
     Miracle,
     Plot,
     Warp,
+    Sneak,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CastFace {
@@ -889,6 +901,9 @@ pub struct CastInfo {
     /// Counter qualification captured before the exile-to-stack transition.
     pub stash_origin: bool,
     pub method: CastMethod,
+    /// Defender captured before the non-targeted Sneak return is paid.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sneak_defender: Option<CombatDefender>,
     /// Optional additional mana paid to obtain this spell's flash timing.
     pub flash_surcharge: bool,
     /// Explicit optional additional cost, declared before targets; None until chosen.
@@ -2304,6 +2319,8 @@ pub struct Observation {
     pub keyword_effects: Vec<KeywordEffectView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_linked_effects: Option<Vec<SourceLinkedEffectView>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -3545,6 +3562,14 @@ impl Game {
                     {
                         return true;
                     }
+                    if self.sneak_cast_available(actor, card)
+                        && emit(Action::AnnounceSneak {
+                            card,
+                            permission: None,
+                        })
+                    {
+                        return true;
+                    }
                     if obj.card.adventure_spell().is_some()
                         && self.alternate_cast_available(
                             actor,
@@ -4780,6 +4805,14 @@ impl Game {
                 item.source_facts.colors = definition.colors();
                 item.source_facts.kinds = definition.kind_mask();
                 item.source_facts.power = 0;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceSneak { card, permission } => {
+                if let Some((source, kind)) = permission {
+                    self.consume_graveyard_type(source, kind);
+                }
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::Sneak;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceWarp { card } => {
@@ -7133,6 +7166,7 @@ impl Game {
                 .map_or_else(Vec::new, |r| r.ability_timestamps.clone()),
             keyword_effects: self.keyword_effect_views(viewer),
             source_linked_effects: self.source_linked_effect_views(),
+            resolved_ability_modifications: self.resolved_ability_modification_views(),
             role_timestamps: s
                 .roles
                 .as_ref()

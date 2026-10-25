@@ -725,6 +725,8 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    /// Non-targeted return payment for Sneak, after blockers are declared.
+    ReturnUnblockedAttacker,
     ReturnToHand,
     Discard,
     DiscardNamed(&'static str),
@@ -1347,6 +1349,8 @@ pub(crate) enum Instruction {
         origin: TargetZone,
     },
     ReturnSourceWithCounterAndEquipment(CounterKind),
+    /// Return the exact death-event card, then modify only its actual entrant.
+    ReturnSourceBlankWithHaste,
     ReturnSourceToBattlefield {
         tapped: bool,
     },
@@ -3467,6 +3471,9 @@ impl Card {
     }
     pub fn inset_parent(self) -> Option<Card> {
         self.adventure_parent().or_else(|| self.omen_parent())
+    }
+    pub(crate) fn sneak_cost(self) -> Option<ManaCost> {
+        authored::rules(self).and_then(|r| r.extras.sneak_cost)
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
         generated::warp_cost(self)
