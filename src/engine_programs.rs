@@ -3632,6 +3632,19 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::PutHandAndAttachEquipment { filter } => {
+                    if self.start_filtered_hand_entry(&item, filter, 0) {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .choice
+                            .as_mut()
+                            .unwrap()
+                            .equipment_recipient = Some(item.object);
+                        return;
+                    }
+                }
                 Instruction::PutHandFiltered { filter, skip } => {
                     if self.start_filtered_hand_entry(&item, filter, skip) {
                         return;

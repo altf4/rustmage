@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9ef713ed92af0fd5c433432c5da5ef6ed1fd20de258af16cdc2abb32fcdab353"
   },
-  "physical_metadata_sha256": "7e4b1611c39a1c491ac9d0a9df027bb0e3c61808bbcc281be7e2ad6eff9cf11b"
+  "physical_metadata_sha256": "0452b959186dd54bec43cb2e47872de5edd0d61ee853f052223c8712397214d4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TonyStark.java",
+  "java_sha256": "a00a8d6d849c7224cce3a891e5f065eeba003ee55d961d7fced16e8b810733a4",
+  "oracle_face": {
+    "oracle_id": "4a46ea59-6c5d-4bed-9951-b5590f9a1bdb",
+    "index": 0,
+    "sha256": "d8d69523f75f662e3db9aa6f0652aa6c2e4ec6964f6bc7e358df41859a20cc1f"
+  }
 }

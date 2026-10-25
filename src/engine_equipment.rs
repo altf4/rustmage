@@ -39,21 +39,7 @@ impl Game {
     }
 
     pub(super) fn equipment_can_attach(&self, source: ObjectRef, target: ObjectRef) -> bool {
-        if source == target
-            || !self.on_battlefield(source.card)
-            || self.object_ref(source.card) != source
-            || !ability_world::CharacteristicWorld::is_equipment(self, source.card)
-            || self.is_creature(source.card)
-            || !self.on_battlefield(target.card)
-            || self.object_ref(target.card) != target
-            || !self.is_creature(target.card)
-            || self
-                .keywords(target.card)
-                .contains(Keywords::PROTECTION_EVERYTHING)
-        {
-            return false;
-        }
-        true
+        can_attach(self, source, target)
     }
     pub(super) fn attach_equipment(&mut self, source: ObjectRef, target: ObjectRef) -> bool {
         if !self.equipment_can_attach(source, target) {
@@ -107,4 +93,23 @@ impl Game {
             self.renew_copy_grant_origin(source, false);
         }
     }
+}
+
+/// Effect attachment has no equip activation or controller restriction.
+pub(super) fn can_attach<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    target: ObjectRef,
+) -> bool {
+    source != target
+        && world.object(source.card).zone == Zone::Battlefield
+        && world.reference(source.card) == source
+        && world.is_equipment(source.card)
+        && world.kinds(source.card) & 1 == 0
+        && world.object(target.card).zone == Zone::Battlefield
+        && world.reference(target.card) == target
+        && world.kinds(target.card) & 1 != 0
+        && !characteristic_query::CharacteristicQuery::in_world(world)
+            .keywords(target.card)
+            .contains(Keywords::PROTECTION_EVERYTHING)
 }

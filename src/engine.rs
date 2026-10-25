@@ -8142,3 +8142,7 @@ mod msh_civil_war_tests;
 #[cfg(test)]
 #[path = "engine_msh_serum_tests.rs"]
 mod msh_serum_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_armor_tony_tests.rs"]
+mod msh_armor_tony_tests;

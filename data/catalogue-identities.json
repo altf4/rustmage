@@ -5408,7 +5408,8 @@
     4,
     0,
     16,
-    16
+    16,
+    10
   ],
   "aliases": [
     [
@@ -24772,6 +24773,10 @@
       4454
     ],
     [
+      "The Invincible Iron Man",
+      5403
+    ],
+    [
       "The Irencrag",
       4455
     ],
@@ -25490,6 +25495,10 @@
     [
       "Tonberry",
       4630
+    ],
+    [
+      "Tony Stark",
+      4631
     ],
     [
       "Tony Stark // The Invincible Iron Man",
@@ -161144,7 +161153,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Tony Stark",
+        "mana_cost": "{1}{U}",
+        "type_line": "Legendary Creature — Human Artificer Hero",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": []
+      },
+      "back_face": 5403
     },
     {
       "index": 4632,
@@ -182905,6 +182930,37 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5403,
+      "module": "card_5403",
+      "path": "msh/the_invincible_iron_man.rs",
+      "set": "msh",
+      "category": "back_face",
+      "name": "The Invincible Iron Man",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "{4}{U}{R}",
+      "type_line": "Legendary Artifact Creature — Human Hero",
+      "oracle_keywords": [
+        "Flying",
+        "Haste"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 4,
+      "face_parent": 4631
     }
   ]
 }

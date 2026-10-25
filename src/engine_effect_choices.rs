@@ -22,6 +22,7 @@ pub(super) struct EffectChoice {
     pub hand_defender: Option<CombatDefender>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
     pub hand_entry_filter: Option<crate::SearchFilter>,
+    pub equipment_recipient: Option<ObjectRef>,
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
@@ -50,6 +51,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
     }
     pub(super) fn start_resolution_counter_payment(&mut self, item: &SpellView) -> bool {
@@ -73,6 +75,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.state.pending = Pending::EffectChoice {
             player: item.controller,
@@ -240,6 +243,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         };
         // Freeze both quotas before either player chooses. The following printed
         // instruction computes new quotas after this entire event and its replacements.
@@ -313,6 +317,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.advance_effect_choice()
     }
@@ -478,6 +483,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.state.pending = Pending::EffectChoice { player };
     }
@@ -586,6 +592,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
         }));
         self.advance_target_attacking_return()
     }
@@ -708,6 +715,7 @@ impl Game {
             hand_defender: None,
             entry_life_bonus: None,
             hand_entry_filter: None,
+            equipment_recipient: None,
             source: item.object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
@@ -945,6 +953,7 @@ impl Game {
                 forced_tapped || enchantment,
             );
             movement.controller = player;
+            movement.attach_equipment_to = choice.equipment_recipient;
             movement.attacking = choice.hand_defender;
             movement.life_bonus = choice
                 .entry_life_bonus

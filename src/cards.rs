@@ -1088,6 +1088,9 @@ pub(crate) enum Instruction {
         filter: SearchFilter,
         skip: usize,
     },
+    PutHandAndAttachEquipment {
+        filter: SearchFilter,
+    },
     PutHandCreature,
     PutHandPermanent {
         maximum: AmountValue,

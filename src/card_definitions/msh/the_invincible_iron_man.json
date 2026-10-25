@@ -1,0 +1,16 @@
+{
+  "name": "The Invincible Iron Man",
+  "catalogue_id": 5403,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "362f838e4a0d9ad1f00ac9b75105d521b49ff38b6dae47bb4452f314cd2e7fb2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TonyStark.java",
+  "java_sha256": "a00a8d6d849c7224cce3a891e5f065eeba003ee55d961d7fced16e8b810733a4",
+  "oracle_face": {
+    "oracle_id": "4a46ea59-6c5d-4bed-9951-b5590f9a1bdb",
+    "index": 1,
+    "sha256": "6a48ba3afabe862f477579a25901b5aa9cc4f65a2e3e08706f8d7af5ec8b6e2b"
+  }
+}

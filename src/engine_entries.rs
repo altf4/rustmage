@@ -20,6 +20,8 @@ pub(super) struct EntryMove {
     pub effect_counter: Option<(CounterKind, u64)>,
     /// Only this surrounding return effect captures its actual public entry result.
     pub equipment_after: bool,
+    /// After this successful entry event, attach this Equipment to an exact recipient.
+    pub attach_equipment_to: Option<ObjectRef>,
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
@@ -76,6 +78,7 @@ impl EntryMove {
             life_bonus: None,
             effect_counter: None,
             equipment_after: false,
+            attach_equipment_to: None,
             return_modification: None,
             attacking: None,
             skipped: false,
@@ -577,6 +580,7 @@ impl Game {
         let mut role_results = Vec::new();
         let mut suspect_results = Vec::new();
         let mut life_results = Vec::new();
+        let mut equipment_results = Vec::new();
         for (movement, counters) in moves {
             let rules = self.freeze_zone_rules(&movement.before, movement.destination, None);
             let plan = self.plan_zone_move(&movement.before, movement.destination, rules);
@@ -614,6 +618,11 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
+                if event.destination == Zone::Battlefield
+                    && let Some(recipient) = movement.attach_equipment_to
+                {
+                    equipment_results.push((event.after, recipient));
+                }
                 if event.destination == Zone::Battlefield
                     && let Some((controller, subtype, amount)) = movement.life_bonus
                 {
@@ -719,6 +728,12 @@ impl Game {
         } else {
             self.finish_zone_events(&events, &[]);
         }
+        // The entry event and its frozen trigger facts precede this subsequent
+        // attachment. Packets cannot be stacked until the surrounding resolution ends.
+        for (equipment, recipient) in equipment_results {
+            self.attach_equipment(equipment, recipient);
+        }
+        self.refresh_controllers();
         for (reference, controller, subtype, amount) in life_results {
             if self.object_ref(reference.card) == reference
                 && self.on_battlefield(reference.card)
