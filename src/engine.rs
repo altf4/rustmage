@@ -775,9 +775,6 @@ impl Object {
     fn is_token(&self) -> bool {
         self.copy_kind != CopyKind::Physical && (self.is_copy_token() || self.card.is_token())
     }
-    fn keywords(&self) -> Keywords {
-        self.card.keywords().union(self.gained_keywords)
-    }
     fn untap(&mut self) {
         if self.tapped {
             if self.counters.stun > 0 {

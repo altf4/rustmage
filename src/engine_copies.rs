@@ -11,6 +11,16 @@ pub struct CopyRecipe {
     pub overrides: Option<CopyOverrides>,
 }
 impl CopyRecipe {
+    /// CR707.9d: a replacement subtype set excludes the copied subtype CDA.
+    /// Later copied exceptions and external keyword grants are separate effects.
+    pub(super) fn intrinsic_keywords(self) -> Keywords {
+        let keywords = self.definition.keywords();
+        if self.copy_types().replace {
+            keywords.without(Keywords::CHANGELING)
+        } else {
+            keywords
+        }
+    }
     pub(super) fn kinds(self) -> u16 {
         let mut kinds = self.definition.kind_mask();
         if self.exceptions.artifact {
