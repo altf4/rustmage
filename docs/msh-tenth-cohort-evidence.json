@@ -1,0 +1,213 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Four complete candidates in the single remaining-set draft PR516; main remains unchanged until final human approval",
+  "base_main": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+  "base_prerequisite": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+  "tested_runtime_head": "a496faea6abd256aecf0fb617822cdd01577780a",
+  "cards": [
+    "Baron Strucker, HYDRA Overlord",
+    "Namor the Sub-Mariner",
+    "The Ten Rings",
+    "The Vision"
+  ],
+  "membership": {
+    "frozen_identities": 281,
+    "frozen_printings": 448,
+    "merged_flags_at_base": 180,
+    "candidate_flags": 198,
+    "candidate_gated": 83,
+    "entire_pool_acceptance": false
+  },
+  "parent_evidence": {
+    "vision": {
+      "head": "204940a250f32d4ca1a7c7b905747b0c052d0e10",
+      "evidence": "docs/msh-vision-evidence.json",
+      "sha256": "d9d078655f8f800f9adfd2aa0b684406a80442b99a4a13fbbf8136b2268ae559",
+      "new_native_groups": 14
+    },
+    "baron": {
+      "head": "b9bd5e1ad42fadab773b13cfccf134ddc9647569",
+      "evidence": "docs/msh-baron-evidence.json",
+      "sha256": "b9a5bd6123401001c9e8e813006a44f4e2dfc95577e79385aee0c7b8edd4d30f",
+      "new_native_groups": 14
+    },
+    "ten_rings": {
+      "head": "149305f13665a5a01029520db5c174638f6e414f",
+      "evidence": "docs/msh-ten-rings-evidence.json",
+      "sha256": "f8c473d6d581a46729328d91470e5ca5fc469ee44651aa8e14a89ab3d8dcae96",
+      "new_native_groups": 26
+    },
+    "namor": {
+      "head": "7e71a6c46f5ffe55d887da15d697e59bb4a325a5",
+      "evidence": "docs/msh-namor-printed-symbols-evidence.json",
+      "sha256": "8b44fe6ae39e844b94c6b655b129d3f1783310ccf4771008a32107cb4f2fa3a7",
+      "new_native_groups": 30
+    }
+  },
+  "scenarios": {
+    "parent_new_groups": 84,
+    "combined_new_groups": 1,
+    "new_groups": 85,
+    "expected_final_native": 1185,
+    "both_seats": true,
+    "combined_source": "src/engine_msh_tenth_combined_tests.rs",
+    "combined": "Paid discounted Villains; declined and accepted entering connive; printed-blue-symbol token creation and all-zone power; all three Vision modes, turn reset, animation and ordinary draws; Ten Rings end-step deficit, opponent-turn draw, natural numeric cleanup with mandatory Ares attack; owned raw/index branches after parent disposal and snapshot restore."
+  },
+  "shared_mechanics": [
+    "Real turn-scoped exact-source modal choices distinct from lifetime ModalOnce; announcement selection and history reset at actual begin_turn",
+    "Entering-event current/latest departed controller facts only for programs consuming entering connive; captured trigger controller independent",
+    "Sparse numeric hand-maximum timestamp timeline, finite/infinite setters, owned staged APNAP ordering and projected funding chronology; all cleanup paths use the same live query",
+    "Immutable chosen-face printed mana-symbol counting, opt-in existing cast-event retention, all-zone controller-relative permanent-count CDA, one exact append-only blue Merfolk token"
+  ],
+  "integration_adjustments": [
+    "Namor cast-symbol recursion includes the new ModalOncePerTurn header, matching every other modal program walker. Generated links/catalogue regenerated with the linker."
+  ],
+  "source": {
+    "definitions": 5399,
+    "source_blobs": 1227,
+    "java_verified": true,
+    "catalogue_version": "fe5f440049c4fa2d3cbcb6cb59cd276296e16b7244d4e462cd9978fab630f76d"
+  },
+  "trace_proof": {
+    "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+    "parents": {
+      "ninth": {
+        "head": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+        "schema": 145,
+        "full_Trace_exact_matches": 2497,
+        "trace_sha256": "860abacedbca501847d01ee19254fdacb2b4b656bcd1d40123028af6392f41b1",
+        "changed": [],
+        "removed": []
+      },
+      "baron": {
+        "head": "b9bd5e1ad42fadab773b13cfccf134ddc9647569",
+        "schema": 146,
+        "full_Trace_exact_matches": 2498,
+        "trace_sha256": "cd8dd7670ca28f7ddfef6cb1b70783f11f26ecf46fe5199ca3a1d82d22eeb595",
+        "changed": [],
+        "removed": []
+      },
+      "vision": {
+        "head": "204940a250f32d4ca1a7c7b905747b0c052d0e10",
+        "schema": 146,
+        "full_Trace_exact_matches": 2498,
+        "trace_sha256": "ea46c7e10c3448ee1de56de19dd46639c3fc90f5e908305a324629c5c463882f",
+        "changed": [],
+        "removed": []
+      },
+      "ten_rings": {
+        "head": "149305f13665a5a01029520db5c174638f6e414f",
+        "schema": 146,
+        "full_Trace_exact_matches": 2498,
+        "trace_sha256": "a1bcc45a7ba725e51d1e96914019624f67d7ff1be55e460a3c8a24bab4c1266f",
+        "changed": [],
+        "removed": []
+      },
+      "namor": {
+        "head": "7e71a6c46f5ffe55d887da15d697e59bb4a325a5",
+        "schema": 145,
+        "full_Trace_exact_matches": 2498,
+        "trace_sha256": "c6a023be0727ac29f908c73e28aa1889924a456c7d808e085f62411f2d8afb7d",
+        "changed": [],
+        "removed": []
+      }
+    },
+    "normal_schema": 146,
+    "comparison_schema": 145,
+    "normal_sha256": "4ff88e0fa4f9018f16702429281addbcbe56800707d77d86d06d717f687f338e",
+    "previous145_sha256": "4b7c45c5d7b5e1e9bc3422830150c3e1c82909522ab37a8de06341b560c646cd",
+    "new_rows": {
+      "Baron Strucker, HYDRA Overlord": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "4324aa4c9fd9325c",
+        "observations": "56d37f0def725b66"
+      },
+      "Namor the Sub-Mariner": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "3fba902266e1c58c",
+        "observations": "5364b24a84a02b16"
+      },
+      "The Ten Rings": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "8af54ec46c2d4077",
+        "observations": "a0a3764660dd57cf"
+      },
+      "The Vision": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "ad0926541e55fa73",
+        "observations": "e0ba6e553fd21d7e"
+      }
+    },
+    "rows": 2501,
+    "metadata_sha256": "7cb0ff5302b7fceab46f1f76c441c6048935a7a765613b386ff02b285ae21e49",
+    "metadata_exact_namor_parent": true,
+    "catalogue_definitions": 5399,
+    "token_recipes": 121,
+    "new_ids": [
+      {
+        "id": 5398,
+        "identity": "@token/msh-blue-merfolk"
+      }
+    ],
+    "old_fields_stripped": false,
+    "recorder_changed": false,
+    "fixed_input_files": 11750,
+    "fixed_input_changes": []
+  },
+  "identity": {
+    "wire_schema": 146,
+    "new_public_payloads": [
+      "optional ModalHistoryView.turn",
+      "optional EventObjectView entering controller",
+      "sparse public hand-size setter timeline"
+    ],
+    "new_ids": [
+      5398
+    ],
+    "definitions": 5399,
+    "token_recipes": 121,
+    "metadata_sha256": "7cb0ff5302b7fceab46f1f76c441c6048935a7a765613b386ff02b285ae21e49",
+    "metadata_exact_namor_parent": true
+  },
+  "validation": {
+    "combined": "Pass, both seats",
+    "preacceptance_native": "1184 rules scenarios passed; sole failure was the freshly added Namor row carried from schema145 while aggregate is146. Each entire parent table then matched its correct normal146/previous145 export before accepting the actual normal146 table. All-target strict Clippy passed.",
+    "full_release": "Pending exact final published aggregate head",
+    "two_independent_nonauthor_reviews": "Required on exact final published aggregate head; local receipts only",
+    "ci": "Pending exact final published aggregate head"
+  },
+  "resource_safety": {
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "fixed_inputs_through_actual_terminal": true,
+    "recorded_files": 11750,
+    "fixed_input_changes": []
+  },
+  "throughput": {
+    "scope": "Four candidate authoring/integration through fresh full trace proof. Conservative rounded start includes predecessor gate transition, serialized queues and fixture corrections; excludes earlier cached design and final published-head release/CI gates.",
+    "start_utc": "2026-10-25T03:00:00+00:00",
+    "evidence_cutoff_utc": "2026-10-25T03:51:20.116039+00:00",
+    "elapsed_seconds": 3080.116039,
+    "candidate_cards_per_hour": 4.675148539103464,
+    "simulation_claim": false
+  },
+  "remaining_blocker": {
+    "effective_saga_lore": "Inherited precombat lore uses printed final chapter without effective Saga subtype and chapter-ability presence. No currently supported producer of the exact animated Saga/type-loss condition established; revisit future copy/type consumers and full-pool acceptance. Chapter-suppressed Saga must neither receive lore nor sacrifice solely for its printed chapter count."
+  },
+  "publication_policy": "Leave existing merges in place. All remaining work stays in draft PR516 for final user approval; no automatic main merge.",
+  "remaining_scope": "83 candidate-gated identities and full-pool obligations, interactions, legal MSH-only games, replay/privacy/owned search and measured performance. Main remains180/281 with101 gated."
+}
