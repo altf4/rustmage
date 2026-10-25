@@ -1382,6 +1382,9 @@ pub(crate) enum Instruction {
         equipment: u16,
         recipient: u16,
     },
+    AttachEquipmentToAttached {
+        group: u16,
+    },
     TapAttached,
     PutGrantorCounter(CounterKind),
     PutCombatDealerCounters,
@@ -2870,6 +2873,7 @@ pub(crate) enum TriggerCondition {
     /// One event per player attacked by at least one declared matching creature.
     AttackPlayer(CreatureFilter),
     GrantedAttacks,
+    AttachedAttacksOrBlocks,
     SelfBecomesTapped,
     /// One event after the complete simultaneous tap group, using post-event types.
     ControlledCreaturesBecomeTapped,

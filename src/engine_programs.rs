@@ -731,6 +731,7 @@ impl Game {
                     | TriggerCondition::EquippedAttacks
                     | TriggerCondition::EquippedAttacksAlone
                     | TriggerCondition::GrantedAttacks
+                    | TriggerCondition::AttachedAttacksOrBlocks
                     | TriggerCondition::AttachedCreatureBecomesTapped
                     | TriggerCondition::AttachedBecomesUntapped
                     | TriggerCondition::SelfBecomesTapped
@@ -1553,6 +1554,17 @@ impl Game {
     /// Reuse the live attachment index once per completed declaration. No arena scan
     /// or mutable granted-ability graph; every queued packet owns its provenance.
     fn attachment_attack_triggers(&mut self, actor: Player, alone: Option<ObjectRef>) {
+        self.attachment_combat_triggers(actor, alone, false);
+    }
+    pub(super) fn attachment_block_triggers(&mut self, actor: Player) {
+        self.attachment_combat_triggers(actor, None, true);
+    }
+    fn attachment_combat_triggers(
+        &mut self,
+        actor: Player,
+        alone: Option<ObjectRef>,
+        blocking: bool,
+    ) {
         let grants: Vec<_> = self
             .state
             .attachment_sources
@@ -1564,11 +1576,15 @@ impl Game {
                     || !self.on_battlefield(recipient.card)
                     || self.object_ref(recipient.card) != recipient
                     || self.state.objects[recipient.card as usize].controller != actor
-                    || !self
-                        .state
-                        .attackers
-                        .iter()
-                        .any(|a| a.card == recipient.card)
+                    || if blocking {
+                        !self.state.blocking.contains(&recipient.card)
+                    } else {
+                        !self
+                            .state
+                            .attackers
+                            .iter()
+                            .any(|a| a.card == recipient.card)
+                    }
                 {
                     return None;
                 }
@@ -1579,10 +1595,19 @@ impl Game {
             let giver = self.object_view(id);
             for (index, ability) in giver.card.triggers().iter().enumerate() {
                 let granted = match ability.condition.event() {
-                    TriggerCondition::EquippedAttacks => false,
-                    TriggerCondition::EquippedAttacksAlone if alone == Some(recipient) => false,
-                    TriggerCondition::GrantedAttacks => true,
-                    TriggerCondition::SelfAttacks if ability.condition.is_granted() => true,
+                    TriggerCondition::AttachedAttacksOrBlocks => false,
+                    TriggerCondition::EquippedAttacks if !blocking => false,
+                    TriggerCondition::EquippedAttacksAlone
+                        if !blocking && alone == Some(recipient) =>
+                    {
+                        false
+                    }
+                    TriggerCondition::GrantedAttacks if !blocking => true,
+                    TriggerCondition::SelfAttacks
+                        if !blocking && ability.condition.is_granted() =>
+                    {
+                        true
+                    }
                     _ => continue,
                 };
                 // Supported games have two players, owner==controller, and only
@@ -1591,7 +1616,7 @@ impl Game {
                     grantor: giver.reference,
                     granting_card: giver.card,
                     recipient,
-                    defender: Some(actor.other()),
+                    defender: (!blocking).then_some(actor.other()),
                     granted,
                     origin: giver.copied_grant_origin(),
                 });
@@ -2969,6 +2994,9 @@ impl Game {
                     if let Some(id) = self.attached_permanent(&item) {
                         self.tap_objects(&[id]);
                     }
+                }
+                Instruction::AttachEquipmentToAttached { group } => {
+                    self.attach_selected_equipment_to_attached(&item, group);
                 }
                 Instruction::AttachEquipmentByGroups {
                     equipment,

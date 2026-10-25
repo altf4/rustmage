@@ -96,10 +96,28 @@ pub(super) trait CharacteristicWorld {
         }
     }
     fn legendary(&self, id: CardId) -> bool {
-        self.recipe(id)
+        let intrinsic = self
+            .recipe(id)
             .overrides
             .and_then(|value| value.legendary)
-            .unwrap_or_else(|| self.definition(id).is_legendary())
+            .unwrap_or_else(|| self.definition(id).is_legendary());
+        intrinsic
+            || self.object(id).zone == Zone::Battlefield
+                && self.attachment_sources().iter().any(|&source| {
+                    let aura = self.object(source);
+                    aura.zone == Zone::Battlefield
+                        && self.kinds(source) & 1 == 0
+                        && aura.attached_to == Some(self.reference(id))
+                        && aura.card.static_ability_groups().iter().any(|group| {
+                            group.first_layer == crate::cards::AbilityLayer::Type
+                                && group.fragments.iter().any(|fragment| {
+                                    matches!(
+                                        fragment,
+                                        crate::cards::StaticAbilityFragment::AttachedLegendary
+                                    )
+                                })
+                        })
+                })
     }
     fn intrinsic_mana_color(&self, id: CardId) -> Option<usize> {
         let card = self.definition(id);

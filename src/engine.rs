@@ -1884,6 +1884,9 @@ pub struct ObjectView {
     /// A temporary copy retains its physical identity in `temporary_copy`.
     pub kinds: u16,
     pub colors: u8,
+    /// Frozen layer-four supertype change, absent when the recipe is sufficient.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_legendary: Option<bool>,
     pub granted_subtypes: GrantedSubtypes,
     pub entry_choice: Option<EntryChoiceValue>,
     pub saddled: bool,
@@ -1941,10 +1944,12 @@ impl ObjectView {
         self.token.is_some()
     }
     pub fn is_legendary(&self) -> bool {
-        self.copy_recipe
-            .and_then(|recipe| recipe.overrides)
-            .and_then(|value| value.legendary)
-            .unwrap_or_else(|| self.card.is_legendary())
+        self.effective_legendary.unwrap_or_else(|| {
+            self.copy_recipe
+                .and_then(|recipe| recipe.overrides)
+                .and_then(|value| value.legendary)
+                .unwrap_or_else(|| self.card.is_legendary())
+        })
     }
     /// Captured rules name, retained even after this object changes or leaves play.
     pub fn name(&self) -> &'static str {
@@ -5158,6 +5163,7 @@ impl Game {
                     .blocking
                     .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
                 self.state.blocks.append(&mut self.state.selected_blocks);
+                self.attachment_block_triggers(actor);
                 for attacker in &mut self.state.attackers {
                     attacker.blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
                 }
@@ -8131,3 +8137,7 @@ mod msh_source_linked_sting_tests;
 #[cfg(test)]
 #[path = "engine_msh_civil_war_tests.rs"]
 mod msh_civil_war_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_serum_tests.rs"]
+mod msh_serum_tests;

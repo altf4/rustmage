@@ -822,6 +822,15 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),
             colors: CharacteristicWorld::colors(self, id),
+            effective_legendary: {
+                let intrinsic = self
+                    .recipe(id)
+                    .overrides
+                    .and_then(|o| o.legendary)
+                    .unwrap_or_else(|| definition.is_legendary());
+                let effective = CharacteristicWorld::legendary(self, id);
+                (effective != intrinsic).then_some(effective)
+            },
             granted_subtypes: self.granted_subtypes(id),
             entry_choice: self.raw_entry_value(self.object_ref(id)),
             saddled: self.is_saddled(self.object_ref(id)),

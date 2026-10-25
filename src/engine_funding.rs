@@ -3126,3 +3126,7 @@ mod msh_counter_quantity_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_attachment_core_tests.rs"]
 mod msh_attachment_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_serum_funding_tests.rs"]
+mod msh_serum_funding_tests;

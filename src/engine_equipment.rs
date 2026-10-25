@@ -67,4 +67,28 @@ impl Game {
         self.state.objects[source.card as usize].attached_to = Some(target);
         true
     }
+    pub(super) fn attach_selected_equipment_to_attached(&mut self, item: &SpellView, group: u16) {
+        let Some(recipient) = self.attached_subject(item).map(|id| self.object_ref(id)) else {
+            return;
+        };
+        // Targets are already revalidated. Freeze the whole legal attachment set
+        // before changing characteristics; target order supplies its controller's
+        // relative timestamp order for these simultaneous attachments (CR613.7m).
+        let equipment: Vec<_> = item
+            .targets
+            .iter()
+            .filter(|b| b.group == group)
+            .filter_map(|b| b.object)
+            .filter(|&r| self.equipment_can_attach(r, recipient))
+            .filter(|r| self.state.objects[r.card as usize].attached_to != Some(recipient))
+            .collect();
+        for &source in &equipment {
+            self.state.objects[source.card as usize].attached_to = Some(recipient);
+        }
+        for source in equipment {
+            self.retimestamp_live_static_source(source);
+            self.retimestamp_hand_size_source(source);
+            self.renew_copy_grant_origin(source, false);
+        }
+    }
 }
