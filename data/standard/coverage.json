@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b75a7350ad3e6ce0a59c958293bfbbb2c3d013a9375921b23e2dd3a2bec4601d",
+  "catalogue_version": "1c13873e83897e737d2f38524b06b2d0b17c351f20d7830896048b01055eb033",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2491,
-  "implemented_total": 2497,
+  "implemented_standard_cards": 2492,
+  "implemented_total": 2498,
   "token_definitions": 120,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 186,
-      "gated": 87
+      "complete": 187,
+      "gated": 86
     },
     "one": {
       "total": 1,
@@ -2877,8 +2877,8 @@
     {
       "name": "Baron Strucker, HYDRA Overlord",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/baron_strucker_hydra_overlord.rs",
       "set": "msh"
     },

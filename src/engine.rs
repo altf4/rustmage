@@ -7623,3 +7623,7 @@ mod msh_doom_tests;
 #[cfg(test)]
 #[path = "engine_msh_ninth_combined_tests.rs"]
 mod msh_ninth_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_baron_tests.rs"]
+mod msh_baron_tests;
