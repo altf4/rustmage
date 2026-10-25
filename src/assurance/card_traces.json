@@ -17471,6 +17471,14 @@
     "journal": "c88e9d51af225cf5",
     "observations": "6fbc2260d1f0177e"
   },
+  "Thanos, the Mad Titan": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b11a716dc52e39de",
+    "observations": "ae532426fbc62744"
+  },
   "Thawbringer": {
     "root": "main",
     "status": "completed",
@@ -18294,6 +18302,14 @@
     "zone": "Graveyard",
     "journal": "258aae5f04be33f3",
     "observations": "a42f5ae3f8ade72e"
+  },
+  "Trickster's Stratagem": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "2426e6f478baea99",
+    "observations": "05bae4cfe6af1e0c"
   },
   "Trip Up": {
     "root": "main",
