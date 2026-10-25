@@ -7,6 +7,7 @@ import re
 import os
 from pathlib import Path
 import signal
+import selectors
 import subprocess
 import sys
 import time
@@ -117,6 +118,152 @@ def run_command(command, *, env, log, timeout):
                 orphaned_processes=orphaned, seconds=time.monotonic()-started, log=str(log))
 
 
+class NativeProgress:
+    """Parse flushed, serial libtest progress with ordinary stdout capture.
+
+    Start prefixes have no newline. Consume chunks so a hanging test cannot
+    hide its start from the deadline watcher. Captured body output is emitted
+    after the progress stream, where it cannot impersonate test results.
+    """
+    def __init__(self, names, events, log):
+        if not names or len(set(names)) != len(names):
+            raise ValueError('expected unique, nonempty native test listing')
+        self.names = names
+        self.events = events
+        self.log = str(log)
+        self.buffer = b''
+        self.active = None
+        self.tests = []
+        self.tail = b''
+
+    def feed(self, chunk, now):
+        if len(self.tests) == len(self.names):
+            self.tail += chunk
+            return
+        self.buffer += chunk
+        while len(self.tests) < len(self.names):
+            if self.active is None:
+                match = re.search(rb'(?m)^test ([^\r\n]+?) \.\.\. ', self.buffer)
+                if match is None:
+                    return
+                name = match.group(1).decode('utf-8')
+                if name.endswith(' - should panic'):
+                    name = name.removesuffix(' - should panic')
+                expected = self.names[len(self.tests)]
+                if name != expected:
+                    raise ValueError(f'expected native test {expected!r}, got {name!r}')
+                self.active = (name, now)
+                self.events.write(json.dumps(dict(event='start', test=name))+'\n')
+                self.events.flush()
+                self.buffer = self.buffer[match.end():]
+            end = self.buffer.find(b'\n')
+            if end < 0:
+                return
+            status = self.buffer[:end].rstrip(b'\r')
+            if status not in (b'ok', b'FAILED'):
+                raise ValueError(f'unexpected native status {status!r}')
+            name, began = self.active
+            row = dict(test=name, exit=0 if status == b'ok' else 1,
+                       timed_out=False, orphaned_processes=False,
+                       seconds=now-began, log=self.log)
+            self.tests.append(row)
+            self.events.write(json.dumps(dict(event='finish', **row))+'\n')
+            self.events.flush()
+            self.active = None
+            self.buffer = self.buffer[end+1:]
+        self.tail = self.buffer
+        self.buffer = b''
+
+    def complete(self):
+        count = len(self.names)
+        summary = (rf'\s*test result: ok\. {count} passed; 0 failed; 0 ignored; '
+                   rf'0 measured; 0 filtered out; finished in [0-9.]+s\s*').encode()
+        return (len(self.tests) == count and all(t['exit'] == 0 for t in self.tests)
+                and re.fullmatch(summary, self.tail) is not None)
+
+
+def run_test_suite(command, *, names, env, log, events, test_timeout, suite_timeout):
+    """Run every serial test with unchanged per-test and global wall deadlines.
+
+    One libtest process avoids spawning thousands of copies of a large native
+    binary. The complete listing and flushed progress protocol remain mandatory;
+    missing, reordered, ignored or failed tests cannot produce success.
+    """
+    started = time.monotonic()
+    members_before = group_members()
+    progress = NativeProgress(names, events, log)
+    result = dict(success=False, tests=progress.tests, expected_tests=len(names),
+                  command=[str(x) for x in command], log=str(log))
+    process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT, start_new_session=True)
+    assert process.stdout is not None
+    selector = selectors.DefaultSelector()
+    selector.register(process.stdout, selectors.EVENT_READ)
+    between_deadline = started + test_timeout
+    eof = False
+    try:
+        with Path(log).open('wb') as output:
+            while not eof:
+                now = time.monotonic()
+                per_test_deadline = (progress.active[1] + test_timeout
+                                     if progress.active else between_deadline)
+                deadline = min(started + suite_timeout, per_test_deadline)
+                if now >= deadline:
+                    result['timed_out'] = True
+                    result['budget_exceeded'] = now >= started + suite_timeout
+                    if progress.active:
+                        name, began = progress.active
+                        row = dict(test=name, exit=124, timed_out=True,
+                                   orphaned_processes=False, seconds=now-began,
+                                   log=str(log))
+                        progress.tests.append(row)
+                        events.write(json.dumps(dict(event='finish', **row))+'\n')
+                        events.flush()
+                    stop_process(process, members_before)
+                    break
+                ready = selector.select(timeout=deadline-now)
+                if not ready:
+                    continue
+                chunk = os.read(process.stdout.fileno(), 65536)
+                if not chunk:
+                    eof = True
+                    break
+                output.write(chunk)
+                output.flush()
+                try:
+                    progress.feed(chunk, time.monotonic())
+                except (ValueError, UnicodeError) as error:
+                    result['error'] = str(error)
+                    stop_process(process, members_before)
+                    break
+                if progress.active is None:
+                    between_deadline = time.monotonic() + test_timeout
+            if process.poll() is None:
+                remaining = min(started + suite_timeout, between_deadline)-time.monotonic()
+                try:
+                    process.wait(timeout=max(0.001, remaining))
+                except subprocess.TimeoutExpired:
+                    result['timed_out'] = True
+                    result['budget_exceeded'] = time.monotonic() >= started+suite_timeout
+                    stop_process(process, members_before)
+            result['exit'] = process.returncode
+            peers = group_members() - members_before
+            result['orphaned_processes'] = bool(peers)
+            if peers:
+                stop_process(process, members_before)
+            result['success'] = (process.returncode == 0 and progress.complete()
+                                 and not result.get('timed_out') and not peers
+                                 and not result.get('error'))
+            result['execution_seconds'] = time.monotonic()-started
+            return result
+    except BaseException:
+        stop_process(process, members_before)
+        raise
+    finally:
+        selector.close()
+        process.stdout.close()
+
+
 def interrupted(signum, frame):
     raise KeyboardInterrupt
 
@@ -168,32 +315,17 @@ def main():
                  if line.endswith(': test')]
         if not names:
             raise RuntimeError('the native library suite contains no tests')
-        suite_start = time.monotonic()
         with args.report.with_suffix('.jsonl').open('w') as events:
-            for index, name in enumerate(names):
-                remaining = args.suite_timeout - (time.monotonic()-suite_start)
-                if remaining <= 0:
-                    result['budget_exceeded'] = True
-                    break
-                events.write(json.dumps(dict(event='start', test=name))+'\n')
-                events.flush()
-                test = run_command([binary, '--exact', name, '--include-ignored', '--nocapture', '--test-threads=1'],
-                                   env=env, log=args.report.with_name(f'native-{index:03}.log'),
-                                   timeout=min(args.test_timeout, remaining))
-                if test['exit'] == 0 and not re.search(r'test result: ok\. 1 passed; 0 failed; 0 ignored;', Path(test['log']).read_text()):
-                    test['exit'] = 1
-                    test['error'] = 'expected exactly one executed passing test'
-                test['test'] = name
-                result['tests'].append(test)
-                events.write(json.dumps(dict(event='finish', **test))+'\n')
-                events.flush()
-                print(f"{name}: exit={test['exit']} {test['seconds']:.3f}s", flush=True)
-                if test['exit']:
-                    break
-        result['execution_seconds'] = time.monotonic()-suite_start
-        result['expected_tests'] = len(names)
-        result['success'] = (len(result['tests']) == len(names)
-                             and all(test['exit'] == 0 for test in result['tests']))
+            # Capture ordinary test output so only libtest writes progress.
+            # Failed-test output is retained in the shared suite transcript.
+            suite = run_test_suite(
+                [binary, '--format=pretty', '--color=never', '--test-threads=1',
+                 '--include-ignored'], names=names, env=env,
+                log=args.report.with_name('native-suite.log'), events=events,
+                test_timeout=args.test_timeout, suite_timeout=args.suite_timeout)
+        result.update(suite)
+        for test in result['tests']:
+            print(f"{test['test']}: exit={test['exit']} {test['seconds']:.3f}s", flush=True)
         return 0 if result['success'] else 1
     except KeyboardInterrupt:
         result['interrupted'] = True
