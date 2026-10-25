@@ -3186,6 +3186,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CounterRelatedUnlessDiscardOrPay(cost) => {
+                    if self.start_ward_discard_or_mana(&item, cost) {
+                        return;
+                    }
+                }
                 Instruction::CounterRelatedUnlessPayManaLife { cost, life } => {
                     if self.start_resolution_payment(&item, cost, CounterSubject::Related, false, 0)
                     {

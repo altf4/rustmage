@@ -6,6 +6,7 @@ pub(super) struct ResolutionPayment {
     pub cost: ManaCost,
     pub alternatives: &'static [ManaCost],
     pub life: Option<u32>,
+    pub discard: bool,
     pub victim: Option<u64>,
     pub exile: bool,
     pub unpaid_pc: usize,
@@ -117,6 +118,32 @@ impl Game {
             }
         }
     }
+    pub(super) fn start_ward_discard_or_mana(&mut self, item: &SpellView, cost: ManaCost) -> bool {
+        let related = item.related_stack.expect("ward stack association");
+        if !self.state.stack.iter().any(|s| s.id == related.id) {
+            return false;
+        }
+        self.start_resolution_payment(item, cost, CounterSubject::Related, false, 0);
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .mana_payment
+            .as_mut()
+            .unwrap()
+            .discard = true;
+        self.start_ward_discard_choice(item, related.controller);
+        true
+    }
+    pub(super) fn finish_ward_discard(&mut self, card: CardId) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let request = resolution.mana_payment.take().unwrap();
+        assert!(request.discard);
+        resolution.choice = None;
+        let cause = resolution.item.controller;
+        self.discard_batch_caused(&[card], None, Some(cause));
+        self.run_program();
+    }
     pub(super) fn start_resolution_payment(
         &mut self,
         item: &SpellView,
@@ -149,6 +176,7 @@ impl Game {
             cost,
             alternatives: &[],
             life: None,
+            discard: false,
             victim: Some(victim.id),
             exile,
             unpaid_pc,
@@ -172,6 +200,7 @@ impl Game {
             cost,
             alternatives: &[],
             life: None,
+            discard: false,
             victim: None,
             exile: false,
             unpaid_pc,
@@ -203,6 +232,7 @@ impl Game {
             },
             alternatives: &[],
             life: Some(amount),
+            discard: false,
             victim: Some(victim.id),
             exile: false,
             unpaid_pc: resolution.pc,
@@ -248,6 +278,9 @@ impl Game {
             .mana_payment
             .take()
             .unwrap();
+        if request.discard {
+            self.state.resolving.as_mut().unwrap().choice = None;
+        }
         if let Some(payment) = payment {
             self.spend_mana(request.payer, payment);
             if let Some(life) = request.life {

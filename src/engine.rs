@@ -3591,67 +3591,70 @@ impl Game {
                         } else {
                             obj.card.cost_options()
                         };
-                        let can_fund = costs.into_iter().any(|cost| {
-                            if !self.spell_cost_option_available(actor, card, cost) {
-                                return false;
-                            }
-                            if obj.card.teamwork().is_some() {
-                                return self.teamwork_initial_fundable(actor, card, cost);
-                            }
-                            if obj.card.tiered_costs().is_some() {
-                                return self.tiered_initial_fundable(actor, card, cost);
-                            }
-                            if target_cost {
-                                return self.initial_target_cost_fundable(actor, card, cost);
-                            }
-                            if obj.card.collect_evidence_cost().is_some() {
-                                return self.evidence_cast_fundable(actor, card, cost, false)
-                                    || self.evidence_cast_fundable(actor, card, cost, true);
-                            }
-                            if obj.card.has_bargain() {
-                                return self.initial_bargain_fundable(actor, card, cost);
-                            }
-                            // Object-specific mana permissions cannot share the
-                            // printed-definition-only prefunding cache.
-                            if self.foreign_stash(actor, card)
-                                || self.exile_cast_modifiers(actor, card).0
-                                || obj.card.has_convoke()
-                                || obj.card.additional_cost().is_some()
-                            {
-                                return self.spell_can_fund(actor, card, cost);
-                            }
-                            let colored = cost.colored;
-                            let generic = cost.generic.saturating_sub(reduction);
-                            let cached = spell_funding_cache
-                                .iter()
-                                .flatten()
-                                .find(|(required, amount, definition, _)| {
-                                    *required == colored
-                                        && *amount == generic
-                                        && *definition == obj.card
-                                })
-                                .map(|(_, _, _, result)| *result);
-                            if let Some(result) = cached {
-                                result
-                            } else {
-                                let result = self.can_fund_for(
-                                    FundingGoal {
-                                        reserve: None,
-                                        actor,
-                                        required: colored,
-                                        generic,
-                                        source: None,
-                                    },
-                                    self.spell_mana_purpose_for_card(actor, card, obj.card),
-                                );
-                                if let Some(slot) =
-                                    spell_funding_cache.iter_mut().find(|slot| slot.is_none())
-                                {
-                                    *slot = Some((colored, generic, obj.card, result));
+                        let can_fund = costs
+                            .into_iter()
+                            .flat_map(|base| obj.card.additional_mana_options(base))
+                            .any(|cost| {
+                                if !self.spell_cost_option_available(actor, card, cost) {
+                                    return false;
                                 }
-                                result
-                            }
-                        });
+                                if obj.card.teamwork().is_some() {
+                                    return self.teamwork_initial_fundable(actor, card, cost);
+                                }
+                                if obj.card.tiered_costs().is_some() {
+                                    return self.tiered_initial_fundable(actor, card, cost);
+                                }
+                                if target_cost {
+                                    return self.initial_target_cost_fundable(actor, card, cost);
+                                }
+                                if obj.card.collect_evidence_cost().is_some() {
+                                    return self.evidence_cast_fundable(actor, card, cost, false)
+                                        || self.evidence_cast_fundable(actor, card, cost, true);
+                                }
+                                if obj.card.has_bargain() {
+                                    return self.initial_bargain_fundable(actor, card, cost);
+                                }
+                                // Object-specific mana permissions cannot share the
+                                // printed-definition-only prefunding cache.
+                                if self.foreign_stash(actor, card)
+                                    || self.exile_cast_modifiers(actor, card).0
+                                    || obj.card.has_convoke()
+                                    || obj.card.additional_cost().is_some()
+                                {
+                                    return self.spell_can_fund(actor, card, cost);
+                                }
+                                let colored = cost.colored;
+                                let generic = cost.generic.saturating_sub(reduction);
+                                let cached = spell_funding_cache
+                                    .iter()
+                                    .flatten()
+                                    .find(|(required, amount, definition, _)| {
+                                        *required == colored
+                                            && *amount == generic
+                                            && *definition == obj.card
+                                    })
+                                    .map(|(_, _, _, result)| *result);
+                                if let Some(result) = cached {
+                                    result
+                                } else {
+                                    let result = self.can_fund_for(
+                                        FundingGoal {
+                                            reserve: None,
+                                            actor,
+                                            required: colored,
+                                            generic,
+                                            source: None,
+                                        },
+                                        self.spell_mana_purpose_for_card(actor, card, obj.card),
+                                    );
+                                    if let Some(slot) =
+                                        spell_funding_cache.iter_mut().find(|slot| slot.is_none())
+                                    {
+                                        *slot = Some((colored, generic, obj.card, result));
+                                    }
+                                    result
+                                }
+                            });
                         if can_fund
                             && emit(if flashback {
                                 Action::AnnounceFlashback { card }
@@ -4921,7 +4924,9 @@ impl Game {
             Action::Sacrifice { object } => self.choose_effect_object(actor, object),
             Action::DeclineEffectPayment => self.decline_effect_payment(),
             Action::Discard { card } => {
-                if matches!(self.state.pending, Pending::EffectChoice { .. }) {
+                if matches!(self.state.pending, Pending::ResolutionMana { .. }) {
+                    self.finish_ward_discard(card);
+                } else if matches!(self.state.pending, Pending::EffectChoice { .. }) {
                     self.choose_effect_object(actor, self.object_ref(card));
                 } else if matches!(self.state.pending, Pending::EffectDiscard { .. }) {
                     let resolution = self.state.resolving.as_mut().unwrap();
@@ -7557,3 +7562,7 @@ mod msh_thirst_tests;
 #[cfg(test)]
 #[path = "engine_msh_seventh_combined_tests.rs"]
 mod msh_seventh_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_titania_tests.rs"]
+mod msh_titania_tests;

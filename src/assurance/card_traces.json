@@ -17719,6 +17719,14 @@
     "journal": "60609359dae9f3fd",
     "observations": "39ded22865c8b0c2"
   },
+  "Titania, Rugged Rumbler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "5c2b79d05dd290ea",
+    "observations": "c1b07ef71d78e01f"
+  },
   "Titanic Growth": {
     "root": "main",
     "status": "completed",
