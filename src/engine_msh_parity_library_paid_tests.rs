@@ -404,7 +404,16 @@ fn msh_parity_paid_thanos_untargeted_destruction_ignores_ward_and_hexproof() {
         let value = Card::from_name("The Serpent Society")
             .unwrap()
             .fixed_mana_value();
-        let shield = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let shield = named(
+            &mut g,
+            p.other(),
+            if value.is_multiple_of(2) {
+                "Hill Giant"
+            } else {
+                "Brazen Scourge"
+            },
+            Zone::Battlefield,
+        );
         g.state.objects[shield as usize].gained_keywords = Keywords::HEXPROOF;
         g.state.players[p.index()].mana = [0, 1, 0, 0, 1, 1];
         checked(&mut g, announce(source));
@@ -420,7 +429,7 @@ fn msh_parity_paid_thanos_untargeted_destruction_ignores_ward_and_hexproof() {
         assert_eq!(g.object_view(ward).zone, Zone::Graveyard);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         assert!(g.state.pending_triggers.is_empty());
-        assert_eq!(g.on_battlefield(shield), value % 2 != 0);
+        assert!(!g.on_battlefield(shield));
     }
 }
 #[test]
@@ -448,8 +457,8 @@ fn msh_parity_paid_thanos_printed_combat_deathtouch_and_lifelink() {
         until(&mut g, |g| g.state.step == Step::Main2);
         assert_eq!(g.object_view(turtle).zone, Zone::Graveyard);
         assert!(g.on_battlefield(source));
-        assert_eq!(g.life(p), 24);
-        assert_eq!(g.life(p.other()), 20);
+        assert_eq!(g.state.players[p.index()].life, 24);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
     }
 }
 #[test]
