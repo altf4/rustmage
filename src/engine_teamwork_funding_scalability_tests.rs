@@ -600,3 +600,149 @@ fn msh_teamwork_config14_exact_context_diagnostic() {
     let actions = g.legal_actions();
     assert!(!actions.is_empty());
 }
+
+#[test]
+fn msh_teamwork_funding_scalability_paid_crew_leaves_only_three_power_and_normal_cast() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let iron = paid_iron(&mut g, p);
+        let bear = named(&mut g, p, "Bear Cub", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
+        cast(&mut g, bear, None, &[]);
+        settle(&mut g);
+        let vehicle = named(&mut g, p, "Dependable Quinjet", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        cast(&mut g, vehicle, None, &[]);
+        settle(&mut g);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: vehicle,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        for id in [iron, bear] {
+            let object = g.object_ref(id);
+            checked(&mut g, Action::ChooseCrewer { object });
+        }
+        checked(&mut g, Action::FinishCrew);
+        settle(&mut g);
+        assert!(g.object_view(iron).tapped && g.object_view(bear).tapped);
+        assert!(!g.object_view(vehicle).tapped);
+        assert_eq!(g.stats(vehicle).power, 3);
+        // Prepared basic-land resources are legal multiples in a Standard deck.
+        let islands: Vec<_> = (0..20)
+            .map(|_| named(&mut g, p, "Island", Zone::Battlefield))
+            .collect();
+        let spell = named(&mut g, p, "Atlantis Attacks", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        let funding = FundingBudget::new(128);
+        let teamwork = Budget::new(256);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        let actions = g.legal_actions();
+        assert!(actions.contains(&Action::ChooseTeamwork { pay: false }));
+        assert!(!actions.contains(&Action::ChooseTeamwork { pay: true }));
+        reject(&mut g, Action::ChooseTeamwork { pay: true });
+        g = orphan(g, Action::ChooseTeamwork { pay: false });
+        drop(teamwork);
+        drop(funding);
+        checked(&mut g, Action::ChooseMode { mode: 0 });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
+        for &card in &islands[..7] {
+            checked(&mut g, Action::TapMana { card });
+        }
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(
+            g.state.stack.last().unwrap().cast.unwrap().teamwork,
+            Some(false)
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert!(g.state.objects.iter().any(|o| o.zone == Zone::Battlefield
+            && o.controller == p
+            && o.card == Card::MshLeviathanToken));
+    }
+}
+#[test]
+fn msh_teamwork_funding_scalability_conservative_class_declines_mutating_routes_and_pt_providers() {
+    let definition = Card::from_name("Dependable Quinjet").unwrap();
+    let original = *definition.activation(0);
+    assert!(FundingState::only_tap_mana(&original));
+    // Bounded activation-cost classifier primitives, not new playable cards.
+    for kind in 0..8 {
+        let mut changed = original;
+        match kind {
+            0 => changed.cost.sacrifice = true,
+            1 => changed.cost.exile_self = true,
+            2 => changed.cost.remove = Some((Some(CounterKind::MinusOne), 1)),
+            3 => changed.cost.life = 1,
+            4 => changed.cost.discard = true,
+            5 => changed.origin = ActivationOrigin::Graveyard,
+            6 => changed.once_per_turn = true,
+            7 => changed.exhaust = true,
+            _ => unreachable!(),
+        }
+        assert!(!FundingState::only_tap_mana(&changed));
+    }
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let iron = paid_iron(&mut g, p);
+        // Explicit earlier-layer tapped board for the conservative classifier.
+        g.state.objects[iron as usize].tapped = true;
+        named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = named(&mut g, p, "Atlantis Attacks", Zone::Hand);
+        let goal = FundingGoal {
+            actor: p,
+            required: [0, 2, 0, 0, 0, 0],
+            generic: 5,
+            source: None,
+            reserve: None,
+        };
+        let w = world(&g, p, spell, context(&g, p, spell));
+        assert!(w.pure_tap_teamwork_deficit(&goal));
+        let mut altered = w.clone();
+        altered
+            .cast_costs
+            .as_mut()
+            .unwrap()
+            .clauses
+            .push(CastCostRow {
+                clause: CastCostClause::Life(1),
+                paid: false,
+            });
+        assert!(!altered.pure_tap_teamwork_deficit(&goal));
+        let mut source_goal = goal.clone();
+        source_goal.source = Some((g.object_ref(iron), 0, Counters::default(), definition, None));
+        assert!(!w.pure_tap_teamwork_deficit(&source_goal));
+        // Every dynamic or scaling P/T provider declines this optimization,
+        // including any future TappedCount-dependent provider. No stat is frozen.
+        let provider = named(&mut g, p, "Crusader of Odric", Zone::Battlefield);
+        g.state.objects[provider as usize].tapped = true;
+        let w = world(&g, p, spell, context(&g, p, spell));
+        assert!(!w.pure_tap_teamwork_deficit(&goal));
+        let mut no_provider = g.clone();
+        no_provider.move_zone(provider, Zone::Graveyard);
+        let treasure = Card::catalogue()
+            .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
+            .unwrap();
+        no_provider.create_tokens(p.other(), treasure, 1, false);
+        let w = world(&no_provider, p, spell, context(&no_provider, p, spell));
+        // Even a currently unavailable opponent route is not assumed pure.
+        assert!(!w.pure_tap_teamwork_deficit(&goal));
+    }
+}
