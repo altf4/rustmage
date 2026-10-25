@@ -7835,3 +7835,7 @@ mod msh_land_origins_tests;
 #[cfg(test)]
 #[path = "engine_msh_twelfth_combined_tests.rs"]
 mod msh_twelfth_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_temporary_copy_cards_tests.rs"]
+mod msh_temporary_copy_cards_tests;

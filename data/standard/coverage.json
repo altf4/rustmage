@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c4c11d99eb53944a47d9eb705772b9861aac5fde5ba3968f976c79327dd638f2",
+  "catalogue_version": "3b8f9504a9c7d7ad3328ce3b408ae3c000c4a79793cd6d0a0186e8cfc99065fa",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2510,
-  "implemented_total": 2516,
+  "implemented_standard_cards": 2513,
+  "implemented_total": 2519,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 205,
-      "gated": 68
+      "complete": 208,
+      "gated": 65
     },
     "one": {
       "total": 1,
@@ -509,8 +509,8 @@
     {
       "name": "Absorbing Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/absorbing_man.rs",
       "set": "msh"
     },
@@ -31061,8 +31061,8 @@
     {
       "name": "Shuri, Wakandan Inventor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/shuri_wakandan_inventor.rs",
       "set": "msh"
     },
@@ -34941,8 +34941,8 @@
     {
       "name": "Taskmaster, Mercenary Mimic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/taskmaster_mercenary_mimic.rs",
       "set": "msh"
     },
