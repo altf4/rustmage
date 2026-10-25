@@ -1,16 +1,19 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete typed Oracle behavior; pinned direct Java and helper audit in provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(3, 4),
     keywords: Keywords::HASTE.union(Keywords::VIGILANCE),
+    static_groups: &[StaticAbilityGroup {
+        line: 0, first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::LookAtLibraryTop],
+    }],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AttackDeclared {
+            minimum: 1, power_min: None, guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::May { skip: 1 }, Instruction::ExileTopPlayBoostSourceIfSubtype {
+            subtype: "Hero", power: 2, toughness: 1,
+        }],
+    }],
     ..CardRules::EMPTY
 };

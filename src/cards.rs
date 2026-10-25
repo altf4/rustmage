@@ -808,6 +808,12 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    RevealTopDrawIfArtifact,
+    ExileTopPlayBoostSourceIfSubtype {
+        subtype: &'static str,
+        power: i32,
+        toughness: i32,
+    },
     OfferMiracleCast(ManaCost),
     Cascade,
     CreateCopyTokenForPlayer {
