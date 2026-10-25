@@ -88,6 +88,9 @@ use crate::PermanentType;
 pub use cast_origins::{GraveyardTypeUse, ResolutionFreeCasts};
 #[path = "engine_cast_permissions.rs"]
 mod cast_permissions;
+#[path = "engine_turn_cast_grants.rs"]
+mod turn_cast_grants;
+pub use turn_cast_grants::PlayerCastGrantsView;
 #[path = "engine_cast_timing.rs"]
 mod cast_timing;
 pub use crate::cards::GraveyardCastKind;
@@ -558,6 +561,8 @@ define_actions! {
     },
     PlayGraveyardPermanent { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceFree { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceFreeCounterGraveyard { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceFreeGraveyardPermanent { card: CardId, face: CastFace, flash_surcharge: bool, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceFreeFromPermission { card: CardId, face: CastFace, flash_surcharge: bool, permission: ObjectRef },
     AnnounceGrantedFlashback { card: CardId, flash_surcharge: bool },
     PayResolutionLife,
@@ -1792,6 +1797,7 @@ struct State {
     borrowed_uses: Option<Box<Vec<borrowed_activations::Use>>>,
     used_free_hand_permissions: Option<SharedVec<ObjectRef>>,
     graveyard_cast_permissions: cast_permissions::Rows,
+    turn_cast_grants: Option<Box<[PlayerCastGrantsView; 2]>>,
     graveyard_type_uses: Option<SharedVec<GraveyardTypeUse>>,
     resolution_free_casts: Option<Box<ResolutionFreeCasts>>,
     miracle: Option<Box<miracle::MiracleState>>,
@@ -1970,6 +1976,8 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub turn_cast_grants: Option<PlayerCastGrantsView>,
     pub hexproof_until_end_turn: bool,
     pub turns_to_skip: u64,
     /// Additional land plays granted until the current turn ends.
@@ -2502,6 +2510,7 @@ impl Game {
                 borrowed_uses: None,
                 used_free_hand_permissions: None,
                 graveyard_cast_permissions: None,
+                turn_cast_grants: None,
                 graveyard_type_uses: None,
                 resolution_free_casts: None,
                 miracle: None,
@@ -3271,9 +3280,8 @@ impl Game {
                     .announcing
                     .as_ref()
                     .unwrap()
-                    .item
-                    .cast
-                    .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost)
+                    .graveyard_origin_counter_cost()
+                    .is_some()
                 {
                     return self.visit_creature_counter_cost(&mut emit);
                 }
@@ -3401,6 +3409,7 @@ impl Game {
                         Zone::Library => {
                             self.can_cast_library_top(actor, card)
                                 || self.can_play_static_land(actor, card)
+                                || self.turn_free_library_origin(actor, card)
                         }
                         Zone::Exile => {
                             self.can_play_exiled(actor, card)
@@ -3521,6 +3530,11 @@ impl Game {
                     if let Some(definition) = obj.card.omen_spell()
                         && self.alternate_cast_available(actor, card, sorcery, definition)
                         && emit(Action::AnnounceOmen { card })
+                    {
+                        return true;
+                    }
+                    if !casting_prohibited
+                        && self.visit_turn_free_casts(actor, card, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -4421,6 +4435,11 @@ impl Game {
             permission,
             permanent_type,
             ..
+        }
+        | Action::AnnounceFreeGraveyardPermanent {
+            permission,
+            permanent_type,
+            ..
         } = &action
         {
             self.consume_graveyard_type(*permission, *permanent_type);
@@ -4619,15 +4638,34 @@ impl Game {
                 card,
                 face,
                 flash_surcharge,
+            }
+            | Action::AnnounceFreeCounterGraveyard {
+                card,
+                face,
+                flash_surcharge,
+            }
+            | Action::AnnounceFreeGraveyardPermanent {
+                card,
+                face,
+                flash_surcharge,
+                ..
             } => {
+                let counter_origin = matches!(action, Action::AnnounceFreeCounterGraveyard { .. });
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 self.set_cast_face(&mut item, face);
+                let origin_counter_cost =
+                    counter_origin.then(|| item.source_card.graveyard_counter_cost().unwrap());
                 item.cast.as_mut().unwrap().method = CastMethod::Free;
                 item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
                 if item.source_card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
-                self.open_payment_announcement(item, Counters::default(), None);
+                self.open_payment_announcement_with_origin_cost(
+                    item,
+                    Counters::default(),
+                    None,
+                    origin_counter_cost,
+                );
             }
             Action::AnnounceFreeFromPermission {
                 card,
@@ -6319,6 +6357,7 @@ impl Game {
         self.expire_base_stats();
         let expired_animations = self.expire_animations();
         self.expire_graveyard_cast_permissions();
+        self.state.turn_cast_grants = None;
         self.expire_keyword_effects();
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
@@ -6916,6 +6955,7 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                turn_cast_grants: self.player_cast_grants_view(i),
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
@@ -7412,6 +7452,9 @@ impl Game {
             + paradigm::owned_bytes(&s.paradigm)
             + faces::owned_bytes(&s.face_changes)
             + modal_history::owned_bytes(&s.modal_history)
+            + s.turn_cast_grants
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<[PlayerCastGrantsView; 2]>())
             + cast_permissions::owned_bytes(&s.graveyard_cast_permissions)
             + s.resolution_free_casts.as_ref().map_or(0, |f| {
                 std::mem::size_of::<ResolutionFreeCasts>()
@@ -8025,3 +8068,7 @@ mod msh_incursion_justice_loki_core_tests;
 #[cfg(test)]
 #[path = "engine_msh_broad_legal_games_tests.rs"]
 mod msh_broad_legal_games_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_turn_cast_grants_tests.rs"]
+mod msh_turn_cast_grants_tests;

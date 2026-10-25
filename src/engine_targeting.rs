@@ -16,6 +16,8 @@ pub(super) struct Announcement {
     pub activation_discount: u32,
     pub power_up_costs: Option<Box<power_up::PowerUpCosts>>,
     pub free_hand_permission: Option<Box<ObjectRef>>,
+    /// Mandatory nonmana cost belonging to the selected origin permission.
+    pub origin_counter_cost: Option<u16>,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
@@ -43,6 +45,14 @@ pub(super) struct Announcement {
 }
 
 impl Announcement {
+    pub(super) fn graveyard_origin_counter_cost(&self) -> Option<u16> {
+        self.origin_counter_cost.or_else(|| {
+            self.item
+                .cast
+                .filter(|c| c.method == CastMethod::GraveyardCounterCost)
+                .and_then(|_| self.item.source_card.graveyard_counter_cost())
+        })
+    }
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Miracle => self.miracle_cost,
@@ -63,16 +73,9 @@ impl Announcement {
             return Some(spec);
         }
         match self.item.kind {
-            StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| c.method == CastMethod::GraveyardCounterCost) =>
-            {
-                Some(Game::creature_counter_spec(
-                    self.item.source_card.graveyard_counter_cost().unwrap(),
-                ))
-            }
+            StackKind::Spell if self.graveyard_origin_counter_cost().is_some() => Some(
+                Game::creature_counter_spec(self.graveyard_origin_counter_cost().unwrap()),
+            ),
             StackKind::Spell if self.item.cast.is_some_and(|c| c.evidence == Some(true)) => Some(
                 evidence::cost(self.item.source_card.collect_evidence_cost().unwrap()),
             ),
@@ -1425,6 +1428,7 @@ impl Game {
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
+            origin_counter_cost: None,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
@@ -1457,6 +1461,16 @@ impl Game {
         counters: Counters,
         production: Option<Mana>,
     ) {
+        self.open_payment_announcement_with_origin_cost(item, counters, production, None);
+    }
+
+    pub(super) fn open_payment_announcement_with_origin_cost(
+        &mut self,
+        item: SpellView,
+        counters: Counters,
+        production: Option<Mana>,
+        origin_counter_cost: Option<u16>,
+    ) {
         if item.cast.is_some_and(|cast| cast.face == CastFace::Back) {
             self.state.objects[item.card as usize].card = item.source_card;
         }
@@ -1486,6 +1500,7 @@ impl Game {
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
+            origin_counter_cost,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,

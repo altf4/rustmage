@@ -115,10 +115,18 @@ impl Game {
                 || self.state.players[player.index()].library.last() == Some(&card))
     }
     pub(super) fn can_cast_library_top(&self, player: Player, card: CardId) -> bool {
+        self.can_cast_library_face(player, card, self.state.objects[card as usize].card)
+    }
+    pub(super) fn can_cast_library_face(
+        &self,
+        player: Player,
+        card: CardId,
+        definition: Card,
+    ) -> bool {
         let object = &self.state.objects[card as usize];
         object.owner == player
             && object.zone == Zone::Library
-            && object.card.is_creature()
+            && definition.is_creature()
             && self.state.players[player.index()].library.last() == Some(&card)
             && has_fragment(self, player, |f| {
                 matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
