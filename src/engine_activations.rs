@@ -526,6 +526,7 @@ impl Game {
                             .expect("live activated source")
                     })
                 }),
+            source_quantity_lki: None,
             sacrificed_toughness: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,

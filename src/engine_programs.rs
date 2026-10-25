@@ -699,6 +699,7 @@ impl Game {
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::SelfAttacks
+                    | TriggerCondition::SelfAttacksIfEquipped
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksAlone
@@ -887,6 +888,11 @@ impl Game {
             .filter(|event| event.granted)
             .map_or(source.card, |event| event.granting_card);
         let condition = definition.triggers()[index].condition;
+        if condition.event() == TriggerCondition::SelfAttacksIfEquipped
+            && self.source_equipment_count(source.reference).unwrap_or(0) == 0
+        {
+            return false;
+        }
         if condition == TriggerCondition::SelfDiesWithCounters && !source.counters.has_any() {
             return false;
         }
@@ -994,6 +1000,8 @@ impl Game {
                 definition.triggers()[index].program,
                 |kind| source.counters.get(kind),
             ),
+            source_quantity_lki: self
+                .source_quantity_facts(definition.triggers()[index].program, source),
             sacrificed_toughness: None,
             source_attachment: source.attached_to,
             card: source.id,
@@ -1496,7 +1504,9 @@ impl Game {
     ) {
         for (index, ability) in source.card.triggers().iter().enumerate() {
             if match ability.condition.event() {
-                TriggerCondition::SelfAttacks | TriggerCondition::SelfEntersOrAttacks => true,
+                TriggerCondition::SelfAttacks
+                | TriggerCondition::SelfAttacksIfEquipped
+                | TriggerCondition::SelfEntersOrAttacks => true,
                 TriggerCondition::SelfFirstAttack => first_attack,
                 TriggerCondition::SelfAttacksAlone => declared_count == 1,
                 TriggerCondition::SelfAttacksWhileSaddled
@@ -1570,7 +1580,8 @@ impl Game {
                 item.controller,
                 item.object,
                 item.source_tapped,
-            ) || !self.tap_event_guard(&item))
+            ) || !self.tap_event_guard(&item)
+                || !self.source_quantity_guard(&item))
         {
             self.give_priority();
             return;
@@ -3470,6 +3481,12 @@ impl Game {
                         self.draw_many(player, amount);
                     }
                 }
+                Instruction::LoseOpponentGainSame(value) => {
+                    let amount = i128::try_from(self.item_amount(value, &item))
+                        .capacity("life quantity representation exhausted");
+                    self.lose_life(item.controller.other(), amount);
+                    self.gain_life(item.controller, amount);
+                }
                 Instruction::DrainLifeScaled(value) => {
                     let amount = i128::try_from(self.item_amount(value, &item))
                         .capacity("life drain amount representation exhausted");
@@ -3845,6 +3862,13 @@ impl Game {
                     for (id, delta) in affected {
                         self.state.objects[id as usize].growth += delta;
                     }
+                }
+                Instruction::GrowPermanentGroupScaled {
+                    filters,
+                    exclude_source,
+                    amount,
+                } => {
+                    self.grow_permanent_group_scaled(&item, filters, exclude_source, amount);
                 }
                 Instruction::GrowCreaturesScaled {
                     filter,

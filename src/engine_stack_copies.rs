@@ -190,6 +190,7 @@ impl Game {
                 trigger.gift = None;
                 trigger.cast_event = None;
                 trigger.source_counter_lki = None;
+                trigger.source_quantity_lki = None;
                 trigger.target_controller_lki = None;
                 trigger.is_copy = false;
                 trigger.targets.clear();

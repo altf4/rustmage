@@ -521,6 +521,7 @@ impl Game {
         } else {
             None
         };
+        self.capture_source_quantities(moves.iter().map(|(movement, _)| &movement.before));
         let mut events = Vec::new();
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();

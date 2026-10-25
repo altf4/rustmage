@@ -1405,6 +1405,12 @@ pub(crate) enum Instruction {
         power: i32,
         toughness: i32,
     },
+    /// Freeze a non-targeted permanent set and one scalar at resolution.
+    GrowPermanentGroupScaled {
+        filters: &'static [BattlefieldFilter],
+        exclude_source: bool,
+        amount: AmountValue,
+    },
     GrowCreaturesScaled {
         filter: CreatureFilter,
         excluding_subtype: Option<&'static str>,
@@ -1529,6 +1535,8 @@ pub(crate) enum Instruction {
     LoseLifeScaled(PlayerSet, AmountValue),
     /// Each opponent loses the frozen amount; the controller gains it once.
     DrainLifeScaled(AmountValue),
+    /// Opponent loss and controller gain use the same frozen quantity.
+    LoseOpponentGainSame(AmountValue),
     /// Optional block containing the following `skip` instructions.
     May {
         skip: usize,
@@ -1623,6 +1631,8 @@ pub(crate) enum AmountValue {
     SpellColors,
     CastSpellManaValue,
     SourcePower,
+    SourceToughness,
+    SourceEquipmentCount,
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
@@ -2661,6 +2671,8 @@ pub(crate) enum TriggerCondition {
     SelfLeaves,
     SelfEntersOrDies,
     SelfAttacks,
+    /// Intervening equipped clause, with exact source-departure quantities.
+    SelfAttacksIfEquipped,
     SelfFirstAttack,
     CreatureAttacksYou {
         colors: u8,

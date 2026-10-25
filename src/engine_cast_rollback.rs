@@ -210,6 +210,11 @@ impl Game {
                     .position(|&id| id == spell)
                     .map(|at| (p, player.library.len() - 1 - at))
             });
+        let before: Vec<_> = retained
+            .iter()
+            .map(|(id, _)| self.object_view(*id))
+            .collect();
+        self.capture_source_quantities(before.iter());
         for (id, object) in retained {
             let before = self.object_view(id);
             if before.zone != Zone::Library {

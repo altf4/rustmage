@@ -929,6 +929,9 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub source_counter_lki: Option<Box<Vec<SourceCounterQuantityView>>>,
+    /// Selected public source facts; refreshed before its complete departure batch.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_quantity_lki: Option<Box<SourceQuantityView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_toughness: Option<Box<i128>>,
     pub source_facts: DamageFacts,
@@ -991,6 +994,10 @@ impl SpellView {
             + self.copy_event.as_ref().map_or(0, |event| {
                 std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
             })
+            + self
+                .source_quantity_lki
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<SourceQuantityView>())
             + self.source_counter_lki.as_ref().map_or(0, |facts| {
                 std::mem::size_of::<Vec<SourceCounterQuantityView>>()
                     + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
@@ -5229,6 +5236,7 @@ impl Game {
                 )
             })
             .collect();
+        self.capture_source_quantities(before.iter().map(|(_, view, _, _)| view));
         // Replacement decisions precede the entire simultaneous commit.
         let planned: Vec<_> = before
             .into_iter()
@@ -5378,6 +5386,7 @@ impl Game {
         counters: Counters,
         entry_controller: Option<Player>,
     ) -> ZoneChange {
+        self.capture_source_quantities(std::iter::once(&before));
         let rules = self.freeze_zone_rules(&before, destination, None);
         let plan = self.plan_zone_move(&before, destination, rules);
         let graveyard_observers = if before.zone == Zone::Graveyard {
@@ -7391,8 +7400,14 @@ impl Game {
 #[path = "engine_card_quantities.rs"]
 mod card_quantities;
 pub use card_quantities::SourceCounterQuantityView;
+pub use source_quantities::SourceQuantityView;
 #[path = "engine_cast_entry_counters.rs"]
 mod cast_entry_counters;
+#[cfg(test)]
+#[path = "engine_msh_source_quantities_tests.rs"]
+mod msh_source_quantities_tests;
+#[path = "engine_source_quantities.rs"]
+mod source_quantities;
 pub use cast_entry_counters::CastEntryCounterView;
 #[path = "engine_counter_placement_history.rs"]
 mod counter_placement_history;

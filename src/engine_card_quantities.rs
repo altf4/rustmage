@@ -55,6 +55,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)
             | Instruction::DrainLifeScaled(value)
+            | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
             | Instruction::AddColorlessScaled(value)
             | Instruction::AddCombatRedScaled(value)
@@ -64,6 +65,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }
+            | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
             | Instruction::CreateTokensWithCounters {
                 counters: value, ..

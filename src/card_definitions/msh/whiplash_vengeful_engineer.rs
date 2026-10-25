@@ -1,16 +1,13 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed implementation: both life changes use the same frozen X.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 2),
+    entry: EntryTapped::Always,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfAttacksIfEquipped,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::LoseOpponentGainSame(
+            AmountValue::SourceEquipmentCount,
+        )],
+    }],
     ..CardRules::EMPTY
 };
