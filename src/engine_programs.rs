@@ -2396,6 +2396,16 @@ impl Game {
                         self.sacrifice_batch(&[(item.controller, item.card)]);
                     }
                 }
+                Instruction::MayTapSourceReflexive { .. } => {
+                    let skip_to = resolution.pc;
+                    if self.exact_source_can_tap(&item) {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    }
+                }
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
                 }

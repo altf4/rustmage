@@ -239,6 +239,7 @@ pub(crate) enum TargetPredicate {
     Nontoken,
     Permanent,
     Attacking,
+    Nonattacking,
     /// The sole creature currently attacking, irrespective of its defender.
     AttackingAlone,
     AttackingOrBlocking,
@@ -1035,6 +1036,10 @@ pub(crate) enum Instruction {
     SacrificeSource,
     /// Queue a separate trigger only after successfully sacrificing this exact source.
     SacrificeSourceReflexive {
+        ability: u16,
+    },
+    /// Offer a tap of the exact untapped source; queue only after the actual tap.
+    MayTapSourceReflexive {
         ability: u16,
     },
     ExileAndCopyNightmare,
@@ -3003,6 +3008,8 @@ impl Keywords {
     pub const NO_HUMAN_BLOCKERS: Self = Self(67108864);
     pub const PROTECTION_EVERYTHING: Self = Self(134217728);
     pub const PROTECTION_INSTANT_SORCERY: Self = Self(268435456);
+    /// A resolved blocking rule, not an ability granted to its recipient.
+    pub const ONLY_HASTE_BLOCKERS: Self = Self(536870912);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }
@@ -3026,7 +3033,8 @@ impl Keywords {
                     | 4194304
                     | 8388608
                     | 16777216
-                    | 33554432),
+                    | 33554432
+                    | Self::ONLY_HASTE_BLOCKERS.0),
         )
     }
     pub(crate) const fn without(self, other: Self) -> Self {

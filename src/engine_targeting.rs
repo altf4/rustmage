@@ -988,6 +988,9 @@ impl Game {
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
+                    TargetPredicate::Nonattacking => {
+                        !self.state.attackers.iter().any(|a| a.card == id)
+                    }
                     TargetPredicate::AttackingAlone => {
                         self.state.attackers.len() == 1 && self.state.attackers[0].card == id
                     }

@@ -5050,6 +5050,8 @@ impl Game {
                 };
                 if !accept {
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
+                } else {
+                    self.complete_optional_tap_reflexive();
                 }
                 self.run_program();
             }
@@ -7733,3 +7735,7 @@ mod msh_eleventh_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_recent_targets_tests.rs"]
 mod msh_recent_targets_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_reflexive_tap_haste_tests.rs"]
+mod msh_reflexive_tap_haste_tests;
