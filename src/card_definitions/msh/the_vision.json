@@ -77,6 +77,11 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
       "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/common/ModesAlreadyUsedHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5aedbaf1b02deb4abeb43229898bea6e1563ecb1ede9a2cf77ed9e3ccac4b737"
     }
   ],
   "rules_notes": [

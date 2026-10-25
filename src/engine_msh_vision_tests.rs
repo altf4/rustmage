@@ -1,5 +1,5 @@
 //! Paid per-turn modal choices, lifetime isolation, real turn/control/blink and owned replay.
-use super::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
+use super::assurance::big_helpers::{checked, named, next_turn, settle, setup};
 use super::*;
 const VISION: &str = "The Vision";
 #[track_caller]
@@ -40,7 +40,25 @@ fn announce(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
     let (colored, generic) = g.object_view(id).card.cost();
     g.state.players[p.index()].mana = colored;
     g.state.players[p.index()].mana[5] += generic;
-    cast(g, id, None, targets);
+    checked(g, Action::AnnounceCast { card: id });
+    for &target in targets {
+        checked(g, Action::ChooseTarget { target });
+    }
+    // Paying the spell can immediately announce Vision's mandatory trigger.
+    // Only finish the selected spell packet, preserving the new mode decision.
+    while g
+        .state
+        .announcing
+        .as_ref()
+        .is_some_and(|a| a.item.card == id && a.item.kind == StackKind::Spell)
+    {
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::FinishTargets | Action::PayCosts { .. }))
+            .unwrap();
+        checked(g, action);
+    }
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     id
 }
