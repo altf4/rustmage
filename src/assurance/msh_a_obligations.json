@@ -36,7 +36,7 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "A.I.M. Labs",
@@ -46,7 +46,7 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "A.I.M. Labs",
@@ -56,10 +56,10 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "A.I.M. Scientists",
@@ -95,7 +95,7 @@
             "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "A.I.M. Scientists",
@@ -105,10 +105,10 @@
             "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "A.I.M. Synthoids",
@@ -144,10 +144,10 @@
             "engine::assurance::msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Abomination, Terrifying Titan",
@@ -185,7 +185,7 @@
             "engine::assurance::interactions::trample_with_deathtouch_assigns_one_lethal_and_the_rest_to_defender"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Abomination, Terrifying Titan",
@@ -195,10 +195,10 @@
             "engine::assurance::msh_a::msh_abomination_optional_fight_hybrid_cost_and_surviving_damage"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Absorbing Man",
@@ -238,7 +238,7 @@
             "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Absorbing Man",
@@ -248,10 +248,10 @@
             "engine::assurance::msh_a::msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Aerial Doombot",
@@ -291,7 +291,7 @@
             "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Aerial Doombot",
@@ -301,10 +301,10 @@
             "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Agent 13, Sharon Carter",
@@ -340,10 +340,10 @@
             "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Agent Maria Hill",
@@ -379,10 +379,10 @@
             "engine::assurance::msh_a::msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Agent Phil Coulson",
@@ -422,7 +422,7 @@
             "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Agent Phil Coulson",
@@ -432,10 +432,10 @@
             "engine::assurance::msh_a::msh_phil_coulson_counters_other_owned_heroes_only_and_taps"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Agent of Atlas",
@@ -471,10 +471,10 @@
             "engine::assurance::msh_a::msh_prowess_family_has_real_noncreature_trigger_and_cleanup"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Agents of HYDRA",
@@ -510,10 +510,10 @@
             "engine::assurance::msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Agents of S.H.I.E.L.D.",
@@ -549,10 +549,10 @@
             "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Alien Invasion",
@@ -587,10 +587,10 @@
             "engine::assurance::msh_a::msh_alien_invasion_grows_next_token_and_requires_able_attack"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Ant-Man's Army",
@@ -626,10 +626,10 @@
             "engine::assurance::msh_a::msh_synthoids_surveil_two_and_ant_army_token_choice_and_borough_tokens"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Ant-Man, Colony Commander",
@@ -665,7 +665,7 @@
             "engine::assurance::msh_a::msh_ant_man_optional_payment_reflexive_counter_and_once_each_turn_insect"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Ant-Man, Colony Commander",
@@ -675,10 +675,10 @@
             "engine::assurance::msh_a::msh_ant_man_optional_payment_reflexive_counter_and_once_each_turn_insect"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Arc Reactor",
@@ -713,7 +713,7 @@
             "engine::assurance::msh_a::msh_arc_reactor_improvise_pays_generic_and_produces_three_after_untap"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Arc Reactor",
@@ -723,7 +723,7 @@
             "engine::assurance::msh_a::msh_arc_reactor_improvise_pays_generic_and_produces_three_after_untap"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Arc Reactor",
@@ -733,10 +733,10 @@
             "engine::assurance::msh_a::msh_arc_reactor_improvise_pays_generic_and_produces_three_after_untap"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Ares, God of War",
@@ -772,7 +772,7 @@
             "engine::assurance::msh_a::msh_ares_attacking_death_returns_owner_card_after_source_departs"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Ares, God of War",
@@ -782,10 +782,10 @@
             "engine::assurance::msh_a::msh_ares_attacking_death_returns_owner_card_after_source_departs"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Armor Wars",
@@ -820,7 +820,7 @@
             "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Armor Wars",
@@ -830,7 +830,7 @@
             "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Armor Wars",
@@ -840,7 +840,7 @@
             "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Armor Wars",
@@ -850,10 +850,10 @@
             "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Arnim Zola, Bio-Fanatic",
@@ -889,10 +889,10 @@
             "engine::assurance::msh_a::msh_agents_hydra_real_death_creates_printed_villain_and_zola_checks_graveyard"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Asgardian Citadel",
@@ -927,7 +927,7 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Asgardian Citadel",
@@ -937,7 +937,7 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Asgardian Citadel",
@@ -947,10 +947,10 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Atlantean Cavalry",
@@ -990,7 +990,7 @@
             "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Atlantean Cavalry",
@@ -1000,10 +1000,10 @@
             "engine::assurance::msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Atlantis Attacks",
@@ -1038,7 +1038,7 @@
             "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Atlantis Attacks",
@@ -1048,7 +1048,7 @@
             "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Atlantis Attacks",
@@ -1058,7 +1058,7 @@
             "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Atlantis Attacks",
@@ -1068,10 +1068,10 @@
             "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Attuma, Atlantean Warlord",
@@ -1107,7 +1107,7 @@
             "engine::assurance::msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Attuma, Atlantean Warlord",
@@ -1117,10 +1117,10 @@
             "engine::assurance::msh_a::msh_second_draw_and_attuma_tribal_draw_use_event_counts"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Avengers Assemble!",
@@ -1155,7 +1155,7 @@
             "engine::assurance::msh_a::msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers Assemble!",
@@ -1165,7 +1165,7 @@
             "engine::assurance::msh_a::msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers Assemble!",
@@ -1175,10 +1175,10 @@
             "engine::assurance::msh_a::msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Avengers Disassembled",
@@ -1213,7 +1213,7 @@
             "engine::assurance::msh_a::msh_avengers_disassembled_modes_damage_land_and_optional_basic_search"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers Disassembled",
@@ -1223,7 +1223,7 @@
             "engine::assurance::msh_a::msh_avengers_disassembled_modes_damage_land_and_optional_basic_search"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers Disassembled",
@@ -1233,10 +1233,10 @@
             "engine::assurance::msh_a::msh_avengers_disassembled_modes_damage_land_and_optional_basic_search"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Avengers Hangar",
@@ -1271,7 +1271,7 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers Hangar",
@@ -1281,7 +1281,7 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers Hangar",
@@ -1291,10 +1291,10 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Avengers Tower",
@@ -1329,7 +1329,7 @@
             "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers Tower",
@@ -1339,7 +1339,7 @@
             "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers Tower",
@@ -1349,10 +1349,10 @@
             "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Avengers: Under Siege",
@@ -1387,7 +1387,7 @@
             "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers: Under Siege",
@@ -1397,7 +1397,7 @@
             "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers: Under Siege",
@@ -1407,7 +1407,7 @@
             "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Avengers: Under Siege",
@@ -1417,10 +1417,10 @@
             "engine::assurance::msh_a::msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Baron Helmut Zemo",
@@ -1456,7 +1456,7 @@
             "engine::assurance::msh_a::msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Baron Helmut Zemo",
@@ -1466,10 +1466,10 @@
             "engine::assurance::msh_a::msh_zemo_hand_connive_and_fifteen_symbols_offer_three_card_copies"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Baron Strucker, HYDRA Overlord",
@@ -1505,7 +1505,7 @@
             "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Baron Strucker, HYDRA Overlord",
@@ -1515,10 +1515,10 @@
             "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Baxter Building",
@@ -1557,7 +1557,7 @@
             "engine::assurance::msh_contracts::msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_controller"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Baxter Building",
@@ -1569,7 +1569,7 @@
             "engine::assurance::msh_contracts::msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_controller"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Baxter Building",
@@ -1581,10 +1581,10 @@
             "engine::assurance::msh_contracts::msh_controlled_payer_mana_conversion_uses_resource_owner_not_decision_controller"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Beast, Erudite Aerialist",
@@ -1620,7 +1620,7 @@
             "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Beast, Erudite Aerialist",
@@ -1630,10 +1630,10 @@
             "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Birnin Zana Plaza",
@@ -1668,7 +1668,7 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Birnin Zana Plaza",
@@ -1678,7 +1678,7 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Birnin Zana Plaza",
@@ -1688,10 +1688,10 @@
             "engine::assurance::msh_a::msh_life_lands_enter_tapped_gain_one_and_produce_only_printed_colors"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Black Panther, Vanguard",
@@ -1727,7 +1727,7 @@
             "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Black Panther, Vanguard",
@@ -1737,7 +1737,7 @@
             "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Black Panther, Vanguard",
@@ -1747,10 +1747,10 @@
             "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Black Widow, Double Agent",
@@ -1790,7 +1790,7 @@
             "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Black Widow, Double Agent",
@@ -1800,10 +1800,10 @@
             "engine::assurance::msh_a::msh_attacks_alone_family_contrasts_one_and_two_attackers_and_expires"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Black Widow, Super Spy",
@@ -1843,7 +1843,7 @@
             "engine::assurance::interactions::indestructible_survives_destroy_and_menace_requires_two_blockers"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Black Widow, Super Spy",
@@ -1853,10 +1853,10 @@
             "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Blazing Crescendo",
@@ -1891,7 +1891,7 @@
             "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Blazing Crescendo",
@@ -1901,10 +1901,10 @@
             "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Bold Biochemist",
@@ -1940,10 +1940,10 @@
             "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Borough Backup",
@@ -1980,7 +1980,7 @@
             "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Borough Backup",
@@ -1991,10 +1991,10 @@
             "engine::assurance::msh_a::msh_scientists_connive_land_and_nonland_then_shared_basic_landcycling"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Brave Brawler",
@@ -2034,7 +2034,7 @@
             "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Brave Brawler",
@@ -2044,10 +2044,10 @@
             "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Bruce Banner // The Incredible Hulk",
@@ -2083,7 +2083,7 @@
             "engine::assurance::msh_a::msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Bruce Banner",
@@ -2093,7 +2093,7 @@
             "engine::assurance::msh_a::msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "The Incredible Hulk",
@@ -2119,7 +2119,7 @@
             "engine::assurance::interactions::trample_with_deathtouch_assigns_one_lethal_and_the_rest_to_defender"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "The Incredible Hulk",
@@ -2129,10 +2129,10 @@
             "engine::assurance::msh_a::msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Bullseye, Death Dealer",
@@ -2168,7 +2168,7 @@
             "engine::assurance::msh_a::msh_bullseye_optional_entry_and_both_activated_alternative_costs"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Bullseye, Death Dealer",
@@ -2178,10 +2178,10 @@
             "engine::assurance::msh_a::msh_bullseye_optional_entry_and_both_activated_alternative_costs"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Call Damage Control",
@@ -2216,7 +2216,7 @@
             "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Call Damage Control",
@@ -2226,7 +2226,7 @@
             "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Call Damage Control",
@@ -2236,7 +2236,7 @@
             "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Call Damage Control",
@@ -2246,7 +2246,7 @@
             "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Call Damage Control",
@@ -2256,10 +2256,10 @@
             "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Captain America's Shield",
@@ -2296,7 +2296,7 @@
             "engine::assurance::interactions::indestructible_survives_destroy_and_menace_requires_two_blockers"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain America's Shield",
@@ -2306,7 +2306,7 @@
             "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain America's Shield",
@@ -2316,7 +2316,7 @@
             "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain America's Shield",
@@ -2326,10 +2326,10 @@
             "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Captain America, Living Legend",
@@ -2369,7 +2369,7 @@
             "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain America, Living Legend",
@@ -2379,10 +2379,10 @@
             "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Captain America, Super-Soldier",
@@ -2422,7 +2422,7 @@
             "engine::assurance::interactions::first_strike_removes_blocker_before_it_deals_damage"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain America, Super-Soldier",
@@ -2432,7 +2432,7 @@
             "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain America, Super-Soldier",
@@ -2442,10 +2442,10 @@
             "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Captain America, Wings of Freedom",
@@ -2481,7 +2481,7 @@
             "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain America, Wings of Freedom",
@@ -2491,10 +2491,10 @@
             "engine::assurance::msh_a::msh_super_soldier_shields_and_wings_toughness_response_with_ward"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Captain Mar-Vell, Space-Born",
@@ -2534,7 +2534,7 @@
             "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain Mar-Vell, Space-Born",
@@ -2544,10 +2544,10 @@
             "engine::assurance::msh_a::msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_window"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Captain Marvel, Earth's Protector",
@@ -2583,7 +2583,7 @@
             "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain Marvel, Earth's Protector",
@@ -2596,7 +2596,7 @@
             "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Captain Marvel, Earth's Protector",
@@ -2606,10 +2606,10 @@
             "engine::assurance::msh_a::msh_simple_power_up_family_cost_reduction_effect_and_once_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Castle Doom",
@@ -2644,7 +2644,7 @@
             "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Castle Doom",
@@ -2654,7 +2654,7 @@
             "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Castle Doom",
@@ -2664,10 +2664,10 @@
             "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Claim the Kingdom",
@@ -2702,7 +2702,7 @@
             "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Claim the Kingdom",
@@ -2712,10 +2712,10 @@
             "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Cloak and Dagger, Entwined",
@@ -2755,7 +2755,7 @@
             "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Cloak and Dagger, Entwined",
@@ -2765,10 +2765,10 @@
             "engine::assurance::msh_a::msh_cloak_hand_or_creature_exile_returns_to_original_zone_and_may_decline"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Colleen Wing, Street Samurai",
@@ -2804,10 +2804,10 @@
             "engine::assurance::msh_a::msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_window"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Construct a Cosmic Cube",
@@ -2842,7 +2842,7 @@
             "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Construct a Cosmic Cube",
@@ -2852,10 +2852,10 @@
             "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Cosmic Cube",
@@ -2890,7 +2890,7 @@
             "engine::assurance::msh_a::msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Cosmic Cube",
@@ -2900,10 +2900,10 @@
             "engine::assurance::msh_a::msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Crimson Operative",
@@ -2941,7 +2941,7 @@
             "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Crimson Operative",
@@ -2952,10 +2952,10 @@
             "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Crossbones, Malicious Mercenary",
@@ -2995,7 +2995,7 @@
             "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Crossbones, Malicious Mercenary",
@@ -3005,10 +3005,10 @@
             "engine::assurance::msh_a::msh_villain_observers_cost_discount_connive_and_first_entry_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Crowd of True Believers",
@@ -3044,10 +3044,10 @@
             "engine::assurance::msh_a::msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Cruel Alliance",
@@ -3082,7 +3082,7 @@
             "engine::assurance::msh_a::msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Cruel Alliance",
@@ -3092,10 +3092,10 @@
             "engine::assurance::msh_a::msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Daredevil, Man Without Fear",
@@ -3131,7 +3131,7 @@
             "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Daredevil, Man Without Fear",
@@ -3141,7 +3141,7 @@
             "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Daredevil, Man Without Fear",
@@ -3151,10 +3151,10 @@
             "engine::assurance::msh_a::msh_black_widow_and_daredevil_exile_options_and_exact_play_permissions"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Dark Deed",
@@ -3189,10 +3189,10 @@
             "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Dark Fortress",
@@ -3229,7 +3229,7 @@
             "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Dark Fortress",
@@ -3240,10 +3240,10 @@
             "engine::assurance::msh_a::msh_tower_castle_mana_restrictions_private_pick_and_castle_sacrifice"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Death to Our Enemies",
@@ -3278,7 +3278,7 @@
             "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Death to Our Enemies",
@@ -3288,10 +3288,10 @@
             "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Decoy Ploy",
@@ -3326,7 +3326,7 @@
             "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Decoy Ploy",
@@ -3336,7 +3336,7 @@
             "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Decoy Ploy",
@@ -3346,10 +3346,10 @@
             "engine::assurance::msh_a::msh_recovery_modes_recover_their_types_and_respect_two_mode_limit"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Dependable Quinjet",
@@ -3386,7 +3386,7 @@
             "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Dependable Quinjet",
@@ -3396,7 +3396,7 @@
             "engine::assurance::msh_a::msh_quinjet_any_color_and_crew_threshold_animate_only_until_cleanup"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Dependable Quinjet",
@@ -3406,10 +3406,10 @@
             "engine::assurance::msh_a::msh_quinjet_any_color_and_crew_threshold_animate_only_until_cleanup"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Depower",
@@ -3444,7 +3444,7 @@
             "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Depower",
@@ -3454,7 +3454,7 @@
             "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Depower",
@@ -3464,10 +3464,10 @@
             "engine::assurance::msh_a::msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Doc Samson, Super Psychiatrist",
@@ -3503,7 +3503,7 @@
             "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Doc Samson, Super Psychiatrist",
@@ -3513,10 +3513,10 @@
             "engine::assurance::msh_a::msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Doctor Doom",
@@ -3552,7 +3552,7 @@
             "engine::assurance::msh_a::msh_doctor_doom_tokens_conditional_indestructibility_and_own_end_step"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Doctor Doom",
@@ -3562,7 +3562,7 @@
             "engine::assurance::msh_a::msh_doctor_doom_tokens_conditional_indestructibility_and_own_end_step"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Doctor Doom",
@@ -3572,10 +3572,10 @@
             "engine::assurance::msh_a::msh_doctor_doom_tokens_conditional_indestructibility_and_own_end_step"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Doom Reigns Supreme",
@@ -3610,7 +3610,7 @@
             "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Doom Reigns Supreme",
@@ -3620,10 +3620,10 @@
             "engine::assurance::msh_a::msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Earth's Mightiest Heroes",
@@ -3658,7 +3658,7 @@
             "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Earth's Mightiest Heroes",
@@ -3668,10 +3668,10 @@
             "engine::assurance::msh_a::msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     },
     {
       "name": "Echo, Perceptive Prodigy",
@@ -3713,7 +3713,7 @@
             "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
           ],
           "evidence_scope": "Literal printed keyword binding plus separately tested actual combat/replacement primitive; this row alone is not whole-card proof.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         },
         {
           "face": "Echo, Perceptive Prodigy",
@@ -3724,10 +3724,10 @@
             "engine::assurance::msh_a::msh_echo_copies_creature_ability_and_changes_only_the_copys_target"
           ],
           "evidence_scope": "Independent bounded checked-action outcomes for this printed rule; contrasting choices, restrictions and durations are shared within the named family.",
-          "coverage_status": "independent bounded assertions mapped; final routine validation and independent reviews pending"
+          "coverage_status": "Independent bounded assertions mapped; final validation/review are separate receipts"
         }
       ],
-      "coverage_status": "All printed paragraphs mapped to independent scenarios; final validation and reviews pending"
+      "coverage_status": "Printed paragraphs mapped to independent bounded assertions; final published-head validation/review are separate receipts"
     }
   ],
   "known_xmage_discrepancies": [

@@ -1,7 +1,7 @@
 {
   "methodology_pr": 468,
   "replaces": "All MSH development-era tests, including repeated legal-game batches and repeated per-action owned contracts.",
-  "status": "Fresh independent bounded assurance in progress; previous MSH test receipts do not certify the replacement.",
+  "status": "Fresh bounded assurance source for all281 MSH candidates. Ordinary validation and independent final-published-head review receipts are reported separately; historic rollout receipts do not certify this replacement.",
   "removed_files": [
     {
       "path": "src/assurance/msh_games.rs",
@@ -768,5 +768,100 @@
     "native_per_test_seconds": 10,
     "native_total_seconds": 30,
     "python_seconds": 5
-  }
+  },
+  "membership": {
+    "oracle_identities": 281,
+    "physical_printings": 448,
+    "main_admission_flags": 180,
+    "candidate_admission_flags": 281,
+    "candidate_gated": 0,
+    "membership_source": "data/sets/msh.json"
+  },
+  "partitions": [
+    {
+      "partition": "a",
+      "identities": 71,
+      "test_module": "src/assurance/msh_a.rs",
+      "test_functions": 41,
+      "test_sha256": "f4bae59bbd247b55ef46879ef89a8082e205d310d62c2850ce29f5efe2af58a5",
+      "obligation_ledger": "src/assurance/msh_a_obligations.json",
+      "ledger_sha256": "1f73ef3ca54ccaee489c1cdaf6098095ec1be7c1521b4ad440bf6255844dd973"
+    },
+    {
+      "partition": "b",
+      "identities": 70,
+      "test_module": "src/assurance/msh_b.rs",
+      "test_functions": 25,
+      "test_sha256": "65596189ecbc9598ef25a95f65df6afa5d8e4b68695b43daa7d110b16fa552c1",
+      "obligation_ledger": "src/assurance/msh_b_obligations.json",
+      "ledger_sha256": "d9e4e5bcf31e51be13b498bcc8206f4a5489d90f0e3c2bb23ab76ada2104f97e"
+    },
+    {
+      "partition": "c",
+      "identities": 70,
+      "test_module": "src/assurance/msh_c.rs",
+      "test_functions": 31,
+      "test_sha256": "be398ff22bc87f1d35699ecfec82b78369b06b17369d280bdd7ce0fd8c5fac3b",
+      "obligation_ledger": "src/assurance/msh_c_obligations.json",
+      "ledger_sha256": "e65c199436201ddf4822f32cda17080b77d2b740404ba058ba631fbebb166022"
+    },
+    {
+      "partition": "d",
+      "identities": 70,
+      "test_module": "src/assurance/msh_d.rs",
+      "test_functions": 35,
+      "test_sha256": "32b3a7bd2e3417748879faa4a670b784ef8435d7b3fe14123acdf1c2e79ec224",
+      "obligation_ledger": "src/assurance/msh_d_obligations.json",
+      "ledger_sha256": "fe32b197cd5d9dba4d00c8ed585a82fe83b49299d790013bae4215f75eb84264"
+    }
+  ],
+  "fresh_card_test_functions": 132,
+  "representative_engine_contracts": {
+    "path": "src/assurance/msh_contracts.rs",
+    "functions": 3,
+    "roots": [
+      "partially selected Teamwork cost",
+      "partially selected Crew cost",
+      "private six-card resolution cast window",
+      "controlled-player resolution payment with paid Baxter conversion"
+    ],
+    "shared_helper": "src/assurance/contracts.rs::branch_contract",
+    "scope": "Raw/index equivalence, parent disposal, snapshot/restore, stale indices, rejected-action transactionality and two-view observations are checked only at representative roots."
+  },
+  "printed_rule_denominators": {
+    "a_oracle_paragraphs": 160,
+    "b_oracle_paragraphs": 156,
+    "c_oracle_paragraphs": 147,
+    "d_printed_clauses": 165,
+    "note": "Compound clauses and face facts are expanded separately by each ledger; counts are bookkeeping, not an independent coverage proof. Header source facts are not added to behavior coverage."
+  },
+  "cast_entry_regression": {
+    "rows": 2584,
+    "sha256": "d3660f0ceb907d6420effb08d17c49e20a684e508cbe37736242224ac1827f30",
+    "max_accepted_actions": 15,
+    "action_limit": 64,
+    "object_limit": 192,
+    "baseline_changed_by_rebuild": false,
+    "scope": "Accepted actions and both final observations; every candidate requires a castable qualified fixture; does not independently prove card correctness."
+  },
+  "source_read_qualification": {
+    "full_oracle_identities": 281,
+    "full_available_main_java_classes": 277,
+    "frozen_direct_class_absences": [
+      "Kid Loki",
+      "Political Triumph",
+      "Robot Domination",
+      "Taskmaster, Mercenary Mimic"
+    ],
+    "helpers": "Relevant full reusable bodies are separately identified in author ledgers; caching/hashing transitive sources is not claimed as reading them."
+  },
+  "remaining_limits": [
+    "No exhaustive card cross-products, action trees or repeated whole-set games; this follows the human PR468 methodology override.",
+    "Civil War changing-total-mana-value response edge is not separately asserted; ordinary printed total-budget legality and fight/expiry outcomes are asserted.",
+    "All-Standard certification remains open:2586 Standard identities remain gated."
+  ],
+  "supersedes_historical_acceptance": [
+    "All deleted MSH test symbols and three legal-game corpora are retired; their old pass receipts are historical only.",
+    "docs/msh-final-source-integration-evidence.json remains an immutable historical source/trace proof, not acceptance of the replacement tests."
+  ]
 }
