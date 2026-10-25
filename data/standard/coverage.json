@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "717883dfe1221e1e3d929148d6a14d4f0b0b9541f28f6e87aeb2d0f946a466ad",
+  "catalogue_version": "baae5b106d9f9ad50f4ee3260b44e9273f882486c7f18d7ac4e4afb1eb18d28d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2537,
-  "implemented_total": 2543,
+  "implemented_standard_cards": 2539,
+  "implemented_total": 2545,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 232,
-      "gated": 41
+      "complete": 234,
+      "gated": 39
     },
     "one": {
       "total": 1,
@@ -5349,8 +5349,8 @@
     {
       "name": "Captain America, Super-Soldier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/captain_america_super_soldier.rs",
       "set": "msh"
     },
@@ -36021,8 +36021,8 @@
     {
       "name": "The Mind Stone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_mind_stone.rs",
       "set": "msh"
     },
