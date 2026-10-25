@@ -87,7 +87,7 @@ fn main(g: &mut Game) {
     settle(g);
 }
 fn unblocked(g: &mut Game, p: Player, attacker: CardId, defender: CombatDefender) {
-    until(g, |g| matches!(g.state.pending, Pending::Attackers { .. }));
+    until(g, |g| matches!(g.state.pending, Pending::Attackers));
     checked(
         g,
         match defender {
@@ -99,7 +99,7 @@ fn unblocked(g: &mut Game, p: Player, attacker: CardId, defender: CombatDefender
         },
     );
     checked(g, Action::FinishAttackers);
-    until(g, |g| matches!(g.state.pending, Pending::Blockers { .. }));
+    until(g, |g| matches!(g.state.pending, Pending::Blockers));
     checked(g, Action::FinishBlockers);
     priority(g, p);
 }

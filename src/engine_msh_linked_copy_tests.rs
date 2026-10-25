@@ -675,7 +675,7 @@ fn msh_secret_reveals_older_copy_with_original_provider_and_hand_chronology_in_w
                 created_turn: g.state.turn,
             },
         );
-        let before = g.temporary_copy_view(g.object_ref(h)).unwrap().layers[0].clone();
+        let before = g.temporary_copy_view(g.object_ref(h)).unwrap().layers[0];
         let t = named(&mut g, p.other(), "Serra Angel", Zone::Battlefield);
         let a = attached(&mut g, p, h, Some(t));
         assert_eq!(g.maximum_hand_size(p), Some(7));

@@ -423,9 +423,7 @@ fn msh_restricted_creatures_shang_allows_new_intrinsic_and_printed_mana_without_
         finish(&mut g);
         assert!(g.object_view(helper).tapped);
         assert!(!g.object_view(s).tapped);
-        until(&mut g, |g| {
-            matches!(g.state.pending, Pending::Attackers { .. })
-        });
+        until(&mut g, |g| matches!(g.state.pending, Pending::Attackers));
         reject(&mut g, Action::Attack { card: s });
     }
 }
