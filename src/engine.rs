@@ -7566,3 +7566,7 @@ mod msh_seventh_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_titania_tests.rs"]
 mod msh_titania_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_thor_tests.rs"]
+mod msh_thor_tests;

@@ -8,6 +8,12 @@ pub struct ReturnLinkView {
     pub zone: Zone,
     pub controller: Player,
     pub counter: Option<(CounterKind, u64)>,
+    /// Instruction-level tapped entry, retained through suspended departure choices.
+    #[serde(skip_serializing_if = "is_false")]
+    pub tapped: bool,
+}
+fn is_false(value: &bool) -> bool {
+    !value
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct DelayedReturnView {
@@ -65,6 +71,7 @@ impl Game {
             Some(Box::new(ReturnLinkView {
                 object: event.after,
                 zone: Zone::Graveyard,
+                tapped: false,
                 controller: event.before.owner,
                 counter: Some((
                     CounterKind::Revival,
@@ -94,6 +101,7 @@ impl Game {
         &mut self,
         item: &SpellView,
         counter: Option<(CounterKind, u64)>,
+        tapped: bool,
     ) {
         let ids: Vec<_> = item
             .targets
@@ -115,6 +123,7 @@ impl Game {
                         zone: Zone::Exile,
                         controller: event.before.owner,
                         counter,
+                        tapped,
                     })
             })
             .collect();
@@ -146,7 +155,7 @@ impl Game {
                 {
                     return None;
                 }
-                let mut movement = self.entry_move(row.object.card, Zone::Battlefield, false);
+                let mut movement = self.entry_move(row.object.card, Zone::Battlefield, row.tapped);
                 movement.controller = row.controller;
                 movement.effect_counter = row.counter;
                 Some(movement)
@@ -175,6 +184,7 @@ impl Game {
                     ReturnLinkView {
                         object: movement.after,
                         zone: Zone::Exile,
+                        tapped: false,
                         controller: if under_owner { owner } else { item.controller },
                         counter: None,
                     },
@@ -223,7 +233,7 @@ impl Game {
         {
             return;
         }
-        let mut movement = self.entry_move(link.object.card, Zone::Battlefield, false);
+        let mut movement = self.entry_move(link.object.card, Zone::Battlefield, link.tapped);
         movement.controller = link.controller;
         movement.effect_counter = link.counter;
         movement.return_modification = modification;

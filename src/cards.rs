@@ -846,6 +846,7 @@ pub(crate) enum Instruction {
     ReturnLinkedExileToHand,
     BlinkImmediately {
         counter: Option<(CounterKind, u64)>,
+        tapped: bool,
     },
     IfCastFromNonHand {
         skip: usize,
