@@ -883,10 +883,11 @@ fn msh_b_kang_schedules_exact_power_up_free_turn() {
     assert!(g.state.turn > turn);
     assert!(g.power_up_prohibited_this_turn());
     mana(&mut g, p, [0, 0, 0, 0, 5, 0]);
-    assert!(!g
-        .legal_actions()
-        .iter()
-        .any(|a| matches!(a,Action::AnnounceActivate{card,..}if *card==herc)));
+    assert!(
+        !g.legal_actions()
+            .iter()
+            .any(|a| matches!(a,Action::AnnounceActivate{card,..}if *card==herc))
+    );
     go(&mut g, p.other(), Step::Main1);
     assert!(!g.power_up_prohibited_this_turn());
 }
@@ -1016,9 +1017,10 @@ fn msh_b_exile_draw_permissions_and_stun() {
     go(&mut g, p.other(), Step::Main1);
     go(&mut g, p, Step::Main1);
     mana(&mut g, p, [0, 0, 0, 2, 0, 0]);
-    assert!(g
-        .legal_actions()
-        .contains(&Action::AnnounceExile { card: saved }));
+    assert!(
+        g.legal_actions()
+            .contains(&Action::AnnounceExile { card: saved })
+    );
     go(&mut g, p.other(), Step::Main1);
     g.state.priority = p;
     mana(&mut g, p, [0, 0, 0, 2, 0, 0]);
@@ -1037,9 +1039,10 @@ fn msh_b_exile_draw_permissions_and_stun() {
     go(&mut g, p, Step::Main1);
     assert!(g.state.objects[j as usize].tapped);
     assert_eq!(g.counter_count(j, CounterKind::Stun), 0);
-    assert!(!g
-        .legal_actions()
-        .contains(&Action::AnnounceExile { card: b }));
+    assert!(
+        !g.legal_actions()
+            .contains(&Action::AnnounceExile { card: b })
+    );
 }
 
 fn nuts(g: &mut Game, p: Player, recipient: CardId) {
@@ -1693,10 +1696,11 @@ fn msh_b_connive_draw_ordinals_and_life_payment() {
     assert_eq!(stats(&g, modok), (3, 3));
     go(&mut g, p.other(), Step::Main1);
     g.state.priority = p;
-    assert!(!g
-        .legal_actions()
-        .iter()
-        .any(|a| matches!(a,Action::AnnounceActivate{card,..}if *card==modok)));
+    assert!(
+        !g.legal_actions()
+            .iter()
+            .any(|a| matches!(a,Action::AnnounceActivate{card,..}if *card==modok))
+    );
 }
 
 #[test]
@@ -2237,4 +2241,75 @@ fn msh_b_keyword_combat_prowess_and_basic_landcycling() {
     assert_eq!(g.state.objects[bear as usize].zone, Zone::Graveyard);
     assert_eq!(g.state.objects[marksman as usize].zone, Zone::Battlefield);
     assert_eq!(g.state.objects[marksman as usize].damage, 0);
+}
+
+#[test]
+fn msh_b_literal_paid_creature_costs_and_base_bodies() {
+    // Header facts supplement the separate complete printed-ability scenarios.
+    // Supply exactly the independently transcribed printed mana and check spent
+    // mana plus the unmodified body before any optional entry decisions resolve.
+    for (name, mana, power, toughness) in [
+        ("Elektra, Daughter of the Hand", [0, 0, 2, 0, 0, 2], 3, 3),
+        ("Falcon, Winged Wonder", [0, 1, 0, 0, 0, 4], 3, 4),
+        ("Fin Fang Foom", [0, 0, 0, 2, 0, 2], 3, 5),
+        ("Ghost, Spectral Saboteur", [0, 1, 0, 0, 0, 2], 2, 2),
+        ("Giant-Sized Flying Ant", [0, 1, 0, 0, 0, 3], 3, 2),
+        ("Grim Reaper, Lethal Legionnaire", [0, 0, 1, 0, 0, 3], 3, 4),
+        ("Guerrilla Gorilla", [0, 0, 0, 0, 1, 1], 2, 2),
+        ("H.E.R.B.I.E. Scout Unit", [0, 0, 0, 0, 0, 4], 2, 1),
+        ("HYDRA Assault Robot", [0, 0, 0, 1, 0, 1], 1, 3),
+        ("HYDRA Troopers", [0, 0, 1, 0, 0, 2], 3, 2),
+        ("Hawkeye, Master Marksman", [0, 0, 0, 1, 0, 1], 2, 2),
+        ("Hawkeye, Young Avenger", [0, 0, 0, 1, 0, 3], 2, 4),
+        ("Hellcat, Undying Vigilante", [0, 0, 0, 0, 2, 0], 2, 2),
+        ("Hercules, Prince of Power", [0, 0, 0, 0, 1, 2], 3, 3),
+        ("Hero in Training", [1, 0, 0, 0, 0, 2], 2, 2),
+        ("Hulk, Gamma Goliath", [0, 0, 0, 1, 1, 3], 6, 5),
+        ("Hulkling, Burgeoning Bruiser", [0, 0, 0, 0, 1, 2], 2, 3),
+        ("Human Torch, Johnny Storm", [0, 0, 0, 1, 0, 2], 2, 2),
+        ("Hydraulic Helper", [0, 1, 0, 0, 0, 1], 2, 3),
+        ("Invisible Woman, Sue Storm", [1, 0, 0, 0, 0, 4], 2, 5),
+        ("Iron Fist, Living Weapon", [0, 0, 0, 1, 0, 2], 2, 3),
+        ("Iron Lad, Diverging Destiny", [0, 1, 0, 0, 0, 2], 2, 2),
+        ("Iron Man, Master of Machines", [0, 1, 0, 1, 0, 2], 1, 4),
+        ("Ironheart, Clever Champion", [0, 1, 0, 0, 0, 4], 3, 4),
+        ("Jennifer Walters", [1, 0, 0, 0, 0, 1], 2, 3),
+        ("Jessica Jones, Private Eye", [0, 0, 0, 1, 0, 2], 2, 3),
+        ("Justice, Vance Astrovik", [0, 1, 0, 0, 0, 2], 2, 2),
+        ("K'un-Lun Warrior", [0, 0, 0, 1, 0, 1], 2, 2),
+        ("Ka-Zar of the Savage Land", [0, 0, 0, 0, 1, 4], 3, 2),
+        ("Kang the Conqueror", [0, 2, 0, 0, 0, 2], 4, 5),
+        ("Kang, Temporal Tyrant", [0, 1, 1, 0, 0, 2], 3, 4),
+        ("Kid Loki", [0, 1, 0, 0, 0, 0], 1, 1),
+        ("Killmonger, Scourge of Wakanda", [0, 0, 1, 0, 1, 2], 3, 3),
+        ("King T'Challa", [1, 1, 0, 0, 0, 1], 3, 2),
+        ("Kingpin's Enforcers", [0, 0, 1, 0, 0, 2], 2, 3),
+        ("Klaw, Sonic Subjugator", [0, 0, 1, 0, 0, 2], 2, 2),
+        ("Knight of Wundagore", [0, 0, 0, 0, 1, 1], 2, 1),
+        ("Kree Commandos", [1, 0, 0, 0, 0, 2], 2, 1),
+        ("Kree Sentinel", [0, 0, 0, 1, 0, 4], 5, 5),
+        ("Leader, Super-Genius", [0, 2, 0, 0, 0, 2], 1, 3),
+        ("Loki Laufeyson", [0, 0, 0, 1, 0, 1], 2, 1),
+        ("Loki, God of Mischief", [0, 1, 0, 0, 0, 1], 2, 1),
+        ("Luke Cage, Power Man", [1, 0, 0, 0, 0, 3], 2, 5),
+        ("M.O.D.O.K.", [0, 0, 2, 0, 0, 3], 2, 2),
+    ] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let id = put(&mut g, p, name, Zone::Hand);
+        g.state.players[p.index()].mana = mana;
+        cast(&mut g, id, None);
+        assert_eq!(
+            g.state.players[p.index()].mana,
+            [0; 6],
+            "{name}: literal paid cast cost"
+        );
+        super::msh_a::until(&mut g, |g| g.object_view(id).zone == Zone::Battlefield);
+        assert_eq!(
+            stats(&g, id),
+            (power, toughness),
+            "{name}: independent printed base body"
+        );
+        assert!(g.is_creature(id), "{name}");
+    }
 }

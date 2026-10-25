@@ -838,6 +838,66 @@ fn msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history() {
         15,
         "five real combat damage"
     );
+    let mut shield = scenario(p);
+    put(
+        &mut shield,
+        p,
+        "Doc Samson, Super Psychiatrist",
+        Zone::Battlefield,
+    );
+    let captain = spell(
+        &mut shield,
+        p,
+        "Captain America, Super-Soldier",
+        [2, 0, 0, 0, 0, 2],
+        None,
+    );
+    resolved(&mut shield);
+    assert_eq!(
+        shield.counter_count(captain, CounterKind::Shield),
+        2,
+        "the replacement also adds one to a non-plus-one counter kind"
+    );
+    for placer in [p, p.other()] {
+        let mut scoped = scenario(placer);
+        put(
+            &mut scoped,
+            p,
+            "Doc Samson, Super Psychiatrist",
+            Zone::Battlefield,
+        );
+        let ant = put(
+            &mut scoped,
+            placer,
+            "Ant-Man, Colony Commander",
+            Zone::Battlefield,
+        );
+        let recipient = put(&mut scoped, placer.other(), "Bear Cub", Zone::Battlefield);
+        scoped.state.players[placer.index()].mana = [0, 0, 0, 0, 0, 1];
+        attack(&mut scoped, &[ant]);
+        until(&mut scoped, |g| {
+            g.legal_actions().contains(&Action::DeclineResolutionMana)
+        });
+        act(
+            &mut scoped,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        until(&mut scoped, |g| {
+            g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(recipient),
+            })
+        });
+        target(&mut scoped, Target::Card(recipient));
+        finish_targets(&mut scoped);
+        resolved(&mut scoped);
+        assert_eq!(
+            scoped.counter_count(recipient, CounterKind::PlusOne),
+            1,
+            "Samson needs both own placer and own recipient, placer={placer:?}"
+        );
+    }
 }
 
 #[test]

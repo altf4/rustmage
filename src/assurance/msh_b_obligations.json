@@ -26,7 +26,8 @@
           "printed": "{2}{B}{B}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Elektra, Daughter of the Hand",
@@ -42,7 +43,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Elektra, Daughter of the Hand",
@@ -50,7 +52,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Elektra, Daughter of the Hand",
@@ -363,7 +366,8 @@
           "printed": "{4}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Falcon, Winged Wonder",
@@ -379,7 +383,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Falcon, Winged Wonder",
@@ -387,7 +392,8 @@
           "printed": "4",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Falcon, Winged Wonder",
@@ -452,7 +458,8 @@
           "printed": "{2}{R}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Fin Fang Foom",
@@ -468,7 +475,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Fin Fang Foom",
@@ -476,7 +484,8 @@
           "printed": "5",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Fin Fang Foom",
@@ -927,7 +936,8 @@
           "printed": "{2}{U/B}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Ghost, Spectral Saboteur",
@@ -943,7 +953,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Ghost, Spectral Saboteur",
@@ -951,7 +962,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Ghost, Spectral Saboteur",
@@ -1068,7 +1080,8 @@
           "printed": "{3}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Giant-Sized Flying Ant",
@@ -1084,7 +1097,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Giant-Sized Flying Ant",
@@ -1092,7 +1106,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Giant-Sized Flying Ant",
@@ -1408,7 +1423,8 @@
           "printed": "{3}{B}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Grim Reaper, Lethal Legionnaire",
@@ -1424,7 +1440,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Grim Reaper, Lethal Legionnaire",
@@ -1432,7 +1449,8 @@
           "printed": "4",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Grim Reaper, Lethal Legionnaire",
@@ -1476,7 +1494,8 @@
           "printed": "{1}{G}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Guerrilla Gorilla",
@@ -1492,7 +1511,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Guerrilla Gorilla",
@@ -1500,7 +1520,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Guerrilla Gorilla",
@@ -1565,7 +1586,8 @@
           "printed": "{4}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "H.E.R.B.I.E. Scout Unit",
@@ -1581,7 +1603,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "H.E.R.B.I.E. Scout Unit",
@@ -1589,7 +1612,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "H.E.R.B.I.E. Scout Unit",
@@ -1769,7 +1793,8 @@
           "printed": "{1}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "HYDRA Assault Robot",
@@ -1785,7 +1810,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "HYDRA Assault Robot",
@@ -1793,7 +1819,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "HYDRA Assault Robot",
@@ -1910,7 +1937,8 @@
           "printed": "{2}{B}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "HYDRA Troopers",
@@ -1926,7 +1954,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "HYDRA Troopers",
@@ -1934,7 +1963,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "HYDRA Troopers",
@@ -2080,7 +2110,8 @@
           "printed": "{1}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hawkeye, Master Marksman",
@@ -2096,7 +2127,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hawkeye, Master Marksman",
@@ -2104,7 +2136,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hawkeye, Master Marksman",
@@ -2232,7 +2265,8 @@
           "printed": "{3}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hawkeye, Young Avenger",
@@ -2248,7 +2282,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hawkeye, Young Avenger",
@@ -2256,7 +2291,8 @@
           "printed": "4",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hawkeye, Young Avenger",
@@ -2488,7 +2524,8 @@
           "printed": "{G}{G}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hellcat, Undying Vigilante",
@@ -2504,7 +2541,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hellcat, Undying Vigilante",
@@ -2512,7 +2550,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hellcat, Undying Vigilante",
@@ -2577,7 +2616,8 @@
           "printed": "{2}{G}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hercules, Prince of Power",
@@ -2593,7 +2633,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hercules, Prince of Power",
@@ -2601,7 +2642,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hercules, Prince of Power",
@@ -2645,7 +2687,8 @@
           "printed": "{2}{W}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hero in Training",
@@ -2661,7 +2704,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hero in Training",
@@ -2669,7 +2713,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hero in Training",
@@ -3015,7 +3060,8 @@
           "printed": "{3}{R}{G}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hulk, Gamma Goliath",
@@ -3031,7 +3077,8 @@
           "printed": "6",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hulk, Gamma Goliath",
@@ -3039,7 +3086,8 @@
           "printed": "5",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hulk, Gamma Goliath",
@@ -3125,7 +3173,8 @@
           "printed": "{2}{G}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hulkling, Burgeoning Bruiser",
@@ -3141,7 +3190,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hulkling, Burgeoning Bruiser",
@@ -3149,7 +3199,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hulkling, Burgeoning Bruiser",
@@ -3214,7 +3265,8 @@
           "printed": "{2}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Human Torch, Johnny Storm",
@@ -3230,7 +3282,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Human Torch, Johnny Storm",
@@ -3238,7 +3291,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Human Torch, Johnny Storm",
@@ -3324,7 +3378,8 @@
           "printed": "{1}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hydraulic Helper",
@@ -3340,7 +3395,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hydraulic Helper",
@@ -3348,7 +3404,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Hydraulic Helper",
@@ -3494,7 +3551,8 @@
           "printed": "{4}{W}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Invisible Woman, Sue Storm",
@@ -3510,7 +3568,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Invisible Woman, Sue Storm",
@@ -3518,7 +3577,8 @@
           "printed": "5",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Invisible Woman, Sue Storm",
@@ -3583,7 +3643,8 @@
           "printed": "{2}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Iron Fist, Living Weapon",
@@ -3599,7 +3660,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Iron Fist, Living Weapon",
@@ -3607,7 +3669,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Iron Fist, Living Weapon",
@@ -3651,7 +3714,8 @@
           "printed": "{2}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Iron Lad, Diverging Destiny",
@@ -3667,7 +3731,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Iron Lad, Diverging Destiny",
@@ -3675,7 +3740,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Iron Lad, Diverging Destiny",
@@ -3892,7 +3958,8 @@
           "printed": "{2}{U}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Iron Man, Master of Machines",
@@ -3908,7 +3975,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Iron Man, Master of Machines",
@@ -3916,7 +3984,8 @@
           "printed": "4",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Iron Man, Master of Machines",
@@ -4002,7 +4071,8 @@
           "printed": "{4}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Ironheart, Clever Champion",
@@ -4018,7 +4088,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Ironheart, Clever Champion",
@@ -4026,7 +4097,8 @@
           "printed": "4",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Ironheart, Clever Champion",
@@ -4164,7 +4236,8 @@
           "printed": "{1}{W}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Jennifer Walters",
@@ -4180,7 +4253,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Jennifer Walters",
@@ -4188,7 +4262,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Jennifer Walters",
@@ -4238,7 +4313,8 @@
           "printed": "{3}{G}{W}{W}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "The Sensational She-Hulk",
@@ -4254,7 +4330,8 @@
           "printed": "6",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "The Sensational She-Hulk",
@@ -4262,7 +4339,8 @@
           "printed": "6",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "The Sensational She-Hulk",
@@ -4348,7 +4426,8 @@
           "printed": "{2}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Jessica Jones, Private Eye",
@@ -4364,7 +4443,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Jessica Jones, Private Eye",
@@ -4372,7 +4452,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Jessica Jones, Private Eye",
@@ -4416,7 +4497,8 @@
           "printed": "{2}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Justice, Vance Astrovik",
@@ -4432,7 +4514,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Justice, Vance Astrovik",
@@ -4440,7 +4523,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Justice, Vance Astrovik",
@@ -4526,7 +4610,8 @@
           "printed": "{1}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "K'un-Lun Warrior",
@@ -4542,7 +4627,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "K'un-Lun Warrior",
@@ -4550,7 +4636,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "K'un-Lun Warrior",
@@ -4594,7 +4681,8 @@
           "printed": "{4}{G}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Ka-Zar of the Savage Land",
@@ -4610,7 +4698,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Ka-Zar of the Savage Land",
@@ -4618,7 +4707,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Ka-Zar of the Savage Land",
@@ -4704,7 +4794,8 @@
           "printed": "{2}{U}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kang the Conqueror",
@@ -4720,7 +4811,8 @@
           "printed": "4",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kang the Conqueror",
@@ -4728,7 +4820,8 @@
           "printed": "5",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kang the Conqueror",
@@ -4793,7 +4886,8 @@
           "printed": "{2}{U}{B}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kang, Temporal Tyrant",
@@ -4809,7 +4903,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kang, Temporal Tyrant",
@@ -4817,7 +4912,8 @@
           "printed": "4",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kang, Temporal Tyrant",
@@ -4882,7 +4978,8 @@
           "printed": "{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kid Loki",
@@ -4898,7 +4995,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kid Loki",
@@ -4906,7 +5004,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kid Loki",
@@ -4979,7 +5078,8 @@
           "printed": "{2}{B}{G}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Killmonger, Scourge of Wakanda",
@@ -4995,7 +5095,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Killmonger, Scourge of Wakanda",
@@ -5003,7 +5104,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Killmonger, Scourge of Wakanda",
@@ -5068,7 +5170,8 @@
           "printed": "{1}{W}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "King T'Challa",
@@ -5084,7 +5187,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "King T'Challa",
@@ -5092,7 +5196,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "King T'Challa",
@@ -5163,7 +5268,8 @@
           "printed": "{4}{W}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Black Panther, Hope Enduring",
@@ -5179,7 +5285,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Black Panther, Hope Enduring",
@@ -5187,7 +5294,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Black Panther, Hope Enduring",
@@ -5294,7 +5402,8 @@
           "printed": "{2}{B}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kingpin's Enforcers",
@@ -5310,7 +5419,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kingpin's Enforcers",
@@ -5318,7 +5428,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kingpin's Enforcers",
@@ -5383,7 +5494,8 @@
           "printed": "{2}{B}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Klaw, Sonic Subjugator",
@@ -5399,7 +5511,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Klaw, Sonic Subjugator",
@@ -5407,7 +5520,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Klaw, Sonic Subjugator",
@@ -5451,7 +5565,8 @@
           "printed": "{1}{G}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Knight of Wundagore",
@@ -5467,7 +5582,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Knight of Wundagore",
@@ -5475,7 +5591,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Knight of Wundagore",
@@ -5540,7 +5657,8 @@
           "printed": "{2}{W}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kree Commandos",
@@ -5556,7 +5674,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kree Commandos",
@@ -5564,7 +5683,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kree Commandos",
@@ -5629,7 +5749,8 @@
           "printed": "{4}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kree Sentinel",
@@ -5645,7 +5766,8 @@
           "printed": "5",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kree Sentinel",
@@ -5653,7 +5775,8 @@
           "printed": "5",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Kree Sentinel",
@@ -5718,7 +5841,8 @@
           "printed": "{2}{U}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Leader, Super-Genius",
@@ -5734,7 +5858,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Leader, Super-Genius",
@@ -5742,7 +5867,8 @@
           "printed": "3",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Leader, Super-Genius",
@@ -5859,7 +5985,8 @@
           "printed": "{1}{R}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Loki Laufeyson",
@@ -5875,7 +6002,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Loki Laufeyson",
@@ -5883,7 +6011,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Loki Laufeyson",
@@ -5948,7 +6077,8 @@
           "printed": "{1}{U}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Loki, God of Mischief",
@@ -5964,7 +6094,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Loki, God of Mischief",
@@ -5972,7 +6103,8 @@
           "printed": "1",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Loki, God of Mischief",
@@ -6110,7 +6242,8 @@
           "printed": "{3}{W}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Luke Cage, Power Man",
@@ -6126,7 +6259,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Luke Cage, Power Man",
@@ -6134,7 +6268,8 @@
           "printed": "5",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "Luke Cage, Power Man",
@@ -6186,7 +6321,8 @@
           "printed": "{3}{B}{B}",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "M.O.D.O.K.",
@@ -6202,7 +6338,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "M.O.D.O.K.",
@@ -6210,7 +6347,8 @@
           "printed": "2",
           "status": "independent_source_fact",
           "test": null,
-          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant."
+          "qualification": "Printed header fact; not itself counted as meaningful behavior evidence. Literal cast payments and concrete stats are asserted in named scenarios where relevant. Supplemental literal paid-cost/base-body table covers the physical front; modal backs retain their focused face scenarios.",
+          "supplementary_test": "engine::assurance::msh_b::msh_b_literal_paid_creature_costs_and_base_bodies"
         },
         {
           "face": "M.O.D.O.K.",
