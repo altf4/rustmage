@@ -17335,14 +17335,6 @@
     "journal": "b57420d067cd09ad",
     "observations": "3b650ca68b3daf52"
   },
-  "The Coming of Galactus": {
-    "root": "main",
-    "status": "completed",
-    "decisions": 7,
-    "zone": "Battlefield",
-    "journal": "1fa2e414f0dfe395",
-    "observations": "4f4a40a281675e35"
-  },
   "The Crystal's Chosen": {
     "root": "main",
     "status": "completed",
@@ -18326,14 +18318,6 @@
     "zone": "Battlefield",
     "journal": "b43781f2834dd88f",
     "observations": "36c5473858eb102a"
-  },
-  "U.S.Agent, John Walker": {
-    "root": "main",
-    "status": "completed",
-    "decisions": 7,
-    "zone": "Battlefield",
-    "journal": "c788bd6ffad9aa32",
-    "observations": "ebdea9dc4576aeb6"
   },
   "Ulna Alley Shopkeep": {
     "root": "main",
