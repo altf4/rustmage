@@ -895,3 +895,103 @@ fn msh_teamwork_funding_scalability_ordinary_nay_fixed_equipment_and_empty_board
         }
     }
 }
+
+// Test-only borrowed view counts availability requests without changing any fact.
+struct AvailabilityProbe<'a, W: CharacteristicWorld + ?Sized> {
+    world: &'a W,
+    checks: Cell<usize>,
+}
+impl<'a, W: CharacteristicWorld + ?Sized> AvailabilityProbe<'a, W> {
+    fn new(world: &'a W) -> Self {
+        Self {
+            world,
+            checks: Cell::new(0),
+        }
+    }
+}
+impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for AvailabilityProbe<'_, W> {
+    fn game(&self) -> &Game {
+        self.world.game()
+    }
+    fn object(&self, id: CardId) -> &Object {
+        self.world.object(id)
+    }
+    fn static_sources(&self) -> &[CardId] {
+        self.world.static_sources()
+    }
+    fn life(&self, player: Player) -> i128 {
+        self.world.life(player)
+    }
+    fn gained_life(&self, player: Player) -> bool {
+        self.world.gained_life(player)
+    }
+    fn attacking(&self, id: CardId) -> bool {
+        self.world.attacking(id)
+    }
+    fn fragment_available(
+        &self,
+        id: CardId,
+        matches: impl Fn(&crate::cards::StaticAbilityFragment) -> bool,
+    ) -> bool {
+        self.checks.set(self.checks.get() + 1);
+        self.world.fragment_available(id, matches)
+    }
+}
+#[test]
+fn msh_improvise_performance_filters_unrelated_providers_before_availability() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let agent = named(&mut g, p, "Agent Maria Hill", Zone::Hand);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 0];
+        cast(&mut g, agent, None, &[]);
+        settle(&mut g);
+        let harness = named(&mut g, p, "Falcon's Wing Harness", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 1];
+        cast(&mut g, harness, None, &[]);
+        settle(&mut g);
+        let shield = named(&mut g, p, "Captain America's Shield", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        cast(&mut g, shield, None, &[]);
+        settle(&mut g);
+        // Bounded keyword-counter placement activates the genuine shared layer evaluator.
+        g.set_counters(agent, Counters::of(CounterKind::Flying, 1));
+        assert!(ability_evaluation::evaluate_if_needed(&g).is_some());
+        let spell = named(&mut g, p, "Atlantis Attacks", Zone::Hand);
+        let definition = g.state.objects[spell as usize].card;
+        let probe = AvailabilityProbe::new(&g);
+        assert!(!improvise::available(&probe, p, definition));
+        assert_eq!(probe.checks.get(), 0);
+        let funding = world(&g, p, spell, context(&g, p, spell));
+        let probe = AvailabilityProbe::new(&funding);
+        assert!(!improvise::available(&probe, p, definition));
+        assert_eq!(probe.checks.get(), 0);
+        let iron = paid_iron(&mut g, p);
+        let probe = AvailabilityProbe::new(&g);
+        assert!(improvise::available(&probe, p, definition));
+        assert_eq!(probe.checks.get(), 1);
+        let foreign = AvailabilityProbe::new(&g);
+        assert!(!improvise::available(&foreign, p.other(), definition));
+        assert_eq!(foreign.checks.get(), 0);
+        let aura = named(&mut g, p, "Witness Protection", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 0];
+        cast(&mut g, aura, None, &[Target::Card(iron)]);
+        settle(&mut g);
+        let probe = AvailabilityProbe::new(&g);
+        assert!(!improvise::available(&probe, p, definition));
+        assert_eq!(probe.checks.get(), 1);
+        let before = g.snapshot();
+        let funding = world(&g, p, spell, context(&g, p, spell));
+        let probe = AvailabilityProbe::new(&funding);
+        assert!(!improvise::available(&probe, p, definition));
+        assert_eq!(probe.checks.get(), 1);
+        assert!(
+            funding.cost_departures(&[g.object_ref(aura)], Zone::Graveyard, &mut |next| {
+                let probe = AvailabilityProbe::new(next);
+                assert!(improvise::available(&probe, p, definition));
+                assert_eq!(probe.checks.get(), 1);
+                true
+            })
+        );
+        assert_eq!(g.snapshot(), before);
+    }
+}
