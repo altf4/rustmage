@@ -166,6 +166,9 @@ pub use evidence::{EvidenceEventView, EvidenceView};
 #[path = "engine_library_selection.rs"]
 mod library_selection;
 pub use library_selection::{EntryTransformChoiceView, LibrarySelectionView};
+#[path = "engine_return_attachment.rs"]
+mod return_attachment;
+pub use return_attachment::EquipmentAttachmentView;
 
 #[path = "engine_forage.rs"]
 mod forage;
@@ -672,6 +675,7 @@ define_actions! {
     ChooseSearchDestination { destination: crate::SearchDestination },
     SelectLibrary { card: CardId },
     FinishLibrarySelection,
+    ChooseEquipmentAttachment { equipment: Option<ObjectRef> },
     OrderLibraryBottom { card: CardId },
     ArrangeLibrary {
         card: CardId,
@@ -1628,6 +1632,9 @@ enum Pending {
     Legend {
         player: Player,
     },
+    EquipmentAttachment {
+        player: Player,
+    },
     EffectLibrarySelection {
         player: Player,
     },
@@ -2296,6 +2303,8 @@ pub struct Observation {
     pub library_selection: Option<LibrarySelectionView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entry_transform: Option<EntryTransformChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub equipment_attachment: Option<EquipmentAttachmentView>,
     pub target_library: Option<TargetLibraryView>,
     pub last_target_library_move: Option<TargetLibraryMovement>,
     pub recovery_choice: Option<RecoveryChoiceView>,
@@ -2660,6 +2669,7 @@ impl Game {
             | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
+            | Pending::EquipmentAttachment { player }
             | Pending::EffectLibrarySelection { player }
             | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
@@ -4371,6 +4381,9 @@ impl Game {
                     }
                 }
             }
+            Pending::EquipmentAttachment { .. } => {
+                return self.visit_return_attachment_actions(emit);
+            }
             Pending::EffectLibrarySelection { .. } => {
                 let f = s.resolving.as_ref().unwrap().selection.as_ref().unwrap();
                 if f.ordering {
@@ -5226,6 +5239,9 @@ impl Game {
                 self.choose_search_destination(actor, destination)
             }
             Action::SelectLibrary { card } => self.choose_library_selection(card),
+            Action::ChooseEquipmentAttachment { equipment } => {
+                self.choose_equipment_attachment(equipment)
+            }
             Action::FinishLibrarySelection => self.finish_library_selection(actor),
             Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
             Action::ArrangeLibrary { card, destination } => {
@@ -6922,6 +6938,7 @@ impl Game {
                 Pending::Forage { .. } => "forage",
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
+                Pending::EquipmentAttachment { .. } => "equipment_attachment",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
                 Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
@@ -7210,6 +7227,7 @@ impl Game {
             },
             library_selection: self.library_selection_view(viewer),
             entry_transform: self.entry_transform_choice_view(),
+            equipment_attachment: self.equipment_attachment_view(),
             target_library: self.target_library_view(viewer),
             last_target_library_move: s.last_target_library_move.as_deref().copied(),
             library_choice: if owns_choice {
@@ -7594,6 +7612,9 @@ impl Game {
                             })
                             .unwrap_or(0)
                         + resolution.selection.as_ref().map_or(0, |f| f.bytes())
+                        + resolution.return_attachment.as_ref().map_or(0, |_| {
+                            std::mem::size_of::<return_attachment::ReturnAttachment>()
+                        })
                         + resolution
                             .selected_discards
                             .iter()

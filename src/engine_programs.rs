@@ -34,6 +34,7 @@ pub(super) struct Resolution {
     pub milled_selection: Option<Box<super::milled_selection::MilledSelection>>,
     pub library: Option<LibraryChoice>,
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
+    pub return_attachment: Option<Box<super::return_attachment::ReturnAttachment>>,
     pub search: Option<Box<super::search::SearchChoice>>,
     pub optional_searches: Option<Box<super::search::OptionalSearchSequence>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
@@ -1878,6 +1879,7 @@ impl Game {
             milled_selection: None,
             library: None,
             selection: None,
+            return_attachment: None,
             target_library: None,
             search: None,
             optional_searches: None,
@@ -2007,6 +2009,9 @@ impl Game {
                 continue;
             }
             if self.advance_optional_searches() {
+                return;
+            }
+            if self.advance_return_attachment() {
                 return;
             }
             if self.finish_entered_library_selection() {
@@ -2659,6 +2664,9 @@ impl Game {
                             self.remember_library_top(owner, event.after);
                         }
                     }
+                }
+                Instruction::ReturnSourceWithCounterAndEquipment(counter) => {
+                    self.return_source_with_equipment(&item, counter);
                 }
                 Instruction::ReturnSourceToBattlefield { tapped } => {
                     if self.object_ref(item.card) == item.object

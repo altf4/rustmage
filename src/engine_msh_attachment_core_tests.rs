@@ -363,3 +363,244 @@ fn msh_attachment_core_paid_winter_live_equipment_count_same_in_virtual_world() 
         assert_eq!(g.stats(winter).power, 2 + 4 + base * 2);
     }
 }
+
+fn activate_return(g: &mut Game, p: Player, winter: CardId) {
+    priority(g, p);
+    g.state.players[p.index()].mana = [1, 0, 1, 0, 0, 3];
+    checked(
+        g,
+        Action::AnnounceActivate {
+            card: winter,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    finish(g);
+    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+}
+#[test]
+fn msh_attachment_core_paid_winter_return_finality_and_public_optional_nontargeting_attachment() {
+    for p in [Player::P0, Player::P1] {
+        for accept in [false, true] {
+            let mut g = setup(p);
+            let pole = paid(&mut g, p, "Fishing Pole", &[]);
+            let old_bear = paid(&mut g, p, "Bear Cub", &[]);
+            equip(&mut g, p, pole, old_bear);
+            let winter = seed(&mut g, p, WINTER, Zone::Graveyard);
+            let foreign = named(&mut g, p.other(), "Fishing Pole", Zone::Battlefield);
+            let old = g.object_ref(winter);
+            activate_return(&mut g, p, winter);
+            let ability = g.state.stack.last().unwrap().clone();
+            assert_eq!(ability.object, old);
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::EquipmentAttachment { .. })
+            });
+            assert_eq!(g.actor(), Some(p));
+            assert_ne!(g.object_ref(winter), old);
+            assert_eq!(g.counter_count(winter, CounterKind::Finality), 1);
+            assert_eq!(g.state.resolving.as_ref().unwrap().item.object, old);
+            assert_eq!(
+                g.state.resolving.as_ref().unwrap().item.source_facts,
+                ability.source_facts
+            );
+            let a = g.observe(p).equipment_attachment.unwrap();
+            let b = g.observe(p.other()).equipment_attachment.unwrap();
+            assert_eq!(
+                serde_json::to_value(&a).unwrap(),
+                serde_json::to_value(&b).unwrap()
+            );
+            assert_eq!(a.recipient.reference, g.object_ref(winter));
+            assert_eq!(a.candidates, vec![g.object_ref(pole)]);
+            assert!(g.state.resolving.as_ref().unwrap().item.targets.is_empty());
+            for bad in [g.object_ref(foreign), g.object_ref(old_bear), old] {
+                reject(
+                    &mut g,
+                    Action::ChooseEquipmentAttachment {
+                        equipment: Some(bad),
+                    },
+                );
+            }
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(pole),
+                },
+            );
+            let equipment = accept.then(|| g.object_ref(pole));
+            g = orphan(g, Action::ChooseEquipmentAttachment { equipment });
+            settle(&mut g);
+            assert_eq!(
+                g.state.objects[pole as usize].attached_to,
+                Some(g.object_ref(if accept { winter } else { old_bear }))
+            );
+            assert!(g.observe(p).equipment_attachment.is_none());
+            assert!(g.state.resolving.is_none());
+            paid(&mut g, p, "Murder", &[Target::Card(winter)]);
+            assert_eq!(g.object_view(winter).zone, Zone::Exile);
+            assert_eq!(g.counter_count(winter, CounterKind::Finality), 0);
+            assert!(
+                !g.legal_actions()
+                    .iter()
+                    .any(|a| matches!(a, Action::AnnounceActivate { card, .. } if *card==winter))
+            );
+        }
+    }
+}
+#[test]
+fn msh_attachment_core_paid_winter_two_queued_activations_only_successful_return_attaches() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let pole = paid(&mut g, p, "Fishing Pole", &[]);
+        let winter = seed(&mut g, p, WINTER, Zone::Graveyard);
+        let old = g.object_ref(winter);
+        activate_return(&mut g, p, winter);
+        activate_return(&mut g, p, winter);
+        assert_eq!(g.state.stack.len(), 2);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EquipmentAttachment { .. })
+        });
+        let returned = g.object_ref(winter);
+        assert_ne!(returned, old);
+        g = orphan(g, Action::ChooseEquipmentAttachment { equipment: None });
+        assert!(g.state.stack.iter().any(|s| s.object == old));
+        until(&mut g, |g| {
+            g.state.stack.is_empty()
+                && g.state.resolving.is_none()
+                && g.state.pending == Pending::Priority
+        });
+        assert_eq!(g.object_ref(winter), returned);
+        assert_eq!(g.counter_count(winter, CounterKind::Finality), 1);
+        assert_eq!(g.state.objects[pole as usize].attached_to, None);
+    }
+}
+#[test]
+fn msh_attachment_core_paid_winter_old_graveyard_incarnation_cannot_return_or_attach_new_one() {
+    for p in [Player::P0, Player::P1] {
+        for back_to_graveyard in [false, true] {
+            let mut g = setup(p);
+            let pole = paid(&mut g, p, "Fishing Pole", &[]);
+            let winter = seed(&mut g, p, WINTER, Zone::Graveyard);
+            let old = g.object_ref(winter);
+            activate_return(&mut g, p, winter);
+            packet(&mut g, p, "Raise the Past", &[]);
+            until(&mut g, |g| {
+                g.on_battlefield(winter) && g.state.pending == Pending::Priority
+            });
+            assert_ne!(g.object_ref(winter), old);
+            assert_eq!(g.counter_count(winter, CounterKind::Finality), 0);
+            if back_to_graveyard {
+                packet(&mut g, p, "Murder", &[Target::Card(winter)]);
+                until(&mut g, |g| {
+                    g.object_view(winter).zone == Zone::Graveyard
+                        && g.state.pending == Pending::Priority
+                });
+            }
+            let current = g.object_ref(winter);
+            until(&mut g, |g| {
+                g.state.stack.is_empty()
+                    && g.state.resolving.is_none()
+                    && g.state.pending == Pending::Priority
+            });
+            assert_eq!(g.object_ref(winter), current);
+            assert_eq!(
+                g.object_view(winter).zone,
+                if back_to_graveyard {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(g.state.objects[pole as usize].attached_to, None);
+            assert_eq!(g.counter_count(winter, CounterKind::Finality), 0);
+        }
+    }
+}
+fn two_seasons(g: &mut Game, p: Player) {
+    paid(g, p, "Doubling Season", &[]);
+    paid(g, p, "Doubling Season", &[]);
+}
+fn finish_replacements(g: &mut Game) {
+    while matches!(g.state.pending, Pending::Replacement { .. }) {
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseReplacement { .. }))
+            .unwrap();
+        checked(g, a);
+    }
+}
+#[test]
+fn msh_attachment_core_paid_winter_counter_entry_pause_precedes_public_attachment_and_owned_resume()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        two_seasons(&mut g, p);
+        let pole = paid(&mut g, p, "Fishing Pole", &[]);
+        let winter = seed(&mut g, p, WINTER, Zone::Graveyard);
+        activate_return(&mut g, p, winter);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::Replacement { .. })
+        });
+        assert_eq!(g.object_view(winter).zone, Zone::Graveyard);
+        assert!(g.observe(p).equipment_attachment.is_none());
+        let choice = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseReplacement { .. }))
+            .unwrap();
+        g = orphan(g, choice);
+        finish_replacements(&mut g);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::EquipmentAttachment { .. })
+        });
+        assert_eq!(g.counter_count(winter, CounterKind::Finality), 4);
+        let equipment = Some(g.object_ref(pole));
+        g = orphan(g, Action::ChooseEquipmentAttachment { equipment });
+        settle(&mut g);
+        assert_eq!(
+            g.state.objects[pole as usize].attached_to,
+            Some(g.object_ref(winter))
+        );
+    }
+}
+#[test]
+fn msh_attachment_core_winter_actual_entry_result_skipped_or_redirected_has_no_attachment_recipient()
+ {
+    for p in [Player::P0, Player::P1] {
+        for skipped in [false, true] {
+            let mut g = setup(p);
+            two_seasons(&mut g, p);
+            let pole = paid(&mut g, p, "Fishing Pole", &[]);
+            let winter = seed(&mut g, p, WINTER, Zone::Graveyard);
+            activate_return(&mut g, p, winter);
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::Replacement { .. })
+            });
+            // Bounded entry-transaction boundary: no claim that an admitted card
+            // currently produces an entry prohibition or this redirection.
+            let movement = &mut g.state.entry_batch.as_mut().unwrap().moves[0];
+            assert!(movement.equipment_after);
+            if skipped {
+                movement.skipped = true;
+            } else {
+                movement.destination = Zone::Exile;
+            }
+            finish_replacements(&mut g);
+            until(&mut g, |g| {
+                g.state.stack.is_empty()
+                    && g.state.resolving.is_none()
+                    && g.state.pending == Pending::Priority
+            });
+            assert_eq!(
+                g.object_view(winter).zone,
+                if skipped {
+                    Zone::Graveyard
+                } else {
+                    Zone::Exile
+                }
+            );
+            assert_eq!(g.state.objects[pole as usize].attached_to, None);
+            assert_eq!(g.counter_count(winter, CounterKind::Finality), 0);
+        }
+    }
+}

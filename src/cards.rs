@@ -1339,6 +1339,7 @@ pub(crate) enum Instruction {
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },
+    ReturnSourceWithCounterAndEquipment(CounterKind),
     ReturnSourceToBattlefield {
         tapped: bool,
     },
