@@ -36,7 +36,7 @@ fn bounded_program(game: &mut Game, item: SpellView, program: &'static [Instruct
 
 // Explicit owned objects for the two still-gated typed core consumers.
 // Normal supported fixtures keep their existing refusal of gated cards.
-fn gated(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
+pub(super) fn gated(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
     assert!(
         !card.is_supported(),

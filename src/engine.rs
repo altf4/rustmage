@@ -7903,3 +7903,7 @@ mod parity_library_core_tests;
 #[cfg(test)]
 #[path = "engine_msh_hand_entry_core_tests.rs"]
 mod msh_hand_entry_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_parity_library_paid_tests.rs"]
+mod msh_parity_library_paid_tests;
