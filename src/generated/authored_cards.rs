@@ -48635,8 +48635,17 @@ pub(super) mod card_5403 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/msh/the_invincible_iron_man.rs");
 }
+pub(super) mod card_5404 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/msh/the_incredible_hulk.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5404] = [
+pub(super) static RULES: [&CardRules; 5405] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54041,6 +54050,7 @@ pub(super) static RULES: [&CardRules; 5404] = [
     &card_5401::RULES,
     &card_5402::RULES,
     &card_5403::RULES,
+    &card_5404::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

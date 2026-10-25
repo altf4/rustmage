@@ -1183,6 +1183,9 @@ pub(crate) enum Instruction {
         required_all: bool,
     },
     AdditionalCombat,
+    ExtraTurn {
+        power_up_prohibited: bool,
+    },
     TransformSource,
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.

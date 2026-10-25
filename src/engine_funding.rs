@@ -2495,7 +2495,18 @@ impl Game {
                             |c| c.generic,
                         )
                         .checked_add(if announcement.has_x_cost() && power_up.is_none() {
-                            announcement.item.x.unwrap_or(0)
+                            announcement
+                                .item
+                                .x
+                                .unwrap_or(0)
+                                .checked_mul(
+                                    announcement
+                                        .item
+                                        .source_card
+                                        .activation(ability)
+                                        .x_symbols(),
+                                )
+                                .capacity("activation X cost exhausted")
                         } else {
                             0
                         })

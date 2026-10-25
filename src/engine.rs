@@ -8,6 +8,9 @@ mod mana_announcements;
 #[path = "engine_turn_facts.rs"]
 mod turn_facts;
 pub use turn_facts::TurnFactsView;
+#[path = "engine_turn_schedule.rs"]
+mod turn_schedule;
+pub use turn_schedule::{ExtraTurnView, TurnScheduleView};
 #[path = "engine_turn_skips.rs"]
 mod turn_skips;
 pub use mana_announcements::ManaAnnouncementView;
@@ -1720,6 +1723,7 @@ struct State {
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
     ending_turn: bool,
     turn_skips: Option<Box<[u64; 2]>>,
+    turn_schedule: Option<Box<TurnScheduleView>>,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
     controls: Option<Box<continuous_control::ControlState>>,
@@ -2217,6 +2221,8 @@ pub struct Observation {
     pub counter_placement_history: Vec<CounterPlacementHistoryView>,
     pub cast_entry_counters: Vec<CastEntryCounterView>,
     pub additional_combats: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub turn_schedule: Option<TurnScheduleView>,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
@@ -2481,6 +2487,7 @@ impl Game {
                 paradigm: None,
                 ending_turn: false,
                 turn_skips: None,
+                turn_schedule: None,
                 mana_lots: None,
                 linked_choices: None,
                 zone_rules: None,
@@ -6881,6 +6888,7 @@ impl Game {
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
             additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
+            turn_schedule: s.turn_schedule.as_deref().cloned(),
             must_be_blocked: s
                 .combat_rules
                 .as_ref()
@@ -7434,6 +7442,7 @@ impl Game {
                 std::mem::size_of::<Vec<ObjectRef>>()
                     + rows.len() * std::mem::size_of::<ObjectRef>()
             })
+            + turn_schedule::owned_bytes(&s.turn_schedule)
             + s.turn_skips
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<[u64; 2]>())
@@ -8157,3 +8166,7 @@ mod msh_serum_tests;
 #[cfg(test)]
 #[path = "engine_msh_armor_tony_tests.rs"]
 mod msh_armor_tony_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_bruce_kang_tests.rs"]
+mod msh_bruce_kang_tests;

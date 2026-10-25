@@ -3178,6 +3178,9 @@ impl Game {
                     self.state.damage_prevention_prohibited = true;
                 }
                 Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::ExtraTurn {
+                    power_up_prohibited,
+                } => self.add_extra_turn(item.controller, power_up_prohibited),
                 Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::ActivationX | Instruction::SourceCounterCost { .. } => (),

@@ -207,7 +207,13 @@ impl Announcement {
                             reduction,
                             self.activation_discount,
                             if self.power_up_costs.is_some() {
-                                self.item.x.unwrap_or(0)
+                                u64::from(self.item.x.unwrap_or(0))
+                                    * u64::from(match self.item.kind {
+                                        StackKind::ActivatedAbility { ability } => {
+                                            self.item.source_card.activation(ability).x_symbols()
+                                        }
+                                        _ => 0,
+                                    })
                             } else {
                                 0
                             },
