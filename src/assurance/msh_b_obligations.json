@@ -63,7 +63,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_sneak_and_attack_reanimation_use_real_combat",
-              "line": 1407
+              "line": 1457
             }
           ],
           "assertion_scope": "Declare an unblocked attacker, pay1BB and return it; Elektra enters tapped/attacking and destroys the opposing3/3.",
@@ -84,7 +84,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_sneak_and_attack_reanimation_use_real_combat",
-              "line": 1407
+              "line": 1457
             }
           ],
           "assertion_scope": "Declare an unblocked attacker, pay1BB and return it; Elektra enters tapped/attacking and destroys the opposing3/3.",
@@ -230,7 +230,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_control_duration_and_combat_only_target_damage",
-              "line": 1915
+              "line": 1979
             }
           ],
           "assertion_scope": "Paid2R steals and untaps2/2 with haste; no Villain ends this turn, MV5 Villain extends control through next own turn; haste still expires first cleanup.",
@@ -311,7 +311,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "keyword_qualification": "Source attachment/animation binding and shared actual flying/reach combat are distinct evidence. No separate equipped or animated-source combat case is claimed.",
@@ -400,7 +400,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -489,7 +489,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -510,7 +510,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_cast_target_events_copy_and_grant_without_recasting",
-              "line": 1171
+              "line": 1206
             }
           ],
           "assertion_scope": "Artifact-target copy retargets a second artifact, both become4/4 and draw twice; actual paid4 Soulstone Sanctuary animation thenG Growth targets the land-only nonartifact and is copied, making9/9. Fin receives exactly2 counters per cast.",
@@ -708,7 +708,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_tap_untap_aura_and_flash_boundaries",
-              "line": 695
+              "line": 715
             }
           ],
           "assertion_scope": "Paid2U creature Aura taps Kree Commandos, removes flying, and blocks untap during its controller next untap step.",
@@ -729,7 +729,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_tap_untap_aura_and_flash_boundaries",
-              "line": 695
+              "line": 715
             }
           ],
           "assertion_scope": "Paid2U creature Aura taps Kree Commandos, removes flying, and blocks untap during its controller next untap step.",
@@ -750,7 +750,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_tap_untap_aura_and_flash_boundaries",
-              "line": 695
+              "line": 715
             }
           ],
           "assertion_scope": "Paid2U creature Aura taps Kree Commandos, removes flying, and blocks untap during its controller next untap step.",
@@ -964,7 +964,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_tap_untap_aura_and_flash_boundaries",
-              "line": 695
+              "line": 715
             }
           ],
           "assertion_scope": "Cast with2B on opponent turn; actual attack cannot be blocked by opposing3/3 and deals2.",
@@ -985,7 +985,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_tap_untap_aura_and_flash_boundaries",
-              "line": 695
+              "line": 715
             }
           ],
           "assertion_scope": "Cast with2B on opponent turn; actual attack cannot be blocked by opposing3/3 and deals2.",
@@ -1105,7 +1105,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_tap_untap_aura_and_flash_boundaries",
-              "line": 695
+              "line": 715
             }
           ],
           "assertion_scope": "Paid3U on opponent turn; choose each distinct ETB mode and tap/untap an actual nonland artifact.",
@@ -1126,7 +1126,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -1147,7 +1147,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_tap_untap_aura_and_flash_boundaries",
-              "line": 695
+              "line": 715
             }
           ],
           "assertion_scope": "Paid3U on opponent turn; choose each distinct ETB mode and tap/untap an actual nonland artifact.",
@@ -1168,7 +1168,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_tap_untap_aura_and_flash_boundaries",
-              "line": 695
+              "line": 715
             }
           ],
           "assertion_scope": "Paid3U on opponent turn; choose each distinct ETB mode and tap/untap an actual nonland artifact.",
@@ -1189,7 +1189,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_tap_untap_aura_and_flash_boundaries",
-              "line": 695
+              "line": 715
             }
           ],
           "assertion_scope": "Paid3U on opponent turn; choose each distinct ETB mode and tap/untap an actual nonland artifact.",
@@ -1445,7 +1445,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_sneak_and_attack_reanimation_use_real_combat",
-              "line": 1407
+              "line": 1457
             }
           ],
           "assertion_scope": "Declared Reaper attack offers paid3B; independent target returns ownGY2/2 tapped/attacking with finality; later lethal Lightning Strike exiles it.",
@@ -1513,7 +1513,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -1534,7 +1534,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_sacrifice_discard_and_reflexive_targets",
-              "line": 1303
+              "line": 1347
             }
           ],
           "assertion_scope": "Actual sorcery activation sacrifices Gorilla before resolution; independently destroys a noncreature artifact and enchantment, rejecting artifact creature Hydraulic Helper. Actual reach block in keyword family.",
@@ -1602,7 +1602,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -2007,7 +2007,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "keyword_qualification": "Source attachment/animation binding and shared actual flying/reach combat are distinct evidence. No separate equipped or animated-source combat case is claimed.",
@@ -2117,7 +2117,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -2138,10 +2138,10 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_damage_replacement_arrows_and_alone_attack",
-              "line": 1859
+              "line": 1909
             }
           ],
-          "assertion_scope": "Declared tap pays3 and chooses three distinct modes: opposing creature cannot block, player takes2, exact card discarded then1 drawn; zero payment and first-strike combat in keyword family.",
+          "assertion_scope": "Declared tap pays3 and chooses three distinct modes: exact enemy cannot actually block (Block action rejected), opponent takes2, exact card discarded then1drawn; zero payment and actual first strike in keyword family.",
           "evidence_identity": {
             "card_index": 95,
             "face": "Hawkeye, Master Marksman",
@@ -2153,24 +2153,21 @@
           "kind": "oracle_paragraph",
           "paragraph": 3,
           "printed": "\u2022 Net \u2014 Target creature can't block this turn.",
-          "status": "partial_focused_evidence",
+          "status": "focused_scenario_mapping",
           "test": "msh_b_damage_replacement_arrows_and_alone_attack",
           "tests": [
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_damage_replacement_arrows_and_alone_attack",
-              "line": 1859
+              "line": 1909
             }
           ],
-          "assertion_scope": "Declared tap pays3 and chooses three distinct modes: opposing creature cannot block, player takes2, exact card discarded then1 drawn; zero payment and first-strike combat in keyword family.",
+          "assertion_scope": "Declared tap pays3 and chooses three distinct modes: exact enemy cannot actually block (Block action rejected), opponent takes2, exact card discarded then1drawn; zero payment and actual first strike in keyword family.",
           "evidence_identity": {
             "card_index": 95,
             "face": "Hawkeye, Master Marksman",
             "paragraph": 3
-          },
-          "unasserted_clauses": [
-            "An actual attempted block with that exact affected creature is not exercised; the flag alone is not treated as block-legality proof."
-          ]
+          }
         },
         {
           "face": "Hawkeye, Master Marksman",
@@ -2183,10 +2180,10 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_damage_replacement_arrows_and_alone_attack",
-              "line": 1859
+              "line": 1909
             }
           ],
-          "assertion_scope": "Declared tap pays3 and chooses three distinct modes: opposing creature cannot block, player takes2, exact card discarded then1 drawn; zero payment and first-strike combat in keyword family.",
+          "assertion_scope": "Declared tap pays3 and chooses three distinct modes: exact enemy cannot actually block (Block action rejected), opponent takes2, exact card discarded then1drawn; zero payment and actual first strike in keyword family.",
           "evidence_identity": {
             "card_index": 95,
             "face": "Hawkeye, Master Marksman",
@@ -2204,10 +2201,10 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_damage_replacement_arrows_and_alone_attack",
-              "line": 1859
+              "line": 1909
             }
           ],
-          "assertion_scope": "Declared tap pays3 and chooses three distinct modes: opposing creature cannot block, player takes2, exact card discarded then1 drawn; zero payment and first-strike combat in keyword family.",
+          "assertion_scope": "Declared tap pays3 and chooses three distinct modes: exact enemy cannot actually block (Block action rejected), opponent takes2, exact card discarded then1drawn; zero payment and actual first strike in keyword family.",
           "evidence_identity": {
             "card_index": 95,
             "face": "Hawkeye, Master Marksman",
@@ -2216,7 +2213,7 @@
         }
       ],
       "scenario": "msh_b_damage_replacement_arrows_and_alone_attack",
-      "asserted_interaction": "Declared tap pays3 and chooses three distinct modes: opposing creature cannot block, player takes2, exact card discarded then1 drawn; zero payment and first-strike combat in keyword family."
+      "asserted_interaction": "Declared tap pays3 and chooses three distinct modes: exact enemy cannot actually block (Block action rejected), opponent takes2, exact card discarded then1drawn; zero payment and actual first strike in keyword family."
     },
     {
       "index": 96,
@@ -2272,7 +2269,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -2293,7 +2290,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_damage_replacement_arrows_and_alone_attack",
-              "line": 1859
+              "line": 1909
             }
           ],
           "assertion_scope": "Current2-power Hawkeye increases own noncombat Lightning Strike3 to5; Reach block and combat-only exclusion are asserted in keyword family.",
@@ -2345,7 +2342,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_control_duration_and_combat_only_target_damage",
-              "line": 1915
+              "line": 1979
             }
           ],
           "assertion_scope": "NormalW deals2 to attacking3/3; Teamwork2 deals4/kills; idle creature target rejected; actual contributor tapped.",
@@ -2366,7 +2363,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_control_duration_and_combat_only_target_damage",
-              "line": 1915
+              "line": 1979
             }
           ],
           "assertion_scope": "NormalW deals2 to attacking3/3; Teamwork2 deals4/kills; idle creature target rejected; actual contributor tapped.",
@@ -2528,7 +2525,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_hellcat_return_is_blank_and_justice_uses_owner",
-              "line": 1468
+              "line": 1518
             }
           ],
           "assertion_scope": "Lethal3 returns own Hellcat3/3 with haste; immediate legal attack; second lethal3 stays in graveyard because death ability was lost. A stolen Hellcat returns under her owner control.",
@@ -2549,7 +2546,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_hellcat_return_is_blank_and_justice_uses_owner",
-              "line": 1468
+              "line": 1518
             }
           ],
           "assertion_scope": "Lethal3 returns own Hellcat3/3 with haste; immediate legal attack; second lethal3 stays in graveyard because death ability was lost. A stolen Hellcat returns under her owner control.",
@@ -2617,7 +2614,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_power_up_prices_lifetime_and_expiry",
-              "line": 759
+              "line": 779
             }
           ],
           "assertion_scope": "Aged source pays full4G, gets1counter and temporary keywords, cannot repeat even refilled; actual6 damage does not kill4/4; cleanup removes indestructible. Paid2G entrant then pays discounted2 and immediately attacks without tapping.",
@@ -2737,10 +2734,10 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_life_counters_optional_wall_and_once_limit",
-              "line": 1037
+              "line": 1057
             }
           ],
-          "assertion_scope": "Paid2G creates Food; paid2/tap/sac Food gains3 and optional distinct controlled targets each receive exactly1 counter. Duplicate target rejected in two-Hero batch.",
+          "assertion_scope": "Paid2G creates Food; paid2/tap/sac gains3 and allocates distinct controlled target counters. Simultaneous two-Hero placement creates one Sue Wall. On next own turn, actual Fisk Tower gain1 still triggers the permanent Feast and gives exactly one chosen creature a counter.",
           "evidence_identity": {
             "card_index": 102,
             "face": "Heroic Feast",
@@ -2752,28 +2749,25 @@
           "kind": "oracle_paragraph",
           "paragraph": 2,
           "printed": "Whenever you gain life, choose up to that many target creatures you control. Put a +1/+1 counter on each of them.",
-          "status": "partial_focused_evidence",
+          "status": "focused_scenario_mapping",
           "test": "msh_b_life_counters_optional_wall_and_once_limit",
           "tests": [
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_life_counters_optional_wall_and_once_limit",
-              "line": 1037
+              "line": 1057
             }
           ],
-          "assertion_scope": "Paid2G creates Food; paid2/tap/sac Food gains3 and optional distinct controlled targets each receive exactly1 counter. Duplicate target rejected in two-Hero batch.",
+          "assertion_scope": "Paid2G creates Food; paid2/tap/sac gains3 and allocates distinct controlled target counters. Simultaneous two-Hero placement creates one Sue Wall. On next own turn, actual Fisk Tower gain1 still triggers the permanent Feast and gives exactly one chosen creature a counter.",
           "evidence_identity": {
             "card_index": 102,
             "face": "Heroic Feast",
             "paragraph": 2
-          },
-          "unasserted_clauses": [
-            "No later-turn life-gain event checks that the granted trigger has expired."
-          ]
+          }
         }
       ],
       "scenario": "msh_b_life_counters_optional_wall_and_once_limit",
-      "asserted_interaction": "Paid2G creates Food; paid2/tap/sac Food gains3 and optional distinct controlled targets each receive exactly1 counter. Duplicate target rejected in two-Hero batch."
+      "asserted_interaction": "Paid2G creates Food; paid2/tap/sac gains3 and allocates distinct controlled target counters. Simultaneous two-Hero placement creates one Sue Wall. On next own turn, actual Fisk Tower gain1 still triggers the permanent Feast and gives exactly one chosen creature a counter."
     },
     {
       "index": 103,
@@ -2813,7 +2807,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_exile_draw_permissions_and_stun",
-              "line": 974
+              "line": 994
             }
           ],
           "assertion_scope": "Paid2R exiles all3 remaining hand cards and draws3; actual exiled land/spell played with normal costs; unused exact permission remains next own turn and expires at its cleanup.",
@@ -3058,7 +3052,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_power_up_prices_lifetime_and_expiry",
-              "line": 759
+              "line": 779
             }
           ],
           "assertion_scope": "Aged Hulk pays full6RG and gains5 counters\u219211/10; another aged Hercules costs1G because of generic3 reduction. Real reach and trample damage assignment in keyword family.",
@@ -3079,7 +3073,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_power_up_prices_lifetime_and_expiry",
-              "line": 759
+              "line": 779
             }
           ],
           "assertion_scope": "Aged Hulk pays full6RG and gains5 counters\u219211/10; another aged Hercules costs1G because of generic3 reduction. Real reach and trample damage assignment in keyword family.",
@@ -3100,7 +3094,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_power_up_prices_lifetime_and_expiry",
-              "line": 759
+              "line": 779
             }
           ],
           "assertion_scope": "Aged Hulk pays full6RG and gains5 counters\u219211/10; another aged Hercules costs1G because of generic3 reduction. Real reach and trample damage assignment in keyword family.",
@@ -3168,7 +3162,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_hulkling_rechecks_greater_power_or_toughness",
-              "line": 875
+              "line": 895
             }
           ],
           "assertion_scope": "Equal/smaller entry does not grow2/3; greater power3/3 OR greater toughness1/4 does. Response Growth makes resolution comparison fail.",
@@ -3189,7 +3183,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_hulkling_rechecks_greater_power_or_toughness",
-              "line": 875
+              "line": 895
             }
           ],
           "assertion_scope": "Equal/smaller entry does not grow2/3; greater power3/3 OR greater toughness1/4 does. Response Growth makes resolution comparison fail.",
@@ -3257,7 +3251,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -3278,7 +3272,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_power_up_prices_lifetime_and_expiry",
-              "line": 759
+              "line": 779
             }
           ],
           "assertion_scope": "Full6R gives3 counters\u21925/5; Forge draw with otherHero deals1 to chosen opponent, no otherHero does not trigger. Actual flying block rejection in keyword family.",
@@ -3299,7 +3293,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_power_up_prices_lifetime_and_expiry",
-              "line": 759
+              "line": 779
             }
           ],
           "assertion_scope": "Full6R gives3 counters\u21925/5; Forge draw with otherHero deals1 to chosen opponent, no otherHero does not trigger. Actual flying block rejection in keyword family.",
@@ -3367,7 +3361,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -3388,7 +3382,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_artifact_live_stats_restricted_mana_and_improvise",
-              "line": 1782
+              "line": 1832
             }
           ],
           "assertion_scope": "Actual tap produces restrictedU; nonartifact Opt announcement rejected, artifact Forge accepts the same lot. Actual defender attack rejected in keyword family.",
@@ -3440,7 +3434,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_artifact_live_stats_restricted_mana_and_improvise",
-              "line": 1782
+              "line": 1832
             }
           ],
           "assertion_scope": "Paid2U animates real noncreature artifact4/4Flying, draws exactly1, reverts at cleanup; copied retargeted animation also resolves in cast-target family.",
@@ -3448,7 +3442,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "keyword_qualification": "Source attachment/animation binding and shared actual flying/reach combat are distinct evidence. No separate equipped or animated-source combat case is claimed.",
@@ -3469,7 +3463,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_artifact_live_stats_restricted_mana_and_improvise",
-              "line": 1782
+              "line": 1832
             }
           ],
           "assertion_scope": "Paid2U animates real noncreature artifact4/4Flying, draws exactly1, reverts at cleanup; copied retargeted animation also resolves in cast-target family.",
@@ -3537,7 +3531,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -3558,7 +3552,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_life_counters_optional_wall_and_once_limit",
-              "line": 1037
+              "line": 1057
             }
           ],
           "assertion_scope": "AnotherHero counter placement may create colorless0/4WallDefender; own-source counter excluded. Actual simultaneous twoHero batch creates only1 Wall; lifelink combat in keyword family.",
@@ -3620,28 +3614,25 @@
           "kind": "oracle_paragraph",
           "paragraph": 1,
           "printed": "Whenever you cast a spell that targets a creature you control, Iron Fist gains \"{T}: Iron Fist deals damage equal to his power to any other target\" until end of turn.",
-          "status": "partial_focused_evidence",
+          "status": "focused_scenario_mapping",
           "test": "msh_b_cast_target_events_copy_and_grant_without_recasting",
           "tests": [
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_cast_target_events_copy_and_grant_without_recasting",
-              "line": 1171
+              "line": 1206
             }
           ],
-          "assertion_scope": "PaidG spell targets own Fist, grants actual tap activation; own source excluded as target, opponent takes current5 power; no recast/cost of original spell.",
+          "assertion_scope": "PaidG spell targeting own Fist grants genuine tap activation; own source excluded, opponent takes current5power. After cleanup/next own untap, temporary activation is absent from legal actions.",
           "evidence_identity": {
             "card_index": 113,
             "face": "Iron Fist, Living Weapon",
             "paragraph": 1
-          },
-          "unasserted_clauses": [
-            "No cleanup-to-next-turn action checks removal of this granted activation."
-          ]
+          }
         }
       ],
       "scenario": "msh_b_cast_target_events_copy_and_grant_without_recasting",
-      "asserted_interaction": "PaidG spell targets own Fist, grants actual tap activation; own source excluded as target, opponent takes current5 power; no recast/cost of original spell."
+      "asserted_interaction": "PaidG spell targeting own Fist grants genuine tap activation; own source excluded, opponent takes current5power. After cleanup/next own untap, temporary activation is absent from legal actions."
     },
     {
       "index": 114,
@@ -3697,7 +3688,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -3718,7 +3709,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_top_library_look_draw_and_land_allowance",
-              "line": 921
+              "line": 941
             }
           ],
           "assertion_scope": "Owner-only exact top look; tap reveals artifact and draws1, nonartifact stays, empty top causes no failed draw/outcome. Flying/vigilance also asserted/used in keyword family.",
@@ -3739,7 +3730,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_top_library_look_draw_and_land_allowance",
-              "line": 921
+              "line": 941
             }
           ],
           "assertion_scope": "Owner-only exact top look; tap reveals artifact and draws1, nonartifact stays, empty top causes no failed draw/outcome. Flying/vigilance also asserted/used in keyword family.",
@@ -3794,7 +3785,7 @@
               "line": 596
             }
           ],
-          "assertion_scope": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Paid2 animation detaches, is1/1 then2/2 after another artifact; repeated activation while creature does not duplicate bonus; cleanup reverts noncreature.",
+          "assertion_scope": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Aged paid2 animation detaches, is1/1 then2/2 after another artifact, repeated activation adds no duplicate grant. Animated creature actually attacks over a rejected ground blocker for2; cleanup restores noncreature.",
           "evidence_identity": {
             "card_index": 115,
             "face": "Iron Man Armor",
@@ -3815,12 +3806,12 @@
               "line": 596
             }
           ],
-          "assertion_scope": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Paid2 animation detaches, is1/1 then2/2 after another artifact; repeated activation while creature does not duplicate bonus; cleanup reverts noncreature.",
+          "assertion_scope": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Aged paid2 animation detaches, is1/1 then2/2 after another artifact, repeated activation adds no duplicate grant. Animated creature actually attacks over a rejected ground blocker for2; cleanup restores noncreature.",
           "shared_primitive_tests": [
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "keyword_qualification": "Source attachment/animation binding and shared actual flying/reach combat are distinct evidence. No separate equipped or animated-source combat case is claimed.",
@@ -3835,7 +3826,7 @@
           "kind": "oracle_paragraph",
           "paragraph": 3,
           "printed": "{2}: If this Equipment isn't a creature, it becomes a 0/0 Construct Hero artifact creature with flying and \"This creature gets +1/+1 for each artifact you control\" until end of turn.",
-          "status": "partial_focused_evidence",
+          "status": "focused_scenario_mapping",
           "test": "msh_b_equipment_attaches_pays_and_animates",
           "tests": [
             {
@@ -3844,23 +3835,20 @@
               "line": 596
             }
           ],
-          "assertion_scope": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Paid2 animation detaches, is1/1 then2/2 after another artifact; repeated activation while creature does not duplicate bonus; cleanup reverts noncreature.",
+          "assertion_scope": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Aged paid2 animation detaches, is1/1 then2/2 after another artifact, repeated activation adds no duplicate grant. Animated creature actually attacks over a rejected ground blocker for2; cleanup restores noncreature.",
           "shared_primitive_tests": [
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
-          "keyword_qualification": "Source attachment/animation binding and shared actual flying/reach combat are distinct evidence. No separate equipped or animated-source combat case is claimed.",
+          "keyword_qualification": "The exact animated Armor attacks and rejects a ground blocker, dealing2, before cleanup; this is a direct animation-specific flying proof.",
           "evidence_identity": {
             "card_index": 115,
             "face": "Iron Man Armor",
             "paragraph": 3
-          },
-          "unasserted_clauses": [
-            "Animation-specific flying is not separately queried or exercised in combat."
-          ]
+          }
         },
         {
           "face": "Iron Man Armor",
@@ -3876,7 +3864,7 @@
               "line": 596
             }
           ],
-          "assertion_scope": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Paid2 animation detaches, is1/1 then2/2 after another artifact; repeated activation while creature does not duplicate bonus; cleanup reverts noncreature.",
+          "assertion_scope": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Aged paid2 animation detaches, is1/1 then2/2 after another artifact, repeated activation adds no duplicate grant. Animated creature actually attacks over a rejected ground blocker for2; cleanup restores noncreature.",
           "evidence_identity": {
             "card_index": 115,
             "face": "Iron Man Armor",
@@ -3885,7 +3873,7 @@
         }
       ],
       "scenario": "msh_b_equipment_attaches_pays_and_animates",
-      "asserted_interaction": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Paid2 animation detaches, is1/1 then2/2 after another artifact; repeated activation while creature does not duplicate bonus; cleanup reverts noncreature."
+      "asserted_interaction": "Paid3 ETB attaches and grants+2/+1/flying; paid2 equip moves bonus. Aged paid2 animation detaches, is1/1 then2/2 after another artifact, repeated activation adds no duplicate grant. Animated creature actually attacks over a rejected ground blocker for2; cleanup restores noncreature."
     },
     {
       "index": 116,
@@ -3941,7 +3929,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -3962,7 +3950,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_artifact_live_stats_restricted_mana_and_improvise",
-              "line": 1782
+              "line": 1832
             }
           ],
           "assertion_scope": "Iron Man1/4 grows to2/4 with another actual artifact; that entry followed by attack draws1 and vigilance leaves untapped; flying block rejection in keyword family.",
@@ -3983,7 +3971,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_artifact_live_stats_restricted_mana_and_improvise",
-              "line": 1782
+              "line": 1832
             }
           ],
           "assertion_scope": "Iron Man1/4 grows to2/4 with another actual artifact; that entry followed by attack draws1 and vigilance leaves untapped; flying block rejection in keyword family.",
@@ -4051,7 +4039,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_artifact_live_stats_restricted_mana_and_improvise",
-              "line": 1782
+              "line": 1832
             }
           ],
           "assertion_scope": "Own artifacts pay generic4 of paid Ironheart4U; U still paid. Another artifact pays generic1 of noncreature Lightning Strike withR still paid; creature spell cannot use provided improvise. Actual flying combat in keyword family.",
@@ -4072,7 +4060,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -4093,7 +4081,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_artifact_live_stats_restricted_mana_and_improvise",
-              "line": 1782
+              "line": 1832
             }
           ],
           "assertion_scope": "Own artifacts pay generic4 of paid Ironheart4U; U still paid. Another artifact pays generic1 of noncreature Lightning Strike withR still paid; creature spell cannot use provided improvise. Actual flying combat in keyword family.",
@@ -4213,7 +4201,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Paid1W front2/3 prevents opponent cast during ownturn; sorcery-only transform3GWW produces6/6 back retaining lock; dealt3 triggers optional source damage3 once, second event adds none.",
@@ -4234,7 +4222,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Paid1W front2/3 prevents opponent cast during ownturn; sorcery-only transform3GWW produces6/6 back retaining lock; dealt3 triggers optional source damage3 once, second event adds none.",
@@ -4287,7 +4275,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Paid1W front2/3 prevents opponent cast during ownturn; sorcery-only transform3GWW produces6/6 back retaining lock; dealt3 triggers optional source damage3 once, second event adds none.",
@@ -4308,7 +4296,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Paid1W front2/3 prevents opponent cast during ownturn; sorcery-only transform3GWW produces6/6 back retaining lock; dealt3 triggers optional source damage3 once, second event adds none.",
@@ -4329,7 +4317,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Paid1W front2/3 prevents opponent cast during ownturn; sorcery-only transform3GWW produces6/6 back retaining lock; dealt3 triggers optional source damage3 once, second event adds none.",
@@ -4397,7 +4385,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_exile_draw_permissions_and_stun",
-              "line": 974
+              "line": 994
             }
           ],
           "assertion_scope": "Actual tap+stun cost; power2 exiles exactly2 and permits landplay; next untap consumes stun and remains tapped; saved spell permission expired.",
@@ -4465,7 +4453,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -4486,7 +4474,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_hellcat_return_is_blank_and_justice_uses_owner",
-              "line": 1468
+              "line": 1518
             }
           ],
           "assertion_scope": "Paid2U optional ETB returns own Forge and Justice grows; zero targets/self return legal. Opponent-controlled return does not grow; controlled stolen creature returns to its other owner hand and grows Justice. Flying combat in keyword family.",
@@ -4507,7 +4495,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_hellcat_return_is_blank_and_justice_uses_owner",
-              "line": 1468
+              "line": 1518
             }
           ],
           "assertion_scope": "Paid2U optional ETB returns own Forge and Justice grows; zero targets/self return legal. Opponent-controlled return does not grow; controlled stolen creature returns to its other owner hand and grows Justice. Flying combat in keyword family.",
@@ -4575,7 +4563,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_sacrifice_discard_and_reflexive_targets",
-              "line": 1303
+              "line": 1347
             }
           ],
           "assertion_scope": "Paid1R ETB explicitly declines or sacrifices artifact or discards card; draw happens only after actual payment.",
@@ -4643,7 +4631,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_top_library_look_draw_and_land_allowance",
-              "line": 921
+              "line": 941
             }
           ],
           "assertion_scope": "Paid4G creates legendary green2/2Cat Zabu; owner sees exact top, actual top land play grows Zabu, second land rejected by ordinary allowance.",
@@ -4664,7 +4652,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_top_library_look_draw_and_land_allowance",
-              "line": 921
+              "line": 941
             }
           ],
           "assertion_scope": "Paid4G creates legendary green2/2Cat Zabu; owner sees exact top, actual top land play grows Zabu, second land rejected by ordinary allowance.",
@@ -4685,7 +4673,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_top_library_look_draw_and_land_allowance",
-              "line": 921
+              "line": 941
             }
           ],
           "assertion_scope": "Paid4G creates legendary green2/2Cat Zabu; owner sees exact top, actual top land play grows Zabu, second land rejected by ordinary allowance.",
@@ -4753,7 +4741,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -4774,7 +4762,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_kang_schedules_exact_power_up_free_turn",
-              "line": 847
+              "line": 867
             }
           ],
           "assertion_scope": "Aged source pays5UUU, gains1 counter, next turn belongs to same player; another funded Power-up unavailable in that exact extra turn and restriction ends afterward. Flying combat in keyword family.",
@@ -4842,7 +4830,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_connive_draw_ordinals_and_life_payment",
-              "line": 1601
+              "line": 1651
             }
           ],
           "assertion_scope": "Declared attack draws then discards nonland, gets1 counter; subsequent draw2 causes exactly one second-card lose1/gain1 event.",
@@ -4863,7 +4851,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_connive_draw_ordinals_and_life_payment",
-              "line": 1601
+              "line": 1651
             }
           ],
           "assertion_scope": "Declared attack draws then discards nonland, gets1 counter; subsequent draw2 causes exactly one second-card lose1/gain1 event.",
@@ -4931,7 +4919,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_life_counters_optional_wall_and_once_limit",
-              "line": 1037
+              "line": 1057
             }
           ],
           "assertion_scope": "Own counter placement gives current recipient hexproof; actual second draw adds Kid counter and hexproof; previous placement hexproof expires next turn.",
@@ -4960,7 +4948,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_life_counters_optional_wall_and_once_limit",
-              "line": 1037
+              "line": 1057
             }
           ],
           "assertion_scope": "Own counter placement gives current recipient hexproof; actual second draw adds Kid counter and hexproof; previous placement hexproof expires next turn.",
@@ -5028,7 +5016,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_sacrifice_discard_and_reflexive_targets",
-              "line": 1303
+              "line": 1347
             }
           ],
           "assertion_scope": "Paid2BG cannot sacrifice source; another creature sacrificed before reflexive opponent nonland target destruction;1\u21922 GY creature threshold changes3/3\u21925/4.",
@@ -5049,7 +5037,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_sacrifice_discard_and_reflexive_targets",
-              "line": 1303
+              "line": 1347
             }
           ],
           "assertion_scope": "Paid2BG cannot sacrifice source; another creature sacrificed before reflexive opponent nonland target destruction;1\u21922 GY creature threshold changes3/3\u21925/4.",
@@ -5117,7 +5105,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Flash paid1WU on opponentturn; another player second draw causes ownerdraw1; paid4WU transforms3/3, prevents Lightning Strike3, double strike deals6 and draws2.",
@@ -5138,7 +5126,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Flash paid1WU on opponentturn; another player second draw causes ownerdraw1; paid4WU transforms3/3, prevents Lightning Strike3, double strike deals6 and draws2.",
@@ -5159,7 +5147,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Flash paid1WU on opponentturn; another player second draw causes ownerdraw1; paid4WU transforms3/3, prevents Lightning Strike3, double strike deals6 and draws2.",
@@ -5212,7 +5200,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Flash paid1WU on opponentturn; another player second draw causes ownerdraw1; paid4WU transforms3/3, prevents Lightning Strike3, double strike deals6 and draws2.",
@@ -5233,7 +5221,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Flash paid1WU on opponentturn; another player second draw causes ownerdraw1; paid4WU transforms3/3, prevents Lightning Strike3, double strike deals6 and draws2.",
@@ -5254,7 +5242,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Flash paid1WU on opponentturn; another player second draw causes ownerdraw1; paid4WU transforms3/3, prevents Lightning Strike3, double strike deals6 and draws2.",
@@ -5275,7 +5263,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_transform_faces_have_distinct_rules_and_damage",
-              "line": 1653
+              "line": 1703
             }
           ],
           "assertion_scope": "Flash paid1WU on opponentturn; another player second draw causes ownerdraw1; paid4WU transforms3/3, prevents Lightning Strike3, double strike deals6 and draws2.",
@@ -5343,7 +5331,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -5358,28 +5346,25 @@
           "kind": "oracle_paragraph",
           "paragraph": 2,
           "printed": "{2}{B}, Sacrifice an artifact or creature: Draw a card.",
-          "status": "partial_focused_evidence",
+          "status": "focused_scenario_mapping",
           "test": "msh_b_sacrifice_discard_and_reflexive_targets",
           "tests": [
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_sacrifice_discard_and_reflexive_targets",
-              "line": 1303
+              "line": 1347
             }
           ],
-          "assertion_scope": "Paid2B activation sacrifices actual artifact before drawing1; actual lifelink combat in keyword family.",
+          "assertion_scope": "Paid2B activation separately sacrifices a noncreature artifact OR a creature, moves that exact object to graveyard and draws1. Actual lifelink2damage/gain2 in keyword family.",
           "evidence_identity": {
             "card_index": 129,
             "face": "Kingpin's Enforcers",
             "paragraph": 2
-          },
-          "unasserted_clauses": [
-            "The alternative creature sacrifice route is not directly exercised in this partition."
-          ]
+          }
         }
       ],
       "scenario": "msh_b_sacrifice_discard_and_reflexive_targets",
-      "asserted_interaction": "Paid2B activation sacrifices actual artifact before drawing1; actual lifelink combat in keyword family."
+      "asserted_interaction": "Paid2B activation separately sacrifices a noncreature artifact OR a creature, moves that exact object to graveyard and draws1. Actual lifelink2damage/gain2 in keyword family."
     },
     {
       "index": 130,
@@ -5435,7 +5420,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_klaw_victim_reveals_controller_discards",
-              "line": 1555
+              "line": 1605
             }
           ],
           "assertion_scope": "Paid2B entry targets opponent; oneGYcreature yields reveal2 from hand3, victim selects subset, controller selects1 discard, unselected card excluded.",
@@ -5503,7 +5488,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -5524,7 +5509,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_life_counters_optional_wall_and_once_limit",
-              "line": 1037
+              "line": 1057
             }
           ],
           "assertion_scope": "Another creature counter placement triggers once, including opposing recipient; second same-turn event adds none; next own turn resets. Self-placement excluded. Actual trample overflow in keyword family.",
@@ -5592,7 +5577,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Paid noncreature G spell makes2/1\u21926/5 via prowess+1/+1 plusGrowth+3/+3; vigilance attack does not tap, ordinary ground blocker rejected, hit6.",
@@ -5613,7 +5598,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Paid noncreature G spell makes2/1\u21926/5 via prowess+1/+1 plusGrowth+3/+3; vigilance attack does not tap, ordinary ground blocker rejected, hit6.",
@@ -5681,7 +5666,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Paid2 hand activation discards Sentinel, chooses real basic Island intohand and finishes search; actual Reach blocking in same family.",
@@ -5702,7 +5687,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Paid2 hand activation discards Sentinel, chooses real basic Island intohand and finishes search; actual Reach blocking in same family.",
@@ -5770,7 +5755,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_connive_draw_ordinals_and_life_payment",
-              "line": 1601
+              "line": 1651
             }
           ],
           "assertion_scope": "Ownbegincombat targets own2/2; Leader replacement draws1 before connive draws1; discardnonland givescounter1 and hand increases by1net.",
@@ -5791,7 +5776,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_connive_draw_ordinals_and_life_payment",
-              "line": 1601
+              "line": 1651
             }
           ],
           "assertion_scope": "Ownbegincombat targets own2/2; Leader replacement draws1 before connive draws1; discardnonland givescounter1 and hand increases by1net.",
@@ -5911,7 +5896,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_cast_target_events_copy_and_grant_without_recasting",
-              "line": 1171
+              "line": 1206
             }
           ],
           "assertion_scope": "Paid1/tap delayedcopy ignores MV3 at sourcepower2, then copies MV2 Lightning Strike with retained targets, only next qualifying cast; full4R Power-up2 counters in Power-up family.",
@@ -5932,7 +5917,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_power_up_prices_lifetime_and_expiry",
-              "line": 759
+              "line": 779
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -6000,7 +5985,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_cast_target_events_copy_and_grant_without_recasting",
-              "line": 1171
+              "line": 1206
             }
           ],
           "assertion_scope": "Ability targeting a permanent draws1, second same-turn acquisition draws0; spells draw0; next turn resets. Separate Fist ability targeting player draws1.",
@@ -6162,7 +6147,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_damage_replacement_arrows_and_alone_attack",
-              "line": 1859
+              "line": 1909
             }
           ],
           "assertion_scope": "Declared alone attack gives+2/+0Indestructible, deals4; cleanup restores2/5/removeskeyword; two-attacker declaration gives no bonus and does not trigger Infiltration drain.",
@@ -6170,7 +6155,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_power_up_prices_lifetime_and_expiry",
-              "line": 759
+              "line": 779
             }
           ],
           "keyword_qualification": "Luke binding asserts alone-attack gain and expiry; Hercules family proves actual lethal damage survival from indestructible.",
@@ -6238,7 +6223,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_keyword_combat_prowess_and_basic_landcycling",
-              "line": 1976
+              "line": 2040
             }
           ],
           "assertion_scope": "Actual keyword combat interaction in the named family; the literal source name is bound in that family, except the transformed She-Hulk keyword pair which is a direct binding joined to shared reach/trample combat.",
@@ -6259,7 +6244,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_connive_draw_ordinals_and_life_payment",
-              "line": 1601
+              "line": 1651
             }
           ],
           "assertion_scope": "Pay3life on ownturn draws/discardsnonland and grows2/2\u21923/3; enemy2/2\u21921/1; cannot activate on otherturn with owner priority. Actual flying/lifelink damage in keyword family.",
@@ -6280,7 +6265,7 @@
             {
               "file": "src/assurance/msh_b.rs",
               "function": "msh_b_connive_draw_ordinals_and_life_payment",
-              "line": 1601
+              "line": 1651
             }
           ],
           "assertion_scope": "Pay3life on ownturn draws/discardsnonland and grows2/2\u21923/3; enemy2/2\u21921/1; cannot activate on otherturn with owner priority. Actual flying/lifelink damage in keyword family.",
@@ -6297,7 +6282,7 @@
   ],
   "body_paragraphs_mapped": 156,
   "header_source_facts": 236,
-  "coverage_qualification": "All156 printed paragraphs have explicit scenario mappings, with five direct-evidence limits enumerated. Mapping is not an assertion that every subclause is directly exercised. Shared keyword combat is explicitly separate from source keyword bindings. The236 header facts remain source facts, not behavior evidence. Final integration is deferred.",
+  "coverage_qualification": "All156 printed paragraphs map to explicit meaningful scenarios, with direct extra assertions for Net block rejection, permanent Feast next-turn life gain, Fist activation expiry, Armor animated flying and both Enforcers sacrifice types. Source keyword bindings remain separate from named shared actual keyword interactions. The236 header facts remain independent source facts rather than standalone gameplay evidence. Final integrated static/contracts and routine validation are owned centrally.",
   "test_functions": 25,
   "expectation_authoring": "Full independent Oracle/direct XMage read and initial392-obligation ledger preceded scenario authoring. Expected values are literal Oracle facts; typed Rust is consulted to drive existing APIs, not to generate expectations. No old MSH test bodies were read or copied.",
   "known_gaps": [
@@ -6331,58 +6316,33 @@
     "fixed_inputs_changed": [],
     "result": "rustmage-msh-bounded-b-focus15/result.json",
     "all_passed": true,
-    "test_source_sha256": "f28ddc6fe1626bedea2afcbb34a554f279f917c6f6787d8fa4eab3e09941c9b6",
     "production_changes": false,
     "resource_guard_memory_gib": 6,
     "cargo_jobs": 1,
     "test_threads": 1,
     "default_or_aggregate_checks": "Deferred to final integration; no claim from this focused run.",
-    "tested_source_sha256": "a4079fce974642e134703de1bb7d75f38e0f1dc980a6f7a4fab87040c24f16e4",
-    "post_test_changes": "rustfmt whitespace only in four assertions; obligation ledger finalized after terminal. No semantic test or production change."
+    "post_test_changes": "The original25-function run passed; five functions then received additional printed-clause assertions and passed the exact-five follow-up. Other20 functions are unchanged apart from rustfmt whitespace. Ledger-only updates follow terminal execution.",
+    "source_sha256": "65596189ecbc9598ef25a95f65df6afa5d8e4b68695b43daa7d110b16fa552c1",
+    "followup": {
+      "result": "rustmage-msh-bounded-b-gaps-focus2/result.json",
+      "profile": "OPT0 development only",
+      "functions": 5,
+      "passed": 5,
+      "compile_seconds": 22.418054793030024,
+      "execution_seconds": 0.06540889199823141,
+      "fixed_inputs_changed": [],
+      "tested_source_sha256": "65596189ecbc9598ef25a95f65df6afa5d8e4b68695b43daa7d110b16fa552c1",
+      "tests": [
+        "engine::assurance::msh_b::msh_b_cast_target_events_copy_and_grant_without_recasting",
+        "engine::assurance::msh_b::msh_b_damage_replacement_arrows_and_alone_attack",
+        "engine::assurance::msh_b::msh_b_equipment_attaches_pays_and_animates",
+        "engine::assurance::msh_b::msh_b_life_counters_optional_wall_and_once_limit",
+        "engine::assurance::msh_b::msh_b_sacrifice_discard_and_reflexive_targets"
+      ]
+    }
   },
   "body_paragraph_mapping_complete": true,
-  "unasserted_printed_clauses": [
-    {
-      "index": 95,
-      "face": "Hawkeye, Master Marksman",
-      "paragraph": 3,
-      "printed_clause": "Net \u2014 Target creature cannot block this turn.",
-      "covered": "Mode is selected and CANT_BLOCK is asserted.",
-      "not_asserted": "An actual attempted block with that exact affected creature is not exercised; the flag alone is not treated as block-legality proof."
-    },
-    {
-      "index": 102,
-      "face": "Heroic Feast",
-      "paragraph": 2,
-      "printed_clause": "This turn, whenever you gain life ...",
-      "covered": "Actual Food payment gains3 and allocates distinct counter targets, including simultaneous Hero recipients.",
-      "not_asserted": "No later-turn life-gain event checks that the granted trigger has expired."
-    },
-    {
-      "index": 113,
-      "face": "Iron Fist, Living Weapon",
-      "paragraph": 1,
-      "printed_clause": "Iron Fist gains the tap damage ability until end of turn.",
-      "covered": "Actual targeted paid spell grants the real activation, own-source target is excluded and current5power damage occurs.",
-      "not_asserted": "No cleanup-to-next-turn action checks removal of this granted activation."
-    },
-    {
-      "index": 115,
-      "face": "Iron Man Armor",
-      "paragraph": 3,
-      "printed_clause": "Animated Equipment has flying until end of turn.",
-      "covered": "Animated stats, live artifact bonus, detach, no duplicate grant and noncreature restoration are asserted; equipped flying is independently bound.",
-      "not_asserted": "Animation-specific flying is not separately queried or exercised in combat."
-    },
-    {
-      "index": 129,
-      "face": "Kingpin's Enforcers",
-      "paragraph": 2,
-      "printed_clause": "Sacrifice an artifact or creature.",
-      "covered": "The artifact sacrifice route pays2B, moves artifact to graveyard and draws1.",
-      "not_asserted": "The alternative creature sacrifice route is not directly exercised in this partition."
-    }
-  ],
+  "unasserted_printed_clauses": [],
   "helper_full_bodies": 45,
   "source_caches": [
     {
@@ -6413,5 +6373,6 @@
     "retained_native_sha256": "4c16b8c4581ad3dc1f48d688d8bacb47a382fe2902621693f94add0e4a0110f3",
     "target_disposable_files_removed": 165,
     "target_path_bytes_removed": 39822623
-  }
+  },
+  "body_coverage_complete": true
 }
