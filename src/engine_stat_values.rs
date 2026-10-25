@@ -116,6 +116,22 @@ impl Game {
                     attacking,
                 ) == 0,
             ),
+            StatValue::SourceEquipmentCount => {
+                if !objects().any(|(id, object)| {
+                    id == source.card
+                        && object.generation == source.generation
+                        && object.zone == Zone::Battlefield
+                }) {
+                    return 0;
+                }
+                objects()
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.attached_to == Some(source)
+                            && subtypes(*id).has(object.card, "Equipment")
+                    })
+                    .count() as i128
+            }
             StatValue::ControllerHandSize => objects()
                 .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand)
                 .count() as i128,

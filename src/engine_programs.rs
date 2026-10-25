@@ -34,6 +34,7 @@ pub(super) struct Resolution {
     pub milled_selection: Option<Box<super::milled_selection::MilledSelection>>,
     pub library: Option<LibraryChoice>,
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
+    pub return_attachment: Option<Box<super::return_attachment::ReturnAttachment>>,
     pub search: Option<Box<super::search::SearchChoice>>,
     pub optional_searches: Option<Box<super::search::OptionalSearchSequence>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
@@ -723,6 +724,7 @@ impl Game {
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::ControlledEquippedCreatureAttacks
                     | TriggerCondition::SelfAttacksWhileSaddled
                     | TriggerCondition::SelfSaddledFirst
                     | TriggerCondition::SelfPaysTeamwork
@@ -1469,6 +1471,22 @@ impl Game {
                         .unwrap()
                         .entering_object = Some(attacker);
                 }
+                if ability.condition.event() == TriggerCondition::ControlledEquippedCreatureAttacks
+                {
+                    for attacker in declared {
+                        let event = self.object_view(attacker.card);
+                        if self.source_equipment_count(event.reference).unwrap_or(0) != 0
+                            && self.queue_trigger(&source, index)
+                        {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .entering_object = Some(event.reference);
+                            self.bind_entering_conniver(&event, ability.program);
+                        }
+                    }
+                }
                 if let TriggerCondition::CreatureAttacksYou { colors } = ability.condition.event() {
                     let count = self
                         .state
@@ -1862,6 +1880,7 @@ impl Game {
             milled_selection: None,
             library: None,
             selection: None,
+            return_attachment: None,
             target_library: None,
             search: None,
             optional_searches: None,
@@ -1993,6 +2012,9 @@ impl Game {
             if self.advance_optional_searches() {
                 return;
             }
+            if self.advance_return_attachment() {
+                return;
+            }
             if self.finish_entered_library_selection() {
                 return;
             }
@@ -2057,6 +2079,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::CopyTargetAbility { .. }
@@ -2643,6 +2666,9 @@ impl Game {
                         }
                     }
                 }
+                Instruction::ReturnSourceWithCounterAndEquipment(counter) => {
+                    self.return_source_with_equipment(&item, counter);
+                }
                 Instruction::ReturnSourceToBattlefield { tapped } => {
                     if self.object_ref(item.card) == item.object
                         && self.state.objects[item.card as usize].zone == Zone::Graveyard
@@ -2942,6 +2968,24 @@ impl Game {
                 Instruction::TapAttached => {
                     if let Some(id) = self.attached_permanent(&item) {
                         self.tap_objects(&[id]);
+                    }
+                }
+                Instruction::AttachEquipmentByGroups {
+                    equipment,
+                    recipient,
+                } => {
+                    let first = item
+                        .targets
+                        .iter()
+                        .find(|bound| bound.group == equipment)
+                        .and_then(|bound| bound.object);
+                    let second = item
+                        .targets
+                        .iter()
+                        .find(|bound| bound.group == recipient)
+                        .and_then(|bound| bound.object);
+                    if let (Some(first), Some(second)) = (first, second) {
+                        self.attach_equipment(first, second);
                     }
                 }
                 Instruction::AttachSource => {

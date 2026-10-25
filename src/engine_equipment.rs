@@ -38,15 +38,11 @@ impl Game {
         self.characteristic_query().keywords(id)
     }
 
-    pub(super) fn attach_equipment(&mut self, source: ObjectRef, target: ObjectRef) -> bool {
+    pub(super) fn equipment_can_attach(&self, source: ObjectRef, target: ObjectRef) -> bool {
         if source == target
             || !self.on_battlefield(source.card)
             || self.object_ref(source.card) != source
             || !ability_world::CharacteristicWorld::is_equipment(self, source.card)
-            || self.state.objects[source.card as usize]
-                .card
-                .equipment()
-                .is_none()
             || self.is_creature(source.card)
             || !self.on_battlefield(target.card)
             || self.object_ref(target.card) != target
@@ -55,6 +51,12 @@ impl Game {
                 .keywords(target.card)
                 .contains(Keywords::PROTECTION_EVERYTHING)
         {
+            return false;
+        }
+        true
+    }
+    pub(super) fn attach_equipment(&mut self, source: ObjectRef, target: ObjectRef) -> bool {
+        if !self.equipment_can_attach(source, target) {
             return false;
         }
         if self.state.objects[source.card as usize].attached_to != Some(target) {

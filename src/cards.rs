@@ -1340,6 +1340,7 @@ pub(crate) enum Instruction {
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },
+    ReturnSourceWithCounterAndEquipment(CounterKind),
     ReturnSourceToBattlefield {
         tapped: bool,
     },
@@ -1377,6 +1378,10 @@ pub(crate) enum Instruction {
     DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
     AttachSource,
+    AttachEquipmentByGroups {
+        equipment: u16,
+        recipient: u16,
+    },
     TapAttached,
     PutGrantorCounter(CounterKind),
     PutCombatDealerCounters,
@@ -1849,6 +1854,7 @@ pub(crate) enum StatValue {
     /// Unqualified all-player count; distinct from controller-owned attackers.
     AllAttackingCreatures,
     SourceModified,
+    SourceEquipmentCount,
     Tokens(CountFilter),
     AtLeast {
         value: &'static StatValue,
@@ -2014,6 +2020,7 @@ pub(crate) struct AuraSpec {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Subject {
+    /// Exact triggering event object, including entrants and declared attackers.
     Entering,
     Source,
     Targets,
@@ -2856,6 +2863,7 @@ pub(crate) enum TriggerCondition {
     SelfAttacksAlone,
     /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
     ControlledCreatureAttacksAlone,
+    ControlledEquippedCreatureAttacks,
     EquippedAttacks,
     /// Attachment recipient was the sole creature declared in this attack event.
     EquippedAttacksAlone,
