@@ -671,7 +671,9 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
-                    TriggerCondition::TokensEnterYou
+                    TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
+                    | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
+                    | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CardsLeaveGraveyard
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::CreatureExploresCardYou { .. }
@@ -2952,6 +2954,9 @@ impl Game {
                     {
                         return;
                     }
+                }
+                Instruction::CopyControlledNontokenCreaturesNonlegendary => {
+                    self.copy_controlled_nontoken_creatures_nonlegendary(item.controller);
                 }
                 Instruction::CreateTemporaryArtifactCopy => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {

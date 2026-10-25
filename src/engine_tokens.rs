@@ -218,6 +218,7 @@ impl Game {
                     cast_event: None,
                     entry_counter_player: Some(controller),
                     graveyard_observers: None,
+                    returned_hand_observers: None,
                     was_cast: false,
                     gift: None,
                     before,

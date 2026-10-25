@@ -218,6 +218,7 @@ impl Game {
     ) {
         self.record_entry_turn_facts(events);
         self.graveyard_departure_triggers(events, death_sources);
+        self.returned_hand_triggers(events);
         for event in events {
             if event.moved
                 && event.destination == Zone::Battlefield

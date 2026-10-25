@@ -866,6 +866,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// One simultaneous creation event, with all original recipes frozen first.
+    CopyControlledNontokenCreaturesNonlegendary,
     RevealTopDrawIfArtifact,
     ExileTopPlayBoostSourceIfSubtype {
         subtype: &'static str,
@@ -2633,6 +2635,10 @@ pub(crate) enum ReturnKind {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// Pre-event observer and other permanent, with an actual owner-hand result.
+    OtherControlledNonlandReturnedToOwnersHand,
+    /// Global target acquisition, not a cast-completion or self-target event.
+    ControlledAbilityTargetsPlayerOrPermanent,
     /// The physical source spell itself was cast; stack copies never dispatch it.
     SelfCast,
     CardsLeaveGraveyard,

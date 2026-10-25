@@ -50,8 +50,14 @@ pub use prepared::PreparationView;
 pub use temporary_copy::{
     CopyDeadline, CopyLayerView, CopyOverrides, CopyTypes, TemporaryCopyView,
 };
+#[path = "engine_ability_target_events.rs"]
+mod ability_target_events;
+#[path = "engine_copy_batches.rs"]
+mod copy_batches;
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
+#[path = "engine_return_events.rs"]
+mod return_events;
 pub use crate::cards::CopyExceptions;
 #[path = "engine_target_allocations.rs"]
 mod target_allocations;
@@ -1748,6 +1754,7 @@ struct State {
     life_sources: Vec<CardId>,
     counter_sources: Vec<CardId>,
     death_sources: Vec<CardId>,
+    ability_target_sources: ability_target_events::Sources,
     attachment_sources: Vec<CardId>,
     exile_links: Vec<ExileLink>,
     exile_permissions: Vec<ExilePlayPermission>,
@@ -1912,6 +1919,12 @@ impl ObjectView {
     }
 }
 
+#[derive(Default)]
+struct ZoneObservers {
+    graveyard: Option<std::sync::Arc<[ObjectView]>>,
+    returned_hand: Option<std::sync::Arc<[ObjectView]>>,
+}
+
 /// A single zone transition with the departing object's last-known characteristics.
 /// Engine internals consume this value; observations do not expose hidden transitions.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -1920,6 +1933,7 @@ pub struct ZoneChange {
     /// CR122.6a: intrinsic entry counters are put on by the incoming controller.
     pub(super) entry_counter_player: Option<Player>,
     pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
+    pub(super) returned_hand_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
     pub before: ObjectView,
@@ -2442,6 +2456,7 @@ impl Game {
                 life_sources: Vec::new(),
                 counter_sources: Vec::new(),
                 death_sources: Vec::new(),
+                ability_target_sources: None,
                 attachment_sources: Vec::new(),
                 exile_links: Vec::new(),
                 exile_permissions: Vec::new(),
@@ -5303,6 +5318,12 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        let returned_hand_observers =
+            if destination == Zone::Hand && ids.iter().any(|&id| self.on_battlefield(id)) {
+                self.freeze_returned_hand_observers()
+            } else {
+                None
+            };
         let graveyard_observers = if ids
             .iter()
             .any(|&id| self.state.objects[id as usize].zone == Zone::Graveyard)
@@ -5388,7 +5409,10 @@ impl Game {
                     tapped,
                     counters,
                     None,
-                    graveyard_observers.clone(),
+                    ZoneObservers {
+                        graveyard: graveyard_observers.clone(),
+                        returned_hand: returned_hand_observers.clone(),
+                    },
                 )
             })
             .collect();
@@ -5529,6 +5553,12 @@ impl Game {
         self.capture_source_quantities(std::iter::once(&before));
         let rules = self.freeze_zone_rules(&before, destination, None);
         let plan = self.plan_zone_move(&before, destination, rules);
+        let returned_hand_observers =
+            if before.zone == Zone::Battlefield && destination == Zone::Hand {
+                self.freeze_returned_hand_observers()
+            } else {
+                None
+            };
         let graveyard_observers = if before.zone == Zone::Graveyard {
             self.freeze_graveyard_observers()
         } else {
@@ -5540,7 +5570,10 @@ impl Game {
             tapped,
             counters,
             entry_controller,
-            graveyard_observers,
+            ZoneObservers {
+                graveyard: graveyard_observers,
+                returned_hand: returned_hand_observers,
+            },
         )
     }
 
@@ -5551,8 +5584,12 @@ impl Game {
         tapped: bool,
         counters: Counters,
         entry_controller: Option<Player>,
-        graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
+        observers: ZoneObservers,
     ) -> ZoneChange {
+        let ZoneObservers {
+            graveyard: graveyard_observers,
+            returned_hand: returned_hand_observers,
+        } = observers;
         let id = before.id;
         self.capture_mana_copy_source_departure(&before);
         if before.zone == Zone::Stack {
@@ -5578,6 +5615,7 @@ impl Game {
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
+                returned_hand_observers: None,
                 was_cast: false,
                 gift: None,
                 after: self.object_ref(id),
@@ -5615,6 +5653,7 @@ impl Game {
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
+                returned_hand_observers: None,
                 was_cast: false,
                 gift: None,
                 after: before.reference,
@@ -5635,6 +5674,7 @@ impl Game {
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
+                returned_hand_observers: None,
                 was_cast: false,
                 gift: None,
                 after: before.reference,
@@ -5815,6 +5855,7 @@ impl Game {
             self.state.life_sources.retain(|&source| source != id);
             self.state.counter_sources.retain(|&source| source != id);
             self.state.death_sources.retain(|&source| source != id);
+            self.forget_ability_target_source(id);
             self.state.attachment_sources.retain(|&source| source != id);
             self.state.attackers.retain(|attacker| attacker.card != id);
             self.state.blocking.retain(|&blocker| blocker != id);
@@ -5923,6 +5964,7 @@ impl Game {
             cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
             graveyard_observers,
+            returned_hand_observers,
             was_cast: false,
             gift: None,
             before,
@@ -7302,6 +7344,7 @@ impl Game {
             + s.hand_play_bans.as_ref().map_or(0, |bans| {
                 std::mem::size_of::<Vec<Player>>() + bans.len() * std::mem::size_of::<Player>()
             })
+            + ability_target_events::owned_bytes(&s.ability_target_sources)
             + miracle::owned_bytes(&s.miracle)
             + prepared::owned_bytes(&s.preparations)
             + s.adventures.as_ref().map_or(0, |p| p.bytes())
@@ -7862,3 +7905,7 @@ mod msh_thirteenth_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_copy_identity_regression_tests.rs"]
 mod msh_copy_identity_regression_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_incursion_justice_loki_core_tests.rs"]
+mod msh_incursion_justice_loki_core_tests;
