@@ -7770,3 +7770,7 @@ mod msh_turn_facts_tests;
 #[cfg(test)]
 #[path = "engine_msh_land_origins_tests.rs"]
 mod msh_land_origins_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_twelfth_combined_tests.rs"]
+mod msh_twelfth_combined_tests;
