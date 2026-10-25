@@ -391,9 +391,10 @@ fn msh_hand_choices_cloak_full_reveal_optional_decline_and_nonland_filter() {
         let v = g.object_view(s);
         assert_eq!((v.power, v.toughness), (2, 2));
         assert!(v.card.is_legendary() && v.has_subtype("Hero") && v.has_subtype("Human"));
-        assert!(v
-            .keywords
-            .contains(Keywords::DEATHTOUCH.union(Keywords::LIFELINK)));
+        assert!(
+            v.keywords
+                .contains(Keywords::DEATHTOUCH.union(Keywords::LIFELINK))
+        );
         assert!(known(&g, land) && known(&g, a));
         for id in [land, foreign] {
             let r = g.object_ref(id);

@@ -40,10 +40,8 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter_map(|(i, o)| {
-                (o.zone == Zone::Hand && o.owner == victim && !o.is_token())
-                    .then(|| self.object_ref(i as CardId))
-            })
+            .filter(|(_, o)| o.zone == Zone::Hand && o.owner == victim && !o.is_token())
+            .map(|(i, _)| self.object_ref(i as CardId))
             .collect()
     }
     fn reveal_hand_refs(&mut self, objects: &[ObjectRef]) {

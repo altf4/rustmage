@@ -33,6 +33,8 @@ pub struct SelfGrantedAbilityView {
     pub expires_turn: u32,
     pub available: bool,
 }
+// Preserve the optional cold-state allocation used by State.
+#[allow(clippy::box_collection)]
 pub(super) fn owned_bytes(rows: &Option<Box<Vec<Row>>>) -> usize {
     rows.as_ref().map_or(0, |rows| {
         std::mem::size_of::<Vec<Row>>() + rows.len() * std::mem::size_of::<Row>()

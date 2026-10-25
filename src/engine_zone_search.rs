@@ -94,10 +94,10 @@ impl Game {
             }
             return false;
         }
-        if self.zone_search_selected(s).is_some() || self.zone_search_minimum(s) == 0 {
-            if emit(Action::FinishSearch) {
-                return true;
-            }
+        if (self.zone_search_selected(s).is_some() || self.zone_search_minimum(s) == 0)
+            && emit(Action::FinishSearch)
+        {
+            return true;
         }
         for (id, _) in self.state.objects.iter().enumerate() {
             if self.zone_search_candidate(s, id as CardId)

@@ -508,12 +508,13 @@ fn msh_widow_worlds_worlds_choices_owned_orphan_and_hidden_counterfactual() {
         let r = g.object_ref(a);
         g = orphan(g, Action::ChooseHandCard { object: Some(r) });
         g = orphan(g, Action::ChooseHandCard { object: None });
-        assert!(g
-            .observe(p.other())
-            .hand_choice
-            .unwrap()
-            .selected
-            .is_empty());
+        assert!(
+            g.observe(p.other())
+                .hand_choice
+                .unwrap()
+                .selected
+                .is_empty()
+        );
         g = orphan(g, Action::ChooseHandCard { object: None });
         settle(&mut g);
         assert!(g.on_battlefield(a));
