@@ -38,6 +38,14 @@ pub(super) fn owned_bytes(state: &Option<Box<CopyState>>) -> usize {
             })
     })
 }
+fn delayed_copy_reads_source_power(item: &SpellView) -> bool {
+    matches!(
+        item.kind,
+        StackKind::TriggeredAbility { ability }
+            if item.trigger_definition().triggers()[usize::from(ability)]
+                .condition.event() == TriggerCondition::DelayedSpellCastSourcePower
+    )
+}
 impl Game {
     pub(super) fn stack_target_rule_matches(
         &self,
@@ -236,21 +244,17 @@ impl Game {
         let mut delayed = std::mem::take(&mut state.delayed);
         let mut retained = Vec::new();
         for mut trigger in delayed.drain(..) {
-            let power_limited = matches!(
-                trigger.kind,
-                StackKind::TriggeredAbility { ability }
-                    if trigger.trigger_definition().triggers()[usize::from(ability)]
-                        .condition.event() == TriggerCondition::DelayedSpellCastSourcePower
-            );
-            let source_power = if self.on_battlefield(trigger.object.card)
-                && self.object_ref(trigger.object.card) == trigger.object
-            {
-                self.stats(trigger.object.card).power
-            } else {
-                trigger.source_facts.power
-            };
             if trigger.controller == spell.controller
-                && (!power_limited || i128::from(spell.mana_value()) <= source_power)
+                && (!delayed_copy_reads_source_power(&trigger) || {
+                    let power = if self.on_battlefield(trigger.object.card)
+                        && self.object_ref(trigger.object.card) == trigger.object
+                    {
+                        self.stats(trigger.object.card).power
+                    } else {
+                        trigger.source_facts.power
+                    };
+                    i128::from(spell.mana_value()) <= power
+                })
             {
                 trigger.id = self.next_stack_id();
                 trigger.copy_event = Some(Box::new(CopyEvent {
@@ -462,12 +466,12 @@ impl Game {
         });
         self.advance_copy_targets()
     }
-    /// Delayed callbacks retain the exact source incarnation, including its
-    /// most recent battlefield power even if it changes after registration.
+    /// Only callbacks that read source power opt into its latest-departure facts.
+    /// Other delayed programs keep their original packet observations unchanged.
     pub(super) fn capture_delayed_copy_source_departure(&mut self, before: &ObjectView) {
         if let Some(state) = &mut self.state.stack_copy_data {
             for item in &mut state.delayed {
-                if item.object == before.reference {
+                if item.object == before.reference && delayed_copy_reads_source_power(item) {
                     item.source_facts = DamageFacts::from_view(before);
                     item.source_keywords = before.keywords;
                     item.source_tapped = before.tapped;

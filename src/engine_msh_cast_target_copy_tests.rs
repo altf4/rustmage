@@ -1200,3 +1200,66 @@ fn msh_cast_copy_cards_speedball_ignores_ability_targets_and_uncast_spell_copy()
         assert_eq!(g.life(p.other()), before - 2);
     }
 }
+#[test]
+fn msh_cast_copy_cards_old_sword_callback_preserves_unused_facts_after_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let sword = paid(&mut g, p, "Sword of Wealth and Power");
+        let bear = paid(&mut g, p, "Bear Cub");
+        age(&mut g, p);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: sword,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        finish_costs(&mut g);
+        settle(&mut g);
+        until(&mut g, |g| g.state.pending == Pending::Attackers);
+        checked(&mut g, Action::Attack { card: bear });
+        checked(&mut g, Action::FinishAttackers);
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        checked(&mut g, Action::FinishBlockers);
+        until(&mut g, |g| {
+            g.state.step == Step::Main2 && g.state.pending == Pending::Priority
+        });
+        settle(&mut g);
+        assert_eq!(g.life(p.other()), 16);
+        assert_eq!(delayed(&g), 1);
+        let before = g.delayed_spell_copy_view()[0].clone();
+        // Bounded compatibility setup after real paid equip and combat: old
+        // callbacks do not read these facts. Change them to distinguish a
+        // refresh from preserving the original public owned packet exactly.
+        g.add_counter(sword, CounterKind::PlusOne, 1);
+        g.state.objects[sword as usize].controller = p.other();
+        assert_ne!(
+            g.object_view(sword).controller,
+            before.source_facts.controller
+        );
+        assert!(g.object_view(sword).counters.plus_one > 0);
+        packet(
+            &mut g,
+            p.other(),
+            "Disenchant",
+            None,
+            &[Target::Card(sword)],
+        );
+        settle(&mut g);
+        assert_eq!(g.object_view(sword).zone, Zone::Graveyard);
+        assert_eq!(g.delayed_spell_copy_view(), vec![before]);
+        let life = g.life(p.other());
+        packet(&mut g, p, "Shock", None, &[Target::Player(p.other())]);
+        settle(&mut g);
+        assert_eq!(g.life(p.other()), life - 4);
+        assert_eq!(delayed(&g), 0);
+    }
+}
