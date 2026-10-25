@@ -576,7 +576,7 @@ fn msh_baxter_modes_and_dark_fortress_entry_or_basic_guard() {
         let baxter = put(&mut g, p, "Baxter Building", Zone::Battlefield);
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
         if witness {
-            put(&mut g, p, "Giant Spider", Zone::Battlefield);
+            put(&mut g, p, "Agents of S.H.I.E.L.D.", Zone::Battlefield);
         }
         let a = Action::AnnounceActivate {
             card: baxter,
@@ -631,5 +631,210 @@ fn msh_baxter_modes_and_dark_fortress_entry_or_basic_guard() {
         assert!(colors.contains(&[0, 0, 0, 0, 0, 1]));
         assert_eq!(colors.contains(&[0, 0, 1, 0, 0, 0]), entered || basic);
         assert_eq!(colors.contains(&[0, 0, 0, 1, 0, 0]), entered || basic);
+    }
+}
+
+#[test]
+fn msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let victim = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+    spell(
+        &mut g,
+        p,
+        "Dark Deed",
+        [0, 0, 1, 0, 0, 1],
+        Some(Target::Card(victim)),
+    );
+    resolved(&mut g);
+    assert_eq!(
+        g.object_view(victim).zone,
+        Zone::Graveyard,
+        "-4 toughness kills a 3/3"
+    );
+    for attacking in [false, true] {
+        let mut g = scenario(p);
+        let target = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        if attacking {
+            attack(&mut g, &[target]);
+        }
+        let hand = g.hand_count(p);
+        spell(
+            &mut g,
+            p,
+            "Depower",
+            if attacking {
+                [0, 1, 0, 0, 0, 0]
+            } else {
+                [0, 1, 0, 0, 0, 2]
+            },
+            Some(Target::Card(target)),
+        );
+        resolved(&mut g);
+        assert_eq!(stats(&g, target), (-1, 3));
+        assert_eq!(g.hand_count(p), hand + 1);
+        g.finish_cleanup();
+        assert_eq!(stats(&g, target), (3, 3));
+    }
+    let mut g = scenario(p);
+    let target = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let top = put(&mut g, p, "Shock", Zone::Library);
+    spell(
+        &mut g,
+        p,
+        "Blazing Crescendo",
+        [0, 0, 0, 1, 0, 1],
+        Some(Target::Card(target)),
+    );
+    resolved(&mut g);
+    assert_eq!(stats(&g, target), (6, 4));
+    assert_eq!(g.object_view(top).zone, Zone::Exile);
+    let permission = g
+        .observe(p)
+        .exile_permissions
+        .into_iter()
+        .find(|r| r.object.card == top)
+        .unwrap();
+    assert!(!permission.cast_only);
+    g.finish_cleanup();
+    assert_eq!(stats(&g, target), (3, 3));
+    // The permission survives the current cleanup and the intervening opponent
+    // turn; it expires at cleanup of the controller's next actual turn.
+    assert!(
+        g.state
+            .exile_permissions
+            .iter()
+            .any(|r| r.object.card == top)
+    );
+    g.state.active = p;
+    g.state.turn += 2;
+    g.begin_turn();
+    g.state.step = Step::Main1;
+    g.state.pending = Pending::Priority;
+    g.state.priority = p;
+    assert!(
+        g.legal_actions()
+            .contains(&Action::AnnounceExile { card: top })
+    );
+    g.finish_cleanup();
+    assert!(
+        !g.state
+            .exile_permissions
+            .iter()
+            .any(|r| r.object.card == top)
+    );
+}
+
+#[test]
+fn msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let doc = spell(
+        &mut g,
+        p,
+        "Doc Samson, Super Psychiatrist",
+        [0, 0, 0, 0, 1, 4],
+        None,
+    );
+    resolved(&mut g);
+    assert_eq!(stats(&g, doc), (3, 6));
+    let bot = spell(&mut g, p, "Aerial Doombot", [0, 1, 0, 0, 0, 0], None);
+    resolved(&mut g);
+    activate(&mut g, p, bot, 0, [0, 0, 0, 0, 0, 5], &[]);
+    resolved(&mut g);
+    assert_eq!(
+        g.counter_count(bot, CounterKind::PlusOne),
+        4,
+        "three counters plus one"
+    );
+    // A turn-start fixture ages Doc so the tap mana ability is ready.
+    g.state.turn += 1;
+    g.begin_turn();
+    g.state.step = Step::Main1;
+    g.state.players[p.index()].mana = [0; 6];
+    choose(
+        &mut g,
+        |a| matches!(a,Action::ActivateMana{card,production:[0,0,0,0,3,0],..}if *card==doc),
+    );
+    assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 3, 0]);
+    assert!(g.object_view(doc).tapped);
+    let beast = spell(
+        &mut g,
+        p,
+        "Beast, Erudite Aerialist",
+        [0, 1, 0, 0, 0, 3],
+        None,
+    );
+    resolved(&mut g);
+    assert!(!g.keywords(beast).contains(Keywords::FLYING));
+    spell(
+        &mut g,
+        p,
+        "Snakeskin Veil",
+        [0, 0, 0, 0, 1, 0],
+        Some(Target::Card(bot)),
+    );
+    resolved(&mut g);
+    assert!(
+        !g.keywords(beast).contains(Keywords::FLYING),
+        "another permanent's counters do not qualify"
+    );
+    spell(
+        &mut g,
+        p,
+        "Snakeskin Veil",
+        [0, 0, 0, 0, 1, 0],
+        Some(Target::Card(beast)),
+    );
+    resolved(&mut g);
+    assert_eq!(g.counter_count(beast, CounterKind::PlusOne), 2);
+    assert!(g.keywords(beast).contains(Keywords::FLYING));
+    g.state.turn += 1;
+    g.begin_turn();
+    g.state.step = Step::Main1;
+    assert!(
+        !g.keywords(beast).contains(Keywords::FLYING),
+        "historical condition resets while counters remain"
+    );
+    let hand = g.hand_count(p);
+    attack(&mut g, &[beast]);
+    until(&mut g, |g| g.state.pending == Pending::Blockers);
+    act(&mut g, Action::FinishBlockers);
+    until(&mut g, |g| g.hand_count(p) == hand + 1);
+    assert_eq!(
+        g.state.players[p.other().index()].life,
+        15,
+        "five real combat damage"
+    );
+}
+
+#[test]
+fn msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition() {
+    let p = Player::P0;
+    for hero_entered in [false, true] {
+        let mut g = scenario(p);
+        let hero = put(&mut g, p, "Agent of Atlas", Zone::Battlefield);
+        let nonhero = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Agent of Atlas", Zone::Battlefield);
+        g.state.step = Step::BeginCombat;
+        spell(&mut g, p, "Avengers Assemble!", [1, 0, 0, 0, 0, 4], None);
+        resolved(&mut g);
+        assert_eq!(stats(&g, hero), (4, 4));
+        assert_eq!(stats(&g, nonhero), (2, 2));
+        assert_eq!(stats(&g, enemy), (2, 2));
+        if hero_entered {
+            g.state.step = Step::Main1;
+            spell(&mut g, p, "Agent Maria Hill", [1, 0, 0, 0, 0, 0], None);
+            resolved(&mut g);
+        }
+        let hand = g.hand_count(p);
+        g.state.active = p.other();
+        g.begin_step(Step::End);
+        resolved(&mut g);
+        assert_eq!(
+            g.hand_count(p),
+            hand + usize::from(hero_entered),
+            "opponent's end step, intervening condition"
+        );
     }
 }
