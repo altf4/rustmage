@@ -1699,6 +1699,7 @@ impl Game {
                     .is_some_and(|group| self.item_target_matches(&item, group.rule, bound.target))
         });
         item.targets = targets;
+        self.retain_resolution_target_budgets(&mut item, spec);
         let valid = !was_targeted || !item.targets.is_empty();
         if !valid {
             if item.kind == StackKind::Spell {
@@ -4372,6 +4373,9 @@ impl Game {
                         .map(|id| (self.object_ref(id), counters.clone()))
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
+                Instruction::GainControlTargetsUntilSourceLeaves => {
+                    self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::Control);
                 }
                 Instruction::RemoveTargetAbilitiesUntilSourceLeaves => {
                     self.resolve_source_linked_effect(

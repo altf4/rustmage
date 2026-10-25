@@ -147,6 +147,7 @@ pub(crate) enum TargetGroupConstraint {
     AttachedToGroup(u16),
     DifferentControllers,
     OtherThanGroup(u16),
+    TotalManaValueAtMost(u64),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -1590,6 +1591,7 @@ pub(crate) enum Instruction {
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
     Tap,
+    GainControlTargetsUntilSourceLeaves,
     RemoveTargetAbilitiesUntilSourceLeaves,
     PreventTargetUntapWhileSourceControlled,
     Untap,

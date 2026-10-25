@@ -8106,3 +8106,7 @@ mod msh_ability_copy_core_tests;
 #[cfg(test)]
 #[path = "engine_msh_source_linked_sting_tests.rs"]
 mod msh_source_linked_sting_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_civil_war_tests.rs"]
+mod msh_civil_war_tests;

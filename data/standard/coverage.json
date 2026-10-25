@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9ff4dcc26b5cd76152f69960ecfd7033c71b36b100122cb8c8e74a23a33cbabf",
+  "catalogue_version": "657641971f78e5b6d927f7862ec6b761077b117072a80fdb7f07949d291cd873",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2531,
-  "implemented_total": 2537,
+  "implemented_standard_cards": 2532,
+  "implemented_total": 2538,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 226,
-      "gated": 47
+      "complete": 227,
+      "gated": 46
     },
     "one": {
       "total": 1,
@@ -36245,8 +36245,8 @@
     {
       "name": "The Super Hero Civil War",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_super_hero_civil_war.rs",
       "set": "msh"
     },

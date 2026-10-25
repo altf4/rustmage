@@ -6,6 +6,7 @@ use super::*;
 pub enum SourceLinkedEffectKind {
     RemoveAbilities,
     PreventUntap,
+    Control,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct SourceLinkedEffectView {
@@ -50,6 +51,11 @@ impl Game {
         if recipients.is_empty() {
             return;
         }
+        if kind == SourceLinkedEffectKind::Control {
+            for &recipient in &recipients {
+                self.ensure_control_base(recipient);
+            }
+        }
         let timestamp = self.next_role_timestamp();
         let rows = &mut self.state.roles.as_mut().unwrap().source_linked_effects;
         for recipient in recipients {
@@ -61,7 +67,11 @@ impl Game {
                 timestamp,
             });
         }
-        self.refresh_copy_grant_availability();
+        if kind == SourceLinkedEffectKind::Control {
+            self.refresh_controllers();
+        } else {
+            self.refresh_copy_grant_availability();
+        }
     }
     pub(super) fn forget_source_linked_effects(&mut self, reference: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
