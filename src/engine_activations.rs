@@ -390,7 +390,10 @@ impl Game {
                     }
                     // A modal activation must choose its mode before targets and
                     // costs. Legacy direct actions cannot encode that declaration.
-                    if modes.is_some() || ability.has_x_cost() {
+                    if modes.is_some()
+                        || ability.has_x_cost()
+                        || ability.source_counter_cost().is_some()
+                    {
                         return false;
                     }
                     // Direct actions have no owned external-cost selection.
@@ -553,6 +556,7 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            source_counter_payment: None,
             source_counter_lki: self.state.objects[card as usize]
                 .card
                 .activations()
@@ -622,6 +626,13 @@ impl Game {
         }
         self.record_power_up_use(item, ability);
         self.pay_counters(item.card, &counter_payment);
+        if let Some(kind) = definition.source_counter_cost() {
+            item.source_counter_payment = Some(SourceCounterPaymentView {
+                kind,
+                amount: counter_payment.get(kind),
+                paid: true,
+            });
+        }
         let object = &mut self.state.objects[item.card as usize];
         if let Some(change) = cost.loyalty {
             if change < 0 {

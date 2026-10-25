@@ -463,6 +463,10 @@ pub(crate) enum ManaProduction {
     SourcePower {
         color: u8,
     },
+    /// All source-power mana has one selected color, never a split.
+    TapSourcePowerChoice {
+        mask: u8,
+    },
     MonocoloredPermanentColors,
     Fixed(Mana),
     CountSubtype {
@@ -501,6 +505,7 @@ impl ManaProduction {
             Self::Tagged { production, .. } => production.visit(emit),
             Self::ChosenColor
             | Self::SourcePower { .. }
+            | Self::TapSourcePowerChoice { .. }
             | Self::MonocoloredPermanentColors
             | Self::CountSubtype { .. } => {
                 panic!("dynamic mana requires a characteristic world")
@@ -866,6 +871,12 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// Real nonmana variable activation cost; amount is declared before payment.
+    SourceCounterCost {
+        kind: CounterKind,
+    },
+    /// Mandatory untargeted resolution payment, then draw only if paid.
+    RemoveCreatureCounterThenDraw,
     RevealTopDrawIfArtifact,
     ExileTopPlayBoostSourceIfSubtype {
         subtype: &'static str,
@@ -1769,6 +1780,8 @@ pub(crate) enum AmountValue {
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
     )]
     SourceCounterQuantity(CounterKind),
+    /// Frozen successful source-counter cost; never the source current counter count.
+    PaidSourceCounterQuantity(CounterKind),
     SacrificedToughness,
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
@@ -2015,6 +2028,9 @@ pub(crate) enum ReplacementFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReplacementSpec {
+    /// Add one of each positive kind, only for the provider controller placing
+    /// counters on their own permanent. General providers do not apply entering.
+    CountersPlacedByController,
     DoubleCreatureDamage,
     DoubleOpponentDamage,
     PreventOtherCreatureNoncombatDamage,
@@ -3034,6 +3050,22 @@ pub(crate) struct ActivatedAbility {
 }
 
 impl ActivatedAbility {
+    pub(crate) fn source_counter_cost(&self) -> Option<CounterKind> {
+        match self.program.first() {
+            Some(Instruction::SourceCounterCost { kind }) => {
+                // Compact domains reserve the source tap for this payment; it
+                // cannot also consume some chosen counters as a mana producer.
+                assert!(
+                    self.origin == ActivationOrigin::Battlefield
+                        && self.cost.tap
+                        && self.cost.remove.is_none(),
+                    "variable counter cost requires its own tap cost and no fixed removal"
+                );
+                Some(*kind)
+            }
+            _ => None,
+        }
+    }
     pub(crate) fn mana_production(&self) -> Option<ManaProduction> {
         if self.cost.loyalty.is_some() {
             return None;

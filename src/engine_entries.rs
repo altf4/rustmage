@@ -394,7 +394,13 @@ impl Game {
                             .card
                             .replacement_effects()
                             .iter()
-                            .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
+                            .any(|e| {
+                                matches!(
+                                    e,
+                                    crate::cards::ReplacementSpec::Counters { .. }
+                                        | crate::cards::ReplacementSpec::CountersPlacedByController
+                                )
+                            })
                     }))
         });
         if batch.choices.is_empty()
@@ -412,17 +418,25 @@ impl Game {
             || (card.enters_counters().total() > 0
                 || !card.entry_counter_rules().is_empty()
                 || card.x_complement_entry_counters().is_some())
-                && (card
-                    .replacement_effects()
-                    .iter()
-                    .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
-                    || self.state.static_sources.iter().any(|&id| {
-                        self.state.objects[id as usize]
-                            .card
-                            .replacement_effects()
-                            .iter()
-                            .any(|e| matches!(e, crate::cards::ReplacementSpec::Counters { .. }))
-                    }))
+                && (card.replacement_effects().iter().any(|e| {
+                    matches!(
+                        e,
+                        crate::cards::ReplacementSpec::Counters { .. }
+                            | crate::cards::ReplacementSpec::CountersPlacedByController
+                    )
+                }) || self.state.static_sources.iter().any(|&id| {
+                    self.state.objects[id as usize]
+                        .card
+                        .replacement_effects()
+                        .iter()
+                        .any(|e| {
+                            matches!(
+                                e,
+                                crate::cards::ReplacementSpec::Counters { .. }
+                                    | crate::cards::ReplacementSpec::CountersPlacedByController
+                            )
+                        })
+                }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
         self.pre_entry_counters_with_payment(before, destination, None, before.controller, 0)

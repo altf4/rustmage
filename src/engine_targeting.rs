@@ -661,6 +661,11 @@ impl Game {
             self.state.pending = Pending::TeamworkIntent { player };
         } else if needs_mode || a.item.modes().is_some() && a.item.mode.is_none() {
             self.state.pending = Pending::Modes { player };
+        } else if a.pay_window
+            && a.item.source_counter_cost().is_some()
+            && a.item.source_counter_payment.is_none()
+        {
+            self.state.pending = Pending::SourceCounterAmount { player };
         } else if a.pay_window && a.has_x_cost() && a.item.x.is_none() {
             self.state.pending = Pending::X { player };
         } else if a.needs_offspring() {
@@ -1358,6 +1363,7 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            source_counter_payment: None,
             source_counter_lki: None,
             source_quantity_lki: None,
             event_object: None,

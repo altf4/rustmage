@@ -192,6 +192,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::FinishTeamwork => 100,
             Action::ChooseSaddler { .. } | Action::ChooseCrewer { .. } => 50,
             Action::FinishSaddle | Action::FinishCrew => 100,
+            Action::ChooseSourceCounterAmount { amount } => 80 + i128::from((*amount).min(20)),
             Action::ChooseX { value } => {
                 let life_cost = observation
                     .announcing

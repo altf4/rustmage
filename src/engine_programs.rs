@@ -1042,6 +1042,7 @@ impl Game {
             discard_event: None,
             draw_event: None,
             life_event: None,
+            source_counter_payment: None,
             source_counter_lki: card_quantities::counter_quantity_facts(
                 definition.triggers()[index].program,
                 |kind| source.counters.get(kind),
@@ -3072,7 +3073,12 @@ impl Game {
                 Instruction::AdditionalCombat => self.add_combat(),
                 Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
-                Instruction::ActivationX => (),
+                Instruction::ActivationX | Instruction::SourceCounterCost { .. } => (),
+                Instruction::RemoveCreatureCounterThenDraw => {
+                    if self.start_resolution_counter_payment(&item) {
+                        return;
+                    }
+                }
                 Instruction::DestroyCombatDamagedPlayersPermanents => {
                     self.destroy_combat_damaged_players_permanents(&item)
                 }
@@ -3146,6 +3152,7 @@ impl Game {
                         | ManaProduction::MonocoloredPermanentColors
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::SourcePower { .. }
+                        | ManaProduction::TapSourcePowerChoice { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
                         ManaProduction::Fixed(mana) => {
                             self.add_quality_mana(item.controller, mana, quality)

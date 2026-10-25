@@ -1,0 +1,319 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T12:21:51.874123+00:00",
+  "scope": "Shared core only for three gated MSH consumers. Zero admissions; whole-card review and remaining printed scenario obligations stay open.",
+  "base": "e5f576b58e0c98fd430fc7932b56530339e4d088",
+  "tested_runtime_source_head": "6fbf0265ea61d2f0a718cfaddf0fbb44c601e3ab",
+  "consumers": [
+    {
+      "name": "Doc Samson, Super Psychiatrist",
+      "complete": false,
+      "status": "Gated real core fixture; no complete-card admission.",
+      "rust": "src/card_definitions/msh/doc_samson_super_psychiatrist.rs",
+      "rust_sha256": "800efe3254c02fc6446f243bfbd5b17d6e83456960279de0bf0a9a56c6daf1a7",
+      "provenance": "src/card_definitions/msh/doc_samson_super_psychiatrist.json",
+      "provenance_sha256": "38f8a9c3b58167fba329685c1497cf9d4aa8f4d18f3075146a276ce333869fd2",
+      "oracle_id": "699610c9-c991-4faf-b712-d015ef0799ad",
+      "facts_sha256": "1357bb7408752eec9325104de93717be0bb658dc93a6f87cf925f535e586e8b4",
+      "java_source": "Mage.Sets/src/mage/cards/d/DocSamsonSuperPsychiatrist.java",
+      "java_sha256": "d4a56da881cd4dab11fcf32028e1e16c06bdcb5b547c96bc6e0c7ad961d66673"
+    },
+    {
+      "name": "Mister Hyde, Monster Within",
+      "complete": false,
+      "status": "Gated real core fixture; no complete-card admission.",
+      "rust": "src/card_definitions/msh/mister_hyde_monster_within.rs",
+      "rust_sha256": "0fe31d0888a6cf1a9cfd24acad86e5cbbd8e48e89eb1e4499ece5c798d5f1911",
+      "provenance": "src/card_definitions/msh/mister_hyde_monster_within.json",
+      "provenance_sha256": "edc789e7deff80eeb20c702cfa10a58c2543ef6eadbeadcc9aac2ad63375fd35",
+      "oracle_id": "4a7c7ecc-df72-4da0-af35-dd0af58ec02c",
+      "facts_sha256": "2f15aa060718f276396dfbee0e9fca3b5c41e2559e792d72c5d9277a0df958fc",
+      "java_source": "Mage.Sets/src/mage/cards/m/MisterHydeMonsterWithin.java",
+      "java_sha256": "738bb5e69de3a6958def0e3c35fc6b313e7356c2baf63aff584aa24027d6ba2b"
+    },
+    {
+      "name": "The Astonishing Ant-Man",
+      "complete": false,
+      "status": "Gated real core fixture; no complete-card admission.",
+      "rust": "src/card_definitions/msh/the_astonishing_ant_man.rs",
+      "rust_sha256": "caf8aac56e4b12eb925730197f5b95abb5db746038960fbb29ed4b4b053ad7b4",
+      "provenance": "src/card_definitions/msh/the_astonishing_ant_man.json",
+      "provenance_sha256": "209ff849465e025ef503206ccf258c03c0b35e0255ac071e283d92aa7a44581d",
+      "oracle_id": "6c7e4e51-099a-4398-a4b7-e2f0ddd36429",
+      "facts_sha256": "10f5f6131639f51e5ba98163dbef13fabde32bd71f61adf43ef72811cf999c42",
+      "java_source": "Mage.Sets/src/mage/cards/t/TheAstonishingAntMan.java",
+      "java_sha256": "45f59daaa08e3a71976832d8c47fbe3e9f18846a192809357c6c9e04f4f85c54"
+    }
+  ],
+  "wire": {
+    "schema": 150,
+    "actual_public_changes": [
+      "Actor-only SourceCounterChoiceView {source,kind,maximum:u64}, inclusive 0..maximum; full domain is compact in legal_action_space.",
+      "Distinct ChooseSourceCounterAmount {amount:u64}; unrelated mana-X remains absent.",
+      "Opt-in SourceCounterPaymentView {kind,amount:u64,paid} on SpellView, frozen successful payment retained through source departure."
+    ],
+    "absent_fields_serde_skipped": true,
+    "previous_schema": 149,
+    "coordination": "One shared cohort allocation; root also has real parity choices. No artificial opcode-only wire bump."
+  },
+  "shared_contracts": {
+    "counter_replacement": "Only permanent recipients; provider controller, placing player and recipient controller must coincide. Add one to each positive kind, with existing ordered simultaneous counter transaction. Incoming general providers are excluded under CR614.12. Existing Counters replacement consumers unchanged.",
+    "resolution_payment": "Mandatory untargeted exact controlled creature/counter pair only if available at resolution. Remove exactly one and only then draw; no counterless escape or optional decline. Existing draw/miracle continuation remains owned.",
+    "variable_counter_cost": "Real source nonmana quantity, including zero and u64 domain; source tap and counter reservations owned by announcement. Exactly successful paid quantity frozen separately from scalar X. Current typed header contract is battlefield/tap-source/no fixed-remove. Large domain is sampled for enumerable actions; raw apply accepts every amount in the compact public domain.",
+    "power_mana": "TapSourcePowerChoice produces the current effective source power after tapping, clamped to zero, in exactly one of five colors. Borrowed source-tapped characteristic adapter delegates all actual/funding overlays; zero gives one zero action. Existing fixed-color SourcePower contract unchanged.",
+    "policy": "One necessary score arm for visible ChooseSourceCounterAmount, deterministic amount min20. Removing that exact line restores all prior policy bytes."
+  },
+  "rules_authorities": {
+    "frozen_oracle_and_complete_sources": "<cache>/rustmage-msh-counter-three-readonly-design-a41d2a70.json",
+    "cache_sha256": "f71813628228b8e3230fe3780acbe22f17b7b1f76958201e07685cfed2637949",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "complete_java_bodies_verified": 35,
+    "source_proof": "<cache>/rustmage-msh-counter-quantity-core-source-proof.json",
+    "source_proof_sha256": "fd3bde533e6dc7474d9a55fbe5f485b2da3aa95596925e9d80bc7ef9e7b832f5",
+    "primary": [
+      "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt"
+    ],
+    "interpretation": [
+      "Oracle excludes the Java Doc player-counter branch.",
+      "CR614.12 excludes the incoming general Doc replacement; an already applicable battlefield Doc can modify entry counters.",
+      "Official Hyde notes require eligible removal whenever possible; no Java counterless-choice escape.",
+      "Ant-Man quantity is the real successfully removed nonmana cost, never an unprinted mana-X."
+    ]
+  },
+  "coverage": {
+    "new_groups": 26,
+    "main_groups": 22,
+    "funding_groups": 4,
+    "both_seats": true,
+    "test_functions": {
+      "src/engine_msh_counter_quantity_core_tests.rs": [
+        "msh_counter_core_gated_real_fixtures_stay_excluded_from_support",
+        "msh_counter_core_doc_placer_and_recipient_controller_permanent_matrix",
+        "msh_counter_core_doc_positive_kinds_and_zero_across_permanent_kinds",
+        "msh_counter_core_doc_mixed_batch_replacements_choose_order_and_commit_together",
+        "msh_counter_core_doc_general_incoming_static_never_applies_to_own_or_other_simultaneous_entry",
+        "msh_counter_core_doc_suppression_departure_and_current_provider_controller",
+        "msh_counter_core_doc_five_one_color_outputs_and_illegal_split_colorless_amounts",
+        "msh_counter_core_doc_actual_funding_is_one_color_and_uses_effective_power",
+        "msh_counter_core_doc_zero_negative_power_is_one_zero_action",
+        "msh_counter_core_hyde_resolution_selection_is_mandatory_eligible_and_untargeted",
+        "msh_counter_core_hyde_all_counter_families_include_self",
+        "msh_counter_core_hyde_no_eligible_counter_means_no_prompt_or_draw_but_mode_is_legal",
+        "msh_counter_core_hyde_recomputes_after_mode_and_retains_old_controller_after_source_departure",
+        "msh_counter_core_hyde_stale_reference_and_both_observation_privacy",
+        "msh_counter_core_hyde_draw_pause_is_owned_and_removal_precedes_draw_then_sba",
+        "msh_counter_core_ant_actual_cost_zero_through_five_freezes_quantity_and_exact_tokens",
+        "msh_counter_core_ant_u64_domain_interior_not_enumerated_is_owned_and_no_token_probe",
+        "msh_counter_core_ant_invalid_amount_wrong_kind_source_and_funding_are_atomic",
+        "msh_counter_core_ant_paid_quantity_survives_changed_counters_departure_blink_and_control",
+        "msh_counter_core_ant_token_replacement_and_mana_before_committed_counter_removal",
+        "msh_counter_core_doc_overflow_rolls_back_complete_resolving_action",
+        "msh_counter_core_doc_noneffect_cost_counters_become_effect_before_doubling"
+      ],
+      "src/engine_msh_counter_quantity_funding_tests.rs": [
+        "msh_counter_core_funding_virtual_provider_departure_matches_actual_counter_outcomes",
+        "msh_counter_core_funding_restored_ability_and_source_power_use_virtual_aura_departure",
+        "msh_counter_core_funding_source_counter_reservations_zero_through_excess_match_actual_availability",
+        "msh_counter_core_funding_power_color_shortages_and_virtual_counters_are_exact"
+      ]
+    },
+    "paid_scenario_scope": [
+      "Real paid gated creature casts and real checked mana/activation costs.",
+      "Doc placer/recipient/owner matrix, positive kinds/zero across permanent kinds, mixed replacement order and simultaneous commit, same-controller simultaneous incoming entries, live suppression/control/departure, all five colors, zero/negative power, actual funding shortages and overflow rollback.",
+      "Hyde current mandatory eligible pair, all 30 counter kinds, counterless/no prompt, source departure/blink/control, exact stale references, full both-observation private-hand counterfactual equality, draw pause and post-resolution SBA.",
+      "Ant-Man zero..five actual removals and exact Insect recipe, mana paid before committed removal, live source/counter/control changes, token replacement, wrong payment/kind/source, compact u64 interior choice without a huge allocation probe.",
+      "Projected counter-provider and Aura departure agree with actual movement; source reservations and one-color mana shortages agree with actual funding.",
+      "Owned parent-disposal raw/index branches, restore/stale-index checks and atomic illegal actions at meaningful menus."
+    ],
+    "fixture_limits": [
+      "The three incomplete immutable definitions are seeded only by the local test helper outside the game and then moved through ordinary production registration. The common support helper and Standard membership/support checks are unchanged.",
+      "Direct shared counter executor probes deliberately advance the existing replacement boundary; they are not natural games.",
+      "The u64 interior-domain test uses raw apply and restore; sampled ordinary domains separately exercise raw/index orphan branches. No exponential or giant token allocation is attempted.",
+      "No new test-only query/card override or runtime behavior hook.",
+      "The source-tapped adapter boundary is implemented and forwards production characteristic state, but these 26 groups do not exercise a supported static producer whose power changes specifically because the source becomes tapped. Current effective-power and actual/projected one-color outputs are exercised; a distinct paid tap-sensitive power producer is not claimed."
+    ],
+    "whole_card_evidence_pending": [
+      "Independent review and integration of this shared core.",
+      "Hyde first-mode whole-card upkeep cases and broader whole-card trigger/control interactions.",
+      "Ant-Man full draw-trigger scenarios and combined printed interactions.",
+      "Final paid whole-card obligations and flags remain gated; generic catalogue traces do not certify them."
+    ]
+  },
+  "validation": {
+    "strict_native_passed": 1618,
+    "base_native": 1592,
+    "new_groups": 26,
+    "strict_result": "<cache>/rustmage-msh-counter-quantity-core-strict-result.json",
+    "strict_result_sha256": "41850acf1ced7985356ff5a2c3ea7ac87143486a4d23375ccd66d6574c8a77a4",
+    "strict_phases": [
+      {
+        "name": "native",
+        "code": 0,
+        "seconds": 198.56426996097434
+      },
+      {
+        "name": "clippy",
+        "code": 0,
+        "seconds": 19.31689819600433
+      },
+      {
+        "name": "fmt",
+        "code": 0,
+        "seconds": 1.8547531189979054
+      },
+      {
+        "name": "card_fmt",
+        "code": 0,
+        "seconds": 0.014836743997875601
+      },
+      {
+        "name": "source",
+        "code": 0,
+        "seconds": 0.7509570220136084
+      },
+      {
+        "name": "link",
+        "code": 0,
+        "seconds": 0.5675150770111941
+      },
+      {
+        "name": "diff",
+        "code": 0,
+        "seconds": 0.05973123898729682
+      }
+    ],
+    "strict_guard": "<cache>/rustmage-msh-counter-quantity-core-strict-guard.json",
+    "strict_guard_sha256": "670d5862ef68e8d7e5eb4a0d6c5aba284d26c81a91e9e8060fe2670dcee8b61b",
+    "resource": {
+      "command": [
+        "python3",
+        "<temp>/run-msh-counter-quantity-core-strict.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 490.8107528159744,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2725810176,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "fixed_inputs": 11818,
+    "changed_inputs": [],
+    "input_manifest": "<cache>/rustmage-msh-counter-quantity-core-strict-inputs.json",
+    "input_manifest_sha256": "9f14c773352104a7b824bda73657eb7fee7c5adc1cd37a2552dbdc684d799974",
+    "history": [
+      {
+        "run": "focused-1",
+        "result": "Compile-only test fixture error: unsupported Keyword::SHROUD reference; corrected after terminal."
+      },
+      {
+        "run": "focused-2",
+        "result": "Shared assurance support guard correctly rejected all gated fixtures before rules execution. Added a local, narrowly authorized gated real-definition seed outside the game, followed by production movement. Common support guard unchanged."
+      },
+      {
+        "run": "focused-3",
+        "result": "21 passed; five direct counter probes had not advanced their staged replacement transaction. Explicitly advanced the existing executor boundary in fixtures after terminal; no runtime defect claimed."
+      },
+      {
+        "run": "focused-4",
+        "result": "All 26 groups passed (0.04s test execution), 1592 filtered."
+      },
+      {
+        "run": "native",
+        "result": "1617 rules/tests passed; sole expected schema-150 versus old schema-149 baseline failure. All static checks passed. Fresh previous-149 export then proved the entire inherited table byte-identical before normal-150 acceptance."
+      },
+      {
+        "run": "strict",
+        "result": "1618 passed, zero failed; final fresh normal150 and previous149 exports exact; every static check zero."
+      }
+    ],
+    "commands": [
+      "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-counter-quantity-core-strict-guard.json -- python3 <temp>/run-msh-counter-quantity-core-strict.py",
+      "cargo test --lib -- --nocapture (inside managed runner; RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage-msh-counter-quantity-core-strict-traces.json; previous schema149)",
+      "cargo clippy --all-targets -- -D warnings (inside managed runner)",
+      "cargo fmt --all -- --check (inside managed runner)",
+      "rustfmt --edition 2024 --check src/card_definitions/msh/doc_samson_super_psychiatrist.rs src/card_definitions/msh/mister_hyde_monster_within.rs src/card_definitions/msh/the_astonishing_ant_man.rs",
+      "python3 scripts/check_sources.py",
+      "python3 scripts/link_catalogue.py --check",
+      "git diff --check"
+    ],
+    "release": "No redundant standalone release build; parent owns final cohort release, CI and independent final-head reviews."
+  },
+  "full_trace_proof": {
+    "schema": 1,
+    "base": "e5f576b58e0c98fd430fc7932b56530339e4d088",
+    "comparison": "All inherited full Trace objects exact at previous schema 149. No fields stripped and recorder byte-exact. Normal150 old journals/status/root/decisions/zones exact.",
+    "old_rows": 2525,
+    "normal_rows": 2525,
+    "previous_rows": 2525,
+    "previous_full_rows_exact": true,
+    "changed": [],
+    "added": [],
+    "removed": [],
+    "base_sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+    "normal_sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+    "previous_sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+    "byte_exact_previous_file": true,
+    "immutable_inputs_exact": {
+      "data/catalogue-identities.json": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+      "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+      "src/assurance/regressions.rs": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185"
+    },
+    "policy": {
+      "base_sha256": "93702545f58aa2d9f4b50c1011b08c4696764de7934faab67889113e38df5dea",
+      "current_sha256": "995174296856dd4681b06feb4de7ab37e430d729acb5366173f247dcf6579bc0",
+      "only_change": "New observation-only ChooseSourceCounterAmount score arm; removing that exact line restores prior policy bytes."
+    },
+    "gated_consumers": 3,
+    "new_admissions": 0,
+    "limits": "Generic traces supplement but do not certify every printed card clause; three whole-card flags remain false pending core review and whole-card tests.",
+    "strict_fresh_exports_exact": true,
+    "normal_export": "<cache>/rustmage-msh-counter-quantity-core-strict-traces.json",
+    "previous_export": "<cache>/rustmage-msh-counter-quantity-core-strict-traces.previous-schema.json"
+  },
+  "preservation": {
+    "parent": "<cache>/rustmage-msh-origin-nick-core-preservation.json",
+    "parent_sha256": "db929e3c37da2b2e186345e3a9e0a07fd52784960781515820818bd8d70a9d43",
+    "parent_required": 3952,
+    "all_prior_paths_and_hashes_exact": true,
+    "manifest": "<cache>/rustmage-msh-counter-quantity-core-preservation.json",
+    "manifest_sha256": "be0a22afa3d65097a48711aa5b744189289d41f6babb45e28f33841b4b612042",
+    "cleanup": "<cache>/rustmage-msh-counter-quantity-core-cleanup.json",
+    "cleanup_sha256": "c137bb31ac1a6c6fefc9f5fa946b2c5cd7f1aa60dfab6634e5e07d542d8b4224",
+    "retained": [
+      {
+        "path": "<cache>/rustmage-msh-counter-quantity-core-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-counter-quantity-core-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "833fe04e5d9ce5a72c7fc77ec79c171f690a2dbd356f1c2ab906e5eaf252b6de"
+      }
+    ],
+    "process_scan": {
+      "accessible_target_refs": [],
+      "denied_inspections": 179
+    },
+    "removed_disposable_files": 1019,
+    "removed_path_allocated_bytes": 126525440,
+    "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation."
+  },
+  "throughput": {
+    "implementation_started_utc": "2026-10-25T11:20:26+00:00",
+    "handoff_prepared_utc": "2026-10-25T12:21:51.874123+00:00",
+    "elapsed_wall_seconds_including_queue_and_validation": 3685.874123,
+    "complete_new_cards": 0,
+    "core_groups": 26,
+    "core_groups_per_elapsed_hour": 25.394247572355308,
+    "native_command_seconds_including_compilation": 198.56426996097434,
+    "native_test_execution_seconds": 15.09,
+    "measurement_limit": "Guard duration includes compilation/queue/checks; native timing includes rules assertions and deterministic replay. Neither is a pure gameplay simulation benchmark."
+  },
+  "remaining_limits": [
+    "Three complete flags stay false. No new ID, token, metadata identity or membership change.",
+    "No full-set acceptance claim; entire-pool interactions/performance and parent release/CI/final reviews remain open.",
+    "Review receipts and outcomes are kept local and are not part of source publication."
+  ]
+}
