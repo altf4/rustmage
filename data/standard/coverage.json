@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "871e26d7cf74ab3ebefd7feefa6b2569f86078ddcf0b61ca727e3c171e195ff9",
+  "catalogue_version": "9b171e064ca9e8e8caab6b1621d2f55a8eed34d0dd4f5738cddc6feb66d7b33f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2533,
-  "implemented_total": 2539,
+  "implemented_standard_cards": 2534,
+  "implemented_total": 2540,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 228,
-      "gated": 45
+      "complete": 229,
+      "gated": 44
     },
     "one": {
       "total": 1,
@@ -34269,8 +34269,8 @@
     {
       "name": "Super-Adaptoid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_adaptoid.rs",
       "set": "msh"
     },

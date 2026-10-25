@@ -1,16 +1,10 @@
-//! Individual paid Super-Adaptoid interactions; typed gated staging is explicit until admission.
+//! Individual paid Super-Adaptoid interactions through ordinary supported definitions.
 use super::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
 use super::msh_thirteenth_combined_tests::owned_checked_step;
 use super::*;
 const ADAPT: &str = "Super-Adaptoid";
 fn seed(g: &mut Game, p: Player, zone: Zone) -> CardId {
-    let card = Card::from_name(ADAPT).unwrap();
-    if card.is_supported() {
-        return named(g, p, ADAPT, zone);
-    }
-    let id = named(g, p, "Hill Giant", zone);
-    g.state.objects[id as usize].card = card;
-    id
+    named(g, p, ADAPT, zone)
 }
 fn packet(g: &mut Game, p: Player) -> CardId {
     if g.actor() != Some(p) {
@@ -373,5 +367,41 @@ fn msh_adaptoid_real_taskmaster_copy_keeps_live_cda_and_intrinsic_legendary_over
         );
         assert_eq!(g.counter_count(copy, CounterKind::Lifelink), 0);
         assert!(!g.keywords(copy).contains(Keywords::LIFELINK));
+    }
+}
+#[test]
+fn msh_adaptoid_existing_temporary_flying_prevents_permanent_flying_counter() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let angel = other_paid(&mut g, p, "Serra Angel", &[]);
+        let id = packet(&mut g, p);
+        choose(&mut g, id, angel);
+        other_packet(&mut g, p, "Thwip!", &[Target::Card(id)]);
+        settle(&mut g);
+        assert!(g.keywords(id).contains(Keywords::FLYING));
+        assert_eq!(g.counter_count(id, CounterKind::Flying), 0);
+        assert_eq!(g.counter_count(id, CounterKind::Vigilance), 1);
+        next_turn(&mut g);
+        assert!(!g.keywords(id).contains(Keywords::FLYING));
+        assert!(g.keywords(id).contains(Keywords::VIGILANCE));
+    }
+}
+#[test]
+fn msh_adaptoid_keywordless_creature_is_still_a_mandatory_legal_target() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let bear = other_paid(&mut g, p, "Bear Cub", &[]);
+        let id = packet(&mut g, p);
+        targets(&mut g, id);
+        reject(&mut g, Action::FinishTargets);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(id).counters, Counters::default());
     }
 }
