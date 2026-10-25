@@ -466,12 +466,12 @@
   "game_aggregate": {
     "games": 32,
     "decisions": 15830,
-    "observed_life_packets": 0,
     "paid_feast_casts": 35,
     "both_controllers_selected_life_targets": [
       true,
       true
-    ]
+    ],
+    "observed_targeted_life_packets": 40
   },
   "trace_proof": {
     "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
@@ -599,5 +599,13 @@
   ],
   "performance_qualification": "Checked natural-game execution includes replay and checks, not a pure simulation benchmark. Source preparation, queue, build and cleanup measurements do not establish full-set performance.",
   "remaining": "Whole-set and full-pool interactions/performance acceptance remain open. Final combined published-head release, CI and two independent nonauthor reviews pending. All remaining work in draft PR516; no main merge authorized.",
-  "recorded_utc": "2026-10-25T04:52:15.582409+00:00"
+  "recorded_utc": "2026-10-25T04:52:15.582409+00:00",
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T04:12:25.831490+00:00",
+    "end_utc": "2026-10-25T04:52:26.145863+00:00",
+    "seconds": 2400.314373,
+    "whole_cards": 1,
+    "cards_per_hour": 1.499803542608708,
+    "scope": "Includes full source design, implementation, fixture corrections, natural-game coverage, build/queue/checks and cleanup through evidence preparation. Excludes final integration/release/review gates; not a simulation benchmark."
+  }
 }
