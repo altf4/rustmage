@@ -339,6 +339,8 @@ impl Game {
             | AmountValue::ColorsSpent
             | AmountValue::SacrificedToughness
             | AmountValue::SourcePower
+            | AmountValue::SourceToughness
+            | AmountValue::SourceEquipmentCount
             | AmountValue::LifeEventAmount
             | AmountValue::DamageEventAmount
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.

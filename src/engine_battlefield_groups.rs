@@ -1,6 +1,27 @@
 //! Non-targeted battlefield sets, frozen before simultaneous movement or damage.
 use super::*;
 impl Game {
+    pub(super) fn grow_permanent_group_scaled(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        exclude_source: bool,
+        amount: AmountValue,
+    ) {
+        let amount = i128::try_from(self.item_amount(amount, item))
+            .capacity("permanent growth quantity exhausted");
+        let affected: Vec<_> = self
+            .battlefield_group(item, filters)
+            .into_iter()
+            .filter(|&id| !exclude_source || self.object_ref(id) != item.object)
+            .collect();
+        for id in affected {
+            self.state.objects[id as usize].growth += Stats {
+                power: amount,
+                toughness: amount,
+            };
+        }
+    }
     pub(super) fn put_permanent_counters_scaled(
         &mut self,
         item: &SpellView,

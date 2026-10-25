@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c9ea1b94cff22b39b03f33914a3103e52656eb6f4e196f3a0c792e92876a5981",
+  "catalogue_version": "48d6e34c10c24002e943d31c733f0004aa594a906385176c1b95f2facc1595cc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2477,
-  "implemented_total": 2483,
+  "implemented_standard_cards": 2479,
+  "implemented_total": 2485,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 172,
-      "gated": 101
+      "complete": 174,
+      "gated": 99
     },
     "one": {
       "total": 1,
@@ -5357,8 +5357,8 @@
     {
       "name": "Captain America, Wings of Freedom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/captain_america_wings_of_freedom.rs",
       "set": "msh"
     },
@@ -40509,8 +40509,8 @@
     {
       "name": "Whiplash, Vengeful Engineer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/whiplash_vengeful_engineer.rs",
       "set": "msh"
     },

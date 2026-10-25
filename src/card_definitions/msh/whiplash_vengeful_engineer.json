@@ -3,10 +3,64 @@
   "catalogue_id": 5038,
   "oracle_id": "00ed7aca-b3c1-4d48-acd5-b1596daeb4c3",
   "facts_sha256": "de6b32c7a897c7d86fe63f43336cec59693e3e34748cba94a1bf2ee3e71b4f29",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6ddb5974cfa937a0b452cdb07c1e85da61cd903d91f73d644f2eb24cc32bcbca"
   },
-  "physical_metadata_sha256": "872de698e6bd7356217e6b2f2d55ffee47bf318b78cff41515061cf930e23768"
+  "physical_metadata_sha256": "872de698e6bd7356217e6b2f2d55ffee47bf318b78cff41515061cf930e23768",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WhiplashVengefulEngineer.java",
+  "java_sha256": "1add701dad416fce8e87561ba2c8a193797822cc66ba07b1ea08eab301021238",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/AbilityImpl.java",
+      "sha256": "7c70aa5739de67e806ff96174bde87f22457c5627fbacdd57075222b46c530af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/GameImpl.java",
+      "sha256": "592ad774bce5257b688c0f54e1e9e586c3d984d4ff2b2b2782f5b0154a78657c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+      "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceEffect.java",
+      "sha256": "a912f8d2328afba2be2060a9b044621afd2d83bf48f05489962eec2ee29cff0d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/EquippedSourceCondition.java",
+      "sha256": "13dbc6ee9c36c3d082180fcba6165b21402d3be53b450a5d42fe7e26f5942979"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/EquipmentAttachedCount.java",
+      "sha256": "8dcd1c4e3d6e1754f48f20c844a3ec61c994bdcf33087fc5d1fb165832864762"
+    }
+  ],
+  "implementation_notes": [
+    "The equipped intervening clause uses source LKI after departure, as expressly required by the official release notes; Java rechecks the live source only. Count and subtype facts freeze before the complete simultaneous departure batch, rather than querying later surviving attachment objects."
+  ],
+  "remaining_obligations": []
 }

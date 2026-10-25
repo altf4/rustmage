@@ -321,6 +321,8 @@ impl Game {
                         .and_then(|facts| facts.iter().find(|fact| fact.kind == kind))
                         .map_or(0, |fact| u128::from(fact.count))
                 }),
+            AmountValue::SourceToughness => self.source_toughness(item),
+            AmountValue::SourceEquipmentCount => self.source_equipment_quantity(item),
             AmountValue::SourcePower => {
                 if self.on_battlefield(item.card) && self.object_ref(item.card) == item.object {
                     self.stats(item.card).power.max(0) as u128
