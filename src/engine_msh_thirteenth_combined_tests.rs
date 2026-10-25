@@ -33,7 +33,7 @@ fn reject(g: &mut Game, action: Action) {
     assert_eq!(g.revision(), revision);
     assert_eq!(g.state_bytes(), bytes);
 }
-fn views(g: &Game) -> [serde_json::Value; 2] {
+pub(super) fn views(g: &Game) -> [serde_json::Value; 2] {
     [Player::P0, Player::P1].map(|p| {
         let mut observation = g.observe(p);
         // Restoring deliberately advances the branch revision.
@@ -147,7 +147,7 @@ fn priority(g: &mut Game, p: Player) {
 
 // Neither the policy nor these checks receives an opponent's hidden identities.
 // The counterfactual changes only unobserved cards and below-top library order.
-fn hidden_information_contract(game: &Game, viewer: Player) {
+pub(super) fn hidden_information_contract(game: &Game, viewer: Player) {
     let observation = serde_json::to_value(game.observe(viewer)).unwrap();
     let mut alternative = game.clone();
     let hidden: Vec<_> = game
@@ -179,7 +179,12 @@ fn hidden_information_contract(game: &Game, viewer: Player) {
     assert_eq!(game.legal_actions(), alternative.legal_actions());
 }
 
-fn owned_checked_step(mut game: Game, actor: Player, index: usize, action: Action) -> Game {
+pub(super) fn owned_checked_step(
+    mut game: Game,
+    actor: Player,
+    index: usize,
+    action: Action,
+) -> Game {
     let revision = game.revision();
     let before = game.snapshot();
     assert_eq!(
@@ -224,7 +229,7 @@ impl FixtureLog {
         *self.observed.entry(label.to_owned()).or_default() += 1;
     }
 }
-fn write_cache_record(variable: &str, value: serde_json::Value) {
+pub(super) fn write_cache_record(variable: &str, value: serde_json::Value) {
     if let Ok(path) = std::env::var(variable) {
         let path = std::path::PathBuf::from(path);
         assert!(
@@ -862,7 +867,7 @@ fn msh_thirteenth_combined_paid_nine_copy_counter_exile_funding_and_combat_win()
 
 // Observation-independent accounting: only records actions after smoke_index has
 // chosen from the ordinary legal menu. It never changes policy input or state.
-fn natural_event_label(g: &Game, action: &Action) -> Option<String> {
+pub(super) fn natural_event_label(g: &Game, action: &Action) -> Option<String> {
     let resolving_source = || {
         g.state
             .resolving
