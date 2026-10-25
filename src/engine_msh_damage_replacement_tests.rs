@@ -275,7 +275,7 @@ fn msh_damage_mjolnir_worthy_equip_checks_all_current_restrictions_and_atomicity
         let mut g = setup(p);
         let id = paid_entry(&mut g, p, HAMMER, None);
         let hawk = paid(&mut g, p, HAWK, &[]);
-        let winter = paid(&mut g, p, "Winter Soldier, Icy Assassin", &[]);
+        let winter = paid(&mut g, p, "Lyra Dawnbringer", &[]);
         let invalid = [
             named(&mut g, p, "Serra Angel", Zone::Battlefield),
             named(
@@ -458,7 +458,7 @@ fn msh_damage_mjolnir_foreign_equipment_controller_still_doubles_creature_damage
             Some(Target::Card(victim)),
         );
         settle(&mut g);
-        assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(victim).damage, 8);
     }
 }
 #[test]
@@ -780,13 +780,7 @@ fn msh_damage_mjolnir_trample_assigns_before_doubling_and_hawkeye_excludes_comba
                 amount: 2,
             },
         );
-        checked(
-            &mut g,
-            Action::AssignDamage {
-                target: Target::Player(p.other()),
-                amount: power - 2,
-            },
-        );
+        // The remaining trample damage is automatically assigned to its defender.
         until(&mut g, |g| {
             g.state.step == Step::Main2 && g.state.pending == Pending::Priority
         });
@@ -796,5 +790,78 @@ fn msh_damage_mjolnir_trample_assigns_before_doubling_and_hawkeye_excludes_comba
         );
         assert_eq!(g.object_view(blocker).zone, Zone::Graveyard);
         assert_eq!(g.object_view(attacker).damage, 2);
+    }
+}
+#[test]
+fn msh_damage_hawkeye_current_controller_and_multiple_real_copied_providers_apply_once() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, HAWK, &[]);
+        paid(
+            &mut g,
+            p,
+            "Harmless Offering",
+            &[Target::Player(p.other()), Target::Card(id)],
+        );
+        let before = g.state.players[p.other().index()].life;
+        paid(&mut g, p, "Shock", &[Target::Player(p.other())]);
+        assert_eq!(g.state.players[p.other().index()].life, before - 2);
+        let before = g.state.players[p.index()].life;
+        paid(&mut g, p.other(), "Shock", &[Target::Player(p)]);
+        assert_eq!(g.state.players[p.index()].life, before - 4);
+        let mut g = setup(p);
+        let hawk = paid(&mut g, p, HAWK, &[]);
+        let mimic = paid(&mut g, p, "Taskmaster, Mercenary Mimic", &[]);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        targets(&mut g, mimic);
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(hawk),
+            },
+        );
+        finish(&mut g);
+        settle(&mut g);
+        g.set_counters(mimic, Counters::of(CounterKind::PlusOne, 2));
+        let before = g.state.players[p.other().index()].life;
+        paid(&mut g, p, "Shock", &[Target::Player(p.other())]);
+        assert_eq!(g.state.players[p.other().index()].life, before - 8);
+    }
+}
+#[test]
+fn msh_damage_mjolnir_destroyed_provider_does_not_double_queued_creature_ability() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let (_, hammer, skrull) = unworthy_equipped(&mut g, p);
+        let victim = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        activate(
+            &mut g,
+            p,
+            skrull,
+            2,
+            [0, 0, 0, 1, 0, 4],
+            Some(Target::Card(victim)),
+        );
+        packet(&mut g, p.other(), "Disenchant", &[Target::Card(hammer)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(victim).damage, 4);
+        assert_eq!(g.object_view(hammer).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn msh_damage_wolverine_suppression_stops_healing_and_restoration_resumes_it() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid_entry(&mut g, p, WOLF, None);
+        // Bounded ordinary counters keep the Witness recipient alive while testing ability availability.
+        g.set_counters(id, Counters::of(CounterKind::PlusOne, 6));
+        paid(&mut g, p.other(), "Shock", &[Target::Card(id)]);
+        let aura = paid(&mut g, p, "Witness Protection", &[Target::Card(id)]);
+        paid(&mut g, p.other(), "Shock", &[Target::Card(id)]);
+        assert_eq!(g.object_view(id).damage, 4);
+        paid(&mut g, p, "Disenchant", &[Target::Card(aura)]);
+        paid(&mut g, p.other(), "Shock", &[Target::Card(id)]);
+        assert_eq!(g.object_view(id).damage, 2);
     }
 }
