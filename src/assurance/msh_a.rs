@@ -177,6 +177,9 @@ fn msh_simple_power_up_family_cost_reduction_effect_and_once_limit() {
         for (same_turn, payment) in [(true, early), (false, late)] {
             let p = Player::P0;
             let mut g = scenario(p);
+            if name == "Captain Marvel, Earth's Protector" {
+                g.state.step = Step::BeginCombat;
+            }
             let id = spell(&mut g, p, name, cast_mana, None);
             resolved(&mut g);
             assert_eq!(stats(&g, id), body, "{name}");
@@ -872,7 +875,7 @@ fn select_mode(g: &mut Game, text: &str) {
     let modes = g.observe(g.actor().unwrap()).mode_choices;
     let mode = modes
         .iter()
-        .find(|m| m.text.eq_ignore_ascii_case(text) || m.text.starts_with(text))
+        .find(|m| m.text.to_lowercase().contains(&text.to_lowercase()))
         .unwrap_or_else(|| panic!("missing mode {text}: {modes:?}"))
         .mode;
     act(g, Action::ChooseMode { mode });
@@ -1076,5 +1079,263 @@ fn msh_recovery_modes_recover_their_types_and_respect_two_mode_limit() {
         }
         assert_eq!(g.object_view(foreign).zone, Zone::Graveyard);
         assert_eq!(g.state.players[p.index()].mana, [0; 6], "{name}");
+    }
+}
+
+fn library(g: &mut Game, p: Player, names: &[&str]) -> Vec<CardId> {
+    let old = g.state.players[p.index()].library.to_vec();
+    for id in old {
+        g.state.objects[id as usize].zone = Zone::Outside;
+    }
+    g.state.players[p.index()].library.clear();
+    let mut ids: Vec<_> = names
+        .iter()
+        .rev()
+        .map(|name| put(g, p, name, Zone::Library))
+        .collect();
+    ids.reverse();
+    ids
+}
+fn teamwork(g: &mut Game, card: CardId, teammates: &[CardId]) {
+    act(g, Action::AnnounceCast { card });
+    act(
+        g,
+        Action::ChooseTeamwork {
+            pay: !teammates.is_empty(),
+        },
+    );
+    for &id in teammates {
+        let object = g.object_ref(id);
+        act(g, Action::ChooseTeammate { object });
+    }
+    if !teammates.is_empty() {
+        act(g, Action::FinishTeamwork);
+    }
+}
+
+#[test]
+fn msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost() {
+    let p = Player::P0;
+    for paid in [false, true] {
+        let mut g = scenario(p);
+        let maria = put(&mut g, p, "Agent Maria Hill", Zone::Battlefield);
+        let small = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let large = put(&mut g, p.other(), "Doctor Doom", Zone::Battlefield);
+        let card = put(&mut g, p, "Cruel Alliance", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 2];
+        teamwork(
+            &mut g,
+            card,
+            if paid {
+                std::slice::from_ref(&maria)
+            } else {
+                &[]
+            },
+        );
+        assert_eq!(
+            g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(large)
+            }),
+            paid
+        );
+        target(&mut g, Target::Card(if paid { large } else { small }));
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        resolved(&mut g);
+        assert_eq!(
+            g.object_view(if paid { large } else { small }).zone,
+            Zone::Exile
+        );
+        assert_eq!(g.state.players[p.index()].life, if paid { 23 } else { 20 });
+        assert_eq!(
+            g.counter_count(maria, CounterKind::PlusOne),
+            u64::from(paid)
+        );
+        assert_eq!(g.hand_count(p), usize::from(paid));
+        assert_eq!(g.object_view(maria).tapped, paid);
+    }
+}
+
+#[test]
+fn msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight() {
+    let p = Player::P0;
+    for paid in [false, true] {
+        let mut g = scenario(p);
+        let one = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let two = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let item = put(&mut g, p, "Captain America's Shield", Zone::Battlefield);
+        let card = put(&mut g, p, "Atlantis Attacks", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 5];
+        let members = if paid { vec![one, two] } else { vec![] };
+        teamwork(&mut g, card, &members);
+        select_mode(&mut g, if paid { "Both" } else { "Target player" });
+        target(&mut g, Target::Player(p.other()));
+        if paid {
+            target(&mut g, Target::Card(enemy));
+            target(&mut g, Target::Card(item));
+        }
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        resolved(&mut g);
+        assert_eq!(
+            g.object_view(enemy).zone,
+            if paid { Zone::Hand } else { Zone::Battlefield }
+        );
+        assert_eq!(
+            g.object_view(item).zone,
+            if paid { Zone::Hand } else { Zone::Battlefield }
+        );
+        let leviathan = creatures(&g, p.other())
+            .into_iter()
+            .find(|&id| g.object_view(id).has_subtype("Leviathan"))
+            .unwrap();
+        assert_eq!(stats(&g, leviathan), (6, 5));
+        assert!(g.keywords(leviathan).contains(Keywords::HEXPROOF));
+    }
+    for (paid, take) in [(false, 0), (false, 1), (true, 2)] {
+        let mut g = scenario(p);
+        let one = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let two = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let top = library(
+            &mut g,
+            p,
+            &[
+                "Bear Cub",
+                "Hill Giant",
+                "Forest",
+                "Forest",
+                "Forest",
+                "Forest",
+                "Forest",
+                "Forest",
+            ],
+        );
+        let card = put(&mut g, p, "Earth's Mightiest Heroes", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 2, 4];
+        let members = if paid { vec![one, two] } else { vec![] };
+        teamwork(&mut g, card, &members);
+        pay(&mut g);
+        until(&mut g, |g| {
+            g.legal_actions().contains(&Action::FinishLibrarySelection)
+        });
+        for &id in top.iter().take(take) {
+            act(&mut g, Action::SelectLibrary { card: id });
+        }
+        act(&mut g, Action::FinishLibrarySelection);
+        resolved(&mut g);
+        for (index, id) in top.into_iter().enumerate() {
+            assert_eq!(
+                g.object_view(id).zone,
+                if index < take {
+                    Zone::Battlefield
+                } else {
+                    Zone::Graveyard
+                }
+            );
+        }
+        assert!(g.state.players[p.index()].library.is_empty());
+    }
+}
+
+#[test]
+fn msh_arc_reactor_improvise_pays_generic_and_produces_three_after_untap() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let artifacts = [
+        put(&mut g, p, "A.I.M. Synthoids", Zone::Battlefield),
+        put(&mut g, p, "A.I.M. Synthoids", Zone::Battlefield),
+    ];
+    let card = put(&mut g, p, "Arc Reactor", Zone::Hand);
+    g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+    act(&mut g, Action::AnnounceCast { card });
+    act(&mut g, Action::BeginImprovise);
+    for id in artifacts {
+        let object = g.object_ref(id);
+        act(&mut g, Action::ChooseImproviser { object });
+    }
+    act(
+        &mut g,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 3],
+        },
+    );
+    resolved(&mut g);
+    assert!(g.object_view(card).tapped);
+    for id in artifacts {
+        assert!(g.object_view(id).tapped);
+    }
+    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    g.state.turn += 1;
+    g.begin_turn();
+    choose(
+        &mut g,
+        |a| matches!(a,Action::ActivateMana{card:id,production:[0,0,0,0,0,3],..}if *id==card),
+    );
+    assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 0, 3]);
+    assert!(g.object_view(card).tapped);
+}
+
+#[test]
+fn msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_legend_untaps_once() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+    let crowd = put(&mut g, p, "Crowd of True Believers", Zone::Battlefield);
+    let shield = spell(
+        &mut g,
+        p,
+        "Captain America's Shield",
+        [0, 0, 0, 0, 0, 2],
+        None,
+    );
+    resolved(&mut g);
+    activate(
+        &mut g,
+        p,
+        shield,
+        0,
+        [0, 0, 0, 0, 0, 2],
+        &[Target::Card(bear)],
+    );
+    resolved(&mut g);
+    assert_eq!(stats(&g, bear), (2, 10));
+    assert!(g.keywords(bear).contains(Keywords::VIGILANCE));
+    attack(&mut g, &[bear]);
+    until(&mut g, |g| {
+        g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(enemy),
+        })
+    });
+    target(&mut g, Target::Card(enemy));
+    finish_targets(&mut g);
+    resolved(&mut g);
+    assert!(g.object_view(enemy).tapped);
+    assert!(!g.object_view(bear).tapped);
+    activate(&mut g, p, crowd, 0, [0; 6], &[Target::Card(bear)]);
+    resolved(&mut g);
+    assert_eq!(stats(&g, bear), (3, 10));
+    assert_eq!(g.state.players[p.index()].life, 21);
+    g.finish_cleanup();
+    assert_eq!(stats(&g, bear), (2, 10));
+    let mut g = scenario(p);
+    put(
+        &mut g,
+        p,
+        "Captain America, Living Legend",
+        Zone::Battlefield,
+    );
+    let phil = put(&mut g, p, "Agent Phil Coulson", Zone::Battlefield);
+    let hero = put(&mut g, p, "Agent of Atlas", Zone::Battlefield);
+    for (n, tapped) in [(1, false), (2, true)] {
+        activate(&mut g, p, phil, 0, [0; 6], &[]);
+        resolved(&mut g);
+        assert_eq!(g.object_view(phil).tapped, tapped);
+        assert_eq!(g.counter_count(hero, CounterKind::PlusOne), n);
     }
 }
