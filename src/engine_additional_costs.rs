@@ -21,6 +21,11 @@ impl Game {
         let Some(o) = self.state.objects.get(object.card as usize) else {
             return false;
         };
+        if spec.kind == EffectChoiceKind::SacrificeAttachedEquipment
+            && o.attached_to != Some(source)
+        {
+            return false;
+        }
         let spec = spec.in_zone(o.zone);
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Discard
@@ -524,7 +529,8 @@ impl Game {
             | EffectChoiceKind::CollectEvidence(_)
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack
-            | EffectChoiceKind::SacrificeOrDiscard { .. } => unreachable!(),
+            | EffectChoiceKind::SacrificeOrDiscard { .. }
+            | EffectChoiceKind::SacrificeAttachedEquipment => unreachable!(),
             EffectChoiceKind::ExileGraveyard => {
                 self.move_object(object.card, Zone::Exile);
             }

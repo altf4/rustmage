@@ -467,6 +467,7 @@ fn restricted_source_departure_lki_does_not_rebind_and_hero_source_need_not_be_c
         subtypes: GrantedSubtypes::default(),
         foreign_stash: false,
         spend_any_mana: false,
+        equip: false,
     };
     assert!(quality().eligible(mana_lots::Purpose::Activation(source)));
     assert!(!quality().eligible(mana_lots::Purpose::Other));

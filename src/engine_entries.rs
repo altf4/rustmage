@@ -18,6 +18,8 @@ pub(super) struct EntryMove {
     pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
+    /// Only this surrounding return effect captures its actual public entry result.
+    pub equipment_after: bool,
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
@@ -73,6 +75,7 @@ impl EntryMove {
             suspect_after: false,
             life_bonus: None,
             effect_counter: None,
+            equipment_after: false,
             return_modification: None,
             attacking: None,
             skipped: false,
@@ -535,6 +538,11 @@ impl Game {
         }
         // Apply quantities captured before this event's replacement choices.
         // No incoming permanent or same-event life payment changes those values.
+        let equipment_origin = batch
+            .moves
+            .iter()
+            .find(|m| m.equipment_after)
+            .map(|m| m.before.reference);
         let moves: Vec<_> = batch
             .moves
             .into_iter()
@@ -701,6 +709,9 @@ impl Game {
             if !tokens.is_empty() {
                 self.finish_temporary_copy(item, tokens);
             }
+        }
+        if let Some(origin) = equipment_origin {
+            self.capture_return_attachment_entry(origin, &events);
         }
         self.capture_selected_library_entry(&events);
         if let Some(context) = batch.discard_context {

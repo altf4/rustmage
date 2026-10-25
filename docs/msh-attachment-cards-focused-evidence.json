@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "scope": "Complete directly authored Swordsman and Winter Soldier; focused per-card proof. Aggregate acceptance deferred to the final set integration as requested.",
+  "base": "6a782a266f7dcc987ac0f58d03f1303ae282ec43",
+  "tested_runtime_head": "7e5ac33a863d929e338316e8679426d02c147fe1",
+  "complete_cards_added": [
+    {
+      "name": "Swordsman, Sharp Scoundrel",
+      "oracle_id": "2f15abe7-54aa-40ed-a15d-5b827f1c3923",
+      "facts_sha256": "69be87ae9ce040f08173eff859b3c1fe6c0394563c695fbc48ab6ee688e0284b",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/s/SwordsmanSharpScoundrel.java",
+      "java_sha256": "8adcd989aec3566a91b1c7d22510845b8d7b592f1628811efafa984710bfb449"
+    },
+    {
+      "name": "Winter Soldier, Icy Assassin",
+      "oracle_id": "6f4c94b6-f829-4646-a574-083997b78dfb",
+      "facts_sha256": "1fe7c689d946e3dbdfafadc5b71aeea1cc9e9b697dd3d24d1aa90e3b9fe8ca81",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/w/WinterSoldierIcyAssassin.java",
+      "java_sha256": "2ec678c28e72e69ea2730af8c329f81346b9970b59b5b9e0b907c17efbd0c58c"
+    }
+  ],
+  "new_admissions": 2,
+  "interfaces": [
+    "SourceEquipmentCount uses exact attached Equipment regardless of controller, shared by actual and speculative characteristic worlds.",
+    "Swordsman declares optional Equipment group and independent mandatory own-creature group; resolves attachment only for surviving legal groups. Declared equipped attackers capture independent exact connive recipients and current/latest-departure controller facts.",
+    "Winter return stages ordinary entry counter replacements. Only the marked movement actual successful battlefield result supplies its owned sparse continuation recipient; stale or failed returns do not bind later incarnations.",
+    "Public optional Equipment attachment uses its own action and absent-skipped observation payload, with no target-acquisition event or equip payment. The original resolving source and LKI remain intact."
+  ],
+  "actual_wire_change": {
+    "schema": 152,
+    "new_action": "ChooseEquipmentAttachment { equipment: Option<ObjectRef> }",
+    "new_view": "equipment_attachment: Option<EquipmentAttachmentView>",
+    "new_pending": "EquipmentAttachment",
+    "omitted_when_absent": true,
+    "coordination": "Other unpublished wire152 additions are integrated at final set acceptance."
+  },
+  "printed_clause_evidence": {
+    "Swordsman": [
+      "Paid2/2 body, self/foreign/non-Villain exclusions; optional zero-or-one controlled Equipment and mandatory controlled creature targets.",
+      "Real paid equip transfer; target/source departure, animated Equipment SBA, type/control change and independent queued ability.",
+      "One connive per declared equipped attacker even with two Equipment; two attackers and foreign-controlled attachments; queued source/attachment departure and current/latest-LKI private conniver."
+    ],
+    "WinterSoldier": [
+      "Paid2/2 body, actual vigilance attack and menace single-block rejection/two-block legality.",
+      "Live +2/+0 for each attached Equipment, foreign controller, ability suppression/restoration, actual/speculative departure parity.",
+      "3WB graveyard-only instant activation, colored/generic affordability and opponent-turn use.",
+      "Real return with finality and optional legal public attach or decline, previous attachment transfer, illegal-choice atomicity and no targeting.",
+      "Two queued activations, actual instant reanimation and new graveyard incarnations do not rebind. Entry replacement pause/doubling, bounded skipped/redirected results, finality exile."
+    ]
+  },
+  "tests": {
+    "file": "src/engine_msh_attachment_core_tests.rs",
+    "groups": 16,
+    "functions": [
+      "msh_attachment_core_paid_swordsman_optional_equipment_mandatory_creature_and_real_move",
+      "msh_attachment_core_paid_swordsman_invalidated_target_preserves_old_attachment_and_source_independence",
+      "msh_attachment_core_paid_swordsman_declared_attack_connives_once_with_two_equipment",
+      "msh_attachment_core_paid_swordsman_queued_attacker_current_or_departed_controller_connives",
+      "msh_attachment_core_paid_winter_live_equipment_count_same_in_virtual_world",
+      "msh_attachment_core_paid_winter_return_finality_and_public_optional_nontargeting_attachment",
+      "msh_attachment_core_paid_winter_two_queued_activations_only_successful_return_attaches",
+      "msh_attachment_core_paid_winter_old_graveyard_incarnation_cannot_return_or_attach_new_one",
+      "msh_attachment_core_paid_winter_counter_entry_pause_precedes_public_attachment_and_owned_resume",
+      "msh_attachment_core_winter_actual_entry_result_skipped_or_redirected_has_no_attachment_recipient",
+      "msh_attachment_card_winter_paid_vigilance_and_menace_single_block_illegal",
+      "msh_attachment_card_winter_graveyard_only_colored_generic_and_opponent_turn_activation",
+      "msh_attachment_card_swordsman_self_foreign_and_nonvillain_excluded_zero_equipment_still_targets",
+      "msh_attachment_card_swordsman_queued_changes_respect_current_attachment_legality",
+      "msh_attachment_card_winter_foreign_equipment_count_and_actual_ability_suppression",
+      "msh_attachment_card_swordsman_two_equipped_attackers_connive_after_source_and_equipment_depart"
+    ],
+    "both_seats": true,
+    "ordinary_supported_setup": true,
+    "owned_raw_index_parent_disposal_restore_stale_revision": true,
+    "illegal_action_atomicity": true,
+    "private_views": true,
+    "profile": "development opt-level0 only; production/performance integration deferred",
+    "execution_seconds": 0.28,
+    "fixed_inputs": 11851,
+    "changed_inputs": [],
+    "log": {
+      "path": "<cache>/rustmage-msh-attachment-cards-final-focus.log",
+      "sha256": "cdb0a99d389e0a3eeeb7c8933741ca12328f7594f3b37d4ade3a6576ff112d9b"
+    },
+    "result": {
+      "path": "<cache>/rustmage-msh-attachment-cards-final-focus-result.json",
+      "sha256": "c75d67ed57d169a0c10c56d1e8bcc6aa0e480b225ab189bc3f76546efd2a71f6"
+    },
+    "guard": {
+      "path": "<cache>/rustmage-msh-attachment-cards-final-focus-guard.json",
+      "sha256": "0fc0da570db16b024a7b2c620777827513a5be8f0a925a5248028d57939b8c5a"
+    }
+  },
+  "resource": {
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2675904512,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "source_audits": [
+    {
+      "path": "<cache>/rustmage-msh-attachment-source-refresh-a9c2b026.json",
+      "sha256": "cfb7454203f5439334bffaea56fd68b65083949d11d44ff813bafffd2fd675f7"
+    },
+    {
+      "path": "<cache>/rustmage-msh-attachment-design-c0994f29.json",
+      "sha256": "51e2183e72b048c91fdf0e5df4f097c14012f3085808991238f56830d5ecb931"
+    }
+  ],
+  "primary_sources": [
+    "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf"
+  ],
+  "fixture_limits": [
+    "Bounded earlier-layer copies, controller changes and skipped/redirected entry primitives are explicitly labeled; no invented printed producer is claimed.",
+    "Helpers use admitted instant It Doesnt Add Up for the response reanimation; no sorcery is illegally cast over a stacked ability."
+  ],
+  "unchanged": [
+    "Catalogue IDs, colors, aliases, token recipes and frozen membership/Oracle inventory.",
+    "Trace recorder and all2535 prior accepted baseline rows."
+  ],
+  "deferred": [
+    "Full native/default/static validation and trace-baseline migration/admission exports.",
+    "Full132-game corpus (prior aggregate10second timeout unresolved),32 additional natural games and final release/CI.",
+    "Two independent final nonauthor reviews of the entire published PR and full281-card set acceptance."
+  ],
+  "measurements": {
+    "interval_start": "2026-10-25T07:07:52-07:00",
+    "interval_end": "2026-10-25T15:08:14.751919+00:00",
+    "hours": 1.0063199775,
+    "cards_per_hour": 1.9874394275353635,
+    "scope": "Two cards from first gated source checkpoint through final focused pass; includes prerequisite integration, queues and user-directed workflow changes, excludes prior design/source preparation; not pure simulation throughput."
+  }
+}

@@ -14,6 +14,7 @@ pub(super) struct ControlEffect {
     pub controller: Player,
     pub timestamp: u64,
     pub expires_turn: Option<u32>,
+    pub expires_after_next_turn: Option<NextTurnControlExpiry>,
 }
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ControlState {
@@ -163,6 +164,15 @@ impl Game {
         controller: Player,
         expires_turn: Option<u32>,
     ) {
+        self.record_control_expiring(object, controller, expires_turn, None);
+    }
+    pub(super) fn record_control_expiring(
+        &mut self,
+        object: ObjectRef,
+        controller: Player,
+        expires_turn: Option<u32>,
+        expires_after_next_turn: Option<NextTurnControlExpiry>,
+    ) {
         self.ensure_control_base(object);
         let timestamp = self.next_role_timestamp();
         self.state
@@ -175,6 +185,7 @@ impl Game {
                 controller,
                 timestamp,
                 expires_turn,
+                expires_after_next_turn,
             });
         self.refresh_controllers();
     }

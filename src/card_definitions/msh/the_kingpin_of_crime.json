@@ -3,10 +3,80 @@
   "catalogue_id": 4458,
   "oracle_id": "3eeeb159-aa45-4a9b-9618-8542604b9830",
   "facts_sha256": "bf1ae9c42b79498b30c4e277103567827c1c0dd306b0da3d2adb164fbe4f457b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c18c43b2feb0cc2a66719d792bd98afde6dc3628b910d0bb52c9da01b86e7f53"
   },
-  "physical_metadata_sha256": "a23c07b8aba9ab64d43390d82ef48cc5ac05c07451f7f86331de3c7bb03b79d3"
+  "physical_metadata_sha256": "a23c07b8aba9ab64d43390d82ef48cc5ac05c07451f7f86331de3c7bb03b79d3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheKingpinOfCrime.java",
+  "java_sha256": "b1adb4f44bee82e97be1293e9c61b5111ca39b73bd799374561c8e735e534d0c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExtortAbility.java",
+      "sha256": "4235ce11afe66a5b88617a2c1cbcacc470e4aa8b2fb7ef09db757011e466009f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CombatDamageByToughnessControlledEffect.java",
+      "sha256": "f53d12244705d3bec02687372af643608ee307af417a19d2f4ee28f072e6732b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ToughnessGreaterThanPowerPredicate.java",
+      "sha256": "880f39a9070e9495900154106d4c1194abd08d288cbb10b2ac93621452c1308c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsYouGainLifeLostEffect.java",
+      "sha256": "0bc4e167abed12a009bde329338859618b81ee78330d68ab6a3f73bc2aced224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/ControllerIdPredicate.java",
+      "sha256": "3e6dddd03c3d0b8025f5988d804acf40a090f03c51e7836507a8a79f8a55589f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/HybridManaCost.java",
+      "sha256": "75a83ce4be6ff11778f6f32c6782df9c68250cc55d04e22b03a5efec27de8ee6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    }
+  ]
 }

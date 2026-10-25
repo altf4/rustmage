@@ -33,9 +33,32 @@ impl Game {
                             | TriggerCondition::PlayerDamaged { .. }
                             | TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::SelfDamaged
+                            | TriggerCondition::AtStep { .. }
                     )
             }) {
                 out.push((giver.clone(), None));
+            }
+            if ability_world::CharacteristicWorld::harnessed(self, id)
+                && giver.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::HarnessedTrigger(_)
+                        )
+                    })
+                })
+            {
+                out.push((
+                    giver.clone(),
+                    Some(AttachmentTriggerView {
+                        grantor: giver.reference,
+                        granting_card: giver.card,
+                        recipient: giver.reference,
+                        defender: None,
+                        granted: true,
+                        origin: giver.copied_grant_origin(),
+                    }),
+                ));
             }
             if giver
                 .card

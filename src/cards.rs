@@ -437,6 +437,8 @@ pub(crate) enum ManaRestriction {
     Unrestricted,
     SpellSubtype(&'static str),
     ChosenCreatureSpellOrActivation,
+    EquipmentSpellOrEquip,
+    CreatureActivation,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ManaSpellBonus {
@@ -724,6 +726,8 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    /// One controlled Equipment attached to this exact activated source.
+    SacrificeAttachedEquipment,
     ReturnToHand,
     Discard,
     DiscardNamed(&'static str),
@@ -758,6 +762,9 @@ impl AdditionalCost {
     /// The hand route has its own printed restriction; the permanent filter
     /// applies only to the sacrifice route.
     pub(crate) fn in_zone(mut self, zone: Zone) -> Self {
+        if self.kind == EffectChoiceKind::SacrificeAttachedEquipment && zone == Zone::Battlefield {
+            self.kind = EffectChoiceKind::Sacrifice;
+        }
         if let EffectChoiceKind::SacrificeOrDiscard { nonland } = self.kind {
             match zone {
                 Zone::Hand => {
@@ -1012,6 +1019,7 @@ pub(crate) enum Instruction {
     ReturnSpellToHand,
     ProhibitCastingThisTurn,
     PlayerHexproofThisTurn,
+    HarnessSource,
     GrantPermanentsThisTurn(Keywords),
     DamageWithController {
         damage: i32,
@@ -1274,6 +1282,8 @@ pub(crate) enum Instruction {
     },
     /// Freeze a non-targeted battlefield group, then return it simultaneously.
     GainControlUntilEndTurn,
+    /// Lock control through your next turn when a controlled Villain has greater mana value.
+    GainControlConditionalVillainManaValue,
     /// A fixed controller for this exact permanent, with no expiry or source dependence.
     GainControl {
         subject: Subject,
@@ -1339,6 +1349,7 @@ pub(crate) enum Instruction {
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },
+    ReturnSourceWithCounterAndEquipment(CounterKind),
     ReturnSourceToBattlefield {
         tapped: bool,
     },
@@ -1376,6 +1387,10 @@ pub(crate) enum Instruction {
     DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
     AttachSource,
+    AttachEquipmentByGroups {
+        equipment: u16,
+        recipient: u16,
+    },
     TapAttached,
     PutGrantorCounter(CounterKind),
     PutCombatDealerCounters,
@@ -1603,6 +1618,10 @@ pub(crate) enum Instruction {
         amount: u32,
     },
     DoubleCounters,
+    /// Add exactly one of every currently present kind to a permanent or player.
+    AddOneOfEachCounterKind,
+    /// Give the exact source keyword counters only for current target keywords it lacks.
+    GainMissingTargetKeywordCounters,
     DoubleCounterKind {
         subject: Subject,
         kind: CounterKind,
@@ -1679,6 +1698,9 @@ pub(crate) enum Instruction {
     GainLife(PlayerSet, u16),
     GainLifeScaled(PlayerSet, AmountValue),
     LoseLife(PlayerSet, u16),
+    /// Untargeted loss followed by a gain of the life actually lost.
+    DrainOpponents(u16),
+    CombatDamageByGreaterToughnessThisTurn,
     LoseLifeScaled(PlayerSet, AmountValue),
     /// Each opponent loses the frozen amount; the controller gains it once.
     DrainLifeScaled(AmountValue),
@@ -1845,6 +1867,9 @@ pub(crate) enum StatValue {
     /// Unqualified all-player count; distinct from controller-owned attackers.
     AllAttackingCreatures,
     SourceModified,
+    SourceEquipmentCount,
+    LegendaryCreaturesYouControl,
+    SourceCounters(CounterKind),
     Tokens(CountFilter),
     AtLeast {
         value: &'static StatValue,
@@ -2010,6 +2035,7 @@ pub(crate) struct AuraSpec {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Subject {
+    /// Exact triggering event object, including entrants and declared attackers.
     Entering,
     Source,
     Targets,
@@ -2046,6 +2072,9 @@ pub(crate) enum ReplacementSpec {
     CountersPlacedByController,
     DoubleCreatureDamage,
     DoubleOpponentDamage,
+    NoncombatDamagePlusSourcePower,
+    DoubleEquippedDamage,
+    HealPreviousDamageToSelf,
     PreventOtherCreatureNoncombatDamage,
     PreventAllDamageToSelf,
     Counters {
@@ -2095,10 +2124,11 @@ pub enum CounterKind {
     Trample,
     Vigilance,
     Finality,
+    Shield,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 30] = [
+    pub const ALL: [Self; 31] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -2129,6 +2159,7 @@ impl CounterKind {
         Self::Trample,
         Self::Vigilance,
         Self::Finality,
+        Self::Shield,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -2158,6 +2189,7 @@ impl CounterKind {
                 | Self::Trample
                 | Self::Vigilance
                 | Self::Finality
+                | Self::Shield
         )
     }
 }
@@ -2852,6 +2884,7 @@ pub(crate) enum TriggerCondition {
     SelfAttacksAlone,
     /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
     ControlledCreatureAttacksAlone,
+    ControlledEquippedCreatureAttacks,
     EquippedAttacks,
     /// Attachment recipient was the sole creature declared in this attack event.
     EquippedAttacksAlone,
@@ -3067,6 +3100,11 @@ pub(crate) struct ActivatedAbility {
 }
 
 impl ActivatedAbility {
+    /// Existing typed equip slots are exactly the battlefield AttachSource program.
+    /// Entry attachments, channel and animation programs are different abilities.
+    pub(crate) fn is_equip(&self) -> bool {
+        self.origin == ActivationOrigin::Battlefield && self.program == [Instruction::AttachSource]
+    }
     pub(crate) fn source_counter_cost(&self) -> Option<CounterKind> {
         match self.program.first() {
             Some(Instruction::SourceCounterCost { kind }) => {

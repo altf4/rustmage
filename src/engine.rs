@@ -140,8 +140,11 @@ pub use subtypes::GrantedSubtypes;
 mod replacements;
 #[path = "engine_sagas.rs"]
 mod sagas;
+#[path = "engine_shield_harness.rs"]
+mod shield_harness;
 pub use replacements::{
-    CreatedTokenChoiceView, ReplacementChoiceView, ReplacementEffectView, TokenGroupView,
+    CreatedTokenChoiceView, DamageEventOrderView, DamagePreventionKind, DamagePreventionView,
+    ReplacementChoiceView, ReplacementEffectView, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -166,6 +169,9 @@ pub use evidence::{EvidenceEventView, EvidenceView};
 #[path = "engine_library_selection.rs"]
 mod library_selection;
 pub use library_selection::{EntryTransformChoiceView, LibrarySelectionView};
+#[path = "engine_return_attachment.rs"]
+mod return_attachment;
+pub use return_attachment::EquipmentAttachmentView;
 
 #[path = "engine_forage.rs"]
 mod forage;
@@ -457,6 +463,8 @@ define_actions! {
     FinishEvidence,
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
+    ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
+    ChooseDamageEvent { index: u32 },
     ChooseCreatedToken { object: ObjectRef },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
@@ -672,6 +680,7 @@ define_actions! {
     ChooseSearchDestination { destination: crate::SearchDestination },
     SelectLibrary { card: CardId },
     FinishLibrarySelection,
+    ChooseEquipmentAttachment { equipment: Option<ObjectRef> },
     OrderLibraryBottom { card: CardId },
     ArrangeLibrary {
         card: CardId,
@@ -1628,6 +1637,9 @@ enum Pending {
     Legend {
         player: Player,
     },
+    EquipmentAttachment {
+        player: Player,
+    },
     EffectLibrarySelection {
         player: Player,
     },
@@ -1867,6 +1879,8 @@ pub struct EndureChoiceView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
     pub prepared: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub harnessed: Option<bool>,
     /// Frozen effective nonkeyword abilities only while a removal effect exists.
     /// None is the allocation-free complete printed/default-grant case.
     pub abilities: Option<Box<AbilityAvailabilityView>>,
@@ -2196,6 +2210,8 @@ pub struct Observation {
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub counter_placement_history: Vec<CounterPlacementHistoryView>,
     pub cast_entry_counters: Vec<CastEntryCounterView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub toughness_combat_damage: Option<[bool; 2]>,
     pub additional_combats: u64,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
@@ -2296,6 +2312,8 @@ pub struct Observation {
     pub library_selection: Option<LibrarySelectionView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entry_transform: Option<EntryTransformChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub equipment_attachment: Option<EquipmentAttachmentView>,
     pub target_library: Option<TargetLibraryView>,
     pub last_target_library_move: Option<TargetLibraryMovement>,
     pub recovery_choice: Option<RecoveryChoiceView>,
@@ -2660,6 +2678,7 @@ impl Game {
             | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
+            | Pending::EquipmentAttachment { player }
             | Pending::EffectLibrarySelection { player }
             | Pending::EffectLibrary { player }
             | Pending::EffectMana { player, .. }
@@ -3430,7 +3449,8 @@ impl Game {
                             .is_some()
                         && (!self.is_creature(card)
                             || !obj.summoning_sick
-                            || self.keywords(card).contains(Keywords::HASTE))
+                            || ability_world::CharacteristicWorld::activation_keywords(self, card)
+                                .contains(Keywords::HASTE))
                         && emit(Action::TapMana { card })
                     {
                         return true;
@@ -4371,6 +4391,9 @@ impl Game {
                     }
                 }
             }
+            Pending::EquipmentAttachment { .. } => {
+                return self.visit_return_attachment_actions(emit);
+            }
             Pending::EffectLibrarySelection { .. } => {
                 let f = s.resolving.as_ref().unwrap().selection.as_ref().unwrap();
                 if f.ordering {
@@ -4449,6 +4472,10 @@ impl Game {
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
             }
+            Action::ChooseDamagePrevention { source, prevention } => {
+                self.choose_damage_prevention(source, prevention)
+            }
+            Action::ChooseDamageEvent { index } => self.choose_damage_event(index),
             Action::ChooseCreatedToken { object } => self.choose_created_token(object),
             Action::ChooseLibraryDestination {
                 object,
@@ -5226,6 +5253,9 @@ impl Game {
                 self.choose_search_destination(actor, destination)
             }
             Action::SelectLibrary { card } => self.choose_library_selection(card),
+            Action::ChooseEquipmentAttachment { equipment } => {
+                self.choose_equipment_attachment(equipment)
+            }
             Action::FinishLibrarySelection => self.finish_library_selection(actor),
             Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
             Action::ArrangeLibrary { card, destination } => {
@@ -5838,6 +5868,11 @@ impl Game {
         }
         self.forget_borrowed_source(before.reference);
         self.forget_power_up_object(before.reference);
+        if let Some(state) = &mut self.state.roles {
+            state
+                .harnessed
+                .retain(|reference| *reference != before.reference);
+        }
         self.forget_face_change(before.reference);
         if let Some(state) = &mut self.state.roles {
             state.keyword_effects.retain(|row| {
@@ -6359,6 +6394,9 @@ impl Game {
         self.expire_graveyard_cast_permissions();
         self.state.turn_cast_grants = None;
         self.expire_keyword_effects();
+        if let Some(roles) = &mut self.state.roles {
+            roles.toughness_combat_damage = [false; 2];
+        }
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
             player.extra_land_plays_remaining = 0;
@@ -6594,6 +6632,18 @@ impl Game {
         }
     }
 
+    /// Assignment rule only. Actual characteristic power and noncombat damage are unchanged.
+    pub(super) fn combat_assignment_amount(&self, id: CardId) -> i128 {
+        let stats = self.stats(id);
+        if self.state.roles.as_ref().is_some_and(|r| {
+            r.toughness_combat_damage[self.state.objects[id as usize].controller.index()]
+        }) && stats.toughness > stats.power
+        {
+            stats.toughness.max(0)
+        } else {
+            stats.power.max(0)
+        }
+    }
     fn prepare_damage(&mut self) {
         self.state.hits.clear();
         self.state.damage_choices.clear();
@@ -6612,7 +6662,7 @@ impl Game {
             for &blocker in &blockers {
                 if self.assigns_this_step(blocker) {
                     let source = self.damage_source(blocker);
-                    let amount = self.stats(blocker).power.max(0);
+                    let amount = self.combat_assignment_amount(blocker);
                     self.queue_hit(source, Target::Card(attacker.card), amount, true);
                 }
             }
@@ -6620,7 +6670,7 @@ impl Game {
                 continue;
             }
             let source = self.damage_source(attacker.card);
-            let power = self.stats(attacker.card).power.max(0);
+            let power = self.combat_assignment_amount(attacker.card);
             let defender = self.combat_defender_target(attacker.defender);
             let trample = source.keywords.contains(Keywords::TRAMPLE) && defender.is_some();
             if !attacker.blocked || (trample && blockers.is_empty()) {
@@ -6843,6 +6893,12 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             schema: OBSERVATION_SCHEMA,
+            toughness_combat_damage: s.roles.as_ref().and_then(|r| {
+                r.toughness_combat_damage
+                    .iter()
+                    .any(|x| *x)
+                    .then_some(r.toughness_combat_damage)
+            }),
             additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
             must_be_blocked: s
                 .combat_rules
@@ -6922,6 +6978,7 @@ impl Game {
                 Pending::Forage { .. } => "forage",
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
+                Pending::EquipmentAttachment { .. } => "equipment_attachment",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
                 Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
@@ -7210,6 +7267,7 @@ impl Game {
             },
             library_selection: self.library_selection_view(viewer),
             entry_transform: self.entry_transform_choice_view(),
+            equipment_attachment: self.equipment_attachment_view(),
             target_library: self.target_library_view(viewer),
             last_target_library_move: s.last_target_library_move.as_deref().copied(),
             library_choice: if owns_choice {
@@ -7594,6 +7652,9 @@ impl Game {
                             })
                             .unwrap_or(0)
                         + resolution.selection.as_ref().map_or(0, |f| f.bytes())
+                        + resolution.return_attachment.as_ref().map_or(0, |_| {
+                            std::mem::size_of::<return_attachment::ReturnAttachment>()
+                        })
                         + resolution
                             .selected_discards
                             .iter()
@@ -7702,7 +7763,7 @@ mod suspect;
 
 #[path = "engine_zone_effects.rs"]
 mod zone_effects;
-pub use zone_effects::TemporaryControlView;
+pub use zone_effects::{NextTurnControlExpiry, TemporaryControlView};
 
 impl Game {
     fn no_maximum_hand_size(&self, player: Player) -> bool {
@@ -8096,3 +8157,27 @@ mod msh_turn_cast_grants_tests;
 #[cfg(test)]
 #[path = "engine_msh_ability_copy_core_tests.rs"]
 mod msh_ability_copy_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_broker_thrall_tests.rs"]
+mod msh_broker_thrall_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_super_adaptoid_tests.rs"]
+mod msh_super_adaptoid_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_damage_replacement_tests.rs"]
+mod msh_damage_replacement_tests;
+
+#[cfg(test)]
+#[path = "engine_shield_harness_tests.rs"]
+mod shield_harness_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_restricted_creatures_tests.rs"]
+mod msh_restricted_creatures_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_kingpin_tests.rs"]
+mod msh_kingpin_tests;

@@ -285,6 +285,11 @@ fn reserve_obligations(
     goal.reserve.is_none_or(|(reference, spec)| {
         object.is_some_and(|o| {
             o.generation == reference.generation
+                && (spec.kind != EffectChoiceKind::SacrificeAttachedEquipment
+                    || goal
+                        .source
+                        .as_ref()
+                        .is_some_and(|(source, _, _, _, _)| o.attached_to == Some(*source)))
                 && Game::additional_object_matches(
                     spec, goal.actor, o, kinds, keywords, subtypes, name,
                 )
@@ -542,7 +547,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -745,7 +750,11 @@ impl<'g> FundingState<'g> {
                     ability_world::CharacteristicWorld::counter_amounts(self, r.id)
                 }),
                 source.map_or(0, |r| self.kinds(r)),
-                || source.map_or(Keywords::NONE, |r| self.keywords(r)),
+                || {
+                    source.map_or(Keywords::NONE, |r| {
+                        ability_world::CharacteristicWorld::activation_keywords(self, r.id)
+                    })
+                },
                 self.life,
             )
     }
@@ -965,7 +974,8 @@ impl<'g> FundingState<'g> {
             if !object.tapped
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
-                    || self.keywords(entry).contains(Keywords::HASTE))
+                    || ability_world::CharacteristicWorld::activation_keywords(self, entry.id)
+                        .contains(Keywords::HASTE))
             {
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, entry.id) {
                     let quality = match grant.production {
@@ -1001,7 +1011,8 @@ impl<'g> FundingState<'g> {
             if !object.tapped
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
-                    || self.keywords(entry).contains(Keywords::HASTE))
+                    || ability_world::CharacteristicWorld::activation_keywords(self, entry.id)
+                        .contains(Keywords::HASTE))
                 && let Some(color) =
                     ability_world::CharacteristicWorld::intrinsic_mana_color(self, entry.id)
             {
@@ -1050,7 +1061,7 @@ impl<'g> FundingState<'g> {
                         &ready_object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
                         self.kinds(entry),
-                        || self.keywords(entry),
+                        || ability_world::CharacteristicWorld::activation_keywords(self, entry.id),
                         self.life,
                         ability,
                         if borrowed.is_some() {
@@ -1101,6 +1112,7 @@ impl<'g> FundingState<'g> {
                             card: object.card,
                             foreign_stash: false,
                             spend_any_mana: false,
+                            equip: ability.is_equip(),
                             kinds: self.kinds(entry),
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
                         });
@@ -1720,7 +1732,8 @@ impl<'g> FundingState<'g> {
             let tap_ready = !object.tapped
                 && (self.kinds(resource) & 1 == 0
                     || !object.summoning_sick
-                    || self.keywords(resource).contains(Keywords::HASTE));
+                    || ability_world::CharacteristicWorld::activation_keywords(self, resource.id)
+                        .contains(Keywords::HASTE));
             if tap_ready {
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, resource.id) {
                     grant.production.visit(|mana| {
@@ -1753,7 +1766,12 @@ impl<'g> FundingState<'g> {
                         object,
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         self.kinds(resource),
-                        || self.keywords(resource),
+                        || {
+                            ability_world::CharacteristicWorld::activation_keywords(
+                                self,
+                                resource.id,
+                            )
+                        },
                         self.life,
                         ability,
                         if borrowed.is_some() {
@@ -1848,15 +1866,17 @@ impl<'g> FundingState<'g> {
                 .iter()
                 .find(|(source, _)| source == object)
             {
-                return mana_lots::Purpose::Activation(*facts);
+                return mana_lots::Purpose::Activation(
+                    (*facts).with_activation(definition.activation(*ability)),
+                );
             }
             if self.reference(object.card) == *object
                 && self.object(object.card).zone == definition.activation(*ability).source_zone()
             {
-                return mana_lots::Purpose::Activation(mana_lots::Source::in_world(
-                    self,
-                    object.card,
-                ));
+                return mana_lots::Purpose::Activation(
+                    mana_lots::Source::in_world(self, object.card)
+                        .with_activation(definition.activation(*ability)),
+                );
             }
         }
         self.purpose
@@ -2111,7 +2131,10 @@ impl Game {
             }),
             || {
                 object.map_or(Keywords::NONE, |_| {
-                    self.keywords(goal.source.as_ref().unwrap().0.card)
+                    ability_world::CharacteristicWorld::activation_keywords(
+                        self,
+                        goal.source.as_ref().unwrap().0.card,
+                    )
                 })
             },
             self.state.players[goal.actor.index()].life,
@@ -3089,3 +3112,23 @@ mod temporary_copy_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_counter_quantity_funding_tests.rs"]
 mod msh_counter_quantity_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_attachment_core_tests.rs"]
+mod msh_attachment_core_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_broker_thrall_funding_tests.rs"]
+mod msh_broker_thrall_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_super_adaptoid_funding_tests.rs"]
+mod msh_super_adaptoid_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_shield_harness_funding_tests.rs"]
+mod shield_harness_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_restricted_creatures_funding_tests.rs"]
+mod msh_restricted_creatures_funding_tests;

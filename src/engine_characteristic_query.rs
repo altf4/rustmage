@@ -102,6 +102,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             &|id, _| self.kinds(id),
             &|id| self.name(id),
             &|id| self.colors(id),
+            &|id| self.legendary(id),
+            &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.life(owner),
             self.state.attack_declared && self.attacking(source.card),
@@ -819,6 +821,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         };
         ObjectView {
             prepared: self.is_prepared(self.object_ref(id)),
+            harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),
             kinds: self.current_kinds(id),
             colors: CharacteristicWorld::colors(self, id),

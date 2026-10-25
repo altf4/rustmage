@@ -81,7 +81,7 @@ impl Game {
     ) {
         let mut ids = self.battlefield_group(item, filters);
         if !exile {
-            ids.retain(|&id| !self.keywords(id).contains(Keywords::INDESTRUCTIBLE));
+            ids.retain(|&id| !self.effect_destruction_prevented(id));
         }
         let sources = if exile || ids.is_empty() {
             Vec::new()

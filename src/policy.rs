@@ -169,7 +169,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceBack { .. } => 30,
             Action::ChooseManaLotSpend { amount } => 120 + i128::from(*amount != 0),
             Action::ChooseEntryTimestamp { .. } => 120,
-            Action::ChooseReplacement { .. } => 120,
+            Action::ChooseReplacement { .. }
+            | Action::ChooseDamagePrevention { .. }
+            | Action::ChooseDamageEvent { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
             Action::ChooseEndure { put_counters } => {
                 if *put_counters {
@@ -353,6 +355,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                         }
                     })
                     .sum()
+            }
+            Action::ChooseEquipmentAttachment { equipment } => {
+                if equipment.is_some() {
+                    80
+                } else {
+                    40
+                }
             }
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryLife { pay } => {

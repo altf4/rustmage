@@ -1,0 +1,151 @@
+{
+  "scope": "One complete individual card plus directly affected damage/attack/payment rules. No aggregate/full-set acceptance.",
+  "base": "90398d96",
+  "tested_source": "fa3360fa831b4013b09d7c4c5c0337e0b7a16426",
+  "cards": [
+    "The Kingpin of Crime"
+  ],
+  "complete": true,
+  "sources": {
+    "full_oracle": 1,
+    "full_direct_java": 1,
+    "full_read_semantic_helpers": 13,
+    "audit": "<cache>/rustmage-msh-kingpin-design-90398d96.json",
+    "audit_sha256": "d8592c00bcec8b0f1586f03460296ab4acaf0719a3adae49aa626fdd7940ee5c",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "primary_release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "official_notes": [
+      "Pay once for each Extort trigger at resolution, never multiple payments per trigger.",
+      "Gain actual total life lost; extort does not target.",
+      "Combat assignment change never changes power, including noncombat power-based damage."
+    ],
+    "rules": [
+      "CR702.101a-b Extort",
+      "CR510.1a combat damage assignment",
+      "CR611.2c rule effects can affect later eligible objects; no fixed recipient list",
+      "CR118.4 life payment",
+      "CR702.4 double strike and CR702.19 trample"
+    ],
+    "scoped_exact_pins_rehashed": 14
+  },
+  "implementation": {
+    "Extort": "Ordinary own-any-spell cast trigger, one optional resolution payment of exactlyW orB through existing alternative-mana payment. Untargeted opponent life loss passes through central actual event logic, followed by gain of the actual amount lost. Trigger has captured controller and remains independent of departed source. Existing life gain additions/prohibitions apply.",
+    "attack_trigger": "One ordinary whole-declaration trigger for attacking with one or more creatures, whether Kingpin attacks or not. Existing optional-life prompt is followed explicitly by actual2life loss, then the rule effect. Unaffordable payment skips both following instructions.",
+    "combat_rule": "Owned cold two-player flag, independent of source or fixed recipient list, expires at actual cleanup. Assignment getter reads current controller and current signed stats; use toughness only while toughness>power, then clamp assignment at0. Both attackers and blockers use this getter before ordinary assignment, trample and damage replacements. Actual power/characteristics and noncombat power damage never change.",
+    "wire": 152,
+    "actual_new_view": "Observation.toughness_combat_damage optional two-player flag, omitted while inactive",
+    "new_actions": 0,
+    "new_catalogue_ids": 0,
+    "scoped_authored_rustfmt_files": 6
+  },
+  "focused": {
+    "groups": 48,
+    "new_individual_groups": 21,
+    "directly_affected_existing_groups": 27,
+    "both_seats": true,
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "new_rules_seconds": 0.23,
+    "summed_rules_seconds": 0.75,
+    "guard_seconds": 48.69400293601211,
+    "driver_seconds": 31.093408584594727,
+    "memory_peak_bytes": 2806554624,
+    "memory_max_bytes": 6442450944,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "fixed_inputs": 11868,
+    "changed": [],
+    "input_map": "<cache>/rustmage-msh-kingpin-final-focus-inputs.json",
+    "input_map_sha256": "577e9cdfea2bdc260b4510befc608fd351962a4449a172694b421222db621789",
+    "runs": [
+      {
+        "filter": "msh_kingpin_",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_damage_",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_shield_harness_captain_actual_first_strike_does_not_need_shield",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_shield_harness_captain_simultaneous_sources_choose_which_shield_prevents_owned",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_attack_alone_paid_observers_buff_exact_other_attacker_and_expire",
+        "exit_code": 0
+      },
+      {
+        "filter": "restricted_ward_is_allowed_for_helper_but_not_tower_activated_only_mana",
+        "exit_code": 0
+      }
+    ],
+    "tests": [
+      "msh_kingpin_paid_body_self_cast_does_not_extort_and_both_hybrid_choices_pay_once",
+      "msh_kingpin_extort_decline_and_wrong_color_are_atomic",
+      "msh_kingpin_extort_queued_source_departure_keeps_captured_controller_and_payment",
+      "msh_kingpin_extort_actual_gain_addition_and_prohibition_use_normal_event_pipeline",
+      "msh_kingpin_extort_player_hexproof_does_not_stop_untargeted_drain",
+      "msh_kingpin_declared_attack_payment_changes_assignment_not_actual_power",
+      "msh_kingpin_attack_with_other_creatures_triggers_once_without_kingpin_attacking",
+      "msh_kingpin_attack_life_payment_affordability_and_owned_pending_choice",
+      "msh_kingpin_rule_survives_source_departure_and_applies_to_later_controlled_creatures",
+      "msh_kingpin_rule_uses_current_stats_and_current_controller_with_signed_values",
+      "msh_kingpin_extort_does_not_trigger_for_land_or_opponent_spell",
+      "msh_kingpin_extort_cannot_spend_restricted_equipment_mana",
+      "msh_kingpin_real_copied_extort_instances_each_offer_one_independent_payment",
+      "msh_kingpin_actual_first_strike_uses_toughness_before_ordinary_retaliation",
+      "msh_kingpin_actual_double_strike_assigns_toughness_in_both_damage_steps",
+      "msh_kingpin_actual_trample_assignment_uses_toughness_before_damage_replacements",
+      "msh_kingpin_combat_rule_does_not_change_real_noncombat_power_damage",
+      "msh_kingpin_time_stop_expires_paid_rule_at_real_cleanup",
+      "msh_kingpin_real_land_payment_requires_printed_white_black_and_generic",
+      "msh_kingpin_extort_disappears_with_ability_removal_and_restores_after_aura_dies",
+      "msh_kingpin_extort_gains_life_before_terminal_state_based_loss"
+    ],
+    "matrix": [
+      "Printed1WB and1/5, real Plains/Swamp/Forest payment versus three-Forest rejection and nonmutating funding queries",
+      "Each hybrid payment exactly once, decline/wrong color/restricted Ronin mana, no self/land/opponent-spell trigger, independent copied Extort instances via actual Taskmaster",
+      "Untargeted drain through real Captain hexproof, queued source Murder, ability removal/restoration, Angel additional gain, Cindermaw prohibition and actual terminal Extort resolution",
+      "Actual own combat, optional2life/insufficientlife, attack with other creatures and once per declaration, current signed stats/controller, later controlled eligible creature and source departure",
+      "First strike, double strike and trample actual assignment; Bite Down still uses real1power; EOT and real Time Stop cleanup",
+      "Raw/index owned action replay, parent-disposed optional/payment branches and restore; wrong actors/illegal payments preserve snapshot, state bytes and both observations"
+    ],
+    "bounded_fixtures": "The signed stat table and fresh later creature are explicit bounded states. Main costs, hybrid payments, cast/declaration events, Taskmaster copying, suppression, player hexproof, creature combat, power-based noncombat damage and cleanup use actual supported paid actions. No unsupported Platinum Emperion consumer is claimed; drain computes actual central loss rather than assuming opponent count.",
+    "prior_attempts": "Initial five combat groups passed; five Extort fixtures initially used a card name absent from this catalogue, corrected to admitted zero-cost Mox Jasper. The expanded matrix had one fixture attempt to cast before completing Ronin\u2019s owned mana announcement; fixed by paying that announcement. Final21 gated and final48 ordinary-supported/affected groups passed. No production runtime correction was required after initial authoring."
+  },
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-kingpin-preservation.json",
+    "sha256": "7d1fdf6d01cd30a63ce83cb84ce50f0f282d42982c9fbd17d1ab0c175396c359",
+    "required_paths": 4587,
+    "prior_paths_rehashed_exact": 4581,
+    "retained": {
+      "<cache>/rustmage-msh-kingpin-dev-target/debug/deps/rustmage-55e16bd14e329fbf": "4282097f6a7a100cae5c88a74abdac1eb765ec7fb9e82893c91d6d9a0202f37b",
+      "<cache>/rustmage-msh-kingpin-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "removed_files": 165,
+    "removed_path_allocated_bytes": 40361984,
+    "own_processes_inspected": 243,
+    "accessible_target_refs": [],
+    "denied_inspections": 174,
+    "cleaned_target_must_not_be_reused": true
+  },
+  "implementation_interval": {
+    "start_utc": "2026-10-25T18:18:26.754540+00:00",
+    "end_utc": "2026-10-25T18:30:18.484546+00:00",
+    "hours": 0.19770277944444445,
+    "cards": 1,
+    "cards_per_hour": 5.058097831553276,
+    "scope": "Full-source design through final ordinary-supported result, including authoring, compiles and serialized resource queue. Not simulation throughput."
+  },
+  "deferred": [
+    "Photon spell copies versus Zemo actually cast card copies, and Sneak versus declared-attack event in final combined matrix",
+    "Full native/default/trace migration/release/CI",
+    "Two independent nonauthor final published-PR reviews",
+    "Entire281-card clause/game/performance acceptance"
+  ],
+  "main_merged": false,
+  "pr": "https://github.com/altf4/rustmage/pull/516"
+}

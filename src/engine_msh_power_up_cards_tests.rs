@@ -656,3 +656,265 @@ fn msh_power_cards_counter_boosted_lifelink_deathtouch_haste_flying_and_reach_co
         checked(&mut g, Action::FinishBlockers);
     }
 }
+
+// Additional own-card scenarios for previously unmapped printed branches.
+mod individual_clause_gaps {
+    use super::*;
+
+    fn until(g: &mut Game, stop: impl Fn(&Game) -> bool) {
+        g.prepare_triggers();
+        for _ in 0..240 {
+            if stop(g) {
+                return;
+            }
+            let a = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| {
+                    matches!(
+                        a,
+                        Action::Pass
+                            | Action::PutTrigger { .. }
+                            | Action::FinishTargets
+                            | Action::FinishAttackers
+                            | Action::FinishBlockers
+                            | Action::AssignDamage { .. }
+                    )
+                })
+                .unwrap_or_else(|| panic!("stalled {:?}", g.state.pending));
+            checked(g, a);
+        }
+        panic!("stalled");
+    }
+    fn priority(g: &mut Game, p: Player) {
+        if g.actor() != Some(p) {
+            checked(g, Action::Pass);
+        }
+        assert_eq!(g.actor(), Some(p));
+    }
+    fn main(g: &mut Game, p: Player) {
+        until(g, |g| {
+            g.state.active == p
+                && g.state.step == Step::Main1
+                && g.state.pending == Pending::Priority
+        });
+        priority(g, p);
+    }
+    fn exact_cast(g: &mut Game, p: Player, name: &str) -> CardId {
+        priority(g, p);
+        let id = named(g, p, name, Zone::Hand);
+        let (mut mana, generic) = Card::from_name(name).unwrap().cost();
+        mana[5] += generic;
+        g.state.players[p.index()].mana = mana;
+        cast(g, id, None, &[]);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(g);
+        id
+    }
+    fn later(g: &mut Game, p: Player) {
+        next_turn(g);
+        next_turn(g);
+        main(g, p);
+    }
+    #[test]
+    fn msh_older_gaps_hercules_full_price_lifetime_and_paid_reentry() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let id = exact_cast(&mut g, p, "Hercules, Prince of Power");
+            assert_eq!(
+                (g.object_view(id).power, g.object_view(id).toughness),
+                (3, 3)
+            );
+            later(&mut g, p);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 3];
+            reject(&mut g, announce(id));
+            g.state.players[p.index()].mana[5] = 4;
+            activate(&mut g, id, None);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(g.counter_count(id, CounterKind::PlusOne), 1);
+            assert_eq!(
+                (g.object_view(id).power, g.object_view(id).toughness),
+                (4, 4)
+            );
+            g.state.players[p.index()].mana = [30; 6];
+            reject(&mut g, announce(id));
+            later(&mut g, p);
+            assert_eq!(g.counter_count(id, CounterKind::PlusOne), 1);
+            assert_eq!(g.object_view(id).toughness, 4);
+            g.state.players[p.index()].mana = [30; 6];
+            reject(&mut g, announce(id));
+            let old = g.object_ref(id);
+            let bounce = named(&mut g, p, "Unsummon", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+            cast(&mut g, bounce, None, &[Target::Card(id)]);
+            settle(&mut g);
+            assert_eq!(g.object_view(id).zone, Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 2];
+            cast(&mut g, id, None, &[]);
+            settle(&mut g);
+            assert_ne!(g.object_ref(id), old);
+            assert_eq!(g.counter_count(id, CounterKind::PlusOne), 0);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+            activate(&mut g, id, None);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(g.counter_count(id, CounterKind::PlusOne), 1);
+        }
+    }
+    #[test]
+    fn msh_older_gaps_hulk_paid_body_full_price_does_not_reduce_self_lifetime() {
+        for p in [Player::P0, Player::P1] {
+            let mut g = setup(p);
+            let hulk = exact_cast(&mut g, p, "Hulk, Gamma Goliath");
+            assert_eq!(
+                (g.object_view(hulk).power, g.object_view(hulk).toughness),
+                (6, 5)
+            );
+            later(&mut g, p);
+            g.state.players[p.index()].mana = [0, 0, 0, 1, 1, 5];
+            reject(&mut g, announce(hulk));
+            g.state.players[p.index()].mana[5] = 6;
+            activate(&mut g, hulk, None);
+            settle(&mut g);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(g.counter_count(hulk, CounterKind::PlusOne), 5);
+            assert_eq!(
+                (g.object_view(hulk).power, g.object_view(hulk).toughness),
+                (11, 10)
+            );
+            g.state.players[p.index()].mana = [30; 6];
+            reject(&mut g, announce(hulk));
+            later(&mut g, p);
+            g.state.players[p.index()].mana = [30; 6];
+            reject(&mut g, announce(hulk));
+            assert_eq!(g.counter_count(hulk, CounterKind::PlusOne), 5);
+        }
+    }
+    #[test]
+    fn msh_older_gaps_hulk_actual_reach_block_and_trample_combat() {
+        for p in [Player::P0, Player::P1] {
+            for reach in [false, true] {
+                let mut g = setup(p);
+                let hulk = exact_cast(&mut g, p, "Hulk, Gamma Goliath");
+                let enemy = named(
+                    &mut g,
+                    p.other(),
+                    if reach {
+                        "Serra Angel"
+                    } else {
+                        "Grizzly Bears"
+                    },
+                    Zone::Battlefield,
+                );
+                later(&mut g, p);
+                if reach {
+                    next_turn(&mut g);
+                    main(&mut g, p.other());
+                }
+                until(&mut g, |g| g.state.pending == Pending::Attackers);
+                checked(
+                    &mut g,
+                    Action::Attack {
+                        card: if reach { enemy } else { hulk },
+                    },
+                );
+                checked(&mut g, Action::FinishAttackers);
+                until(&mut g, |g| g.state.pending == Pending::Blockers);
+                checked(
+                    &mut g,
+                    Action::Block {
+                        blocker: if reach { hulk } else { enemy },
+                        attacker: if reach { enemy } else { hulk },
+                    },
+                );
+                checked(&mut g, Action::FinishBlockers);
+                until(&mut g, |g| {
+                    g.state.step == Step::EndCombat && g.state.pending == Pending::Priority
+                });
+                assert_eq!(g.object_view(hulk).zone, Zone::Battlefield);
+                assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+                assert_eq!(g.object_view(hulk).damage, if reach { 4 } else { 2 });
+                assert_eq!(
+                    g.state.players[p.other().index()].life,
+                    if reach { 20 } else { 16 }
+                );
+                assert_eq!(g.state.players[p.index()].life, 20);
+            }
+        }
+    }
+    #[test]
+    fn msh_older_gaps_helicarrier_natural_attacker_and_blocker_teamwork_both_seats() {
+        for p in [Player::P0, Player::P1] {
+            for blocker in [false, true] {
+                for teamwork in [false, true] {
+                    let mut g = setup(p);
+                    let attack = exact_cast(&mut g, p, "Aegis Turtle");
+                    let block = named(&mut g, p.other(), "Aegis Turtle", Zone::Battlefield);
+                    let teammate = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+                    let weak = named(&mut g, p, "Healer's Hawk", Zone::Battlefield);
+                    later(&mut g, p);
+                    until(&mut g, |g| g.state.pending == Pending::Attackers);
+                    checked(&mut g, Action::Attack { card: attack });
+                    checked(&mut g, Action::FinishAttackers);
+                    until(&mut g, |g| g.state.pending == Pending::Blockers);
+                    checked(
+                        &mut g,
+                        Action::Block {
+                            blocker: block,
+                            attacker: attack,
+                        },
+                    );
+                    checked(&mut g, Action::FinishBlockers);
+                    priority(&mut g, p);
+                    let spell = named(&mut g, p, "Helicarrier Strike", Zone::Hand);
+                    g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+                    reject(&mut g, Action::AnnounceCast { card: spell });
+                    g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 0];
+                    checked(&mut g, Action::AnnounceCast { card: spell });
+                    checked(&mut g, Action::ChooseTeamwork { pay: teamwork });
+                    reject(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(teammate),
+                        },
+                    );
+                    let target = if blocker { block } else { attack };
+                    checked(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(target),
+                        },
+                    );
+                    if let Some(a) = g
+                        .legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::FinishTargets))
+                    {
+                        checked(&mut g, a);
+                    }
+                    let payment = g
+                        .legal_actions()
+                        .into_iter()
+                        .find(|a| matches!(a, Action::PayCosts { .. }))
+                        .unwrap();
+                    checked(&mut g, payment);
+                    if teamwork {
+                        checked(&mut g, Action::ChooseCastCost { clause: 0 });
+                        let object = g.object_ref(weak);
+                        checked(&mut g, Action::ChooseTeammate { object });
+                        reject(&mut g, Action::FinishTeamwork);
+                        let object = g.object_ref(teammate);
+                        checked(&mut g, Action::ChooseTeammate { object });
+                        checked(&mut g, Action::FinishTeamwork);
+                    }
+                    settle(&mut g);
+                    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                    assert_eq!(g.object_view(target).damage, if teamwork { 4 } else { 2 });
+                    assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+                    assert_eq!(g.object_view(teammate).tapped, teamwork);
+                }
+            }
+        }
+    }
+}

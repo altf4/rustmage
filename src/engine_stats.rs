@@ -87,6 +87,7 @@ impl Game {
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
             self.state.attack_sources.push(id);
@@ -191,7 +192,10 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
+                            | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
+                            | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
+                            | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::ControlledSpellsCasualty { .. }

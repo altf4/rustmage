@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "07932950953d80b180b93e9b8f7480b91ba26a540a5e0f3418c625818b03ec67",
+  "catalogue_version": "e6e07fe86ee147437cd70cc4b0560ac46d2c10172a6ae531249515c60e323cee",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2529,
-  "implemented_total": 2535,
+  "implemented_standard_cards": 2542,
+  "implemented_total": 2548,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 224,
-      "gated": 49
+      "complete": 237,
+      "gated": 36
     },
     "one": {
       "total": 1,
@@ -5349,8 +5349,8 @@
     {
       "name": "Captain America, Super-Soldier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/captain_america_super_soldier.rs",
       "set": "msh"
     },
@@ -11325,8 +11325,8 @@
     {
       "name": "Evil's Thrall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/evil_s_thrall.rs",
       "set": "msh"
     },
@@ -15949,8 +15949,8 @@
     {
       "name": "Hawkeye, Young Avenger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hawkeye_young_avenger.rs",
       "set": "msh"
     },
@@ -22613,8 +22613,8 @@
     {
       "name": "Mjölnir, Hammer of Thor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/mjolnir_hammer_of_thor.rs",
       "set": "msh"
     },
@@ -25901,8 +25901,8 @@
     {
       "name": "Powerful Broker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/powerful_broker.rs",
       "set": "msh"
     },
@@ -28853,8 +28853,8 @@
     {
       "name": "Ronin, Shadow Stalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ronin_shadow_stalker.rs",
       "set": "msh"
     },
@@ -30685,8 +30685,8 @@
     {
       "name": "Shang-Chi, Master of Kung Fu",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/shang_chi_master_of_kung_fu.rs",
       "set": "msh"
     },
@@ -34269,8 +34269,8 @@
     {
       "name": "Super-Adaptoid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_adaptoid.rs",
       "set": "msh"
     },
@@ -34581,8 +34581,8 @@
     {
       "name": "Swordsman, Sharp Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/swordsman_sharp_scoundrel.rs",
       "set": "msh"
     },
@@ -35869,8 +35869,8 @@
     {
       "name": "The Kingpin of Crime",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_kingpin_of_crime.rs",
       "set": "msh"
     },
@@ -36021,8 +36021,8 @@
     {
       "name": "The Mind Stone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_mind_stone.rs",
       "set": "msh"
     },
@@ -40861,8 +40861,8 @@
     {
       "name": "Winter Soldier, Icy Assassin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/winter_soldier_icy_assassin.rs",
       "set": "msh"
     },
@@ -41053,8 +41053,8 @@
     {
       "name": "Wolverine, Fierce Fighter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/wolverine_fierce_fighter.rs",
       "set": "msh"
     },

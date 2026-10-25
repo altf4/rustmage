@@ -6,7 +6,15 @@ pub struct TemporaryControlView {
     pub object: ObjectRef,
     pub controller: Player,
     pub previous_controller: Player,
-    pub expires_turn: u32,
+    pub expires_turn: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_after_next_turn: Option<NextTurnControlExpiry>,
+}
+/// A duration tied to an actual future turn, including extra or skipped turns.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct NextTurnControlExpiry {
+    pub player: Player,
+    pub created_turn: u32,
 }
 impl Game {
     pub(super) fn remove_from_combat(&mut self, id: CardId, reference: ObjectRef) {
@@ -44,6 +52,12 @@ impl Game {
         target.summoning_sick = true;
     }
     pub(super) fn gain_control_until_end_turn(&mut self, item: &SpellView) {
+        self.gain_control_with_duration(item, false);
+    }
+    pub(super) fn gain_control_conditional_villain_mana_value(&mut self, item: &SpellView) {
+        self.gain_control_with_duration(item, true);
+    }
+    fn gain_control_with_duration(&mut self, item: &SpellView, conditional: bool) {
         for bound in &item.targets {
             if !self.same_target_object(*bound) {
                 continue;
@@ -54,17 +68,34 @@ impl Game {
             if !self.on_battlefield(id) {
                 continue;
             }
+            let longer = conditional
+                && self.state.objects.iter().enumerate().any(|(other, o)| {
+                    o.zone == Zone::Battlefield
+                        && o.controller == item.controller
+                        && self.has_subtype(other as CardId, "Villain")
+                        && o.card.fixed_mana_value()
+                            > self.state.objects[id as usize].card.fixed_mana_value()
+                });
             let effect = TemporaryControlView {
                 object: self.object_ref(id),
                 controller: item.controller,
                 previous_controller: self.state.objects[id as usize].controller,
-                expires_turn: self.state.turn,
+                expires_turn: (!longer).then_some(self.state.turn),
+                expires_after_next_turn: longer.then_some(NextTurnControlExpiry {
+                    player: item.controller,
+                    created_turn: self.state.turn,
+                }),
             };
             self.state
                 .temporary_controls
                 .get_or_insert_with(|| Box::new(Vec::new()))
                 .push(effect);
-            self.record_control(effect.object, effect.controller, Some(self.state.turn));
+            self.record_control_expiring(
+                effect.object,
+                effect.controller,
+                effect.expires_turn,
+                effect.expires_after_next_turn,
+            );
         }
     }
     pub(super) fn gain_control(
@@ -89,9 +120,10 @@ impl Game {
             // Future temporary effects capture this controller as their baseline.
             self.forget_temporary_control(object);
             if let Some(state) = &mut self.state.controls {
-                state
-                    .effects
-                    .retain(|row| row.object != object || row.expires_turn.is_none());
+                state.effects.retain(|row| {
+                    row.object != object
+                        || (row.expires_turn.is_none() && row.expires_after_next_turn.is_none())
+                });
             }
             self.record_control(object, controller, None);
         }
@@ -110,9 +142,22 @@ impl Game {
         }
     }
     pub(super) fn expire_temporary_controls(&mut self) {
-        self.state.temporary_controls = None;
+        let turn = self.state.turn;
+        let active = self.state.active;
+        let expired = |eot: Option<u32>, next: Option<NextTurnControlExpiry>| {
+            eot.is_some_and(|end| end <= turn)
+                || next.is_some_and(|end| end.player == active && turn > end.created_turn)
+        };
+        if let Some(rows) = &mut self.state.temporary_controls {
+            rows.retain(|row| !expired(row.expires_turn, row.expires_after_next_turn));
+            if rows.is_empty() {
+                self.state.temporary_controls = None;
+            }
+        }
         if let Some(state) = &mut self.state.controls {
-            state.effects.retain(|row| row.expires_turn.is_none());
+            state
+                .effects
+                .retain(|row| !expired(row.expires_turn, row.expires_after_next_turn));
         }
         self.refresh_controllers();
     }
@@ -193,7 +238,7 @@ impl Game {
         // Token factories have stable synthetic identities; their actual names,
         // not those factory identifiers, determine shared-name destruction.
         let target_name = self.object_name(id);
-        let ids: Vec<_> = self
+        let mut ids: Vec<_> = self
             .state
             .objects
             .iter()
@@ -211,6 +256,7 @@ impl Game {
                 .then_some(i as CardId)
             })
             .collect();
+        ids.retain(|&id| !self.effect_destruction_prevented(id));
         let sources = if ids.is_empty() {
             Vec::new()
         } else {
