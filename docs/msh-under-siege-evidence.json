@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+  "tracking_issue": 478,
+  "final_delivery": "Root final draft PR516; no child PR, review/outcome comments or main merge.",
+  "authored_complete_candidates": [
+    "Avengers: Under Siege"
+  ],
+  "new_card_admissions": 1,
+  "new_tokens": 0,
+  "metadata_and_recipes_unchanged": true,
+  "wire_schema": 144,
+  "wire_schema_changed": false,
+  "shared_rules": [
+    "Private Instruction::DamageBattlefieldExceptSubtype and shared executor use current effective subtype after current-kind battlefield matching, freeze one recipient vector and dispatch one simultaneous damage batch. Existing DamageBattlefield calls the same executor with no exclusion. All38 unrelated BattlefieldFilter initializers unchanged."
+  ],
+  "inherited_shared_consumers": [
+    "Artistic Process",
+    "Avengers Disassembled",
+    "Dragonback Assault",
+    "Fire Magic",
+    "Fuel the Flames",
+    "Fulminous Forte",
+    "Pyroclasm",
+    "Seismic Rupture",
+    "Slagstorm",
+    "Splatter Technique",
+    "Tectonic Hazard",
+    "Wildfire Howl"
+  ],
+  "obligations": {
+    "saga_lore_chapters_and_sacrifice": "msh_under_siege_paid_all_chapters_natural_turns_exact_tokens_and_treasure_mana; multiple_lore_crossings_replacement_and_final_packet_lifetime",
+    "chapter_i": "Actual paid2BR creates two exact existing5312 2/1black Villain menace tokens; actual summon-sickness and one/two-blocker menace legality, plus Doubling Season token multiplication.",
+    "chapter_ii": "One damage batch for current non-Villain creatures of either controller plus opponent of captured ability controller. Effective type changes after queue, all-types Changeling, artifact creatures, animated lands and tokens; hexproof/indestructible are not targeting gates. Lifelink one-event + Pridemate and Twinflame Tyrant damage replacement prove simultaneous actual outcomes. Live/departed source controller determines lifelink while queued ability controller determines opponent.",
+    "chapter_iii": "Count current controlled Villain PERMANENTS once at resolution, including Kindred noncreature Villain; control/departure after queue does not rebind controller. Existing5302 Treasure exact recipe, all five colors and actual Treasure-funded Shock with cost departure/owned replay.",
+    "identity_suppression_privacy_atomic_owned": "Queued packet survives departure/suppression; pre-event ability suppression prevents chapter effect. Hidden hand/library objects remain private. Every paid/choice action uses shared checked helper with wrong actor, raw/index equality, parent disposal, snapshot restore and stale revision; explicit rejection preserves snapshot/revision."
+  },
+  "fixtures": {
+    "production_characteristic_rows": "Positive-timestamp ordinary AnimationView and CreatureTypesEffectView create animated artifact/lands, a noncreature Kindred Villain and an animated-Saga suppression fixture; no cfg(test) runtime hook or magic timestamp. Witness Protection is an ordinary production Aura attached to the fixture.",
+    "admitted_cards": [
+      "Hill Giant",
+      "Bear Cub",
+      "Aegis Turtle",
+      "Gilded Lotus",
+      "Forest",
+      "Undercover Skrull",
+      "Barkform Harvester",
+      "Clachan Festival",
+      "Ajani's Pridemate",
+      "Twinflame Tyrant",
+      "Doubling Season",
+      "Witness Protection",
+      "Shock"
+    ],
+    "fixture_limits": "Clachan Festival is an admitted Kindred Enchantment; synthetic Villain type producer only, its ETB/activation is not claimed as newly certified. Animation/subtype fixtures exercise existing production layer rows without admitting new producers."
+  },
+  "tests": [
+    "msh_under_siege_paid_all_chapters_natural_turns_exact_tokens_and_treasure_mana",
+    "msh_under_siege_live_types_include_tokens_artifacts_animated_lands_and_changeling",
+    "msh_under_siege_chapter_three_counts_current_kindred_villains_once_and_captured_controller",
+    "msh_under_siege_simultaneous_lifelink_damage_is_one_life_event_with_opponent_replacement",
+    "msh_under_siege_damage_source_current_or_departure_controller_differs_from_ability_controller",
+    "msh_under_siege_damage_is_untargeted_private_and_actions_are_atomic",
+    "msh_under_siege_multiple_lore_crossings_replacement_and_final_packet_lifetime",
+    "msh_under_siege_suppressed_before_counter_event_is_quiet_queued_packet_survives",
+    "msh_under_siege_villain_tokens_menace_is_actual_block_legality",
+    "msh_under_siege_created_treasure_funds_real_spell_and_cost_departure_is_owned"
+  ],
+  "validation": {
+    "focused": {
+      "passed": 10,
+      "both_seats": true,
+      "execution_seconds": 0.01,
+      "log": "<cache>/rustmage/msh-under-siege/focused-2.log"
+    },
+    "full_native": {
+      "passed": 1018,
+      "failed": 1,
+      "only_failure": "Expected pre-acceptance2491vs2490 trace count mismatch; all other native tests pass.",
+      "execution_seconds": 4.85,
+      "log": "<cache>/rustmage/msh-under-siege/native-record.log"
+    },
+    "strict_trace": {
+      "passed": 1,
+      "filtered": 1018,
+      "execution_seconds": 0.75,
+      "log": "<cache>/rustmage/msh-under-siege/strict-trace.log"
+    },
+    "clippy": "cargo clippy --all-targets -- -D warnings passed on identical final gameplay/test source before one-row expected baseline acceptance.",
+    "source_check": {
+      "definitions": 5397,
+      "source_blobs": 1188,
+      "java_verified": true,
+      "catalogue_version": "e0f1b1a2a9b367652092ceae3be3ee96445b927e9bae1eb788cc0c90e2693faf"
+    },
+    "format": "cargo fmt --all --check passed after baseline acceptance.",
+    "link": "link_catalogue.py and --check passed; no manual generated edits.",
+    "full_release": "Not repeated in child; root final aggregate runs required python3 scripts/validate.py --release and two fresh independent final-head reviews."
+  },
+  "trace_proof": {
+    "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+    "old_rows": 2490,
+    "candidate_rows": 2491,
+    "added": [
+      "Avengers: Under Siege"
+    ],
+    "removed": [],
+    "changed": [],
+    "comparison": "Exact equality of every full deserialized Trace struct, including root/status/decisions/zone/journal/observations; no projection, field removal or recorder change.",
+    "base_sha256": "88275144dc386ddf37a71d78fd2d81ade6d08697d7e8e1ec0a5a7124b4427c80",
+    "candidate_sha256": "b19719ffcf2047c032cefc0ff1cfa1c6d23d80b4db06cc67e53128ee2fcc403d"
+  },
+  "resource_reports": {
+    "focus-1": {
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 246.02012052200735,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1786081280,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "focus-2": {
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 391.9717765900423,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2378326016,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "native-clippy": {
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 280.15038000495406,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1865465856,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "strict": {
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 239.61974023398943,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2386538496,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "guard": "All Cargo under scripts/resource_guard.py; one Cargo job/test thread, 6442450944-byte cap, fixed inputs until actual terminal completion, persistent cache logs; no OOM probes.",
+  "source_sha256": {
+    "src/cards.rs": "3c287ebac005f32a5064b5669c3b012bff40d1f74ba4fc6a6f2e829d02cd43de",
+    "src/engine_battlefield_groups.rs": "e119257519b65126d47e15a5a6ca72881f67c70da0f6ce25845efda582b2bf70",
+    "src/engine_programs.rs": "2d661f555e8381bef629f5e38f113cd52435e98e6fcffecef1baa9eadbcbb4bf",
+    "src/engine_msh_under_siege_tests.rs": "010d74d043c0ca37eecd4f7f14c8f9322d3f4579f9b45e7fbfdcaf0ca954299f",
+    "src/card_definitions/msh/avengers_under_siege.rs": "eb7e2d772bbded91cdc8c23e5f44ec3548b600ffc4f499e4387bc2a8abd794b5",
+    "src/card_definitions/msh/avengers_under_siege.json": "241cd61d29c2e3a5ea4558775efaf0f14579666a934aec0f3ce0b40c0ef14cfc"
+  },
+  "rules_sources": [
+    {
+      "url": "https://magic.wizards.com/en/news/announcements/secrets-of-strixhaven-update-bulletin",
+      "rules": "Current714.3a/714.3b: Saga entry lore is intrinsic/replacement and doubles with Doubling Season; ordinary main-phase lore is turn-based."
+    },
+    {
+      "path": "src/card_definitions/msh/avengers_under_siege.json",
+      "rules": "Full frozen Oracle, pinned direct Java and13 complete directly reused helper/token/cost sources; Java multi-effect damage represented by one simultaneous Rust damage batch."
+    }
+  ],
+  "cleanup": {
+    "report": "<cache>/rustmage/msh-under-siege/cleanup.json",
+    "scanned_user_processes": 218,
+    "active_consumers": 0,
+    "freed_bytes": 121740852,
+    "removed_files": 1019,
+    "preserved_libraries": [
+      {
+        "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<preserved-worktree:msh-existing-cards>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-coulson/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-hideout-falcon/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-under-siege/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ],
+    "preserved_native": [
+      {
+        "path": "<cache>/rustmage/msh-under-siege/target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "3c57222e25d2a470f491ca6559fdeaa2c379f381bed4a7cc1f8ecb3d47f7309f"
+      },
+      {
+        "path": "<cache>/rustmage/msh-under-siege/native-before-baseline",
+        "sha256": "d11c1561113540a106ac0e66dece0172c2bf594d806780cca9ee72e9466853da"
+      }
+    ]
+  },
+  "remaining_blockers": [
+    "No printed obligation remains unimplemented for this authored candidate; independent final aggregate review/release remains pending.",
+    "Latent generic Saga issue tracked separately: precombat lore checks printed final-chapter metadata rather than effective Saga subtype. A synthetic animated-Saga plus Witness Protection can gain lore after losing Saga type; no supported producer of this exact animation was identified in this scope. No generic Saga rule changed here.",
+    "Full281-card set behavior, complete games and simulation performance acceptance remain open."
+  ],
+  "throughput": {
+    "start_utc": "2026-10-25T02:14:53+00:00",
+    "end_utc": "2026-10-25T02:41:20.515066+00:00",
+    "elapsed_seconds": 1587.515066,
+    "whole_cards": 1,
+    "cards_per_hour": 2.2676950141145937,
+    "interval": "This authorized one-card/core authoring through terminal checks and cleanup, including shared build-slot waiting; excludes earlier read-only triage.",
+    "simulation": "Not measured; rules-test timings are not a gameplay throughput benchmark."
+  },
+  "latent_generic_saga_issue": {
+    "base": "097f444ed71778d2ca4dbf7fb61b06c1765640af",
+    "classification": "Latent source-level gap; no supported gameplay producer identified in this scope. Current Under Siege candidate scope remains unchanged.",
+    "source": {
+      "path": "src/engine_sagas.rs",
+      "start_line": 22,
+      "end_line": 54,
+      "sha256": "575401fea8288730817b4a5bfaf44d5101242d1b8a66311faac5738c32219725",
+      "body": "    pub(super) fn precombat_lore_counters(&mut self) {\n        let placements = self\n            .state\n            .step_sources\n            .iter()\n            .filter_map(|&id| {\n                let o = &self.state.objects[id as usize];\n                if o.zone != Zone::Battlefield\n                    || o.controller != self.state.active\n                    || o.card.saga_final_chapter().is_none()\n                {\n                    return None;\n                }\n                Some(replacements::CounterPlacement {\n                    placed_by: o.controller,\n                    object: self.object_ref(id),\n                    card: o.card,\n                    owner: o.owner,\n                    controller: o.controller,\n                    subtypes: self.granted_subtypes(id),\n                    kind: self.current_kinds(id),\n                    amount: Counters {\n                        lore: 1,\n                        ..Counters::default()\n                    },\n                    effect: false,\n                    entry_index: None,\n                    private: false,\n                })\n            })\n            .collect();\n        self.stage_counter_placements(placements, replacements::ResumeMode::Pending);\n    }"
+    },
+    "observation": "precombat_lore_counters tests printed card.saga_final_chapter but does not test current effective Saga subtype. A source that loses Saga type can remain on the step-source index and receive a turn-based lore counter.",
+    "fixture": {
+      "path": "src/engine_msh_under_siege_tests.rs",
+      "test": "msh_under_siege_suppressed_before_counter_event_is_quiet_queued_packet_survives",
+      "producer": "Synthetic positive-timestamp production AnimationView makes paid Under Siege a creature; ordinary production Witness Protection Aura makes it a non-Saga Citizen and removes abilities. No cfg(test) runtime hook.",
+      "coverage_limit": "The native scenario asserts suppressed/queued chapter-effect behavior, not a distinct lore-counter delta. This latent counter path was identified from the exact helper implementation; a future prerequisite should add the explicit before/after counter assertion and a supported producer when available."
+    },
+    "future_revisit": "Revisit before admitting Absorbing Man or other copy/type consumers that make this state reachable, and before full281-card set acceptance.",
+    "proposed_prerequisite": "Require effective Saga subtype at the turn-based event in addition to necessary printed chapter mechanics, while preserving chapter packets/ability-removal and copy semantics. Separate owner/review/tests before editing core."
+  }
+}

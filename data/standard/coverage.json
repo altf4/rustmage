@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "bdfd3b842faef75d926ed18ec3456ee24b4027d032ea12cf084cced388de34ed",
+  "catalogue_version": "6b62bcfffb449802083d815db6b332d3be277bf85b1415a07aba8441c3446a7c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2486,
-  "implemented_total": 2492,
+  "implemented_standard_cards": 2487,
+  "implemented_total": 2493,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 181,
-      "gated": 92
+      "complete": 182,
+      "gated": 91
     },
     "one": {
       "total": 1,
@@ -2493,8 +2493,8 @@
     {
       "name": "Avengers: Under Siege",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/avengers_under_siege.rs",
       "set": "msh"
     },

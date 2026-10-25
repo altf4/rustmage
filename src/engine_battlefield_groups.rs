@@ -148,10 +148,21 @@ impl Game {
         players: Option<PlayerSet>,
         amount: i32,
     ) {
+        self.damage_battlefield_group_excluding(item, filters, players, amount, None);
+    }
+    pub(super) fn damage_battlefield_group_excluding(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        players: Option<PlayerSet>,
+        amount: i32,
+        excluded_subtype: Option<&str>,
+    ) {
         let source = self.program_damage_source(item);
         let mut recipients: Vec<_> = self
             .battlefield_group(item, filters)
             .into_iter()
+            .filter(|&id| excluded_subtype.is_none_or(|subtype| !self.has_subtype(id, subtype)))
             .map(Target::Card)
             .collect();
         if let Some(players) = players {
