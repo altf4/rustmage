@@ -1031,6 +1031,31 @@ impl FundingState<'_> {
             }
         }
         for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && let Some((origin, keywords)) = m.keywords_after
+            {
+                let recipient = next.reference(m.before.id);
+                let turn = next.game.state.turn;
+                let p = next.entry_projection.as_mut().unwrap();
+                let timestamp = p.roles.next_timestamp();
+                p.roles.keyword_effects.push(KeywordEffectView {
+                    recipient,
+                    origin: KeywordEffectOrigin::Resolution { source: origin },
+                    keywords: keywords.without(keywords.resolution_rules()),
+                    rules: keywords.resolution_rules(),
+                    timestamp,
+                    expires_turn: Some(turn),
+                });
+                let row = next
+                    .resources
+                    .iter_mut()
+                    .find(|r| r.id == recipient.card)
+                    .unwrap();
+                row.object.gained_keywords = row.object.gained_keywords.union(keywords);
+            }
+        }
+        for m in &moves {
             if !m.skipped {
                 next.entry_projection
                     .as_mut()

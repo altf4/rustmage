@@ -3354,6 +3354,14 @@ impl Game {
                     self.animate_source_if_noncreature(&item, spec, ability)
                 }
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
+                Instruction::SearchLibraryAndGraveyardWithXCounters {
+                    filter,
+                    counter,
+                    haste_at,
+                } => {
+                    self.start_zone_search(&item, filter, counter, haste_at);
+                    return;
+                }
                 Instruction::Search(spec)
                 | Instruction::SearchTargetController(spec)
                 | Instruction::SearchTargetPlayer(spec)

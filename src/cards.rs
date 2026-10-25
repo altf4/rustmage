@@ -1466,6 +1466,11 @@ pub(crate) enum Instruction {
         spec: AnimationSpec,
         ability: u16,
     },
+    SearchLibraryAndGraveyardWithXCounters {
+        filter: SearchFilter,
+        counter: CounterKind,
+        haste_at: Option<u32>,
+    },
     Search(SearchSpec),
     SearchTargetController(SearchSpec),
     /// The legal player target in the currently selected target group searches.

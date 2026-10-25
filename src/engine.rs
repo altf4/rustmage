@@ -1,3 +1,6 @@
+#[path = "engine_zone_search.rs"]
+mod zone_search;
+pub use zone_search::ZoneSearchView;
 #[path = "engine_library_cast_look.rs"]
 mod library_cast_look;
 pub use library_cast_look::LibraryCastLookView;
@@ -693,6 +696,7 @@ define_actions! {
     ChooseSearch {
         card: CardId,
     },
+    ChooseSearchZones { library:bool, graveyard:bool },
     FinishSearch,
     ChooseSearchBattlefield { card: CardId },
     ChooseSearchDestination { destination: crate::SearchDestination },
@@ -1670,6 +1674,9 @@ enum Pending {
     EffectSearch {
         player: Player,
     },
+    LibraryGraveyardSearch {
+        player: Player,
+    },
     EffectMana {
         player: Player,
         production: ManaProduction,
@@ -2222,6 +2229,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub library_cast_look: Option<LibraryCastLookView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub zone_search: Option<ZoneSearchView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_choice: Option<SourceCounterChoiceView>,
     /// Frozen relevant public events; present only with a public historical observer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2724,6 +2733,7 @@ impl Game {
             | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
+            | Pending::LibraryGraveyardSearch { player }
             | Pending::EquipmentAttachment { player }
             | Pending::EffectLibrarySelection { player }
             | Pending::EffectLibrary { player }
@@ -3058,6 +3068,7 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, Card, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::LibraryGraveyardSearch { .. } => return self.visit_zone_search(&mut emit),
             Pending::ZoneReplacement { .. } => {
                 if self.zone_choice_actions(&mut emit) {
                     return true;
@@ -5308,8 +5319,23 @@ impl Game {
                 self.run_program();
             }
             Action::RecoverMilled { object } => self.recover_milled(object),
-            Action::ChooseSearch { card } => self.choose_search(card),
-            Action::FinishSearch => self.finish_search(actor),
+            Action::ChooseSearchZones { library, graveyard } => {
+                self.choose_search_zones(library, graveyard)
+            }
+            Action::ChooseSearch { card } => {
+                if self.has_zone_search() {
+                    self.choose_zone_search_card(card)
+                } else {
+                    self.choose_search(card)
+                }
+            }
+            Action::FinishSearch => {
+                if self.has_zone_search() {
+                    self.finish_zone_search()
+                } else {
+                    self.finish_search(actor)
+                }
+            }
             Action::ChooseSearchBattlefield { card } => self.choose_search_battlefield(actor, card),
             Action::ChooseSearchDestination { destination } => {
                 self.choose_search_destination(actor, destination)
@@ -6794,6 +6820,7 @@ impl Game {
         Observation {
             player_control: self.player_control_view(),
             library_cast_look: self.library_cast_look_view(viewer),
+            zone_search: self.zone_search_view(viewer),
             turn_facts: self.turn_facts_view(),
             paradigms: self.paradigm_views(),
             resolved_spell_names: self.resolved_spell_name_views(),
@@ -7033,6 +7060,7 @@ impl Game {
                 Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::MilledSelection { .. } => "milled_selection",
+                Pending::LibraryGraveyardSearch { .. } => "library_graveyard_search",
                 Pending::EffectSearch { .. } => {
                     if s.resolving
                         .as_ref()
@@ -8268,3 +8296,7 @@ mod msh_bruce_kang_tests;
 #[cfg(test)]
 #[path = "engine_msh_cosmic_cube_tests.rs"]
 mod msh_cosmic_cube_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_vision_quest_tests.rs"]
+mod msh_vision_quest_tests;

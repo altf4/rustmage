@@ -3152,3 +3152,7 @@ mod msh_self_granted_static_tests;
 #[cfg(test)]
 #[path = "engine_msh_armor_tony_funding_tests.rs"]
 mod msh_armor_tony_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_vision_quest_funding_tests.rs"]
+mod msh_vision_quest_funding_tests;

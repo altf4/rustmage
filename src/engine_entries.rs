@@ -18,6 +18,8 @@ pub(super) struct EntryMove {
     pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
+    /// Timestamped ability grant after only this move actually enters.
+    pub keywords_after: Option<(ObjectRef, Keywords)>,
     /// Only this surrounding return effect captures its actual public entry result.
     pub equipment_after: bool,
     /// After this successful entry event, attach this Equipment to an exact recipient.
@@ -77,6 +79,7 @@ impl EntryMove {
             suspect_after: false,
             life_bonus: None,
             effect_counter: None,
+            keywords_after: None,
             equipment_after: false,
             attach_equipment_to: None,
             return_modification: None,
@@ -584,6 +587,7 @@ impl Game {
         let mut suspect_results = Vec::new();
         let mut life_results = Vec::new();
         let mut equipment_results = Vec::new();
+        let mut keyword_results = Vec::new();
         for (movement, counters) in moves {
             let rules = self.freeze_zone_rules(&movement.before, movement.destination, None);
             let plan = self.plan_zone_move(&movement.before, movement.destination, rules);
@@ -621,6 +625,11 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
+                if event.destination == Zone::Battlefield
+                    && let Some((source, keywords)) = movement.keywords_after
+                {
+                    keyword_results.push((event.after, source, keywords));
+                }
                 if event.destination == Zone::Battlefield
                     && let Some(recipient) = movement.attach_equipment_to
                 {
@@ -733,6 +742,11 @@ impl Game {
         }
         // The entry event and its frozen trigger facts precede this subsequent
         // attachment. Packets cannot be stacked until the surrounding resolution ends.
+        for (recipient, source, keywords) in keyword_results {
+            if self.object_ref(recipient.card) == recipient && self.on_battlefield(recipient.card) {
+                self.grant_keyword_effects(&[recipient.card], source, keywords);
+            }
+        }
         for (equipment, recipient) in equipment_results {
             self.attach_equipment(equipment, recipient);
         }

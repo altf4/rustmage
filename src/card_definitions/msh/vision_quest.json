@@ -3,10 +3,96 @@
   "catalogue_id": 4915,
   "oracle_id": "240410a0-3288-4336-b1ad-34936e64ccf2",
   "facts_sha256": "50fc23f339b55d251d38903f00dca45b449ce70b14063668b4f239092ff4fa88",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a16d3ac0ef6f5bec5fae68c2d4143278acadd206bf94875726c8aa956433d6a0"
   },
-  "physical_metadata_sha256": "547c912afee5bfc60c37a1a5375715d85ce289c3a00bf85e66ea3b35af00fb3c"
+  "physical_metadata_sha256": "18dc72436648425e5d0f0f8b90087de460e39684039f6e3b7ac3d34c750f9bd3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VisionQuest.java",
+  "java_sha256": "97c031a29851ac3b6469f86ac4a57ec876fc511ec83d55e8190d5560b8992352",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/filter/common/FilterArtifactCard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b83bf74eb3350828f9e0d61a716272f06439b9752ece9b10b041b03ee0dc32d4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/Counters.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b9e042f9af94a36bcfa431de6c94188a5854266a919f5d2ea26d805cecd0e42b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/Counter.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "6d4e0bf164c0dcff96733c77953362f8a7e3550166f1fd6deaf335ddb0b99ede"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/BoostCounter.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f98863ba5032b79579e49a809d8a59871d2242fc909d5eeea2a4b0fe35111043"
+    },
+    {
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ],
+  "implementation_notes": [
+    "Direct whole Oracle behavior: artifact AND creature, mana value X or less, X additional entry counters and haste until end of turn for X>=4.",
+    "Three nonempty library/graveyard zone subsets; qualified hidden failure to find, public graveyard mandatory find if eligible, shuffle only when library chosen. CR701.23a-b inference takes precedence over Java optional-zero graveyard selection.",
+    "Pinned fixed printed mana components corrected from the gated zero placeholder to U+R; typed x_symbols is1. IDs, aliases, recipes and Oracle facts unchanged.",
+    "Paid both-seat scenarios: src/engine_msh_vision_quest_tests.rs; exact borrowed entry projection: src/engine_msh_vision_quest_funding_tests.rs. Final aggregate integration remains deferred."
+  ]
 }

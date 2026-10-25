@@ -265,6 +265,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
+            Action::ChooseSearchZones { .. } => 50,
             Action::Concede => -1000,
             Action::ChooseZoneReplacement { .. } => 50,
             Action::Sacrifice { .. } => 50,

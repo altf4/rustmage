@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e77923c1c7bb07fb5703b9504139ffe7a164e0344571ee10532cca4ffa11a7a8",
+  "catalogue_version": "87d02289023ab5049190334c22dbbe973cdeeb8b989dab8889ebef5bb41415d2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2550,
-  "implemented_total": 2556,
+  "implemented_standard_cards": 2551,
+  "implemented_total": 2557,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 245,
-      "gated": 28
+      "complete": 246,
+      "gated": 27
     },
     "one": {
       "total": 1,
@@ -39525,8 +39525,8 @@
     {
       "name": "Vision Quest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/vision_quest.rs",
       "set": "msh"
     },
