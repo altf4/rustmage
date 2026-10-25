@@ -1335,7 +1335,7 @@
     "journal": "a4c714aeb662e85f",
     "observations": "ae5be06692fd7954"
   },
-  "Bartolomé del Presidio": {
+  "Bartolom\u00e9 del Presidio": {
     "root": "main",
     "status": "completed",
     "decisions": 4,
@@ -1583,7 +1583,7 @@
     "journal": "b43781f2834dd88f",
     "observations": "99f1efab8907352f"
   },
-  "Bespoke Bō": {
+  "Bespoke B\u014d": {
     "root": "main",
     "status": "completed",
     "decisions": 7,
@@ -7087,7 +7087,7 @@
     "journal": "ce93789b5fa64c9f",
     "observations": "cfd2eea0e4cec62f"
   },
-  "Glóin the Mighty": {
+  "Gl\u00f3in the Mighty": {
     "root": "main",
     "status": "completed",
     "decisions": 4,
@@ -17319,6 +17319,14 @@
     "journal": "b57420d067cd09ad",
     "observations": "df86a5d9d0623a1c"
   },
+  "The Coming of Galactus": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "1fa2e414f0dfe395",
+    "observations": "4f4a40a281675e35"
+  },
   "The Crystal's Chosen": {
     "root": "main",
     "status": "completed",
@@ -17671,7 +17679,7 @@
     "journal": "2e812e35bf5aacc1",
     "observations": "59fbed14d81490e5"
   },
-  "Thrór's Map": {
+  "Thr\u00f3r's Map": {
     "root": "main",
     "status": "completed",
     "decisions": 7,
@@ -18302,6 +18310,14 @@
     "zone": "Battlefield",
     "journal": "b43781f2834dd88f",
     "observations": "e41bdca6df8225c2"
+  },
+  "U.S.Agent, John Walker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "c788bd6ffad9aa32",
+    "observations": "ebdea9dc4576aeb6"
   },
   "Ulna Alley Shopkeep": {
     "root": "main",

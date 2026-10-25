@@ -270,20 +270,28 @@ fn msh_galactus_nonland_indestructible_target_survives_and_blink_stays_exact() {
     }
 }
 #[test]
-fn msh_galactus_multiple_thresholds_wait_every_exact_packet() {
+fn msh_galactus_multiple_thresholds_iv_first_waits_every_exact_packet() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let s = saga(&mut g, p);
         g.effect_counter(s, CounterKind::Lore, 3, replacements::ResumeMode::Pending);
         g.prepare_triggers();
         assert!(!g.saga_sacrifice_required(s));
-        // All source packets exist together, irrespective of chosen stack ordering.
-        assert_eq!(
-            g.state.pending_triggers.len()
-                + g.state.ordering_triggers.len()
-                + g.state.stack.iter().filter(|i| i.card == s).count(),
-            3
-        );
+        // Put IV on top; its resolution cannot sacrifice while II/III remain.
+        for ability in [1, 2, 3] {
+            let id = g
+                .state
+                .ordering_triggers
+                .iter()
+                .find(|i| i.card == s && i.kind == StackKind::TriggeredAbility { ability })
+                .unwrap()
+                .id;
+            checked(&mut g, Action::PutTrigger { id });
+            finish(&mut g);
+        }
+        until(&mut g, |g| !tokens(g, p, Card::MshGalactusToken).is_empty());
+        assert!(g.on_battlefield(s));
+        assert!(!g.saga_sacrifice_required(s));
         settle(&mut g);
         assert!(!g.on_battlefield(s));
         assert_eq!(tokens(&g, p, Card::MshGalactusToken).len(), 1);
@@ -411,6 +419,9 @@ fn msh_galactus_no_land_attack_continues_and_sickness_rejects() {
         checked(&mut g, Action::FinishAttackers);
         settle(&mut g);
         assert!(g.on_battlefield(t));
+        until(&mut g, |g| {
+            g.actor().is_none() || g.state.step == Step::Main2
+        });
         assert_eq!(g.state.players[p.other().index()].life, 0);
     }
 }
@@ -438,7 +449,15 @@ fn msh_galactus_flying_block_legality_and_actual_trample_damage() {
             },
         );
         checked(&mut g, Action::FinishBlockers);
-        settle(&mut g);
+        until(&mut g, |g| g.state.pending == Pending::Damage);
+        checked(
+            &mut g,
+            Action::AssignDamage {
+                target: Target::Card(flyer),
+                amount: 1,
+            },
+        );
+        until(&mut g, |g| g.state.step == Step::Main2);
         assert!(!g.on_battlefield(flyer));
         assert_eq!(g.state.players[p.other().index()].life, 1);
     }
@@ -501,6 +520,7 @@ fn msh_galactus_saga_live_type_loss_stops_lore_and_sacrifice_not_queued_chapter(
         settle(&mut g);
         assert!(g.on_battlefield(s));
         g.move_object(aura, Zone::Graveyard);
+        g.give_priority();
         assert!(g.has_subtype(s, "Saga"));
         settle(&mut g);
         assert!(!g.on_battlefield(s));
@@ -512,6 +532,7 @@ fn msh_galactus_saga_chapter_suppression_preserves_subtype_no_lore_no_sacrifice(
         let mut g = setup(p);
         let s = saga(&mut g, p);
         animate(&mut g, s, false);
+        g.state.players[p.index()].mana = [30; 6];
         let aura = paid(&mut g, p, "Frozen in Ice", &[Target::Card(s)]);
         assert!(g.has_subtype(s, "Saga"));
         assert!(!g.printed_abilities_available(s));
@@ -523,6 +544,7 @@ fn msh_galactus_saga_chapter_suppression_preserves_subtype_no_lore_no_sacrifice(
         assert!(g.on_battlefield(s));
         assert!(tokens(&g, p, Card::MshGalactusToken).is_empty());
         g.move_object(aura, Zone::Graveyard);
+        g.give_priority();
         settle(&mut g);
         assert!(!g.on_battlefield(s));
         assert!(tokens(&g, p, Card::MshGalactusToken).is_empty());
@@ -543,6 +565,7 @@ fn msh_galactus_suppressed_queued_iv_resolves_then_restoration_sacrifices() {
         assert!(g.on_battlefield(s));
         assert_eq!(tokens(&g, p, Card::MshGalactusToken).len(), 1);
         g.move_object(aura, Zone::Graveyard);
+        g.give_priority();
         settle(&mut g);
         assert!(!g.on_battlefield(s));
     }
@@ -559,5 +582,42 @@ fn msh_galactus_wrong_controller_and_second_main_never_place_lore() {
         g.begin_step(Step::Main2);
         settle(&mut g);
         assert_eq!(g.counter_count(s, CounterKind::Lore), 1);
+    }
+}
+#[test]
+fn msh_galactus_orphan_final_packets_full_private_observations_restore() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let secret = named(&mut g, p, NAME, Zone::Hand);
+        let mut alt = g.clone();
+        alt.state.objects[secret as usize].card = Card::from_name("Forest").unwrap();
+        assert_eq!(
+            serde_json::to_value(g.observe(p.other())).unwrap(),
+            serde_json::to_value(alt.observe(p.other())).unwrap()
+        );
+        let s = saga(&mut g, p);
+        g.effect_counter(s, CounterKind::Lore, 3, replacements::ResumeMode::Pending);
+        chapter(&mut g, s, 3);
+        let before = g.snapshot();
+        let actor = g.actor().unwrap();
+        let revision = g.revision();
+        let action = Action::Pass;
+        let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+        let (mut raw, mut indexed) = (g.clone(), g.clone());
+        drop(g);
+        raw.apply(actor, action.clone()).unwrap();
+        indexed.apply_index(actor, revision, index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        for child in [&mut raw, &mut indexed] {
+            child.move_object(s, Zone::Exile);
+            settle(child);
+            assert_eq!(tokens(child, p, Card::MshGalactusToken).len(), 1);
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        raw.restore(&before).unwrap();
+        checked(&mut raw, action);
+        raw.move_object(s, Zone::Exile);
+        settle(&mut raw);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
     }
 }

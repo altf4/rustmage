@@ -449,12 +449,40 @@ fn msh_us_agent_live_shield_power_funds_actual_crew_four() {
                 counter_payment: Counters::default(),
             },
         );
-        finish(&mut g);
         let object = g.object_ref(s);
         checked(&mut g, Action::ChooseCrewer { object });
         checked(&mut g, Action::FinishCrew);
         settle(&mut g);
         assert!(g.is_creature(vehicle));
         assert!(g.object_view(s).tapped);
+    }
+}
+#[test]
+fn msh_us_agent_free_actual_cast_keeps_intrinsic_hybrid_colors_and_entry() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Omniscience", Zone::Battlefield);
+        let s = named(&mut g, p, NAME, Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        checked(
+            &mut g,
+            Action::AnnounceFree {
+                card: s,
+                face: CastFace::Normal,
+                flash_surcharge: false,
+            },
+        );
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(s).colors, 5);
+        assert_eq!(
+            g.stats(s),
+            Stats {
+                power: 4,
+                toughness: 4
+            }
+        );
+        assert_eq!(shields(&g, p).len(), 1);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     }
 }

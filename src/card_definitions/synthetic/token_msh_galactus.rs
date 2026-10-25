@@ -1,4 +1,5 @@
 pub(in crate::cards) const RULES: CardRules = CardRules {
+    deck_limit: None,
     effect: Effect::Creature(16, 16),
     keywords: Keywords::FLYING.union(Keywords::TRAMPLE),
     triggers: &[TriggeredAbility {
