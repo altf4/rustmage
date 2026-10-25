@@ -487,3 +487,116 @@ fn msh_teamwork_funding_scalability_general_sacrifice_restores_improvise_before_
         ));
     }
 }
+
+thread_local! { static FUNDING_LIMIT: Cell<Option<Limit>> = const { Cell::new(None) }; }
+struct FundingBudget;
+impl FundingBudget {
+    fn new(maximum: u64) -> Self {
+        FUNDING_LIMIT.with(|c| {
+            assert!(c.get().is_none());
+            c.set(Some(Limit { nodes: 0, maximum }));
+        });
+        Self
+    }
+}
+impl Drop for FundingBudget {
+    fn drop(&mut self) {
+        FUNDING_LIMIT.with(|c| c.set(None));
+    }
+}
+pub(super) fn visit_funding_node() {
+    FUNDING_LIMIT.with(|c| {
+        if let Some(mut limit) = c.get() {
+            limit.nodes += 1;
+            c.set(Some(limit));
+            assert!(
+                limit.nodes <= limit.maximum,
+                "exact diagnostic exceeded scoped {} funding-node budget",
+                limit.maximum
+            );
+        }
+    });
+}
+#[test]
+#[ignore = "Local exact original config14 diagnostic; requires a cache output path and a cheap scoped search budget"]
+fn msh_teamwork_config14_exact_context_diagnostic() {
+    let output =
+        std::path::PathBuf::from(std::env::var("RUSTMAGE_TEAMWORK_CONTEXT_RECORD").unwrap());
+    assert!(
+        output.starts_with(std::path::PathBuf::from(std::env::var("HOME").unwrap()).join(".cache"))
+    );
+    assert!(!output.exists());
+    let pool: serde_json::Value =
+        serde_json::from_str(include_str!("../data/assurance/msh-broad-legal-games.json")).unwrap();
+    let case = &pool["games"][14];
+    assert_eq!(case["seed"].as_u64(), Some(5571876328824635697));
+    let decks = std::array::from_fn(|i| {
+        let deck = pool["decks"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|d| d["id"] == case["decks"][i])
+            .unwrap();
+        deck["cards"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .flat_map(|row| {
+                std::iter::repeat_n(
+                    Card::from_name(row[0].as_str().unwrap()).unwrap(),
+                    row[1].as_u64().unwrap() as usize,
+                )
+            })
+            .collect()
+    });
+    let config = Config {
+        decks,
+        seed: case["seed"].as_u64().unwrap(),
+        starting_player: serde_json::from_value(case["starting_player"].clone()).unwrap(),
+        deck_rules: DeckRules::Standard,
+    };
+    let mut g = Game::new(config).unwrap();
+    let mut ledger = Vec::new();
+    for _ in 0..1141 {
+        assert!(g.outcome().is_none());
+        let actor = g.actor().unwrap();
+        let actions = g.legal_actions();
+        let index = crate::policy::smoke_index(&g, &actions);
+        let action = actions[index].clone();
+        ledger.push((actor, action.clone()));
+        g.apply(actor, action).unwrap();
+    }
+    assert_eq!(g.state.turn, 31);
+    assert_eq!(g.state.objects.len(), 128);
+    assert!(matches!(
+        g.state.pending,
+        Pending::TeamworkIntent { player: Player::P0 }
+    ));
+    assert_eq!(g.state.announcing.as_ref().unwrap().item.object.card, 59);
+    let mut contexts = Vec::new();
+    for pay in [false, true] {
+        let mut a = g.state.announcing.as_ref().unwrap().clone();
+        a.item.cast.as_mut().unwrap().teamwork = Some(pay);
+        a.initialize_cast_costs(improvise::potential(&g, a.item.source_card));
+        for cost in a.cost_options() {
+            let mut choice = a.clone();
+            choice.cost = Some(cost);
+            let goal = g.funding_goal(&choice);
+            let mut w = FundingState::from_game_with_convoke(
+                &g,
+                &goal,
+                choice.item.source_card.has_convoke(),
+            );
+            w.set_purpose(g.purpose_for_item(&choice.item));
+            w.set_cost_context(Some(&choice));
+            let resources: Vec<_> = w.resources.iter().filter(|r| r.object.zone == Zone::Battlefield).map(|r| serde_json::json!({"id":r.id,"definition":r.object.card.identity(),"name":w.name(r.id),"controller":r.object.controller,"tapped":r.object.tapped,"kinds":w.kinds(r.id),"colors":w.colors(r.id),"power":w.power(r.id),"mana_activations":format!("{:?}", w.mana_activations(r.id).map(|(i,a,_)|(i,a)).collect::<Vec<_>>())})).collect();
+            let c = w.cast_costs.as_ref();
+            contexts.push(serde_json::json!({"pay_teamwork":pay,"goal":format!("{goal:?}"),"pool":w.mana,"lots":format!("{:?}",w.lots),"available_mana":mana_lots::available(w.mana,&w.lots,w.purpose),"locked_mana":c.and_then(|c|c.mana),"clauses":c.map(|c|&c.clauses),"active":c.and_then(|c|c.active),"current_hall_payable":c.is_some_and(|c|w.mana_clause_payable(c)),"convoke_masks":w.convoke_masks(),"improvise_potential":improvise::potential(&g,choice.item.source_card),"improvise_available":improvise::available(&w,goal.actor,choice.item.source_card),"resources":resources}));
+        }
+    }
+    std::fs::write(output,serde_json::to_vec_pretty(&serde_json::json!({"config_index":14,"configuration":case,"prefix_decisions":ledger.len(),"ledger":ledger,"snapshot":g.snapshot(),"contexts":contexts})).unwrap()).unwrap();
+    let _funding_budget = FundingBudget::new(128);
+    let _teamwork_budget = Budget::new(256);
+    let actions = g.legal_actions();
+    assert!(!actions.is_empty());
+}

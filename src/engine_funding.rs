@@ -1870,6 +1870,8 @@ impl<'g> FundingState<'g> {
         evidence: Option<u16>,
         visited: &mut HashSet<FundingKey>,
     ) -> bool {
+        #[cfg(test)]
+        cast_cost_planning::visit_funding_diagnostic_node();
         if !self.obligations(goal) {
             return false;
         }

@@ -1192,3 +1192,8 @@ mod msh_improvise_ordered_tests;
 #[cfg(test)]
 #[path = "engine_teamwork_funding_scalability_tests.rs"]
 mod teamwork_scalability_tests;
+
+#[cfg(test)]
+pub(super) fn visit_funding_diagnostic_node() {
+    teamwork_scalability_tests::visit_funding_node();
+}
