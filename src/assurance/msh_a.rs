@@ -1104,11 +1104,21 @@ fn teamwork(g: &mut Game, card: CardId, teammates: &[CardId]) {
             pay: !teammates.is_empty(),
         },
     );
-    for &id in teammates {
-        let object = g.object_ref(id);
-        act(g, Action::ChooseTeammate { object });
-    }
+}
+fn teamwork_pay(g: &mut Game, teammates: &[CardId]) {
+    pay(g);
     if !teammates.is_empty() {
+        let costs = g.observe(g.actor().unwrap()).cast_costs.unwrap();
+        let clause = costs
+            .clauses
+            .iter()
+            .position(|row| matches!(row.clause, CastCostClause::Teamwork(_)))
+            .unwrap() as u16;
+        act(g, Action::ChooseCastCost { clause });
+        for &id in teammates {
+            let object = g.object_ref(id);
+            act(g, Action::ChooseTeammate { object });
+        }
         act(g, Action::FinishTeamwork);
     }
 }
@@ -1142,7 +1152,14 @@ fn msh_cruel_alliance_teamwork_changes_target_and_maria_triggers_only_for_cost()
         if g.legal_actions().contains(&Action::FinishTargets) {
             act(&mut g, Action::FinishTargets);
         }
-        pay(&mut g);
+        teamwork_pay(
+            &mut g,
+            if paid {
+                std::slice::from_ref(&maria)
+            } else {
+                &[]
+            },
+        );
         resolved(&mut g);
         assert_eq!(
             g.object_view(if paid { large } else { small }).zone,
@@ -1180,7 +1197,7 @@ fn msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight() {
         if g.legal_actions().contains(&Action::FinishTargets) {
             act(&mut g, Action::FinishTargets);
         }
-        pay(&mut g);
+        teamwork_pay(&mut g, &members);
         resolved(&mut g);
         assert_eq!(
             g.object_view(enemy).zone,
@@ -1219,7 +1236,7 @@ fn msh_atlantis_teamwork_requires_both_modes_and_earth_reveals_exact_eight() {
         g.state.players[p.index()].mana = [0, 0, 0, 0, 2, 4];
         let members = if paid { vec![one, two] } else { vec![] };
         teamwork(&mut g, card, &members);
-        pay(&mut g);
+        teamwork_pay(&mut g, &members);
         until(&mut g, |g| {
             g.legal_actions().contains(&Action::FinishLibrarySelection)
         });
@@ -1338,4 +1355,322 @@ fn msh_shield_equips_vigilant_attacker_and_crowd_requires_alone_then_living_lege
         assert_eq!(g.object_view(phil).tapped, tapped);
         assert_eq!(g.counter_count(hero, CounterKind::PlusOne), n);
     }
+}
+
+#[test]
+fn msh_absorbing_man_copies_three_allowed_types_preserves_exceptions_and_expires() {
+    let p = Player::P0;
+    for name in [
+        "A.I.M. Labs",
+        "Captain America's Shield",
+        "Avengers Assemble!",
+    ] {
+        let mut g = scenario(p);
+        let target_id = put(&mut g, p.other(), name, Zone::Battlefield);
+        let wrong = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let source = put(&mut g, p, "Absorbing Man", Zone::Battlefield);
+        g.begin_step(Step::Main1);
+        until(&mut g, |g| {
+            g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(target_id),
+            })
+        });
+        assert!(!g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(wrong)
+        }));
+        target(&mut g, Target::Card(target_id));
+        finish_targets(&mut g);
+        resolved(&mut g);
+        let view = g.object_view(source);
+        assert_eq!(view.name(), "Absorbing Man");
+        assert_eq!(stats(&g, source), (4, 4));
+        assert!(view.has_subtype("Human") && view.has_subtype("Villain"));
+        assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+        assert_eq!(
+            g.state.players[p.index()].life,
+            20,
+            "copying a land is not entering it"
+        );
+        if name == "A.I.M. Labs" {
+            assert!(view.card.is_land());
+            g.state.players[p.index()].mana = [0; 6];
+            choose(
+                &mut g,
+                |a| matches!(a,Action::ActivateMana{card,production:[0,1,0,0,0,0],..}if *card==source),
+            );
+            assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 0, 0]);
+        }
+        g.state.turn += 1;
+        g.begin_turn();
+        assert!(!g.object_view(source).card.is_land());
+        assert_eq!(stats(&g, source), (4, 4));
+    }
+    let mut g = scenario(p);
+    let phil = put(&mut g, p, "Agent Phil Coulson", Zone::Battlefield);
+    let echo = put(&mut g, p, "Echo, Perceptive Prodigy", Zone::Battlefield);
+    let hero = put(&mut g, p, "Agent of Atlas", Zone::Battlefield);
+    activate(&mut g, p, phil, 0, [0; 6], &[]);
+    let ability = g.state.stack.last().unwrap().id;
+    activate(
+        &mut g,
+        p,
+        echo,
+        0,
+        [0, 0, 0, 0, 0, 1],
+        &[Target::Stack(ability)],
+    );
+    resolved(&mut g);
+    assert_eq!(
+        g.counter_count(hero, CounterKind::PlusOne),
+        2,
+        "copy plus original creature-source ability"
+    );
+    assert_eq!(g.counter_count(phil, CounterKind::PlusOne), 0);
+    assert!(g.object_view(echo).tapped);
+}
+
+#[test]
+fn msh_bruce_paid_x_transform_and_real_attacking_enrage_adds_combat() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = spell(&mut g, p, "Bruce Banner", [0, 1, 0, 0, 0, 0], None);
+    resolved(&mut g);
+    g.state.turn += 1;
+    g.begin_turn();
+    g.state.step = Step::Main1;
+    g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    act(&mut g, Action::ChooseX { value: 2 });
+    pay(&mut g);
+    let hand = g.hand_count(p);
+    resolved(&mut g);
+    assert_eq!(g.hand_count(p), hand + 2);
+    assert!(g.object_view(source).tapped);
+    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    activate(&mut g, p, source, 1, [0, 0, 0, 2, 2, 2], &[]);
+    resolved(&mut g);
+    assert_eq!(g.object_view(source).name(), "The Incredible Hulk");
+    assert_eq!(stats(&g, source), (8, 8));
+    assert!(
+        g.keywords(source)
+            .contains(Keywords::REACH.union(Keywords::TRAMPLE))
+    );
+    spell(
+        &mut g,
+        p,
+        "Shock",
+        [0, 0, 0, 1, 0, 0],
+        Some(Target::Card(source)),
+    );
+    resolved(&mut g);
+    assert_eq!(stats(&g, source), (9, 9));
+    assert!(
+        g.object_view(source).tapped,
+        "nonattacking enrage does not untap"
+    );
+    g.finish_cleanup();
+    g.state.turn += 1;
+    g.begin_turn();
+    g.state.step = Step::Main1;
+    attack(&mut g, &[source]);
+    assert!(g.object_view(source).tapped);
+    spell(
+        &mut g,
+        p,
+        "Shock",
+        [0, 0, 0, 1, 0, 0],
+        Some(Target::Card(source)),
+    );
+    resolved(&mut g);
+    assert_eq!(stats(&g, source), (10, 10));
+    assert!(!g.object_view(source).tapped);
+    until(&mut g, |g| g.state.pending == Pending::Blockers);
+    act(&mut g, Action::FinishBlockers);
+    until(&mut g, |g| g.state.step == Step::EndCombat);
+    let turn = g.state.turn;
+    act(&mut g, Action::Pass);
+    act(&mut g, Action::Pass);
+    assert_eq!(g.state.step, Step::BeginCombat);
+    assert_eq!(g.state.turn, turn);
+}
+
+#[test]
+fn msh_villain_observers_cost_discount_connive_and_first_entry_limit() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(
+        &mut g,
+        p,
+        "Baron Strucker, HYDRA Overlord",
+        Zone::Battlefield,
+    );
+    let cross = put(
+        &mut g,
+        p,
+        "Crossbones, Malicious Mercenary",
+        Zone::Battlefield,
+    );
+    let discard = put(&mut g, p, "Shock", Zone::Library);
+    let hydra = spell(&mut g, p, "Agents of HYDRA", [0, 0, 1, 0, 0, 0], None);
+    until(&mut g, |g| {
+        g.legal_actions()
+            .contains(&Action::ChooseOptional { accept: true })
+    });
+    act(&mut g, Action::ChooseOptional { accept: true });
+    until(&mut g, |g| {
+        g.legal_actions()
+            .contains(&Action::Discard { card: discard })
+    });
+    act(&mut g, Action::Discard { card: discard });
+    resolved(&mut g);
+    assert_eq!(stats(&g, hydra), (2, 2));
+    assert_eq!(stats(&g, cross), (4, 4));
+    assert_eq!(g.state.players[p.other().index()].life, 18);
+    spell(&mut g, p, "Aerial Doombot", [0, 1, 0, 0, 0, 0], None);
+    resolved(&mut g);
+    assert_eq!(g.counter_count(cross, CounterKind::PlusOne), 1);
+    assert_eq!(g.state.players[p.other().index()].life, 18);
+    spell(&mut g, p, "Bear Cub", [0, 0, 0, 0, 0, 2], None);
+    resolved(&mut g);
+    assert_eq!(
+        g.counter_count(cross, CounterKind::PlusOne),
+        1,
+        "non-Villain doesn't qualify"
+    );
+    for make_token in [false, true] {
+        let mut g = scenario(p);
+        let panther = put(&mut g, p, "Black Panther, Vanguard", Zone::Battlefield);
+        let maria = spell(&mut g, p, "Agent Maria Hill", [1, 0, 0, 0, 0, 0], None);
+        until(&mut g, |g| !g.observe(p).mode_choices.is_empty());
+        select_mode(&mut g, if make_token { "Create" } else { "Creatures" });
+        finish_targets(&mut g);
+        resolved(&mut g);
+        assert_eq!(stats(&g, panther), if make_token { (4, 4) } else { (5, 5) });
+        assert_eq!(stats(&g, maria), if make_token { (2, 1) } else { (3, 2) });
+        assert_eq!(creatures(&g, p).len(), if make_token { 3 } else { 2 });
+        spell(&mut g, p, "Borough Backup", [1, 0, 0, 0, 0, 4], None);
+        resolved(&mut g);
+        assert_eq!(
+            creatures(&g, p).len(),
+            if make_token { 5 } else { 4 },
+            "token Heroes do not trigger Panther"
+        );
+        g.finish_cleanup();
+        assert_eq!(stats(&g, panther), (4, 4));
+    }
+}
+
+#[test]
+fn msh_doctor_doom_tokens_conditional_indestructibility_and_own_end_step() {
+    let p = Player::P0;
+    for plan in [false, true] {
+        let mut g = scenario(p);
+        let doom = spell(&mut g, p, "Doctor Doom", [0, 0, 2, 0, 0, 4], None);
+        resolved(&mut g);
+        let tokens = creatures(&g, p)
+            .into_iter()
+            .filter(|&id| id != doom)
+            .collect::<Vec<_>>();
+        assert_eq!(tokens.len(), 2);
+        for &id in &tokens {
+            assert_eq!(stats(&g, id), (3, 3));
+            assert_eq!(g.object_view(id).name(), "Doombot");
+            assert!(g.object_view(id).has_subtype("Robot"));
+        }
+        assert!(g.keywords(doom).contains(Keywords::INDESTRUCTIBLE));
+        if plan {
+            put(&mut g, p, "Claim the Kingdom", Zone::Battlefield);
+        }
+        for id in tokens {
+            spell(
+                &mut g,
+                p,
+                "Lightning Strike",
+                [0, 0, 0, 1, 0, 1],
+                Some(Target::Card(id)),
+            );
+            resolved(&mut g);
+        }
+        assert_eq!(g.keywords(doom).contains(Keywords::INDESTRUCTIBLE), plan);
+        let hand = g.hand_count(p);
+        g.begin_step(Step::End);
+        resolved(&mut g);
+        assert_eq!(g.hand_count(p), hand + 1);
+        assert_eq!(g.state.players[p.index()].life, 19);
+        g.state.active = p.other();
+        g.begin_step(Step::End);
+        resolved(&mut g);
+        assert_eq!(g.hand_count(p), hand + 1);
+    }
+}
+
+#[test]
+fn msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_window() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let colleen = spell(
+        &mut g,
+        p,
+        "Colleen Wing, Street Samurai",
+        [1, 0, 0, 0, 0, 1],
+        None,
+    );
+    resolved(&mut g);
+    let bear = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let top = put(&mut g, p, "Forest", Zone::Library);
+    spell(
+        &mut g,
+        p,
+        "Shock",
+        [0, 0, 0, 1, 0, 0],
+        Some(Target::Card(bear)),
+    );
+    until(&mut g, |g| {
+        g.legal_actions().contains(&Action::ArrangeLibrary {
+            card: top,
+            destination: LibraryDestination::Bottom,
+        })
+    });
+    act(
+        &mut g,
+        Action::ArrangeLibrary {
+            card: top,
+            destination: LibraryDestination::Bottom,
+        },
+    );
+    resolved(&mut g);
+    assert_eq!(g.counter_count(colleen, CounterKind::PlusOne), 1);
+    assert_eq!(g.state.players[p.index()].library.first(), Some(&top));
+    let mut g = scenario(p);
+    put(&mut g, p, "Captain Mar-Vell, Space-Born", Zone::Battlefield);
+    let bot = put(&mut g, p, "Aerial Doombot", Zone::Hand);
+    g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+    g.state.step = Step::BeginCombat;
+    assert!(
+        !g.legal_actions()
+            .contains(&Action::AnnounceCast { card: bot })
+    );
+    spell(
+        &mut g,
+        p.other(),
+        "Shock",
+        [0, 0, 0, 1, 0, 0],
+        Some(Target::Player(p)),
+    );
+    resolved(&mut g);
+    priority(&mut g, p);
+    assert!(
+        g.legal_actions()
+            .contains(&Action::AnnounceCast { card: bot })
+    );
+    cast(&mut g, bot, None);
+    resolved(&mut g);
+    assert_eq!(g.object_view(bot).zone, Zone::Battlefield);
 }
