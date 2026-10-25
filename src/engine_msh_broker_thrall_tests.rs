@@ -562,7 +562,12 @@ fn msh_broker_thrall_thrall_later_fixed_control_supersedes_and_removes_long_dead
         paid(&mut g, p, BROKER, &[]);
         let target = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         paid(&mut g, p, THRALL, &[Target::Card(target)]);
-        paid(&mut g, p, "Harmless Offering", &[Target::Card(target)]);
+        paid(
+            &mut g,
+            p,
+            "Harmless Offering",
+            &[Target::Player(p.other()), Target::Card(target)],
+        );
         controls(&g, target, p.other());
         assert!(g.observe(p).temporary_controls.is_empty());
         next_turn(&mut g);
