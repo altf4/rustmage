@@ -557,6 +557,8 @@ fn msh_second_draw_and_attuma_tribal_draw_use_event_counts() {
     assert_eq!(stats(&g, cavalry), (5, 4));
     assert_eq!(stats(&g, attuma), (3, 4));
     assert_eq!(stats(&g, other), (3, 2));
+    g.state.turn += 1;
+    g.begin_turn();
     let hand = g.hand_count(p);
     attack(&mut g, &[cavalry, attuma]);
     resolved(&mut g);
@@ -614,6 +616,10 @@ fn msh_baxter_modes_and_dark_fortress_entry_or_basic_guard() {
         );
         if entered {
             act(&mut g, Action::PlayLand { card: land });
+        } else {
+            g.state.turn += 1;
+            g.begin_turn();
+            g.state.step = Step::Main1;
         }
         if basic {
             put(&mut g, p, "Forest", Zone::Battlefield);
@@ -712,6 +718,7 @@ fn msh_dark_deed_depower_and_blazing_crescendo_concrete_stats_and_durations() {
     g.state.step = Step::Main1;
     g.state.pending = Pending::Priority;
     g.state.priority = p;
+    g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
     assert!(
         g.legal_actions()
             .contains(&Action::AnnounceExile { card: top })
@@ -819,7 +826,11 @@ fn msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition() {
         g.state.step = Step::BeginCombat;
         spell(&mut g, p, "Avengers Assemble!", [1, 0, 0, 0, 0, 4], None);
         resolved(&mut g);
-        assert_eq!(stats(&g, hero), (4, 4));
+        assert_eq!(
+            stats(&g, hero),
+            (5, 5),
+            "2/2 plus Assemble +2/+2 and prowess +1/+1"
+        );
         assert_eq!(stats(&g, nonhero), (2, 2));
         assert_eq!(stats(&g, enemy), (2, 2));
         if hero_entered {
@@ -836,5 +847,234 @@ fn msh_avengers_assemble_flash_hero_bonus_and_each_end_step_condition() {
             hand + usize::from(hero_entered),
             "opponent's end step, intervening condition"
         );
+    }
+}
+
+fn finish_targets(g: &mut Game) {
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    if g.legal_actions()
+        .contains(&Action::PayCosts { payment: [0; 6] })
+    {
+        act(g, Action::PayCosts { payment: [0; 6] });
+    }
+}
+fn target(g: &mut Game, target: Target) {
+    if !g.legal_actions().contains(&Action::ChooseTarget { target })
+        && g.legal_actions().contains(&Action::FinishTargets)
+    {
+        act(g, Action::FinishTargets);
+    }
+    act(g, Action::ChooseTarget { target });
+}
+fn select_mode(g: &mut Game, text: &str) {
+    let modes = g.observe(g.actor().unwrap()).mode_choices;
+    let mode = modes
+        .iter()
+        .find(|m| m.text.eq_ignore_ascii_case(text) || m.text.starts_with(text))
+        .unwrap_or_else(|| panic!("missing mode {text}: {modes:?}"))
+        .mode;
+    act(g, Action::ChooseMode { mode });
+}
+
+#[test]
+fn msh_alien_invasion_grows_next_token_and_requires_able_attack() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = spell(&mut g, p, "Alien Invasion", [0, 0, 0, 2, 1, 1], None);
+    resolved(&mut g);
+    for size in [1, 2] {
+        g.begin_step(Step::BeginCombat);
+        resolved(&mut g);
+        let tokens = creatures(&g, p);
+        assert_eq!(tokens.len(), size as usize);
+        let id = *tokens.last().unwrap();
+        assert_eq!(stats(&g, id), (size, size));
+        assert!(g.keywords(id).contains(Keywords::HASTE));
+        assert_eq!(g.counter_count(source, CounterKind::Invasion), size as u64);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        assert!(
+            !g.legal_actions().contains(&Action::FinishAttackers),
+            "new hasty Alien must attack"
+        );
+        for id in tokens {
+            if !g.object_view(id).tapped {
+                act(&mut g, Action::Attack { card: id });
+            }
+        }
+        act(&mut g, Action::FinishAttackers);
+        // Move to another bounded beginning-of-combat event, without simulating a game.
+        g.state.pending = Pending::Priority;
+        g.state.priority = p;
+    }
+}
+
+#[test]
+fn msh_ares_attacking_death_returns_owner_card_after_source_departs() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let ares = put(&mut g, p, "Ares, God of War", Zone::Battlefield);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    g.state.step = Step::Attackers;
+    g.state.pending = Pending::Attackers;
+    assert!(!g.legal_actions().contains(&Action::FinishAttackers));
+    act(&mut g, Action::Attack { card: ares });
+    act(&mut g, Action::Attack { card: bear });
+    act(&mut g, Action::FinishAttackers);
+    spell(
+        &mut g,
+        p,
+        "Shock",
+        [0, 0, 0, 1, 0, 0],
+        Some(Target::Card(bear)),
+    );
+    until(&mut g, |g| g.object_view(bear).zone == Zone::Graveyard);
+    spell(
+        &mut g,
+        p,
+        "Murder",
+        [0, 0, 2, 0, 0, 1],
+        Some(Target::Card(ares)),
+    );
+    resolved(&mut g);
+    assert_eq!(
+        g.object_view(bear).zone,
+        Zone::Hand,
+        "queued death trigger survives Ares leaving"
+    );
+    assert_eq!(
+        g.object_view(ares).zone,
+        Zone::Hand,
+        "Ares was also attacking when he died"
+    );
+}
+
+#[test]
+fn msh_sagas_three_chapters_have_independent_draw_cost_damage_and_token_outcomes() {
+    let p = Player::P0;
+    for accept in [false, true] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Arc Reactor", Zone::Battlefield);
+        let hand = g.hand_count(p);
+        let opposing_hand = g.hand_count(p.other());
+        let saga = spell(&mut g, p, "Armor Wars", [0, 1, 0, 1, 0, 2], None);
+        until(&mut g, |g| {
+            g.legal_actions()
+                .contains(&Action::ChooseOptional { accept })
+        });
+        act(&mut g, Action::ChooseOptional { accept });
+        resolved(&mut g);
+        assert_eq!(g.hand_count(p), hand + usize::from(accept));
+        assert_eq!(g.hand_count(p.other()), opposing_hand + usize::from(accept));
+        assert_eq!(g.counter_count(saga, CounterKind::Lore), 1);
+        g.begin_step(Step::Main1);
+        resolved(&mut g);
+        assert_eq!(g.counter_count(saga, CounterKind::Lore), 2);
+        let artifact = spell(
+            &mut g,
+            p,
+            "Captain America's Shield",
+            [0, 0, 0, 0, 0, 1],
+            None,
+        );
+        resolved(&mut g);
+        assert_eq!(
+            g.object_view(artifact).zone,
+            Zone::Battlefield,
+            "artifact-only one generic discount"
+        );
+        g.begin_step(Step::Main1);
+        until(&mut g, |g| {
+            g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            })
+        });
+        target(&mut g, Target::Player(p.other()));
+        finish_targets(&mut g);
+        resolved(&mut g);
+        assert_eq!(
+            g.state.players[p.other().index()].life,
+            15,
+            "greatest artifact MV is Reactor's five"
+        );
+        assert_eq!(g.object_view(saga).zone, Zone::Graveyard);
+    }
+    let mut g = scenario(p);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let siege = spell(&mut g, p, "Avengers: Under Siege", [0, 0, 1, 1, 0, 2], None);
+    resolved(&mut g);
+    let villains = creatures(&g, p)
+        .into_iter()
+        .filter(|&id| id != bear)
+        .collect::<Vec<_>>();
+    assert_eq!(villains.len(), 2);
+    for &id in &villains {
+        assert_eq!(stats(&g, id), (2, 1));
+        assert!(g.keywords(id).contains(Keywords::MENACE));
+    }
+    g.begin_step(Step::Main1);
+    resolved(&mut g);
+    assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+    assert_eq!(g.state.players[p.other().index()].life, 18);
+    for &id in &villains {
+        assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+    }
+    g.begin_step(Step::Main1);
+    resolved(&mut g);
+    let treasures = g
+        .state
+        .objects
+        .iter()
+        .filter(|o| o.zone == Zone::Battlefield && o.card.has_subtype("Treasure"))
+        .count();
+    assert_eq!(treasures, 2);
+    assert_eq!(g.object_view(siege).zone, Zone::Graveyard);
+}
+
+#[test]
+fn msh_recovery_modes_recover_their_types_and_respect_two_mode_limit() {
+    let p = Player::P0;
+    for (name, mana, modes, types) in [
+        (
+            "Call Damage Control",
+            [0, 0, 0, 0, 1, 1],
+            "Artifact and land",
+            ["Captain America's Shield", "Forest"],
+        ),
+        (
+            "Decoy Ploy",
+            [0, 0, 1, 0, 0, 1],
+            "Both",
+            ["Agents of HYDRA", "Agent of Atlas"],
+        ),
+    ] {
+        let mut g = scenario(p);
+        let ids = types.map(|n| put(&mut g, p, n, Zone::Graveyard));
+        let foreign = put(&mut g, p.other(), types[0], Zone::Graveyard);
+        let card = put(&mut g, p, name, Zone::Hand);
+        g.state.players[p.index()].mana = mana;
+        act(&mut g, Action::AnnounceCast { card });
+        select_mode(&mut g, modes);
+        assert!(
+            !g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(foreign)
+            }),
+            "{name}: own graveyard"
+        );
+        for id in ids {
+            target(&mut g, Target::Card(id));
+        }
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        resolved(&mut g);
+        for id in ids {
+            assert_eq!(g.object_view(id).zone, Zone::Hand, "{name}");
+        }
+        assert_eq!(g.object_view(foreign).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6], "{name}");
     }
 }
