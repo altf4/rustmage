@@ -4319,6 +4319,36 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::GainMissingTargetKeywordCounters => {
+                    if self.on_battlefield(item.object.card)
+                        && self.object_ref(item.object.card) == item.object
+                        && let Some(target) = item.targets.iter().find_map(|bound| {
+                            if self.same_target_object(*bound)
+                                && let Target::Card(id) = bound.target
+                                && self.on_battlefield(id)
+                                && self.is_creature(id)
+                            {
+                                Some(id)
+                            } else {
+                                None
+                            }
+                        })
+                    {
+                        let donor = self.keywords(target);
+                        let existing = self.keywords(item.object.card);
+                        let mut counters = Counters::default();
+                        for kind in CounterKind::KEYWORDS {
+                            let keyword = kind.keyword().unwrap();
+                            if donor.contains(keyword) && !existing.contains(keyword) {
+                                counters = counters.with(kind, 1);
+                            }
+                        }
+                        self.effect_counters(
+                            vec![(item.object, counters)],
+                            replacements::ResumeMode::Program,
+                        );
+                    }
+                }
                 Instruction::AddOneOfEachCounterKind => {
                     let mut changes = Vec::new();
                     for bound in &item.targets {

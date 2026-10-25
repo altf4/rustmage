@@ -1612,6 +1612,8 @@ pub(crate) enum Instruction {
     DoubleCounters,
     /// Add exactly one of every currently present kind to a permanent or player.
     AddOneOfEachCounterKind,
+    /// Give the exact source keyword counters only for current target keywords it lacks.
+    GainMissingTargetKeywordCounters,
     DoubleCounterKind {
         subject: Subject,
         kind: CounterKind,
@@ -1791,6 +1793,7 @@ pub(crate) enum AmountValue {
     SourcePower,
     SourceToughness,
     SourceEquipmentCount,
+    LegendaryCreaturesYouControl,
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"

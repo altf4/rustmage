@@ -8121,3 +8121,7 @@ mod msh_ability_copy_core_tests;
 #[cfg(test)]
 #[path = "engine_msh_broker_thrall_tests.rs"]
 mod msh_broker_thrall_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_super_adaptoid_tests.rs"]
+mod msh_super_adaptoid_tests;

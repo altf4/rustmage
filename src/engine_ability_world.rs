@@ -356,6 +356,7 @@ pub(super) trait CharacteristicWorld {
             &|id, _| self.kinds(id),
             &|id| self.name(id),
             &|id| self.colors(id),
+            &|id| self.legendary(id),
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
