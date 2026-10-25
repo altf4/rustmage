@@ -542,3 +542,78 @@ fn msh_shield_harness_mind_queued_blink_survives_source_departure() {
         assert_ne!(g.object_ref(bear), old);
     }
 }
+#[test]
+fn msh_shield_harness_captain_current_control_moves_both_conditional_grants() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, CAP, &[]);
+        let own = paid(&mut g, p, "Hawkeye, Young Avenger", &[]);
+        let foreign = named(
+            &mut g,
+            p.other(),
+            "Hawkeye, Young Avenger",
+            Zone::Battlefield,
+        );
+        paid(
+            &mut g,
+            p,
+            "Harmless Offering",
+            &[Target::Player(p.other()), Target::Card(id)],
+        );
+        assert!(!g.player_has_hexproof(p));
+        assert!(g.player_has_hexproof(p.other()));
+        assert!(!g.keywords(own).contains(Keywords::HEXPROOF));
+        assert!(g.keywords(foreign).contains(Keywords::HEXPROOF));
+        paid(&mut g, p, "Shock", &[Target::Card(id)]);
+        assert_eq!(g.object_view(id).damage, 0);
+        assert!(!g.player_has_hexproof(p.other()));
+        assert!(!g.keywords(foreign).contains(Keywords::HEXPROOF));
+    }
+}
+#[test]
+fn msh_shield_harness_mind_decline_optional_blink_keeps_exact_recipient() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, MIND, &[]);
+        let bear = paid(&mut g, p, "Bear Cub", &[]);
+        harness(&mut g, p, id);
+        targets(&mut g, id);
+        let old = g.object_ref(bear);
+        checked(&mut g, Action::FinishTargets);
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_ref(bear), old);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn msh_shield_harness_mind_designation_is_not_copied_but_persists_through_copy_layers() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let id = paid(&mut g, p, MIND, &[]);
+        harness(&mut g, p, id);
+        let mimic = paid(&mut g, p, "Absorbing Man", &[]);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        choose(&mut g, mimic, id);
+        settle(&mut g);
+        assert_eq!(g.object_view(mimic).harnessed, None);
+        assert!(g.keywords(mimic).contains(Keywords::INDESTRUCTIBLE));
+        harness(&mut g, p, mimic);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        choose(&mut g, mimic, id);
+        settle(&mut g);
+        assert_eq!(g.object_view(mimic).harnessed, Some(true));
+        assert!(
+            g.object_view(mimic)
+                .abilities
+                .as_ref()
+                .unwrap()
+                .grants
+                .iter()
+                .any(|grant| grant.grantor == g.object_ref(mimic)
+                    && grant.granting_card == Card::from_name(MIND).unwrap())
+        );
+    }
+}
