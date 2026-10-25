@@ -2457,7 +2457,9 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::BlinkImmediately { counter } => self.blink_immediately(&item, counter),
+                Instruction::BlinkImmediately { counter, tapped } => {
+                    self.blink_immediately(&item, counter, tapped)
+                }
                 Instruction::IfCastFromNonHand { skip } => {
                     if item.is_copy || !item.cast.is_some_and(|cast| cast.origin != Zone::Hand) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
