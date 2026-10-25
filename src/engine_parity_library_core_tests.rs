@@ -122,7 +122,7 @@ fn parity(g: &mut Game, p: Player, source: CardId, item: Option<SpellView>) {
     );
 }
 fn library_program(g: &mut Game, p: Player, target: CardId, own: Option<CardId>) {
-    let source = gated(g, p, "Trickster's Stratagem", Zone::Hand);
+    let source = gated(g, p, "Trickster's Stratagem", Zone::Stack);
     let mut item = g.activation_item(p, source, 0);
     item.kind = StackKind::Spell;
     item.targets.push(BoundTarget {
@@ -282,7 +282,7 @@ fn msh_parity_library_core_library_order_owner_tokens_knowledge_and_destination_
     for p in [Player::P0, Player::P1] {
         for stolen in [false, true] {
             for token in [false, true] {
-                for n in [0, 1, 2, 4] {
+                for n in [0usize, 1, 2, 4] {
                     for known in [false, true] {
                         for destination in [
                             LibraryDestination::SecondFromTop,
@@ -396,7 +396,7 @@ fn msh_parity_library_core_library_pause_keeps_independent_connive_group_and_pri
             },
         );
         assert_eq!(g.actor(), Some(p));
-        assert_eq!(hand_count(&g, p), count + 2); // bounded source card plus connive draw
+        assert_eq!(hand_count(&g, p), count + 1); // Only connive draws; the bounded spell source starts on the stack.
         assert!(g.on_battlefield(conniver));
         assert_eq!(g.object_view(conniver).counters.plus_one, 0);
         assert!(!g.observe(p.other()).objects.iter().any(|v| v.id == discard));
