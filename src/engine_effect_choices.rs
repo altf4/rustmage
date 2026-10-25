@@ -117,6 +117,17 @@ impl Game {
         ) {
             return o.zone == Zone::Hand
                 && match choice.kind {
+                    // Hand costs use the same typed characteristics and filters as
+                    // announced discard costs, including artifact lands in hand.
+                    EffectChoiceKind::Discard => self.additional_candidate(
+                        AdditionalCost {
+                            kind: choice.kind,
+                            filter: choice.filter,
+                        },
+                        player,
+                        choice.source,
+                        object,
+                    ),
                     EffectChoiceKind::HandCreature => o.card.is_creature(),
                     EffectChoiceKind::HandPermanent { maximum, .. } => {
                         o.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
@@ -495,6 +506,7 @@ impl Game {
         if let Some(skip_to) = choice.skip_to {
             assert!(skip_to <= self.state.resolving.as_ref().unwrap().program.len());
         }
+        let private_optional_discard = kind == EffectChoiceKind::Discard && optional_skip.is_some();
         for player in self.program_players(players, item) {
             if greatest || kind == EffectChoiceKind::ExileGreatestManaValue {
                 choice.greatest_value[player.index()] = self
@@ -534,6 +546,7 @@ impl Game {
                 })
                 .count();
             if let Some(skip_to) = choice.skip_to
+                && !private_optional_discard
                 && !matches!(
                     kind,
                     EffectChoiceKind::SacrificeOrDiscard { .. }
@@ -549,15 +562,16 @@ impl Game {
             }
             // Optional private choices always present the same actor/phase,
             // even with no eligible card. The player can decline without revealing
-            // whether their hidden hand contains a creature or land.
-            choice.required[player.index()] = if matches!(
-                kind,
-                EffectChoiceKind::SacrificeOrDiscard { .. }
-                    | EffectChoiceKind::HandExileCopy
-                    | EffectChoiceKind::HandCreature
-                    | EffectChoiceKind::HandPermanent { .. }
-                    | EffectChoiceKind::HandLand { .. }
-            ) {
+            // whether their hidden hand contains a matching card.
+            choice.required[player.index()] = if private_optional_discard
+                || matches!(
+                    kind,
+                    EffectChoiceKind::SacrificeOrDiscard { .. }
+                        | EffectChoiceKind::HandExileCopy
+                        | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandPermanent { .. }
+                        | EffectChoiceKind::HandLand { .. }
+                ) {
                 u32::from(amount)
             } else {
                 u32::from(amount).min(u32::try_from(available).capacity("choice count exhausted"))
