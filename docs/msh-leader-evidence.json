@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "One complete typed Leader card plus the directly affected selected-group connive correction; final set integration deferred.",
+  "scope": "One complete typed Leader card plus a defensive selected-group connive check; final set integration deferred.",
   "base": "4546e517744f022474b94757c5f0a28b91d2d91c",
   "tested_runtime": "0317cc31b75b738199356c42035617ce944176cc",
   "source_branch": "codex/msh-leader-connive-replacement",
@@ -175,12 +175,14 @@
     ],
     "numbering_note": [
       "Pinned XMage comments use older connive rule number701.47; frozen 20260925 primary rules number it701.50. Current701.50c repeats each remaining instruction, including departed permanents. No corresponding behavioral discrepancy for this selected one-conniver card."
-    ]
+    ],
+    "correction_cache": "<cache>/rustmage-msh-leader-source-audit-correction.json",
+    "correction_cache_sha256": "26a8d09decb3fd7f8cd7f451df13b61ecd9ccf35d13bbc9d5b9dfcebf1e2d7e9"
   },
   "shared_rules": [
     "Event-local ConniveDraw replacement providers are chosen with the existing replacement action. Each exact provider/slot applies once, including interrupted first draws. Original connive draws and private discard occur afterward.",
     "Latest actual battlefield departure saves an opt-in conniver creature-kind fact alongside its exact controller. Live objects use current effective kinds, departed objects use the latest exact-incarnation facts; copied queued packets retain/capture their own facts.",
-    "Subject::Targets connive selects only the active target group and exact live objects. This repairs Trickster Stratagem and the same group shape in Mechanical Mobster."
+    "Subject::Targets connive defensively selects only the active target group and exact live objects. The instruction executor already filters ordinary Connive item targets, so the new filter is redundant for existing Trickster Stratagem and Mechanical Mobster programs. Their paid regression is not evidence of a prior gameplay defect."
   ],
   "wire": {
     "schema": 152,
@@ -381,7 +383,7 @@
     "start_utc": "2026-10-25T15:45:44+00:00",
     "end_utc": "2026-10-25T16:03:54.719652+00:00",
     "elapsed_seconds": 1090.719652,
-    "scope": "One card, one inherited connive target-group correction, source audit/authoring/focused development/cleanup; no simulation or full-set throughput extrapolation.",
+    "scope": "One card, defensive connive target-group checking, source audit/authoring/focused development/cleanup; no simulation or full-set throughput extrapolation.",
     "focused_rules_seconds": 0.28
   },
   "deferred": [
@@ -389,5 +391,6 @@
     "No new IDs, tokens, membership or policy changes. No new accepted trace table; prior2535 table remains byteexact.",
     "Full-set281-card printed obligations and final integrated gameplay/performance acceptance remain open.",
     "Root attachment consumers are absent from this branch: at final integration initialize conniver_creature:None at their new EventObjectView constructors. No cross-worktree edit made."
-  ]
+  ],
+  "technical_correction": "Subsequent all-group instruction audit established that run_program already filters targets before Connive. Earlier wording calling this an inherited defect was incorrect; no before/after failing gameplay reproducer was recorded."
 }

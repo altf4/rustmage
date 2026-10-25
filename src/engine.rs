@@ -1,3 +1,6 @@
+#[path = "engine_hand_choices.rs"]
+mod hand_choices;
+pub use hand_choices::{HandChoiceKind, HandChoiceView};
 #[path = "engine_hand_exile.rs"]
 mod hand_exile;
 #[path = "engine_mana_announcements.rs"]
@@ -523,6 +526,8 @@ define_actions! {
         payment: Mana,
     },
     DeclineResolutionMana,
+    // Required private reveal selection, revealed discard, or optional exile.
+    ChooseHandCard { object: Option<ObjectRef> },
     ChooseRevealedDiscard { object: ObjectRef },
     RecoverMilled {
         object: Option<ObjectRef>,
@@ -1584,6 +1589,9 @@ enum Pending {
     MilledSelection {
         player: Player,
     },
+    HandCardChoice {
+        player: Player,
+    },
     RevealedDiscard {
         player: Player,
         victim: Player,
@@ -2189,6 +2197,8 @@ pub struct Observation {
     pub cast_costs: Option<CastCostTransaction>,
     pub mana_rollback: Option<ManaRollbackView>,
     pub library_piles: Option<LibraryPilesView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hand_choice: Option<HandChoiceView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
     pub mana_lots: Vec<ManaLotView>,
@@ -2657,6 +2667,7 @@ impl Game {
             | Pending::Role { player }
             | Pending::Legend { player }
             | Pending::MilledSelection { player }
+            | Pending::HandCardChoice { player }
             | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
@@ -4296,6 +4307,7 @@ impl Game {
                     }
                 }
             }
+            Pending::HandCardChoice { .. } => return self.visit_hand_card_choices(&mut emit),
             Pending::RevealedDiscard {
                 victim,
                 excluded_kinds,
@@ -5213,6 +5225,7 @@ impl Game {
             }
             Action::SelectMilled { object } => self.select_milled(object),
             Action::FinishMilledSelection => self.finish_milled_selection(),
+            Action::ChooseHandCard { object } => self.choose_hand_card(object),
             Action::ChooseRevealedDiscard { object } => {
                 let cause = self.state.resolving.as_ref().unwrap().item.controller;
                 self.discard_batch_caused(&[object.card], None, Some(cause));
@@ -6717,6 +6730,7 @@ impl Game {
                 .and_then(|a| a.casualty.as_deref())
                 .map_or_else(Vec::new, |v| v.clone()),
             keep_types: self.keep_types_view(),
+            hand_choice: self.hand_choice_view(viewer),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
                 c.links
                     .iter()
@@ -6923,6 +6937,7 @@ impl Game {
                 Pending::EffectMana { .. } => "mana_choice",
                 Pending::EffectLibrary { .. } => "library_choice",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
+                Pending::HandCardChoice { .. } => "hand_card_choice",
                 Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::MilledSelection { .. } => "milled_selection",
@@ -8108,3 +8123,7 @@ mod msh_graveyard_plans_tests;
 #[cfg(test)]
 #[path = "engine_msh_leader_tests.rs"]
 mod msh_leader_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_hand_choices_tests.rs"]
+mod msh_hand_choices_tests;

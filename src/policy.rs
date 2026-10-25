@@ -253,7 +253,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 observation.aura_entry.as_ref().unwrap().card,
                 Target::Card(object.card),
             ),
-            Action::SelectMilled { .. } | Action::ChooseRevealedDiscard { .. } => 60,
+            Action::ChooseHandCard { object: Some(_) }
+            | Action::SelectMilled { .. }
+            | Action::ChooseRevealedDiscard { .. } => 60,
+            Action::ChooseHandCard { object: None } => -1,
             Action::FinishMilledSelection => 0,
             Action::RecoverMilled { object } => {
                 if object.is_some() {

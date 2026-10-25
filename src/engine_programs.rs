@@ -2058,6 +2058,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::RevealTargetHandExileUntilSourceLeaves
                     | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::CopyTargetAbility { .. }
@@ -2870,6 +2871,16 @@ impl Game {
                             generation: object.generation,
                         })
                         .collect();
+                }
+                Instruction::RevealTargetHandSubsetDiscard(amount) => {
+                    if self.start_hand_subset_discard(&item, amount) {
+                        return;
+                    }
+                }
+                Instruction::RevealTargetHandExileUntilSourceLeaves => {
+                    if self.start_revealed_hand_exile(&item) {
+                        return;
+                    }
                 }
                 Instruction::RevealHandDiscard { excluded_kinds } => {
                     let Some(victim) = self.program_players(PlayerSet::Targeted, &item).next()

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8a7c00ba42ee8f7d651399426a3c431c775bec53f8dd676134d8b65a2a6d1e4e",
+  "catalogue_version": "4d35ddb2227811ced101b7e511e5ae36ded5f9047efd32ffe5432b94717ceefd",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2534,
-  "implemented_total": 2540,
+  "implemented_standard_cards": 2536,
+  "implemented_total": 2542,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 229,
-      "gated": 44
+      "complete": 231,
+      "gated": 42
     },
     "one": {
       "total": 1,
@@ -6389,8 +6389,8 @@
     {
       "name": "Cloak and Dagger, Entwined",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/cloak_and_dagger_entwined.rs",
       "set": "msh"
     },
@@ -19253,8 +19253,8 @@
     {
       "name": "Klaw, Sonic Subjugator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/klaw_sonic_subjugator.rs",
       "set": "msh"
     },

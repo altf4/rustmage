@@ -545,6 +545,8 @@ impl Game {
         };
         match constraint {
             TargetGroupConstraint::OtherThanGroup(_) => unreachable!(),
+            TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
+                && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
@@ -564,6 +566,22 @@ impl Game {
         bound: BoundTarget,
         plan: TargetPlan,
     ) -> bool {
+        if let Some(TargetSpec {
+            rule:
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::ControllerOfPlayerGroup(_),
+                    ..
+                },
+            ..
+        }) = plan.group(bound.group)
+        {
+            return self.target_group_compatible(
+                plan.group(bound.group).unwrap().rule,
+                bound.group,
+                &item.targets,
+                bound.target,
+            );
+        }
         if let Some(TargetSpec {
             rule:
                 TargetRule::Grouped {
@@ -940,6 +958,7 @@ impl Game {
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
+                    | TargetGroupConstraint::ControllerOfPlayerGroup(_)
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
                     TargetGroupConstraint::OtherThanGroup(_) => None,
                 };

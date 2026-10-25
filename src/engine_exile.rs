@@ -180,29 +180,35 @@ impl Game {
     }
 
     pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) {
-        if !self.on_battlefield(item.object.card)
-            || self.object_ref(item.object.card) != item.object
-        {
-            return;
-        }
-        let ids: Vec<_> = item
+        let objects = item
             .targets
             .iter()
             .copied()
-            .filter(|&bound| self.same_target_object(bound))
-            .filter_map(|bound| {
-                if let Target::Card(id) = bound.target {
-                    Some(id)
-                } else {
-                    None
-                }
-            })
+            .filter(|&b| self.same_target_object(b))
+            .filter_map(|b| b.object)
+            .collect::<Vec<_>>();
+        self.exile_objects_until_source_leaves(item.object, &objects);
+    }
+    /// A non-target hand choice and an ordinary bound target share the same exact
+    /// movement/link transaction. Only an actual arrival in exile creates a link.
+    pub(super) fn exile_objects_until_source_leaves(
+        &mut self,
+        source: ObjectRef,
+        objects: &[ObjectRef],
+    ) {
+        if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+            return;
+        }
+        let ids: Vec<_> = objects
+            .iter()
+            .filter(|r| self.object_ref(r.card) == **r)
+            .map(|r| r.card)
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
-            if event.moved {
+            if event.moved && event.destination == Zone::Exile {
                 self.state.exile_links.push(ExileLink {
-                    source: item.object,
+                    source,
                     exiled: event.after,
                     return_zone: event.before.zone,
                 });

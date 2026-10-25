@@ -143,6 +143,8 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    /// Controlled by the player chosen in a distinct target group.
+    ControllerOfPlayerGroup(u16),
     /// Attached to the exact object selected in another target group.
     AttachedToGroup(u16),
     DifferentControllers,
@@ -1374,6 +1376,8 @@ pub(crate) enum Instruction {
     MayMill(u16),
     RecoverMilled(RecoveryFilter),
     CollectGraveyard,
+    RevealTargetHandSubsetDiscard(AmountValue),
+    RevealTargetHandExileUntilSourceLeaves,
     RevealHandDiscard {
         excluded_kinds: u16,
     },
