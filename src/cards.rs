@@ -235,6 +235,8 @@ pub(crate) enum TargetPredicate {
     Nontoken,
     Permanent,
     Attacking,
+    /// The sole creature currently attacking, irrespective of its defender.
+    AttackingAlone,
     AttackingOrBlocking,
     Damaged,
     DealtDamage,
@@ -2667,6 +2669,10 @@ pub(crate) enum TriggerCondition {
     /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
     ControlledCreatureAttacksAlone,
     EquippedAttacks,
+    /// Attachment recipient was the sole creature declared in this attack event.
+    EquippedAttacksAlone,
+    /// One event per player attacked by at least one declared matching creature.
+    AttackPlayer(CreatureFilter),
     GrantedAttacks,
     SelfBecomesTapped,
     /// One event after the complete simultaneous tap group, using post-event types.

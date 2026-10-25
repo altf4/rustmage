@@ -3,10 +3,46 @@
   "catalogue_id": 3638,
   "oracle_id": "6fd44fb9-3433-4cb0-95a4-4ac8170b2166",
   "facts_sha256": "071e0b3b27f4a8940d2e3129185faf776ccf1b67d9eec77e3dbd97f230d28549",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "ada36c2fa040bdf9501c812f836f1315bebe4786ce485ddd0239404927ae5e0c"
-  },
-  "physical_metadata_sha256": "96e10f8711905c9faa9814c1ed5917d5b957aaa44d42a953d0e0d2a516365316"
+  "complete": true,
+  "physical_metadata_sha256": "96e10f8711905c9faa9814c1ed5917d5b957aaa44d42a953d0e0d2a516365316",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SHIELDSpyKit.java",
+  "java_sha256": "9ec1abde76041163b7eea8222953ec25ef326dda18188c799ea3d6d8f98ff3ad",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAloneAttachedTriggeredAbility.java",
+      "sha256": "3333faa91da16182de1f4f816a33f2a0905a95ddd5505a05529423ce771c3f94"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAttachedTriggeredAbility.java",
+      "sha256": "227a8e960c16f1e0930b065ad97af82479a4dd1f9b192254c1c785806c897c1b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAttachedEffect.java",
+      "sha256": "2fa3c394587eff1a4e2a1e1be58a4924f310b3375c714b839b672186dc8136f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    }
+  ]
 }

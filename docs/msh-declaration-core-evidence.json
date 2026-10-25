@@ -1,0 +1,605 @@
+{
+  "scope": "Three whole MSH declaration consumers and the smallest shared event/live-target rules; candidate for the single aggregate set PR, references #478.",
+  "base": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+  "branch": "codex/msh-declaration-core",
+  "full_set_membership": 281,
+  "base_msh_admission_flags": 180,
+  "candidate_msh_admission_flags": 183,
+  "remaining_candidate_gated": 98,
+  "complete_candidates": [
+    "Attuma, Atlantean Warlord",
+    "Crowd of True Believers",
+    "S.H.I.E.L.D. Spy Kit"
+  ],
+  "full_set_goal": "Open. Admission flags, focused interactions and bounded traces do not establish entire-set acceptance; no additional card expansion is claimed.",
+  "schema": 143,
+  "wire_change": false,
+  "catalogue_ids_changed": false,
+  "definitions": 5397,
+  "source_blobs_verified": 1175,
+  "frozen_oracles": [
+    {
+      "oracle_id": "e3b70a85-4296-411f-a673-7992b0c8a9aa",
+      "name": "Attuma, Atlantean Warlord",
+      "layout": "normal",
+      "mana_cost": "{2}{U}{U}",
+      "cmc": 4.0,
+      "type_line": "Legendary Creature \u2014 Merfolk Warrior Villain",
+      "oracle_text": "Other Merfolk you control get +1/+1.\nWhenever one or more Merfolk you control attack a player, draw a card.",
+      "power": "3",
+      "toughness": "4",
+      "colors": [
+        "U"
+      ],
+      "color_identity": [
+        "U"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "c3d5add1-0d0e-414b-a964-8da326472d35",
+        "set": "msh",
+        "collector_number": "47",
+        "released_at": "2026-06-26"
+      }
+    },
+    {
+      "oracle_id": "06296d4d-a1b3-4e9a-a2fd-a0183bb892a1",
+      "name": "Crowd of True Believers",
+      "layout": "normal",
+      "mana_cost": "{W}",
+      "cmc": 1.0,
+      "type_line": "Creature \u2014 Human Citizen",
+      "oracle_text": "{T}: Target creature you control that's attacking alone gets +1/+0 until end of turn. You gain 1 life.",
+      "power": "1",
+      "toughness": "2",
+      "colors": [
+        "W"
+      ],
+      "color_identity": [
+        "W"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "4b2fffb8-d538-4772-8fbc-9bec3b9c4d9c",
+        "set": "msh",
+        "collector_number": "14",
+        "released_at": "2026-06-26"
+      }
+    },
+    {
+      "oracle_id": "6fd44fb9-3433-4cb0-95a4-4ac8170b2166",
+      "name": "S.H.I.E.L.D. Spy Kit",
+      "layout": "normal",
+      "mana_cost": "{W}",
+      "cmc": 1.0,
+      "type_line": "Artifact \u2014 Equipment",
+      "oracle_text": "Equipped creature gets +1/+1.\nWhenever equipped creature attacks alone, untap it and scry 1. (Look at the top card of your library. You may put that card on the bottom.)\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+      "colors": [
+        "W"
+      ],
+      "color_identity": [
+        "W"
+      ],
+      "keywords": [
+        "Equip",
+        "Scry"
+      ],
+      "reference_printing": {
+        "id": "4938e23f-b5da-493b-9904-af61a3733ba0",
+        "set": "msh",
+        "collector_number": "36",
+        "released_at": "2026-06-26"
+      }
+    }
+  ],
+  "authored_sources": [
+    {
+      "name": "S.H.I.E.L.D. Spy Kit",
+      "catalogue_id": 3638,
+      "oracle_id": "6fd44fb9-3433-4cb0-95a4-4ac8170b2166",
+      "facts_sha256": "071e0b3b27f4a8940d2e3129185faf776ccf1b67d9eec77e3dbd97f230d28549",
+      "complete": true,
+      "physical_metadata_sha256": "96e10f8711905c9faa9814c1ed5917d5b957aaa44d42a953d0e0d2a516365316",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/s/SHIELDSpyKit.java",
+      "java_sha256": "9ec1abde76041163b7eea8222953ec25ef326dda18188c799ea3d6d8f98ff3ad",
+      "xmage_dependencies": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksAloneAttachedTriggeredAbility.java",
+          "sha256": "3333faa91da16182de1f4f816a33f2a0905a95ddd5505a05529423ce771c3f94"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksAttachedTriggeredAbility.java",
+          "sha256": "227a8e960c16f1e0930b065ad97af82479a4dd1f9b192254c1c785806c897c1b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAttachedEffect.java",
+          "sha256": "2fa3c394587eff1a4e2a1e1be58a4924f310b3375c714b839b672186dc8136f7"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+          "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+          "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+          "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+          "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+        }
+      ]
+    },
+    {
+      "name": "Crowd of True Believers",
+      "catalogue_id": 897,
+      "oracle_id": "06296d4d-a1b3-4e9a-a2fd-a0183bb892a1",
+      "facts_sha256": "0cd6186904f3f0e66bf7aec917c1accd9235f1ebbc0cdc87e5924b1e569920a9",
+      "complete": true,
+      "physical_metadata_sha256": "aca6cf7b98691fcfbdd3ae84ce9f1124e593257f2432f71552daefbb1c78cc44",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/c/CrowdOfTrueBelievers.java",
+      "java_sha256": "7023f09b19395d8b327c83546ef1e8cc7177614f1955f65152441f1a811539b9",
+      "xmage_dependencies": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+          "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+        }
+      ]
+    },
+    {
+      "name": "Attuma, Atlantean Warlord",
+      "catalogue_id": 260,
+      "oracle_id": "e3b70a85-4296-411f-a673-7992b0c8a9aa",
+      "facts_sha256": "d49bbe6b99b26145c18fcc8d25d2cb970639a2b54bd1ad22c8021101cc872312",
+      "complete": true,
+      "physical_metadata_sha256": "a1aa1d8bb77e2ca857c56e6fa22221a3cf821cf933d9125ea385cf7061f9c401",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/a/AttumaAtlanteanWarlord.java",
+      "java_sha256": "af270b8d59154af49ced11cbbd12dd90cb96e624159331a8a63ba89eea900656",
+      "xmage_dependencies": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksPlayerWithCreaturesTriggeredAbility.java",
+          "sha256": "fa6b8f8e8f89c9f1958a0b57504d2dafb2e7abcb0936ef0fb09d182e49a1de49"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+          "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        }
+      ]
+    }
+  ],
+  "shared_rules": [
+    "Borrow the committed declaration slice for player-defender filtered attack events; one packet per attacked player, excluding creatures merely entering attacking.",
+    "Private EquippedAttacksAlone uses the captured declaration sole attacker. Existing AttachmentTriggerView freezes exact recipient and Equipment ability controller.",
+    "UntapEventObject also accepts the exact captured attachment recipient without requiring current creature type; source departure, reattachment and recipient new incarnation cannot redirect it.",
+    "Private AttackingAlone target predicate uses the current global combat list and central availability/selection/resolution validation, including actual borrowed abilities.",
+    "Attuma reuses current type/control/ability layer modifiers and source indexes; its projected funding worlds agree with actual departures."
+  ],
+  "oracle_java_discrepancy": "UntapAttachedEffect currently queries later source attachment (or departure attachment LKI). Oracle refers to previously identified attacker, so reattachment must not redirect untap. CR608.2k also means a surviving now-noncreature permanent is still untapped.",
+  "rules_authority": {
+    "release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "paraphrase": "Spy Kit uses declaration count; later attacking entrants do not alter that event. Crowd uses present attacking membership across defenders and all-invalid targets stop its life gain. Attuma triggers once per attacked player with declared Merfolk, excluding later entrants. Thor reentry creates a fresh object.",
+    "cached_rules": "<cache>/rustmage-rules-20260925.txt",
+    "rules_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "rules": [
+      "506.5 attacks alone versus attacking alone",
+      "508.1m declared attack trigger boundary",
+      "508.4 enters attacking never attacked",
+      "603.10 ordinary post-event characteristics",
+      "608.2h current or latest departure information",
+      "608.2k untargeted event object remains affected after characteristics change",
+      "400.7/400.7j zone incarnation and linked public-zone movement"
+    ]
+  },
+  "meaningful_evidence": {
+    "spy_kit": {
+      "complete_obligations": [
+        "W artifact Equipment; continuous equipped +1/+1",
+        "Equip1 targets own creature only at sorcery timing, source/target generation guards",
+        "Whenever equipped creature is sole DECLARED attacker, untap exact event permanent and scry1 for captured Equipment ability controller"
+      ],
+      "matrix": [
+        "Both seats paidW/Equip1, own/opponent target filtering, empty stack and sorcery timing, summoning-sick equip recipient",
+        "One declared attacker versus two; remove second later does not create trigger; add entered-attacking creature later does not erase queued trigger",
+        "Actual Equipment controller can differ from creature controller; captured Equipment controller scries after either controller changes",
+        "Source leaves or reattaches after queue: original exact recipient untaps; left/reentered recipient is not rebound; noncreature original still untaps; scry proceeds if recipient gone",
+        "Suppression before declaration prevents queue and bonus; after queue does not erase packet; stun consumes counter and untap prohibitions do not consume stun; scry private to captured actor",
+        "Owned raw/index choices, wrongactor and stale generation atomic, parent disposal and snapshot restore during scry/queued event"
+      ]
+    },
+    "crowd": {
+      "complete_obligations": [
+        "W Human Citizen1/2",
+        "Tap cost requires available source/haste, one target controlled creature CURRENTLY attacking alone",
+        "Grow target+1/+0EOT then captured ability controller gains1; all-invalid targets skip both effects"
+      ],
+      "matrix": [
+        "Both seats paidW, source sickness/tap enforcement and instant-speed timing",
+        "Two declared then remove one -> current survivor legal; one declared plus extra entered attacking -> neither live-alone target legal",
+        "Attackers split among player/planeswalker still count globally; sole attacker with departed defender remains attacking; no nonattacking own creature legal",
+        "Target bounces, changes controller, stops creature/attacking or ceases alone before resolution -> no life; source leaving/control changing does not redirect life",
+        "Gain+1/+0 cleanup expiry and captured controller life triggers; ability suppression availability",
+        "Actual and borrowed legal-action targets, exact source facts, wrongactor/atomic checks and orphan raw/index/restore"
+      ]
+    },
+    "attuma": {
+      "complete_obligations": [
+        "2UU legendary Merfolk Warrior Villain3/4",
+        "Other controlled current Merfolk get+1/+1, excluding exact observer, with actual/speculative layers",
+        "One draw per player attacked by one or more DECLARED controlled Merfolk"
+      ],
+      "matrix": [
+        "Both seats exact2UU payment and legendary/SBA behavior",
+        "Own/foreign/non-Merfolk lord control, source exclusion, type changes, suppression and funding projected lord dependencies",
+        "One or several declared Merfolk attacking player ->one draw; only non-Merfolk ->none; planeswalker-only ->none; mixed defender rows count only player-attacking Merfolk",
+        "Entered attacking Merfolk alone never triggers; adding/removing creatures after declaration does not recheck qualified draw",
+        "Source/control/subtype changes after queue do not redirect draw; private drawn card and wrongactor atomicity",
+        "Owned declaration roots and draw packets across raw/index clone, disposal and restore; existing permanent/spell copies keep exact source/lord identity"
+      ]
+    }
+  },
+  "fixture_limits": [
+    "Paid ordinary equip, paid Stop Cold before/after queue, actual Voice of Victory mobilize, actual opponent-owned Crowd/Moon/Forge borrowing and Applied Geometry copy are exercised.",
+    "Direct exact-incarnation fixtures supplement uncommon reattachment, recipient becoming noncreature, untap prohibition after declaration, and already-attacking Merfolk declaration boundaries; no synthetic card definition is introduced.",
+    "Planeswalker direct setup uses its normal six loyalty. Private scry contents are asserted through LibraryChoiceView; they are not expected in the general object list.",
+    "No multiplayer expansion, other pending MSH mechanics or new IDs/wire fields are claimed."
+  ],
+  "validation": {
+    "checks": [
+      {
+        "name": "focus",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_declaration",
+          "--",
+          "--nocapture"
+        ],
+        "exit_code": 0,
+        "expected_exit": 0,
+        "seconds": 109.44393372535706,
+        "log": "<cache>/msh-declaration-final-focus.log",
+        "passed": 18,
+        "test_seconds": 0.02
+      },
+      {
+        "name": "attack-regressions",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_attack_alone"
+        ],
+        "exit_code": 0,
+        "expected_exit": 0,
+        "seconds": 0.10669851303100586,
+        "log": "<cache>/msh-declaration-final-attack-regressions.log",
+        "passed": 10,
+        "test_seconds": 0.01
+      },
+      {
+        "name": "equipment-regressions",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "big_equipment_tests"
+        ],
+        "exit_code": 0,
+        "expected_exit": 0,
+        "seconds": 0.08648228645324707,
+        "log": "<cache>/msh-declaration-final-equipment-regressions.log",
+        "passed": 7,
+        "test_seconds": 0.01
+      },
+      {
+        "name": "borrowed-regressions",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "territory_forge"
+        ],
+        "exit_code": 0,
+        "expected_exit": 0,
+        "seconds": 0.08136320114135742,
+        "log": "<cache>/msh-declaration-final-borrowed-regressions.log",
+        "passed": 10,
+        "test_seconds": 0.01
+      },
+      {
+        "name": "untap-regressions",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "untap"
+        ],
+        "exit_code": 0,
+        "expected_exit": 0,
+        "seconds": 0.09300947189331055,
+        "log": "<cache>/msh-declaration-final-untap-regressions.log",
+        "passed": 12,
+        "test_seconds": 0.01
+      },
+      {
+        "name": "record",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "supported_cards_retain_bounded_cast_and_entry_traces",
+          "--",
+          "--nocapture"
+        ],
+        "exit_code": 101,
+        "expected_exit": 101,
+        "seconds": 0.8343195915222168,
+        "log": "<cache>/msh-declaration-final-record.log"
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit_code": 0,
+        "expected_exit": 0,
+        "seconds": 36.734264850616455,
+        "log": "<cache>/msh-declaration-final-clippy.log"
+      },
+      {
+        "name": "sources",
+        "command": [
+          "python3",
+          "scripts/check_sources.py"
+        ],
+        "exit_code": 0,
+        "expected_exit": 0,
+        "seconds": 0.6063394546508789,
+        "log": "<cache>/msh-declaration-final-sources.log"
+      },
+      {
+        "name": "format",
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "src/lib.rs",
+          "src/card_definitions/msh/s_h_i_e_l_d_spy_kit.rs",
+          "src/card_definitions/msh/crowd_of_true_believers.rs",
+          "src/card_definitions/msh/attuma_atlantean_warlord.rs"
+        ],
+        "exit_code": 0,
+        "expected_exit": 0,
+        "seconds": 0.9138777256011963,
+        "log": "<cache>/msh-declaration-final-format.log"
+      },
+      {
+        "name": "strict-traces",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "supported_cards_retain_bounded_cast_and_entry_traces",
+          "--",
+          "--nocapture"
+        ],
+        "exit_code": 0,
+        "seconds": 109.78597378730774,
+        "log": "<cache>/msh-declaration-strict-traces.log",
+        "passed": 1,
+        "test_seconds": 0.76
+      },
+      {
+        "name": "strict-focus",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_declaration"
+        ],
+        "exit_code": 0,
+        "seconds": 0.0968027114868164,
+        "log": "<cache>/msh-declaration-strict-focus.log",
+        "passed": 18,
+        "test_seconds": 0.02
+      },
+      {
+        "name": "source-check",
+        "command": [
+          "python3",
+          "scripts/check_sources.py"
+        ],
+        "exit_code": 0,
+        "seconds": 0.6035752296447754,
+        "log": "<cache>/msh-declaration-source-check.log"
+      }
+    ],
+    "pre_accept_inputs_unchanged": true,
+    "strict_inputs_unchanged": true,
+    "only_between_chain_input_change": "src/assurance/card_traces.json after exact old-row proof",
+    "fixed_inputs_reports": [
+      "<cache>/msh-declaration-final-checks.json",
+      "<cache>/msh-declaration-strict-checks.json"
+    ],
+    "trace_proof": {
+      "base": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+      "schema": 143,
+      "inherited_count": 2483,
+      "candidate_count": 2486,
+      "full_inherited_trace_equality": true,
+      "inherited_sha256": "d74b7400e84e85e6d845b5dd38e2eedf9321f15f9198efa80b4d516d4d6b0ed5",
+      "candidate_sha256": "ebbaf93b51bbe7f7d6be2131d619ed48509420474cf37997c47a6076109a4f4b",
+      "new_rows": {
+        "Attuma, Atlantean Warlord": {
+          "root": "main",
+          "status": "completed",
+          "decisions": 4,
+          "zone": "Battlefield",
+          "journal": "9fb8f9361b7adf8f",
+          "observations": "4c59a1f138f4f692"
+        },
+        "Crowd of True Believers": {
+          "root": "main",
+          "status": "completed",
+          "decisions": 4,
+          "zone": "Battlefield",
+          "journal": "97f197e40a843eee",
+          "observations": "fa06ad8d47b6886e"
+        },
+        "S.H.I.E.L.D. Spy Kit": {
+          "root": "main",
+          "status": "completed",
+          "decisions": 4,
+          "zone": "Battlefield",
+          "journal": "97f197e40a843eee",
+          "observations": "5a73b7a681f6c60a"
+        }
+      },
+      "recorder_unchanged": true,
+      "projection": "none; same actual wire143"
+    },
+    "trace_proof_path": "<cache>/msh-declaration-trace-proof.json",
+    "resource_reports": [
+      {
+        "path": "<cache>/rustmage-build-reports/cb9c7a319cb349568505cba0227270f8.json",
+        "command": [
+          "python3",
+          "<cache>/msh-declaration-check-chain.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 217.70654284302145,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2371457024,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "path": "<cache>/rustmage-build-reports/47d2be5b3ab346edbde798dd4629a643.json",
+        "command": [
+          "python3",
+          "<cache>/msh-declaration-strict-chain.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 110.74742721201619,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2369839104,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    ],
+    "recording_note": "The explicit recorder exported the candidate and then ordinary validation correctly failed only on new-row cardinality 2486 versus 2483. All inherited complete Trace values were compared before accepting the three new rows. Subsequent strict validation passed. Recorder code was not edited.",
+    "full_release": "Deferred to the single aggregate final published head; parent runs routine release and obtains two independent nonauthor reviews. No merge to main or separate PR is authorized."
+  },
+  "cleanup": {
+    "terminal_consumers_verified": true,
+    "active_target_handles": [],
+    "removed_bytes": 121489669,
+    "removed_files": 1019,
+    "preserved": {
+      "<cache>/msh-declaration-eighth-target/debug/deps/rustmage-b764cd26223fba2c": {
+        "sha256": "df0fd864803c2eee4206024358855ae075d39a5dd15eb9db38430c29ab48b090",
+        "bytes": 31885408
+      },
+      "<cache>/msh-declaration-eighth-target/debug/deps/libserde_derive-31145c71f3b23723.so": {
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so": {
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      "<cache>/msh-existing-seventh-target/debug/deps/libserde_derive-31145c71f3b23723.so": {
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      "<cache>/msh-existing-seventh-target/debug/deps/rustmage-b764cd26223fba2c": {
+        "sha256": "a34e0b8ca1247a8007640ddaf9e168aed74f127a60471f417fd6ce53903d5ca8",
+        "bytes": 31510056
+      }
+    }
+  },
+  "measured_interval": {
+    "start_epoch": 1792890700.4994652,
+    "green_strict_end_epoch": 1792892627.8987184,
+    "seconds": 1927.399253129959,
+    "whole_cards": 3,
+    "cards_per_hour": 5.603405720149351,
+    "includes": "Source authoring, test API/fixture repairs, shared build queuing, compilation, focused/affected tests, exact trace audit, Clippy/source/format and strict trace acceptance.",
+    "bounded_trace_rows": 2486,
+    "bounded_trace_test_seconds": 0.76,
+    "bounded_traces_per_second": 3271.0526315789475,
+    "workload_limit": "Bounded single-card cast/entry regressions, not a full-game or owned-search simulation benchmark. No full-set performance claim."
+  }
+}

@@ -219,6 +219,9 @@ mod faces;
 #[path = "engine_modal_history.rs"]
 mod modal_history;
 #[cfg(test)]
+#[path = "engine_msh_declaration_tests.rs"]
+mod msh_declaration_tests;
+#[cfg(test)]
 #[path = "engine_msh_existing_seventh_tests.rs"]
 mod msh_existing_seventh_tests;
 #[cfg(test)]
@@ -5794,11 +5797,11 @@ impl Game {
         }
         self.state.attackers.extend(declared.iter().cloned());
         self.tap_objects(&to_tap);
-        for attack in declared {
+        for attack in &declared {
             event(self, attack.card);
         }
         if self.state.attack_declared {
-            self.declaration_triggers(actor, alone);
+            self.declaration_triggers(actor, alone, &declared);
         }
     }
 

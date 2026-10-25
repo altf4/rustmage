@@ -1047,6 +1047,14 @@
     "journal": "100cb581dd613f1f",
     "observations": "ce7713cc37d48f1a"
   },
+  "Attuma, Atlantean Warlord": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9fb8f9361b7adf8f",
+    "observations": "4c59a1f138f4f692"
+  },
   "Aunt May": {
     "root": "main",
     "status": "completed",
@@ -3486,6 +3494,14 @@
     "zone": "Battlefield",
     "journal": "c74d47fdf1bf30fc",
     "observations": "3bebd6e50bd7bf70"
+  },
+  "Crowd of True Believers": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "97f197e40a843eee",
+    "observations": "fa06ad8d47b6886e"
   },
   "Crude Bent Blade": {
     "root": "main",
@@ -14110,6 +14126,14 @@
     "zone": "Battlefield",
     "journal": "77bf79854c3416e3",
     "observations": "e5532427acb137b7"
+  },
+  "S.H.I.E.L.D. Spy Kit": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "97f197e40a843eee",
+    "observations": "5a73b7a681f6c60a"
   },
   "SP//dr, Piloted by Peni": {
     "root": "main",
