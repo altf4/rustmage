@@ -1,0 +1,647 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "source_base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+  "tested_runtime_content_head": "e9cccd1684337a94a9a7e87508cf3992df8d44b5",
+  "scope": "Two whole-card candidates in isolated source branch for aggregate draft PR516. No new PR or main merge. Final aggregate independent local reviews, release/CI, whole-set games and human approval remain parent integration gates; no full-set acceptance claimed.",
+  "complete_candidates": [
+    "The Coming of Galactus",
+    "U.S.Agent, John Walker"
+  ],
+  "observation_wire_unchanged": 146,
+  "wire_reason": "New private Instruction::CreateEquipmentForSource, TokenCompletion::AttachCreatedTo and live Saga helper. Existing resolving source/event/choice payloads suffice; no public action or observation field added. Parent147 integration compares previous146 full table.",
+  "new_ids": [
+    5399,
+    5400
+  ],
+  "next5401": "Unallocated by this branch",
+  "definitions": 5401,
+  "token_recipes": 123,
+  "catalogue_version": "cc1f3e5a8ae0b17791913b117a2441ad56f68c1b1a55cac5c2d89fc0d0b772d8",
+  "candidate_set_flags": {
+    "total": 281,
+    "admitted": 200,
+    "gated": 81,
+    "qualification": "Isolated candidate flags; base198/83. Admission flags do not certify independent whole-set acceptance."
+  },
+  "full_frozen_oracle": {
+    "The Coming of Galactus": {
+      "oracle_id": "e05f23ba-f2b2-4c40-83fa-8defce3cb978",
+      "name": "The Coming of Galactus",
+      "layout": "saga",
+      "mana_cost": "{2}{B}{B}{G}",
+      "cmc": 5.0,
+      "type_line": "Enchantment \u2014 Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI \u2014 Destroy up to one target nonland permanent.\nII, III \u2014 Each opponent loses 2 life.\nIV \u2014 Create Galactus, a legendary 16/16 black Elder Alien creature token with flying, trample, and \"Whenever Galactus attacks, destroy target land.\"",
+      "colors": [
+        "B",
+        "G"
+      ],
+      "color_identity": [
+        "B",
+        "G"
+      ],
+      "keywords": [
+        "Trample"
+      ],
+      "all_parts": [
+        {
+          "id": "d911f8c6-88a5-4f66-a400-4df72b49c351",
+          "component": "token",
+          "name": "Galactus",
+          "type_line": "Token Legendary Creature \u2014 Elder Alien"
+        },
+        {
+          "id": "8ffaa5b3-00fa-46ea-918c-dfce0de9e898",
+          "component": "combo_piece",
+          "name": "The Coming of Galactus",
+          "type_line": "Enchantment \u2014 Saga"
+        }
+      ],
+      "reference_printing": {
+        "id": "04a38b92-619e-4fe8-b0cb-6fa31f0824ff",
+        "set": "msh",
+        "collector_number": "212",
+        "released_at": "2026-06-26"
+      }
+    },
+    "U.S.Agent, John Walker": {
+      "oracle_id": "2b6fa8b6-4865-4eb6-974b-00f6b16b6f0f",
+      "name": "U.S.Agent, John Walker",
+      "layout": "normal",
+      "mana_cost": "{3}{W/B}",
+      "cmc": 4.0,
+      "type_line": "Legendary Creature \u2014 Human Soldier Hero",
+      "oracle_text": "When U.S.Agent enters, create a colorless Equipment artifact token named Sturdy Shield with \"Equipped creature gets +1/+2\" and equip {2}. Attach it to U.S.Agent.",
+      "power": "3",
+      "toughness": "2",
+      "colors": [
+        "B",
+        "W"
+      ],
+      "color_identity": [
+        "B",
+        "W"
+      ],
+      "keywords": [],
+      "all_parts": [
+        {
+          "id": "35e11911-799c-4d82-9109-3ca27964bef0",
+          "component": "combo_piece",
+          "name": "U.S.Agent, John Walker",
+          "type_line": "Legendary Creature \u2014 Human Soldier Hero"
+        },
+        {
+          "id": "da23a10f-7ac6-4cdc-a35c-ef6bba6b6b6f",
+          "component": "token",
+          "name": "Sturdy Shield",
+          "type_line": "Token Artifact \u2014 Equipment"
+        }
+      ],
+      "reference_printing": {
+        "id": "35e11911-799c-4d82-9109-3ca27964bef0",
+        "set": "msh",
+        "collector_number": "236",
+        "released_at": "2026-06-26"
+      }
+    }
+  },
+  "printed_obligations": {
+    "The Coming of Galactus": [
+      "Ordinary paid2BBG Saga, initial intrinsic lore and turn-based precombat lore; four exact chapter thresholds, final sacrifice after every exact outstanding chapter packet leaves.",
+      "I optional zero or one any-controller nonland permanent destruction; II/III untargeted each-opponent2 life loss; IV exact Galactus creation under captured chapter controller.",
+      "Galactus legendary black16/16 Elder Alien creature, flying/trample, MV0, no haste. Mandatory any-controller land destruction on actual attack, including sole own land.",
+      "Saga itself has no printed trample; migrated gated keyword removed from typed definition while physical Oracle pin unchanged."
+    ],
+    "U.S.Agent, John Walker": [
+      "Actual hybrid base 3W OR 3B, legendary 3/2 Human Soldier Hero, both intrinsic colors; no printed keywords.",
+      "SelfEnters trigger does not target. Create exact colorless noncreature Artifact Equipment token named Sturdy Shield, untapped, nonlegendary, no mana cost, mana value 0.",
+      "Attach all tokens resulting from this creation event that can legally equip the exact entering object; creation still happens if recipient left, changed incarnation or is no longer a creature.",
+      "Sturdy Shield attached recipient gets +1/+2 through ordinary attachment layer7c fragment; separate equip2 activation costs generic2, targets creature you control, sorcery timing. Equipment and creature controllers are independent."
+    ]
+  },
+  "source_provenance": {
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "direct_and_helper_pins": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TheComingOfGalactus.java",
+        "sha256": "b5ce11f579d2bf53d71c692bec2572dddb872b1d1de3fcfb202d08f8351c9eed",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/token/GalactusToken.java",
+        "sha256": "ccc624dd4dd7d57b0ce2e7778d55f60d16285e2facadbb0b70ad8e5a92a137ae",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+        "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+        "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+        "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+        "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+        "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+        "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetLandPermanent.java",
+        "sha256": "c0beb7517ef08eb7d86e58f64cc0fa9faee438dc46405c3a48c61b2bb580f43b",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+        "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+        "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+        "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+        "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+        "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetObject.java",
+        "sha256": "04f411662058b88bb5feeaec7aa4c29d20b934da2f073731cf8af29f7ecd25f3",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetImpl.java",
+        "sha256": "4366d56a414e29c40704e8b734f760d1ec6657d57b0abf8998f51f50d566f915",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/token/TokenImpl.java",
+        "sha256": "64e2102a28036ddfaaec4914c34355f7174f90df30d71527b0553aef9a14687d",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+        "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/constants/SagaChapter.java",
+        "sha256": "2a5bcf61b6a211a22ba02c94ee762bdb3f70ae6470df54d28b11f255142077f5",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterLandPermanent.java",
+        "sha256": "efba60ffb8cf55463b746f675ff624e8fb59c2125ab9f9a3e96930b4e3573d98",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterNonlandPermanent.java",
+        "sha256": "451cffb8d2af71777225c79e09772339e74603483d0f32ad2cc65c88e3a73cb9",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+        "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+        "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+        "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+        "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/constants/CardType.java",
+        "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+        "read_coverage": "complete"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+        "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+        "read_coverage": "Only relevant land/nonland filter definitions at lines750-775 and952-970; whole source snapshot retained, unrelated definitions not newly audited."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/u/USAgentJohnWalker.java",
+        "sha256": "623aad546bdd92e2c121b4982a87e9a212d80fe364bbfc55ac1e336911c81488",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/token/SturdyShieldToken.java",
+        "sha256": "13e65c17bc72efaa92b3a0fdc5b3c3852834feb6a6b0df4521940a1b493422dc",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+        "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+        "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+        "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+        "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+        "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+        "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+        "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+        "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5",
+        "read_coverage": "complete current pass"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/AbilityImpl.java",
+        "sha256": "7c70aa5739de67e806ff96174bde87f22457c5627fbacdd57075222b46c530af",
+        "read_coverage": "Exact relevant complete methods at lines 1722-1756; unrelated infrastructure not newly audited. Full source retained."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/cards/CardImpl.java",
+        "sha256": "7901ebec3da385c68e1ccf207feb95d1a19e14febb3419fccf1a13098c082d54",
+        "read_coverage": "Exact relevant complete methods at lines 923-1002; unrelated infrastructure not newly audited. Full source retained."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/permanent/PermanentImpl.java",
+        "sha256": "5b72e235e1fe716b7337ffe76539d7fd79a5a9de1c54e6f343426126aeec6fe1",
+        "read_coverage": "Exact relevant complete methods at lines 1055-1090; unrelated infrastructure not newly audited. Full source retained."
+      }
+    ],
+    "prior_28_java_full_body_hashes_reverified": true,
+    "full_direct_card_token_and_concrete_helpers_read": true,
+    "generic_infrastructure_limits": "Three large Java infrastructure methods have explicit partial source coverage; full bodies cached. Prior StaticFilters covers relevant controlled/land/nonland definitions. Not a recursive generic-Java certification.",
+    "frozen_oracle_sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+    "local_design": "<cache>/rustmage-msh-galactus-us-agent-design-a496faea.json",
+    "design_sha256": "1efadc7abd06f23acede419931322f4be478d8189c1d9fcb8536ac3ec0bab027",
+    "java_verified": true,
+    "source_blobs": 1235
+  },
+  "authoritative_rules": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+    "version": "September25,2026",
+    "rules": [
+      "714.2b-d",
+      "714.3a-c",
+      "714.4",
+      "704.5s",
+      "301.5b-e",
+      "701.3a-c",
+      "701.7a-b"
+    ],
+    "resolution": "Live Saga subtype and at least one chapter required for main lore/final sacrifice. Total chapter suppression suspends both; old packets survive. Equipment creation survives failed attachment. TokenImpl UI cap500 not ported."
+  },
+  "shared_mechanics": [
+    "Fast immutable non-Saga rejection, then live effective Saga subtype and printed chapter availability/max. Shared by precombat lore and sacrifice; exact source packet lifetime guard unchanged. No broad copy/gained-chapter framework admitted.",
+    "Private replacement completion captures every exact result of fixed token creation, then attaches each legal Equipment to the exact trigger source before next priority. Source absence/control/type changes never cancel creation; old slot reuse cannot rebind.",
+    "Replacement doubling and addition retain the entire created set. Role and JobSelect continuations unchanged. Existing central Equipment legality, independent controllers, exact target/equip2, stat layers, legend SBA and token lifecycle reused."
+  ],
+  "test_evidence": {
+    "native_tests": 1219,
+    "new_groups": 34,
+    "named_groups": {
+      "engine_msh_galactus_tests.rs": [
+        "msh_galactus_paid_natural_four_chapters_exact_token_and_final_sacrifice",
+        "msh_galactus_optional_nonland_target_paid_zero_self_or_opponent",
+        "msh_galactus_chapter_one_land_hidden_and_player_choices_atomic",
+        "msh_galactus_nonland_indestructible_target_survives_and_blink_stays_exact",
+        "msh_galactus_multiple_thresholds_iv_first_waits_every_exact_packet",
+        "msh_galactus_entry_replacement_crosses_chapters_but_main_lore_is_turn_based",
+        "msh_galactus_iv_survives_paid_source_removal_and_captured_controller",
+        "msh_galactus_countered_final_packet_allows_sacrifice_without_token",
+        "msh_galactus_attack_must_target_any_land_including_sole_own_land",
+        "msh_galactus_no_land_attack_continues_and_sickness_rejects",
+        "msh_galactus_flying_block_legality_and_actual_trample_damage",
+        "msh_galactus_land_packet_survives_paid_token_bounce_and_exact_reentry",
+        "msh_galactus_saga_live_type_loss_stops_lore_and_sacrifice_not_queued_chapter",
+        "msh_galactus_saga_chapter_suppression_preserves_subtype_no_lore_no_sacrifice",
+        "msh_galactus_suppressed_queued_iv_resolves_then_restoration_sacrifices",
+        "msh_galactus_wrong_controller_and_second_main_never_place_lore",
+        "msh_galactus_orphan_final_packets_full_private_observations_restore"
+      ],
+      "engine_msh_us_agent_tests.rs": [
+        "msh_us_agent_both_paid_hybrid_choices_exact_shield_and_creature",
+        "msh_us_agent_insufficient_mana_and_foreign_cast_are_atomic",
+        "msh_us_agent_doubling_attaches_every_new_shield_leaves_old_shield_unchanged",
+        "msh_us_agent_source_paid_bounce_creates_unattached_and_old_packet_never_rebinds",
+        "msh_us_agent_control_change_keeps_trigger_controller_and_cross_controller_attachment",
+        "msh_us_agent_nontarget_attachment_ignores_hexproof_and_ward_but_obeys_protection",
+        "msh_us_agent_attachment_recipient_no_longer_creature_creates_unattached",
+        "msh_us_agent_paid_equip_two_retargets_only_own_creature_at_sorcery_speed",
+        "msh_us_agent_equip_target_control_change_and_source_leave_revalidate",
+        "msh_us_agent_equipment_animation_detaches_and_source_removal_loses_bonus",
+        "msh_us_agent_replacement_addition_non_equipment_stays_unattached",
+        "msh_us_agent_full_hidden_observations_and_orphan_replacement_branches_restore",
+        "msh_us_agent_real_hero_restricted_funding_cast_and_artifact_only_cannot_pay",
+        "msh_us_agent_live_shield_power_funds_actual_crew_four",
+        "msh_us_agent_free_actual_cast_keeps_intrinsic_hybrid_colors_and_entry"
+      ],
+      "engine_msh_galactus_funding_tests.rs": [
+        "msh_galactus_funding_shield_virtual_departure_matches_actual_full_view",
+        "msh_galactus_funding_recipient_departure_does_not_rebind_equipment_bonus"
+      ]
+    },
+    "both_seats": true,
+    "actual_routes": "2BBG natural full Saga turns;3W/3B and actual Omniscience U.S.Agent casts; optional nonland targets, actual paid Get Lost/Unsummon/Frozen in Ice, spell source/control and target departure, exact tokens/doubling/legend, mandatory own land, actual flying blocking and trample damage, equip2 and live shield power paying real crew4, Hero-restricted actual funding and artifact-only rejection.",
+    "privacy_atomicity_ownership": "Full nonactor serialized observations for hidden card alternatives; illegal choices snapshot/state-bytes/revision atomicity. Existing checked helper raw/index branch after parent disposal and restore at each mutation. Additional explicit orphan final chapter packet and owned replacement continuation raw/index/restore, source departure and exact refs.",
+    "funding": "Two borrowed worlds: shield virtual departure full ObjectView/power equals actual branch; recipient departure removes battlefield-only bonus without rebinding. Parent snapshot unchanged.",
+    "bounded_fixture_qualification": "Existing lore counter primitive advances some token-combat cases; natural turns separately prove ordinary progression. Production AnimationView makes Saga targetable, ordinary Aura state stages queued suppression/type loss; paid Aura removal proves real restoration SBA. Controller mutation/target blink/ability-counter primitive are labeled existing production fixtures, no gated producer cast or cfg(test) runtime hook. Actual initial nontarget ward uses prepared Falcon Wing Harness.",
+    "future_copy_scope": "No currently admitted paid generic Saga animation producer. Future Absorbing Man copying a Saga makes suppression reachable in full MSH; future copy/selective gained chapters must extend live chapter identity/provider indexing before admission."
+  },
+  "trace_proof": {
+    "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+    "base_wire": 146,
+    "candidate_wire": 146,
+    "full_inherited_rows_compared": 2501,
+    "every_full_struct_equal": true,
+    "fields_removed": [],
+    "added_only": [
+      "The Coming of Galactus",
+      "U.S.Agent, John Walker"
+    ],
+    "normal_rows": 2503,
+    "normal_sha256": "0e142b168425207cdb162b171c7c1ba6ec526b18812a532e5642531d6d008a88",
+    "checked_utc": "2026-10-25T04:20:51.793392+00:00",
+    "previous_schema": "No public schema change in this isolated branch. Parent integration changing147 compares previous146 against this full table."
+  },
+  "metadata_proof": {
+    "base": "7d958ebdae306935a8dcf5b907a84743815538d2",
+    "all_prior_metadata_equal": true,
+    "authorized_append_ids": [
+      5399,
+      5400
+    ],
+    "next5401": "Unallocated",
+    "definitions_before": 5399,
+    "definitions_after": 5401,
+    "tokens_before": 121,
+    "tokens_after": 123,
+    "physical_count_unchanged": 5183,
+    "old_recipes_ids_aliases_unchanged": true,
+    "manifest_sha256": "504e5898b107e869e75afb89ff24c3a13e139a3fad02ce875224fe500c7ab768",
+    "only_added_aliases": [
+      [
+        "@token/msh-galactus",
+        5399
+      ],
+      [
+        "@token/msh-sturdy-shield",
+        5400
+      ]
+    ]
+  },
+  "validation": {
+    "native_all_passed": true,
+    "clippy_all_targets_deny_warnings": true,
+    "source_pins": true,
+    "linker_check": true,
+    "rustfmt_check": true,
+    "git_diff_check": true,
+    "resource_runs": [
+      {
+        "log": "<cache>/rustmage-msh-galactus-native-4.log",
+        "log_sha256": "3050960b8b582bf77f83ebf70ac10439806f8df54d39ef3ef5cbe0021684c7b2",
+        "report": "<cache>/rustmage-build-reports/0a3e9bd25fbb4a408bb99804c86f2125.json",
+        "command": [
+          "cargo",
+          "test",
+          "--lib"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 223.7224747739965,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2510368768,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "log": "<cache>/rustmage-msh-galactus-clippy.log",
+        "log_sha256": "1756fe9c4b4ec979675b6c3f0bb83ff800bcf9dcd5a166def1bc5e5bbe32ebe7",
+        "report": "<cache>/rustmage-build-reports/a9a6037f7f4e423da6f48717bbe38d7f.json",
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 244.91016716201557,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1930223616,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    ],
+    "cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "inputs_fixed_through_actual_terminal": true,
+    "oom_probe": false,
+    "qualification": "Author full-native and Clippy/source checks; final aggregate release/CI are parent gates."
+  },
+  "development_corrections": [
+    "Test borrow/import correction; preserve ordinary immutable non-Saga fast path.",
+    "Both new synthetic recipes explicitly deck_limitNone, retaining exact rejection as tokens in all deck formats.",
+    "Fixtures respect settle stopping at idle priority, explicit combat/damage/crew progression, automatic lone-trigger announcement and real paid Aura removal to invoke SBA. No runtime relaxation of timing/legality."
+  ],
+  "cleanup": {
+    "terminal_inputs_only": true,
+    "proc_fd_maps_exe_scan_clear": true,
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 125419520,
+    "qualification": "Path-allocated total, not deduplicated physical disk reclaim.",
+    "preserved": [
+      {
+        "path": "<cache>/rustmage-msh-galactus-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "2646c5aecd87531148b30af4782b970788c4e550dcb0cc38f5e7ba81b0bb054f"
+      },
+      {
+        "path": "<cache>/rustmage-msh-galactus-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "prior_artifacts": {
+    "all_required_prior_artifacts_unchanged": true,
+    "verified": [
+      {
+        "path": "<cache>/rustmage-msh-titania-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "0aa41adbea2022cb5a048135c9e61a08c894881cb52b0090864d666cd250afd7"
+      },
+      {
+        "path": "<cache>/rustmage-msh-titania-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-doom-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "2e5793e7dbf717efbf2eaed1e423d74135e35247c2b29cc2f69c64bd329efbb3"
+      },
+      {
+        "path": "<cache>/rustmage-msh-doom-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-source-quantities-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "8da65393061c896dccb9ad037ec849356438eade39e652ab2d8d9b81a2848c00"
+      },
+      {
+        "path": "<cache>/rustmage-msh-source-quantities-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-namor-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "c5d59f667e2658e5a3c74f1a61463c94f2ba94eb8d58be9436547ca3a420b3d8"
+      },
+      {
+        "path": "<cache>/rustmage-msh-namor-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-validation-mm2sv5nl/release/librustmage.so",
+        "sha256": "3641f3de4105e15375f822df4c571eb6a5d1da714430fe482a5ce41b6a7520ea"
+      },
+      {
+        "path": "<cache>/rustmage-validation-mm2sv5nl/release/deps/librustmage.so",
+        "sha256": "3641f3de4105e15375f822df4c571eb6a5d1da714430fe482a5ce41b6a7520ea"
+      },
+      {
+        "path": "<cache>/rustmage-validation-mm2sv5nl/release/deps/libserde_derive-deeeff55f06a54fe.so",
+        "sha256": "303eaf69eb8a4faefdd4fce1f3dadeb24dbf8f90e0886e8cc302c0afda23b0a2"
+      },
+      {
+        "path": "<cache>/rustmage-validation-mm2sv5nl/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T03:58:32+00:00",
+    "end_utc": "2026-10-25T04:21:24.342010+00:00",
+    "elapsed_seconds": 1372.34201,
+    "whole_card_candidates": 2,
+    "candidate_cards_per_hour": 5.246505570429925,
+    "scope": "First author-pass clock through source/test authoring, corrections, guarded build queues, native/Clippy/source checks and cleanup/evidence cutoff. Prior read-only design, final publication/integration/reviews/release/CI and set games excluded.",
+    "simulation": "No simulation throughput measured; no full-pool game coverage claimed."
+  },
+  "remaining_blockers": "No known unimplemented printed obligation in these two candidates after successful rules checks. Parent aggregate independent review/release/CI remain. Remaining81 gated identities plus complete MSH-only games/performance block full-set acceptance."
+}
