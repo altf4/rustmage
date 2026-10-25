@@ -236,7 +236,16 @@ fn msh_attachment_core_paid_swordsman_invalidated_target_preserves_old_attachmen
                 1 => pole,
                 _ => sword,
             };
-            paid(&mut g, p, "Unsummon", &[Target::Card(removed)]);
+            paid(
+                &mut g,
+                p,
+                if departure == 1 {
+                    "Disenchant"
+                } else {
+                    "Unsummon"
+                },
+                &[Target::Card(removed)],
+            );
             settle(&mut g);
             assert_eq!(
                 g.state.objects[pole as usize].attached_to,
