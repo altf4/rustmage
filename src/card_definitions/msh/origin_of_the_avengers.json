@@ -3,7 +3,7 @@
   "catalogue_id": 3040,
   "oracle_id": "d7f3178d-7b7c-4346-af50-a7b0206bee22",
   "facts_sha256": "5c282746b19b625b64822d96edc5ce3f696e237e6d1f5068cb549dc81181833c",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "e1ae3ed932842570ff9f2be63fce4b92d8354052e7ff4059a0a640039afa6b26",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/o/OriginOfTheAvengers.java",

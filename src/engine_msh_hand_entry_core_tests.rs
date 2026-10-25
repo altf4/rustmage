@@ -1,6 +1,6 @@
-//! Bounded private-opcode fixtures while both real producers remain gated.
+//! Bounded private-opcode regression fixtures; whole paid producers have their own module.
 //! Every envelope is a genuinely paid supported Divination; the immutable program
-//! is explicitly substituted only here. This does not admit Origin or Nick.
+//! is explicitly substituted only here; these fixtures are not whole-card proof.
 use super::assurance::big_helpers::{cast, checked, named, settle, setup};
 use super::*;
 use crate::cards::{
@@ -122,8 +122,6 @@ fn paid(g: &mut Game, p: Player, name: &str) -> CardId {
 }
 #[test]
 fn msh_entry_core_origin_real_program_filter_payment_and_decline_both_seats() {
-    assert!(!Card::from_name(ORIGIN).unwrap().is_supported());
-    assert!(!Card::from_name(NICK).unwrap().is_supported());
     for p in [Player::P0, Player::P1] {
         for pay in [false, true] {
             let mut g = setup(p);

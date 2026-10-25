@@ -1,0 +1,296 @@
+{
+  "schema": 1,
+  "scope": "Complete Origin of the Avengers and Nick Fury, Agent of S.H.I.E.L.D. on the previously implemented hand-payment/entry-transform core. Two new admissions only; entire-pool acceptance remains open.",
+  "producer_base": "f57178b70cfaad32ab04cbb0ca06cbaef0540ab3",
+  "tested_runtime": "0ab9bcacc44fa31942dbf57aea88d08333c35cd9",
+  "source_head": "6aca13a815645bf6c39cea0e68a07bde3d427593",
+  "cards": [
+    "Origin of the Avengers",
+    "Nick Fury, Agent of S.H.I.E.L.D."
+  ],
+  "source_pins": {
+    "data/standard/coverage.json": "1ce8d5782d8a0bc721a068b03a8a5612204b24bdcc0c70ed51a6829326e2a82c",
+    "src/assurance/card_traces.json": "9079ef0ccc91c94eb006a5802dc0607d4b1a4164ad923172d8139522aa5e4438",
+    "src/card_definitions/msh/nick_fury_agent_of_s_h_i_e_l_d.json": "c723076a16f99ce2f5009628d898d9181a9483e4cb33c81a3aab9194052e313c",
+    "src/card_definitions/msh/nick_fury_agent_of_s_h_i_e_l_d.rs": "68c67bc4f309120dad7498a96c2282a9a2b99791f2d2ec1adc5826b76557e3b8",
+    "src/card_definitions/msh/origin_of_the_avengers.json": "ca927f324a28dba9a45e866ab88ccb78c3622910c3b6af7d2fd14b18a472c2ce",
+    "src/card_definitions/msh/origin_of_the_avengers.rs": "59c0feda9d3eb2d567d7336a531e7a18367cae71bfa092811bffadf77857b31f",
+    "src/engine.rs": "231124bab455939b993ff20daed74d6d58a404528dbba1c4883e6a7cf2002b0a",
+    "src/engine_msh_hand_entry_core_tests.rs": "324eab4a85d50a92fe8719786c7788772d51fd30518ff585d6f66789c4bfcb84",
+    "src/engine_msh_origin_nick_cards_tests.rs": "b5f1c58d2266be5534b8f4ceebc72cb019a8639813ccf21f2f516ecf33affb44",
+    "src/generated/catalogue.rs": "84c8a1a284c675a9ae2cbe83eabb906c4aff870702cbf531d4ae6fd6d81869b3"
+  },
+  "unchanged_pins": {
+    "data/catalogue-identities.json": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+    "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+    "src/policy.rs": "93702545f58aa2d9f4b50c1011b08c4696764de7934faab67889113e38df5dea",
+    "src/assurance/regressions.rs": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185"
+  },
+  "core_reference": {
+    "source": "docs/msh-origin-nick-hand-entry-core-evidence.json",
+    "sha256": "183544fea17a13b171daad7d3e875461c41b4ad58975e21d4baf6ea973b93e9b",
+    "producer_runtime_delta": "Enable the two real immutable rules bodies. No additional shared runtime rule or public payload is introduced in the producer phase."
+  },
+  "provenance": {
+    "design_sha256": "2355463a991f55bd872990eb49af728ee07158a80b1806512b6e9de7042404db",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_files": {
+      "Mage.Sets/src/mage/cards/o/OriginOfTheAvengers.java": "0bc8e0d89340e480bb30f5d92f79aa20eb8fd5bc13145b210a55a1499e874373",
+      "Mage/src/main/java/mage/abilities/common/SagaAbility.java": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80",
+      "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63",
+      "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58",
+      "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53",
+      "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5",
+      "Mage/src/main/java/mage/filter/predicate/card/DoubleFacedCardPredicate.java": "3130bed28b3b6ac9fc0be48dec9038e9974f64660112ef043df381896d255e35",
+      "Mage/src/main/java/mage/target/common/TargetCardInHand.java": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88",
+      "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4",
+      "Mage/src/main/java/mage/target/TargetCard.java": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e",
+      "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739",
+      "Mage/src/main/java/mage/filter/FilterCard.java": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2",
+      "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+      "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede",
+      "Mage/src/main/java/mage/filter/FilterPermanent.java": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397",
+      "Mage/src/main/java/mage/filter/FilterObject.java": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139",
+      "Mage/src/main/java/mage/filter/FilterImpl.java": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc",
+      "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262",
+      "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f",
+      "Mage/src/main/java/mage/filter/predicate/Predicates.java": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98",
+      "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+      "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+      "Mage/src/main/java/mage/game/ZonesHandler.java": "959c5d1eb065ab34d00b82ddf69d4254afc2c33c02243dee21dd7f16645749ca",
+      "Mage/src/main/java/mage/util/CardUtil.java": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+      "Mage/src/main/java/mage/players/PlayerImpl.java": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3",
+      "Mage/src/main/java/mage/game/permanent/PermanentImpl.java": "5b72e235e1fe716b7337ffe76539d7fd79a5a9de1c54e6f343426126aeec6fe1",
+      "Mage/src/main/java/mage/constants/CardType.java": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+      "Mage/src/main/java/mage/constants/SubType.java": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2",
+      "Mage/src/main/java/mage/filter/StaticFilters.java": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+      "Mage.Sets/src/mage/cards/n/NickFuryAgentOfSHIELD.java": "cba3def6aad71a463b0dbfd9d7129891f73bd6bf3eee68340335c10100deea6c"
+    },
+    "read_coverage": "Full two Oracle/main Java bodies. Prior full design records24 complete reusable class reads and6 precisely ranged large-class reads; all30 distinct source hashes freshly reverified. No recursive whole-framework read claim.",
+    "primary_sources": [
+      "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf"
+    ],
+    "discrepancies": [
+      "Origin uses optional resolution payment under CR118.12: a legal selected put redirected by replacement remains paid; inability/prohibition cannot pay. This follows primary rules rather than Java move-result branching.",
+      "Nick enters front, then may transform the exact actual entrant, then randomly bottoms the remainder before queued triggers stack; current controller is not an added eligibility condition. Official notes and CR712 take precedence over Java controlled-permanent filtering."
+    ]
+  },
+  "obligations": {
+    "Origin": [
+      "Paid1W Saga entry lore1 and private Scry2 with0/1/2cards and both top/bottom orders.",
+      "Real turn-based chapterII/III progression, Hero CREATURE mana-value<=3 intersection, Changeling positive, larger/nonHero/Kindred negative, legal selected put versus decline draw1.",
+      "Full nonactor view equality across hidden eligibility; owned draw/miracle pause and exact source-independent queued chapter after paid removal.",
+      "ChapterIII all current own effective creatures including tokens; later paid instant entrants included, opponent excluded, Doubling Season counter replacement, final Saga sacrifice."
+    ],
+    "Nick": [
+      "PaidW2/1 legendary Hero and WUBRGPower-up; entry-turnW discount versus older full cost, actual and prospective Hero-only versus Villain-only restricted lots, illegal short payment atomicity.",
+      "Once history, no tap/sickness/sorcery restriction; real opponent-turn activation, source-control/incarnation boundaries, suppression and source death with independent continuation.",
+      "Top7 private min-length selection0..1 Hero OR Equipment OR Vehicle, exact looked references, rejection of wrong/out-of-look/extra cards; random remainder deterministic under owned replay.",
+      "Actual front Jennifer2 entry under two paid Mentors plus paid Garruk Uprising, then optional modal-DFC transform to6 before bottom and trigger stacking; two front Mentor packets, no retroactive6power Uprising packet.",
+      "Real legend choices after decline, no mid-resolution legend SBA before transform; Monica decline/accept provider refresh, exact source counters and doubling replacement."
+    ]
+  },
+  "bounded_scope_notes": [
+    "Before admission, all23 groups passed using only the two real typed producers inserted in an explicitly bounded initial hand. No program, cost, target or rules definition was substituted. Final tests use ordinary admitted named helpers.",
+    "Firdoch Core is an explicitly bounded immutable Kindred-Hero characteristic fixture, never cast or put onto the battlefield; it remains gated.",
+    "Source blink/control changes at no-priority identity boundaries and the Lorehold first-draw history boundary are explicitly labeled primitive fixtures after actual paid packets. Shared core fixtures separately exercise entry prohibition/redirection, foreign entry controller, exact actual entrant, private look-owner and stale incarnation.",
+    "The legal Standard60 deck constructor check is admission evidence, not a completed legal-game or set-level simulation claim.",
+    "Owned raw/index children survive parent disposal; snapshots and full observations compare exactly, apart from the documented restore revision increment in the expected restored view. Trace rows are never stripped."
+  ],
+  "scenario_module": "src/engine_msh_origin_nick_cards_tests.rs",
+  "scenario_groups": [
+    "msh_origin_nick_cards_origin_paid_scry_two_private_permutations_owned",
+    "msh_origin_nick_cards_origin_natural_chapters_put_and_all_current_creatures_final_sacrifice",
+    "msh_origin_nick_cards_origin_filter_intersection_changeling_and_decline_draw",
+    "msh_origin_nick_cards_origin_hidden_eligible_and_empty_hand_same_nonactor_observation",
+    "msh_origin_nick_cards_origin_queued_chapter_survives_actual_paid_disenchant",
+    "msh_origin_nick_cards_origin_decline_draw_resumes_actual_lorehold_miracle_pause",
+    "msh_origin_nick_cards_origin_doubling_season_chapter_crossing_and_counter_replacement",
+    "msh_origin_nick_cards_nick_paid_white_body_entry_discount_older_full_cost_atomicity",
+    "msh_origin_nick_cards_nick_hero_equipment_vehicle_or_filter_without_targeting",
+    "msh_origin_nick_cards_nick_paid_mentor_front_entry_transform_before_remainder_and_trigger_stack",
+    "msh_origin_nick_cards_nick_real_legend_menu_after_transform_decline_or_accept",
+    "msh_origin_nick_cards_nick_monica_optional_faces_and_provider_refresh",
+    "msh_origin_nick_cards_nick_actual_paid_murder_source_gone_keeps_library_ability",
+    "msh_origin_nick_cards_nick_empty_short_top_seven_optional_and_owned_random_replay",
+    "msh_origin_nick_cards_nick_instant_opponent_turn_tapped_sick_and_once_survives_control",
+    "msh_origin_nick_cards_nick_actual_restricted_hero_lots_and_prospective_funding",
+    "msh_origin_nick_cards_nick_selection_exact_looked_refs_one_pick_and_outside_top_seven",
+    "msh_origin_nick_cards_nick_captured_player_and_old_source_reference_survive_control_and_blink",
+    "msh_origin_nick_cards_nick_suppression_disables_actual_and_funding_activation",
+    "msh_origin_nick_cards_kindred_hero_is_not_a_creature_in_origin_filter_but_nick_accepts_it",
+    "msh_origin_nick_cards_origin_empty_and_single_card_scry_owned",
+    "msh_origin_nick_cards_origin_queued_final_chapter_uses_resolution_creatures_after_source_destruction",
+    "msh_origin_nick_cards_nick_counters_use_actual_doubling_season_before_private_look"
+  ],
+  "public_contract": {
+    "wire_schema": 150,
+    "new_public_payload_in_producer_phase": [],
+    "new_ids": [],
+    "identity_membership_policy_recorder_changes": false
+  },
+  "validation": {
+    "default_profile": true,
+    "native_summary": [
+      "test result: ok. 1627 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.42s"
+    ],
+    "new_whole_card_groups": 23,
+    "pre_admission_focused_groups": 23,
+    "pre_admission_focus_seconds": 0.44,
+    "pre_admission_focus_profile": "Test development opt-level0 only; default proof below is separate.",
+    "phases": [
+      {
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit": 0,
+        "seconds": 20.376859861018602,
+        "log": "<cache>/rustmage-msh-origin-nick-cards-final/00.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 2.11328660097206,
+        "log": "<cache>/rustmage-msh-origin-nick-cards-final/01.log"
+      },
+      {
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "src/card_definitions/msh/origin_of_the_avengers.rs",
+          "src/card_definitions/msh/nick_fury_agent_of_s_h_i_e_l_d.rs"
+        ],
+        "exit": 0,
+        "seconds": 0.015338565048296005,
+        "log": "<cache>/rustmage-msh-origin-nick-cards-final/02.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/check_sources.py"
+        ],
+        "exit": 0,
+        "seconds": 0.8005971550010145,
+        "log": "<cache>/rustmage-msh-origin-nick-cards-final/03.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/link_catalogue.py",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 0.5850839299964719,
+        "log": "<cache>/rustmage-msh-origin-nick-cards-final/04.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/test_assurance_runner.py"
+        ],
+        "exit": 0,
+        "seconds": 0.4467552569694817,
+        "log": "<cache>/rustmage-msh-origin-nick-cards-final/05.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "seconds": 219.9838525300147,
+        "log": "<cache>/rustmage-msh-origin-nick-cards-final/06.log"
+      }
+    ],
+    "post_test_comment_child": {
+      "head": "6aca13a815645bf6c39cea0e68a07bde3d427593",
+      "scope": "One neutral test-comment word only; runtime and card definitions unchanged.",
+      "static_checks_sha256": "1699ee3a7095187cfe383ac3615a1fbc0248323845e3092aa63f24244fe2755f",
+      "static_checks": [
+        "rustfmt four affected files",
+        "source provenance",
+        "link consistency"
+      ],
+      "all_exit_zero": true
+    },
+    "execution_driver_sha256": "a12a010df83707f087521c6363f6543f468bbd6f0d8e434fa58c2ba251662a18",
+    "fixed_inputs": 11818,
+    "changed_inputs": [],
+    "seconds": 244.4832376249833,
+    "guard": {
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 1215.8524430660182,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2713628672,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "full_trace_proof": {
+    "parent_rows": 2525,
+    "normal150_rows": 2527,
+    "previous149_rows": 2527,
+    "new_keys": [
+      "Nick Fury, Agent of S.H.I.E.L.D.",
+      "Origin of the Avengers"
+    ],
+    "missing": [],
+    "full_normal150_parent_differences": [],
+    "full_previous149_parent_differences": [],
+    "normal150_exact_accepted": true,
+    "summary": [
+      "test result: ok. 1627 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.42s"
+    ],
+    "failures": [],
+    "normal_sha256": "9079ef0ccc91c94eb006a5802dc0607d4b1a4164ad923172d8139522aa5e4438",
+    "previous_sha256": "a65f152a1f4ab0b93b764022591e85a2a42b79e40efbed645b52286e6b72e184",
+    "parent_proof_exact": true
+  },
+  "trace_acceptance": "Preaccept run proved all2525 FULL current150 and previous149 inherited rows exact with precisely2new keys. Only then appended those2new rows; fresh final default run and dual export reprove exact parents and accepted table. Recorder unchanged.",
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-origin-nick-cards-preservation.json",
+    "manifest_sha256": "32a174ee010fa2391b6f436d7aaf1e3f8b640774bedd2e3d0895c5c4fc1bd731",
+    "required_count": 4056,
+    "prior_required": 4000,
+    "prior_all_exact_rehashed": true,
+    "retained": {
+      "<cache>/rustmage-msh-origin-nick-cards-default-target/debug/deps/rustmage-b764cd26223fba2c": "5d96b9fd13e649a87b76037ea52f364f7832ec8ae5da8e16155f402158221200",
+      "<cache>/rustmage-msh-origin-nick-cards-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "development_retained": {
+      "<cache>/rustmage-msh-origin-nick-cards-target/debug/deps/rustmage-55e16bd14e329fbf": "11de8e89b771f1ee745632a447cf49d96d252937ff57d89d3a498ff305a85216",
+      "<cache>/rustmage-msh-origin-nick-cards-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "active_consumers_before_cleanup": [],
+    "scan": "Host /proc exe/cwd/maps/fd exact target references",
+    "removed_files": 1019,
+    "removed_bytes": 123136202
+  },
+  "throughput": {
+    "producer_phase_started_utc": "2026-10-25T12:30:30.123613+00:00",
+    "evidence_created_utc": "2026-10-25T13:24:19.213690+00:00",
+    "elapsed_seconds_including_shared_slot_queue": 3229.090077,
+    "whole_cards": 2,
+    "cards_per_hour_observed_for_this_producer_interval": 2.2297303042995913,
+    "scope": "Prerequisite design/shared-core work occurred earlier and is excluded. No extrapolation to unrelated cards or all-Standard implementation. No new simulation benchmark was run; native assurance is not gameplay simulation throughput."
+  },
+  "remaining": "Aggregate release/CI/final published-head independent reviews and complete281-card set interaction/legal-game acceptance remain integrator work. This source does not merge main or certify the entire set."
+}

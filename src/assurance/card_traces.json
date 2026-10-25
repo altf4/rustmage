@@ -11695,6 +11695,14 @@
     "journal": "21c94e12108ffb3f",
     "observations": "857d1cbcce6839a6"
   },
+  "Nick Fury, Agent of S.H.I.E.L.D.": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "97f197e40a843eee",
+    "observations": "407c87a9cd572aef"
+  },
   "Night Nurse, Healer of Heroes": {
     "root": "main",
     "status": "completed",
@@ -12086,6 +12094,14 @@
     "zone": "Battlefield",
     "journal": "60609359dae9f3fd",
     "observations": "4d9fd4b035ab2af2"
+  },
+  "Origin of the Avengers": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "18eca4f051a75862",
+    "observations": "2f5bf6208db6430d"
   },
   "Orysa, Tide Choreographer": {
     "root": "main",
