@@ -3,10 +3,47 @@
   "catalogue_id": 2118,
   "oracle_id": "deb16a9a-2fa9-4ad3-bb20-7c16066e3d14",
   "facts_sha256": "b53cb53e6a53037c080e067a6034fdad5ebd9b5b8e6f50354fd064885479783a",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "fd6beff2e0505b7008cf39a34ed330874ecc74af2074688ab0f3f1bcb411ccd0"
-  },
-  "physical_metadata_sha256": "97415678aa34792e29e29f212f6f3bcd401bcd6a4dae68068dcb67510170e35c"
+  "complete": true,
+  "physical_metadata_sha256": "97415678aa34792e29e29f212f6f3bcd401bcd6a4dae68068dcb67510170e35c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IAmIronMan.java",
+  "java_sha256": "cd9b016ab6cd2f324b671bb20180d04463e28d7503cbd1325c0d1fb972e7ed35",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+      "sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+      "sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    }
+  ],
+  "rules_notes": [
+    "Artifact creature retains prior card types, subtypes, colors, abilities and counters (CR205.1b); layer7b base4/4 and layer6 flying last until end of turn on the exact targeted incarnation.",
+    "Targets any artifact or creature of either controller. If all targets are illegal at resolution, neither animation nor draw occurs. The draw belongs to the captured spell controller.",
+    "The targeted executor shares existing actual/projected animation rows and timestamps; no new public observation field or schema change.",
+    "Broad shared Java helper read in the scoped methods/initializer recorded in the cached source audit; entire blob authenticated."
+  ]
 }
