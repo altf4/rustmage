@@ -1,5 +1,8 @@
 #[path = "engine_mana_announcements.rs"]
 mod mana_announcements;
+#[path = "engine_turn_facts.rs"]
+mod turn_facts;
+pub use turn_facts::TurnFactsView;
 #[path = "engine_turn_skips.rs"]
 mod turn_skips;
 pub use mana_announcements::ManaAnnouncementView;
@@ -775,6 +778,7 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    turn_facts: TurnFactsView,
     hexproof_until_end_turn: bool,
     /// Presence of a lasting grant; its authoritative order is in HandSizeState.
     no_maximum_hand_size: bool,
@@ -2072,6 +2076,9 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    /// Frozen relevant public events; present only with a public historical observer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub turn_facts: Option<[TurnFactsView; 2]>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_library_reveal: Option<LibraryRevealEvent>,
     pub paradigms: Vec<ParadigmView>,
@@ -2284,6 +2291,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            turn_facts: TurnFactsView::default(),
             hexproof_until_end_turn: false,
             no_maximum_hand_size: false,
             extra_land_plays_remaining: 0,
@@ -5880,6 +5888,7 @@ impl Game {
         }
         self.state.attackers.extend(declared.iter().cloned());
         self.tap_objects(&to_tap);
+        self.record_attack_turn_facts(actor, &declared);
         for attack in &declared {
             event(self, attack.card);
         }
@@ -5943,6 +5952,7 @@ impl Game {
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
         for player in &mut self.state.players {
+            player.turn_facts = TurnFactsView::default();
             player.nonland_permanents_entered_this_turn = 0;
             player.spells_cast_this_turn = 0;
             player.instant_sorcery_cast_this_turn = 0;
@@ -6436,6 +6446,7 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            turn_facts: self.turn_facts_view(),
             paradigms: self.paradigm_views(),
             resolved_spell_names: self.resolved_spell_name_views(),
             preparations: s
@@ -7739,3 +7750,7 @@ mod msh_recent_targets_tests;
 #[cfg(test)]
 #[path = "engine_msh_reflexive_tap_haste_tests.rs"]
 mod msh_reflexive_tap_haste_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_turn_facts_tests.rs"]
+mod msh_turn_facts_tests;

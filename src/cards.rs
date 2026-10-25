@@ -2472,6 +2472,8 @@ pub(crate) struct CombatRestriction {
 pub(crate) enum StepGuard {
     /// Trigger-time attachment relation; wrap the step event in When.
     AttachedControllerTurn,
+    ArtifactEnteredThisTurn,
+    HeroEnteredOrAttackedThisTurn,
     CardExiledThisTurn,
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
