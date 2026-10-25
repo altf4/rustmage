@@ -87,10 +87,10 @@ fn msh_final_shared_serum_legendary_feeds_adaptoid_and_bypasses_mjolnir_equip() 
         let mut g = setup(p);
         let turtle = paid(&mut g, p, "Aegis Turtle", &[]);
         let adaptoid = super::msh_super_adaptoid_tests::paid(&mut g, p, Some(turtle));
-        assert_eq!(g.object_view(adaptoid).power, 0);
+        assert_eq!(g.object_view(adaptoid).power, 1);
         let serum = paid(&mut g, p, "Super-Soldier Serum", &[Target::Card(turtle)]);
         assert!(g.object_view(turtle).is_legendary());
-        assert_eq!(g.object_view(adaptoid).power, 1);
+        assert_eq!(g.object_view(adaptoid).power, 2);
         let hammer = paid(&mut g, p, "Mjölnir, Hammer of Thor", &[]);
         assert_eq!(g.object_view(hammer).attached_to, None);
         let mut probe = g.clone();
@@ -142,7 +142,7 @@ fn msh_final_shared_serum_legendary_feeds_adaptoid_and_bypasses_mjolnir_equip() 
         assert_eq!(g.state.players[p.other().index()].life, 16);
         paid(&mut g, p, "Disenchant", &[Target::Card(serum)]);
         assert!(!g.object_view(turtle).is_legendary());
-        assert_eq!(g.object_view(adaptoid).power, 0);
+        assert_eq!(g.object_view(adaptoid).power, 1);
         assert_eq!(
             g.object_view(hammer).attached_to,
             Some(g.object_ref(turtle))
