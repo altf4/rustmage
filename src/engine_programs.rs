@@ -2872,11 +2872,33 @@ impl Game {
                         })
                         .collect();
                 }
+                Instruction::CastLibraryTopUpToAttackingPower(amount) => {
+                    self.cast_library_by_attacking_power(&item, amount);
+                    return;
+                }
+                Instruction::BottomLookedLibraryRandom => self.finish_library_cast_look(),
+                Instruction::ControlTargetPlayerNextTurn => {
+                    for player in self
+                        .program_players(PlayerSet::Targeted, &item)
+                        .collect::<Vec<_>>()
+                    {
+                        self.schedule_player_control(player, item.controller);
+                    }
+                }
                 Instruction::ExileAllCreaturesRemember => self.exile_all_creatures_remember(),
-                Instruction::DeployHandCreaturesEach => { self.start_hand_deployment(); return; },
+                Instruction::DeployHandCreaturesEach => {
+                    self.start_hand_deployment();
+                    return;
+                }
                 Instruction::ReturnExiledResultToHands => self.return_exiled_result_to_hands(),
-                Instruction::ExileDamagedLibraryUntilNonland => self.exile_damaged_library_until_nonland(&item),
-                Instruction::MayCounterSourceOtherwiseCast => { if self.offer_source_counter_or_cast(&item) { return; } },
+                Instruction::ExileDamagedLibraryUntilNonland => {
+                    self.exile_damaged_library_until_nonland(&item)
+                }
+                Instruction::MayCounterSourceOtherwiseCast => {
+                    if self.offer_source_counter_or_cast(&item) {
+                        return;
+                    }
+                }
                 Instruction::RevealTargetHandSubsetDiscard(amount) => {
                     if self.start_hand_subset_discard(&item, amount) {
                         return;

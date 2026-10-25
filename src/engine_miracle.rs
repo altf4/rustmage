@@ -63,7 +63,9 @@ impl Game {
     }
     pub(super) fn miracle_choice_view(&self, viewer: Player) -> Option<MiracleChoiceView> {
         let choice = self.state.miracle.as_ref()?.choice.as_ref()?;
-        if viewer != choice.player || !matches!(self.state.pending, Pending::MiracleReveal { .. }) {
+        if !self.shares_information(viewer, choice.player)
+            || !matches!(self.state.pending, Pending::MiracleReveal { .. })
+        {
             return None;
         }
         Some(MiracleChoiceView {

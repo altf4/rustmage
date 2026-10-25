@@ -94,7 +94,7 @@ impl Game {
                         && self.can_view_hideaway(viewer, row.recipient)
                         && !matches!(object.zone, Zone::Outside | Zone::Library)
                         && (object.zone != Zone::Hand
-                            || object.owner == viewer
+                            || self.shares_information(viewer, object.owner)
                             || self.state.known_hand.contains(&row.recipient))
                 })
                 .copied()

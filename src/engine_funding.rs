@@ -2200,7 +2200,8 @@ impl Game {
         &self,
         viewer: Player,
     ) -> Option<PaymentRequestView> {
-        if self.actor() != Some(viewer)
+        let viewer = self.choice_information_player(viewer);
+        if self.semantic_actor() != Some(viewer)
             || matches!(
                 self.state.pending,
                 Pending::Saddle { .. } | Pending::Crew { .. }
@@ -2813,7 +2814,9 @@ impl Game {
         let Action::ActivateMana { payment, .. } = action else {
             return;
         };
-        let Some(actor) = self.actor() else { return };
+        let Some(actor) = self.semantic_actor() else {
+            return;
+        };
         if *payment == [0; 6]
             || self.mana_lots(actor).is_empty()
             || self

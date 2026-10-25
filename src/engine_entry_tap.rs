@@ -163,7 +163,11 @@ impl Game {
         let batch = self.state.entry_batch.as_ref()?;
         let event = batch.tap_events.get(batch.tap_next)?;
         let movement = &batch.moves[event.index];
-        if !entries::visible(movement, viewer, &self.state.known_hand) {
+        if !entries::visible_mask(
+            movement,
+            self.information_mask(viewer),
+            &self.state.known_hand,
+        ) {
             return None;
         }
         Some(EntryTapView {

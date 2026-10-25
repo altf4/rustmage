@@ -45,6 +45,7 @@ pub struct LinkedExileView {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ChoiceState {
     pub hand: Option<Box<super::hand_choices::HandInteraction>>,
+    pub library_cast: Option<Box<super::library_cast_look::LibraryCastLook>>,
     pub deployment: Option<Box<super::library_hand_exchange::HandDeployment>>,
     piles: Option<Piles>,
     keep_types: Option<KeepTypes>,
@@ -58,6 +59,7 @@ impl ChoiceState {
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.hand.as_ref().map_or(0, |h| h.bytes())
+            + self.library_cast.as_ref().map_or(0, |h| h.bytes())
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hideaway_controllers.len() * std::mem::size_of::<(ObjectRef, u8)>()
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, ObjectRef, u8)>()
@@ -74,6 +76,7 @@ impl Game {
     pub(super) fn abandon_linked_choices(&mut self) {
         if let Some(data) = self.state.linked_choices.as_mut() {
             data.hand = None;
+            data.library_cast = None;
             data.deployment = None;
             data.piles = None;
             data.keep_types = None;
@@ -171,7 +174,7 @@ impl Game {
     pub(super) fn library_piles_view(&self, viewer: Player) -> Option<LibraryPilesView> {
         let p = self.state.linked_choices.as_ref()?.piles.as_ref()?;
         // The split itself is private until both piles have been made.
-        if viewer != p.controller && !p.choosing {
+        if !self.shares_information(viewer, p.controller) && !p.choosing {
             return None;
         }
         let views =
@@ -179,12 +182,12 @@ impl Game {
         Some(LibraryPilesView {
             controller: p.controller,
             choosing: p.choosing,
-            remaining: if viewer == p.controller {
+            remaining: if self.shares_information(viewer, p.controller) {
                 views(&p.remaining)
             } else {
                 Vec::new()
             },
-            face_down: (viewer == p.controller).then(|| views(&p.down)),
+            face_down: (self.shares_information(viewer, p.controller)).then(|| views(&p.down)),
             face_down_count: p.down.len(),
             face_up: views(&p.up),
         })
@@ -374,7 +377,7 @@ impl Game {
     pub(super) fn can_view_hideaway(&self, viewer: Player, object: ObjectRef) -> bool {
         self.state.linked_choices.as_ref().is_none_or(|data| {
             data.hidden.iter().all(|&(_, exiled, viewers)| {
-                exiled != object || viewers & (1 << viewer.index()) != 0
+                exiled != object || viewers & self.information_mask(viewer) != 0
             })
         })
     }

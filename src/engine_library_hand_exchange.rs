@@ -99,7 +99,7 @@ impl Game {
     pub(super) fn hand_deployment_view(&self, viewer: Player) -> Option<HandChoiceView> {
         let d = self.hand_deployment()?;
         let actor = d.players[d.next];
-        if actor != viewer {
+        if !self.shares_information(viewer, actor) {
             return None;
         }
         Some(HandChoiceView {

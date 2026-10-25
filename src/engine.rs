@@ -1,3 +1,9 @@
+#[path = "engine_library_cast_look.rs"]
+mod library_cast_look;
+pub use library_cast_look::LibraryCastLookView;
+#[path = "engine_player_control.rs"]
+mod player_control;
+pub use player_control::{ControlledPlayer, PlayerControlView};
 #[path = "engine_library_hand_exchange.rs"]
 mod library_hand_exchange;
 pub use library_hand_exchange::HandDeploymentView;
@@ -1718,6 +1724,7 @@ struct State {
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
     ending_turn: bool,
     turn_skips: Option<Box<[u64; 2]>>,
+    player_control: Option<Box<player_control::PlayerControlState>>,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
     controls: Option<Box<continuous_control::ControlState>>,
@@ -2187,6 +2194,10 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub player_control: Option<PlayerControlView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub library_cast_look: Option<LibraryCastLookView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_choice: Option<SourceCounterChoiceView>,
     /// Frozen relevant public events; present only with a public historical observer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2470,6 +2481,7 @@ impl Game {
                 paradigm: None,
                 ending_turn: false,
                 turn_skips: None,
+                player_control: None,
                 mana_lots: None,
                 linked_choices: None,
                 zone_rules: None,
@@ -2617,7 +2629,9 @@ impl Game {
         Ok(())
     }
 
-    pub fn actor(&self) -> Option<Player> {
+    /// Player whose game decisions must currently be made. Resources and
+    /// object controllers continue to belong to this semantic player.
+    pub fn semantic_actor(&self) -> Option<Player> {
         match self.state.pending {
             Pending::OpeningHand { player: p, .. }
             | Pending::OptionalSearch(p)
@@ -2697,6 +2711,11 @@ impl Game {
         }
     }
 
+    /// External decision maker, including a player controlling another player.
+    pub fn actor(&self) -> Option<Player> {
+        self.semantic_actor().map(|p| self.decision_controller(p))
+    }
+
     /// Complete legal space, including damage assignments and scalar-X intervals.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
@@ -2736,7 +2755,7 @@ impl Game {
     /// representatives. Use legal_action_space for the complete parametric space.
     pub fn legal_actions_into(&self, out: &mut Vec<Action>) {
         out.clear();
-        if self.actor().is_none() {
+        if self.semantic_actor().is_none() {
             return;
         }
         self.visit_actions(|a| {
@@ -2756,6 +2775,16 @@ impl Game {
     /// Mutation happens only after complete validation. Rejected actions leave state
     /// and revision unchanged. No user-supplied IDs are used to index before validation.
     pub fn apply(&mut self, actor: Player, action: Action) -> Result<(), Error> {
+        // Conceding is always the caller's own choice, even while controlled.
+        if action != Action::Concede && self.state.outcome.is_none() && self.actor() != Some(actor)
+        {
+            return Err(Error::WrongActor);
+        }
+        let actor = if action == Action::Concede {
+            actor
+        } else {
+            self.semantic_actor().unwrap_or(actor)
+        };
         let deferred_action = self.state.mana_lots.is_some().then(|| action.clone());
         // Cold mechanic presence avoids an extra action clone in ordinary games.
         let zone_action = self.state.zone_rules.is_some().then(|| action.clone());
@@ -2867,7 +2896,7 @@ impl Game {
             self.state.outcome = Some(Outcome::Winner(actor.other()));
             self.state.pending = Pending::Terminal;
         } else {
-            if self.actor() != Some(actor) {
+            if self.semantic_actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
             let legal = if let Action::PayCosts { payment } = &action {
@@ -2984,7 +3013,7 @@ impl Game {
     }
     fn visit_unfiltered_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
         let s = &self.state;
-        let Some(actor) = self.actor() else {
+        let Some(actor) = self.semantic_actor() else {
             return false;
         };
         if emit(Action::Concede) {
@@ -3700,7 +3729,9 @@ impl Game {
                         continue;
                     }
                     if obj.card.is_land() {
-                        if obj.zone == Zone::Exile && !self.can_play_exiled_land(actor, card) { continue; }
+                        if obj.zone == Zone::Exile && !self.can_play_exiled_land(actor, card) {
+                            continue;
+                        }
                         if sorcery
                             && (!s.land_played
                                 || self
@@ -6182,6 +6213,7 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.begin_player_control_turn();
         self.expire_temporary_copies(false);
         self.reset_copy_turn_uses();
         self.prune_modal_history();
@@ -6696,7 +6728,11 @@ impl Game {
     /// projected only to their actor; known revealed hand incarnations are public.
     pub fn observe(&self, viewer: Player) -> Observation {
         let s = &self.state;
-        let owns_choice = self.actor() == Some(viewer);
+        let owns_choice = self
+            .semantic_actor()
+            .is_some_and(|p| self.shares_information(viewer, p));
+        let makes_decision = self.actor() == Some(viewer);
+        let choice_player = self.choice_information_player(viewer);
         let query = self.characteristic_query();
         let objects = s
             .objects
@@ -6707,12 +6743,14 @@ impl Game {
                     && o.zone != Zone::Outside
                     && o.zone != Zone::Library
                     && (o.zone != Zone::Hand
-                        || o.owner == viewer
+                        || self.shares_information(viewer, o.owner)
                         || s.known_hand.contains(&self.object_ref(*i as CardId)))
             })
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            player_control: self.player_control_view(),
+            library_cast_look: self.library_cast_look_view(viewer),
             turn_facts: self.turn_facts_view(),
             paradigms: self.paradigm_views(),
             resolved_spell_names: self.resolved_spell_name_views(),
@@ -6726,14 +6764,14 @@ impl Game {
                 .state
                 .announcing
                 .as_ref()
-                .filter(|a| a.item.controller == viewer)
+                .filter(|a| self.shares_information(viewer, a.item.controller))
                 .and_then(|a| a.cast_costs.as_deref())
                 .cloned(),
             casualty_declarations: self
                 .state
                 .announcing
                 .as_ref()
-                .filter(|a| a.item.controller == viewer)
+                .filter(|a| self.shares_information(viewer, a.item.controller))
                 .and_then(|a| a.casualty.as_deref())
                 .map_or_else(Vec::new, |v| v.clone()),
             keep_types: self.keep_types_view(),
@@ -7055,7 +7093,11 @@ impl Game {
                 .as_ref()
                 .and_then(|r| r.cascade.as_deref().cloned()),
             miracle: self.miracle_choice_view(viewer),
-            resolution_free_casts: s.resolution_free_casts.as_deref().cloned(),
+            resolution_free_casts: s
+                .resolution_free_casts
+                .as_deref()
+                .filter(|f| f.origin != Zone::Library || self.shares_information(viewer, f.player))
+                .cloned(),
             graveyard_type_uses: s
                 .graveyard_type_uses
                 .as_ref()
@@ -7079,7 +7121,7 @@ impl Game {
                 .map_or_else(Vec::new, |w| w.delayed.iter().map(|d| d.view).collect()),
             plot_payment: self
                 .plot_payment()
-                .filter(|p| p.controller == viewer)
+                .filter(|p| self.shares_information(viewer, p.controller))
                 .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
             ability_resolutions: s
@@ -7278,7 +7320,7 @@ impl Game {
                         destination: choice.spec.destination,
                         tapped: choice.spec.tapped,
                         reveal: choice.spec.reveal,
-                        cards: s.players[viewer.index()]
+                        cards: s.players[choice_player.index()]
                             .library
                             .iter()
                             .map(|&id| query.object_view(id))
@@ -7294,7 +7336,7 @@ impl Game {
                 .and_then(|r| r.search.as_ref())
                 .filter(|choice| choice.destination_pending && (choice.spec.reveal || owns_choice))
                 .map(|choice| SearchDestinationChoiceView {
-                    player: self.actor().unwrap(),
+                    player: self.semantic_actor().unwrap(),
                     cards: choice
                         .selected
                         .iter()
@@ -7356,7 +7398,13 @@ impl Game {
             effect_discards: s
                 .resolving
                 .as_ref()
-                .map(|resolution| resolution.selected_discards[viewer.index()].clone())
+                .map(|resolution| {
+                    [Player::P0, Player::P1]
+                        .into_iter()
+                        .filter(|&p| self.shares_information(viewer, p))
+                        .flat_map(|p| resolution.selected_discards[p.index()].iter().copied())
+                        .collect()
+                })
                 .unwrap_or_default(),
             attackers: if owns_choice && s.pending == Pending::Attackers {
                 s.selected_attackers.iter().map(|a| a.card).collect()
@@ -7394,7 +7442,7 @@ impl Game {
                 None
             },
             outcome: s.outcome,
-            actions: if owns_choice {
+            actions: if makes_decision {
                 self.legal_actions()
             } else {
                 Vec::new()
@@ -7407,6 +7455,9 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + s.player_control.as_ref().map_or(0, |_| {
+                std::mem::size_of::<player_control::PlayerControlState>()
+            })
             + s.library_top
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<library_top::LibraryTopState>())

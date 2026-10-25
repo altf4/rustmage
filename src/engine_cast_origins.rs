@@ -141,7 +141,7 @@ impl Game {
         if self.library_top_deferred(owner) {
             return None;
         }
-        if viewer == owner && self.can_look_library_top(viewer) {
+        if self.shares_information(viewer, owner) && self.can_look_library_top(owner) {
             self.state.players[owner.index()]
                 .library
                 .last()

@@ -1535,7 +1535,7 @@ impl Game {
             }),
             Event::Counters(batch) => {
                 let p = &batch.placements[batch.next];
-                if p.private && viewer != p.owner {
+                if p.private && !self.shares_information(viewer, p.owner) {
                     return None;
                 }
                 Some(ReplacementChoiceView {

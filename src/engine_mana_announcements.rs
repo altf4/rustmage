@@ -74,7 +74,7 @@ impl Game {
             .flat_map(|v| v.iter())
             .map(|frame| {
                 let a = &frame.announcement;
-                let owns = a.item.controller == viewer;
+                let owns = self.shares_information(viewer, a.item.controller);
                 let mut item = a.item.clone();
                 if !owns {
                     item.targets.clear();

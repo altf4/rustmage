@@ -340,6 +340,7 @@ impl Game {
         }
     }
     pub(super) fn evidence_view(&self, viewer: Player) -> Option<EvidenceView> {
+        let viewer = self.choice_information_player(viewer);
         let e = self
             .state
             .announcing
@@ -351,7 +352,7 @@ impl Game {
                     .as_ref()
                     .and_then(|r| r.evidence.as_deref())
             })?;
-        if viewer != e.player || self.actor() != Some(viewer) {
+        if viewer != e.player || self.semantic_actor() != Some(viewer) {
             return None;
         }
         let choosing = matches!(self.state.pending, Pending::Evidence { .. });

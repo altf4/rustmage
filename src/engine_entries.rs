@@ -157,16 +157,19 @@ pub struct EntryLifeView {
     pub selected_attachments: Vec<AuraAttachmentView>,
 }
 pub(super) fn visible(m: &EntryMove, viewer: Player, known_hand: &[ObjectRef]) -> bool {
+    visible_mask(m, 1 << viewer.index(), known_hand)
+}
+pub(super) fn visible_mask(m: &EntryMove, viewers: u8, known_hand: &[ObjectRef]) -> bool {
     m.public_origin
-        || m.before.owner == viewer
+        || viewers & (1 << m.before.owner.index()) != 0
         || known_hand.contains(&m.before.reference)
         || !matches!(m.before.zone, Zone::Hand | Zone::Library)
 }
 impl EntryBatch {
-    fn selected_life(&self, viewer: Player, known_hand: &[ObjectRef]) -> Vec<EntryLifeSelection> {
+    fn selected_life(&self, viewers: u8, known_hand: &[ObjectRef]) -> Vec<EntryLifeSelection> {
         self.moves
             .iter()
-            .filter(|m| visible(m, viewer, known_hand))
+            .filter(|m| visible_mask(m, viewers, known_hand))
             .filter_map(|m| {
                 let EntryTapped::PayLife(cost) = m.before.card.entry_tapped() else {
                     return None;
@@ -182,12 +185,12 @@ impl EntryBatch {
     }
     fn selected_attachments(
         &self,
-        viewer: Player,
+        viewers: u8,
         known_hand: &[ObjectRef],
     ) -> Vec<AuraAttachmentView> {
         self.moves
             .iter()
-            .filter(|m| visible(m, viewer, known_hand))
+            .filter(|m| visible_mask(m, viewers, known_hand))
             .filter_map(|m| {
                 Some(AuraAttachmentView {
                     aura: m.before.reference,
@@ -915,7 +918,11 @@ impl Game {
         } else {
             batch.moves.get(*batch.choices.get(batch.next)?)?
         };
-        if !visible(movement, viewer, &self.state.known_hand) {
+        if !visible_mask(
+            movement,
+            self.information_mask(viewer),
+            &self.state.known_hand,
+        ) {
             return None;
         }
         let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() else {
@@ -926,8 +933,9 @@ impl Game {
             card: movement.before.card,
             cost,
             already_tapped: movement.tapped,
-            selected: batch.selected_life(viewer, &self.state.known_hand),
-            selected_attachments: batch.selected_attachments(viewer, &self.state.known_hand),
+            selected: batch.selected_life(self.information_mask(viewer), &self.state.known_hand),
+            selected_attachments: batch
+                .selected_attachments(self.information_mask(viewer), &self.state.known_hand),
         })
     }
     pub(super) fn aura_entry_view(&self, viewer: Player) -> Option<AuraEntryView> {
@@ -940,7 +948,11 @@ impl Game {
         } else {
             batch.moves.get(*batch.choices.get(batch.next)?)?
         };
-        if !visible(movement, viewer, &self.state.known_hand) {
+        if !visible_mask(
+            movement,
+            self.information_mask(viewer),
+            &self.state.known_hand,
+        ) {
             return None;
         }
         Some(AuraEntryView {
@@ -954,8 +966,10 @@ impl Game {
                 .map(|(i, _)| self.object_ref(i as CardId))
                 .filter(|&r| self.entry_candidate(r))
                 .collect(),
-            selected: batch.selected_attachments(viewer, &self.state.known_hand),
-            selected_life: batch.selected_life(viewer, &self.state.known_hand),
+            selected: batch
+                .selected_attachments(self.information_mask(viewer), &self.state.known_hand),
+            selected_life: batch
+                .selected_life(self.information_mask(viewer), &self.state.known_hand),
         })
     }
 }
@@ -1097,7 +1111,13 @@ impl Game {
         };
         // Entry remains a single transaction. Ordering continuous sources must
         // not publish cards that are still selected in a private library/hand.
-        let visible_index = |&i: &usize| visible(&batch.moves[i], viewer, &self.state.known_hand);
+        let visible_index = |&i: &usize| {
+            visible_mask(
+                &batch.moves[i],
+                self.information_mask(viewer),
+                &self.state.known_hand,
+            )
+        };
         let candidates: Vec<_> = self
             .remaining_timestamp_indices()
             .into_iter()

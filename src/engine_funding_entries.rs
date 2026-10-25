@@ -1101,7 +1101,7 @@ impl Game {
             .and_then(|v| v.first())
             .map(|f| f.announcement.item.controller)
             .or_else(|| self.state.announcing.as_ref().map(|a| a.item.controller));
-        if self.actor() != caster {
+        if self.semantic_actor() != caster {
             return true;
         }
         self.projected_cast_entries_fundable(Some(action))

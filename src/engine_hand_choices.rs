@@ -55,11 +55,12 @@ impl Game {
     }
     fn set_hand_interaction(&mut self, interaction: HandInteraction) {
         let actor = interaction.actor;
-        assert!(self
-            .state
-            .linked_choices
-            .as_ref()
-            .is_none_or(|s| s.hand.is_none()));
+        assert!(
+            self.state
+                .linked_choices
+                .as_ref()
+                .is_none_or(|s| s.hand.is_none())
+        );
         self.state.linked_choices.get_or_insert_default().hand = Some(Box::new(interaction));
         self.state.pending = Pending::HandCardChoice { player: actor };
     }
@@ -229,7 +230,8 @@ impl Game {
         self.run_program();
     }
     pub(super) fn hand_choice_view(&self, viewer: Player) -> Option<HandChoiceView> {
-        if !matches!(self.state.pending,Pending::HandCardChoice{player} if player==viewer) {
+        if !matches!(self.state.pending,Pending::HandCardChoice{player} if self.shares_information(viewer,player))
+        {
             return None;
         }
         if self.hand_deployment().is_some() {
