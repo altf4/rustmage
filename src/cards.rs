@@ -1566,6 +1566,8 @@ pub(crate) enum Instruction {
     TopLibrary,
     AdditionalLandPlays(u64),
     OwnerLibrary,
+    OwnerLibrarySecondFromTop,
+    ChooseManaValueParityDestroyOthers,
     ShuffleTargetIntoLibrary,
     ShuffleGraveyardIntoLibrary,
     DoubleTargetPower,

@@ -1,0 +1,359 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T12:34:03.856877+00:00",
+  "scope": "Gated parity/library shared core only. Zero new complete cards; two real typed immutable consumer bodies complete:false. Whole paid producer stage follows integration.",
+  "base": "f57178b70cfaad32ab04cbb0ca06cbaef0540ab3",
+  "tested_runtime": "8e0a4f1e920e8b10e592fec4f5f65dbb21a231d9",
+  "candidate_complete_flags": 222,
+  "denominator": 281,
+  "set_acceptance": false,
+  "source_pins": {
+    "data/standard/coverage.json": "8dfa7f6b9d260d860b0265e1e8eb9835343b131e88647e09ed0c8a86b150d6f2",
+    "examples/standard_qualified_casts.rs": "d742143cd5616f77be90314653b35263ede1dd57b7358254200686f9b79b8e31",
+    "src/card_definitions/msh/thanos_the_mad_titan.json": "9becc7940ed7a9be67e5259b56107bc23e1320134212059847a1774b5c8cbaf2",
+    "src/card_definitions/msh/thanos_the_mad_titan.rs": "b56279a3b1277de1cd2f2bfe0ba1acf1fef7c413f31908814eb19b49c768aa9b",
+    "src/card_definitions/msh/trickster_s_stratagem.json": "89710e70eb73120560bfaa5f52a6350a2f7fef309c6544ff1ead71326a9d77ae",
+    "src/card_definitions/msh/trickster_s_stratagem.rs": "8c1eb9dd8cef13fa67f6618d313f6a04563b4014e6b75a0a990b049059284845",
+    "src/cards.rs": "e01fe54e81ba4c46366154c2b5ff930783bcf486a0987d6f169b546c960f3188",
+    "src/engine.rs": "1133d7e0edc4dc7b32f14fdead9fadc76d1fc30a2720a368213065b5e200c726",
+    "src/engine_mana_value_parity.rs": "f18f7289600876a84d78b28cb3618624b4a885e1d8020c1a3ba57e557bb4f0f8",
+    "src/engine_parity_library_core_tests.rs": "3b8b710ea4885c4997ef4242f22347883be1effc06977855e01f7779010bb8e9",
+    "src/engine_programs.rs": "aed8c868b430eb4bc4302392d6d56ad5a261a7374fe54fb1e9fcbb8123ed0d20",
+    "src/engine_target_library.rs": "30da4936477a61582a4cf4896395e349eb256c5eebeaacb15eaa40d3b8b20eda",
+    "src/generated/catalogue.rs": "2f696cc225cf79c4add24fd83102280913ddc93ef3db967d308d1cb341fd9493",
+    "src/policy.rs": "5afd3be64a1738da555eb90fc01b1985b0b6cc3c78e46a17e9050f20199c0d6f"
+  },
+  "source_provenance": {
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "design": "<cache>/rustmage-msh-thanos-stratagem-design-8fb9c4fd.json",
+    "design_sha256": "14a2ac39ca110db4184b7b6283449c67ed1ebf0c9b4908eac3e320280ef7b5a4",
+    "read_scope": "Both direct classes and all19 complete reusable helper bodies read/reused fully; two broad infrastructure files are explicitly ranged as in the retained audit, not claimed whole-class semantic review. Actual all23 file object hashes reverified before authoring.",
+    "pins": [
+      {
+        "path": "Mage.Sets/src/mage/cards/t/ThanosTheMadTitan.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c7c71f1e793c2357ec3d06651da140666e7eb48b2fa234aac8da2cb53a0289ba",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/t/TrickstersStratagem.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e36aa134ee30d1cf60acdf32d9e2e759d614022c80c6bfed00651e1bb3b0d5de",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/PutIntoLibraryNFromTopTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "622d4e2fcbc1c4d63c008e52eb5c48419fa12e4eaf81c1a450d07f3493cdb8a6",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/keyword/ConniveTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "346bded28edee4c31d82766c2cfe989fa1a72d101c5ffcac2c78dbc5a5c3982f",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/keyword/ConniveSourceEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "469ee6e08805cc7745bde31232b310bde37a9fea5ea8bac89c8a3ddeeda7af53",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/targetpointer/NthTargetPointer.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "d3f06450efa592e446dbcab29c913f7946e36b31d5d0a7f6b1d3e5ac824ebc73",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/choices/ChoiceImpl.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "717314b1651bec04f9a8872b3a9e74adb8e6805e45a83a6d4b7c034b13b41811",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterOpponentsCreaturePermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "9e64645fa99f5e9c77a41dd9490e629a050201ee2fb8cb973bebdef3a3914942",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+        "read_coverage": "complete file body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3",
+        "read_coverage": "explicit line ranges only; full body retained for reproducibility"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+        "read_coverage": "explicit line ranges only; full body retained for reproducibility"
+      }
+    ]
+  },
+  "shared_rules": [
+    "Mandatory odd/even resolution choice independent of source survival; exact captured incarnation excluded; current creature/copied represented-face fixed mana values and indestructibility frozen before one simultaneous destruction batch. Zero is even.",
+    "Owner-controlled target-library choice adds SecondFromTop/Bottom for the new instruction; old Top/Bottom instruction behavior retained. Exact short-library order and physical token cessation reuse ordinary movement. Unknown top stays unknown; already public old top retained; empty library only incoming top is public.",
+    "Owned target-library pause preserves independent target group1 connive. Current target legality/controller/owner and original references use existing resolution machinery."
+  ],
+  "wire": {
+    "schema": 150,
+    "actual_changes": [
+      "ChooseManaValueParity action/decision and exported serialized ManaValueParity enum",
+      "LibraryDestination::SecondFromTop on the existing destination action; no artificial duplicate public choice payload"
+    ],
+    "policy": "Only extend existing destination-choice constant50 arm for the new parity action; existing action scoring unchanged.",
+    "new_ids": []
+  },
+  "rules_tests": {
+    "groups": 10,
+    "seats": "both in every group",
+    "path": "src/engine_parity_library_core_tests.rs",
+    "coverage": [
+      "Both choices/current creatures bothcontrollers/mana0through6/noncreatures",
+      "Departed/blinked source and copiedmana/exact exclusion/indestructible",
+      "Mandatory empty-set choice, wrongactor/illegalatomicity/privatehand/serdeaction roundtrip",
+      "Both owners/stolencontroller/real tokens/empty0one1two2four4 libraries/knownunknown tops/SecondBottom and invalid destinations",
+      "Separate own connive group continues after owner pause with private draw/discard",
+      "Conditional Doom indestructibility frozen before simultaneous artifact departure",
+      "Two actual paid Seasons replace counters before parity; real RIP/Progenitus competing zone replacement pauses keep destruction atomic",
+      "Current supported modal DFC represented-face value and copiedtoken face value"
+    ],
+    "bounded_limits": [
+      "Private opcode continuations and initial gated immutable objects deliberately do not certify actual paid Thanos or Stratagem producers.",
+      "MDFCs use their represented-face mana values; unsupported physical nonmodal DFC behavior is not admitted here.",
+      "Existing checked action helper covers wrongactor/rawindex orphan branches/restores/staleindices. No test-only runtime query override."
+    ]
+  },
+  "validation": {
+    "default_profile": true,
+    "native_passed": 1614,
+    "native_failed": 0,
+    "new_core_groups": 10,
+    "execution_seconds": 14.99,
+    "phases": [
+      {
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit": 0,
+        "seconds": 19.684910814044997,
+        "log": "<cache>/rustmage-msh-parity-library-core-default-3/00.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 1.9973252190393396,
+        "log": "<cache>/rustmage-msh-parity-library-core-default-3/01.log"
+      },
+      {
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "src/card_definitions/msh/thanos_the_mad_titan.rs",
+          "src/card_definitions/msh/trickster_s_stratagem.rs"
+        ],
+        "exit": 0,
+        "seconds": 0.014363649999722838,
+        "log": "<cache>/rustmage-msh-parity-library-core-default-3/02.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/check_sources.py"
+        ],
+        "exit": 0,
+        "seconds": 0.8045078839641064,
+        "log": "<cache>/rustmage-msh-parity-library-core-default-3/03.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/link_catalogue.py",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 0.5715962540125474,
+        "log": "<cache>/rustmage-msh-parity-library-core-default-3/04.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/test_assurance_runner.py"
+        ],
+        "exit": 0,
+        "seconds": 0.44396033498924226,
+        "log": "<cache>/rustmage-msh-parity-library-core-default-3/05.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "seconds": 190.76561543199932,
+        "log": "<cache>/rustmage-msh-parity-library-core-default-3/06.log"
+      }
+    ],
+    "fixed_inputs": 11819,
+    "changed_inputs": [],
+    "driver_seconds": 214.47063317301217,
+    "guard": {
+      "command": [
+        "python3",
+        "<temp>/msh-parity-core-default3-driver.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 400.38921016902896,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2719653888,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "report": "<cache>/rustmage-msh-parity-library-core-default-3/result.json",
+    "report_sha256": "df9ff237617bbc2743ac2cc7ff9f0c58670919e9f2cefcd10c02ccb16270bbde",
+    "guard_report": "<cache>/rustmage-msh-parity-library-core-default-3-resource.json",
+    "guard_sha256": "12288f1418e451fbef552f4d481fb3d962b9e2c4ff3d67ec8a181bc1553b4282",
+    "history": [
+      "Focus1 compile-only ambiguous integer fixture fixed after terminal.",
+      "Focus2 seven passed, three absent catalogue fixture names corrected after terminal; no runtime change.",
+      "Focus3 known-invalid queued rerun intentionally stopped and terminal observed; NOT a test pass.",
+      "Focus4 all10 passed profile0; final validation uses repository defaults.",
+      "Default1 found existing example exhaustive match missing new destination; added existing invalid-surveil panic branch.",
+      "Default2 found two Clippy evenness lints in test fixtures; syntactic fix only.",
+      "Default3 all1614 rules and7command exits0; fresh full dualexports exact."
+    ]
+  },
+  "full_trace_proof": {
+    "normal_schema": 150,
+    "previous_schema": 149,
+    "additional_historical_schema": 148,
+    "rows": 2525,
+    "normal_sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+    "previous_sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+    "all16_parent_full_structs_exact": true,
+    "no_field_stripping": true,
+    "recorder_changes": false,
+    "legacy_proof": "<cache>/rustmage-msh-parity-library-core-legacy-148-result.json",
+    "legacy_proof_sha256": "8c546846032c8124adcf993ce249646bb78b1817482a502bedc5f83e4fb17134"
+  },
+  "preservation": {
+    "parent": "<cache>/rustmage-msh-incursion-return-target-core-preservation.json",
+    "parent_sha256": "10f4b7b995ef62ec4f8613a287c42da302b037e4af9e8d0bde11de069ae197ee",
+    "prior_required": 3973,
+    "required": 3985,
+    "manifest": "<cache>/rustmage-msh-parity-library-core-preservation.json",
+    "manifest_sha256": "8237fa944fd759393fa894b7e282b35f150366d87fb2c11c8b769b296d7c27f7",
+    "retained": {
+      "<cache>/rustmage-msh-parity-library-core-default-target/debug/deps/rustmage-b764cd26223fba2c": "0d7c8a57bd3ef743ce2f07848f4ecd922e62805dd35cc5d07404b296285192fc",
+      "<cache>/rustmage-msh-parity-library-core-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-parity-library-core-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "98c05fd6fbf4737584836c49b0807b6d867237604512e095dac538dc84d9285c",
+      "<cache>/rustmage-msh-parity-library-core-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "cleanup": "<cache>/rustmage-msh-parity-library-core-cleanup.json",
+    "cleanup_sha256": "695b13539cbd7455a837284c4985fc85c183ee9bbb4d96dae0cd61761a004427",
+    "accessible_target_references": [],
+    "own_processes_inspected": 200,
+    "denied_inspections": 169,
+    "removed_files": 1184,
+    "removed_path_allocated_bytes": 166821888,
+    "qualification": "Sum of st_blocks by removed path; no deduplicated physical reclaim claim."
+  },
+  "throughput_limits": "Zero complete-card admissions at this core checkpoint. Native14.99s includes assertions/replay; no pure gameplay simulation or all-set throughput claim.",
+  "remaining": "Feature integration, full paid both-seat whole producer obligations, then complete flags. Final aggregate release, CI, published final-head reviews and full281 acceptance remain open."
+}
