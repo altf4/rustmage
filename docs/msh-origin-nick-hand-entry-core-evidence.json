@@ -1,0 +1,354 @@
+{
+  "schema": 1,
+  "scope": "Gated shared core only; zero new complete cards. Both real immutable producer bodies remain Effect::Unsupported and paired complete:false. Full paid producer translation proof follows only after core integration.",
+  "base": "e5f576b58e0c98fd430fc7932b56530339e4d088",
+  "tested_runtime": "78e57d2f9a849e1af02ec2329e4ceafcd9825211",
+  "created_utc": "2026-10-25T11:58:37.048164+00:00",
+  "core_behavior": {
+    "hand_payment": "Owned private SearchFilter on existing HandPermanent resolution choice; identical hidden phase/quota even when no legal card. Selecting legally pays before ingress replacement; explicit Skip/Draw program branch uses CR118.11/118.12; a known impossible Aura cannot pay.",
+    "library_completion": "Captured look-owner, exact actual ZoneChange.after from the selected original reference, entry transaction and front facts before optional transform, then actual remaining looked references randomly bottomed. New public entry_transform recipient is omitted when absent; existing ChooseOptional shape is reused.",
+    "transformation": "Shared exact ObjectRef helper keeps physical Single/Double/copy-face behavior and provider refresh; intrinsic TransformSource wrapper retains the captured serial guard. No current-controller restriction is imposed on Nick's entered recipient.",
+    "funding": "No speculative resolution side effects or new payment resources. Existing CharacteristicWorld and physical-face projection continue to supply actual/FundingWorld queries; full inherited suite covers those unchanged paths."
+  },
+  "public_contract": {
+    "schema": 150,
+    "actual_new_payload": "Observation.entry_transform: Option<EntryTransformChoiceView>, serde-skipped absent. Public recipient only; no private remainder exposed to another entry/replacement actor.",
+    "new_ids": [],
+    "identity_membership_policy_recorder_edits": false
+  },
+  "source_pins": {
+    "data/observation-schema.txt": "9a7f91a861f59c0cb27f0af9323d158fdab7740d5e3c8016a60f4b04c0fc41e0",
+    "data/standard/coverage.json": "cf61745ee472cdd0f91d51fc60d37a004829759612b75718ff3bfd57d65518d1",
+    "src/assurance/card_traces.json": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+    "src/card_definitions/msh/nick_fury_agent_of_s_h_i_e_l_d.json": "6a37a7a6b07c37acd7ac8c7bf30f7638e204cde0cb33c61e5ad4e4cc415c3ae5",
+    "src/card_definitions/msh/nick_fury_agent_of_s_h_i_e_l_d.rs": "0d3e26c369058bba7b3b09812accc93596d695a98b1d7542e93512c97276e6af",
+    "src/card_definitions/msh/origin_of_the_avengers.json": "197d48faf857a9b4b558cb509453358424d6f89a3ad72a07ed1d95db85199af7",
+    "src/card_definitions/msh/origin_of_the_avengers.rs": "481daed0aa8eebcca4377d4a2466b5919f8723839a54ab36fbf685009f79c0dd",
+    "src/cards.rs": "c735f81451898be23b6bda50404acb5f696e673acff8341849f62a478acd7e68",
+    "src/engine.rs": "d2b56735838fd5463aff1ab616f895cc23fd3729fa4884eca9e3932db2eb0096",
+    "src/engine_card_quantities.rs": "45005ce8cc5f33abb5f869ebbbc6855beeeee82dbe9bf3f41a9332569c73df51",
+    "src/engine_cast_symbol_quantities.rs": "f378738a2e3726da9b087ed69d10b6003257af17de2fedd6e70efdce88a74fd4",
+    "src/engine_effect_choices.rs": "dbf713bcd1338f7ed01132e5622cd995711c761a2e235cc8d4673f8ed8d136af",
+    "src/engine_entries.rs": "37ee7e47842144aa0df26efa3e70c3d606c7ba1a9b47a47c89e7c580e26e5939",
+    "src/engine_faces.rs": "cb4bd45c8a504bf064151a1686ab8bca9e77f560dd591d3baa58d3bc208a4029",
+    "src/engine_library_selection.rs": "d79bf69d5e996d63d257f15931605ea6d70b4184dae2ff75844bc048c4d23d21",
+    "src/engine_msh_hand_entry_core_tests.rs": "19060b6d1b80338416131b681b69780a161acf61d72551ed69b468938e1fd4ff",
+    "src/engine_programs.rs": "280709f9f9f4c19717a95ba433acc1746d816f0022c62b3a6bb7c0d28eaa511b",
+    "src/engine_source_quantities.rs": "e51d0dd0e301919093c903222e7ded2efbf898fc7ec808ead394047b41f12390",
+    "src/generated/catalogue.rs": "a0fda62014417591171ec520e3032fae4f2d65a892c2f61e4e900cb132fbc4a7"
+  },
+  "unchanged_pins": {
+    "data/catalogue-identities.json": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+    "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+    "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+    "src/assurance/regressions.rs": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185"
+  },
+  "provenance": {
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_files": [
+      {
+        "path": "Mage.Sets/src/mage/cards/o/OriginOfTheAvengers.java",
+        "sha256": "0bc8e0d89340e480bb30f5d92f79aa20eb8fd5bc13145b210a55a1499e874373",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/n/NickFuryAgentOfSHIELD.java",
+        "sha256": "cba3def6aad71a463b0dbfd9d7129891f73bd6bf3eee68340335c10100deea6c",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+        "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+        "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+        "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+        "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+        "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/predicate/card/DoubleFacedCardPredicate.java",
+        "sha256": "3130bed28b3b6ac9fc0be48dec9038e9974f64660112ef043df381896d255e35",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+        "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+        "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/TargetCard.java",
+        "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+        "sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+        "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+        "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+        "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+        "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+        "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+        "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+        "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+        "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+        "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/game/ZonesHandler.java",
+        "sha256": "959c5d1eb065ab34d00b82ddf69d4254afc2c33c02243dee21dd7f16645749ca",
+        "read_scope": "complete"
+      },
+      {
+        "path": "Mage/src/main/java/mage/util/CardUtil.java",
+        "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+        "read_scope": "ranged; full body cached without a full-read claim"
+      },
+      {
+        "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+        "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3",
+        "read_scope": "ranged; full body cached without a full-read claim"
+      },
+      {
+        "path": "Mage/src/main/java/mage/game/permanent/PermanentImpl.java",
+        "sha256": "5b72e235e1fe716b7337ffe76539d7fd79a5a9de1c54e6f343426126aeec6fe1",
+        "read_scope": "ranged; full body cached without a full-read claim"
+      },
+      {
+        "path": "Mage/src/main/java/mage/constants/CardType.java",
+        "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+        "read_scope": "ranged; full body cached without a full-read claim"
+      },
+      {
+        "path": "Mage/src/main/java/mage/constants/SubType.java",
+        "sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2",
+        "read_scope": "ranged; full body cached without a full-read claim"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+        "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+        "read_scope": "ranged; full body cached without a full-read claim"
+      }
+    ],
+    "prior_complete_design": "<cache>/rustmage-msh-origin-nick-design-530c5205.json",
+    "design_sha256": "2355463a991f55bd872990eb49af728ee07158a80b1806512b6e9de7042404db",
+    "coverage": "Full2Oracle/mainJava; all30 cached dependency hashes freshly revalidated. Prior audit records24 full class reads and6 precise ranged large-class reads; no recursive whole-framework read claim.",
+    "primary_sources": [
+      "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf"
+    ],
+    "java_discrepancies": [
+      "Origin payment uses the legal optional-payment decision, independent of actual redirected destination, rather than treating returned moveCards success as the branch.",
+      "Nick binds the actual entered permanent without the Java controlled-permanent restriction."
+    ]
+  },
+  "validation": {
+    "default_profile": true,
+    "native": {
+      "passed": 1604,
+      "failed": 0,
+      "new_bounded_groups": 12,
+      "execution_seconds": 12.09,
+      "summary": [
+        "test result: ok. 1604 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.09s"
+      ]
+    },
+    "phases": [
+      {
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit": 0,
+        "seconds": 16.703316389000975,
+        "log": "<cache>/rustmage-msh-origin-nick-core-final/00.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 1.6199000920169055,
+        "log": "<cache>/rustmage-msh-origin-nick-core-final/01.log"
+      },
+      {
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "src/card_definitions/msh/origin_of_the_avengers.rs",
+          "src/card_definitions/msh/nick_fury_agent_of_s_h_i_e_l_d.rs"
+        ],
+        "exit": 0,
+        "seconds": 0.010344763984903693,
+        "log": "<cache>/rustmage-msh-origin-nick-core-final/02.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/check_sources.py"
+        ],
+        "exit": 0,
+        "seconds": 0.615432127029635,
+        "log": "<cache>/rustmage-msh-origin-nick-core-final/03.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/link_catalogue.py",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 0.4572309060022235,
+        "log": "<cache>/rustmage-msh-origin-nick-core-final/04.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/test_assurance_runner.py"
+        ],
+        "exit": 0,
+        "seconds": 0.44306253601098433,
+        "log": "<cache>/rustmage-msh-origin-nick-core-final/05.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "seconds": 153.7465681169997,
+        "log": "<cache>/rustmage-msh-origin-nick-core-final/06.log"
+      }
+    ],
+    "fixed_inputs": 11816,
+    "changed_inputs": [],
+    "guard": {
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 299.5871046480024,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2692608000,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "guard_report": "<cache>/rustmage-msh-origin-nick-core-final-guard.json",
+    "raw_final_report": "<cache>/rustmage-msh-origin-nick-core-final/result.json",
+    "raw_report_label_note": "The reused driver retains a diagnostic key named expected_wire_baseline_failure_only. In the final driver it parses the1604passed0failed summary; all7 final command exits are0. The preaccept run alone intentionally had the old wire-table assertion failure."
+  },
+  "full_trace_proof": {
+    "parent_rows": 2525,
+    "normal150_rows": 2525,
+    "previous149_rows": 2525,
+    "previous149_full_dictionary_exact_parent": true,
+    "differing_full_parent_keys": [],
+    "normal150_exact_accepted": true,
+    "normal150_sha256": "db2be1f7f62416bb99f2ec92741183a0a0fe9725b1a5f9069d6b414dd4187518",
+    "previous149_sha256": "6282fe65d3c640911ad93b63937334ceeaeac40c7a6e19964c9cd4b38980c29d",
+    "no_recorder_or_projection_changes": true,
+    "acceptance_order": "Fresh preaccept full previous149 dictionary equality proved before accepting normal150 table; fresh final reproof all green afterward."
+  },
+  "test_scope": [
+    "Genuinely paid supported Divination envelopes substitute only the real immutable gated program as explicitly bounded private-opcode fixtures; they do not certify either producer as playable.",
+    "Both-seat filtered hand positive/decline/impossible payment and equal full nonactor observations.",
+    "Two actual paid Mentors + Garruk Uprising + actual Jennifer entry: two front2-power packets survive transform; no retroactive back6-power entry packet; pay1 for each Mentor after remainder.",
+    "Owned raw/indexed branches after parent disposal, restore (including its documented revision increment), foreign and illegal choices remain atomic.",
+    "Actual modal front entry, transform/decline, source object incarnation, legend SBA deferred through resolution, private remainder ownership across foreign entry-value actor.",
+    "Clearly labeled ingress plan/control/redirection/prohibition and during-resolution departure fixtures where no admitted producer creates that timing."
+  ],
+  "preservation": {
+    "parent_required": 3914,
+    "parent_all_exact_rehashed": true,
+    "manifest": "<cache>/rustmage-msh-origin-nick-core-preservation.json",
+    "manifest_sha256": "db929e3c37da2b2e186345e3a9e0a07fd52784960781515820818bd8d70a9d43",
+    "retained": {
+      "<cache>/rustmage-msh-origin-nick-entry-core-target/debug/deps/rustmage-b764cd26223fba2c": "703dfdb5ea7f4a78f61b7c5f4578974b00188cd6d2d909149b93d7274b6894fa",
+      "<cache>/rustmage-msh-origin-nick-entry-core-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "active_consumers_before_cleanup": [],
+    "consumer_scan": "Host /proc exe/cwd/maps/fd target paths; no active consumer before removal",
+    "removed_files": 1019,
+    "removed_bytes": 123134538
+  },
+  "throughput_limits": "1604 rules tests executed in12.09s; this is not a simulation benchmark. Zero whole cards admitted at this core checkpoint; no new gameplay throughput claim.",
+  "remaining_work": "Core integration/read checkpoint, full actual paid both-seat Origin Saga and Nick Power-up producer proof, only then complete flags; aggregate release/CI/final published-batch reviews remain integrator responsibilities."
+}
