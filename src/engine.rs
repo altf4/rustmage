@@ -219,6 +219,9 @@ mod faces;
 #[path = "engine_modal_history.rs"]
 mod modal_history;
 #[cfg(test)]
+#[path = "engine_msh_existing_seventh_tests.rs"]
+mod msh_existing_seventh_tests;
+#[cfg(test)]
 #[path = "engine_msh_faces_tests.rs"]
 mod msh_faces_tests;
 #[cfg(test)]

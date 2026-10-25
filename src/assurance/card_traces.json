@@ -8871,6 +8871,14 @@
     "journal": "2af928f35a52b81c",
     "observations": "32e6768ace7e6816"
   },
+  "Jessica Jones, Private Eye": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "46c02d17c20515de"
+  },
   "Jet, Freedom Fighter": {
     "root": "main",
     "status": "completed",
@@ -12879,6 +12887,14 @@
     "journal": "f385416f7e57ec16",
     "observations": "50dcd5d58d7b25a9"
   },
+  "Quicksilver, Brash Blur": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "c4b8f6d37ca7169e",
+    "observations": "7666a2b995442f0b"
+  },
   "Quill-Blade Laureate": {
     "root": "main",
     "status": "completed",
@@ -14062,6 +14078,14 @@
     "zone": "Battlefield",
     "journal": "7cab70b24f8e18ec",
     "observations": "c664b828465225aa"
+  },
+  "S.H.I.E.L.D. Flying Car": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "091bbc1cbc70f60f",
+    "observations": "2078b7601916ee0a"
   },
   "S.H.I.E.L.D. Helicarrier": {
     "root": "main",
