@@ -2594,6 +2594,18 @@ impl Game {
                 } => {
                     self.damage_battlefield_group(&item, filters, players, amount);
                 }
+                Instruction::DamageBattlefieldExceptSubtype {
+                    filters,
+                    excluded_subtype,
+                    players,
+                    amount,
+                } => self.damage_battlefield_group_excluding(
+                    &item,
+                    filters,
+                    players,
+                    amount,
+                    Some(excluded_subtype),
+                ),
                 Instruction::DrawMoved | Instruction::GainLifeMoved => {
                     let count = self
                         .state

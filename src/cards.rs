@@ -1181,6 +1181,13 @@ pub(crate) enum Instruction {
         players: Option<PlayerSet>,
         amount: i32,
     },
+    /// One simultaneous damage batch, excluding creatures with a live subtype.
+    DamageBattlefieldExceptSubtype {
+        filters: &'static [BattlefieldFilter],
+        excluded_subtype: &'static str,
+        players: Option<PlayerSet>,
+        amount: i32,
+    },
     DrawMoved,
     GainLifeMoved,
     CreateEmblem(Card),
