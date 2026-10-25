@@ -1,0 +1,1576 @@
+{
+  "schema": 1,
+  "scope": "Two assurance-only groups over the integrated eight-card candidate. No new admissions, shared runtime behavior, catalogue, tokens, identities, policy, recorder or wire changes. Source-only branch for parent draft PR516; no child PR or main merge.",
+  "runtime_base": "e236acac27ed9df0614cb1dcafb934a33815e9eb",
+  "accepted_trace_baseline_commit": "cfacb1d6aa77a60623bb6685de55d56695bb09a0",
+  "tested_source_commit": "e854797d387ecd1d4b8c1991a4e2ec5d6d1bada1",
+  "branch": "codex/msh-twelfth-combined-assurance",
+  "owned_files": [
+    "src/engine_msh_twelfth_combined_tests.rs",
+    "src/engine.rs appended test module only",
+    "docs/msh-twelfth-combined-evidence.json"
+  ],
+  "baseline_only_change": "src/assurance/card_traces.json copied exactly from integrator-approved cfacb1d6 after first focused consumer terminated; no new recording accepted by this author.",
+  "candidate_pool": {
+    "whole_candidates": 213,
+    "membership": 281,
+    "gated": 68,
+    "qualification": "Candidate flags only, inherited from all-eight integration; no additional card completed by this assurance scope. Full MSH and all-Standard acceptance remain open."
+  },
+  "new_groups": 2,
+  "parent_native_groups": 1414,
+  "final_native_groups": 1416,
+  "groups": [
+    "msh_twelfth_combined_paid_eight_land_origins_history_recovery_reflexive_and_natural_win",
+    "msh_twelfth_combined_32_natural_standard_mirror_games_full_replay_and_all_eight_paid"
+  ],
+  "paid_both_seat_scenario": {
+    "cards": [
+      "Ka-Zar of the Savage Land",
+      "Mole Man, Moloid Master",
+      "Iron Man, Master of Machines",
+      "Avengers Assemble!",
+      "Night Nurse, Healer of Heroes",
+      "Restorative Technique",
+      "Spider-Man, To the Rescue",
+      "Speed, Young Avenger"
+    ],
+    "actions_and_outcomes": [
+      "All eight spells pay their ordinary printed costs; Spider pays its green hybrid option. Scenario fixture mana is explicitly supplied separately from the natural-game group.",
+      "Ka-Zar enters with exact legendary Zabu; Mole enables an ordinary graveyard land play from an explicitly bounded Forest graveyard fixture. That land and Restorative searched tapped Forest produce Moloids and Zabu counters.",
+      "Opponent actually casts and pays Murder on Human Torch. Paid flash Nurse returns the just-died permanent to hand with checked target announcement; Torch is then paid again.",
+      "Restorative self-player plus Zabu targets, one extra actual generic mana pays Speed triggered optional cost, and the later child targets haste Speed. Search completes normally, adding a tapped basic and landfall counter/token, then Restorative adds its targeted counter.",
+      "Spider accepts the actual exact-source tap, then the separately announced child protects current nonattacking Speed. Paid late Avengers supplies its Hero lord and sees prior Hero entry/attack for end-step draw; Human Torch observes those actual draws.",
+      "Speed attacks with haste; nonhaste Bear cannot block due to the resolved restriction. On next own turn both temporary restriction and indestructibility expire.",
+      "Ka-Zar permits a real library-top Forest play after ordinary turn advance and draws; top is owner-visible and opponent-hidden. New landfall creates the third Moloid and fourth Zabu counter.",
+      "Paid Arc Reactor uses five real mana rather than improvise helpers, enters tapped, adds one other artifact to Iron Man power, and enables the real attack-history draw. A Moloid attacks and accepts one actual mill; Nurse attacks and gains four life via lifelink with the Hero lord.",
+      "Further ordinary army combat reaches a natural Winner for each seat without concession or injected life/outcome."
+    ],
+    "owned_privacy_atomicity": "Existing checked actions compare raw/index application and restore, reject wrong actor. Local orphan helper drops parent, compares full two-seat views/snapshots, restores, rejects stale index and replays. Illegal zero Speed payment and nonhaste block are atomic with snapshot/revision/state_bytes checks. Top visibility is explicitly tested for both viewers.",
+    "fixture_limits": [
+      "Bounded scenario setup uses supported cards and explicit payment mana; Forest is deliberately moved into graveyard using the production move operation. This scenario is not a Standard-legal natural-game claim.",
+      "No new bot or new runtime test hook. Individual complete-card source parents retain their full clause/edge-case proofs."
+    ]
+  },
+  "natural_games": {
+    "configuration": "32 ordinary Game::new Standard mirror games: seeds20261024..20261040 upper-exclusive, each starting player. Same60-card MSH-only deck both seats.",
+    "deck": {
+      "Plains": 6,
+      "Island": 6,
+      "Mountain": 6,
+      "Forest": 6,
+      "Ka-Zar of the Savage Land": 4,
+      "Mole Man, Moloid Master": 4,
+      "Iron Man, Master of Machines": 4,
+      "Avengers Assemble!": 4,
+      "Night Nurse, Healer of Heroes": 4,
+      "Restorative Technique": 4,
+      "Spider-Man, To the Rescue": 4,
+      "Speed, Young Avenger": 4,
+      "A.I.M. Scientists": 4
+    },
+    "membership_and_legality": "Each identity checked against frozen MSH membership, support and Standard legality; exactly60 cards, four-copy nonbasic limit enforced by Game::new Standard.",
+    "policy": "Unchanged observation-only policy::smoke_index; no new bot, injected setup, phase advance, mana, card movement, choices, concessions or game progress.",
+    "games": 32,
+    "decisions": 19832,
+    "owned_privacy_checkpoints": 218,
+    "all_natural_winners": true,
+    "every_game_full_deterministic_replay_snapshot_and_outcome_equal": true,
+    "all_eight_actual_successful_paid_cast_names": [
+      "Avengers Assemble!",
+      "Iron Man, Master of Machines",
+      "Ka-Zar of the Savage Land",
+      "Mole Man, Moloid Master",
+      "Night Nurse, Healer of Heroes",
+      "Restorative Technique",
+      "Speed, Young Avenger",
+      "Spider-Man, To the Rescue"
+    ],
+    "recorded_choices_and_land_origins": {
+      "ChooseOptional { accept: true }": 103,
+      "DeclineResolutionMana": 9,
+      "PayResolutionMana { payment: [0, 0, 0, 0, 1, 0] }": 11,
+      "PayResolutionMana { payment: [0, 0, 0, 1, 0, 0] }": 9,
+      "PayResolutionMana { payment: [0, 1, 0, 0, 0, 0] }": 6,
+      "PayResolutionMana { payment: [1, 0, 0, 0, 0, 0] }": 2,
+      "land_from_Graveyard": 3,
+      "land_from_Hand": 490,
+      "land_from_Library": 10
+    },
+    "actual_speed_generic_payments": 28,
+    "actual_speed_payment_declines": 9,
+    "privacy": "Hidden counterfactual permutes only unobserved opponent hand identities and below-top library order; known-hand refs excluded and current top preserved, protecting Ka-Zar-visible top. Full observation JSON and legal actions match. Every97th decision tests wrong actor, invalid index, raw/index branches, parent disposal and restore/stale-index rejection.",
+    "checked_execution_seconds": 1.042247101,
+    "measurement_limit": "Wall time includes policy decisions, legality/privacy checks, owned replay checks and full game replay; this is bounded coverage, not a simulation throughput benchmark or whole-set acceptance.",
+    "artifact": "<cache>/rustmage-msh-twelfth-natural-games-final.json",
+    "sha256": "63033d2d3e7608ae940778c44f64f4206d85600249b6a44de0e333e704e968e2",
+    "per_game_results": [
+      {
+        "decisions": 697,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 8,
+        "seed": 20261024,
+        "starting_player": "P0",
+        "turn": 21
+      },
+      {
+        "decisions": 443,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 5,
+        "seed": 20261024,
+        "starting_player": "P1",
+        "turn": 15
+      },
+      {
+        "decisions": 388,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 4,
+        "seed": 20261025,
+        "starting_player": "P0",
+        "turn": 13
+      },
+      {
+        "decisions": 458,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 5,
+        "seed": 20261025,
+        "starting_player": "P1",
+        "turn": 14
+      },
+      {
+        "decisions": 719,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 8,
+        "seed": 20261026,
+        "starting_player": "P0",
+        "turn": 22
+      },
+      {
+        "decisions": 910,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 10,
+        "seed": 20261026,
+        "starting_player": "P1",
+        "turn": 26
+      },
+      {
+        "decisions": 310,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 4,
+        "seed": 20261027,
+        "starting_player": "P0",
+        "turn": 12
+      },
+      {
+        "decisions": 334,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 4,
+        "seed": 20261027,
+        "starting_player": "P1",
+        "turn": 13
+      },
+      {
+        "decisions": 662,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261028,
+        "starting_player": "P0",
+        "turn": 20
+      },
+      {
+        "decisions": 723,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 8,
+        "seed": 20261028,
+        "starting_player": "P1",
+        "turn": 22
+      },
+      {
+        "decisions": 722,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 8,
+        "seed": 20261029,
+        "starting_player": "P0",
+        "turn": 22
+      },
+      {
+        "decisions": 564,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261029,
+        "starting_player": "P1",
+        "turn": 18
+      },
+      {
+        "decisions": 508,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261030,
+        "starting_player": "P0",
+        "turn": 18
+      },
+      {
+        "decisions": 671,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261030,
+        "starting_player": "P1",
+        "turn": 21
+      },
+      {
+        "decisions": 637,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261031,
+        "starting_player": "P0",
+        "turn": 19
+      },
+      {
+        "decisions": 943,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 10,
+        "seed": 20261031,
+        "starting_player": "P1",
+        "turn": 25
+      },
+      {
+        "decisions": 644,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261032,
+        "starting_player": "P0",
+        "turn": 21
+      },
+      {
+        "decisions": 1051,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 11,
+        "seed": 20261032,
+        "starting_player": "P1",
+        "turn": 26
+      },
+      {
+        "decisions": 950,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 10,
+        "seed": 20261033,
+        "starting_player": "P0",
+        "turn": 29
+      },
+      {
+        "decisions": 465,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 5,
+        "seed": 20261033,
+        "starting_player": "P1",
+        "turn": 15
+      },
+      {
+        "decisions": 556,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261034,
+        "starting_player": "P0",
+        "turn": 18
+      },
+      {
+        "decisions": 943,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 10,
+        "seed": 20261034,
+        "starting_player": "P1",
+        "turn": 29
+      },
+      {
+        "decisions": 807,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 9,
+        "seed": 20261035,
+        "starting_player": "P0",
+        "turn": 26
+      },
+      {
+        "decisions": 746,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 8,
+        "seed": 20261035,
+        "starting_player": "P1",
+        "turn": 23
+      },
+      {
+        "decisions": 344,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 4,
+        "seed": 20261036,
+        "starting_player": "P0",
+        "turn": 14
+      },
+      {
+        "decisions": 301,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 4,
+        "seed": 20261036,
+        "starting_player": "P1",
+        "turn": 13
+      },
+      {
+        "decisions": 463,
+        "outcome": {
+          "Winner": "P0"
+        },
+        "owned_privacy_checkpoints": 5,
+        "seed": 20261037,
+        "starting_player": "P0",
+        "turn": 15
+      },
+      {
+        "decisions": 526,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261037,
+        "starting_player": "P1",
+        "turn": 17
+      },
+      {
+        "decisions": 512,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261038,
+        "starting_player": "P0",
+        "turn": 16
+      },
+      {
+        "decisions": 555,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 6,
+        "seed": 20261038,
+        "starting_player": "P1",
+        "turn": 17
+      },
+      {
+        "decisions": 671,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261039,
+        "starting_player": "P0",
+        "turn": 20
+      },
+      {
+        "decisions": 609,
+        "outcome": {
+          "Winner": "P1"
+        },
+        "owned_privacy_checkpoints": 7,
+        "seed": 20261039,
+        "starting_player": "P1",
+        "turn": 19
+      }
+    ]
+  },
+  "validation": {
+    "first_focus": {
+      "report": "<cache>/rustmage-msh-twelfth-combined-focus-1.guard.json",
+      "metrics": {
+        "command": [
+          "env",
+          "CARGO_TARGET_DIR=<cache>/rustmage-msh-twelfth-combined-target",
+          "RUSTMAGE_RECORD_MSH_TWELFTH_GAMES=<cache>/rustmage-msh-twelfth-natural-games.json",
+          "cargo",
+          "test",
+          "--lib",
+          "msh_twelfth_combined",
+          "--",
+          "--test-threads=1"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 257.8437082019518,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2620960768,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "result": "Natural32 passed with all8 cast coverage in the first run. Combined scenario failed solely because a fixture read Nurse packet after the sole target auto-finished announcement. Fixed by capturing packet before target selection; unused copied helper removed. No runtime changes."
+    },
+    "final_native_static": {
+      "report": "<cache>/rustmage-msh-twelfth-combined-native-2.guard.json",
+      "log": "<cache>/rustmage-msh-twelfth-combined-native-2.log",
+      "metrics": {
+        "command": [
+          "env",
+          "CARGO_TARGET_DIR=<cache>/rustmage-msh-twelfth-combined-target",
+          "RUSTMAGE_RECORD_MSH_TWELFTH_GAMES=<cache>/rustmage-msh-twelfth-natural-games-final.json",
+          "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage-msh-twelfth-combined-traces.json",
+          "bash",
+          "-c",
+          "cargo test --lib -- --test-threads=1 && cargo clippy --all-targets -- -D warnings && cargo fmt --check"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 186.027619622997,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2583298048,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "native_passed": 1416,
+      "native_failed": 0,
+      "native_seconds": 8.32,
+      "clippy_all_targets_deny_warnings": true,
+      "cargo_fmt_check": true
+    },
+    "source_checks": {
+      "commands": [
+        "python3 scripts/check_sources.py",
+        "python3 scripts/link_catalogue.py --check",
+        "rustfmt --edition 2024 --check src/engine_msh_twelfth_combined_tests.rs plus all8 authored card files",
+        "git diff --check"
+      ],
+      "definitions": 5403,
+      "source_blobs": 1271,
+      "catalogue_version": "68990609a46b5ef55d61be6114fe58a7cad853b5b066d7233b0d771ca32e30d6"
+    },
+    "fixed_source_manifest": {
+      "path": "<cache>/rustmage-msh-twelfth-combined-fixed-inputs.json",
+      "sha256": "6feb720daddbac2af424caa4a61fb7636aa5984b32c410839196f4a3959fe2ad",
+      "files": 11789,
+      "location": "Cache-only, not a repository consuming input; captured after terminal with no intervening source edits."
+    },
+    "trace_proof": {
+      "runtime_base": "e236acac27ed9df0614cb1dcafb934a33815e9eb",
+      "accepted_baseline_head": "cfacb1d6aa77a60623bb6685de55d56695bb09a0",
+      "wire": 148,
+      "full_rows": 2516,
+      "full_export_exact_accepted_baseline_bytes": true,
+      "sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+      "parent_proof_path": "<cache>/rustmage-msh-twelfth-trace-proof.json",
+      "parent_proof_sha256": "1333a43562e2cdc4a321b101dc6a92674b80dcd3b5fd297b1d3e4d36702f7476",
+      "parent_full_table_proof": {
+        "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+        "parents": {
+          "base": {
+            "head": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+            "schema": 147,
+            "full_Trace_exact_matches": 2508,
+            "trace_sha256": "8b0cb3dfdc9cee46637c0c43b639a917135357f1a8de32f0ba1fc5805351b478",
+            "changed": [],
+            "removed": []
+          },
+          "recent_targets": {
+            "head": "d5733fbafd6fbc182d1fe9853ae9069ad7e80b78",
+            "schema": 147,
+            "full_Trace_exact_matches": 2510,
+            "trace_sha256": "621df564b53526e22dd9c23ab0758654fa7067aa5c26e5f8078089775423c833",
+            "changed": [],
+            "removed": []
+          },
+          "reflexive_tap_haste": {
+            "head": "583fa2eb225071fadc32d1c7a3c5bcf3d35e609a",
+            "schema": 147,
+            "full_Trace_exact_matches": 2510,
+            "trace_sha256": "ba5e3fe386b4659df21d5a9c13055f1fa31c0653f0a5b38e4bd0ea37ef5326e8",
+            "changed": [],
+            "removed": []
+          },
+          "hero_artifact_history": {
+            "head": "46741e0163ae2f5bcfae45616e7909c97bde1427",
+            "schema": 148,
+            "full_Trace_exact_matches": 2510,
+            "trace_sha256": "3e80a01d47b13ffc7e355f05f5a11251595eed6a38e8c907fecd5312a5db766e",
+            "changed": [],
+            "removed": []
+          },
+          "land_origins": {
+            "head": "dd7930feffb6d2301e9ce870645432466bf9769a",
+            "schema": 147,
+            "full_Trace_exact_matches": 2510,
+            "trace_sha256": "2c9a344739f65a20767e69219713ba6442f74f86b7ad1bee2d1a777464e38da8",
+            "changed": [],
+            "removed": []
+          }
+        },
+        "normal_schema": 148,
+        "comparison_schema": 147,
+        "normal_sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+        "previous147_sha256": "62a0e1cf82ad55ce83298a858fb1f4142b2f202b72c968b3c459e189b301ea89",
+        "new_rows": {
+          "Avengers Assemble!": {
+            "root": "main",
+            "status": "completed",
+            "decisions": 4,
+            "zone": "Battlefield",
+            "journal": "db7b0f4bd7e53672",
+            "observations": "566293e271622893"
+          },
+          "Iron Man, Master of Machines": {
+            "root": "main",
+            "status": "completed",
+            "decisions": 4,
+            "zone": "Battlefield",
+            "journal": "2cbbc7bfb5d12fad",
+            "observations": "d2567d6e7ccdeab4"
+          },
+          "Ka-Zar of the Savage Land": {
+            "root": "main",
+            "status": "completed",
+            "decisions": 6,
+            "zone": "Battlefield",
+            "journal": "1707eabb445652c2",
+            "observations": "0e959d595fb34d1a"
+          },
+          "Mole Man, Moloid Master": {
+            "root": "main",
+            "status": "completed",
+            "decisions": 4,
+            "zone": "Battlefield",
+            "journal": "7c50116fb450cf1c",
+            "observations": "e669d69c55fa8010"
+          },
+          "Night Nurse, Healer of Heroes": {
+            "root": "main",
+            "status": "completed",
+            "decisions": 4,
+            "zone": "Battlefield",
+            "journal": "ce93789b5fa64c9f",
+            "observations": "920ad036dadf0036"
+          },
+          "Restorative Technique": {
+            "root": "main",
+            "status": "completed",
+            "decisions": 7,
+            "zone": "Graveyard",
+            "journal": "4e3ecd79df95ffa0",
+            "observations": "76157b03121ef1b9"
+          },
+          "Speed, Young Avenger": {
+            "root": "main",
+            "status": "completed",
+            "decisions": 4,
+            "zone": "Battlefield",
+            "journal": "b43781f2834dd88f",
+            "observations": "63aa3fa2f48f03ba"
+          },
+          "Spider-Man, To the Rescue": {
+            "root": "main",
+            "status": "completed",
+            "decisions": 11,
+            "zone": "Battlefield",
+            "journal": "43e402f78de7c2e8",
+            "observations": "cb480bbd9aae077e"
+          }
+        },
+        "rows": 2516,
+        "metadata_sha256": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+        "metadata_exact_land_origins_parent": true,
+        "old_metadata_rows_and_globals_exact": true,
+        "catalogue_definitions": 5403,
+        "token_recipes": 125,
+        "new_ids": [
+          {
+            "id": 5401,
+            "identity": "@token/msh-zabu"
+          },
+          {
+            "id": 5402,
+            "identity": "@token/msh-moloid"
+          }
+        ],
+        "old_fields_stripped": false,
+        "recorder_changed": false,
+        "membership_unchanged": true,
+        "policy_unchanged": true,
+        "fixed_input_files": 11788,
+        "fixed_input_changes": [],
+        "native_rules_passed": 1413,
+        "sole_preacceptance_failure": "Expected row count2516 vs2510"
+      },
+      "recorder_or_field_stripping": "None"
+    },
+    "trace_proof_path": "<cache>/rustmage-msh-twelfth-combined-trace-proof.json",
+    "trace_proof_sha256": "28c97b7c56618417ed2868c49b395cd5ce16c1da55d389df1affe37905a67f89",
+    "fresh_export": "<cache>/rustmage-msh-twelfth-combined-traces.json",
+    "full_release_ci_and_two_fresh_independent_reviews": "Owned by final aggregate integrator. This child adds no redundant release job or reviewer receipt."
+  },
+  "source_pins": [
+    {
+      "name": "Ka-Zar of the Savage Land",
+      "paired_provenance": "src/card_definitions/msh/ka_zar_of_the_savage_land.json",
+      "paired_provenance_sha256": "7d43f8a4aaaa54737de5bbdad366587ad3e0d14ae6d1408aa6a1912a35dce29b",
+      "rust_definition_sha256": "f0ae0415a75df12726c4a52d6980e0d59361d0eb7a9a694000a650da11155f28",
+      "oracle_id": "88eeb519-5782-4732-bd34-81d1ee6dbc8f",
+      "facts_sha256": "f0bccbe32ddcf606def92c74acc8e0022391b2eccfbc8a8949bb727f1b54eb35",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/k/KaZarOfTheSavageLand.java",
+      "java_sha256": "5bc0fc94089d3ffa35f234b95118e5100a25f2b5a705589f20426bfe025805f4",
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage.Sets/src/mage/cards/m/MoleManMoloidMaster.java",
+          "sha256": "54518656e977027c1d8fe23700fbd30ac51ac9de171291f16813cb966a05cd94"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+          "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+          "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/PlayFromGraveyardControllerEffect.java",
+          "sha256": "72cc948dd1f65f347eb25cc2f8b19dab87326c3aa0ae77945c2fd4b6e142c6a4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/ZabuToken.java",
+          "sha256": "cdeaf6fc334e47fbefde2d75e3328eed8a19ff3e5ec27ec54749f63756798e83"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/MoloidToken.java",
+          "sha256": "25c6d8759dd00338ac7496b04e330c2924cfe5d508c867a2c37eec5e5b894d96"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+          "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+          "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+          "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterLandCard.java",
+          "sha256": "e9e31535856250c875e2036b551236be506dd0b4229c3e7a4f3f4f639ac257df"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+          "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+          "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+          "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/TokenImpl.java",
+          "sha256": "64e2102a28036ddfaaec4914c34355f7174f90df30d71527b0553aef9a14687d"
+        }
+      ]
+    },
+    {
+      "name": "Mole Man, Moloid Master",
+      "paired_provenance": "src/card_definitions/msh/mole_man_moloid_master.json",
+      "paired_provenance_sha256": "be465738a14b7371a311e0f8d27a82d31617d8f7524adbaa46457dea6c1992da",
+      "rust_definition_sha256": "3620f3751c55f00d84aef40dd85c5ca574e4f85af498ce0385ea7c2e823d6522",
+      "oracle_id": "34994475-b914-44f6-8ca1-c2747b6d5956",
+      "facts_sha256": "80ba1bb00f1b65f9aac025c8367fa30f0e38fc6eb41141420062f94d312d9bb7",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/m/MoleManMoloidMaster.java",
+      "java_sha256": "54518656e977027c1d8fe23700fbd30ac51ac9de171291f16813cb966a05cd94",
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage.Sets/src/mage/cards/k/KaZarOfTheSavageLand.java",
+          "sha256": "5bc0fc94089d3ffa35f234b95118e5100a25f2b5a705589f20426bfe025805f4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+          "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+          "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/PlayFromGraveyardControllerEffect.java",
+          "sha256": "72cc948dd1f65f347eb25cc2f8b19dab87326c3aa0ae77945c2fd4b6e142c6a4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/ZabuToken.java",
+          "sha256": "cdeaf6fc334e47fbefde2d75e3328eed8a19ff3e5ec27ec54749f63756798e83"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/MoloidToken.java",
+          "sha256": "25c6d8759dd00338ac7496b04e330c2924cfe5d508c867a2c37eec5e5b894d96"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+          "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+          "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+          "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+          "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterLandCard.java",
+          "sha256": "e9e31535856250c875e2036b551236be506dd0b4229c3e7a4f3f4f639ac257df"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+          "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+          "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+          "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/TokenImpl.java",
+          "sha256": "64e2102a28036ddfaaec4914c34355f7174f90df30d71527b0553aef9a14687d"
+        }
+      ]
+    },
+    {
+      "name": "Iron Man, Master of Machines",
+      "paired_provenance": "src/card_definitions/msh/iron_man_master_of_machines.json",
+      "paired_provenance_sha256": "310315cd987539995f277faaf564fa490330eda52065bba02b24327ee947d4b5",
+      "rust_definition_sha256": "05ee6311ae6755bff267f3da3d03aa66f61bec055ccf176adc03a1c94814feb9",
+      "oracle_id": "94bc796d-8c04-4835-8a99-7e5dce9540ee",
+      "facts_sha256": "c8ac4369c0952fb0305f5894e00e54d2a9d256ac4524f292e6924ae7096cded8",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/i/IronManMasterOfMachines.java",
+      "java_sha256": "e3e0b3e2ccbb1ae7b00f7fcb67ca51877390c23d89b7d4319833d3c4c9d14f5e",
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/common/ArtifactEnteredControllerWatcher.java",
+          "sha256": "a1f364da559cfe59d73e34963271cd4aebcb3780e727886dfcd56b57926b3339"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/ArtifactEnteredUnderYourControlCondition.java",
+          "sha256": "dd5f36d0ec21da7009bb16253902186e50db2e60aa79c99584b8f368f8d9886d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/common/AttackedThisTurnWatcher.java",
+          "sha256": "6c5e923e07c20b5532156598d59f92869d578f7fba9e42c238240b2dcd9b13df"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/common/PermanentsEnteredBattlefieldWatcher.java",
+          "sha256": "5179d8e5329c11f2d83e74aa2699a92a98d7952ed766ebd4f9532ddf050bfa77"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+          "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+          "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+          "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+          "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+          "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+          "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+          "sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+          "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+          "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+          "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/constants/CardType.java",
+          "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        }
+      ]
+    },
+    {
+      "name": "Avengers Assemble!",
+      "paired_provenance": "src/card_definitions/msh/avengers_assemble.json",
+      "paired_provenance_sha256": "00dc9dc45fb3f3c2dc13c5e9354b148ad5a47cc46d4097c348bc5ac1b03cf792",
+      "rust_definition_sha256": "5b41d75200f5eb0fd03ec26796498eadd00c820539fb3c452928f263fd775a90",
+      "oracle_id": "3477e1cc-46af-46f4-9ea2-bdf0bf1f880e",
+      "facts_sha256": "cc151c839e5ff498ff3c3a24e6969164372345f4e1bb91421773ac90d44526e7",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/a/AvengersAssemble.java",
+      "java_sha256": "eb449f1a27316a712ab52da494291953d2d96c2f272f942316f31cba5aa76be3",
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/common/ArtifactEnteredControllerWatcher.java",
+          "sha256": "a1f364da559cfe59d73e34963271cd4aebcb3780e727886dfcd56b57926b3339"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/ArtifactEnteredUnderYourControlCondition.java",
+          "sha256": "dd5f36d0ec21da7009bb16253902186e50db2e60aa79c99584b8f368f8d9886d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/common/AttackedThisTurnWatcher.java",
+          "sha256": "6c5e923e07c20b5532156598d59f92869d578f7fba9e42c238240b2dcd9b13df"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/common/PermanentsEnteredBattlefieldWatcher.java",
+          "sha256": "5179d8e5329c11f2d83e74aa2699a92a98d7952ed766ebd4f9532ddf050bfa77"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+          "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+          "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+          "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+          "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+          "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+          "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+          "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+          "sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+          "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+          "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+          "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+          "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+          "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/constants/CardType.java",
+          "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+          "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+        }
+      ]
+    },
+    {
+      "name": "Night Nurse, Healer of Heroes",
+      "paired_provenance": "src/card_definitions/msh/night_nurse_healer_of_heroes.json",
+      "paired_provenance_sha256": "9e8b456e21304380db59f14a00ebe00ef48a178a6a54c6e0f6210687b91d9ce5",
+      "rust_definition_sha256": "71088b80e77774f85531b39afebe9f88f0f85a485b387460243ffc6c55a9998d",
+      "oracle_id": "e3559565-0512-4525-addb-bf27903bcd13",
+      "facts_sha256": "2977171d7e7391c5f15a6870facc8920fe9e69a9db234524e9ba2e578fb62159",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/n/NightNurseHealerOfHeroes.java",
+      "java_sha256": "c6c0b64b397726a687b0d34dc3824a85c8fb966668694f06f5e21394b5188314",
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterPermanentCard.java",
+          "sha256": "2af04f95edb47547b39271ca3c5024712fa9ba1728c5e2c7249d63fa8c411033"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+          "sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/card/PutIntoGraveFromAnywhereThisTurnPredicate.java",
+          "sha256": "c2935fa1d4f1d97eb62fc90dd802089b75dd9abb516de4baafec0531d2f55c35"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+          "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/common/CardsPutIntoGraveyardWatcher.java",
+          "sha256": "7adcba89bfd94638c279998a6175725be871324c3f70b3f05ab0b540f107b2a3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+          "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+        }
+      ]
+    },
+    {
+      "name": "Restorative Technique",
+      "paired_provenance": "src/card_definitions/msh/restorative_technique.json",
+      "paired_provenance_sha256": "f421fec96d5e52324ac2a6fd8affcd68a1c7d50a392f59b3e90d14e4b5e0edc7",
+      "rust_definition_sha256": "de46a7c9d6e29c3be7620bd5dd98c5f788656cc4f0b3599085781bc91e9ccb44",
+      "oracle_id": "f7b2606c-42b8-46d6-bcaa-8d4506b348eb",
+      "facts_sha256": "c7f3cbe4c270e8fc93eb441d0613e363293dbefdfdb7bea4c352bef760c736ed",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/r/RestorativeTechnique.java",
+      "java_sha256": "cf9e2ffd9296ae172916228983481286ef10133c4be008bae3ab5cc741fcbfe7",
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeTargetEffect.java",
+          "sha256": "9f89eae0cab67d969113091a50272e8b91503ec438466324e3790bbe8ac54b65"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayTargetPlayerEffect.java",
+          "sha256": "298e82bd931bffcac0e192153e518c82256b08faf43d438ec03b1ba7dfd1adb9"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+          "sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterLandCard.java",
+          "sha256": "e9e31535856250c875e2036b551236be506dd0b4229c3e7a4f3f4f639ac257df"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+          "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+          "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+          "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+          "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/targetpointer/NthTargetPointer.java",
+          "sha256": "d3f06450efa592e446dbcab29c913f7946e36b31d5d0a7f6b1d3e5ac824ebc73"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+          "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+        }
+      ]
+    },
+    {
+      "name": "Spider-Man, To the Rescue",
+      "paired_provenance": "src/card_definitions/msh/spider_man_to_the_rescue.json",
+      "paired_provenance_sha256": "d3f7aee8e25430fe5e15e9008adfdd67a2490bed98412b5d79dd769b7d29aa40",
+      "rust_definition_sha256": "6e0864fb802e1737a0fc3640ad6679e27b4eb167dab91757532984b7fbb19fe5",
+      "oracle_id": "85dec6cf-6f27-4eb0-834b-5f6fbbe25fc8",
+      "facts_sha256": "bd024708a94e8ca29fe664ea2eff543f445cc895a55a777f1a3b49972bcbda75",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/s/SpiderManToTheRescue.java",
+      "java_sha256": "b823e6546f267f2aecffe38938dfd8539ee38921e6f3c365e5d356fd48a7d9bc",
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+          "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+          "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+          "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+          "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java",
+          "sha256": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+          "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+        }
+      ]
+    },
+    {
+      "name": "Speed, Young Avenger",
+      "paired_provenance": "src/card_definitions/msh/speed_young_avenger.json",
+      "paired_provenance_sha256": "babd1530f0ab8f31ecc26e8d1f4e49808e3aade8ba0e972e58838b3f1a4b2ae0",
+      "rust_definition_sha256": "5667ba39d2d7e0ef4b99c0804d671d8c9ca7dc981e94627876bb669fa068864f",
+      "oracle_id": "2fb0f2d2-ed1f-4181-91f2-684a71c34998",
+      "facts_sha256": "237ecf7a4f3d7b72d24ce73141b9ed38e98bbf0b711da39be840efe6dfb013de",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/s/SpeedYoungAvenger.java",
+      "java_sha256": "4b04ef39d5205da8e4683d16ec08f268984c440f071d5e999e8c6a0457e99afd",
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+          "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+          "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostImpl.java",
+          "sha256": "22993c90f4047d015504922f5fe38d98de760d1a89755ec8ce40f127b4e3274a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+          "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+          "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AbilityPredicate.java",
+          "sha256": "6e8ecc0108fde867fbb47c3afbc24e5dd30a0e9de97efc5e06950498f0b32dda"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+          "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "active_fd_maps_exe_cwd_matches": [],
+    "unreadable_proc_maps": 47,
+    "files_removed": 1019,
+    "bytes_freed": 122422354,
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-twelfth-combined-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "1fdd953b5bc54d27647f3731f2b968908abf4748196b68b920198e5621865cd6"
+      },
+      {
+        "path": "<cache>/rustmage-msh-twelfth-combined-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ],
+    "required_shared_libraries": [
+      {
+        "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<existing-worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-coulson/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-hideout-falcon/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-under-siege/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-baron/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage/msh-improvise/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-eleventh-combined-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-reflexive-tap-haste-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-twelfth-combined-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ]
+  },
+  "implementation_interval": {
+    "start_utc": "2026-10-25T06:12:50+00:00",
+    "end_utc": "2026-10-25T06:25:44.360734+00:00",
+    "elapsed_seconds": 774.360734,
+    "new_assurance_groups": 2,
+    "whole_cards_newly_implemented": 0,
+    "groups_per_elapsed_hour": 9.297992116423611,
+    "scope": "Assurance authorship, queued compilation, one fixture correction, final native/static/trace checks and terminal cleanup. Not card implementation throughput or gameplay benchmark."
+  },
+  "remaining_limits": [
+    "Bounded32 natural games add to existing52 prior natural-game evidence; they do not certify all213 candidate identities, all281 printed obligations or full set gameplay/performance.",
+    "Mandatory follow-up final aggregate release/CI and independent reviews remain open. No new ID/schema allocation or main merge."
+  ]
+}
