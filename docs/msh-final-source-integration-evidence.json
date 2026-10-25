@@ -1,0 +1,1643 @@
+{
+  "scope": "Final source union and bounded trace acceptance. Complete flags are candidates until final natural-game corpus, ordinary aggregate validation, performance and final published-head gates finish.",
+  "created_utc": "2026-10-25T19:19:07.647375+00:00",
+  "source_runtime_head": "8514c3b352f5070530fc53f200f36407fef527b3",
+  "integration_base": "6a782a266f7dcc987ac0f58d03f1303ae282ec43",
+  "source_anchors": {
+    "root": "a7924eff645ac9fbd8c43bf242ef3b8ed9e80569",
+    "existing": "2de94e633308b26d8b97f2f0445efb207da73121",
+    "history": "a5fabfd45c8fa123c9c552190e9f214b949a8b48",
+    "copy": "b5cfb44c961bdcbf974c88019a89f895127c0712",
+    "game_harness": "5822fa0b6e86597f3f23522f241af65bdfcbb2e8",
+    "copy_interactions": "bded2eebc5732ee1a02726d795fc4239fd242637",
+    "shared_fixture_correction": "f64cc1a6934f16495f2561da43b8b3a238f88870"
+  },
+  "candidate_membership": {
+    "oracle_identities": 281,
+    "printing_inventory": 448,
+    "complete_candidates": 281,
+    "gated_candidates": 0,
+    "membership_unchanged": true,
+    "not_a_full_set_acceptance_claim": true
+  },
+  "trace_proof": {
+    "created_utc": "2026-10-25T19:18:08.687751+00:00",
+    "source_head": "8514c3b352f5070530fc53f200f36407fef527b3",
+    "base": "6a782a266f7dcc987ac0f58d03f1303ae282ec43",
+    "baseline": {
+      "path": "src/assurance/card_traces.json",
+      "sha256": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3",
+      "rows": 2535,
+      "schema": 151
+    },
+    "normal": {
+      "path": "<cache>/rustmage-msh-final-traces-4.json",
+      "sha256": "d3660f0ceb907d6420effb08d17c49e20a684e508cbe37736242224ac1827f30",
+      "rows": 2584,
+      "schema": 152
+    },
+    "previous": {
+      "path": "<cache>/rustmage-msh-final-traces-4.previous-schema.json",
+      "sha256": "95b46d1e4fc67feed6912365999fcc38b2e58af77daf929110cc801e592c305b",
+      "rows": 2584,
+      "schema": 151
+    },
+    "all_inherited_full_trace_structs_exact": true,
+    "inherited_changed": [],
+    "removed": [],
+    "normal_inherited_nonschema_fields_exact": true,
+    "fresh_outputs_byte_identical_to_first_runtime_export": true,
+    "new_rows": [
+      {
+        "name": "Armor Wars",
+        "catalogue_id": 225,
+        "rust": "src/card_definitions/msh/armor_wars.rs",
+        "rust_sha256": "bb354a1fee0fb9e01aa588f205c8f5bea710bb7345c2091895e3860c3f73bc1e",
+        "provenance": "src/card_definitions/msh/armor_wars.json",
+        "provenance_sha256": "680488833d60a091459b6e887d972af8b2a934c5ff84b3ef464aa3524acdfe1b",
+        "oracle_id": "1ad83cac-2c85-477b-ab00-1369f9683db5",
+        "facts_sha256": "ebf5f4db2ee4a0d7c4bdb6c933c3b519ffd2dcbbe90cdae638d2cf91023de288"
+      },
+      {
+        "name": "Baron Helmut Zemo",
+        "catalogue_id": 333,
+        "rust": "src/card_definitions/msh/baron_helmut_zemo.rs",
+        "rust_sha256": "4b54606546e4b3deb3dff7b2793689bef5da1691f8d9060ded407b5d7f9ac11b",
+        "provenance": "src/card_definitions/msh/baron_helmut_zemo.json",
+        "provenance_sha256": "bd441a0c354609ed99f503254bc24210561b6c3e1758deba36f9c34b088380ce",
+        "oracle_id": "0fe6c042-1182-4392-8938-fee36149d74f",
+        "facts_sha256": "015d5c5972dea39c6597840fffc0945fe86b3a13c14c4bf1fd87cd5d88af113b"
+      },
+      {
+        "name": "Black Widow, Super Spy",
+        "catalogue_id": 434,
+        "rust": "src/card_definitions/msh/black_widow_super_spy.rs",
+        "rust_sha256": "d134c8f43ea201f93500f8315e9d06435ddf8533c1b3b8d417b53c7fb2453bc6",
+        "provenance": "src/card_definitions/msh/black_widow_super_spy.json",
+        "provenance_sha256": "d2d180e12c426aaf34beb613c84a1ad91f448ac4959de9c1494f81b137f36be4",
+        "oracle_id": "579f9a86-a1af-4c2a-a7e5-8fea0bd0eb61",
+        "facts_sha256": "575a5b0db0130243fcdd4122f1c86bac4713b65b635d068d67b6834e6d23cf8d"
+      },
+      {
+        "name": "Bruce Banner // The Incredible Hulk",
+        "catalogue_id": 571,
+        "rust": "src/card_definitions/msh/bruce_banner_the_incredible_hulk.rs",
+        "rust_sha256": "a513cfb52e28e89a8622ffa45eeac9659b922500c029235fa93d14853f5bf22e",
+        "provenance": "src/card_definitions/msh/bruce_banner_the_incredible_hulk.json",
+        "provenance_sha256": "dac52b35e08b59594b3dcda75aeb75327bd76048e42fd70431454d79276949d5",
+        "oracle_id": "b6c0ee14-2028-4e8b-9acd-ff78821bca9b",
+        "facts_sha256": "452ba06a5e9d2abdb5fe9626c7ebde2633461aa100fdeb37a1f10cc0987f9371"
+      },
+      {
+        "name": "Captain America, Super-Soldier",
+        "catalogue_id": 643,
+        "rust": "src/card_definitions/msh/captain_america_super_soldier.rs",
+        "rust_sha256": "08196b70babeb6f20aa8bd64e7f8436d805649c0711d70652c892f374698cf2a",
+        "provenance": "src/card_definitions/msh/captain_america_super_soldier.json",
+        "provenance_sha256": "6c2fe21539dceda97ac1b9ee2ff65b10445b9d735a7469419dcc26acbafe126d",
+        "oracle_id": "ac1b6ffc-12a9-4d9c-a9fc-68a839a40738",
+        "facts_sha256": "e31e00e496c00e829a5a53b027374a00c011d633e0b019b76b1d6466509b0b83"
+      },
+      {
+        "name": "Cloak and Dagger, Entwined",
+        "catalogue_id": 773,
+        "rust": "src/card_definitions/msh/cloak_and_dagger_entwined.rs",
+        "rust_sha256": "19b6d6528ea86855904b683a5889e8ff854de71b094f6fd086721b2fd755d010",
+        "provenance": "src/card_definitions/msh/cloak_and_dagger_entwined.json",
+        "provenance_sha256": "4119f1292376d75a720bb2f1ca8bf80987324ce4cf4719135dc94675d64b167b",
+        "oracle_id": "64132f93-66ac-4794-8c07-a88f9ed0e22b",
+        "facts_sha256": "e474281f28a85f96ecce4768ce930e3d8db6b8fdd7d5472ff68aec5c716dee97"
+      },
+      {
+        "name": "Construct a Cosmic Cube",
+        "catalogue_id": 835,
+        "rust": "src/card_definitions/msh/construct_a_cosmic_cube.rs",
+        "rust_sha256": "aa4477a3aa4bb7c37c141832ec66a2a64d0f842206189a233e9ee3673fc2d394",
+        "provenance": "src/card_definitions/msh/construct_a_cosmic_cube.json",
+        "provenance_sha256": "5ef8a0c9e421f1a3304e2d56565ab5022330702b06499dbe3c1602297a0dd027",
+        "oracle_id": "369aa9a6-af8a-432c-adff-ced2bb203dc7",
+        "facts_sha256": "f32e4f84c9c74dfd9c011a37b98d5432e49324403fa81fcf48aa9de044f83da0"
+      },
+      {
+        "name": "Cosmic Cube",
+        "catalogue_id": 859,
+        "rust": "src/card_definitions/msh/cosmic_cube.rs",
+        "rust_sha256": "8309b235caaa9ca21fef12a1506c785949f5f7f9420c5a9ae402bfc56c7e5a94",
+        "provenance": "src/card_definitions/msh/cosmic_cube.json",
+        "provenance_sha256": "140a74511bbab7b3f66cf19fdd8356a00ff70172382bc44b09d7d9aca18912b3",
+        "oracle_id": "0866a630-d962-4aa9-a15f-08b2947540ef",
+        "facts_sha256": "f3b3951097db43a25a7f2cd687afc36e7b2be782c205664f59164a7cf2c2bc5d"
+      },
+      {
+        "name": "Doom Reigns Supreme",
+        "catalogue_id": 1132,
+        "rust": "src/card_definitions/msh/doom_reigns_supreme.rs",
+        "rust_sha256": "83581999714d71fa335d0cf9897a08d7f08c938ebfce4060bff5f2e1a06594aa",
+        "provenance": "src/card_definitions/msh/doom_reigns_supreme.json",
+        "provenance_sha256": "6d9cb9ffd9d078769bc12014953cb7691839111176dbf34cee3143aebb5158cd",
+        "oracle_id": "f398a742-22c1-4da9-9d49-fdce2eb93d01",
+        "facts_sha256": "b135a825c040f024441e308d1b0fad14bd315e265fb45c1da1acb960ebea0547"
+      },
+      {
+        "name": "Echo, Perceptive Prodigy",
+        "catalogue_id": 1250,
+        "rust": "src/card_definitions/msh/echo_perceptive_prodigy.rs",
+        "rust_sha256": "9d6ef4c5bc6060515d44271462317fa5b9a6ae0b01e074b241849935e15c7c51",
+        "provenance": "src/card_definitions/msh/echo_perceptive_prodigy.json",
+        "provenance_sha256": "50a37c37c156d12c4b2496da4b55116f2122d1ad8afbfe3d95ba0492c671ba9d",
+        "oracle_id": "1091c83a-a4b9-457f-a69a-9a44a7e10759",
+        "facts_sha256": "0e21244bc3a6c7def060ba621accf0b30b5757ddfe48983f2b1c71b9c0a5f02f"
+      },
+      {
+        "name": "Elektra, Daughter of the Hand",
+        "catalogue_id": 1281,
+        "rust": "src/card_definitions/msh/elektra_daughter_of_the_hand.rs",
+        "rust_sha256": "3251be7f017fd728a6d094c8179f849dae889d0107648951e517340da44c7cc7",
+        "provenance": "src/card_definitions/msh/elektra_daughter_of_the_hand.json",
+        "provenance_sha256": "ce5d8a3b8149830210514fdc193e81263d128786103f6ffa59cd4ac3f862c7a0",
+        "oracle_id": "b46647a1-0c91-451b-8c0b-be8fe02faee2",
+        "facts_sha256": "61e1b69ea557f3aac8eb3c243920255848c595fa4a900d12387c4d2cd49e374f"
+      },
+      {
+        "name": "Evil's Thrall",
+        "catalogue_id": 1390,
+        "rust": "src/card_definitions/msh/evil_s_thrall.rs",
+        "rust_sha256": "a5d4608f63bba75adfe9e0151154d202730e8f9c7b6d576467416c53244349e3",
+        "provenance": "src/card_definitions/msh/evil_s_thrall.json",
+        "provenance_sha256": "f3987e802aa65e885da38ad27ecfecfd3f28b41301ff46b1c73cbed44718c170",
+        "oracle_id": "d7562f89-4808-44ab-8dc9-fc4078e8a47b",
+        "facts_sha256": "873a4e5353b431ef6e1d997e2ec53f7606e38709efe5f7a2d8c65e9722c27212"
+      },
+      {
+        "name": "Fin Fang Foom",
+        "catalogue_id": 1508,
+        "rust": "src/card_definitions/msh/fin_fang_foom.rs",
+        "rust_sha256": "9f4782373706a63aa870c0e54ff6504c7f78313d9c0eddf9c1533e2c1fe45d5b",
+        "provenance": "src/card_definitions/msh/fin_fang_foom.json",
+        "provenance_sha256": "e7e70693128854d28391ba2a33813124737f64a185cd1ff98af2579aecbe2ce0",
+        "oracle_id": "52ec472e-a745-4e25-b9a7-8e1eb8873594",
+        "facts_sha256": "bfdccb9fe4b85adab006415a71aecc2f94f0284affa5adaddb7dfae2b2d9644b"
+      },
+      {
+        "name": "Hawkeye, Master Marksman",
+        "catalogue_id": 1967,
+        "rust": "src/card_definitions/msh/hawkeye_master_marksman.rs",
+        "rust_sha256": "6a77bb1bc6ac627ece7d653b9d3672563c6686d3a1362905cb5dc385371c6570",
+        "provenance": "src/card_definitions/msh/hawkeye_master_marksman.json",
+        "provenance_sha256": "e84697e9079eb338445b15df7079bf41da19e5977f20aec671097638dbe4965f",
+        "oracle_id": "6b59bb1f-f2d4-4d47-bd57-23927d588381",
+        "facts_sha256": "7db2bd745aa109b9cddbe494c9eca8f33f2a35d21a77882ff0531ced491cb4f9"
+      },
+      {
+        "name": "Hawkeye, Young Avenger",
+        "catalogue_id": 1968,
+        "rust": "src/card_definitions/msh/hawkeye_young_avenger.rs",
+        "rust_sha256": "8dd1cec5cabda997e2ea691b7ce1816d3017dba2a074524e459bbbef63c0d45f",
+        "provenance": "src/card_definitions/msh/hawkeye_young_avenger.json",
+        "provenance_sha256": "479aa966c19407af5bc3d2878cda2a2a40d4c91e8b954ae5cf52d8ac94bd9c66",
+        "oracle_id": "c8f8b4ed-8455-45cd-a24c-e2f42cd5e5b1",
+        "facts_sha256": "4de238a5dc77c7b1b9687354a8aa6d9a77e9023668429f833405ee57efab2b2e"
+      },
+      {
+        "name": "Hellcat, Undying Vigilante",
+        "catalogue_id": 1998,
+        "rust": "src/card_definitions/msh/hellcat_undying_vigilante.rs",
+        "rust_sha256": "6e69ed3f3c65bbd6ecb924f1fe381e8a01682943abf92a9993bacf6eaa33bcfa",
+        "provenance": "src/card_definitions/msh/hellcat_undying_vigilante.json",
+        "provenance_sha256": "4bf1c4e955f5f279e32ad20cba3908bbc90ee7d23ab666ef5aea59f5697a84eb",
+        "oracle_id": "4c27ba61-6812-4dd7-8efc-65435a8df7b5",
+        "facts_sha256": "d78de0ce922d326631478b42b74978c8f30f7a98ee8794cc9644b2f5b9ed614f"
+      },
+      {
+        "name": "Iron Fist, Living Weapon",
+        "catalogue_id": 2224,
+        "rust": "src/card_definitions/msh/iron_fist_living_weapon.rs",
+        "rust_sha256": "2f1bf31335248964e7390f7115d63a08ef7d1c165f73bf0a2373f36e1aba6f8e",
+        "provenance": "src/card_definitions/msh/iron_fist_living_weapon.json",
+        "provenance_sha256": "15bb2dff63f802981914259716cfba9737898e832f7e54cfcdf607cbf3d46e01",
+        "oracle_id": "bbf873c2-94c1-46b8-912e-e29e48e0212c",
+        "facts_sha256": "72d49068561bc193e60092a082f109baf73be56fa5508337e97fb169d264ccab"
+      },
+      {
+        "name": "Iron Man Armor",
+        "catalogue_id": 2230,
+        "rust": "src/card_definitions/msh/iron_man_armor.rs",
+        "rust_sha256": "2bc78ccb299c34863d1f319a8dfb8b2341b461d964b5c11a0de631d1608eae37",
+        "provenance": "src/card_definitions/msh/iron_man_armor.json",
+        "provenance_sha256": "4cc9c278a9ad2a279c85b878a40f1ae9fcb9150675372393a7cde10fd69189cc",
+        "oracle_id": "958d81c2-ca09-4275-890e-3bb595317325",
+        "facts_sha256": "1653254302ec981c0945e17d2ba5f3e5c4a3a2df56e7ce58406c90648262059b"
+      },
+      {
+        "name": "Kang the Conqueror",
+        "catalogue_id": 2311,
+        "rust": "src/card_definitions/msh/kang_the_conqueror.rs",
+        "rust_sha256": "0c6c7ce5b6fcd4fca6f48e7b667fd03d0b90a1a43c3b44c260e5c53aed41882a",
+        "provenance": "src/card_definitions/msh/kang_the_conqueror.json",
+        "provenance_sha256": "41599bda204033a803f249f9c8be6dbed3906d47865707d28edfe02ca56fa952",
+        "oracle_id": "da6e24a4-8adc-41a1-b5eb-3e31dc1250c9",
+        "facts_sha256": "74935864dad224ea8a2ab79e5ae6cbad8ac48c95693806ec479ee0dad9b0c88a"
+      },
+      {
+        "name": "Klaw, Sonic Subjugator",
+        "catalogue_id": 2381,
+        "rust": "src/card_definitions/msh/klaw_sonic_subjugator.rs",
+        "rust_sha256": "c830c743cdeaccd03494b966455af794c94328c572424758134dbceb35f1de56",
+        "provenance": "src/card_definitions/msh/klaw_sonic_subjugator.json",
+        "provenance_sha256": "a80ac8e9e4336e4a1bb89549eafeb524ae6e46c73b030cdfd6a55972022ea7bc",
+        "oracle_id": "1c233e08-d5a3-48d7-9074-20393896a480",
+        "facts_sha256": "e10306222a2f3871d3a692026a21d51080b63018de470cfb6cdc86e4d87e21fb"
+      },
+      {
+        "name": "Leader, Super-Genius",
+        "catalogue_id": 2463,
+        "rust": "src/card_definitions/msh/leader_super_genius.rs",
+        "rust_sha256": "ed6efe65b299e62e4549219bd35ec63db45c7565cb90ab9d1117c236cc2839cf",
+        "provenance": "src/card_definitions/msh/leader_super_genius.json",
+        "provenance_sha256": "72e42f593b11edd7e0e954cb1788eeeabf3c8746cb22e4224e1f1907ba26993e",
+        "oracle_id": "bec686dd-a9ea-4db5-bc20-8e40420b9a9b",
+        "facts_sha256": "8d712c75d410ec52b543cddec3d67830ffcf1662da33d1e6275ff804c264a3b5"
+      },
+      {
+        "name": "Loki Laufeyson",
+        "catalogue_id": 2538,
+        "rust": "src/card_definitions/msh/loki_laufeyson.rs",
+        "rust_sha256": "a8b78af7a01b823dbe7b057d2a0181432e5666262bd9fe1f590dd04fd5125ccd",
+        "provenance": "src/card_definitions/msh/loki_laufeyson.json",
+        "provenance_sha256": "7cf19860e28a66402839f167bab3d6d5a9530027039562a49c90494d3eca0aa5",
+        "oracle_id": "9c78778a-6335-4949-8ade-11d0f085cb2b",
+        "facts_sha256": "23dd95859ef9b4c7aa9a3df2a8456061de8ccc9e704bc238504dd79f94bdcc41"
+      },
+      {
+        "name": "Mjölnir, Hammer of Thor",
+        "catalogue_id": 2801,
+        "rust": "src/card_definitions/msh/mjolnir_hammer_of_thor.rs",
+        "rust_sha256": "8eae27c30755d68e8d0fffd1f8ce2c5476d23b1f9d95ecdb30a75c503a37de41",
+        "provenance": "src/card_definitions/msh/mjolnir_hammer_of_thor.json",
+        "provenance_sha256": "7bf46494fc19e55a7241aaa0fe93a41f634de06a74d348a39f4ce3674214fb13",
+        "oracle_id": "7f9a8845-d760-44a7-a4c9-8a20dba4e14a",
+        "facts_sha256": "46ce9e3c03a14be320b5100c687266a137b78557bc2771e39b7e2861cbbf44e7"
+      },
+      {
+        "name": "Ms. Marvel, Kamala Khan",
+        "catalogue_id": 2869,
+        "rust": "src/card_definitions/msh/ms_marvel_kamala_khan.rs",
+        "rust_sha256": "d3ecd220af45074326a446ed6eef7cc24f64c79028383427959c4806281841fe",
+        "provenance": "src/card_definitions/msh/ms_marvel_kamala_khan.json",
+        "provenance_sha256": "45e59624d4b0cbc6a2c524fb3dfbb7c4590b074135cca1a57d159d1a86c78cea",
+        "oracle_id": "ebedff30-ae43-4861-aab2-afe1fc88337e",
+        "facts_sha256": "390bf275eb11a5365be36e30bd4c2848f809c85b243f21d559fe2af7ccb79983"
+      },
+      {
+        "name": "Photon Blast Barrage",
+        "catalogue_id": 3150,
+        "rust": "src/card_definitions/msh/photon_blast_barrage.rs",
+        "rust_sha256": "1622ed9ff79aa0d59987acd0b11edc63da1324c36efc5fe062822f8d7d0371a6",
+        "provenance": "src/card_definitions/msh/photon_blast_barrage.json",
+        "provenance_sha256": "38f09bb5491e47065ac48639d1636b4b225d37fa5bb872abe8ff20ee091560fc",
+        "oracle_id": "a5424e33-ff4e-4c82-8aa9-9d25ced7830a",
+        "facts_sha256": "ce0a32d3c6998b31c3d03f94378fad6e59798e2474d180c1442fb4303100d3d6"
+      },
+      {
+        "name": "Powerful Broker",
+        "catalogue_id": 3212,
+        "rust": "src/card_definitions/msh/powerful_broker.rs",
+        "rust_sha256": "f1c2eb5cab5887b6a212d819f4f685812e14e1b41bacdc1b76ca15478a43c1c4",
+        "provenance": "src/card_definitions/msh/powerful_broker.json",
+        "provenance_sha256": "9e83074a0543922667833775a04d7bd30185f21356e75197b4f04be2eb96bb80",
+        "oracle_id": "2b3d76e7-faaa-4e6f-9e21-a88dd719247e",
+        "facts_sha256": "60373018b605d51158479855445dc0846f334611ee3f3e6604c6cd574b0a2f79"
+      },
+      {
+        "name": "Robot Domination",
+        "catalogue_id": 3564,
+        "rust": "src/card_definitions/msh/robot_domination.rs",
+        "rust_sha256": "42c614ef2f9cdcbaf1fda1f2c3571b79ffed3d25d02bfd3e82c044398238df88",
+        "provenance": "src/card_definitions/msh/robot_domination.json",
+        "provenance_sha256": "41eff7845960a8dc6a542b2f6dd624e7777e04cb999d304558e58e70cfc28069",
+        "oracle_id": "4f69d2f9-c16a-4752-9026-794a29d73af8",
+        "facts_sha256": "de2dd594ff456a6e237a8ba35477974857742943a1a937cacdd771015aaf0297"
+      },
+      {
+        "name": "Ronin, Shadow Stalker",
+        "catalogue_id": 3581,
+        "rust": "src/card_definitions/msh/ronin_shadow_stalker.rs",
+        "rust_sha256": "91039b3890003aea2b2efb135376952f9a2c5d59e4ef90ed7bb295fe2d28b6c9",
+        "provenance": "src/card_definitions/msh/ronin_shadow_stalker.json",
+        "provenance_sha256": "15ff98e95c638235ce435263ebadbd054d12c6ee3a9070966951f4c7996337a9",
+        "oracle_id": "8ceb1acf-5ff3-4f1a-af04-9f07ad454526",
+        "facts_sha256": "c91363c46da3dae45b80a195d67dd727487a964f732ec39ba25419a62e0015fc"
+      },
+      {
+        "name": "Scientist Supreme of A.I.M.",
+        "catalogue_id": 3723,
+        "rust": "src/card_definitions/msh/scientist_supreme_of_a_i_m.rs",
+        "rust_sha256": "cd015ac1607e09313bd4df61e200c701dcd4106058365827bd8df760ffd93f61",
+        "provenance": "src/card_definitions/msh/scientist_supreme_of_a_i_m.json",
+        "provenance_sha256": "6c5e272d18695d36bd828ca29695d815975cb5bd32915475759d6e8a5704152a",
+        "oracle_id": "c09c424b-6aba-4190-9f55-f0307d746386",
+        "facts_sha256": "a2de9144bc1feb734f813829b4bf2b72027795f73775a2949dc978ac4d2ddf79"
+      },
+      {
+        "name": "Secret Invasion",
+        "catalogue_id": 3760,
+        "rust": "src/card_definitions/msh/secret_invasion.rs",
+        "rust_sha256": "cb948c87f621afa40a1baa39921df6008bdc8733674497c809a139e137d3ce95",
+        "provenance": "src/card_definitions/msh/secret_invasion.json",
+        "provenance_sha256": "4d0dfbaaa795a6ce4b09938772781d4c2d6681004009b403fc85f4925b17f780",
+        "oracle_id": "25443ea4-3177-4e29-a2b1-f3fee60b3205",
+        "facts_sha256": "23902f2567e877aaa06f761441273eaf27c474ef72e9c0481d7db7580f761f2b"
+      },
+      {
+        "name": "Shang-Chi, Master of Kung Fu",
+        "catalogue_id": 3810,
+        "rust": "src/card_definitions/msh/shang_chi_master_of_kung_fu.rs",
+        "rust_sha256": "7bffa2ce32f9444ba61496c2de6ceceaa919a7bf2fe8c1052fdf028442174cc9",
+        "provenance": "src/card_definitions/msh/shang_chi_master_of_kung_fu.json",
+        "provenance_sha256": "60ac73c78cfe57a00a413b2aa33731becd39cdfaaa665bf0309cad516468495b",
+        "oracle_id": "700ef9c8-698b-45f7-a1fd-dec74e553224",
+        "facts_sha256": "96bec0faa158d6b3ad7474c75d7fe60c1180d093ded33f66ffaa7b058d79a14f"
+      },
+      {
+        "name": "Speedball, New Warrior",
+        "catalogue_id": 4004,
+        "rust": "src/card_definitions/msh/speedball_new_warrior.rs",
+        "rust_sha256": "cc071484cc919c79cacdbdee6a91f3a2a95a869a2d167b4dee7eb74e6fb9bdec",
+        "provenance": "src/card_definitions/msh/speedball_new_warrior.json",
+        "provenance_sha256": "133e7314826a9bef8dc1068fb97d56f730e2ee2035de3096d3f07a6eb57a14f1",
+        "oracle_id": "53d3ef8f-8e0f-4119-8cdc-a0bf076b4e91",
+        "facts_sha256": "54099ee6b2d3a836aa845d263654fbb103bb7b45de8f41993ec0e2992c5b14c1"
+      },
+      {
+        "name": "Spider-Woman, Secret Agent",
+        "catalogue_id": 4041,
+        "rust": "src/card_definitions/msh/spider_woman_secret_agent.rs",
+        "rust_sha256": "6b6fb7746b0dfc50d915b9951ebc2c7d2b4445ce86ca448dc1436375b3641f8f",
+        "provenance": "src/card_definitions/msh/spider_woman_secret_agent.json",
+        "provenance_sha256": "0b140eb8626910ac1f802bf073d3d3dfe4187dfed943b8bd8842743f4498efb6",
+        "oracle_id": "04e53f36-9f16-4678-9caf-9afda85f76b4",
+        "facts_sha256": "3f1c9657203df6097bb7e6362c23722f46b3d3ec734da95a749c4fc70292d318"
+      },
+      {
+        "name": "Storm, Windrider",
+        "catalogue_id": 4169,
+        "rust": "src/card_definitions/msh/storm_windrider.rs",
+        "rust_sha256": "ba52128c98cece02a9100c748750e99afeff69a7bdb5225b16f13b74f0bb98f0",
+        "provenance": "src/card_definitions/msh/storm_windrider.json",
+        "provenance_sha256": "9bab290360736fb9a770e946f1b226f2b1a367e9f6b1d5c5b8a2f374c4bc831d",
+        "oracle_id": "06e9287b-56d4-443e-97ba-b5dcdc4fa989",
+        "facts_sha256": "a142c9aae362474193cd10fed4f04e90bf49fbfefa84540972e935ae78cdfe4f"
+      },
+      {
+        "name": "Super-Adaptoid",
+        "catalogue_id": 4258,
+        "rust": "src/card_definitions/msh/super_adaptoid.rs",
+        "rust_sha256": "71aa571503623c011faad9964de3561f7f63a4a9e0181fb817e3d60cd7a95fb8",
+        "provenance": "src/card_definitions/msh/super_adaptoid.json",
+        "provenance_sha256": "781828660b8b218335d70496144d06ce64754c0cfd8c2da479cac143c17e0a9b",
+        "oracle_id": "f93fa6ec-1f13-4109-aa60-11e148f7ba88",
+        "facts_sha256": "0481bc192f440a63fa0e81d0c71ea9a76c1868ad22a83019af960e6ab30eb75e"
+      },
+      {
+        "name": "Super-Soldier Serum",
+        "catalogue_id": 4260,
+        "rust": "src/card_definitions/msh/super_soldier_serum.rs",
+        "rust_sha256": "ee8e419c27e794eed1eed94ceb7108decb82f54da7c00073f3ec254eb4aa77c1",
+        "provenance": "src/card_definitions/msh/super_soldier_serum.json",
+        "provenance_sha256": "18f2582212b019f930d721425b8e1810b1f1fdafbd7d91688f56bdf862996673",
+        "oracle_id": "6f2ba142-5e7c-4709-ae03-e028cb2a9872",
+        "facts_sha256": "60cf12ea50fdfa3c83145a5d346e8f84a3fdff5d004e36151c827bec082a4f8d"
+      },
+      {
+        "name": "Swordsman, Sharp Scoundrel",
+        "catalogue_id": 4297,
+        "rust": "src/card_definitions/msh/swordsman_sharp_scoundrel.rs",
+        "rust_sha256": "67f588d605777669b18f2a481579b87c2f5f05ef962065dd80b26a1548d302a4",
+        "provenance": "src/card_definitions/msh/swordsman_sharp_scoundrel.json",
+        "provenance_sha256": "2cb71fd0a274b76973f92f2672df43e8b0532b9fbffae438f2ff84d287a58c3e",
+        "oracle_id": "2f15abe7-54aa-40ed-a15d-5b827f1c3923",
+        "facts_sha256": "69be87ae9ce040f08173eff859b3c1fe6c0394563c695fbc48ab6ee688e0284b"
+      },
+      {
+        "name": "The Kingpin of Crime",
+        "catalogue_id": 4458,
+        "rust": "src/card_definitions/msh/the_kingpin_of_crime.rs",
+        "rust_sha256": "9d104f29848b126ba0eceaf26327edbb5fe6032a2c6ab95d64a13b787eb639e8",
+        "provenance": "src/card_definitions/msh/the_kingpin_of_crime.json",
+        "provenance_sha256": "30ba44e38335a97a9f2a1bd85145b36f4c32613c9e3af622220d07202a669c78",
+        "oracle_id": "3eeeb159-aa45-4a9b-9618-8542604b9830",
+        "facts_sha256": "bf1ae9c42b79498b30c4e277103567827c1c0dd306b0da3d2adb164fbe4f457b"
+      },
+      {
+        "name": "The Mind Stone",
+        "catalogue_id": 4477,
+        "rust": "src/card_definitions/msh/the_mind_stone.rs",
+        "rust_sha256": "3f3470d23a43bb2bfbda2c8d1da7cf68a06c7511f9f41f6a04f934fcad2b20af",
+        "provenance": "src/card_definitions/msh/the_mind_stone.json",
+        "provenance_sha256": "cceca755f096453c61390f7471a2a9c008abdd5ba9b36f39bbaad6872f4e88c2",
+        "oracle_id": "b175e826-09e8-4fae-9f2e-b902f95b282d",
+        "facts_sha256": "2d1251fd99d3d9cff8245178e5fd2fe18a28b5727b109c4ab3fc8b05db66cac2"
+      },
+      {
+        "name": "The Ruinous Wrecking Crew",
+        "catalogue_id": 4492,
+        "rust": "src/card_definitions/msh/the_ruinous_wrecking_crew.rs",
+        "rust_sha256": "4891b7332da48d7d54d954e2dff6bd6a199d1f13b5e9dfaa0504632f46fcd26c",
+        "provenance": "src/card_definitions/msh/the_ruinous_wrecking_crew.json",
+        "provenance_sha256": "b8667d144738f3547d07eed50e57978db8599bcc1fc0779c0e277991d2ddcda5",
+        "oracle_id": "0ff9c0cc-4fb3-4117-9a8e-5b51f62306c4",
+        "facts_sha256": "2aa3df1f0d9507f970071a62ae1a0a37af54e1e68125adeb2c9eb5282cfcdeb9"
+      },
+      {
+        "name": "The Super Hero Civil War",
+        "catalogue_id": 4505,
+        "rust": "src/card_definitions/msh/the_super_hero_civil_war.rs",
+        "rust_sha256": "a8a18812f6299d2f4186a5d4d7dfbf39493bb74915c21d632b49b0b84ac9ab4e",
+        "provenance": "src/card_definitions/msh/the_super_hero_civil_war.json",
+        "provenance_sha256": "4e67ddcd7136d6836d044637d329721d73b311764f5a651d8015c315179853f9",
+        "oracle_id": "11d74dc2-8c11-4d4b-b727-8216d2eb6b4e",
+        "facts_sha256": "e1bde7deaf758e4d42b722bccb1ad942a1322617673f9eeb0c56ef57815b4308"
+      },
+      {
+        "name": "The Wondrous Wasp",
+        "catalogue_id": 4520,
+        "rust": "src/card_definitions/msh/the_wondrous_wasp.rs",
+        "rust_sha256": "5cec4ad5d31df5c42f5c83b49fb5d19e4fbe2d1791b4f6da2f5c24822e888074",
+        "provenance": "src/card_definitions/msh/the_wondrous_wasp.json",
+        "provenance_sha256": "3b1ec8174f69e0f003e866d0fc8abd1cdd10ded33c07a6e4fe669b07e5d718f2",
+        "oracle_id": "5ad8963b-8091-4787-9147-20a1fe7bf0fb",
+        "facts_sha256": "2dde2fe81e0f3b894439f4c041cbce943b1e753540ac166e1a859c52e8d47915"
+      },
+      {
+        "name": "Tony Stark // The Invincible Iron Man",
+        "catalogue_id": 4631,
+        "rust": "src/card_definitions/msh/tony_stark_the_invincible_iron_man.rs",
+        "rust_sha256": "0a49f8663ffe44e8e4ff356d61ad360bed338e4098c6c8497647f282fa65c3da",
+        "provenance": "src/card_definitions/msh/tony_stark_the_invincible_iron_man.json",
+        "provenance_sha256": "44938d994abadfc6b69ea2f8fbd351addf912fd6671ab648b2be3d50277e9fe9",
+        "oracle_id": "4a46ea59-6c5d-4bed-9951-b5590f9a1bdb",
+        "facts_sha256": "4927b2cbcd71e54a9aecccc05357877807d00a8c42421a882ab8eade9deeb342"
+      },
+      {
+        "name": "Ultron, Artificial Malevolence",
+        "catalogue_id": 4748,
+        "rust": "src/card_definitions/msh/ultron_artificial_malevolence.rs",
+        "rust_sha256": "516ec257c1de09f5e021de110f1625fc2e062271f6fad4ee2166e5c0b40ac7f2",
+        "provenance": "src/card_definitions/msh/ultron_artificial_malevolence.json",
+        "provenance_sha256": "dbdccef1a434d6077eeb4afb45c09849fdffa246ba28c4806af696f6a2e309b2",
+        "oracle_id": "a8f25e67-2112-4355-9298-363ed04a5cb8",
+        "facts_sha256": "9b2d673916203f821b00aef54368aa5b6c524ecec737beb64a28bc2ff003db4f"
+      },
+      {
+        "name": "Vision Quest",
+        "catalogue_id": 4915,
+        "rust": "src/card_definitions/msh/vision_quest.rs",
+        "rust_sha256": "ed35551adff237fcc5a8f9391c53de880dd3d254c8614cc73bc35c5637fe6ce7",
+        "provenance": "src/card_definitions/msh/vision_quest.json",
+        "provenance_sha256": "0814defbb4f56d2f60d77afe98cfb8678d10df7eadc7427cda6a7e469650023e",
+        "oracle_id": "240410a0-3288-4336-b1ad-34936e64ccf2",
+        "facts_sha256": "50fc23f339b55d251d38903f00dca45b449ce70b14063668b4f239092ff4fa88"
+      },
+      {
+        "name": "Winter Soldier, Icy Assassin",
+        "catalogue_id": 5082,
+        "rust": "src/card_definitions/msh/winter_soldier_icy_assassin.rs",
+        "rust_sha256": "11615167dbc8b1f13c34b98e2b27ea223fedaceeaa07e4be012f577ae0ab90e3",
+        "provenance": "src/card_definitions/msh/winter_soldier_icy_assassin.json",
+        "provenance_sha256": "c5f4869fdce291a51b5d01358de261c2826439c9a0c636a157c3e66219a0a758",
+        "oracle_id": "6f4c94b6-f829-4646-a574-083997b78dfb",
+        "facts_sha256": "1fe7c689d946e3dbdfafadc5b71aeea1cc9e9b697dd3d24d1aa90e3b9fe8ca81"
+      },
+      {
+        "name": "Wolverine, Fierce Fighter",
+        "catalogue_id": 5106,
+        "rust": "src/card_definitions/msh/wolverine_fierce_fighter.rs",
+        "rust_sha256": "efd674d51e2354f1d379dab0ccf7cc8355b5011fb995854e1bd4e85e4a64d2e2",
+        "provenance": "src/card_definitions/msh/wolverine_fierce_fighter.json",
+        "provenance_sha256": "7c137b163b18ede1a1d4f435d16d7eb5814bafff699935bf26550790750e71b7",
+        "oracle_id": "8429ba6a-6c06-4a83-a6ee-023b64b825f8",
+        "facts_sha256": "8d2f738c58c39349f22824e288d597b1307e03666fedfbcf2f6d44d693965a78"
+      },
+      {
+        "name": "World War Hulk",
+        "catalogue_id": 5113,
+        "rust": "src/card_definitions/msh/world_war_hulk.rs",
+        "rust_sha256": "2877e573f1c3d311a7fe4b6dd11a7e76a60e861c9732544fe748fe8216ff7891",
+        "provenance": "src/card_definitions/msh/world_war_hulk.json",
+        "provenance_sha256": "e50d0d103bf06deacc694ad0c8ee9b1d511a4b6a283709ce1a40a8e123260fd7",
+        "oracle_id": "8c4da760-8913-46ca-b00c-bba6d877d482",
+        "facts_sha256": "b9e36eaae63f89e42bd788dc2985ced360daf8d608555ca1f6ee948cf2308f7f"
+      },
+      {
+        "name": "Worlds Within Worlds",
+        "catalogue_id": 5114,
+        "rust": "src/card_definitions/msh/worlds_within_worlds.rs",
+        "rust_sha256": "d7e6c148d205abc05c1151821b720dddc82292ff6e476a87c374a45f1ded671f",
+        "provenance": "src/card_definitions/msh/worlds_within_worlds.json",
+        "provenance_sha256": "9efb4e30d55008f12ddea44ccab17437e51b61f2ee051c70225178ade8c35c15",
+        "oracle_id": "e25062ba-7176-4d59-ac3e-26d19b26f02a",
+        "facts_sha256": "c495b3e3578f1405b65504d6b324dde533406f84d86a7c5f7726783743ec134c"
+      }
+    ],
+    "new_rows_count": 49,
+    "projection_scope": "Existing recording-only schema parameter changes Observation.schema to151. No field removal, recorder changes, or per-card exceptions. Every previous151 full Trace struct is compared directly to committed baseline. Normal output remains152.",
+    "fixed_inputs": 11359,
+    "changed_inputs": [],
+    "checks": "<cache>/rustmage-msh-final-traces-4-checks.json",
+    "guard": "<cache>/rustmage-msh-final-traces-4-guard.json",
+    "proof_path": "<cache>/rustmage-msh-final2584-trace-proof.json",
+    "proof_sha256": "2a323c88fe3e499cb5955c32a214dba3c482a14bd9470752fa098c082e48c87b"
+  },
+  "new_admission_rules_evidence": [
+    {
+      "name": "Armor Wars",
+      "catalogue_id": 225,
+      "rust": "src/card_definitions/msh/armor_wars.rs",
+      "rust_sha256": "bb354a1fee0fb9e01aa588f205c8f5bea710bb7345c2091895e3860c3f73bc1e",
+      "provenance": "src/card_definitions/msh/armor_wars.json",
+      "provenance_sha256": "680488833d60a091459b6e887d972af8b2a934c5ff84b3ef464aa3524acdfe1b",
+      "oracle_id": "1ad83cac-2c85-477b-ab00-1369f9683db5",
+      "facts_sha256": "ebf5f4db2ee4a0d7c4bdb6c933c3b519ffd2dcbbe90cdae638d2cf91023de288",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-armor-hulk-sagas-evidence.json",
+          "sha256": "28d1385ccd39ebbbd8ed4292c452aa958083edc1eb60b55f4533cc2676108faf"
+        }
+      ]
+    },
+    {
+      "name": "Baron Helmut Zemo",
+      "catalogue_id": 333,
+      "rust": "src/card_definitions/msh/baron_helmut_zemo.rs",
+      "rust_sha256": "4b54606546e4b3deb3dff7b2793689bef5da1691f8d9060ded407b5d7f9ac11b",
+      "provenance": "src/card_definitions/msh/baron_helmut_zemo.json",
+      "provenance_sha256": "bd441a0c354609ed99f503254bc24210561b6c3e1758deba36f9c34b088380ce",
+      "oracle_id": "0fe6c042-1182-4392-8938-fee36149d74f",
+      "facts_sha256": "015d5c5972dea39c6597840fffc0945fe86b3a13c14c4bf1fd87cd5d88af113b",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-photon-zemo-focused-evidence.json",
+          "sha256": "fdd772ee0dff370365084d4593df4cddf6beb0d69dbbe622d854313c24df71ff"
+        }
+      ]
+    },
+    {
+      "name": "Black Widow, Super Spy",
+      "catalogue_id": 434,
+      "rust": "src/card_definitions/msh/black_widow_super_spy.rs",
+      "rust_sha256": "d134c8f43ea201f93500f8315e9d06435ddf8533c1b3b8d417b53c7fb2453bc6",
+      "provenance": "src/card_definitions/msh/black_widow_super_spy.json",
+      "provenance_sha256": "d2d180e12c426aaf34beb613c84a1ad91f448ac4959de9c1494f81b137f36be4",
+      "oracle_id": "579f9a86-a1af-4c2a-a7e5-8fea0bd0eb61",
+      "facts_sha256": "575a5b0db0130243fcdd4122f1c86bac4713b65b635d068d67b6834e6d23cf8d",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-widow-worlds-evidence.json",
+          "sha256": "560b34e2887afcc0b0df2ab07c8ebf9b0ad1ee1e0791f984cebbb234fb9c3ef7"
+        }
+      ]
+    },
+    {
+      "name": "Bruce Banner // The Incredible Hulk",
+      "catalogue_id": 571,
+      "rust": "src/card_definitions/msh/bruce_banner_the_incredible_hulk.rs",
+      "rust_sha256": "a513cfb52e28e89a8622ffa45eeac9659b922500c029235fa93d14853f5bf22e",
+      "provenance": "src/card_definitions/msh/bruce_banner_the_incredible_hulk.json",
+      "provenance_sha256": "dac52b35e08b59594b3dcda75aeb75327bd76048e42fd70431454d79276949d5",
+      "oracle_id": "b6c0ee14-2028-4e8b-9acd-ff78821bca9b",
+      "facts_sha256": "452ba06a5e9d2abdb5fe9626c7ebde2633461aa100fdeb37a1f10cc0987f9371",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-bruce-kang-focused-evidence.json",
+          "sha256": "05328073586fc48ce3b0ec9292ad1d3890daa12cfa290e894b75719685b55129"
+        }
+      ]
+    },
+    {
+      "name": "Captain America, Super-Soldier",
+      "catalogue_id": 643,
+      "rust": "src/card_definitions/msh/captain_america_super_soldier.rs",
+      "rust_sha256": "08196b70babeb6f20aa8bd64e7f8436d805649c0711d70652c892f374698cf2a",
+      "provenance": "src/card_definitions/msh/captain_america_super_soldier.json",
+      "provenance_sha256": "6c2fe21539dceda97ac1b9ee2ff65b10445b9d735a7469419dcc26acbafe126d",
+      "oracle_id": "ac1b6ffc-12a9-4d9c-a9fc-68a839a40738",
+      "facts_sha256": "e31e00e496c00e829a5a53b027374a00c011d633e0b019b76b1d6466509b0b83",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-shield-harness-focused-evidence.json",
+          "sha256": "7165230a3c1cdbc722b4dcf805e500e8d616dfde602547fbc9eba2c5f0643d34"
+        }
+      ]
+    },
+    {
+      "name": "Cloak and Dagger, Entwined",
+      "catalogue_id": 773,
+      "rust": "src/card_definitions/msh/cloak_and_dagger_entwined.rs",
+      "rust_sha256": "19b6d6528ea86855904b683a5889e8ff854de71b094f6fd086721b2fd755d010",
+      "provenance": "src/card_definitions/msh/cloak_and_dagger_entwined.json",
+      "provenance_sha256": "4119f1292376d75a720bb2f1ca8bf80987324ce4cf4719135dc94675d64b167b",
+      "oracle_id": "64132f93-66ac-4794-8c07-a88f9ed0e22b",
+      "facts_sha256": "e474281f28a85f96ecce4768ce930e3d8db6b8fdd7d5472ff68aec5c716dee97",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-hand-choices-evidence.json",
+          "sha256": "e399129479239754f50cc3e3093c0cb961e031432faaab912bf580503c9d2ba4"
+        }
+      ]
+    },
+    {
+      "name": "Construct a Cosmic Cube",
+      "catalogue_id": 835,
+      "rust": "src/card_definitions/msh/construct_a_cosmic_cube.rs",
+      "rust_sha256": "aa4477a3aa4bb7c37c141832ec66a2a64d0f842206189a233e9ee3673fc2d394",
+      "provenance": "src/card_definitions/msh/construct_a_cosmic_cube.json",
+      "provenance_sha256": "5ef8a0c9e421f1a3304e2d56565ab5022330702b06499dbe3c1602297a0dd027",
+      "oracle_id": "369aa9a6-af8a-432c-adff-ced2bb203dc7",
+      "facts_sha256": "f32e4f84c9c74dfd9c011a37b98d5432e49324403fa81fcf48aa9de044f83da0",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-cosmic-cube-focused-evidence.json",
+          "sha256": "ad26121483063b8b8a17a51faf6b77d2023bfb4b5d6fe71fdc64de1334866245"
+        }
+      ]
+    },
+    {
+      "name": "Cosmic Cube",
+      "catalogue_id": 859,
+      "rust": "src/card_definitions/msh/cosmic_cube.rs",
+      "rust_sha256": "8309b235caaa9ca21fef12a1506c785949f5f7f9420c5a9ae402bfc56c7e5a94",
+      "provenance": "src/card_definitions/msh/cosmic_cube.json",
+      "provenance_sha256": "140a74511bbab7b3f66cf19fdd8356a00ff70172382bc44b09d7d9aca18912b3",
+      "oracle_id": "0866a630-d962-4aa9-a15f-08b2947540ef",
+      "facts_sha256": "f3b3951097db43a25a7f2cd687afc36e7b2be782c205664f59164a7cf2c2bc5d",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-cosmic-cube-focused-evidence.json",
+          "sha256": "ad26121483063b8b8a17a51faf6b77d2023bfb4b5d6fe71fdc64de1334866245"
+        }
+      ]
+    },
+    {
+      "name": "Doom Reigns Supreme",
+      "catalogue_id": 1132,
+      "rust": "src/card_definitions/msh/doom_reigns_supreme.rs",
+      "rust_sha256": "83581999714d71fa335d0cf9897a08d7f08c938ebfce4060bff5f2e1a06594aa",
+      "provenance": "src/card_definitions/msh/doom_reigns_supreme.json",
+      "provenance_sha256": "6d9cb9ffd9d078769bc12014953cb7691839111176dbf34cee3143aebb5158cd",
+      "oracle_id": "f398a742-22c1-4da9-9d49-fdce2eb93d01",
+      "facts_sha256": "b135a825c040f024441e308d1b0fad14bd315e265fb45c1da1acb960ebea0547",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-graveyard-plans-evidence.json",
+          "sha256": "2cf441eb8d46e0700c5cab9f2c4f04e383f250670ded63aa2eaf796886fc5a3d"
+        }
+      ]
+    },
+    {
+      "name": "Echo, Perceptive Prodigy",
+      "catalogue_id": 1250,
+      "rust": "src/card_definitions/msh/echo_perceptive_prodigy.rs",
+      "rust_sha256": "9d6ef4c5bc6060515d44271462317fa5b9a6ae0b01e074b241849935e15c7c51",
+      "provenance": "src/card_definitions/msh/echo_perceptive_prodigy.json",
+      "provenance_sha256": "50a37c37c156d12c4b2496da4b55116f2122d1ad8afbfe3d95ba0492c671ba9d",
+      "oracle_id": "1091c83a-a4b9-457f-a69a-9a44a7e10759",
+      "facts_sha256": "0e21244bc3a6c7def060ba621accf0b30b5757ddfe48983f2b1c71b9c0a5f02f",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-echo-scientist-focused-evidence.json",
+          "sha256": "93766e5d1fa31f2481d54a0069bd513f9e2402d19fff10966454c7370e0c6ed2"
+        }
+      ]
+    },
+    {
+      "name": "Elektra, Daughter of the Hand",
+      "catalogue_id": 1281,
+      "rust": "src/card_definitions/msh/elektra_daughter_of_the_hand.rs",
+      "rust_sha256": "3251be7f017fd728a6d094c8179f849dae889d0107648951e517340da44c7cc7",
+      "provenance": "src/card_definitions/msh/elektra_daughter_of_the_hand.json",
+      "provenance_sha256": "ce5d8a3b8149830210514fdc193e81263d128786103f6ffa59cd4ac3f862c7a0",
+      "oracle_id": "b46647a1-0c91-451b-8c0b-be8fe02faee2",
+      "facts_sha256": "61e1b69ea557f3aac8eb3c243920255848c595fa4a900d12387c4d2cd49e374f",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-elektra-hellcat-focused-evidence.json",
+          "sha256": "8340acb745ff11739b2f09edd4444a88d54a70c676b32141d3810895e485091c"
+        }
+      ]
+    },
+    {
+      "name": "Evil's Thrall",
+      "catalogue_id": 1390,
+      "rust": "src/card_definitions/msh/evil_s_thrall.rs",
+      "rust_sha256": "a5d4608f63bba75adfe9e0151154d202730e8f9c7b6d576467416c53244349e3",
+      "provenance": "src/card_definitions/msh/evil_s_thrall.json",
+      "provenance_sha256": "f3987e802aa65e885da38ad27ecfecfd3f28b41301ff46b1c73cbed44718c170",
+      "oracle_id": "d7562f89-4808-44ab-8dc9-fc4078e8a47b",
+      "facts_sha256": "873a4e5353b431ef6e1d997e2ec53f7606e38709efe5f7a2d8c65e9722c27212",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-broker-thrall-focused-evidence.json",
+          "sha256": "db50759aa5fbe5eee10e06e56dfed5d21364317254d3236aae5e1e5b43912b8a"
+        }
+      ]
+    },
+    {
+      "name": "Fin Fang Foom",
+      "catalogue_id": 1508,
+      "rust": "src/card_definitions/msh/fin_fang_foom.rs",
+      "rust_sha256": "9f4782373706a63aa870c0e54ff6504c7f78313d9c0eddf9c1533e2c1fe45d5b",
+      "provenance": "src/card_definitions/msh/fin_fang_foom.json",
+      "provenance_sha256": "e7e70693128854d28391ba2a33813124737f64a185cd1ff98af2579aecbe2ce0",
+      "oracle_id": "52ec472e-a745-4e25-b9a7-8e1eb8873594",
+      "facts_sha256": "bfdccb9fe4b85adab006415a71aecc2f94f0284affa5adaddb7dfae2b2d9644b",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-cast-target-copy-cards-focused-evidence.json",
+          "sha256": "a1f8622fdb6288915893e1a6df6365ecf8f9428387587a1923a6c77da68b4372"
+        }
+      ]
+    },
+    {
+      "name": "Hawkeye, Master Marksman",
+      "catalogue_id": 1967,
+      "rust": "src/card_definitions/msh/hawkeye_master_marksman.rs",
+      "rust_sha256": "6a77bb1bc6ac627ece7d653b9d3672563c6686d3a1362905cb5dc385371c6570",
+      "provenance": "src/card_definitions/msh/hawkeye_master_marksman.json",
+      "provenance_sha256": "e84697e9079eb338445b15df7079bf41da19e5977f20aec671097638dbe4965f",
+      "oracle_id": "6b59bb1f-f2d4-4d47-bd57-23927d588381",
+      "facts_sha256": "7db2bd745aa109b9cddbe494c9eca8f33f2a35d21a77882ff0531ced491cb4f9",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-hawkeye-wrecking-focused-evidence.json",
+          "sha256": "4c3f6417e0a03daf766625f60f8e36f059c41900a4341de26d34062e3362ebf4"
+        }
+      ]
+    },
+    {
+      "name": "Hawkeye, Young Avenger",
+      "catalogue_id": 1968,
+      "rust": "src/card_definitions/msh/hawkeye_young_avenger.rs",
+      "rust_sha256": "8dd1cec5cabda997e2ea691b7ce1816d3017dba2a074524e459bbbef63c0d45f",
+      "provenance": "src/card_definitions/msh/hawkeye_young_avenger.json",
+      "provenance_sha256": "479aa966c19407af5bc3d2878cda2a2a40d4c91e8b954ae5cf52d8ac94bd9c66",
+      "oracle_id": "c8f8b4ed-8455-45cd-a24c-e2f42cd5e5b1",
+      "facts_sha256": "4de238a5dc77c7b1b9687354a8aa6d9a77e9023668429f833405ee57efab2b2e",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-damage-replacements-focused-evidence.json",
+          "sha256": "36a8d5e98b6381cda963cc216e0bf51f43d1793acc046e03e6593a3d16a4e41b"
+        }
+      ]
+    },
+    {
+      "name": "Hellcat, Undying Vigilante",
+      "catalogue_id": 1998,
+      "rust": "src/card_definitions/msh/hellcat_undying_vigilante.rs",
+      "rust_sha256": "6e69ed3f3c65bbd6ecb924f1fe381e8a01682943abf92a9993bacf6eaa33bcfa",
+      "provenance": "src/card_definitions/msh/hellcat_undying_vigilante.json",
+      "provenance_sha256": "4bf1c4e955f5f279e32ad20cba3908bbc90ee7d23ab666ef5aea59f5697a84eb",
+      "oracle_id": "4c27ba61-6812-4dd7-8efc-65435a8df7b5",
+      "facts_sha256": "d78de0ce922d326631478b42b74978c8f30f7a98ee8794cc9644b2f5b9ed614f",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-elektra-hellcat-focused-evidence.json",
+          "sha256": "8340acb745ff11739b2f09edd4444a88d54a70c676b32141d3810895e485091c"
+        }
+      ]
+    },
+    {
+      "name": "Iron Fist, Living Weapon",
+      "catalogue_id": 2224,
+      "rust": "src/card_definitions/msh/iron_fist_living_weapon.rs",
+      "rust_sha256": "2f1bf31335248964e7390f7115d63a08ef7d1c165f73bf0a2373f36e1aba6f8e",
+      "provenance": "src/card_definitions/msh/iron_fist_living_weapon.json",
+      "provenance_sha256": "15bb2dff63f802981914259716cfba9737898e832f7e54cfcdf607cbf3d46e01",
+      "oracle_id": "bbf873c2-94c1-46b8-912e-e29e48e0212c",
+      "facts_sha256": "72d49068561bc193e60092a082f109baf73be56fa5508337e97fb169d264ccab",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-iron-fist-focused-evidence.json",
+          "sha256": "6488ab7b19dafde61b0fbefb36c0a1566f35d2dd297211318f4aee92e7ee3d12"
+        }
+      ]
+    },
+    {
+      "name": "Iron Man Armor",
+      "catalogue_id": 2230,
+      "rust": "src/card_definitions/msh/iron_man_armor.rs",
+      "rust_sha256": "2bc78ccb299c34863d1f319a8dfb8b2341b461d964b5c11a0de631d1608eae37",
+      "provenance": "src/card_definitions/msh/iron_man_armor.json",
+      "provenance_sha256": "4cc9c278a9ad2a279c85b878a40f1ae9fcb9150675372393a7cde10fd69189cc",
+      "oracle_id": "958d81c2-ca09-4275-890e-3bb595317325",
+      "facts_sha256": "1653254302ec981c0945e17d2ba5f3e5c4a3a2df56e7ce58406c90648262059b",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-iron-armor-tony-focused-evidence.json",
+          "sha256": "d67eef31f56e7ff05c56e0884cb53be4959df69380aea44767fe7eafa2039d19"
+        }
+      ]
+    },
+    {
+      "name": "Kang the Conqueror",
+      "catalogue_id": 2311,
+      "rust": "src/card_definitions/msh/kang_the_conqueror.rs",
+      "rust_sha256": "0c6c7ce5b6fcd4fca6f48e7b667fd03d0b90a1a43c3b44c260e5c53aed41882a",
+      "provenance": "src/card_definitions/msh/kang_the_conqueror.json",
+      "provenance_sha256": "41599bda204033a803f249f9c8be6dbed3906d47865707d28edfe02ca56fa952",
+      "oracle_id": "da6e24a4-8adc-41a1-b5eb-3e31dc1250c9",
+      "facts_sha256": "74935864dad224ea8a2ab79e5ae6cbad8ac48c95693806ec479ee0dad9b0c88a",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-bruce-kang-focused-evidence.json",
+          "sha256": "05328073586fc48ce3b0ec9292ad1d3890daa12cfa290e894b75719685b55129"
+        }
+      ]
+    },
+    {
+      "name": "Klaw, Sonic Subjugator",
+      "catalogue_id": 2381,
+      "rust": "src/card_definitions/msh/klaw_sonic_subjugator.rs",
+      "rust_sha256": "c830c743cdeaccd03494b966455af794c94328c572424758134dbceb35f1de56",
+      "provenance": "src/card_definitions/msh/klaw_sonic_subjugator.json",
+      "provenance_sha256": "a80ac8e9e4336e4a1bb89549eafeb524ae6e46c73b030cdfd6a55972022ea7bc",
+      "oracle_id": "1c233e08-d5a3-48d7-9074-20393896a480",
+      "facts_sha256": "e10306222a2f3871d3a692026a21d51080b63018de470cfb6cdc86e4d87e21fb",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-hand-choices-evidence.json",
+          "sha256": "e399129479239754f50cc3e3093c0cb961e031432faaab912bf580503c9d2ba4"
+        }
+      ]
+    },
+    {
+      "name": "Leader, Super-Genius",
+      "catalogue_id": 2463,
+      "rust": "src/card_definitions/msh/leader_super_genius.rs",
+      "rust_sha256": "ed6efe65b299e62e4549219bd35ec63db45c7565cb90ab9d1117c236cc2839cf",
+      "provenance": "src/card_definitions/msh/leader_super_genius.json",
+      "provenance_sha256": "72e42f593b11edd7e0e954cb1788eeeabf3c8746cb22e4224e1f1907ba26993e",
+      "oracle_id": "bec686dd-a9ea-4db5-bc20-8e40420b9a9b",
+      "facts_sha256": "8d712c75d410ec52b543cddec3d67830ffcf1662da33d1e6275ff804c264a3b5",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-leader-evidence.json",
+          "sha256": "c1a42c746cccc4092bd46ff218d1f7a261bd663481018e45b861b3d031ccff04"
+        }
+      ]
+    },
+    {
+      "name": "Loki Laufeyson",
+      "catalogue_id": 2538,
+      "rust": "src/card_definitions/msh/loki_laufeyson.rs",
+      "rust_sha256": "a8b78af7a01b823dbe7b057d2a0181432e5666262bd9fe1f590dd04fd5125ccd",
+      "provenance": "src/card_definitions/msh/loki_laufeyson.json",
+      "provenance_sha256": "7cf19860e28a66402839f167bab3d6d5a9530027039562a49c90494d3eca0aa5",
+      "oracle_id": "9c78778a-6335-4949-8ade-11d0f085cb2b",
+      "facts_sha256": "23dd95859ef9b4c7aa9a3df2a8456061de8ccc9e704bc238504dd79f94bdcc41",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-cast-target-copy-cards-focused-evidence.json",
+          "sha256": "a1f8622fdb6288915893e1a6df6365ecf8f9428387587a1923a6c77da68b4372"
+        }
+      ]
+    },
+    {
+      "name": "Mjölnir, Hammer of Thor",
+      "catalogue_id": 2801,
+      "rust": "src/card_definitions/msh/mjolnir_hammer_of_thor.rs",
+      "rust_sha256": "8eae27c30755d68e8d0fffd1f8ce2c5476d23b1f9d95ecdb30a75c503a37de41",
+      "provenance": "src/card_definitions/msh/mjolnir_hammer_of_thor.json",
+      "provenance_sha256": "7bf46494fc19e55a7241aaa0fe93a41f634de06a74d348a39f4ce3674214fb13",
+      "oracle_id": "7f9a8845-d760-44a7-a4c9-8a20dba4e14a",
+      "facts_sha256": "46ce9e3c03a14be320b5100c687266a137b78557bc2771e39b7e2861cbbf44e7",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-damage-replacements-focused-evidence.json",
+          "sha256": "36a8d5e98b6381cda963cc216e0bf51f43d1793acc046e03e6593a3d16a4e41b"
+        }
+      ]
+    },
+    {
+      "name": "Ms. Marvel, Kamala Khan",
+      "catalogue_id": 2869,
+      "rust": "src/card_definitions/msh/ms_marvel_kamala_khan.rs",
+      "rust_sha256": "d3ecd220af45074326a446ed6eef7cc24f64c79028383427959c4806281841fe",
+      "provenance": "src/card_definitions/msh/ms_marvel_kamala_khan.json",
+      "provenance_sha256": "45e59624d4b0cbc6a2c524fb3dfbb7c4590b074135cca1a57d159d1a86c78cea",
+      "oracle_id": "ebedff30-ae43-4861-aab2-afe1fc88337e",
+      "facts_sha256": "390bf275eb11a5365be36e30bd4c2848f809c85b243f21d559fe2af7ccb79983",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-marvel-focused-evidence.json",
+          "sha256": "0b530a9f287668520cbf5099462efe09e1d61f979b547fa4d4efa63decb5f155"
+        }
+      ]
+    },
+    {
+      "name": "Photon Blast Barrage",
+      "catalogue_id": 3150,
+      "rust": "src/card_definitions/msh/photon_blast_barrage.rs",
+      "rust_sha256": "1622ed9ff79aa0d59987acd0b11edc63da1324c36efc5fe062822f8d7d0371a6",
+      "provenance": "src/card_definitions/msh/photon_blast_barrage.json",
+      "provenance_sha256": "38f09bb5491e47065ac48639d1636b4b225d37fa5bb872abe8ff20ee091560fc",
+      "oracle_id": "a5424e33-ff4e-4c82-8aa9-9d25ced7830a",
+      "facts_sha256": "ce0a32d3c6998b31c3d03f94378fad6e59798e2474d180c1442fb4303100d3d6",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-photon-zemo-focused-evidence.json",
+          "sha256": "fdd772ee0dff370365084d4593df4cddf6beb0d69dbbe622d854313c24df71ff"
+        }
+      ]
+    },
+    {
+      "name": "Powerful Broker",
+      "catalogue_id": 3212,
+      "rust": "src/card_definitions/msh/powerful_broker.rs",
+      "rust_sha256": "f1c2eb5cab5887b6a212d819f4f685812e14e1b41bacdc1b76ca15478a43c1c4",
+      "provenance": "src/card_definitions/msh/powerful_broker.json",
+      "provenance_sha256": "9e83074a0543922667833775a04d7bd30185f21356e75197b4f04be2eb96bb80",
+      "oracle_id": "2b3d76e7-faaa-4e6f-9e21-a88dd719247e",
+      "facts_sha256": "60373018b605d51158479855445dc0846f334611ee3f3e6604c6cd574b0a2f79",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-broker-thrall-focused-evidence.json",
+          "sha256": "db50759aa5fbe5eee10e06e56dfed5d21364317254d3236aae5e1e5b43912b8a"
+        }
+      ]
+    },
+    {
+      "name": "Robot Domination",
+      "catalogue_id": 3564,
+      "rust": "src/card_definitions/msh/robot_domination.rs",
+      "rust_sha256": "42c614ef2f9cdcbaf1fda1f2c3571b79ffed3d25d02bfd3e82c044398238df88",
+      "provenance": "src/card_definitions/msh/robot_domination.json",
+      "provenance_sha256": "41eff7845960a8dc6a542b2f6dd624e7777e04cb999d304558e58e70cfc28069",
+      "oracle_id": "4f69d2f9-c16a-4752-9026-794a29d73af8",
+      "facts_sha256": "de2dd594ff456a6e237a8ba35477974857742943a1a937cacdd771015aaf0297",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-graveyard-plans-evidence.json",
+          "sha256": "2cf441eb8d46e0700c5cab9f2c4f04e383f250670ded63aa2eaf796886fc5a3d"
+        }
+      ]
+    },
+    {
+      "name": "Ronin, Shadow Stalker",
+      "catalogue_id": 3581,
+      "rust": "src/card_definitions/msh/ronin_shadow_stalker.rs",
+      "rust_sha256": "91039b3890003aea2b2efb135376952f9a2c5d59e4ef90ed7bb295fe2d28b6c9",
+      "provenance": "src/card_definitions/msh/ronin_shadow_stalker.json",
+      "provenance_sha256": "15ff98e95c638235ce435263ebadbd054d12c6ee3a9070966951f4c7996337a9",
+      "oracle_id": "8ceb1acf-5ff3-4f1a-af04-9f07ad454526",
+      "facts_sha256": "c91363c46da3dae45b80a195d67dd727487a964f732ec39ba25419a62e0015fc",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-restricted-creatures-focused-evidence.json",
+          "sha256": "a8aee0dc52891bb2c070ab5ccdbdb36bca2841ca9ed1e6f0590795896b7947a9"
+        }
+      ]
+    },
+    {
+      "name": "Scientist Supreme of A.I.M.",
+      "catalogue_id": 3723,
+      "rust": "src/card_definitions/msh/scientist_supreme_of_a_i_m.rs",
+      "rust_sha256": "cd015ac1607e09313bd4df61e200c701dcd4106058365827bd8df760ffd93f61",
+      "provenance": "src/card_definitions/msh/scientist_supreme_of_a_i_m.json",
+      "provenance_sha256": "6c5e272d18695d36bd828ca29695d815975cb5bd32915475759d6e8a5704152a",
+      "oracle_id": "c09c424b-6aba-4190-9f55-f0307d746386",
+      "facts_sha256": "a2de9144bc1feb734f813829b4bf2b72027795f73775a2949dc978ac4d2ddf79",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-echo-scientist-focused-evidence.json",
+          "sha256": "93766e5d1fa31f2481d54a0069bd513f9e2402d19fff10966454c7370e0c6ed2"
+        }
+      ]
+    },
+    {
+      "name": "Secret Invasion",
+      "catalogue_id": 3760,
+      "rust": "src/card_definitions/msh/secret_invasion.rs",
+      "rust_sha256": "cb948c87f621afa40a1baa39921df6008bdc8733674497c809a139e137d3ce95",
+      "provenance": "src/card_definitions/msh/secret_invasion.json",
+      "provenance_sha256": "4d0dfbaaa795a6ce4b09938772781d4c2d6681004009b403fc85f4925b17f780",
+      "oracle_id": "25443ea4-3177-4e29-a2b1-f3fee60b3205",
+      "facts_sha256": "23902f2567e877aaa06f761441273eaf27c474ef72e9c0481d7db7580f761f2b",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-secret-invasion-focused-evidence.json",
+          "sha256": "44b485b30452d096d5d3df34ca863371ea4f3fe65d831c31543d66ecffb3e819"
+        }
+      ]
+    },
+    {
+      "name": "Shang-Chi, Master of Kung Fu",
+      "catalogue_id": 3810,
+      "rust": "src/card_definitions/msh/shang_chi_master_of_kung_fu.rs",
+      "rust_sha256": "7bffa2ce32f9444ba61496c2de6ceceaa919a7bf2fe8c1052fdf028442174cc9",
+      "provenance": "src/card_definitions/msh/shang_chi_master_of_kung_fu.json",
+      "provenance_sha256": "60ac73c78cfe57a00a413b2aa33731becd39cdfaaa665bf0309cad516468495b",
+      "oracle_id": "700ef9c8-698b-45f7-a1fd-dec74e553224",
+      "facts_sha256": "96bec0faa158d6b3ad7474c75d7fe60c1180d093ded33f66ffaa7b058d79a14f",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-restricted-creatures-focused-evidence.json",
+          "sha256": "a8aee0dc52891bb2c070ab5ccdbdb36bca2841ca9ed1e6f0590795896b7947a9"
+        }
+      ]
+    },
+    {
+      "name": "Speedball, New Warrior",
+      "catalogue_id": 4004,
+      "rust": "src/card_definitions/msh/speedball_new_warrior.rs",
+      "rust_sha256": "cc071484cc919c79cacdbdee6a91f3a2a95a869a2d167b4dee7eb74e6fb9bdec",
+      "provenance": "src/card_definitions/msh/speedball_new_warrior.json",
+      "provenance_sha256": "133e7314826a9bef8dc1068fb97d56f730e2ee2035de3096d3f07a6eb57a14f1",
+      "oracle_id": "53d3ef8f-8e0f-4119-8cdc-a0bf076b4e91",
+      "facts_sha256": "54099ee6b2d3a836aa845d263654fbb103bb7b45de8f41993ec0e2992c5b14c1",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-cast-target-copy-cards-focused-evidence.json",
+          "sha256": "a1f8622fdb6288915893e1a6df6365ecf8f9428387587a1923a6c77da68b4372"
+        }
+      ]
+    },
+    {
+      "name": "Spider-Woman, Secret Agent",
+      "catalogue_id": 4041,
+      "rust": "src/card_definitions/msh/spider_woman_secret_agent.rs",
+      "rust_sha256": "6b6fb7746b0dfc50d915b9951ebc2c7d2b4445ce86ca448dc1436375b3641f8f",
+      "provenance": "src/card_definitions/msh/spider_woman_secret_agent.json",
+      "provenance_sha256": "0b140eb8626910ac1f802bf073d3d3dfe4187dfed943b8bd8842743f4498efb6",
+      "oracle_id": "04e53f36-9f16-4678-9caf-9afda85f76b4",
+      "facts_sha256": "3f1c9657203df6097bb7e6362c23722f46b3d3ec734da95a749c4fc70292d318",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-source-linked-sting-evidence.json",
+          "sha256": "bb2d920a2bca5862c6abe30d3d5241ad19087629d378856bf079850eb2bf58d3"
+        }
+      ]
+    },
+    {
+      "name": "Storm, Windrider",
+      "catalogue_id": 4169,
+      "rust": "src/card_definitions/msh/storm_windrider.rs",
+      "rust_sha256": "ba52128c98cece02a9100c748750e99afeff69a7bdb5225b16f13b74f0bb98f0",
+      "provenance": "src/card_definitions/msh/storm_windrider.json",
+      "provenance_sha256": "9bab290360736fb9a770e946f1b226f2b1a367e9f6b1d5c5b8a2f374c4bc831d",
+      "oracle_id": "06e9287b-56d4-443e-97ba-b5dcdc4fa989",
+      "facts_sha256": "a142c9aae362474193cd10fed4f04e90bf49fbfefa84540972e935ae78cdfe4f",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-storm-focused-evidence.json",
+          "sha256": "53faf81ad14f5aba2ca9897206aa5f0c21c4424103f9073decfe1cbffd81d900"
+        }
+      ]
+    },
+    {
+      "name": "Super-Adaptoid",
+      "catalogue_id": 4258,
+      "rust": "src/card_definitions/msh/super_adaptoid.rs",
+      "rust_sha256": "71aa571503623c011faad9964de3561f7f63a4a9e0181fb817e3d60cd7a95fb8",
+      "provenance": "src/card_definitions/msh/super_adaptoid.json",
+      "provenance_sha256": "781828660b8b218335d70496144d06ce64754c0cfd8c2da479cac143c17e0a9b",
+      "oracle_id": "f93fa6ec-1f13-4109-aa60-11e148f7ba88",
+      "facts_sha256": "0481bc192f440a63fa0e81d0c71ea9a76c1868ad22a83019af960e6ab30eb75e",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-super-adaptoid-focused-evidence.json",
+          "sha256": "df15d05373105195108eb0ca156967fa312a9a3ad7a1639705f2af80c040eb90"
+        }
+      ]
+    },
+    {
+      "name": "Super-Soldier Serum",
+      "catalogue_id": 4260,
+      "rust": "src/card_definitions/msh/super_soldier_serum.rs",
+      "rust_sha256": "ee8e419c27e794eed1eed94ceb7108decb82f54da7c00073f3ec254eb4aa77c1",
+      "provenance": "src/card_definitions/msh/super_soldier_serum.json",
+      "provenance_sha256": "18f2582212b019f930d721425b8e1810b1f1fdafbd7d91688f56bdf862996673",
+      "oracle_id": "6f2ba142-5e7c-4709-ae03-e028cb2a9872",
+      "facts_sha256": "60cf12ea50fdfa3c83145a5d346e8f84a3fdff5d004e36151c827bec082a4f8d",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-civil-war-serum-evidence.json",
+          "sha256": "97a1bd7172a49a83296a7d7ae862cf68122aa725f25037c0c84f783ca1257504"
+        }
+      ]
+    },
+    {
+      "name": "Swordsman, Sharp Scoundrel",
+      "catalogue_id": 4297,
+      "rust": "src/card_definitions/msh/swordsman_sharp_scoundrel.rs",
+      "rust_sha256": "67f588d605777669b18f2a481579b87c2f5f05ef962065dd80b26a1548d302a4",
+      "provenance": "src/card_definitions/msh/swordsman_sharp_scoundrel.json",
+      "provenance_sha256": "2cb71fd0a274b76973f92f2672df43e8b0532b9fbffae438f2ff84d287a58c3e",
+      "oracle_id": "2f15abe7-54aa-40ed-a15d-5b827f1c3923",
+      "facts_sha256": "69be87ae9ce040f08173eff859b3c1fe6c0394563c695fbc48ab6ee688e0284b",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-attachment-cards-focused-evidence.json",
+          "sha256": "14b7ef84a936b8b1614edad1f1c4f1b3fb54f174ccc9199654a6c7608665bb1f"
+        }
+      ]
+    },
+    {
+      "name": "The Kingpin of Crime",
+      "catalogue_id": 4458,
+      "rust": "src/card_definitions/msh/the_kingpin_of_crime.rs",
+      "rust_sha256": "9d104f29848b126ba0eceaf26327edbb5fe6032a2c6ab95d64a13b787eb639e8",
+      "provenance": "src/card_definitions/msh/the_kingpin_of_crime.json",
+      "provenance_sha256": "30ba44e38335a97a9f2a1bd85145b36f4c32613c9e3af622220d07202a669c78",
+      "oracle_id": "3eeeb159-aa45-4a9b-9618-8542604b9830",
+      "facts_sha256": "bf1ae9c42b79498b30c4e277103567827c1c0dd306b0da3d2adb164fbe4f457b",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-kingpin-focused-evidence.json",
+          "sha256": "89dfa4a22316686f56892abac190d9d0f0c761adc333ac5a4405eb39cabe01b9"
+        }
+      ]
+    },
+    {
+      "name": "The Mind Stone",
+      "catalogue_id": 4477,
+      "rust": "src/card_definitions/msh/the_mind_stone.rs",
+      "rust_sha256": "3f3470d23a43bb2bfbda2c8d1da7cf68a06c7511f9f41f6a04f934fcad2b20af",
+      "provenance": "src/card_definitions/msh/the_mind_stone.json",
+      "provenance_sha256": "cceca755f096453c61390f7471a2a9c008abdd5ba9b36f39bbaad6872f4e88c2",
+      "oracle_id": "b175e826-09e8-4fae-9f2e-b902f95b282d",
+      "facts_sha256": "2d1251fd99d3d9cff8245178e5fd2fe18a28b5727b109c4ab3fc8b05db66cac2",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-shield-harness-focused-evidence.json",
+          "sha256": "7165230a3c1cdbc722b4dcf805e500e8d616dfde602547fbc9eba2c5f0643d34"
+        }
+      ]
+    },
+    {
+      "name": "The Ruinous Wrecking Crew",
+      "catalogue_id": 4492,
+      "rust": "src/card_definitions/msh/the_ruinous_wrecking_crew.rs",
+      "rust_sha256": "4891b7332da48d7d54d954e2dff6bd6a199d1f13b5e9dfaa0504632f46fcd26c",
+      "provenance": "src/card_definitions/msh/the_ruinous_wrecking_crew.json",
+      "provenance_sha256": "b8667d144738f3547d07eed50e57978db8599bcc1fc0779c0e277991d2ddcda5",
+      "oracle_id": "0ff9c0cc-4fb3-4117-9a8e-5b51f62306c4",
+      "facts_sha256": "2aa3df1f0d9507f970071a62ae1a0a37af54e1e68125adeb2c9eb5282cfcdeb9",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-hawkeye-wrecking-focused-evidence.json",
+          "sha256": "4c3f6417e0a03daf766625f60f8e36f059c41900a4341de26d34062e3362ebf4"
+        }
+      ]
+    },
+    {
+      "name": "The Super Hero Civil War",
+      "catalogue_id": 4505,
+      "rust": "src/card_definitions/msh/the_super_hero_civil_war.rs",
+      "rust_sha256": "a8a18812f6299d2f4186a5d4d7dfbf39493bb74915c21d632b49b0b84ac9ab4e",
+      "provenance": "src/card_definitions/msh/the_super_hero_civil_war.json",
+      "provenance_sha256": "4e67ddcd7136d6836d044637d329721d73b311764f5a651d8015c315179853f9",
+      "oracle_id": "11d74dc2-8c11-4d4b-b727-8216d2eb6b4e",
+      "facts_sha256": "e1bde7deaf758e4d42b722bccb1ad942a1322617673f9eeb0c56ef57815b4308",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-civil-war-serum-evidence.json",
+          "sha256": "97a1bd7172a49a83296a7d7ae862cf68122aa725f25037c0c84f783ca1257504"
+        }
+      ]
+    },
+    {
+      "name": "The Wondrous Wasp",
+      "catalogue_id": 4520,
+      "rust": "src/card_definitions/msh/the_wondrous_wasp.rs",
+      "rust_sha256": "5cec4ad5d31df5c42f5c83b49fb5d19e4fbe2d1791b4f6da2f5c24822e888074",
+      "provenance": "src/card_definitions/msh/the_wondrous_wasp.json",
+      "provenance_sha256": "3b1ec8174f69e0f003e866d0fc8abd1cdd10ded33c07a6e4fe669b07e5d718f2",
+      "oracle_id": "5ad8963b-8091-4787-9147-20a1fe7bf0fb",
+      "facts_sha256": "2dde2fe81e0f3b894439f4c041cbce943b1e753540ac166e1a859c52e8d47915",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-source-linked-sting-evidence.json",
+          "sha256": "bb2d920a2bca5862c6abe30d3d5241ad19087629d378856bf079850eb2bf58d3"
+        }
+      ]
+    },
+    {
+      "name": "Tony Stark // The Invincible Iron Man",
+      "catalogue_id": 4631,
+      "rust": "src/card_definitions/msh/tony_stark_the_invincible_iron_man.rs",
+      "rust_sha256": "0a49f8663ffe44e8e4ff356d61ad360bed338e4098c6c8497647f282fa65c3da",
+      "provenance": "src/card_definitions/msh/tony_stark_the_invincible_iron_man.json",
+      "provenance_sha256": "44938d994abadfc6b69ea2f8fbd351addf912fd6671ab648b2be3d50277e9fe9",
+      "oracle_id": "4a46ea59-6c5d-4bed-9951-b5590f9a1bdb",
+      "facts_sha256": "4927b2cbcd71e54a9aecccc05357877807d00a8c42421a882ab8eade9deeb342",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-iron-armor-tony-focused-evidence.json",
+          "sha256": "d67eef31f56e7ff05c56e0884cb53be4959df69380aea44767fe7eafa2039d19"
+        }
+      ]
+    },
+    {
+      "name": "Ultron, Artificial Malevolence",
+      "catalogue_id": 4748,
+      "rust": "src/card_definitions/msh/ultron_artificial_malevolence.rs",
+      "rust_sha256": "516ec257c1de09f5e021de110f1625fc2e062271f6fad4ee2166e5c0b40ac7f2",
+      "provenance": "src/card_definitions/msh/ultron_artificial_malevolence.json",
+      "provenance_sha256": "dbdccef1a434d6077eeb4afb45c09849fdffa246ba28c4806af696f6a2e309b2",
+      "oracle_id": "a8f25e67-2112-4355-9298-363ed04a5cb8",
+      "facts_sha256": "9b2d673916203f821b00aef54368aa5b6c524ecec737beb64a28bc2ff003db4f",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-ultron-focused-evidence.json",
+          "sha256": "c36f5d7cd66d12469666ae2f3f3ab22742aab9b2452cbad8c3517cf8773c8ea3"
+        }
+      ]
+    },
+    {
+      "name": "Vision Quest",
+      "catalogue_id": 4915,
+      "rust": "src/card_definitions/msh/vision_quest.rs",
+      "rust_sha256": "ed35551adff237fcc5a8f9391c53de880dd3d254c8614cc73bc35c5637fe6ce7",
+      "provenance": "src/card_definitions/msh/vision_quest.json",
+      "provenance_sha256": "0814defbb4f56d2f60d77afe98cfb8678d10df7eadc7427cda6a7e469650023e",
+      "oracle_id": "240410a0-3288-4336-b1ad-34936e64ccf2",
+      "facts_sha256": "50fc23f339b55d251d38903f00dca45b449ce70b14063668b4f239092ff4fa88",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-vision-quest-focused-evidence.json",
+          "sha256": "acfba47335a98c739b041d490287d6f24c757653858786544bb03212430f680e"
+        }
+      ]
+    },
+    {
+      "name": "Winter Soldier, Icy Assassin",
+      "catalogue_id": 5082,
+      "rust": "src/card_definitions/msh/winter_soldier_icy_assassin.rs",
+      "rust_sha256": "11615167dbc8b1f13c34b98e2b27ea223fedaceeaa07e4be012f577ae0ab90e3",
+      "provenance": "src/card_definitions/msh/winter_soldier_icy_assassin.json",
+      "provenance_sha256": "c5f4869fdce291a51b5d01358de261c2826439c9a0c636a157c3e66219a0a758",
+      "oracle_id": "6f4c94b6-f829-4646-a574-083997b78dfb",
+      "facts_sha256": "1fe7c689d946e3dbdfafadc5b71aeea1cc9e9b697dd3d24d1aa90e3b9fe8ca81",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-attachment-cards-focused-evidence.json",
+          "sha256": "14b7ef84a936b8b1614edad1f1c4f1b3fb54f174ccc9199654a6c7608665bb1f"
+        }
+      ]
+    },
+    {
+      "name": "Wolverine, Fierce Fighter",
+      "catalogue_id": 5106,
+      "rust": "src/card_definitions/msh/wolverine_fierce_fighter.rs",
+      "rust_sha256": "efd674d51e2354f1d379dab0ccf7cc8355b5011fb995854e1bd4e85e4a64d2e2",
+      "provenance": "src/card_definitions/msh/wolverine_fierce_fighter.json",
+      "provenance_sha256": "7c137b163b18ede1a1d4f435d16d7eb5814bafff699935bf26550790750e71b7",
+      "oracle_id": "8429ba6a-6c06-4a83-a6ee-023b64b825f8",
+      "facts_sha256": "8d2f738c58c39349f22824e288d597b1307e03666fedfbcf2f6d44d693965a78",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-damage-replacements-focused-evidence.json",
+          "sha256": "36a8d5e98b6381cda963cc216e0bf51f43d1793acc046e03e6593a3d16a4e41b"
+        }
+      ]
+    },
+    {
+      "name": "World War Hulk",
+      "catalogue_id": 5113,
+      "rust": "src/card_definitions/msh/world_war_hulk.rs",
+      "rust_sha256": "2877e573f1c3d311a7fe4b6dd11a7e76a60e861c9732544fe748fe8216ff7891",
+      "provenance": "src/card_definitions/msh/world_war_hulk.json",
+      "provenance_sha256": "e50d0d103bf06deacc694ad0c8ee9b1d511a4b6a283709ce1a40a8e123260fd7",
+      "oracle_id": "8c4da760-8913-46ca-b00c-bba6d877d482",
+      "facts_sha256": "b9e36eaae63f89e42bd788dc2985ced360daf8d608555ca1f6ee948cf2308f7f",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-armor-hulk-sagas-evidence.json",
+          "sha256": "28d1385ccd39ebbbd8ed4292c452aa958083edc1eb60b55f4533cc2676108faf"
+        }
+      ]
+    },
+    {
+      "name": "Worlds Within Worlds",
+      "catalogue_id": 5114,
+      "rust": "src/card_definitions/msh/worlds_within_worlds.rs",
+      "rust_sha256": "d7e6c148d205abc05c1151821b720dddc82292ff6e476a87c374a45f1ded671f",
+      "provenance": "src/card_definitions/msh/worlds_within_worlds.json",
+      "provenance_sha256": "9efb4e30d55008f12ddea44ccab17437e51b61f2ee051c70225178ade8c35c15",
+      "oracle_id": "e25062ba-7176-4d59-ac3e-26d19b26f02a",
+      "facts_sha256": "c495b3e3578f1405b65504d6b324dde533406f84d86a7c5f7726783743ec134c",
+      "individual_rules_evidence": [
+        {
+          "path": "docs/msh-widow-worlds-evidence.json",
+          "sha256": "560b34e2887afcc0b0df2ab07c8ebf9b0ad1ee1e0791f984cebbb234fb9c3ef7"
+        }
+      ]
+    }
+  ],
+  "trace_qualification": "Bounded cast/entry traces prove deterministic shape and inherited compatibility, not every printed clause. The pinned individual-card evidence contains each paid both-seat printed-obligation matrix and its focused rules outcomes.",
+  "focused_integration": {
+    "current_nine_head": "16a302737a23dd94280c4285910a9b69c2e0db30",
+    "final_groups": 9,
+    "shared": 3,
+    "copy": 4,
+    "privacy": 2,
+    "current_nine_checks": "<cache>/rustmage-msh-final-union-focus-5-checks.json",
+    "additional_affected_groups": 91,
+    "additional_affected_checks": "<cache>/rustmage-msh-final-union-focus-4-checks.json",
+    "unique_focused_groups": 100,
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development; timings include checks and are not a pure simulation benchmark.",
+    "fixture_correction": "Root authored scenario corrected legendary counts from0/1/0 to1/2/1; no runtime change.",
+    "compilation_corrections": "Absent optional initializer fields and one test characteristic-world import; no new rule substitution."
+  },
+  "static_checks": {
+    "terminal": true,
+    "head": "8514c3b352f5070530fc53f200f36407fef527b3",
+    "seconds": 71.76338725700043,
+    "checks": [
+      {
+        "label": "trace export",
+        "exit_code": 101,
+        "seconds": 47.73686591099249
+      },
+      {
+        "label": "source pins",
+        "exit_code": 0,
+        "seconds": 0.6675335440086201
+      },
+      {
+        "label": "metadata link",
+        "exit_code": 0,
+        "seconds": 0.4726097660022788
+      },
+      {
+        "label": "format",
+        "exit_code": 0,
+        "seconds": 1.955451568996068
+      },
+      {
+        "label": "card format",
+        "exit_code": 0,
+        "seconds": 1.011816106038168
+      },
+      {
+        "label": "clippy",
+        "exit_code": 0,
+        "seconds": 19.812918860989157
+      }
+    ],
+    "test_result_lines": [
+      "test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2532 filtered out; finished in 14.09s"
+    ],
+    "fixed_inputs": 11359,
+    "changed_inputs": [],
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development; single trace filter plus static checks"
+  },
+  "guard": {
+    "command": [
+      "python3",
+      "/tmp/rustmage-msh-final-traces-4-driver.py"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 71.89993822900578,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 3027447808,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "metadata_delta": {
+    "old_rows": 5403,
+    "new_rows": 5405,
+    "new_nonphysical_definitions": [
+      {
+        "index": 5403,
+        "module": "card_5403",
+        "path": "msh/the_invincible_iron_man.rs",
+        "set": "msh",
+        "category": "back_face",
+        "name": "The Invincible Iron Man",
+        "oracle_id": null,
+        "facts_sha256": null,
+        "mana_cost": "{4}{U}{R}",
+        "type_line": "Legendary Artifact Creature — Human Hero",
+        "oracle_keywords": [
+          "Flying",
+          "Haste"
+        ],
+        "standard_legal": false,
+        "legendary": true,
+        "kind": 17,
+        "basic": false,
+        "mana_color": null,
+        "colored": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 4,
+        "face_parent": 4631
+      },
+      {
+        "index": 5404,
+        "module": "card_5404",
+        "path": "msh/the_incredible_hulk.rs",
+        "set": "msh",
+        "category": "back_face",
+        "name": "The Incredible Hulk",
+        "oracle_id": null,
+        "facts_sha256": null,
+        "mana_cost": "{2}{R}{R}{G}{G}",
+        "type_line": "Legendary Creature — Gamma Berserker Hero",
+        "oracle_keywords": [
+          "Reach",
+          "Trample"
+        ],
+        "standard_legal": false,
+        "legendary": true,
+        "kind": 1,
+        "basic": false,
+        "mana_color": null,
+        "colored": [
+          0,
+          0,
+          0,
+          2,
+          2,
+          0
+        ],
+        "generic": 2,
+        "face_parent": 571
+      }
+    ],
+    "old_card_metadata_changes": [
+      {
+        "id": 571,
+        "name": "Bruce Banner // The Incredible Hulk",
+        "changed_fields": {
+          "front_face": {
+            "old": null,
+            "new": {
+              "name": "Bruce Banner",
+              "mana_cost": "{U}",
+              "type_line": "Legendary Creature — Human Scientist Hero",
+              "colored": [
+                0,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "generic": 0,
+              "oracle_keywords": []
+            }
+          },
+          "back_face": {
+            "old": null,
+            "new": 5404
+          }
+        }
+      },
+      {
+        "id": 3150,
+        "name": "Photon Blast Barrage",
+        "changed_fields": {
+          "colored": {
+            "old": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "new": [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "id": 4492,
+        "name": "The Ruinous Wrecking Crew",
+        "changed_fields": {
+          "colored": {
+            "old": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "new": [
+              0,
+              0,
+              1,
+              1,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "id": 4631,
+        "name": "Tony Stark // The Invincible Iron Man",
+        "changed_fields": {
+          "front_face": {
+            "old": null,
+            "new": {
+              "name": "Tony Stark",
+              "mana_cost": "{1}{U}",
+              "type_line": "Legendary Creature — Human Artificer Hero",
+              "colored": [
+                0,
+                1,
+                0,
+                0,
+                0,
+                0
+              ],
+              "generic": 1,
+              "oracle_keywords": []
+            }
+          },
+          "back_face": {
+            "old": null,
+            "new": 5403
+          }
+        }
+      },
+      {
+        "id": 4915,
+        "name": "Vision Quest",
+        "changed_fields": {
+          "colored": {
+            "old": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "new": [
+              0,
+              1,
+              0,
+              1,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "aliases_added": {
+      "Bruce Banner": 571,
+      "The Incredible Hulk": 5404,
+      "The Invincible Iron Man": 5403,
+      "Tony Stark": 4631
+    },
+    "aliases_removed": {},
+    "aliases_changed": {},
+    "tokens_exact": true,
+    "emblems_exact": true,
+    "creature_types_exact": true,
+    "other_fields_exact": [
+      "schema",
+      "baseline_revision",
+      "source_catalogue_sha256",
+      "physical_count",
+      "token_base",
+      "emblem_base",
+      "tokens",
+      "emblems",
+      "creature_types",
+      "constants",
+      "helper_interface"
+    ]
+  },
+  "semantic_actor_audit": "New attached-equipment sacrifice, symbol-sum costs, search-zone selection, mana/modal/reflexive payments and damage ordering retain semantic rules actor/captured players. Public API authorization remains external decision maker. Existing Cube, new privacy probes and individual owned raw/index/orphan/restore scenarios exercise delegation.",
+  "intentional_policy_changes": "Only visible-domain scoring for genuine added actions; legacy action scores retained. No new bot or deck/seed/time-limit changes.",
+  "recorder_unchanged": true,
+  "full_native_not_executed_in_this_trace_job": true,
+  "pending": [
+    "Natural252-game corpus currently halted on a grounded slow funding query; diagnostic owner is preparing a semantics-preserving fix without changing workloads.",
+    "Final aggregate ordinary native suite and fresh strict trace confirmation.",
+    "Required validate.py --release with fixed inputs and global native time bound.",
+    "Final published batch and two independent nonauthor final-head gates."
+  ],
+  "artifact_custody": "All required4651 parent paths remain in place; terminal own-target cleanup and successor manifest follow strict confirmation.",
+  "portable_locations": "<cache>, <worktree>, <temp> denote original retained locations without moving artifacts."
+}
