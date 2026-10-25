@@ -13,6 +13,7 @@ pub(super) struct EntryProjection {
     pub static_sources: Vec<CardId>,
     pub attachment_sources: Vec<CardId>,
     pub roles: roles::RoleState,
+    pub hand_size: hand_size::HandSizeState,
     pub controls: continuous_control::ControlState,
     pub entry_values: Vec<entry_choices::ChoiceRow>,
     pub order: Vec<ObjectRef>,
@@ -21,10 +22,22 @@ pub(super) struct EntryProjection {
 }
 impl EntryProjection {
     fn from_world(w: &FundingState<'_>) -> Self {
+        let mut hand_size = w
+            .game
+            .state
+            .hand_size
+            .as_deref()
+            .cloned()
+            .unwrap_or_default();
+        hand_size.sources.retain(|row| {
+            w.reference(row.source.card) == row.source
+                && w.object(row.source.card).zone == Zone::Battlefield
+        });
         Self {
             static_sources: w.static_sources().to_vec(),
             attachment_sources: w.attachment_sources().to_vec(),
             roles: w.roles().cloned().unwrap_or_default(),
+            hand_size,
             controls: w.controls().cloned().unwrap_or_default(),
             entry_values: w.entry_values().to_vec(),
             order: Vec::new(),
@@ -835,7 +848,11 @@ impl FundingState<'_> {
                 !prefix.contains(i)
                     && !m.skipped
                     && m.destination == Zone::Battlefield
-                    && Self::entry_has_timestamp(m)
+                    && (Self::entry_has_timestamp(m)
+                        || (moves.iter().any(|m| {
+                            Game::hand_entry(m)
+                                && m.before.card.hand_size_setting().flatten().is_some()
+                        }) && Game::hand_entry(m)))
             })
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
@@ -956,6 +973,9 @@ impl FundingState<'_> {
             }
             let source = next.reference(m.before.id);
             let p = next.entry_projection.as_mut().unwrap();
+            if !Self::entry_has_timestamp(m) {
+                continue;
+            }
             let timestamp = p.register(source, m.before.card);
             keyword_counters::sync_effects(
                 &mut p.roles,
@@ -997,6 +1017,24 @@ impl FundingState<'_> {
                     timestamp,
                 });
             }
+        }
+        for m in &moves {
+            if !m.skipped {
+                next.entry_projection
+                    .as_mut()
+                    .unwrap()
+                    .hand_size
+                    .forget(m.before.reference);
+            }
+        }
+        for i in Game::hand_entry_order_for(&moves, order, next.active) {
+            let m = &moves[i];
+            let source = next.reference(m.before.id);
+            next.entry_projection
+                .as_mut()
+                .unwrap()
+                .hand_size
+                .register(source, m.before.card);
         }
         for m in &moves {
             if m.skipped || m.destination != Zone::Battlefield || !m.before.card.controls_attached()
@@ -1392,3 +1430,7 @@ mod msh_skrull_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_doom_funding_tests.rs"]
 mod msh_doom_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_ten_rings_funding_tests.rs"]
+mod msh_ten_rings_funding_tests;

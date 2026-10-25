@@ -58,6 +58,7 @@ impl Game {
         }
         if self.state.objects[source.card as usize].attached_to != Some(target) {
             self.retimestamp_live_static_source(source);
+            self.retimestamp_hand_size_source(source);
         }
         self.state.objects[source.card as usize].attached_to = Some(target);
         true

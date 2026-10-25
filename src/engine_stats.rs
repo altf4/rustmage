@@ -33,6 +33,7 @@ impl Game {
         self.register_static_base_stats(id);
         self.register_live_static_source(id);
         self.register_ability_source(id);
+        self.register_hand_size_source(id);
         if self.state.objects[id as usize]
             .card
             .attachment_bonus()
@@ -193,6 +194,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
+                            | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)

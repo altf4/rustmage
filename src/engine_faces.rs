@@ -103,6 +103,7 @@ impl Game {
                 object: item.object,
                 serial,
             });
+        self.forget_hand_size_source(item.object);
         self.remove_face_providers(item.card);
         self.state.objects[item.card as usize].card = other;
         if let Some(mut recipe) = self.copy_recipe(item.object) {

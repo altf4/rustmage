@@ -106,7 +106,7 @@ impl Game {
         self.state.ending_turn = false;
         self.clear_step_mana(false, true);
         self.state.step = Step::Cleanup;
-        if !self.no_maximum_hand_size(self.state.active) && self.hand_count(self.state.active) > 7 {
+        if self.above_hand_limit(self.state.active, 0) {
             self.state.pending = Pending::Discard;
             return true;
         }

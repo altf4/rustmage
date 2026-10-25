@@ -490,8 +490,16 @@ impl Game {
         batch.timestamp_order = timestamp_order.clone();
         batch.timestamps_ready = true;
         self.record_cast_mana_entries(&batch);
+        let hand_cards: Vec<_> = Self::hand_entry_order(&batch, self.state.active)
+            .iter()
+            .map(|&i| batch.moves[i].before.id)
+            .collect();
+        if !hand_cards.is_empty() {
+            self.state.hand_size.get_or_insert_default().deferred = true;
+        }
         let timestamp_cards: Vec<_> = timestamp_order
             .iter()
+            .filter(|&&i| Self::entry_has_timestamp(&batch.moves[i]))
             .map(|&i| batch.moves[i].before.id)
             .collect();
         if !timestamp_cards.is_empty() {
@@ -621,6 +629,17 @@ impl Game {
                     .find(|e| e.before.id == id && e.moved && e.destination == Zone::Battlefield)
                 {
                     self.assign_static_source_timestamp(event.after);
+                }
+            }
+        }
+        if !hand_cards.is_empty() {
+            self.state.hand_size.as_mut().unwrap().deferred = false;
+            for id in hand_cards {
+                if let Some(event) = events
+                    .iter()
+                    .find(|e| e.before.id == id && e.moved && e.destination == Zone::Battlefield)
+                {
+                    self.retimestamp_hand_size_source(event.after);
                 }
             }
         }
@@ -906,7 +925,7 @@ pub struct EntryTimestampView {
     pub selected: Vec<EntryTimestampObjectView>,
 }
 impl Game {
-    fn entry_has_timestamp(m: &EntryMove) -> bool {
+    pub(super) fn entry_has_timestamp(m: &EntryMove) -> bool {
         m.destination == Zone::Battlefield
             && m.before.zone != Zone::Battlefield
             && (!m.before.is_token()
@@ -932,17 +951,23 @@ impl Game {
             .moves
             .iter()
             .enumerate()
-            .filter_map(|(i, m)| Self::entry_has_timestamp(m).then_some(i))
+            .filter_map(|(i, m)| {
+                (Self::entry_has_timestamp(m)
+                    || (batch.moves.iter().any(|m| {
+                        Self::hand_entry(m) && m.before.card.hand_size_setting().flatten().is_some()
+                    }) && Self::hand_entry(m)))
+                .then_some(i)
+            })
             .collect();
         ids.sort_by_key(|&i| batch.moves[i].controller != self.state.active);
         ids
     }
     fn entry_needs_timestamp_choice(&self, batch: &EntryBatch) -> bool {
+        let indices = self.entry_timestamp_indices(batch);
         [Player::P0, Player::P1].iter().any(|&p| {
-            batch
-                .moves
+            indices
                 .iter()
-                .filter(|m| m.controller == p && Self::entry_has_timestamp(m))
+                .filter(|&&i| batch.moves[i].controller == p)
                 .count()
                 > 1
         })

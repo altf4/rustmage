@@ -1109,6 +1109,9 @@ impl<'g> FundingState<'g> {
     }
     fn remember_payment_departure(&mut self, id: CardId) {
         let reference = self.reference(id);
+        if let Some(p) = &mut self.entry_projection {
+            p.hand_size.forget(reference);
+        }
         let is_announcement_source = |item: &SpellView| {
             matches!(item.kind, StackKind::ActivatedAbility { .. }) && item.object == reference
         };
