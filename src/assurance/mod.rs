@@ -5,6 +5,7 @@ pub(super) mod big_helpers;
 mod cards;
 mod contracts;
 mod interactions;
+mod msh_games;
 mod regressions;
 
 fn scenario(p: Player) -> Game {
