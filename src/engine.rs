@@ -8092,3 +8092,7 @@ mod msh_fourteenth_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_turn_cast_grants_tests.rs"]
 mod msh_turn_cast_grants_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_ability_copy_core_tests.rs"]
+mod msh_ability_copy_core_tests;
