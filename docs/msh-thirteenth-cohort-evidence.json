@@ -176,9 +176,10 @@
     "dedicated_whole_cards": 113,
     "shared_copy_core": 47,
     "combined": 2,
-    "expected_total_native_after_integration": 1590,
-    "final_release_validation": "Pending required validate.py --release on the final published source; final exact-head CI is also pending.",
-    "copy_rule_corrections": 12
+    "expected_total_native_after_integration": 1592,
+    "final_release_validation": "Pending required validate.py --release and exact-head CI on the final world-aware aggregate.",
+    "copy_rule_corrections": 12,
+    "projected_face_correction": 2
   },
   "combined_games": {
     "fixture_record": {
@@ -284,14 +285,14 @@
   "implementation_throughput": {
     "whole_candidates": 9,
     "window_start_utc": "2026-10-25T04:50:08.092020+00:00",
-    "window_end_utc": "2026-10-25T10:54:29.303673+00:00",
-    "elapsed_seconds": 21861.211653,
-    "candidates_per_hour": 1.482077046518772,
+    "window_end_utc": "2026-10-25T11:09:05.300832+00:00",
+    "elapsed_seconds": 22737.208812,
+    "candidates_per_hour": 1.4249770175352514,
     "start_artifact": {
       "path": "<cache>/rustmage-msh-temporary-copy-design-a29274fe.json",
       "sha256": "a3c34d39e09d818e0a1703b227150b16a4c4ee64b0cc5f4e63a9dbceac73177b"
     },
-    "scope": "Observed earliest retained temporary-copy design audit through corrected aggregate evidence. Includes shared-core/card work, fixtures, integration, initial release validation and subsequent rules corrections, queues, evidence and cleanup; overlaps preparatory audits. Excludes the final corrected release validation, CI and approval."
+    "scope": "Observed earliest retained temporary-copy design audit through the world-aware corrected aggregate evidence. Includes shared-core/card work, fixtures, integration, both earlier release validations and subsequent rules corrections, queues, evidence and cleanup; overlaps preparatory audits. Excludes the final world-aware aggregate release validation, CI and approval."
   },
   "remaining": {
     "gated_cards": [
@@ -394,7 +395,44 @@
     "new_admissions": [],
     "new_ids": [],
     "schema_changed": false,
-    "final_release": "Pending required validate.py --release and exact-head CI on the corrected aggregate."
+    "final_release": "Superseded by the projected-face correction; final new aggregate release is pending.",
+    "prior_aggregate_release": {
+      "head": "f798abe6c25f7df572915beccd0cae6355d9a77e",
+      "artifact": "<cache>/rustmage-validation-egp7pbvf/report/result.json",
+      "sha256": "3c2233d2b57a524cbf2ff77b7dd686e6b93a9f5cce767919efef1d167dd861b0",
+      "native": 1590,
+      "all_eight_phases_zero": true,
+      "fixed_inputs": 11814,
+      "changed": [],
+      "active_processes": [],
+      "seconds": 320.7612501120311,
+      "ci_run": 40186730270,
+      "ci_conclusion": "success",
+      "scope": "Historical completed checkpoint before the additional world-aware face-view correction."
+    }
   },
-  "updated_utc": "2026-10-25T10:54:29.303673+00:00"
+  "updated_utc": "2026-10-25T11:09:05.300832+00:00",
+  "projected_face_correction": {
+    "source_head": "04d0de61e6c9752d867b98b92951fb524013b943",
+    "tested_runtime": "7494faba46d3e70a17e8923c154360eba30fced5",
+    "evidence_document": {
+      "path": "docs/msh-copy-projected-faces-evidence.json",
+      "sha256": "1f8e16fbc6b7a246c2b7e599fa6d473d62aa0c648bcafd13b7151c8392eea961"
+    },
+    "new_groups": 2,
+    "native": 1592,
+    "execution_seconds": 12.18,
+    "fixed_inputs": 11814,
+    "changed": [],
+    "all_static_green": true,
+    "complete_parent_tables_exact": 13,
+    "trace_rows": 2525,
+    "normal_schema": 149,
+    "previous_schema": 148,
+    "behavior": "Build complete face observations from the current characteristic world retained copy recipe after speculative departures. Both inverse paid-produced Single/Double token shapes retain their actual views through graveyard, exile and replacement destinations.",
+    "new_admissions": [],
+    "new_ids": [],
+    "schema_changed": false,
+    "aggregate_release": "Pending required validate.py --release and exact-head CI on the new aggregate."
+  }
 }
