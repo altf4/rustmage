@@ -314,6 +314,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             gift: None,
                             physical_card: None,
                             flash_surcharge: false,
+                            sneak_defender: None,
                             face: CastFace::Normal,
                             payment: info.payment,
                             offspring: None,
