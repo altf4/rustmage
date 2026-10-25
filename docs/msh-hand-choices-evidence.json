@@ -1,0 +1,482 @@
+{
+  "schema": 1,
+  "scope": "Two whole typed cards with private hand-subset selection, captured-controller discard, independent target legality and exact temporary exile. Focused card acceptance only; final set integration deferred.",
+  "base": "92e076f567840703b2e925cb421192ce075fc40f",
+  "tested_runtime": "9dd40600f3fd258e9481e24c2ae392b908707968",
+  "source_branch": "codex/msh-hand-reveal-exile",
+  "complete_cards": [
+    "Cloak and Dagger, Entwined",
+    "Klaw, Sonic Subjugator"
+  ],
+  "oracle": [
+    {
+      "oracle_id": "64132f93-66ac-4794-8c07-a88f9ed0e22b",
+      "name": "Cloak and Dagger, Entwined",
+      "layout": "normal",
+      "mana_cost": "{1}{W}{B}",
+      "cmc": 3.0,
+      "type_line": "Legendary Creature \u2014 Human Hero",
+      "oracle_text": "Deathtouch, lifelink\nWhen Cloak and Dagger enter, choose target opponent and up to one target creature they control. They reveal their hand. You may exile a nonland card from their hand or the chosen creature until Cloak and Dagger leave the battlefield.",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "B",
+        "W"
+      ],
+      "color_identity": [
+        "B",
+        "W"
+      ],
+      "keywords": [
+        "Lifelink",
+        "Deathtouch"
+      ],
+      "reference_printing": {
+        "id": "fa01d35f-1064-4a7c-9475-4504566df850",
+        "set": "msh",
+        "collector_number": "211",
+        "released_at": "2026-06-26"
+      }
+    },
+    {
+      "oracle_id": "1c233e08-d5a3-48d7-9074-20393896a480",
+      "name": "Klaw, Sonic Subjugator",
+      "layout": "normal",
+      "mana_cost": "{2}{B}",
+      "cmc": 3.0,
+      "type_line": "Legendary Creature \u2014 Human Rogue Villain",
+      "oracle_text": "Sonic Attack \u2014 When Klaw enters, target player reveals a number of cards from their hand equal to one plus the number of creature cards in your graveyard. You choose one of them. That player discards that card.",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "B"
+      ],
+      "color_identity": [
+        "B"
+      ],
+      "keywords": [
+        "Sonic Attack"
+      ],
+      "reference_printing": {
+        "id": "c79a86f8-24e9-49a2-8b1c-72a72fed1985",
+        "set": "msh",
+        "collector_number": "103",
+        "released_at": "2026-06-26"
+      }
+    }
+  ],
+  "source_pins": {
+    "design": {
+      "path": "<cache>/rustmage-msh-hand-choices-source-design.json",
+      "sha256": "90676b66e948756d06078637b613ac367f67330094447fd0943576cff4e33934"
+    },
+    "oracle_inventory": {
+      "path": "data/standard/cards.json",
+      "sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0"
+    },
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java": [
+      {
+        "path": "Mage.Sets/src/mage/cards/k/KlawSonicSubjugator.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "39deb13855e245f2247f402a0e324d11934e890ef56a2b2d09f9e725d0bc581b",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/c/CloakAndDaggerEntwined.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "d2aed4439b1cd39fbee9f3c2bd86c236afd3574ffba5080081790d9ec94b932c",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/IntPlusDynamicValue.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e6b7d97aecee63d129c961c1d35245a1daec6d200f4f495ca6ed10081e5b1c43",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/delayed/OnLeaveReturnExiledAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "5b62cf341bee369a87d667c2431aa2bdf252f167e84793aca73e04a2ceee1822",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/TargetCard.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/FilterOpponent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "45813e5fd75e1b9a5401f9927d811a9ebf05ea2364938b8f7c1020da7b6f1f7f",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/constants/TargetController.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/util/CardUtil.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+        "read_scope": "scoped excerpt getCardExileZoneId/getExileZoneId/getCardZoneString/getObjectZoneString helpers; not full utility file"
+      }
+    ],
+    "primary": [
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "sections": [
+          "Cloak and Dagger, Entwined lines588-601",
+          "Klaw, Sonic Subjugator lines1258-1266"
+        ],
+        "paraphrase": "Cloak: handle each legal target independently; source gone still reveals without exiling. Hand cards return to hand, permanents to owner control; tokens do not return. Klaw reveals the whole hand if the requested quantity exceeds its size."
+      },
+      {
+        "cache": "<cache>/rustmage-MagicCompRules-20260925.txt",
+        "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+        "rules": [
+          "608.2b",
+          "610.3",
+          "400.7",
+          "701 discard/reveal"
+        ]
+      }
+    ],
+    "definitions": [
+      {
+        "path": "src/card_definitions/msh/klaw_sonic_subjugator.rs",
+        "sha256": "c830c743cdeaccd03494b966455af794c94328c572424758134dbceb35f1de56"
+      },
+      {
+        "path": "src/card_definitions/msh/klaw_sonic_subjugator.json",
+        "sha256": "a80ac8e9e4336e4a1bb89549eafeb524ae6e46c73b030cdfd6a55972022ea7bc"
+      },
+      {
+        "path": "src/card_definitions/msh/cloak_and_dagger_entwined.rs",
+        "sha256": "19b6d6528ea86855904b683a5889e8ff854de71b094f6fd086721b2fd755d010"
+      },
+      {
+        "path": "src/card_definitions/msh/cloak_and_dagger_entwined.json",
+        "sha256": "4119f1292376d75a720bb2f1ca8bf80987324ce4cf4719135dc94675d64b167b"
+      }
+    ]
+  },
+  "shared_mechanics": [
+    "An owned cold HandInteraction exposes truthful actor-only ChooseHandCard phases: victim selects required subset privately; commitment reveals exact refs; captured ability controller chooses one central caused-discard.",
+    "Optional exile reuses exact-object ExileLink movement and original return zone, returning hand cards to hand and creatures to their owner as new objects. Only actual arrivals in exile create links.",
+    "ControllerOfPlayerGroup checks current target controller at announcement and resolution against the original full target bindings; surviving player and creature targets remain independent.",
+    "Cloak instruction explicitly consumes all target groups in run_program. Existing exile-until-source-leaves callers share the new refs executor."
+  ],
+  "wire": {
+    "schema": 152,
+    "new_action": "ChooseHandCard { object: Option<ObjectRef> }",
+    "new_optional_observation": "hand_choice: Option<HandChoiceView>, serialized only when present and only for the actual decision actor.",
+    "private_state": "HandInteraction in cold ChoiceState, including exact selected/candidate refs, source incarnation, victim and captured controller.",
+    "policy": "Only analogous scoring arm for new action: Some60/None-1. No strategy/bot rewrite.",
+    "schema_note": "Same unpublished coordinated152 allocation; no153."
+  },
+  "obligations": [
+    {
+      "card": "Klaw, Sonic Subjugator",
+      "clause": "2B legendary Human Rogue Villain 2/2 and ordinary colored payment",
+      "evidence": [
+        "msh_hand_choices_klaw_body_actual_cost_and_two_phase_subset_discard",
+        "msh_hand_choices_actual_consumer_costs_require_colored_mana"
+      ]
+    },
+    {
+      "card": "Klaw, Sonic Subjugator",
+      "clause": "ETB target either player; 1 plus captured-controller current graveyard creature cards at resolution; empty/short/all hand",
+      "evidence": [
+        "msh_hand_choices_klaw_empty_short_all_and_land_mandatory_discard",
+        "msh_hand_choices_klaw_self_target_and_resolution_graveyard_count",
+        "msh_hand_choices_klaw_graveyard_owner_card_kind_and_token_filter",
+        "msh_hand_choices_klaw_illegal_player_target_has_no_reveal"
+      ]
+    },
+    {
+      "card": "Klaw, Sonic Subjugator",
+      "clause": "Victim privately selects exact required subset, reveal only at commitment, controller chooses mandatory one then caused-discard; controller/source changes and replacements",
+      "evidence": [
+        "msh_hand_choices_klaw_body_actual_cost_and_two_phase_subset_discard",
+        "msh_hand_choices_klaw_source_control_blink_and_captured_controller",
+        "msh_hand_choices_klaw_discard_caused_by_controller_preserves_replacements",
+        "msh_hand_choices_klaw_private_selection_counterfactual_orphan_and_restore",
+        "msh_hand_choices_klaw_stale_private_candidate_is_not_new_hand_incarnation"
+      ]
+    },
+    {
+      "card": "Cloak and Dagger, Entwined",
+      "clause": "1WB legendary Human Hero2/2, deathtouch/lifelink actual combat",
+      "evidence": [
+        "msh_hand_choices_actual_consumer_costs_require_colored_mana",
+        "msh_hand_choices_cloak_actual_combat_deathtouch_lifelink_after_own_untap"
+      ]
+    },
+    {
+      "card": "Cloak and Dagger, Entwined",
+      "clause": "Target opponent and optional one creature they control; independent partial legality, ward, full hand reveal, nonland/creature optional choice",
+      "evidence": [
+        "msh_hand_choices_cloak_full_reveal_optional_decline_and_nonland_filter",
+        "msh_hand_choices_cloak_partial_targets_independent_player_or_creature_legality",
+        "msh_hand_choices_cloak_target_relationship_mandatory_opponent_and_optional_creature",
+        "msh_hand_choices_cloak_ward_countered_ability_does_not_reveal_hand"
+      ]
+    },
+    {
+      "card": "Cloak and Dagger, Entwined",
+      "clause": "Exact source-linked exile until source leaves; source-gone reveal/no exile; hand/BF owner return, counters/equipment/new object, token ceasing, entry pause and copied packets",
+      "evidence": [
+        "msh_hand_choices_cloak_hand_exile_exact_link_returns_to_hand_on_source_leave",
+        "msh_hand_choices_cloak_creature_exile_returns_owner_new_object_without_counters_or_equipment",
+        "msh_hand_choices_cloak_source_gone_or_reentered_still_reveals_without_exile",
+        "msh_hand_choices_cloak_exiled_token_ceases_and_never_returns",
+        "msh_hand_choices_cloak_old_exile_object_moved_and_source_blink_do_not_rebind",
+        "msh_hand_choices_cloak_copied_packets_own_separate_choices_and_shared_exact_departure",
+        "msh_hand_choices_cloak_return_entry_choice_is_owned_by_card_owner"
+      ]
+    },
+    {
+      "card": "Both",
+      "clause": "Illegal choices atomic; full both-view privacy; owned raw/index branches, disposed parent and restore",
+      "evidence": [
+        "msh_hand_choices_klaw_private_selection_counterfactual_orphan_and_restore",
+        "msh_hand_choices_cloak_public_exile_choice_owned_orphan_and_atomic_failures",
+        "msh_hand_choices_klaw_stale_private_candidate_is_not_new_hand_incarnation",
+        "msh_hand_choices_cloak_return_entry_choice_is_owned_by_card_owner"
+      ]
+    }
+  ],
+  "focused_tests": {
+    "module": "src/engine_msh_hand_choices_tests.rs",
+    "module_sha256": "d7498051f08f3242f20baaba29c643e6e00cf81e709f8ba14afdda61465d78fd",
+    "new_groups": 23,
+    "new_groups_both_seats": true,
+    "all_new_functions": [
+      "msh_hand_choices_klaw_body_actual_cost_and_two_phase_subset_discard",
+      "msh_hand_choices_klaw_empty_short_all_and_land_mandatory_discard",
+      "msh_hand_choices_klaw_self_target_and_resolution_graveyard_count",
+      "msh_hand_choices_klaw_graveyard_owner_card_kind_and_token_filter",
+      "msh_hand_choices_klaw_source_control_blink_and_captured_controller",
+      "msh_hand_choices_klaw_discard_caused_by_controller_preserves_replacements",
+      "msh_hand_choices_klaw_illegal_player_target_has_no_reveal",
+      "msh_hand_choices_klaw_private_selection_counterfactual_orphan_and_restore",
+      "msh_hand_choices_cloak_full_reveal_optional_decline_and_nonland_filter",
+      "msh_hand_choices_cloak_hand_exile_exact_link_returns_to_hand_on_source_leave",
+      "msh_hand_choices_cloak_creature_exile_returns_owner_new_object_without_counters_or_equipment",
+      "msh_hand_choices_cloak_partial_targets_independent_player_or_creature_legality",
+      "msh_hand_choices_cloak_source_gone_or_reentered_still_reveals_without_exile",
+      "msh_hand_choices_cloak_target_relationship_mandatory_opponent_and_optional_creature",
+      "msh_hand_choices_cloak_exiled_token_ceases_and_never_returns",
+      "msh_hand_choices_cloak_old_exile_object_moved_and_source_blink_do_not_rebind",
+      "msh_hand_choices_cloak_public_exile_choice_owned_orphan_and_atomic_failures",
+      "msh_hand_choices_cloak_ward_countered_ability_does_not_reveal_hand",
+      "msh_hand_choices_actual_consumer_costs_require_colored_mana",
+      "msh_hand_choices_cloak_copied_packets_own_separate_choices_and_shared_exact_departure",
+      "msh_hand_choices_klaw_stale_private_candidate_is_not_new_hand_incarnation",
+      "msh_hand_choices_cloak_return_entry_choice_is_owned_by_card_owner",
+      "msh_hand_choices_cloak_actual_combat_deathtouch_lifelink_after_own_untap"
+    ],
+    "existing_groups": [
+      "sos_silverquill_cost_returned_lord_changes_later_casualty_power",
+      "sos_silverquill_returned_banner_choice_cannot_strand_declared_casualty",
+      "sos_silverquill_casualty_can_return_a_creature_before_convoking_it",
+      "sos_silverquill_returned_aura_attachment_uses_projected_layers",
+      "msh_recent_nurse_real_duress_discard_then_flash_return"
+    ],
+    "existing_group_count": 5,
+    "total_groups": 28,
+    "final_all_passed": true,
+    "new_rules_seconds": 0.11,
+    "summed_rules_seconds": 0.25,
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development",
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-msh-hand-choices-final-driver.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 42.61521685903426,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2736705536,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "driver_seconds": 30.512486125982832,
+    "fixed_inputs": 11154,
+    "changed_inputs": [],
+    "inputs": {
+      "path": "<cache>/rustmage-msh-hand-choices-final-inputs.json",
+      "sha256": "f2820df01f37f2ec9377848d438c652282d5d065900c442570e0dad0eca934e1"
+    },
+    "log": {
+      "path": "<cache>/rustmage-msh-hand-choices-final.log",
+      "sha256": "f0c39ecf8c71e9e1db3cdac7a10e428f7b2a66347dc6a94eb96ffffa43686973"
+    },
+    "checks": {
+      "path": "<cache>/rustmage-msh-hand-choices-final-checks.json",
+      "sha256": "86079c7d1270df714fe48053f5aa01588cbb327d156029fb4c63fd2b75bbed0c"
+    },
+    "resource_report": {
+      "path": "<cache>/rustmage-msh-hand-choices-final-guard.json",
+      "sha256": "b297b98a42def2a6d307b730e9a1d060b4196dc96ea3717b52d3c9f4dfb5ff06"
+    }
+  },
+  "development_history": [
+    "Initial compilation rejected an attribute within the existing action macro; replaced with an ordinary source comment. A later new test missed a CreatureType import; both compile-only failures preceded final supported run.",
+    "Initial gated matrix found a missing all-target-groups dispatch opt-in for the new Cloak instruction; corrected before final source. An announcement fixture also finished an optional group too early and was corrected.",
+    "Gated focused4 passed19; expanded focus6 passed22/23. Remaining Adaptive Automaton fixture moved source directly without pumping pending entry_batch. Replaced this boundary shortcut with real paid Unsummon and an owned returned-card entry decision. Focus7 passed23 (cost test skipped while gated).",
+    "After flags/provenance and metadata-only linking, removed all gated fixture fallbacks/skip. Final ordinary supported23 plus5 exact existing regressions all pass."
+  ],
+  "boundary_qualification": "Copied queued packets and production object moves during suspended resolution are explicitly bounded executor probes, not a claim that players receive response priority during resolution. Final ordinary entry/cast/payment paths use supported paid cards. These are scenario fixtures, not natural Standard games.",
+  "metadata": {
+    "command": "python3 scripts/link_catalogue.py",
+    "purpose": "Metadata-only typed definition wiring after complete flag changes; no gameplay/full integration validation.",
+    "new_tokens": 0,
+    "new_ids": 0,
+    "membership_changes": false,
+    "recorder_changes": false,
+    "accepted_trace_changes": false,
+    "existing_trace_sha256": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3"
+  },
+  "cleanup": {
+    "report": {
+      "path": "<cache>/rustmage-msh-hand-choices-cleanup.json",
+      "sha256": "35531cf189cec892c7a0aa40bd228cdd2707270bb4f53a803604f65d635d1561"
+    },
+    "preservation": {
+      "path": "<cache>/rustmage-msh-hand-choices-preservation.json",
+      "sha256": "0db5024104a55caf8a744410b196c742fbf38a6c4c9408f7509177dde42ca316"
+    },
+    "required_artifacts": 4403,
+    "details": {
+      "created_utc": "2026-10-25T16:49:43.404788+00:00",
+      "terminal": true,
+      "known_guarded_consumers_terminal": true,
+      "own_user_processes_scanned": 209,
+      "accessible_fd_maps_exe_cwd_target_refs": [],
+      "denied_inspections": 174,
+      "target": "<cache>/rustmage-msh-hand-choices-dev-target",
+      "parent_manifest": "<cache>/rustmage-msh-self-static-preservation.json",
+      "parent_manifest_sha256": "de17c14178750acd0633e3c8fa4b2e5d0441032919d9f94593d0416978d67c4a",
+      "prior_required": 4392,
+      "all_prior_paths_and_hashes_exact": true,
+      "missing_prior": [],
+      "changed_prior": [],
+      "removed_files": 165,
+      "removed_path_allocated_bytes": 40366080,
+      "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation.",
+      "preserved_target_files": [
+        {
+          "path": "<cache>/rustmage-msh-hand-choices-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage-msh-hand-choices-dev-target/debug/deps/rustmage-55e16bd14e329fbf",
+          "sha256": "b568902ca616eaf682ebee60add1654cb738432f19a6e4b93b5904d5438eab36"
+        }
+      ]
+    }
+  },
+  "technical_correction": "docs/msh-leader-evidence.json now correctly labels its selected-group filter defensive/redundant for ordinary existing Connive dispatch. The paid Stratagem regressions provide coverage, not a demonstrated inherited gameplay defect. Original source audit cache remains unchanged, with an appended correction sidecar.",
+  "throughput": {
+    "start_utc": "2026-10-25T16:13:41.521377+00:00",
+    "end_utc": "2026-10-25T16:50:51.948459+00:00",
+    "elapsed_seconds": 2230.427082,
+    "scope": "Two cards: full-source audit, core/typed authoring, focused development, supported paid confirmation, provenance/evidence and terminal cleanup. Not pure simulation throughput; no full-set extrapolation."
+  },
+  "deferred": [
+    "Final integration, DEFAULT/all-native, aggregate Clippy/static, full old Trace exports, release/CI and final batch reviews are intentionally deferred until all remaining cards are implemented.",
+    "Independent final whole-batch rules/interactions/performance acceptance remains open for all281 Oracle identities.",
+    "No other card admissions, token IDs, main merge or additional PR."
+  ]
+}
