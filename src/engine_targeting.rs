@@ -1338,6 +1338,7 @@ impl Game {
             life_event: None,
             source_counter_lki: None,
             source_quantity_lki: None,
+            event_object: None,
             sacrificed_toughness: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,

@@ -214,6 +214,7 @@ impl Game {
             .iter()
             .map(|(id, _)| self.object_view(*id))
             .collect();
+        self.capture_event_object_facts(before.iter());
         self.capture_source_quantities(before.iter());
         for (id, object) in retained {
             let before = self.object_view(id);
