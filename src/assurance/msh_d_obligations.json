@@ -958,7 +958,7 @@
           "id": "216.4",
           "oracle": "{4}{R}: Super-Skrull deals 4 damage to target creature.",
           "assertions": [
-            "pay4R kills target Bear with4damage"
+            "Pay4R deals exactly4 damage to a surviving7/6 Savage Land Dinosaur."
           ],
           "scenario_tests": [
             "engine::assurance::msh_d::super_skrull_all_four_activated_abilities",
@@ -5484,7 +5484,7 @@
           "id": "274.1",
           "oracle": "Teamwork 3 (As an additional cost to cast this spell, you may tap any number of creatures you control with total power 3 or more.)",
           "assertions": [
-            "normal1B mode0 grants deathtouch to bound creature; paid Teamwork3 combined mode separately binds own creature for deathtouch and enemy Bear for lethal-2/-2"
+            "Normal1B mode0 grants deathtouch; paid Teamwork3 combines own recipient deathtouch and opponent Hill Giant3/3 becoming1/1. Cleanup restores3/3 and removes deathtouch."
           ],
           "scenario_tests": [
             "engine::assurance::msh_d::teamwork_tactics_reanimation_bite_and_counter_tax"
@@ -5497,7 +5497,7 @@
           "id": "274.2",
           "oracle": "Choose one. If this spell was cast using teamwork, choose both instead.",
           "assertions": [
-            "normal1B mode0 grants deathtouch to bound creature; paid Teamwork3 combined mode separately binds own creature for deathtouch and enemy Bear for lethal-2/-2"
+            "Normal1B mode0 grants deathtouch; paid Teamwork3 combines own recipient deathtouch and opponent Hill Giant3/3 becoming1/1. Cleanup restores3/3 and removes deathtouch."
           ],
           "scenario_tests": [
             "engine::assurance::msh_d::teamwork_tactics_reanimation_bite_and_counter_tax"
@@ -5510,7 +5510,7 @@
           "id": "274.3",
           "oracle": "\u2022 Target creature gains deathtouch until end of turn.",
           "assertions": [
-            "normal1B mode0 grants deathtouch to bound creature; paid Teamwork3 combined mode separately binds own creature for deathtouch and enemy Bear for lethal-2/-2"
+            "Normal1B mode0 grants deathtouch; paid Teamwork3 combines own recipient deathtouch and opponent Hill Giant3/3 becoming1/1. Cleanup restores3/3 and removes deathtouch."
           ],
           "scenario_tests": [
             "engine::assurance::msh_d::teamwork_tactics_reanimation_bite_and_counter_tax"
@@ -5523,7 +5523,7 @@
           "id": "274.4",
           "oracle": "\u2022 Target creature gets -2/-2 until end of turn.",
           "assertions": [
-            "normal1B mode0 grants deathtouch to bound creature; paid Teamwork3 combined mode separately binds own creature for deathtouch and enemy Bear for lethal-2/-2"
+            "Normal1B mode0 grants deathtouch; paid Teamwork3 combines own recipient deathtouch and opponent Hill Giant3/3 becoming1/1. Cleanup restores3/3 and removes deathtouch."
           ],
           "scenario_tests": [
             "engine::assurance::msh_d::teamwork_tactics_reanimation_bite_and_counter_tax"
@@ -6048,5 +6048,14 @@
       ],
       "printed_body_binding_test": "engine::assurance::msh_d::literal_printed_creature_bodies_and_keyword_families"
     }
-  ]
+  ],
+  "current_source_delta": {
+    "since": "author-focused receipts retained unchanged",
+    "changes": [
+      "Super-Skrull red activation asserts exactly4 damage on a surviving7/6.",
+      "Widow's Bite asserts3/3 becoming1/1, then3/3 after cleanup; granted deathtouch expires."
+    ],
+    "test_source_sha256": "b953a930c7fb6b0b6bcc9511f03a843c566010972375f7cd5e624d6182922593",
+    "routine_validation": "Default-profile full routine at42bede48776bb6a528a38e6a8aed0879bca506f5 passed; later assertion descriptions do not change executable scenarios."
+  }
 }

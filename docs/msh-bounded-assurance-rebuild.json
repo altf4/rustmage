@@ -794,7 +794,7 @@
       "test_functions": 26,
       "test_sha256": "8719c9fecba9b85a5bbe7a4a065cdbb698dc149e6fad0c811bcad83c96d7984d",
       "obligation_ledger": "src/assurance/msh_b_obligations.json",
-      "ledger_sha256": "06eb76c4fe3cb251c056d0687c7cd9bb7c8091cdfa708998eab52f20d98c8f5d"
+      "ledger_sha256": "90a25245d5914ff30d643d635f59b26f21935b1976b0fdff5ea387c3d4712241"
     },
     {
       "partition": "c",
@@ -803,7 +803,7 @@
       "test_functions": 31,
       "test_sha256": "ca6f5049a75e39f796f0ced987b94a51abb26b93fdeb06004a5fe4756a50d03a",
       "obligation_ledger": "src/assurance/msh_c_obligations.json",
-      "ledger_sha256": "2bd08c27edde8d0a8bdf9127a7cadaa0ebfc264861a03ac3750110cd61ee42a8"
+      "ledger_sha256": "8f762baf183bfe081849efd18a99e3bc76a33437a3453520d4cbbf1cd7ec0a9b"
     },
     {
       "partition": "d",
@@ -812,7 +812,7 @@
       "test_functions": 35,
       "test_sha256": "b953a930c7fb6b0b6bcc9511f03a843c566010972375f7cd5e624d6182922593",
       "obligation_ledger": "src/assurance/msh_d_obligations.json",
-      "ledger_sha256": "fe32b197cd5d9dba4d00c8ed585a82fe83b49299d790013bae4215f75eb84264"
+      "ledger_sha256": "0e56994d9dcda59491daf1d54faa5179ff05307e88d6f2360904b7b974180b4c"
     }
   ],
   "fresh_card_test_functions": 133,

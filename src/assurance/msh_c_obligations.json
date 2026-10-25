@@ -10823,5 +10823,13 @@
     "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0"
   },
   "test_source_sha256": "ca6f5049a75e39f796f0ced987b94a51abb26b93fdeb06004a5fe4756a50d03a",
-  "author_test_source_sha256": "be398ff22bc87f1d35699ecfec82b78369b06b17369d280bdd7ce0fd8c5fac3b"
+  "author_test_source_sha256": "be398ff22bc87f1d35699ecfec82b78369b06b17369d280bdd7ce0fd8c5fac3b",
+  "current_source_delta": {
+    "since": "author-focused receipts retained unchanged",
+    "changes": [
+      "Repulsor Blast now targets a surviving7/6 and asserts exactly5 damage in either Teamwork branch."
+    ],
+    "test_source_sha256": "ca6f5049a75e39f796f0ced987b94a51abb26b93fdeb06004a5fe4756a50d03a",
+    "routine_validation": "Default-profile full routine at42bede48776bb6a528a38e6a8aed0879bca506f5 passed; later audit metadata leaves parsed Oracle fixtures unchanged."
+  }
 }
