@@ -293,6 +293,7 @@ fn msh_adaptoid_live_donor_keywords_rechecked_after_queued_ability_and_hexproof_
     for p in [Player::P0, Player::P1] {
         for variant in 0..3 {
             let mut g = setup(p);
+            other_paid(&mut g, p, "High Fae Trickster", &[]);
             let angel = if variant == 1 {
                 named(&mut g, p.other(), "Serra Angel", Zone::Battlefield)
             } else {
@@ -324,6 +325,7 @@ fn msh_adaptoid_live_donor_keywords_rechecked_after_queued_ability_and_hexproof_
 fn msh_adaptoid_ability_removal_after_trigger_preserves_packet_and_new_counter_timestamp() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
+        other_paid(&mut g, p, "High Fae Trickster", &[]);
         let angel = other_paid(&mut g, p, "Serra Angel", &[]);
         let id = packet(&mut g, p);
         choose(&mut g, id, angel);
