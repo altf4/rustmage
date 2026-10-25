@@ -6,15 +6,10 @@ const HAWK: &str = "Hawkeye, Young Avenger";
 const WOLF: &str = "Wolverine, Fierce Fighter";
 const HAMMER: &str = "Mjölnir, Hammer of Thor";
 fn seed(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    let card = Card::from_name(name).unwrap();
-    if card.is_supported() {
-        return named(g, p, name, zone);
-    }
-    assert!([HAWK, WOLF, HAMMER].contains(&name));
-    let id = named(g, p, "Hill Giant", zone);
-    g.state.objects[id as usize].card = card;
-    id
+    assert!(Card::from_name(name).unwrap().is_supported(), "{name}");
+    named(g, p, name, zone)
 }
+
 fn priority(g: &mut Game, p: Player) {
     if g.actor() != Some(p) {
         checked(g, Action::Pass);
@@ -684,6 +679,10 @@ fn msh_damage_wolverine_prevention_order_exposes_owned_queued_heal_truthfully() 
                 source: reference,
                 prevention: DamagePreventionKind::ProtectionInstantSorcery,
             };
+            assert_eq!(
+                serde_json::from_value::<Action>(serde_json::to_value(&action).unwrap()).unwrap(),
+                action
+            );
             g = orphan(g, action);
             settle(&mut g);
             assert_eq!(g.object_view(id).damage, if heal_first { 0 } else { 4 });
