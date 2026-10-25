@@ -1009,6 +1009,7 @@ impl Game {
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            cast_creature_subjects: None,
             copy_event: None,
             target_allocations: None,
             captured_artifact_copy: None,
@@ -1328,6 +1329,7 @@ impl Game {
             self.queue_instant_sorcery_storm(index);
         }
         self.temporary_cast_triggers(caster, card, stack);
+        self.capture_cast_creature_subjects(stack, first_trigger);
         self.capture_copy_cast(stack, first_trigger);
         if let Some(index) = stack {
             self.capture_mana_copies(index);
@@ -4078,6 +4080,9 @@ impl Game {
                 }
                 Instruction::ReturnGrantedSource { counter, role } => {
                     self.return_granted_source(&item, counter, role)
+                }
+                Instruction::GrantCastCreatureKeywords(keywords) => {
+                    self.grant_cast_creature_keywords(&item, keywords);
                 }
                 Instruction::GrantKeywords { subject, keywords } => {
                     let ids = self.keyword_subjects(&item, subject);

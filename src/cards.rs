@@ -1533,6 +1533,8 @@ pub(crate) enum Instruction {
         counter: Option<(CounterKind, u64)>,
         role: Option<Card>,
     },
+    /// Grant to the exact, non-target creature subjects frozen by a cast event.
+    GrantCastCreatureKeywords(Keywords),
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,

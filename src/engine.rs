@@ -1,3 +1,6 @@
+#[path = "engine_cast_subjects.rs"]
+mod cast_subjects;
+pub use cast_subjects::CastCreatureSubjectsView;
 #[path = "engine_hand_exile.rs"]
 mod hand_exile;
 #[path = "engine_mana_announcements.rs"]
@@ -938,6 +941,9 @@ pub struct SpellView {
     pub borrowed_slot: Option<u64>,
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
+    /// Exact non-target subjects fixed when the triggering spell was cast.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cast_creature_subjects: Option<Box<CastCreatureSubjectsView>>,
     pub copy_event: Option<Box<stack_copies::CopyEvent>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_copy_recipe: Option<Box<CopyRecipe>>,
@@ -1041,7 +1047,11 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.event_object
+        self.cast_creature_subjects.as_ref().map_or(0, |event| {
+            std::mem::size_of::<CastCreatureSubjectsView>()
+                + event.objects.len() * std::mem::size_of::<ObjectRef>()
+        }) + self
+            .event_object
             .as_ref()
             .map_or(0, |_| std::mem::size_of::<EventObjectView>())
             + self
@@ -4018,11 +4028,15 @@ impl Game {
                     {
                         continue;
                     }
-                    if emit(Action::Attack { card }) {
+                    if self.can_attack_defender(card, CombatDefender::Player(actor.other()))
+                        && emit(Action::Attack { card })
+                    {
                         return true;
                     }
                     for &defender in &walkers {
-                        if emit(Action::AttackPlaneswalker { card, defender }) {
+                        if self.can_attack_defender(card, CombatDefender::Planeswalker(defender))
+                            && emit(Action::AttackPlaneswalker { card, defender })
+                        {
                             return true;
                         }
                     }
@@ -8101,3 +8115,7 @@ mod msh_ability_copy_core_tests;
 #[cfg(test)]
 #[path = "engine_msh_cast_target_copy_tests.rs"]
 mod msh_cast_target_copy_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_storm_tests.rs"]
+mod msh_storm_tests;

@@ -42,10 +42,8 @@ impl Game {
             })
     }
 
-    /// All representable mandatory attacks are independent: any eligible creature
-    /// may attack the defending player. Attack taxes, defender-specific requirements
-    /// and global attack-count restrictions remain gated; they need a combined
-    /// declaration/cost solver before their cards can be admitted.
+    /// Every mandatory attacker must attack if at least one legal defender exists.
+    /// Defender-specific restrictions do not create a requirement to attack a player.
     pub(super) fn attack_declaration_complete(&self, actor: Player) -> bool {
         let chosen = &self.state.selected_attackers;
         for (index, attacker) in chosen.iter().enumerate() {
@@ -53,6 +51,9 @@ impl Game {
                 || chosen[..index]
                     .iter()
                     .any(|other| other.card == attacker.card)
+                || attacker
+                    .defender
+                    .is_none_or(|defender| !self.can_attack_defender(attacker.card, defender))
                 || !match attacker.defender {
                     Some(CombatDefender::Player(player)) => player == actor.other(),
                     Some(CombatDefender::Planeswalker(reference)) => self
@@ -74,6 +75,7 @@ impl Game {
         self.state.static_sources.iter().all(|&id| {
             !self.attacks_each_combat(id)
                 || !self.can_declare_attacker(actor, id)
+                || !self.can_attack_any_defender(actor, id)
                 || chosen.iter().any(|attacker| attacker.card == id)
         })
     }

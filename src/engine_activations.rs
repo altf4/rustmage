@@ -515,6 +515,7 @@ impl Game {
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            cast_creature_subjects: None,
             copy_event: None,
             target_allocations: None,
             captured_artifact_copy: None,
