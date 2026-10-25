@@ -1,0 +1,677 @@
+{
+  "kind": "whole-card implementation evidence; isolated child of the aggregate implementation PR",
+  "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+  "runtime_commit": "dd7930feffb6d2301e9ce870645432466bf9769a",
+  "source_branch": "codex/msh-land-origins",
+  "scope": {
+    "complete_cards": [
+      "Ka-Zar of the Savage Land",
+      "Mole Man, Moloid Master"
+    ],
+    "complete_token_recipes": [
+      {
+        "id": 5401,
+        "name": "Zabu",
+        "legendary": true,
+        "colors": [
+          "G"
+        ],
+        "power": 2,
+        "toughness": 2,
+        "subtypes": [
+          "Cat"
+        ]
+      },
+      {
+        "id": 5402,
+        "name": "Moloid",
+        "legendary": false,
+        "colors": [
+          "G"
+        ],
+        "power": 1,
+        "toughness": 1,
+        "subtypes": [
+          "Minion"
+        ]
+      }
+    ],
+    "remaining_printed_obligations": [],
+    "child_msh_candidate": {
+      "complete": 207,
+      "total": 281,
+      "gated": 74
+    },
+    "aggregate_release_ci_and_independent_review": "performed separately by the integration owner; no child main merge"
+  },
+  "printed_obligations": {
+    "Ka-Zar": [
+      "Legendary green 3/2 Human Barbarian Hero, {4}{G}.",
+      "Controller may look at the current library top any time, subject to CR 401.5 deferral.",
+      "Controller may play owned land cards from the current library top using normal land timing and the shared turn allowance.",
+      "Its enters trigger creates the exact legendary Zabu recipe for the captured trigger controller."
+    ],
+    "Mole Man": [
+      "Legendary green 1/1 Human Villain, {G}.",
+      "Controller may play owned land cards from their graveyard using normal land timing and shared allowance; no per-source limit or graveyard spell permission.",
+      "Whenever a land the controller controls enters, create the exact Moloid recipe."
+    ],
+    "Zabu": [
+      "Legendary green 2/2 Cat.",
+      "Whenever a land its controller controls enters, put one +1/+1 counter on the exact source incarnation."
+    ],
+    "Moloid": [
+      "Green 1/1 Minion.",
+      "When this creature attacks, its trigger controller may mill one card; empty libraries skip the impossible optional action."
+    ]
+  },
+  "shared_mechanics": [
+    "Live controller and printed-ability availability for normal land-origin permission in actual and borrowed characteristic worlds.",
+    "Action::PlayLand retains global timing, allowance, ownership, face and current-zone constraints. No generic cast permission or per-provider use row.",
+    "A private EntryMove public-origin marker retains the already public played-land identity through suspended entry choices. The next library top remains deferred until the special action finishes.",
+    "Existing typed creation, landfall, counter and optional self-attack mill effects retain exact object incarnations, trigger controllers and batch entry behavior."
+  ],
+  "wire": {
+    "schema": 147,
+    "new_public_payload": false,
+    "private_entry_marker": true,
+    "inherited_public_trace_changes": 0
+  },
+  "sources": {
+    "oracle": [
+      {
+        "oracle_id": "88eeb519-5782-4732-bd34-81d1ee6dbc8f",
+        "name": "Ka-Zar of the Savage Land",
+        "layout": "normal",
+        "mana_cost": "{4}{G}",
+        "cmc": 5.0,
+        "type_line": "Legendary Creature — Human Barbarian Hero",
+        "oracle_text": "You may look at the top card of your library any time.\nYou may play lands from the top of your library.\nWhen Ka-Zar enters, create Zabu, a legendary 2/2 green Cat creature token with \"Landfall — Whenever a land you control enters, put a +1/+1 counter on Zabu.\"",
+        "power": "3",
+        "toughness": "2",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [],
+        "all_parts": [
+          {
+            "id": "8ff55043-379e-400c-9847-30b75e4a1322",
+            "component": "token",
+            "name": "Zabu",
+            "type_line": "Token Legendary Creature — Cat"
+          },
+          {
+            "id": "caf70fc5-87a0-4b4d-bedd-74dd09569bed",
+            "component": "combo_piece",
+            "name": "Ka-Zar of the Savage Land",
+            "type_line": "Legendary Creature — Human Barbarian Hero"
+          }
+        ],
+        "reference_printing": {
+          "id": "caf70fc5-87a0-4b4d-bedd-74dd09569bed",
+          "set": "msh",
+          "collector_number": "174",
+          "released_at": "2026-06-26"
+        }
+      },
+      {
+        "oracle_id": "34994475-b914-44f6-8ca1-c2747b6d5956",
+        "name": "Mole Man, Moloid Master",
+        "layout": "normal",
+        "mana_cost": "{2}{G}",
+        "cmc": 3.0,
+        "type_line": "Legendary Creature — Human Villain",
+        "oracle_text": "You may play lands from your graveyard.\nLandfall — Whenever a land you control enters, create a 1/1 green Minion creature token named Moloid with \"Whenever this token attacks, you may mill a card.\"",
+        "power": "1",
+        "toughness": "1",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [
+          "Mill",
+          "Landfall"
+        ],
+        "all_parts": [
+          {
+            "id": "57bcf5f4-da1e-4b6a-85ef-aad91d2276cf",
+            "component": "token",
+            "name": "Moloid",
+            "type_line": "Token Creature — Minion"
+          },
+          {
+            "id": "f1fbac4b-574e-4f30-9ee7-6054081b278c",
+            "component": "combo_piece",
+            "name": "Mole Man, Moloid Master",
+            "type_line": "Legendary Creature — Human Villain"
+          }
+        ],
+        "reference_printing": {
+          "id": "1b406cc5-75c9-430a-83a2-de0f2a8aeae6",
+          "set": "msh",
+          "collector_number": "177",
+          "released_at": "2026-06-26"
+        }
+      }
+    ],
+    "authored_provenance": [
+      {
+        "name": "Ka-Zar of the Savage Land",
+        "catalogue_id": 2303,
+        "oracle_id": "88eeb519-5782-4732-bd34-81d1ee6dbc8f",
+        "facts_sha256": "f0bccbe32ddcf606def92c74acc8e0022391b2eccfbc8a8949bb727f1b54eb35",
+        "physical_metadata_sha256": "d5b70278c0fa89f29388e6574acbbbdfa4d7e4435be2e51ea34191d00c870604",
+        "java_source": "Mage.Sets/src/mage/cards/k/KaZarOfTheSavageLand.java",
+        "java_sha256": "5bc0fc94089d3ffa35f234b95118e5100a25f2b5a705589f20426bfe025805f4"
+      },
+      {
+        "name": "Mole Man, Moloid Master",
+        "catalogue_id": 2811,
+        "oracle_id": "34994475-b914-44f6-8ca1-c2747b6d5956",
+        "facts_sha256": "80ba1bb00f1b65f9aac025c8367fa30f0e38fc6eb41141420062f94d312d9bb7",
+        "physical_metadata_sha256": "60047f88d5070a2aac807f12a845860097bbc3087fb01d344f73ed197196e89d",
+        "java_source": "Mage.Sets/src/mage/cards/m/MoleManMoloidMaster.java",
+        "java_sha256": "54518656e977027c1d8fe23700fbd30ac51ac9de171291f16813cb966a05cd94"
+      },
+      {
+        "name": "@token/msh-zabu",
+        "catalogue_id": 5401,
+        "oracle_id": null,
+        "facts_sha256": null,
+        "physical_metadata_sha256": "e7939855d84fad7dd91b5371611ee29c38aa50505d1fe08e8b8d99fee822ab15",
+        "java_source": "Mage/src/main/java/mage/game/permanent/token/ZabuToken.java",
+        "java_sha256": "cdeaf6fc334e47fbefde2d75e3328eed8a19ff3e5ec27ec54749f63756798e83"
+      },
+      {
+        "name": "@token/msh-moloid",
+        "catalogue_id": 5402,
+        "oracle_id": null,
+        "facts_sha256": null,
+        "physical_metadata_sha256": "1c6e79dd72b11b4684feb78da6444939a2ecddff1abd0ec516039551971f16cc",
+        "java_source": "Mage/src/main/java/mage/game/permanent/token/MoloidToken.java",
+        "java_sha256": "25c6d8759dd00338ac7496b04e330c2924cfe5d508c867a2c37eec5e5b894d96"
+      }
+    ],
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "whole_java_bodies_read": [
+      {
+        "path": "Mage.Sets/src/mage/cards/k/KaZarOfTheSavageLand.java",
+        "sha256": "5bc0fc94089d3ffa35f234b95118e5100a25f2b5a705589f20426bfe025805f4",
+        "bytes": 2036
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/m/MoleManMoloidMaster.java",
+        "sha256": "54518656e977027c1d8fe23700fbd30ac51ac9de171291f16813cb966a05cd94",
+        "bytes": 1567
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+        "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f",
+        "bytes": 1800
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+        "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd",
+        "bytes": 3380
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/PlayFromGraveyardControllerEffect.java",
+        "sha256": "72cc948dd1f65f347eb25cc2f8b19dab87326c3aa0ae77945c2fd4b6e142c6a4",
+        "bytes": 4532
+      },
+      {
+        "path": "Mage/src/main/java/mage/game/permanent/token/ZabuToken.java",
+        "sha256": "cdeaf6fc334e47fbefde2d75e3328eed8a19ff3e5ec27ec54749f63756798e83",
+        "bytes": 1103
+      },
+      {
+        "path": "Mage/src/main/java/mage/game/permanent/token/MoloidToken.java",
+        "sha256": "25c6d8759dd00338ac7496b04e330c2924cfe5d508c867a2c37eec5e5b894d96",
+        "bytes": 911
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+        "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1",
+        "bytes": 2397
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+        "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3",
+        "bytes": 2435
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+        "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c",
+        "bytes": 1801
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789",
+        "bytes": 646
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+        "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d",
+        "bytes": 613
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+        "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+        "bytes": 3876
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+        "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3",
+        "bytes": 9454
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+        "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53",
+        "bytes": 4202
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+        "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd",
+        "bytes": 5741
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterLandCard.java",
+        "sha256": "e9e31535856250c875e2036b551236be506dd0b4229c3e7a4f3f4f639ac257df",
+        "bytes": 562
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+        "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47",
+        "bytes": 19792
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+        "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997",
+        "bytes": 5123
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+        "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66",
+        "bytes": 25549
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+        "bytes": 1340
+      },
+      {
+        "path": "Mage/src/main/java/mage/game/permanent/token/TokenImpl.java",
+        "sha256": "64e2102a28036ddfaaec4914c34355f7174f90df30d71527b0553aef9a14687d",
+        "bytes": 23425
+      }
+    ],
+    "additional_complete_method_read": [
+      {
+        "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+        "whole_file_sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3",
+        "start_line": 5504,
+        "end_line": 5520,
+        "sha256": "cd7d8b8f49d09911bc82af6f431b847e5a7a9bb7ea6d7470be73758d6d6ea674"
+      }
+    ],
+    "audit_cache": {
+      "path": "<cache>/rustmage-msh-land-origins-design-edb82bf7.json",
+      "sha256": "3f9ce130bc1da5178a5ee14ad206f8cd338095c69d62ecca8824af8a4a37453d",
+      "revalidated_against": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf"
+    },
+    "rules": {
+      "cache": "<cache>/rustmage-rules-20260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "paragraphs": [
+        "111.1",
+        "111.2",
+        "111.3",
+        "111.6",
+        "111.7",
+        "111.8",
+        "113.7a",
+        "116.2a",
+        "305.1",
+        "305.2",
+        "305.2a",
+        "305.2b",
+        "305.3",
+        "305.4",
+        "400.7",
+        "401.5",
+        "508.3a",
+        "603.3a",
+        "603.5",
+        "603.6a",
+        "603.6d",
+        "603.10",
+        "701.17a",
+        "701.17b",
+        "704.5d",
+        "704.5j",
+        "712.8a",
+        "712.11b",
+        "712.11c",
+        "712.12"
+      ],
+      "official_release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+    },
+    "discrepancies": [
+      "CR 401.5 applies to the changed top during a land special action; the Java top-library helper guards only library casting.",
+      "CR 701.17b makes an empty-library optional mill impossible; no failed-draw event is generated."
+    ]
+  },
+  "validation": {
+    "commands": [
+      {
+        "name": "native",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "seconds": 138.92356220603688,
+        "log_sha256": "1ce321b551c45713656554e2c29402f6ae4b4633d3f71810bcab85bc59272a99",
+        "log": "<cache>/rustmage-msh-land-origins-final-native.log",
+        "resource": {
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "--",
+            "--test-threads=1"
+          ],
+          "terminal": true,
+          "exit_code": 0,
+          "seconds": 138.8930554179824,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2595504128,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        }
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit": 0,
+        "seconds": 15.815607656957582,
+        "log_sha256": "17204cadf96023ffe1b4c4ba61098fc8c9919c71d2cde315c64dfa236b3856e0",
+        "log": "<cache>/rustmage-msh-land-origins-final-clippy.log",
+        "resource": {
+          "command": [
+            "cargo",
+            "clippy",
+            "--all-targets",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "terminal": true,
+          "exit_code": 0,
+          "seconds": 15.773920861945953,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2595504128,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        }
+      },
+      {
+        "name": "cargo-fmt",
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 1.5308925369754434,
+        "log_sha256": "62c6c675e13fae535922b3ecd8f41ef91e790c7eb40d6c66062648da1c3566e6",
+        "log": "<cache>/rustmage-msh-land-origins-final-cargo-fmt.log",
+        "resource": {
+          "command": [
+            "cargo",
+            "fmt",
+            "--all",
+            "--",
+            "--check"
+          ],
+          "terminal": true,
+          "exit_code": 0,
+          "seconds": 1.4990675720036961,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2595504128,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        }
+      },
+      {
+        "name": "card-rustfmt",
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "<every card Rust source>"
+        ],
+        "exit": 0,
+        "seconds": 0.9528188550029881,
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "log": "<cache>/rustmage-msh-land-origins-final-card-rustfmt.log",
+        "source_count": 5404
+      },
+      {
+        "name": "source",
+        "command": [
+          "/usr/bin/python3",
+          "scripts/check_sources.py"
+        ],
+        "exit": 0,
+        "seconds": 0.6037475730408914,
+        "log_sha256": "ac61eb7291e8989d08ebce14bff5cde019bda149acff18b39bc02da15a189dcd",
+        "log": "<cache>/rustmage-msh-land-origins-final-source.log"
+      },
+      {
+        "name": "link",
+        "command": [
+          "/usr/bin/python3",
+          "scripts/link_catalogue.py",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 0.4527818229980767,
+        "log_sha256": "f3b89b6532565d5b14d48a302376ae17d93759b21b090070c48fd58eeb0d1250",
+        "log": "<cache>/rustmage-msh-land-origins-final-link.log"
+      },
+      {
+        "name": "contracts",
+        "command": [
+          "/usr/bin/python3",
+          "scripts/test_assurance_runner.py"
+        ],
+        "exit": 0,
+        "seconds": 0.4330863410141319,
+        "log_sha256": "2565da2e106674b14e6e2b44cc1153dc0947bad522c4f357ca2c8d6d3dfac315",
+        "log": "<cache>/rustmage-msh-land-origins-final-contracts.log"
+      }
+    ],
+    "native_tests_passed": 1338,
+    "native_tests_failed": 0,
+    "new_groups": 39,
+    "new_group_names": [
+      "msh_land_origins_borrowed_new_entry_and_control_aura_departure_use_live_owner",
+      "msh_land_origins_borrowed_provider_departure_matches_actual_without_funding_land_drops",
+      "msh_land_origins_actual_memory_vessel_hand_ban_keeps_other_land_origins",
+      "msh_land_origins_adventure_lands_allow_front_and_never_adventure_spell",
+      "msh_land_origins_bounded_cast_prohibition_never_prohibits_normal_land_action",
+      "msh_land_origins_copied_artifact_moloid_improvises_and_retains_attack_mill",
+      "msh_land_origins_daredevil_exile_land_then_mole_and_zabu_normal_landfall",
+      "msh_land_origins_duplicate_sources_deduplicate_actions_without_use_rows",
+      "msh_land_origins_graveyard_land_life_choice_is_public_and_allowance_consumed_once",
+      "msh_land_origins_kazar_etb_source_gone_or_stolen_captures_controller",
+      "msh_land_origins_landfall_hand_library_graveyard_and_put_entries",
+      "msh_land_origins_landfall_opponent_and_type_change_do_not_trigger",
+      "msh_land_origins_library_graveyard_and_hand_share_the_allowance",
+      "msh_land_origins_live_provider_suppression_and_departure_with_paid_answers",
+      "msh_land_origins_mole_never_grants_graveyard_spell_or_cycling",
+      "msh_land_origins_moloid_attack_accept_or_decline_is_public_only_after_mill",
+      "msh_land_origins_moloid_attack_packet_survives_source_departure_and_theft",
+      "msh_land_origins_moloid_empty_library_skips_impossible_choice_without_draw",
+      "msh_land_origins_moloid_milled_land_can_later_use_mole_permission",
+      "msh_land_origins_moloid_put_attacking_does_not_trigger_declared_attack",
+      "msh_land_origins_multiple_moloids_have_independent_optional_attack_triggers",
+      "msh_land_origins_only_exact_top_owned_land_and_no_spell_permission",
+      "msh_land_origins_owned_playland_and_illegal_failed_cast_do_not_change_permissions",
+      "msh_land_origins_paid_kazar_body_zabu_and_top_privacy",
+      "msh_land_origins_paid_mole_body_no_etb_and_exact_moloid",
+      "msh_land_origins_private_library_put_remains_private_during_entry_choices",
+      "msh_land_origins_provider_theft_changes_only_controllers_library_or_graveyard",
+      "msh_land_origins_recast_new_provider_does_not_reset_turn_land_allowance",
+      "msh_land_origins_shared_normal_allowance_has_no_per_source_limit",
+      "msh_land_origins_simultaneous_new_source_and_two_lands_see_entire_batch",
+      "msh_land_origins_timing_priority_and_stack_are_normal",
+      "msh_land_origins_top_land_entry_value_is_public_without_revealing_deeper_cards",
+      "msh_land_origins_top_land_life_choice_is_public_owned_and_next_top_private",
+      "msh_land_origins_top_land_tap_replacement_order_is_public_owned_and_private_next",
+      "msh_land_origins_vision_draw_replaces_private_top_before_ordinary_land_play",
+      "msh_land_origins_zabu_copy_of_copy_has_own_source_and_preserved_recipe",
+      "msh_land_origins_zabu_counter_replacements_and_trigger_source_suppression",
+      "msh_land_origins_zabu_doubled_creation_legend_choice_is_owned",
+      "msh_land_origins_zabu_exact_departure_and_reused_slot_never_get_old_counter"
+    ],
+    "coverage": [
+      "Both seats with actual paid casts and responses; exact body/token values, colors, legend and summoning sickness.",
+      "Hand, library, graveyard and existing exile permissions share timing and allowance; extra land allowance and next-turn reset.",
+      "Live suppression, departure, controller transfer, duplicate providers, recast, exact top, nonland rejection, owner and supported face constraints.",
+      "Whole-batch simultaneous entries in both orders, new sources, landfall ownership, token copies, legend choice, counter replacements and reused slots.",
+      "Optional mill acceptance/decline, empty library, source departure/theft, independent attackers and put-attacking exclusion.",
+      "Full nonactor privacy, public pending top-land entry identity, private next top and private library puts.",
+      "Transactional illegal actions, owned raw/index branch after parent drop, restore of complete views with the documented revision increment.",
+      "Borrowed funding state follows live provider creation, departure and controller changes without speculative land drops.",
+      "Daredevil exile play, Vision draw before top-land play, copied Moloid Improvise funding and attack mill."
+    ],
+    "fixed_inputs": {
+      "files": 11780,
+      "unchanged_until_terminal": true,
+      "full_manifest_kept_in_cache": true,
+      "report": "<cache>/rustmage-msh-land-origins-final-gates.json",
+      "report_sha256": "fdc55ceb96fceb01cc17fb1d9349630b53b24081067e977bfa64096347c00173",
+      "validated_working_tree_later_committed_as": "dd7930feffb6d2301e9ce870645432466bf9769a",
+      "git_head_during_validation": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf"
+    },
+    "terminal_exit": 0,
+    "seconds_excluding_outer_queue": 158.99730580899632,
+    "final_gates_finished_utc": "2026-10-25T06:02:02.196454+00:00",
+    "cargo_runner": "python3 scripts/resource_guard.py -- cargo ...",
+    "outer_resource_report": "<cache>/rustmage-build-reports/5a10d5844ce748cca158b9e0ab4e2d5c.json",
+    "release_validation": "integration owner runs the complete aggregate release validator; no isolated-child release claim"
+  },
+  "full_trace_proof": {
+    "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+    "schema": 147,
+    "base_rows": 2508,
+    "fresh_rows": 2510,
+    "inherited_full_structs_exact": 2508,
+    "changed": [],
+    "removed": [],
+    "added": [
+      "Ka-Zar of the Savage Land",
+      "Mole Man, Moloid Master"
+    ],
+    "compared_fields": [
+      "root",
+      "status",
+      "decisions",
+      "zone",
+      "journal",
+      "observations"
+    ],
+    "base_sha256": "8b0cb3dfdc9cee46637c0c43b639a917135357f1a8de32f0ba1fc5805351b478",
+    "fresh_sha256": "2c9a344739f65a20767e69219713ba6442f74f86b7ad1bee2d1a777464e38da8",
+    "recorder_unchanged": true,
+    "recorder_sha256": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185",
+    "field_stripping": false
+  },
+  "metadata": {
+    "old_definitions": 5401,
+    "new_definitions": 5403,
+    "old_token_recipes": 123,
+    "new_token_recipes": 125,
+    "old_cards_colors_and_recipe_prefixes_exact": true,
+    "all_old_aliases_exact": true,
+    "all_other_manifest_fields_exact": true,
+    "only_new_aliases": {
+      "@token/msh-zabu": 5401,
+      "@token/msh-moloid": 5402
+    },
+    "base_manifest_sha256": "504e5898b107e869e75afb89ff24c3a13e139a3fad02ce875224fe500c7ab768",
+    "new_manifest_sha256": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1"
+  },
+  "preservation": {
+    "terminal_consumers_before_cleanup": true,
+    "source_inputs_unchanged": true,
+    "prior_validation_libraries_exact": 553,
+    "all_required_artifacts_exact": 563,
+    "manifest": "<cache>/rustmage-msh-land-origins-preservation.json",
+    "manifest_sha256": "ed0f36f9d1bc5223efd1a3353b949b039a2eab93ebc0bab914be27a13684b982",
+    "accessible_proc_scan": {
+      "pids_seen": 508,
+      "unreadable_surfaces": 1027,
+      "references": [],
+      "scope": "Only accessible proc exe/cwd/fd/maps; no claim about inaccessible surfaces."
+    },
+    "removed_files": 1019,
+    "removed_allocated_file_bytes": 125689856,
+    "retained_new_artifacts": {
+      "<cache>/rustmage-msh-land-origins-target/debug/deps/libserde_derive-31145c71f3b23723.so": {
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760,
+        "kind": "new required shared library"
+      },
+      "<cache>/rustmage-msh-land-origins-target/debug/deps/rustmage-b764cd26223fba2c": {
+        "sha256": "f6e4a686c63f0a0002a45ea0eaf9ffa40f5ccbce7a7a7ef0d71db6cb2ff17e41",
+        "bytes": 35610488,
+        "kind": "useful final native rules executable"
+      }
+    },
+    "cleanup_finished_utc": "2026-10-25T06:05:24.686426+00:00"
+  },
+  "measurements": {
+    "author_branch_created_utc": "2026-10-25T05:18:27+00:00",
+    "cleanup_complete_utc": "2026-10-25T06:05:24.686426+00:00",
+    "author_to_cleanup_seconds": 2817.686426,
+    "complete_cards_per_hour_including_validation": 2.5553,
+    "native_execution_seconds": 6.95,
+    "native_tests_per_second": 192.52,
+    "simulation_benchmark": "not measured in the isolated child; aggregate release benchmark is separate"
+  },
+  "limits": [
+    "Arbitrary modal double-faced back-land consumers are absent from the frozen supported pool; supported Adventure front lands are exercised without broadening spell permissions.",
+    "A distinct changed-top Plot scenario remains unproved; the existing private Plot deferral condition is retained.",
+    "Whole-set completion and aggregate final approval remain open."
+  ],
+  "publication": {
+    "source_branch_only": true,
+    "new_child_pr": false,
+    "main_merge": false,
+    "review_text_or_outcomes_included": false
+  }
+}
