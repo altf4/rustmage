@@ -1,10 +1,10 @@
-//! Bounded shared-core continuations; both prospective printed consumers stay gated.
+//! Shared-core continuations using ordinary admitted producer objects.
 use super::assurance::big_helpers::{cast, checked, named, settle, setup};
 use super::*;
 
 fn bounded_program(game: &mut Game, item: SpellView, program: &'static [Instruction]) {
-    // Owned continuation fixture for a private opcode whose producers remain
-    // gated. Production dispatch, target-group selection and expiry are real.
+    // Bounded continuation fixture. Production dispatch, target-group
+    // selection and expiry are real.
     game.state.resolving = Some(programs::Resolution {
         cascade: None,
         target_card_facts: None,
@@ -34,47 +34,6 @@ fn bounded_program(game: &mut Game, item: SpellView, program: &'static [Instruct
     game.run_program();
 }
 
-// Explicit owned objects for the two still-gated typed core consumers.
-// Normal supported fixtures keep their existing refusal of gated cards.
-pub(super) fn gated(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
-    let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
-    assert!(
-        !card.is_supported(),
-        "core-only fixture must remain gated: {name}"
-    );
-    assert!(matches!(
-        name,
-        "Thanos, the Mad Titan" | "Trickster's Stratagem"
-    ));
-    let id = g.state.objects.len() as CardId;
-    g.state.objects.push(Object {
-        copy_kind: CopyKind::None,
-        card,
-        owner,
-        controller: owner,
-        zone,
-        generation: 0,
-        tapped: false,
-        summoning_sick: false,
-        flashback: false,
-        damage: 0,
-        damaged_this_turn: false,
-        dealt_damage_this_turn: false,
-        deathtouch_since_sba: false,
-        growth: Stats::default(),
-        gained_keywords: Keywords::NONE,
-        counters: InitialCounters::default(),
-        used_abilities: 0,
-        attached_to: None,
-    });
-    match zone {
-        Zone::Library => g.state.players[owner.index()].library.push(id),
-        Zone::Battlefield => g.register_battlefield_sources(id),
-        Zone::Graveyard => g.register_graveyard_sources(id),
-        _ => (),
-    }
-    id
-}
 fn hand_count(g: &Game, p: Player) -> usize {
     g.state
         .objects
@@ -122,7 +81,7 @@ fn parity(g: &mut Game, p: Player, source: CardId, item: Option<SpellView>) {
     );
 }
 fn library_program(g: &mut Game, p: Player, target: CardId, own: Option<CardId>) {
-    let source = gated(g, p, "Trickster's Stratagem", Zone::Stack);
+    let source = named(g, p, "Trickster's Stratagem", Zone::Stack);
     let mut item = g.activation_item(p, source, 0);
     item.kind = StackKind::Spell;
     item.targets.push(BoundTarget {
@@ -155,7 +114,7 @@ fn msh_parity_library_core_both_parities_current_creatures_both_controllers_and_
     for p in [Player::P0, Player::P1] {
         for choice in [ManaValueParity::Odd, ManaValueParity::Even] {
             let mut g = setup(p);
-            let source = gated(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
+            let source = named(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
             let mut victims = Vec::new();
             for owner in [p, p.other()] {
                 for (name, value) in [
@@ -192,7 +151,7 @@ fn msh_parity_library_core_departed_source_and_new_incarnation_do_not_cancel_cho
     for p in [Player::P0, Player::P1] {
         for blink in [false, true] {
             let mut g = setup(p);
-            let source = gated(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
+            let source = named(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
             let item = g.activation_item(p, source, 0);
             let old = item.object;
             g.move_object(source, Zone::Exile);
@@ -222,7 +181,7 @@ fn msh_parity_library_core_departed_source_and_new_incarnation_do_not_cancel_cho
 fn msh_parity_library_core_effective_copy_cost_exact_exclusion_and_indestructible() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
-        let source = gated(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
+        let source = named(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
         let item = g.activation_item(p, source, 0);
         let victim = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         g.apply_temporary_copy(
@@ -257,7 +216,7 @@ fn msh_parity_library_core_effective_copy_cost_exact_exclusion_and_indestructibl
 fn msh_parity_library_core_empty_set_compulsory_choice_ownership_and_atomicity() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
-        let source = gated(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
+        let source = named(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
         let item = g.activation_item(p, source, 0);
         g.state.objects[source as usize].controller = p.other();
         let secret = named(&mut g, p, "Cancel", Zone::Hand);
@@ -441,7 +400,7 @@ fn msh_parity_library_core_simultaneous_conditional_indestructible_is_frozen_bef
         g.advance_entries();
         settle(&mut g);
         assert!(g.keywords(doom).contains(Keywords::INDESTRUCTIBLE));
-        let source = gated(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
+        let source = named(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
         parity(&mut g, p, source, None);
         checked(&mut g, Action::ChooseManaValueParity { parity: choice });
         assert!(!g.on_battlefield(refs[0].card));
@@ -458,7 +417,7 @@ fn msh_parity_library_core_counter_replacements_finish_before_mandatory_parity()
             cast(&mut g, season, None, &[]);
             settle(&mut g);
         }
-        let source = gated(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
+        let source = named(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
         let item = g.activation_item(p, source, 0);
         bounded_program(
             &mut g,
@@ -519,7 +478,7 @@ fn msh_parity_library_core_competing_zone_replacements_replay_frozen_batch_witho
             let rip = named(&mut g, p, "Rest in Peace", Zone::Hand);
             cast(&mut g, rip, None, &[]);
             settle(&mut g);
-            let source = gated(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
+            let source = named(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
             let progenitus = named(&mut g, p.other(), "Progenitus", Zone::Battlefield);
             let bear = named(&mut g, p, "Bear Cub", Zone::Battlefield);
             parity(&mut g, p, source, None);
@@ -579,7 +538,7 @@ fn msh_parity_library_core_current_modal_face_cost_and_copied_token_cost() {
                 .fixed_mana_value(),
             6
         );
-        let source = gated(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
+        let source = named(&mut g, p, "Thanos, the Mad Titan", Zone::Battlefield);
         parity(&mut g, p, source, None);
         checked(
             &mut g,

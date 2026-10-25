@@ -1,15 +1,8 @@
-//! Complete paid producer obligations; source seeds stay bounded until admission.
+//! Complete paid producer obligations using ordinary admitted fixture objects.
 use super::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
 use super::*;
 const THANOS: &str = "Thanos, the Mad Titan";
 const STRAT: &str = "Trickster's Stratagem";
-fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    if Card::from_name(name).unwrap().is_supported() {
-        named(g, p, name, zone)
-    } else {
-        super::parity_library_core_tests::gated(g, p, name, zone)
-    }
-}
 fn priority(g: &mut Game, p: Player) {
     if g.actor() != Some(p) {
         checked(g, Action::Pass);
@@ -18,7 +11,7 @@ fn priority(g: &mut Game, p: Player) {
 }
 fn paid(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
     priority(g, p);
-    let id = fixture(g, p, name, Zone::Hand);
+    let id = named(g, p, name, Zone::Hand);
     let (mut mana, generic) = Card::from_name(name).unwrap().cost();
     mana[5] += generic;
     g.state.players[p.index()].mana = mana;
@@ -100,7 +93,7 @@ fn choose_parity(g: &mut Game, parity: ManaValueParity) {
 }
 fn strat(g: &mut Game, p: Player, target: CardId, own: Option<CardId>) -> CardId {
     priority(g, p);
-    let id = fixture(g, p, STRAT, Zone::Hand);
+    let id = named(g, p, STRAT, Zone::Hand);
     g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 3];
     let targets: Vec<_> = std::iter::once(Target::Card(target))
         .chain(own.map(Target::Card))
@@ -364,7 +357,7 @@ fn msh_parity_paid_strat_partial_and_all_invalid_targets_after_real_responses() 
 fn msh_parity_paid_strat_target_relations_mandatory_first_optional_second_and_sorcery_timing() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
-        let spell = fixture(&mut g, p, STRAT, Zone::Hand);
+        let spell = named(&mut g, p, STRAT, Zone::Hand);
         let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
         let enemy = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
         let artifact = named(&mut g, p.other(), "Arc Reactor", Zone::Battlefield);
@@ -409,7 +402,7 @@ fn msh_parity_paid_strat_target_relations_mandatory_first_optional_second_and_so
         );
         settle(&mut g);
         assert_eq!(g.counter_count(own, CounterKind::PlusOne), 0);
-        let second = fixture(&mut g, p, STRAT, Zone::Hand);
+        let second = named(&mut g, p, STRAT, Zone::Hand);
         next_turn(&mut g);
         priority(&mut g, p);
         g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 3];
