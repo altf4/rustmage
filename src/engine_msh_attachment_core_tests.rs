@@ -1,4 +1,4 @@
-//! Gated attachment core fixtures: real immutable definitions and paid actions.
+//! Complete attachment card fixtures: ordinary supported definitions and paid actions.
 //! Paid complete printed-clause fixtures for both attachment consumers.
 use super::*;
 use crate::engine::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
@@ -6,39 +6,7 @@ use crate::engine::msh_thirteenth_combined_tests::owned_checked_step;
 const SWORD: &str = "Swordsman, Sharp Scoundrel";
 const WINTER: &str = "Winter Soldier, Icy Assassin";
 fn seed(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    let card = Card::from_name(name).unwrap();
-    if card.is_supported() {
-        return named(g, p, name, zone);
-    }
-    assert!([SWORD, WINTER].contains(&name));
-    let id = CardId::try_from(g.state.objects.len()).unwrap();
-    g.state.objects.push(Object {
-        card,
-        copy_kind: CopyKind::None,
-        owner: p,
-        controller: p,
-        zone,
-        generation: 0,
-        tapped: false,
-        summoning_sick: false,
-        flashback: false,
-        damage: 0,
-        damaged_this_turn: false,
-        dealt_damage_this_turn: false,
-        deathtouch_since_sba: false,
-        growth: Stats::default(),
-        gained_keywords: Keywords::NONE,
-        counters: InitialCounters::default(),
-        used_abilities: 0,
-        attached_to: None,
-    });
-    match zone {
-        Zone::Battlefield => g.register_battlefield_sources(id),
-        Zone::Library => g.state.players[p.index()].library.push(id),
-        Zone::Graveyard => g.register_graveyard_sources(id),
-        _ => (),
-    }
-    id
+    named(g, p, name, zone)
 }
 fn priority(g: &mut Game, p: Player) {
     if g.actor() != Some(p) {

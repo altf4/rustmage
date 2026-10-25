@@ -1,4 +1,4 @@
-// Direct typed attachment and return consumer; complete admission remains gated.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
 const BONUS: ScalingModifier = ScalingModifier {
     subject: Subject::Source,
     value: StatValue::SourceEquipmentCount,

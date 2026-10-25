@@ -1,4 +1,4 @@
-// Gated typed attachment consumer; whole paid admission follows shared-core proof.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     triggers: &[
