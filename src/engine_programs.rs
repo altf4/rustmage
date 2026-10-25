@@ -460,6 +460,7 @@ impl Game {
             return;
         }
         self.temporary_departure_triggers(event);
+        self.forget_self_grants(event);
         if event.before.zone == Zone::Battlefield {
             // A self-departure trigger needs only its frozen pre-event source.
             // This also covers exile/bounce paths which do not collect death observers.
@@ -4081,6 +4082,7 @@ impl Game {
                 Instruction::ReturnGrantedSource { counter, role } => {
                     self.return_granted_source(&item, counter, role)
                 }
+                Instruction::GrantSelfAbility(kind) => self.grant_self_ability(&item, kind),
                 Instruction::GrantCastCreatureKeywords(keywords) => {
                     self.grant_cast_creature_keywords(&item, keywords);
                 }

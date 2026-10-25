@@ -1535,6 +1535,8 @@ pub(crate) enum Instruction {
     },
     /// Grant to the exact, non-target creature subjects frozen by a cast event.
     GrantCastCreatureKeywords(Keywords),
+    /// Bestow a real self-owned static ability, rather than a resolved stat modifier.
+    GrantSelfAbility(crate::engine::SelfGrantedAbilityKind),
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,

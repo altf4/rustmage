@@ -3089,3 +3089,7 @@ mod temporary_copy_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_counter_quantity_funding_tests.rs"]
 mod msh_counter_quantity_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_self_granted_static_tests.rs"]
+mod msh_self_granted_static_tests;

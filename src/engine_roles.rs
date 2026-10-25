@@ -227,6 +227,7 @@ impl Game {
                 }
             }
         }
+        self.retimestamp_self_granted_statics(source);
     }
     pub(super) fn record_role(&mut self, aura: ObjectRef, recipient: ObjectRef, timestamp: u64) {
         let r = self.state.roles.get_or_insert_with(Default::default);
