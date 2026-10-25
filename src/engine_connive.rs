@@ -30,9 +30,22 @@ impl Game {
         let remaining = match subject {
             Subject::Entering => item
                 .entering_object
-                .map(|object| ConniverView {
-                    object,
-                    controller: item.controller,
+                .map(|object| {
+                    let saved = item.event_object.as_ref().expect("entering conniver facts");
+                    assert_eq!(saved.object, object);
+                    let EventObjectFacts::Controller(controller) = saved.facts else {
+                        unreachable!("entering conniver controller");
+                    };
+                    ConniverView {
+                        object,
+                        controller: if self.on_battlefield(object.card)
+                            && self.object_ref(object.card) == object
+                        {
+                            self.state.objects[object.card as usize].controller
+                        } else {
+                            controller
+                        },
+                    }
                 })
                 .into_iter()
                 .collect(),

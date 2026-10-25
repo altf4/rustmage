@@ -25,6 +25,8 @@ impl CreatureComparisonFacts {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub enum EventObjectFacts {
     DamageActor(DamageSource),
+    /// Current or latest battlefield controller of an exact untargeted conniver.
+    Controller(Player),
     CreatureComparison(CreatureComparisonFacts),
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -117,11 +119,37 @@ impl Game {
             {
                 e.facts = match e.facts {
                     EventObjectFacts::DamageActor(_) => EventObjectFacts::DamageActor(*damage),
+                    EventObjectFacts::Controller(_) => {
+                        EventObjectFacts::Controller(damage.controller)
+                    }
                     EventObjectFacts::CreatureComparison(_) => {
                         EventObjectFacts::CreatureComparison(*stats)
                     }
                 };
             }
+        }
+    }
+    /// Only programs that actually connive the entrant own these facts. Other
+    /// entry packets retain their existing payload and departure work.
+    pub(super) fn bind_entering_conniver(
+        &mut self,
+        entering: &ObjectView,
+        program: &[Instruction],
+    ) {
+        if program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::Connive {
+                    subject: Subject::Entering,
+                    ..
+                }
+            )
+        }) {
+            self.state.pending_triggers.last_mut().unwrap().event_object =
+                Some(Box::new(EventObjectView {
+                    object: entering.reference,
+                    facts: EventObjectFacts::Controller(entering.controller),
+                }));
         }
     }
     pub(super) fn bind_creature_comparison(&mut self, source: &ObjectView, entering: &ObjectView) {

@@ -1,0 +1,474 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T03:32:15.539808+00:00",
+  "scope": "One whole Baron Strucker representative plus narrow entering-conniver controller prerequisite; final aggregate integration and acceptance remain pending.",
+  "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+  "validated_runtime_and_trace_head": "f4677f37eedd8dab77a69a708998745d94dbe17a",
+  "branch": "codex/msh-baron-entering-conniver",
+  "parent_issue": 478,
+  "delivery": "Source branch push only; no child PR, main merge, review receipt or release claim. Root owns final draft PR #516 and combined release/two nonauthor reviews.",
+  "complete_card": {
+    "name": "Baron Strucker, HYDRA Overlord",
+    "catalogue_id": 334,
+    "oracle_id": "c91e64d4-e687-4ccd-a56e-796cff6e052c",
+    "facts_sha256": "a4c5a7352a06b64d84f342d8e7c336a829517b4f112cf03c749e0e29ea19e724",
+    "full_frozen_oracle": {
+      "oracle_id": "c91e64d4-e687-4ccd-a56e-796cff6e052c",
+      "name": "Baron Strucker, HYDRA Overlord",
+      "layout": "normal",
+      "mana_cost": "{2}{B}",
+      "cmc": 3.0,
+      "type_line": "Legendary Creature — Human Villain",
+      "oracle_text": "Villain spells you cast cost {1} less to cast.\nWhenever another Villain you control enters, you may have it connive. Do this only once each turn. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on that creature.)",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "B"
+      ],
+      "color_identity": [
+        "B"
+      ],
+      "keywords": [
+        "Connive"
+      ],
+      "reference_printing": {
+        "id": "eaf2251a-ffaf-4055-9474-7e3d08d89609",
+        "set": "msh",
+        "collector_number": "88",
+        "released_at": "2026-06-26"
+      }
+    },
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_source": "Mage.Sets/src/mage/cards/b/BaronStruckerHYDRAOverlord.java",
+    "java_sha256": "c8aeff5f8845777e7d7aac2a682e319b00492d9c706384d72d3face497d0ba4b",
+    "dependencies": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+        "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+        "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/keyword/ConniveSourceEffect.java",
+        "sha256": "469ee6e08805cc7745bde31232b310bde37a9fea5ea8bac89c8a3ddeeda7af53"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/keyword/ConniveTargetEffect.java",
+        "sha256": "346bded28edee4c31d82766c2cfe989fa1a72d101c5ffcac2c78dbc5a5c3982f"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+        "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+        "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+        "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+        "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+        "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+        "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+        "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+        "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+        "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+        "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/util/CardUtil.java",
+        "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/constants/SubType.java",
+        "sha256": "be30aa51ffe000d8bfffe5038b5df426d285a78fdc07061029c9d8d7a01892d2"
+      }
+    ],
+    "remaining_obligations": []
+  },
+  "shared_mechanic": {
+    "payload": "EventObjectFacts::Controller(Player), opt-in only when actual queued entry program contains Connive SubjectEntering. No new instruction, tokens, metadata IDs or state buffer.",
+    "resolution": "Exact live entrant controller wins; otherwise saved latest intact battlefield departure controller. Never infer from owner, reused slot, packet controller or new incarnation. No creature/Villain requirement at resolution.",
+    "movement": "Existing central precommit capture refreshes only matching exact event refs in stack/pending/ordering/resolving/announcing/nested mana announcement packets. Unrelated packets keep absent context.",
+    "schema": {
+      "from": 145,
+      "to": 146,
+      "reason": "New public event-object facts enum variant. Central146 shared with sibling scopes by parent authorization."
+    },
+    "inherited_consumers": "No authored ConniveEntering consumer existed on base across twelve matching definitions; existing Source/Targets implementations unchanged and all inherited full traces/rules pass.",
+    "java_discrepancy": "Pinned ConniveTargetEffect loops FixedTarget.getTargets then game.getPermanent; FixedTarget drops moved zone counters, so departed entrant does not connive. Current CR701.50b requires LKI; implement Oracle/current rules, do not port this helper bug.",
+    "rules": [
+      {
+        "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+        "effective": "2026-09-25",
+        "rules": [
+          "701.50a",
+          "701.50b",
+          "701.50c",
+          "701.50d",
+          "701.50f"
+        ],
+        "paraphrase": "Conniver current/last controller draws/discards; nonland causes that player to place counters if original remains; departed permanent still connives."
+      },
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "paraphrase": "Baron reduces generic after increases, not MV. Optional once is consumed on choosing connive; decline allows later trigger and accepted use disables already-queued packets."
+      }
+    ]
+  },
+  "obligations": [
+    {
+      "oracle": "Legendary black Human Villain 2/2 for {2}{B}.",
+      "evidence": [
+        "msh_baron_paid_body_discount_and_generic_colored_floor",
+        "msh_baron_copied_packet_shared_once_and_copied_source_independent"
+      ],
+      "scope": "Real paid cast, insufficient mana rejection, exact body/keywords, copied source in other controller; central legend machinery unchanged."
+    },
+    {
+      "oracle": "Villain spells you cast cost {1} generic less.",
+      "evidence": [
+        "msh_baron_paid_body_discount_and_generic_colored_floor",
+        "msh_baron_discount_current_controller_suppression_other_spells_and_funding"
+      ],
+      "scope": "Real reduced paid Villain, colored components and MV unchanged, current source controller, suppression/removal, non-Villain exclusion, actual Villainous Hideout restricted lot paying Baron; non-Villain spell requires forbidden restricted unit in rejection case. CastFilterSubtype has no creature narrowing."
+    },
+    {
+      "oracle": "Whenever another Villain you control enters.",
+      "evidence": [
+        "msh_baron_entry_filter_kindred_current_types_source_exclusion_and_untargeted",
+        "msh_baron_live_control_change_uses_conniver_player_and_private_discard",
+        "msh_baron_recipient_subtype_and_creature_loss_do_not_cancel_connive",
+        "msh_baron_source_theft_departure_and_suppression_preserve_queued_choice",
+        "msh_baron_copied_packet_shared_once_and_copied_source_independent",
+        "msh_baron_token_ceases_same_slot_new_incarnation_does_not_receive_old_counter"
+      ],
+      "scope": "Own/other/exact source, effective subtypes, noncreature Kindred fixture, token and copied source, ability suppression; no target or creature recheck after event."
+    },
+    {
+      "oracle": "You may have it connive, only once each turn.",
+      "evidence": [
+        "msh_baron_decline_accept_queued_limiter_turn_reset_and_exact_source",
+        "msh_baron_copied_packet_shared_once_and_copied_source_independent"
+      ],
+      "scope": "Decline then accept, queued+future effects suppressed after acceptance, turn reset and source incarnation reset, copied packet shares guard, copied source has independent guard. Guard remains exact source+ability rather than controller."
+    },
+    {
+      "oracle": "Conniver current or last controller draws/discards and places nonland counters.",
+      "evidence": [
+        "msh_baron_live_control_change_uses_conniver_player_and_private_discard",
+        "msh_baron_latest_departure_all_zones_owner_and_reentry_never_rebind",
+        "msh_baron_recipient_subtype_and_creature_loss_do_not_cancel_connive",
+        "msh_baron_counter_replacement_and_opponent_discard_deferred_placer",
+        "msh_baron_land_discard_no_counter_and_no_unrelated_payload",
+        "msh_baron_paid_bounce_updates_recipient_last_controller_and_source_stays_separate",
+        "msh_baron_token_ceases_same_slot_new_incarnation_does_not_receive_old_counter"
+      ],
+      "scope": "Live control change, owner differs, last control in hand/graveyard/exile, new incarnation/token cessation, noncreature/subtype loss, land/nonland discard, Doubling Season and deferred Wilt-Leaf discard, actual paid Unsummon. No counter reaches a replacement incarnation."
+    },
+    {
+      "oracle": "Legal choices, hidden information, deterministic owned branching.",
+      "evidence": [
+        "msh_baron_paid_body_discount_and_generic_colored_floor",
+        "msh_baron_discount_current_controller_suppression_other_spells_and_funding",
+        "msh_baron_entry_filter_kindred_current_types_source_exclusion_and_untargeted",
+        "msh_baron_decline_accept_queued_limiter_turn_reset_and_exact_source",
+        "msh_baron_live_control_change_uses_conniver_player_and_private_discard",
+        "msh_baron_latest_departure_all_zones_owner_and_reentry_never_rebind",
+        "msh_baron_recipient_subtype_and_creature_loss_do_not_cancel_connive",
+        "msh_baron_counter_replacement_and_opponent_discard_deferred_placer",
+        "msh_baron_source_theft_departure_and_suppression_preserve_queued_choice",
+        "msh_baron_copied_packet_shared_once_and_copied_source_independent",
+        "msh_baron_land_discard_no_counter_and_no_unrelated_payload",
+        "msh_baron_paid_bounce_updates_recipient_last_controller_and_source_stays_separate",
+        "msh_baron_context_orphan_privacy_restore_and_latest_control_is_branch_local",
+        "msh_baron_token_ceases_same_slot_new_incarnation_does_not_receive_old_counter"
+      ],
+      "scope": "big_helpers::checked performs wrong-actor rejection, raw/index parity, dropped clone parent, restore/stale revision for every paid action; new rejects test foreign discard/target/mana and unavailable funding. Explicit orphan controller-LKI branch, restore and opponent hidden-hand substitution equality."
+    }
+  ],
+  "test_module": "src/engine_msh_baron_tests.rs",
+  "test_groups": [
+    "msh_baron_paid_body_discount_and_generic_colored_floor",
+    "msh_baron_discount_current_controller_suppression_other_spells_and_funding",
+    "msh_baron_entry_filter_kindred_current_types_source_exclusion_and_untargeted",
+    "msh_baron_decline_accept_queued_limiter_turn_reset_and_exact_source",
+    "msh_baron_live_control_change_uses_conniver_player_and_private_discard",
+    "msh_baron_latest_departure_all_zones_owner_and_reentry_never_rebind",
+    "msh_baron_recipient_subtype_and_creature_loss_do_not_cancel_connive",
+    "msh_baron_counter_replacement_and_opponent_discard_deferred_placer",
+    "msh_baron_source_theft_departure_and_suppression_preserve_queued_choice",
+    "msh_baron_copied_packet_shared_once_and_copied_source_independent",
+    "msh_baron_land_discard_no_counter_and_no_unrelated_payload",
+    "msh_baron_paid_bounce_updates_recipient_last_controller_and_source_stays_separate",
+    "msh_baron_context_orphan_privacy_restore_and_latest_control_is_branch_local",
+    "msh_baron_token_ceases_same_slot_new_incarnation_does_not_receive_old_counter"
+  ],
+  "test_group_count": 14,
+  "both_seats": true,
+  "synthetic_fixture_limits": [
+    "Noncreature Villain uses gated Boggart Mischief immutable Kindred Enchantment metadata only, with ordinary positive-timestamp CreatureTypesEffectView before event dispatch. Its printed behavior is never cast, executed or admitted.",
+    "Untargeted current types/suppression/control and reentry matrices use ordinary production effect rows or movement/control methods to isolate rules boundaries. Actual paid Baron/Ghost casts and Unsummon/Hideout actions use checked public decisions.",
+    "Copied packets/source tokens use production owned packet/copy engine fixtures; no cfg(test) runtime hook, English parser or synthetic ID is introduced."
+  ],
+  "validation": {
+    "native": {
+      "command": "RUSTMAGE_RECORD_CARD_TRACES=<cache>/rustmage/msh-baron/card-traces-candidate.json RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=145 python3 scripts/resource_guard.py -- cargo test --lib",
+      "rules_passed": 1113,
+      "groups_new": 14,
+      "inherited_rules_passed": 1099,
+      "recording_only_failure": "Exactly one expected 2,498 vs 2,497 trace-count assertion before acceptance. No rules failures on final native run.",
+      "seconds": 5.61
+    },
+    "strict_trace": {
+      "passed": 1,
+      "failed": 0,
+      "filtered": 1113,
+      "seconds": 0.77,
+      "accepted_rows": 2498
+    },
+    "clippy": "All targets with -D warnings passed on final test source before baseline-only update.",
+    "format": "cargo fmt --all --check passed after baseline update.",
+    "link": "link_catalogue.py generation/check passed; generated artifacts came from script only.",
+    "source": {
+      "definitions": 5398,
+      "source_blobs": 1212,
+      "java_verified": true,
+      "catalogue_version": "1c13873e83897e737d2f38524b06b2d0b17c351f20d7830896048b01055eb033"
+    },
+    "full_release": "Not run in child per parent direction; required final combined release remains with root.",
+    "earlier_runs": "First run compile-only fixture production type error; second run two fixture ordering failures, both corrected by declining legitimate fresh entrant packets before old exact recipient. All evidence retained; final 14 groups pass."
+  },
+  "trace_proof": {
+    "base": "7addcbc71a7b805c60ad7ba2f7232a3ea432b9c3",
+    "inherited": 2497,
+    "candidate": 2498,
+    "new": [
+      "Baron Strucker, HYDRA Overlord"
+    ],
+    "removed": [],
+    "full_previous_trace_differences": [],
+    "normal_journal_differences": [],
+    "current_schema": 146,
+    "previous_schema": 145,
+    "comparison": "All 2,497 complete prior Trace structs compared directly to existing opt-in145 export; no field stripping, recorder edits, or custom projection.",
+    "base_sha256": "860abacedbca501847d01ee19254fdacb2b4b656bcd1d40123028af6392f41b1",
+    "candidate_sha256": "cd8dd7670ca28f7ddfef6cb1b70783f11f26ecf46fe5199ca3a1d82d22eeb595",
+    "previous_sha256": "d8802daf3abcfba34147cd1a437c9dba369f885f4b176e2817cab09815a96995",
+    "runtime_head": "fd68eac008a91a67a638115682da66a1511e5649"
+  },
+  "artifacts": {
+    "native-record-1.log": {
+      "path": "<cache>/rustmage/msh-baron/native-record-1.log",
+      "sha256": "5996a3d9c38220628c8b29f47e35fb6e4309ae126aff559f3a8ce46758b11d3b"
+    },
+    "clippy-1.log": {
+      "path": "<cache>/rustmage/msh-baron/clippy-1.log",
+      "sha256": "c9e3d8de3e56acd4e1a7b0f6aad35ba8ee80b8edf077ccdd6183024af1291a18"
+    },
+    "native-record-2.log": {
+      "path": "<cache>/rustmage/msh-baron/native-record-2.log",
+      "sha256": "bb8d19504c46f8a77ea5692905449d62f533064362b91f7897833349d89a9e19"
+    },
+    "clippy-2.log": {
+      "path": "<cache>/rustmage/msh-baron/clippy-2.log",
+      "sha256": "bf1295f2e4b9330c9e74301eba9096664dcc85c86b44dac390826b01ef527f2f"
+    },
+    "native-record-3.log": {
+      "path": "<cache>/rustmage/msh-baron/native-record-3.log",
+      "sha256": "2499f78f412ab9f0a82c46411b0badd10110a0dabcff19c5b2dd37f4fe168078"
+    },
+    "clippy-3.log": {
+      "path": "<cache>/rustmage/msh-baron/clippy-3.log",
+      "sha256": "c38abf166c4da948392f46ee0ceb0cac99bfa3fb39f0f6db9a3efabc258d80d9"
+    },
+    "strict-trace.log": {
+      "path": "<cache>/rustmage/msh-baron/strict-trace.log",
+      "sha256": "018ed984ae065280ad748128d184e8d0f836da6e627087f2ad069b83449ab21a"
+    },
+    "format-final.log": {
+      "path": "<cache>/rustmage/msh-baron/format-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "link-final.log": {
+      "path": "<cache>/rustmage/msh-baron/link-final.log",
+      "sha256": "e200780056d6e9a86c47355d367022c1769e2648a4b30b90c38fd8e15c5090b0"
+    },
+    "link-strict.log": {
+      "path": "<cache>/rustmage/msh-baron/link-strict.log",
+      "sha256": "e200780056d6e9a86c47355d367022c1769e2648a4b30b90c38fd8e15c5090b0"
+    },
+    "source-final.log": {
+      "path": "<cache>/rustmage/msh-baron/source-final.log",
+      "sha256": "f34ef63306134b3ddebde0d98f58d2f5177450a0b42c79388200f2df17224ed6"
+    },
+    "trace-proof.json": {
+      "path": "<cache>/rustmage/msh-baron/trace-proof.json",
+      "sha256": "0c6db01fedbd0aaeecefe2374c9a7c48e53e2c5ac883e97ad604eb708389c4f0"
+    },
+    "cleanup.json": {
+      "path": "<cache>/rustmage/msh-baron/cleanup.json",
+      "sha256": "f297a1d5b7f3fb73ad2041c76c62f683180e043b1223a54102c8396a3d7b3fc5"
+    },
+    "resource-native-clippy-1.json": {
+      "path": "<cache>/rustmage/msh-baron/resource-native-clippy-1.json",
+      "sha256": "912f4840a368db87823ededebc5813031884f87ee2d5e7462966c041827b8bdf"
+    },
+    "resource-native-clippy-2.json": {
+      "path": "<cache>/rustmage/msh-baron/resource-native-clippy-2.json",
+      "sha256": "3a02b8d7e7ef1a42ca6eadfc5bf2ca30ce29e759c4ea921c84490ddaca6cc6a4"
+    },
+    "resource-native-clippy-3.json": {
+      "path": "<cache>/rustmage/msh-baron/resource-native-clippy-3.json",
+      "sha256": "81303f51865ba16dcec08253ce2d432fe4ef4558c9309ee12b7c1b6933c01950"
+    },
+    "resource-strict.json": {
+      "path": "<cache>/rustmage/msh-baron/resource-strict.json",
+      "sha256": "393d19fdd1732a3264d791b148d2bba108ba835b6794d6df1e5bd49a127a7120"
+    }
+  },
+  "resource_safety": {
+    "all_consumers_terminal": true,
+    "memory_max_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "peak_bytes": 2447990784,
+    "oom_events": 0,
+    "fixed_inputs": "Each consuming process was polled to actual terminal before any next source update. Sessions76421,69752,35065,81348 completed; no cancellation or unmanaged Cargo."
+  },
+  "cleanup": {
+    "created_utc": "2026-10-25T03:31:07.088141+00:00",
+    "terminal": true,
+    "active_target_refs": [],
+    "scan": "Readable /proc FD symlinks, maps, exe and cwd before deletion; all target references absent.",
+    "deleted_files": 1019,
+    "freed_bytes": 121860268,
+    "required_libraries": [
+      {
+        "path": "<worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "size": 4099760
+      },
+      {
+        "path": "<existing-worktree>/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "size": 4099760
+      },
+      {
+        "path": "<cache>/rustmage/msh-existing/four-native-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "size": 4099760
+      },
+      {
+        "path": "<cache>/rustmage/msh-coulson/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "size": 4099760
+      },
+      {
+        "path": "<cache>/rustmage/msh-hideout-falcon/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "size": 4099760
+      },
+      {
+        "path": "<cache>/rustmage/msh-sentry-alien/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "size": 4099760
+      },
+      {
+        "path": "<cache>/rustmage/msh-under-siege/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "size": 4099760
+      }
+    ],
+    "preserved_target": [
+      {
+        "path": "<cache>/rustmage/msh-baron/target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      {
+        "path": "<cache>/rustmage/msh-baron/target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "f16200aba0e7c33acae80a3fb9fcd53b1484bb1efe0bfbad3a43354289e3053b",
+        "bytes": 33833480
+      }
+    ],
+    "preserved_extra_natives": [
+      {
+        "path": "<cache>/rustmage/msh-baron/native-before-trigger-order-fix",
+        "sha256": "a3b7559483d72eec28777394e3443aeb6fac2d60009a2f7a941108d62dddf073",
+        "bytes": 32414032
+      },
+      {
+        "path": "<cache>/rustmage/msh-baron/native-before-baseline",
+        "sha256": "0f6dc927b0e9692e5975ec1d76c2eedd6ed602d8958b42f70e538ce698eb8d7c",
+        "bytes": 33833360
+      }
+    ]
+  },
+  "counts": {
+    "full_pool": 281,
+    "isolated_candidate_complete": 195,
+    "isolated_gated": 86,
+    "new_whole_cards": 1,
+    "main_unchanged_by_child": true,
+    "entire_set_game_and_performance_acceptance": "Open; admission flags and bounded traces do not certify all 281 games."
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T02:53:43+00:00",
+    "end_utc": "2026-10-25T03:32:15.537212+00:00",
+    "elapsed_seconds": 2312.537211894989,
+    "whole_cards": 1,
+    "cards_per_hour": 1.5567317064057147,
+    "interval": "Branch creation through evidence preparation, including shared guard waits and fixture repair; source audit before branch creation excluded.",
+    "simulation": "No simulation benchmark run;5.61 seconds is native rules-suite time, not game/search throughput."
+  },
+  "remaining_blockers": [
+    "Final aggregate release and two fresh independent nonauthor reviews required; no final set acceptance claimed.",
+    "Galactus deferred; portable complete source design at<cache>/msh-galactus-design-a8e6f458.json SHA256 9d26df207737c4810a73b0a70a8131d4d380bba67aa1b6843d092631aacae963, no ID allocated.",
+    "Latent effective-Saga subtype/Main1 lore issue remains separately tracked with synthetic-only reachability limits; unchanged by this scope."
+  ]
+}
