@@ -83,6 +83,8 @@ pub(super) enum TokenCompletion {
         ability: u16,
     },
     JobAttach(ObjectRef),
+    /// Creation precedes attachment; an absent/illegal recipient leaves tokens intact.
+    AttachCreatedTo(ObjectRef),
     RoleAttach(ObjectRef),
     RoleReflexive(Box<RoleReflexiveCompletion>),
     /// One mass creation event; original group indices retain exact recipients.
@@ -1177,6 +1179,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::JobAttach(_)
+                                        | TokenCompletion::AttachCreatedTo(_)
                                         | TokenCompletion::Counters { .. }
                                         | TokenCompletion::CounterSet(_)
                                         | TokenCompletion::Keywords { .. }
@@ -1253,6 +1256,13 @@ impl Game {
                                     })
                                 {
                                     self.queue_reflexive(&c.item, c.ability, Some(c.recipient));
+                                }
+                                if let TokenCompletion::AttachCreatedTo(recipient) =
+                                    batch.completion
+                                {
+                                    for &equipment in &created {
+                                        self.attach_equipment(equipment, recipient);
+                                    }
                                 }
                                 if let TokenCompletion::JobAttach(source) = batch.completion {
                                     let eligible = created

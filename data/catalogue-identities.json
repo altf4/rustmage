@@ -5404,7 +5404,9 @@
     8,
     17,
     0,
-    2
+    2,
+    4,
+    0
   ],
   "aliases": [
     [
@@ -6200,6 +6202,10 @@
       5397
     ],
     [
+      "@token/msh-galactus",
+      5399
+    ],
+    [
       "@token/msh-leviathan",
       5387
     ],
@@ -6210,6 +6216,10 @@
     [
       "@token/msh-robot-villain",
       5388
+    ],
+    [
+      "@token/msh-sturdy-shield",
+      5400
     ],
     [
       "@token/msh-tiger-god",
@@ -28458,6 +28468,18 @@
       "name": "Merfolk Token",
       "subtypes": "Merfolk",
       "colors": 2
+    },
+    {
+      "factory_identity": "@token/msh-galactus",
+      "name": "Galactus",
+      "subtypes": "Elder Alien",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/msh-sturdy-shield",
+      "name": "Sturdy Shield",
+      "subtypes": "Equipment",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -28826,7 +28848,9 @@
     "MshBlackPantherHopeEnduring": 5392,
     "MshSensationalSheHulk": 5396,
     "MshDoombotToken": 5397,
-    "MshBlueMerfolkToken": 5398
+    "MshBlueMerfolkToken": 5398,
+    "MshGalactusToken": 5399,
+    "MshSturdyShieldToken": 5400
   },
   "helper_interface": [
     [
@@ -182737,6 +182761,63 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5399,
+      "module": "card_5399",
+      "path": "synthetic/token_msh_galactus.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-galactus",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Elder Alien",
+      "oracle_keywords": [
+        "Flying",
+        "Trample"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5400,
+      "module": "card_5400",
+      "path": "synthetic/token_msh_sturdy_shield.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/msh-sturdy-shield",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact — Equipment",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
       "basic": false,
       "mana_color": null,
       "colored": [

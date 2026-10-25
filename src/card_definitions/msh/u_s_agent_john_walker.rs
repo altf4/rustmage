@@ -1,17 +1,14 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Creation always happens; attachment follows every resulting exact token.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(3, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CreateEquipmentForSource {
+            token: Card::MshSturdyShieldToken,
+            amount: 1,
+        }],
+    }],
     extras: &CardExtras {
         cost_alternatives: &[ManaCost {
             colored: [1, 0, 0, 0, 0, 0],
