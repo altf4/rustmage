@@ -7619,3 +7619,7 @@ mod msh_under_siege_tests;
 #[cfg(test)]
 #[path = "engine_msh_doom_tests.rs"]
 mod msh_doom_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_ninth_combined_tests.rs"]
+mod msh_ninth_combined_tests;
