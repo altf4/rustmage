@@ -1,0 +1,431 @@
+{
+  "schema": 1,
+  "scope": "One complete Vision Quest card, shared owned search/entry core and individual/directly affected focused rules scenarios. Final aggregate integration deferred.",
+  "base": "4777e195ea8d40aacc25184b8e61dfc0785b96e4",
+  "tested_runtime": "e0d60c14c78a88cca02a2bd2d4f0db24ebdb85ba",
+  "complete_cards": [
+    "Vision Quest"
+  ],
+  "oracle": {
+    "oracle_id": "240410a0-3288-4336-b1ad-34936e64ccf2",
+    "name": "Vision Quest",
+    "layout": "normal",
+    "mana_cost": "{X}{U}{R}",
+    "cmc": 2.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Search your library and/or graveyard for an artifact creature card with mana value X or less and put it onto the battlefield with X additional +1/+1 counters on it. If X is 4 or greater, it gains haste until end of turn. If you search your library this way, shuffle.",
+    "colors": [
+      "R",
+      "U"
+    ],
+    "color_identity": [
+      "R",
+      "U"
+    ],
+    "keywords": [],
+    "reference_printing": {
+      "id": "c01afea6-645d-4d4f-bdaa-90794a628bcd",
+      "set": "msh",
+      "collector_number": "237",
+      "released_at": "2026-06-26"
+    }
+  },
+  "source_audit": {
+    "design": {
+      "path": "<cache>/rustmage-msh-vision-quest-source-design.json",
+      "sha256": "79fda1946793cccac69c1dcb44312d8ad4d879816821fc976402282413a71e95"
+    },
+    "supplement": {
+      "path": "<cache>/rustmage-msh-vision-quest-supplemental-source-audit.json",
+      "sha256": "7986337257134640e737fd327a5a5cad078738bf922e12a62aad595fa4171e04"
+    },
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "full_direct_and_helper_bodies": 15,
+    "additional_full_bodies": [
+      "CardType.java",
+      "AIMSynthoids.java",
+      "SurveilEffect.java"
+    ],
+    "complete_utility_methods": "getSourceCostsTagsMap/getSourceCostsTag/getPermanentFromCardPutToBattlefield plus getDefaultCardSideForBattlefield/getActualSourceObjectZoneChangeCounter/getSourceStackMomentReference. No full CardUtil read claim.",
+    "pins": [
+      {
+        "path": "Mage.Sets/src/mage/cards/v/VisionQuest.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "97c031a29851ac3b6469f86ac4a57ec876fc511ec83d55e8190d5560b8992352",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterArtifactCard.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b83bf74eb3350828f9e0d61a716272f06439b9752ece9b10b041b03ee0dc32d4",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/TargetCard.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/counters/Counters.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "b9e042f9af94a36bcfa431de6c94188a5854266a919f5d2ea26d805cecd0e42b",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/counters/Counter.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "6d4e0bf164c0dcff96733c77953362f8a7e3550166f1fd6deaf335ddb0b99ede",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/counters/CounterType.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/counters/BoostCounter.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "f98863ba5032b79579e49a809d8a59871d2242fc909d5eeea2a4b0fe35111043",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/util/CardUtil.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+        "read_scope": "Complete getPermanentFromCardPutToBattlefield/getSourceCostsTagsMap/getSourceCostsTag and dependent getter scopes; no full utility-file read claim."
+      }
+    ],
+    "primary": [
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "scope": "Vision Quest complete release-note section: X in library/graveyard costs is zero for mana value."
+      },
+      {
+        "path": "<cache>/rustmage-MagicCompRules-20260925.txt",
+        "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+        "rules": [
+          "400.2",
+          "608.2d",
+          "701.23a",
+          "701.23b",
+          "701.23g"
+        ],
+        "inference": "Choose a nonempty subset for and/or. Qualified hidden library may fail to find; a chosen public graveyard search must find if an eligible card exists. Chosen library alone may fail even if graveyard contains an eligible card."
+      }
+    ],
+    "discrepancy": [
+      "Java two optional prompts allow neither zone and graveyard target0 even when eligible. Rust will use three nonempty zone subsets and public mandatory-find eligibility, per explicit CR inference."
+    ]
+  },
+  "obligations": [
+    {
+      "clause": "Sorcery XUR, actual colored payment and X selected/captured as a real cost quantity; no fake alternate X.",
+      "evidence": [
+        "msh_vision_quest_paid_x_domain_and_actual_colored_costs",
+        "msh_vision_quest_actual_paid_spell_copy_keeps_x_and_independent_search"
+      ]
+    },
+    {
+      "clause": "Search library, graveyard or both; three nonempty zone subsets, own cards only, one artifact AND creature with MV<=X, X in found-card cost is zero.",
+      "evidence": [
+        "msh_vision_quest_three_nonempty_zone_subsets_and_public_grave_required",
+        "msh_vision_quest_artifact_and_creature_both_required_and_mana_value_inclusive",
+        "msh_vision_quest_wrong_owner_wrong_zone_and_stale_selected_incarnation",
+        "msh_vision_quest_metadata_x_card_mana_value_zero_without_admitting_its_behavior",
+        "msh_vision_quest_zero_and_empty_grave_search_no_illegal_no_zone_decline"
+      ]
+    },
+    {
+      "clause": "Qualified hidden library may fail to find; chosen public graveyard with an eligible card must find. Library is shuffled iff searched, even when nothing is found.",
+      "evidence": [
+        "msh_vision_quest_three_nonempty_zone_subsets_and_public_grave_required",
+        "msh_vision_quest_library_fail_to_find_still_shuffles_when_grave_has_card",
+        "msh_vision_quest_graveyard_only_keeps_entire_library_rng_and_known_top"
+      ]
+    },
+    {
+      "clause": "Put one exact selected current incarnation onto battlefield with X additional +1/+1 entry counters through pre-entry replacement and choice pauses.",
+      "evidence": [
+        "msh_vision_quest_library_entry_x_counters_haste_boundary_and_attack",
+        "msh_vision_quest_entry_choice_is_owned_private_then_counters_and_haste",
+        "msh_vision_quest_entry_counter_replacement_pause_and_orphan_restore",
+        "msh_vision_quest_entry_counter_replacements_do_not_change_haste_x_threshold",
+        "msh_vision_quest_opponent_entry_tapped_replacement_and_counters",
+        "msh_vision_quest_wrong_owner_wrong_zone_and_stale_selected_incarnation"
+      ]
+    },
+    {
+      "clause": "If X>=4 the exact successfully entered permanent gains haste until end of turn, with ordinary layer6 timestamp/removal, independent from actual replaced counter amount.",
+      "evidence": [
+        "msh_vision_quest_library_entry_x_counters_haste_boundary_and_attack",
+        "msh_vision_quest_entry_counter_replacements_do_not_change_haste_x_threshold",
+        "msh_vision_quest_haste_grant_timestamp_loses_to_later_ability_removal",
+        "msh_vision_quest_exact_entry_haste_does_not_follow_blink",
+        "msh_vision_quest_failed_entry_completion_never_grants_haste_or_counters"
+      ]
+    },
+    {
+      "clause": "Copied spells retain X and independent search state; captured semantic caster owns search/resources even when another player controls decisions.",
+      "evidence": [
+        "msh_vision_quest_actual_paid_spell_copy_keeps_x_and_independent_search",
+        "msh_vision_quest_controlled_player_search_entitlement_and_semantic_owner"
+      ]
+    },
+    {
+      "clause": "Private library selection, legal/invalid choices, transaction atomicity, owned raw/index branches after parent disposal, restore and stale revision; actual/projected entry results agree.",
+      "evidence": [
+        "msh_vision_quest_private_library_both_views_counterfactual_and_orphan_choices",
+        "msh_vision_quest_entry_choice_is_owned_private_then_counters_and_haste",
+        "msh_vision_quest_entry_counter_replacement_pause_and_orphan_restore",
+        "msh_vision_quest_paid_x_domain_and_actual_colored_costs",
+        "msh_vision_quest_projected_entry_counter_and_postentry_keyword_matches_actual"
+      ]
+    }
+  ],
+  "shared_core": {
+    "instruction": "SearchLibraryAndGraveyardWithXCounters{filter,counter,haste_at}",
+    "quantity": "One item.x captured at resolution drives maximum mana value, additional counter quantity and threshold; spell copies retain packet X.",
+    "search_state": "Cold owned ZoneSearch records captured player/source/filter/X/zone subset and exact selected ObjectRef; selections remain in their zones until explicit FinishSearch. Current type/owner/zone/MV and exact incarnation are revalidated.",
+    "entry": "Reuse EntryMove.effect_counter and central pre-entry counter replacements. New private EntryMove.keywords_after grants timestamped EOT keyword effect only on actual successful battlefield result, after entry facts freeze and before subsequent triggers can resolve. Borrowed entry projection applies the same post-entry grant.",
+    "cleanup": "Zone-search continuation is removed on commitment or ordinary abandoned resolution; owned byte accounting includes initialized context."
+  },
+  "public_wire": {
+    "schema": 152,
+    "allocation": "Existing coordinated unpublished cohort; no extra increment.",
+    "action": "ChooseSearchZones{library,graveyard}",
+    "view": "Optional serde-skipped Observation.zone_search, with public captured player/filter/X/counter/haste/zone context; card identities and selected library reference only for entitled viewers.",
+    "existing_actions": "ChooseSearch and FinishSearch retained after zone selection. No old search payload changed when new context absent.",
+    "policy": "One necessary deterministic visible choice score arm50; no other policy logic changes."
+  },
+  "printed_mana_metadata": {
+    "catalogue_id": 4915,
+    "before_colored": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "after_colored": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0
+    ],
+    "generic_unchanged": 0,
+    "physical_pin_before": "547c912afee5bfc60c37a1a5375715d85ce289c3a00bf85e66ea3b35af00fb3c",
+    "physical_pin_after": "18dc72436648425e5d0f0f8b90087de460e39684039f6e3b7ac3d34c750f9bd3",
+    "typed_x_symbols": 1,
+    "reason": "Correct the gated zero-cost placeholder to exact printed UR fixed components. No IDs, names, aliases, colors, types, recipes or Oracle facts changed."
+  },
+  "focused": {
+    "new_groups": 20,
+    "producer_and_core_groups": 19,
+    "funding_groups": 1,
+    "directly_affected_groups": 55,
+    "total_groups": 75,
+    "test_functions": [
+      "msh_vision_quest_paid_x_domain_and_actual_colored_costs",
+      "msh_vision_quest_library_entry_x_counters_haste_boundary_and_attack",
+      "msh_vision_quest_artifact_and_creature_both_required_and_mana_value_inclusive",
+      "msh_vision_quest_graveyard_only_keeps_entire_library_rng_and_known_top",
+      "msh_vision_quest_three_nonempty_zone_subsets_and_public_grave_required",
+      "msh_vision_quest_zero_and_empty_grave_search_no_illegal_no_zone_decline",
+      "msh_vision_quest_library_fail_to_find_still_shuffles_when_grave_has_card",
+      "msh_vision_quest_private_library_both_views_counterfactual_and_orphan_choices",
+      "msh_vision_quest_wrong_owner_wrong_zone_and_stale_selected_incarnation",
+      "msh_vision_quest_entry_choice_is_owned_private_then_counters_and_haste",
+      "msh_vision_quest_entry_counter_replacements_do_not_change_haste_x_threshold",
+      "msh_vision_quest_entry_counter_replacement_pause_and_orphan_restore",
+      "msh_vision_quest_haste_grant_timestamp_loses_to_later_ability_removal",
+      "msh_vision_quest_exact_entry_haste_does_not_follow_blink",
+      "msh_vision_quest_opponent_entry_tapped_replacement_and_counters",
+      "msh_vision_quest_actual_paid_spell_copy_keeps_x_and_independent_search",
+      "msh_vision_quest_metadata_x_card_mana_value_zero_without_admitting_its_behavior",
+      "msh_vision_quest_controlled_player_search_entitlement_and_semantic_owner",
+      "msh_vision_quest_failed_entry_completion_never_grants_haste_or_counters",
+      "msh_vision_quest_projected_entry_counter_and_postentry_keyword_matches_actual"
+    ],
+    "filters": [
+      {
+        "filter": "msh_vision_quest_",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_widow_worlds_",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_armor_tony_",
+        "exit_code": 0
+      }
+    ],
+    "command": "CARGO_TARGET_DIR=<cache>/rustmage-msh-vision-quest-dev-target CARGO_PROFILE_TEST_OPT_LEVEL=0 python3 scripts/resource_guard.py --report <cache>/rustmage-msh-vision-quest-final-guard.json -- python3 <cache>/rustmage-msh-vision-quest-final-driver.py",
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development",
+    "new_checked_execution_seconds": 0.17,
+    "affected_seconds": [
+      0.11,
+      0.25
+    ],
+    "sum_checked_execution_seconds": 0.53,
+    "measurement": "Includes legal/paid scene setup, both-seat assertions and owned raw/index/restore replay; not pure simulation throughput.",
+    "driver_seconds": 31.788855879043695,
+    "guard_seconds": 32.549462322029285,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2797830144,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "fixed_inputs": 11179,
+    "changed_inputs": [],
+    "artifacts": [
+      {
+        "path": "<cache>/rustmage-msh-vision-quest-final.log",
+        "sha256": "29cf5113f7489418b9d15314178f3c7f74aad71758b61ec4e4b2879635e56a6a"
+      },
+      {
+        "path": "<cache>/rustmage-msh-vision-quest-final-checks.json",
+        "sha256": "c97f0cabdaacb99d12c887bec291eed4f24af216af8fddfd4fa8a4df4ad796ea"
+      },
+      {
+        "path": "<cache>/rustmage-msh-vision-quest-final-guard.json",
+        "sha256": "af9e07d013a7df71ff12d16dca9e3ae5f3ec7f6f13a740bdc9af630ca516abe1"
+      },
+      {
+        "path": "<cache>/rustmage-msh-vision-quest-final-inputs.json",
+        "sha256": "6ede142836d73cdbe37679055b02307dd064bfc92de20742e786755c1708e27e"
+      }
+    ]
+  },
+  "development_history": [
+    "Three compile-only iterations corrected explicit module imports, private funding test registration and its fixture constant; no query override or widened production API was introduced.",
+    "First executable matrix2/20passed. Authored Vision Quest lacked explicit x_symbols1 and fixed printedUR metadata; corrected both while gated, with paired metadata pin and metadata-only regeneration.",
+    "Next17/20 passed; corrected fixture assumptions about Synthoids1/3 body and its separate ETBsurveil2 trigger. Grave-only no-shuffle is asserted before that trigger; copied-search walker resolves it explicitly.",
+    "Next19/20 passed; combat fixture had checked damage before the damage step. Advanced through actual EndCombat;20/20 gated confirmation passed.",
+    "Promoted the whole card and removed its gated fallback. Final20new+55affected ordinary supported groups pass."
+  ],
+  "fixture_qualifications": [
+    "Scene setup can seed mana, cards, phase and bounded moves; these are individual rules scenarios, not legal natural full games.",
+    "All final Vision Quest casts use the ordinary support-checked fixture path. The sole retained gated Marketback Walker fixture inspects immutable type/MV0 eligibility and never enters, resolves or admits that card.",
+    "No supported zero-mana-value artifact creature exists in this source parent. X0 ordinary payment/failure-to-find and gated immutable X0 eligibility are distinguished.",
+    "Entry replacement coverage includes actual DoublingSeason/Doc counter order, Authority tapped entry and private AdaptiveAutomaton entry choice. Explicit skipped/nonbattlefield EntryMove cases are bounded executor completion probes, not a claim of an unavailable printed battlefield-exile replacement.",
+    "Paid Choreographed Sparks copies the actual Vision Quest spell, retaining X and independent one-card searches; no hand-made copied packet substitutes for this case.",
+    "Funding assertion compares complete actual/projected ObjectView for counters/haste without mutating the parent; no pure performance claim."
+  ],
+  "metadata": {
+    "command": "python3 scripts/link_catalogue.py",
+    "purpose": "Metadata-only regeneration for fixed printed cost while gated and final complete flag; no aggregate engine validation.",
+    "new_ids": 0,
+    "new_tokens": 0,
+    "membership_changes": false,
+    "recorder_changes": false,
+    "accepted_trace_changes": false,
+    "existing_trace": {
+      "path": "<worktree>/src/assurance/card_traces.json",
+      "sha256": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3"
+    }
+  },
+  "cleanup": {
+    "report": {
+      "path": "<cache>/rustmage-msh-vision-quest-cleanup.json",
+      "sha256": "402a74ae68448b0db7f879a063ec65ede3b72f22b524fc4a5827b8c3c2667b89"
+    },
+    "preservation": {
+      "path": "<cache>/rustmage-msh-vision-quest-preservation.json",
+      "sha256": "48533c220ca916ad2e15d6766b66e05fdc95ad1cbaf88f3c7a3cfaa73e0e0b0e"
+    },
+    "required_artifacts": 4581,
+    "details": {
+      "created_utc": "2026-10-25T18:22:41.909372+00:00",
+      "terminal": true,
+      "known_guarded_consumers_terminal": true,
+      "own_user_processes_scanned": 253,
+      "accessible_fd_maps_exe_cwd_target_refs": [],
+      "denied_inspections": 174,
+      "target": "<cache>/rustmage-msh-vision-quest-dev-target",
+      "parent_manifest": "<cache>/rustmage-msh-restricted-creatures-preservation.json",
+      "parent_manifest_sha256": "62177befab1ef7af053c8b72ff18530b48e19d5e9f7e1134040450784c8734f0",
+      "prior_required": 4571,
+      "all_prior_paths_and_hashes_exact": true,
+      "missing_prior": [],
+      "changed_prior": [],
+      "removed_files": 165,
+      "removed_path_allocated_bytes": 40370176,
+      "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation.",
+      "preserved_target_files": [
+        {
+          "path": "<cache>/rustmage-msh-vision-quest-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage-msh-vision-quest-dev-target/debug/deps/rustmage-55e16bd14e329fbf",
+          "sha256": "ecc8f40847259473832531403c1a9924f2b671133592bf58705a5ff4e6d89f8a"
+        }
+      ]
+    }
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T18:01:42.991679+00:00",
+    "end_utc": "2026-10-25T18:24:23.876460+00:00",
+    "elapsed_seconds": 1360.884781,
+    "complete_cards": 1,
+    "scope": "Full source/helper audit, typed/shared implementation, focused development, ordinary supported confirmation, provenance/evidence and terminal cleanup; no full-set extrapolation."
+  },
+  "deferred": [
+    "No DEFAULT/all-native, aggregate Clippy/static, full old Trace exports, release/CI, main merge or new PR. User priority defers these until all remaining individual cards are ready.",
+    "Complete281-card behavior/interactions/legalgames/performance acceptance remains open."
+  ]
+}
