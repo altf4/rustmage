@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e3dc5e4217ef2fc42a5a876df4f4760b8026e7528ded8186b81128f4dedb1b50",
+  "catalogue_version": "0aa1096b58976115cf31e12ae88382f1912bb94d4fe1f6e06f6c42ff394f0a21",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2531,
-  "implemented_total": 2537,
+  "implemented_standard_cards": 2534,
+  "implemented_total": 2540,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 226,
-      "gated": 47
+      "complete": 229,
+      "gated": 44
     },
     "one": {
       "total": 1,
@@ -12269,8 +12269,8 @@
     {
       "name": "Fin Fang Foom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/fin_fang_foom.rs",
       "set": "msh"
     },
@@ -20509,8 +20509,8 @@
     {
       "name": "Loki Laufeyson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/loki_laufeyson.rs",
       "set": "msh"
     },
@@ -32237,8 +32237,8 @@
     {
       "name": "Speedball, New Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/speedball_new_warrior.rs",
       "set": "msh"
     },

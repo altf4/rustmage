@@ -1,4 +1,4 @@
-//! Paid, bounded gated-card fixtures for cast-target, delayed-copy and retarget rules.
+//! Whole-card paid scenarios for cast-target, delayed-copy and retarget rules.
 use super::ability_world::CharacteristicWorld;
 use super::assurance::big_helpers::{cast, checked, named, next_turn, settle, setup};
 use super::*;
@@ -6,16 +6,7 @@ const FIN: &str = "Fin Fang Foom";
 const LOKI: &str = "Loki Laufeyson";
 const SPEED: &str = "Speedball, New Warrior";
 fn hand(g: &mut Game, p: Player, name: &str) -> CardId {
-    let card = Card::from_name(name).unwrap();
-    if card.is_supported() {
-        return named(g, p, name, Zone::Hand);
-    }
-    assert!([FIN, LOKI, SPEED].contains(&name));
-    // Only these immutable typed gated definitions are seeded. Deck admission
-    // remains false; no effect, target or program is replaced by the fixture.
-    let id = named(g, p, "Hill Giant", Zone::Hand);
-    g.state.objects[id as usize].card = card;
-    id
+    named(g, p, name, Zone::Hand)
 }
 fn priority(g: &mut Game, p: Player) {
     if g.actor() != Some(p) {
