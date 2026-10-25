@@ -736,7 +736,7 @@ fn msh_teamwork_funding_scalability_conservative_class_declines_mutating_routes_
         let w = world(&g, p, spell, context(&g, p, spell));
         assert!(!w.pure_tap_teamwork_deficit(&goal));
         let mut no_provider = g.clone();
-        no_provider.move_zone(provider, Zone::Graveyard);
+        no_provider.move_object(provider, Zone::Graveyard);
         let treasure = Card::catalogue()
             .find(|c| c.token_info().is_some_and(|t| t.subtypes == "Treasure"))
             .unwrap();
