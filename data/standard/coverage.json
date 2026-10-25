@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2510968a28c909142d6d9eccb25a51b6a67e87c0a6c667a17d377d0935dc9081",
+  "catalogue_version": "e77923c1c7bb07fb5703b9504139ffe7a164e0344571ee10532cca4ffa11a7a8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2548,
-  "implemented_total": 2554,
+  "implemented_standard_cards": 2550,
+  "implemented_total": 2556,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 243,
-      "gated": 30
+      "complete": 245,
+      "gated": 28
     },
     "one": {
       "total": 1,
@@ -6885,8 +6885,8 @@
     {
       "name": "Construct a Cosmic Cube",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/construct_a_cosmic_cube.rs",
       "set": "msh"
     },
@@ -7077,8 +7077,8 @@
     {
       "name": "Cosmic Cube",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/cosmic_cube.rs",
       "set": "msh"
     },

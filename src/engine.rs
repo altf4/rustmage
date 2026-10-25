@@ -8264,3 +8264,7 @@ mod msh_armor_tony_tests;
 #[cfg(test)]
 #[path = "engine_msh_bruce_kang_tests.rs"]
 mod msh_bruce_kang_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_cosmic_cube_tests.rs"]
+mod msh_cosmic_cube_tests;
