@@ -829,6 +829,7 @@ impl Game {
                     }
                     self.bind_stat_subject(event.after, source.card.triggers()[index].program);
                     self.bind_entering_conniver(&entered, source.card.triggers()[index].program);
+                    self.bind_entering_copy(&entered, source.card.triggers()[index].program);
                     if same && source.card.x_symbols() > 0 {
                         self.state.pending_triggers.last_mut().unwrap().x = Some(event.x);
                     }
@@ -2132,6 +2133,9 @@ impl Game {
                         .delayed_artifact_copies
                         .get_or_insert_default()
                         .push(delayed);
+                }
+                Instruction::CopyEnteringPermanentThenAnimate(spec) => {
+                    self.copy_entering_then_animate(&item, spec);
                 }
                 Instruction::CreateCapturedArtifactCopy => {
                     if let Some(recipe) = item.captured_artifact_copy.as_deref() {

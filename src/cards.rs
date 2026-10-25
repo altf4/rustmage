@@ -959,6 +959,8 @@ pub(crate) enum Instruction {
         ability: u16,
     },
     CreateCapturedArtifactCopy,
+    /// Copy one current/latest-departure entrant, then animate its actual results after entry.
+    CopyEnteringPermanentThenAnimate(AnimationSpec),
     CopyCastSpell {
         prior_spells: bool,
     },

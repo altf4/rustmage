@@ -1,6 +1,6 @@
 //! Owned, event-local replacement ordering. Immutable programs stay in the catalogue.
 use super::*;
-use crate::cards::{ReplacementFilter, ReplacementSpec};
+use crate::cards::{AnimationSpec, ReplacementFilter, ReplacementSpec};
 use std::collections::VecDeque;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -81,6 +81,7 @@ pub(super) enum TokenCompletion {
     },
     CounterSet(Box<Counters>),
     TemporaryCopy(Box<SpellView>),
+    AnimateNoncreatures(AnimationSpec),
     Keywords {
         source: ObjectRef,
         keywords: Keywords,
@@ -132,6 +133,10 @@ enum Event {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
+    AnimateCreated {
+        created: Vec<ObjectRef>,
+        spec: AnimationSpec,
+    },
     CreatedCounters {
         player: Player,
         created: Vec<ObjectRef>,
@@ -198,6 +203,9 @@ impl ReplacementState {
                 .work
                 .iter()
                 .map(|w| match w {
+                    Work::AnimateCreated { created, .. } => {
+                        created.len() * std::mem::size_of::<ObjectRef>()
+                    }
                     Work::Damage(b) => {
                         b.events.len() * std::mem::size_of::<DamageEvent>()
                             + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
@@ -1102,6 +1110,10 @@ impl Game {
             }
             if state.active.is_none() {
                 match state.work.pop_front() {
+                    Some(Work::AnimateCreated { created, spec }) => {
+                        self.animate_created_noncreatures(&created, spec);
+                        continue;
+                    }
                     Some(Work::CreatedCounters {
                         player,
                         created,
@@ -1263,6 +1275,13 @@ impl Game {
                                     &batch.recipes,
                                     temporary,
                                 );
+                                if let TokenCompletion::AnimateNoncreatures(spec) = batch.completion
+                                {
+                                    state.work.push_front(Work::AnimateCreated {
+                                        created: created.clone(),
+                                        spec,
+                                    });
+                                }
                                 let counters = match &batch.completion {
                                     TokenCompletion::Counters { kind, amount } => {
                                         Some(Counters::of(*kind, *amount))

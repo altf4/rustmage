@@ -27,6 +27,8 @@ pub enum EventObjectFacts {
     DamageActor(DamageSource),
     /// Current or latest battlefield controller of an exact untargeted conniver.
     Controller(Player),
+    /// Exact untargeted entrant's current or latest battlefield copiable values.
+    Copiable(CopyRecipe),
     CreatureComparison(CreatureComparisonFacts),
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -87,7 +89,14 @@ impl Game {
                                 .is_some_and(|q| q.creature_comparison.is_some()))
                 })
             })
-            .map(|v| (v.reference, CreatureComparisonFacts::from_view(v), actor(v)))
+            .map(|v| {
+                (
+                    v.reference,
+                    CreatureComparisonFacts::from_view(v),
+                    actor(v),
+                    v.copy_recipe.unwrap_or_else(|| CopyRecipe::new(v.card)),
+                )
+            })
             .collect();
         if facts.is_empty() {
             return;
@@ -110,15 +119,17 @@ impl Game {
         {
             if let Some(q) = &mut p.source_quantity_lki
                 && q.creature_comparison.is_some()
-                && let Some((_, stats, _)) = facts.iter().find(|(r, _, _)| *r == p.object)
+                && let Some((_, stats, _, _)) = facts.iter().find(|(r, _, _, _)| *r == p.object)
             {
                 q.creature_comparison = Some(*stats);
             }
             if let Some(e) = &mut p.event_object
-                && let Some((_, stats, damage)) = facts.iter().find(|(r, _, _)| *r == e.object)
+                && let Some((_, stats, damage, recipe)) =
+                    facts.iter().find(|(r, _, _, _)| *r == e.object)
             {
                 e.facts = match e.facts {
                     EventObjectFacts::DamageActor(_) => EventObjectFacts::DamageActor(*damage),
+                    EventObjectFacts::Copiable(_) => EventObjectFacts::Copiable(*recipe),
                     EventObjectFacts::Controller(_) => {
                         EventObjectFacts::Controller(damage.controller)
                     }

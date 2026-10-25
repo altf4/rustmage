@@ -1,3 +1,5 @@
+#[path = "engine_entering_copies.rs"]
+mod entering_copies;
 #[path = "engine_self_granted_activations.rs"]
 mod self_granted_activations;
 pub use self_granted_activations::SelfGrantedActivationContext;
@@ -8151,3 +8153,7 @@ mod msh_cast_target_copy_tests;
 #[cfg(test)]
 #[path = "engine_msh_storm_tests.rs"]
 mod msh_storm_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_entering_copy_tests.rs"]
+mod msh_entering_copy_tests;
