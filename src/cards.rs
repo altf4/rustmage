@@ -1062,6 +1062,12 @@ pub(crate) enum Instruction {
         maximum: AmountValue,
         tapped: bool,
     },
+    /// Optional resolution payment: selecting a legal filtered hand permanent pays
+    /// before any replacement changes the resulting move. Decline skips a block.
+    PutHandFiltered {
+        filter: SearchFilter,
+        skip: usize,
+    },
     PutHandCreature,
     PutHandPermanent {
         maximum: AmountValue,
@@ -1418,6 +1424,8 @@ pub(crate) enum Instruction {
     SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
     SelectLibraryTo(LibrarySelectionEffect),
+    /// Enter first; optionally transform the exact actual entrant before the remainder.
+    SelectLibraryThenMayTransform(LibrarySelectionEffect),
     NoMaximumHandSize,
     ExileResolvingSpell,
     UntapLands(u16),

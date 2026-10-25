@@ -95,35 +95,46 @@ impl Game {
         {
             return;
         }
-        let Some((_, other)) = self.physical_copy_faces(item.object).turned() else {
+        self.transform_permanent(item.object);
+    }
+    pub(super) fn can_transform_permanent(&self, object: ObjectRef) -> bool {
+        self.on_battlefield(object.card)
+            && self.object_ref(object.card) == object
+            && self
+                .physical_copy_faces(object)
+                .turned()
+                .is_some_and(|(_, other)| other.kind_mask() & (1 | 2 | 16 | 32 | 64 | 128) != 0)
+    }
+    pub(super) fn transform_permanent(&mut self, object: ObjectRef) {
+        if !self.can_transform_permanent(object) {
+            return;
+        }
+        let Some((_, other)) = self.physical_copy_faces(object).turned() else {
             return;
         };
         if other.kind_mask() & (1 | 2 | 16 | 32 | 64 | 128) == 0 {
             return;
         }
         let serial = self
-            .transform_serial(item.object)
+            .transform_serial(object)
             .checked_add(1)
             .capacity("transform count exhausted");
-        self.forget_face_change(item.object);
+        self.forget_face_change(object);
         self.state
             .face_changes
             .get_or_insert_default()
-            .push(FaceChange {
-                object: item.object,
-                serial,
-            });
-        if self.transform_under_temporary_copy(item.object, other) {
+            .push(FaceChange { object, serial });
+        if self.transform_under_temporary_copy(object, other) {
             return;
         }
-        self.forget_hand_size_source(item.object);
-        self.remove_face_providers(item.card);
-        self.state.objects[item.card as usize].card = other;
-        if let Some(mut recipe) = self.copy_recipe(item.object) {
+        self.forget_hand_size_source(object);
+        self.remove_face_providers(object.card);
+        self.state.objects[object.card as usize].card = other;
+        if let Some(mut recipe) = self.copy_recipe(object) {
             assert_eq!(recipe.turn_face(), Some(other));
-            self.set_copy_recipe(item.object, recipe);
+            self.set_copy_recipe(object, recipe);
         }
-        self.register_battlefield_providers(item.card);
+        self.register_battlefield_providers(object.card);
         self.refresh_controllers();
     }
     pub(super) fn remove_face_providers(&mut self, id: CardId) {

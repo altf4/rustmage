@@ -38,7 +38,8 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
                     result.1 |= nested.1;
                 }
             }
-            Instruction::SelectLibraryTo(effect) => {
+            Instruction::SelectLibraryTo(effect)
+            | Instruction::SelectLibraryThenMayTransform(effect) => {
                 if let Some(value) = effect.maximum_mana_value {
                     amount(value, &mut result);
                 }

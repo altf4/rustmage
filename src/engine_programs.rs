@@ -1988,7 +1988,9 @@ impl Game {
             if self.advance_optional_searches() {
                 return;
             }
-            self.finish_entered_library_selection();
+            if self.finish_entered_library_selection() {
+                return;
+            }
             if self.state.resolving.as_ref().unwrap().connive.is_some() && self.advance_connive() {
                 return;
             }
@@ -3342,6 +3344,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::SelectLibraryThenMayTransform(effect) => {
+                    if self.start_library_selection_completion(&item, effect, true) {
+                        return;
+                    }
+                }
                 Instruction::SelectLibraryTo(effect) => {
                     if self.start_library_selection_to(&item, effect) {
                         return;
@@ -3522,6 +3529,11 @@ impl Game {
                 }
                 Instruction::PutHandPermanent { maximum, tapped } => {
                     if self.start_hand_permanent(&item, maximum, tapped) {
+                        return;
+                    }
+                }
+                Instruction::PutHandFiltered { filter, skip } => {
+                    if self.start_filtered_hand_entry(&item, filter, skip) {
                         return;
                     }
                 }

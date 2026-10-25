@@ -21,6 +21,7 @@ pub(super) struct EffectChoice {
     pub discard_mana_value_life: Option<Player>,
     pub hand_defender: Option<CombatDefender>,
     pub entry_life_bonus: Option<(&'static str, u16)>,
+    pub hand_entry_filter: Option<crate::SearchFilter>,
 }
 impl EffectChoice {
     pub fn bytes(&self) -> usize {
@@ -48,6 +49,7 @@ impl Game {
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
         }));
     }
     pub(super) fn effect_choice_candidate(
@@ -154,6 +156,10 @@ impl Game {
                     EffectChoiceKind::HandPermanent { maximum, .. } => {
                         o.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
                             && o.card.fixed_mana_value() <= u64::from(maximum)
+                            && choice.hand_entry_filter.is_none_or(|filter| {
+                                filter.matches(o.card)
+                                    && self.hand_entry_payment_legal(player, object)
+                            })
                     }
                     EffectChoiceKind::HandExileCopy => o.card.is_creature() || o.card.is_artifact(),
                     EffectChoiceKind::HandLand { .. } => o.card.is_land() && o.controller == player,
@@ -201,6 +207,7 @@ impl Game {
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
         };
         // Freeze both quotas before either player chooses. The following printed
         // instruction computes new quotas after this entire event and its replacements.
@@ -273,6 +280,7 @@ impl Game {
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
         }));
         self.advance_effect_choice()
     }
@@ -309,6 +317,45 @@ impl Game {
             false,
             None,
         )
+    }
+    fn hand_entry_payment_legal(&self, player: Player, object: ObjectRef) -> bool {
+        let o = &self.state.objects[object.card as usize];
+        o.zone == Zone::Hand
+            && o.owner == player
+            && self.object_ref(object.card) == object
+            && !o.is_token()
+            && (o.card.aura().is_none()
+                || self.state.objects.iter().enumerate().any(|(id, _)| {
+                    self.aura_can_enchant(o.card, player, self.object_ref(id as CardId))
+                }))
+    }
+    pub(super) fn start_filtered_hand_entry(
+        &mut self,
+        item: &SpellView,
+        filter: crate::SearchFilter,
+        skip: usize,
+    ) -> bool {
+        // HandPermanent always retains its private optional phase even when empty.
+        // Eligibility never changes the public phase or mandatory choice quota.
+        let pending = self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::HandPermanent {
+                maximum: u32::MAX,
+                tapped: false,
+            },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            Some(0),
+            false,
+            None,
+        );
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let choice = resolution.choice.as_mut().expect("private hand phase");
+        choice.hand_entry_filter = Some(filter);
+        choice.skip_to = Some(resolution.pc.checked_add(skip).expect("program offset"));
+        assert!(choice.skip_to.unwrap() <= resolution.program.len());
+        pending
     }
     pub(super) fn start_hand_creature(&mut self, item: &SpellView) -> bool {
         self.start_effect_choice_inner(
@@ -398,6 +445,7 @@ impl Game {
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
         }));
         self.state.pending = Pending::EffectChoice { player };
     }
@@ -498,6 +546,7 @@ impl Game {
             discard_mana_value_life: None,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
         }));
         self.advance_target_attacking_return()
     }
@@ -619,6 +668,7 @@ impl Game {
             discard_mana_value_life,
             hand_defender: None,
             entry_life_bonus: None,
+            hand_entry_filter: None,
             source: item.object,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
