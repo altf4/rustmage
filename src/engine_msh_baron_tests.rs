@@ -237,7 +237,7 @@ fn msh_baron_discount_current_controller_suppression_other_spells_and_funding() 
                 ability: 1,
                 payment: [0; 6],
                 counter_payment: Counters::default(),
-                production: 2,
+                production: [0, 0, 1, 0, 0, 0],
             },
         );
         let non = named(&mut g, p, "Hill Giant", Zone::Hand);
