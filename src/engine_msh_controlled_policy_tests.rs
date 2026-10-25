@@ -33,9 +33,11 @@ fn msh_controlled_policy_baxter_extort_scores_and_spends_actual_payer_pool() {
                 }
                 g.state.players[payer.index()].mana = [0, 0, 0, 0, 0, 4];
                 g.state.players[payer.other().index()].mana = external_pool;
-                let spell = named(&mut g, payer, "Mind Stone", Zone::Hand);
-                // Preserve exactly four C for Baxter after the actual two-mana cast.
-                g.state.players[payer.index()].mana[5] += 2;
+                let spell = named(&mut g, payer, "The Mind Stone", Zone::Hand);
+                // Preserve exactly four C after paying the actual printed spell cost.
+                let (mut spell_mana, generic) = Card::from_name("The Mind Stone").unwrap().cost();
+                spell_mana[5] += generic + 4;
+                g.state.players[payer.index()].mana = spell_mana;
                 cast(&mut g, spell, None, &[]);
                 g.prepare_triggers();
                 for _ in 0..30 {
