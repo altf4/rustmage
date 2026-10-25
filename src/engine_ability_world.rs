@@ -62,6 +62,9 @@ pub(super) trait CharacteristicWorld {
             .then(|| self.game().copy_ability_origin(self.reference(id)))
             .flatten()
     }
+    fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
+        self.game().temporary_copy_view(object)
+    }
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.game().copy_recipe(self.reference(id))
     }

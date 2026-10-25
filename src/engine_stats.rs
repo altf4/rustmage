@@ -191,6 +191,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
+                            | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)

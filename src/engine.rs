@@ -16,6 +16,16 @@ pub use hand_choices::{HandChoiceKind, HandChoiceView};
 #[path = "engine_self_granted.rs"]
 mod self_granted;
 pub use self_granted::{SelfGrantedAbilityKind, SelfGrantedAbilityView};
+#[path = "engine_entering_copies.rs"]
+mod entering_copies;
+#[path = "engine_linked_copies.rs"]
+mod linked_copies;
+#[path = "engine_self_granted_activations.rs"]
+mod self_granted_activations;
+pub use self_granted_activations::SelfGrantedActivationContext;
+#[path = "engine_cast_subjects.rs"]
+mod cast_subjects;
+pub use cast_subjects::CastCreatureSubjectsView;
 #[path = "engine_hand_exile.rs"]
 mod hand_exile;
 #[path = "engine_mana_announcements.rs"]
@@ -529,6 +539,7 @@ define_actions! {
     AnnounceCounterGraveyard { card: CardId },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
+    AnnounceSelfGrantedAbility { source: ObjectRef, grant_timestamp: u64 },
     ChooseAdditionalCost {
         object: ObjectRef,
     },
@@ -585,6 +596,7 @@ define_actions! {
     FinishOpeningHand,
     CastExiledDuringResolution { object: ObjectRef, face: CastFace },
     FinishResolutionCasts,
+    FinishGraveyardSymbolCost,
     Mulligan,
     Bottom {
         card: CardId,
@@ -978,6 +990,13 @@ pub struct SpellView {
     /// Declared nonmana counter cost; paid is set only by the committed cost executor.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_payment: Option<SourceCounterPaymentView>,
+    /// Successful exact exile results paid by this ability's printed-symbol cost.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare owned cost results use one pointer in ordinary packets"
+    )]
+    pub exiled_symbol_cards: Option<Box<Vec<ObjectRef>>>,
     /// Allocated only after a targeted permanent departs; these are public facts.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
@@ -987,8 +1006,13 @@ pub struct SpellView {
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
     pub source_move: Option<Box<TriggerSourceMoveView>>,
     pub borrowed_slot: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub self_granted_activation: Option<Box<SelfGrantedActivationContext>>,
     pub crew: Option<Box<CrewContext>>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
+    /// Exact non-target subjects fixed when the triggering spell was cast.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cast_creature_subjects: Option<Box<CastCreatureSubjectsView>>,
     pub copy_event: Option<Box<stack_copies::CopyEvent>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_copy_recipe: Option<Box<CopyRecipe>>,
@@ -1092,9 +1116,20 @@ impl SpellView {
     }
     /// Heap-owned continuation payloads; inline packet storage is counted by its container.
     pub(super) fn owned_bytes(&self) -> usize {
-        self.event_object
+        self.exiled_symbol_cards.as_ref().map_or(0, |r| {
+            std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+        }) + self
+            .self_granted_activation
             .as_ref()
-            .map_or(0, |_| std::mem::size_of::<EventObjectView>())
+            .map_or(0, |_| std::mem::size_of::<SelfGrantedActivationContext>())
+            + self.cast_creature_subjects.as_ref().map_or(0, |event| {
+                std::mem::size_of::<CastCreatureSubjectsView>()
+                    + event.objects.len() * std::mem::size_of::<ObjectRef>()
+            })
+            + self
+                .event_object
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<EventObjectView>())
             + self
                 .captured_artifact_copy
                 .as_ref()
@@ -3405,6 +3440,11 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                if self.graveyard_symbol_selection_complete()
+                    && emit(Action::FinishGraveyardSymbolCost)
+                {
+                    return true;
+                }
                 if self
                     .state
                     .announcing
@@ -3573,6 +3613,11 @@ impl Game {
                     }
                     if obj.zone == Zone::Battlefield
                         && self.visit_borrowed_activations(card, actor, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Battlefield
+                        && self.visit_self_granted_activations(card, actor, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -4160,11 +4205,15 @@ impl Game {
                     {
                         continue;
                     }
-                    if emit(Action::Attack { card }) {
+                    if self.can_attack_defender(card, CombatDefender::Player(actor.other()))
+                        && emit(Action::Attack { card })
+                    {
                         return true;
                     }
                     for &defender in &walkers {
-                        if emit(Action::AttackPlaneswalker { card, defender }) {
+                        if self.can_attack_defender(card, CombatDefender::Planeswalker(defender))
+                            && emit(Action::AttackPlaneswalker { card, defender })
+                        {
                             return true;
                         }
                     }
@@ -4631,10 +4680,17 @@ impl Game {
                 item.cast.as_mut().unwrap().method = CastMethod::GraveyardCounterCost;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceSelfGrantedAbility {
+                source,
+                grant_timestamp,
+            } => {
+                self.announce_self_granted_ability(source, grant_timestamp);
+            }
             Action::AnnounceAttachedAbility { grantor, ability } => {
                 self.announce_attached_ability(grantor, ability)
             }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::FinishGraveyardSymbolCost => self.finish_graveyard_symbol_cost(),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
             Action::ChooseEntryReplacement { source, intrinsic } => {
                 self.choose_entry_tap_effect(source, intrinsic)
@@ -5923,6 +5979,7 @@ impl Game {
                     && item.card == id
                     && item.object == before.reference)
             });
+            self.clear_copy_recipe(before.reference);
             let object = &mut self.state.objects[id as usize];
             object.zone = Zone::Outside;
             object.generation = object
@@ -6113,6 +6170,7 @@ impl Game {
                 .retain(|spell| spell.kind != StackKind::Spell || spell.object != before.reference);
         }
         if before.zone == Zone::Battlefield {
+            self.capture_delayed_copy_source_departure(&before);
             self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
@@ -7782,7 +7840,9 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution.cascade.as_ref().map_or(0, |row| {
+                    resolution.linked_copy.as_ref().map_or(0, |_| {
+                        std::mem::size_of::<linked_copies::LinkedCopyCapture>()
+                    }) + resolution.cascade.as_ref().map_or(0, |row| {
                         std::mem::size_of::<CascadeView>()
                             + row.exiled.len() * std::mem::size_of::<ObjectRef>()
                     }) + resolution
@@ -8425,3 +8485,30 @@ mod msh_vision_quest_tests;
 #[cfg(test)]
 #[path = "engine_msh_hawkeye_wrecking_tests.rs"]
 mod msh_hawkeye_wrecking_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_cast_target_copy_tests.rs"]
+mod msh_cast_target_copy_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_storm_tests.rs"]
+mod msh_storm_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_entering_copy_tests.rs"]
+mod msh_entering_copy_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_photon_barrage_tests.rs"]
+mod msh_photon_barrage_tests;
+
+#[path = "engine_graveyard_symbol_cost.rs"]
+mod graveyard_symbol_cost;
+
+#[cfg(test)]
+#[path = "engine_msh_zemo_tests.rs"]
+mod msh_zemo_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_final_shared_interactions_tests.rs"]
+mod msh_final_shared_interactions_tests;

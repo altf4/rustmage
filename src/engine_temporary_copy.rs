@@ -32,11 +32,19 @@ impl CopyOverrides {
 pub enum CopyDeadline {
     EndOfTurn,
     NextTurn { player: Player, created_turn: u32 },
+    WhileSource { source: ObjectRef },
 }
 impl CopyDeadline {
+    pub(super) fn source(self) -> Option<ObjectRef> {
+        match self {
+            Self::WhileSource { source } => Some(source),
+            _ => None,
+        }
+    }
     fn expired(self, turn: u32, active: Player, cleanup: bool) -> bool {
         match self {
             Self::EndOfTurn => cleanup,
+            Self::WhileSource { .. } => false,
             Self::NextTurn {
                 player,
                 created_turn,
@@ -417,6 +425,11 @@ impl Game {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }
+        if let Some(source) = deadline.source()
+            && (!self.on_battlefield(source.card) || self.object_ref(source.card) != source)
+        {
+            return;
+        }
         let origin = self.next_role_timestamp();
         let old_used = self.state.objects[object.card as usize].used_abilities;
         let initial = if self.temporary_copy_row(object).is_none() {
@@ -531,6 +544,58 @@ impl Game {
         if self.state.temporary_copies.as_ref().unwrap().is_empty() {
             self.state.temporary_copies = None;
         }
+    }
+    /// Called only after the complete movement batch committed. Departure LKI
+    /// was frozen before any recipient or lifetime-source moved.
+    pub(super) fn prune_source_bound_copies(&mut self) -> bool {
+        let Some(rows) = &mut self.state.temporary_copies else {
+            return false;
+        };
+        let objects = &self.state.objects;
+        let mut changes = Vec::new();
+        for row in rows.iter_mut() {
+            if !row
+                .layers
+                .iter()
+                .any(|layer| layer.value.deadline.source().is_some())
+            {
+                continue;
+            }
+            let old = row.active().value.origin;
+            let old_len = row.layers.len();
+            row.layers.last_mut().unwrap().used_abilities =
+                objects[row.object.card as usize].used_abilities;
+            row.layers.retain(|layer| {
+                layer.value.deadline.source().is_none_or(|source| {
+                    objects[source.card as usize].zone == Zone::Battlefield
+                        && objects[source.card as usize].generation == source.generation
+                })
+            });
+            if row.layers.len() != old_len
+                && row.layers.last().map(|layer| layer.value.origin) != Some(old)
+            {
+                changes.push(row.clone());
+            }
+        }
+        // Restore every definition first; no provider may inspect an empty old
+        // layer or a half-restored simultaneous set of other recipients.
+        for row in &changes {
+            self.materialize_copy_row(row, false);
+        }
+        if let Some(rows) = &mut self.state.temporary_copies {
+            rows.retain(|row| !row.layers.is_empty());
+            if rows.is_empty() {
+                self.state.temporary_copies = None;
+            }
+        }
+        for row in &changes {
+            self.materialize_copy_row(row, true);
+            self.renew_copy_grant_origin(row.object, false);
+        }
+        if !changes.is_empty() {
+            self.refresh_controllers();
+        }
+        !changes.is_empty()
     }
     pub(super) fn expire_temporary_copies(&mut self, cleanup: bool) -> bool {
         let Some(rows) = &mut self.state.temporary_copies else {

@@ -766,10 +766,14 @@ impl FundingState<'_> {
                 None => return false,
             },
             EffectChoiceKind::CollectEvidence(n) => {
-                evidence_min = Some(u128::from(n));
+                evidence_min = Some((u128::from(n), None));
                 destination = Zone::Exile;
                 spec.kind = EffectChoiceKind::ExileGraveyard;
                 any_graveyard = true;
+            }
+            EffectChoiceKind::ExileGraveyardSymbols { color, minimum } => {
+                evidence_min = Some((u128::from(minimum), Some(color)));
+                destination = Zone::Exile;
             }
             EffectChoiceKind::RemoveCreatureCounters(n) => counters = Some(n),
             EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
@@ -814,10 +818,10 @@ impl FundingState<'_> {
                 self.cost_object(spec, r, c.source).then_some(r)
             })
             .collect::<Vec<_>>();
-        if evidence_min.is_some_and(|n| {
+        if evidence_min.is_some_and(|(n, color)| {
             candidates
                 .iter()
-                .map(|r| u128::from(self.object(r.card).card.fixed_mana_value()))
+                .map(|r| cost_weight(self.object(r.card).card, color))
                 .sum::<u128>()
                 < n
         }) {
@@ -849,15 +853,15 @@ impl FundingState<'_> {
         spec: AdditionalCost,
         destination: Zone,
         amount: usize,
-        evidence_min: Option<u128>,
+        evidence_min: Option<(u128, Option<crate::cards::ChoiceColor>)>,
         candidates: &[ObjectRef],
         at: usize,
         selected: &mut Vec<ObjectRef>,
     ) -> bool {
-        let enough = evidence_min.map_or(selected.len() == amount, |minimum| {
+        let enough = evidence_min.map_or(selected.len() == amount, |(minimum, color)| {
             selected
                 .iter()
-                .map(|r| u128::from(self.object(r.card).card.fixed_mana_value()))
+                .map(|r| cost_weight(self.object(r.card).card, color))
                 .sum::<u128>()
                 >= minimum
         });
@@ -1324,4 +1328,53 @@ mod teamwork_scalability_tests;
 #[cfg(test)]
 pub(super) fn visit_funding_diagnostic_node() {
     teamwork_scalability_tests::visit_funding_node();
+}
+
+fn cost_weight(card: Card, color: Option<crate::cards::ChoiceColor>) -> u128 {
+    u128::from(color.map_or_else(
+        || card.fixed_mana_value(),
+        |color| card.mana_symbols_of_color(color),
+    ))
+}
+
+impl Game {
+    pub(in crate::engine) fn can_fund_symbol_cost_group(
+        &self,
+        goal: FundingGoal,
+        purpose: mana_lots::Purpose,
+        spec: AdditionalCost,
+        source: ObjectRef,
+        selected: &[ObjectRef],
+    ) -> bool {
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_purpose(purpose);
+        world.install_cost_context(Some(Box::new(CostContext {
+            actor: goal.actor,
+            source,
+            clauses: vec![
+                CastCostRow {
+                    clause: CastCostClause::Additional,
+                    paid: false,
+                },
+                CastCostRow {
+                    clause: CastCostClause::Mana,
+                    paid: false,
+                },
+            ],
+            active: None,
+            casualty: Vec::new(),
+            additional: Some(spec),
+            forage: None,
+            selected: selected.to_vec(),
+            exact: false,
+            counters: Vec::new(),
+            mana: Some(ManaCost {
+                colored: goal.required,
+                generic: goal.generic,
+            }),
+            teammates: Vec::new(),
+            teamwork_exact: false,
+        })));
+        world.reachable(&goal, &mut HashSet::new())
+    }
 }

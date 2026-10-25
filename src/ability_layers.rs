@@ -168,6 +168,8 @@ pub(crate) enum StaticAbilityFragment {
     CombatRestriction(u16, CombatRestriction),
     /// Source attacks every combat when independently able to attack.
     AttacksEachCombat,
+    /// Flying creatures cannot attack this controller or block their creatures.
+    FlyingCombatRestriction,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
     /// Rules restriction evaluated after all derived power modifications.

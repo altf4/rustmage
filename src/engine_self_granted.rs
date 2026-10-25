@@ -8,6 +8,8 @@ pub enum SelfGrantedAbilityKind {
     ControllerHandPower,
     /// Source-owned layer7c bonus, counting current controlled artifacts.
     ControllerArtifactBonus,
+    /// A real immutable activated template, independently acquired per grant.
+    Activated { ability: u16 },
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Row {
@@ -16,7 +18,7 @@ pub(super) struct Row {
     pub kind: SelfGrantedAbilityKind,
     pub timestamp: u64,
     /// Generated static-effect chronology, independent of ability acquisition.
-    pub effect_timestamp: u64,
+    pub effect_timestamp: Option<u64>,
     pub expires_turn: u32,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -26,7 +28,8 @@ pub struct SelfGrantedAbilityView {
     pub kind: SelfGrantedAbilityKind,
     pub timestamp: u64,
     /// Generated static-effect chronology, independent of ability acquisition.
-    pub effect_timestamp: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effect_timestamp: Option<u64>,
     pub expires_turn: u32,
     pub available: bool,
 }
@@ -58,6 +61,19 @@ impl Game {
         {
             return;
         }
+        if let SelfGrantedAbilityKind::Activated { ability } = kind {
+            let definition = item.trigger_definition();
+            assert!(definition.self_granted_activation_template(ability));
+            let rules = definition.activation(ability);
+            assert!(
+                rules.origin == ActivationOrigin::Battlefield
+                    && !rules.once_per_turn
+                    && !rules.exhaust
+                    && !definition.power_up_abilities().contains(&ability)
+                    && rules.mana_production().is_none(),
+                "unsupported granted activation lifecycle"
+            );
+        }
         self.state
             .self_granted_abilities
             .get_or_insert_default()
@@ -66,7 +82,11 @@ impl Game {
                 granting_card: item.trigger_definition(),
                 kind,
                 timestamp,
-                effect_timestamp: timestamp,
+                effect_timestamp: if matches!(kind, SelfGrantedAbilityKind::Activated { .. }) {
+                    None
+                } else {
+                    Some(timestamp)
+                },
                 expires_turn: self.state.turn,
             });
     }
@@ -77,14 +97,15 @@ impl Game {
         let mut indices: Vec<_> = rows
             .iter()
             .enumerate()
-            .filter(|(_, row)| row.recipient == source)
-            .map(|(index, row)| (row.effect_timestamp, index))
+            .filter(|(_, row)| row.recipient == source && row.effect_timestamp.is_some())
+            .map(|(index, row)| (row.effect_timestamp.unwrap(), index))
             .collect();
         indices.sort_unstable();
         // CR613.7a: retain relative static-effect order without reacquiring any ability.
         for (_, index) in indices {
             let timestamp = self.next_role_timestamp();
-            self.state.self_granted_abilities.as_mut().unwrap()[index].effect_timestamp = timestamp;
+            self.state.self_granted_abilities.as_mut().unwrap()[index].effect_timestamp =
+                Some(timestamp);
         }
     }
     pub(super) fn forget_self_grants(&mut self, event: &ZoneChange) {

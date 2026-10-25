@@ -634,7 +634,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 if row.kind == SelfGrantedAbilityKind::ControllerHandPower
                     && row.recipient == object
                     && row.expires_turn == self.state.turn
-                    && power_time.is_none_or(|time| row.effect_timestamp > time)
+                    && row
+                        .effect_timestamp
+                        .is_some_and(|effect_time| power_time.is_none_or(|time| effect_time > time))
                     && self.self_grant_available(row.recipient, row.timestamp)
                 {
                     stats.power = self.stat_value_without_hand(
@@ -643,7 +645,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         self.object(id).controller,
                         departing,
                     );
-                    power_time = Some(row.effect_timestamp);
+                    power_time = row.effect_timestamp;
                 }
             }
         }
@@ -905,7 +907,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             },
             copy_recipe: self.stored_recipe(id),
             temporary_copy: if obj.zone == Zone::Battlefield {
-                self.temporary_copy_view(self.object_ref(id)).map(Box::new)
+                self.world.temporary_copy_view(self.object_ref(id)).map(Box::new)
             } else {
                 None
             },

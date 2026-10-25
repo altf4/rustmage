@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "58ea68a998a0dc6e7ad1b84d1f0ef5f0883d23c2af7442dfcb8a17367e8e65aa",
+  "catalogue_version": "938acde740abc88b293e679dd8c06719ee897866c14f5cf6a479eca9766a21cc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2566,
-  "implemented_total": 2572,
+  "implemented_standard_cards": 2578,
+  "implemented_total": 2584,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,7 @@
     },
     "msh": {
       "total": 273,
-      "complete": 261,
-      "gated": 12
+      "complete": 273
     },
     "one": {
       "total": 1,
@@ -2869,8 +2868,8 @@
     {
       "name": "Baron Helmut Zemo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/baron_helmut_zemo.rs",
       "set": "msh"
     },
@@ -10205,8 +10204,8 @@
     {
       "name": "Echo, Perceptive Prodigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/echo_perceptive_prodigy.rs",
       "set": "msh"
     },
@@ -12269,8 +12268,8 @@
     {
       "name": "Fin Fang Foom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/fin_fang_foom.rs",
       "set": "msh"
     },
@@ -17997,8 +17996,8 @@
     {
       "name": "Iron Fist, Living Weapon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/iron_fist_living_weapon.rs",
       "set": "msh"
     },
@@ -20509,8 +20508,8 @@
     {
       "name": "Loki Laufeyson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/loki_laufeyson.rs",
       "set": "msh"
     },
@@ -23157,8 +23156,8 @@
     {
       "name": "Ms. Marvel, Kamala Khan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ms_marvel_kamala_khan.rs",
       "set": "msh"
     },
@@ -25405,8 +25404,8 @@
     {
       "name": "Photon Blast Barrage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/photon_blast_barrage.rs",
       "set": "msh"
     },
@@ -29989,8 +29988,8 @@
     {
       "name": "Scientist Supreme of A.I.M.",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/scientist_supreme_of_a_i_m.rs",
       "set": "msh"
     },
@@ -30285,8 +30284,8 @@
     {
       "name": "Secret Invasion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/secret_invasion.rs",
       "set": "msh"
     },
@@ -32237,8 +32236,8 @@
     {
       "name": "Speedball, New Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/speedball_new_warrior.rs",
       "set": "msh"
     },
@@ -33557,8 +33556,8 @@
     {
       "name": "Storm, Windrider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/storm_windrider.rs",
       "set": "msh"
     },
@@ -38189,8 +38188,8 @@
     {
       "name": "Ultron, Artificial Malevolence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ultron_artificial_malevolence.rs",
       "set": "msh"
     },

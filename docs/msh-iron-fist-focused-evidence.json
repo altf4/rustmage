@@ -1,0 +1,212 @@
+{
+  "scope": "One complete Iron Fist candidate and shared resolution-created ordinary activated instances, individual focused tests only; integration and whole-set acceptance deferred.",
+  "base": "2f49867bc0a5f8dfdd67be0b105e3a8be6124c64",
+  "tested_source_commit": "5dd6868aa211bac80d0386b41e3b1a079e2b2eb1",
+  "complete_candidates": [
+    "Iron Fist, Living Weapon"
+  ],
+  "local_msh_candidates": 240,
+  "msh_denominator": 281,
+  "wire": 152,
+  "ids_allocated": 0,
+  "shared_mechanics": [
+    "Acquired ordinary activated templates are excluded from printed, borrowed and mana inventories until a real trigger resolves.",
+    "Exact recipient and stable grant timestamp identify independent instances. Frozen granting definition/program survives copying, control changes and source departure; ordinary target/payment machinery is reused.",
+    "Layer-six suppression and EOT expiry apply to the acquired instance. Static self-grant effect timestamps retain their numeric JSON; ordinary activated instances have no generated static-effect timestamp.",
+    "Optional owned self_granted_activation packet context is omitted on existing packets and retained by actual Echo copies; existing intrinsic ability-use history is not charged for acquired activations.",
+    "The typed activation lifecycle currently excludes once/exhaust/mana/power-up templates; future such lifecycles require their actual origin/use handling."
+  ],
+  "printed_clause_evidence": {
+    "2R legendary Human Warrior Hero2/3; actual cast mana/timing": [
+      "msh_self_activation_paid_body_and_no_unacquired_printed_template",
+      "msh_self_activation_cast_mana_and_sorcery_timing_failures_atomic"
+    ],
+    "Whenever you cast a spell targeting a creature you control; once per spell, including tokens and multiple groups": [
+      "msh_self_activation_spell_relation_and_target_negatives",
+      "msh_self_activation_multiple_target_groups_acquire_one_instance_per_cast",
+      "msh_self_activation_original_spell_countered_still_acquires_independent_ability"
+    ],
+    "Iron Fist gains a distinct ability until EOT": [
+      "msh_self_activation_multiple_grants_untap_reuses_same_instance_without_once_history",
+      "msh_self_activation_opponent_turn_and_end_turn_expiry_hide_template",
+      "msh_self_activation_source_gone_before_grant_cannot_bestow_on_returned_object",
+      "msh_self_activation_layer6_removal_and_restoration_preserve_exact_instances",
+      "msh_self_activation_bounded_copy_preserves_granted_program_and_current_power"
+    ],
+    "Tap cost and ordinary activation restrictions": [
+      "msh_self_activation_paid_tap_damage_and_distinct_owned_context",
+      "msh_self_activation_summoning_sickness_then_real_haste_permission",
+      "msh_self_activation_source_tap_is_reserved_in_actual_and_borrowed_funding",
+      "msh_self_activation_current_global_activation_prohibition_applies_to_acquired_instances"
+    ],
+    "Deals damage equal to current power, latest departure LKI, negative zero": [
+      "msh_self_activation_current_power_is_resolution_time_not_announcement",
+      "msh_self_activation_departure_lki_and_new_incarnation_do_not_rebind",
+      "msh_self_activation_negative_current_power_clamps_to_zero"
+    ],
+    "Any other target, both players/creatures/planeswalkers; ward and invalid target": [
+      "msh_self_activation_other_target_atomic_self_land_and_artifact_rejection",
+      "msh_self_activation_any_other_creature_and_planeswalker_damage",
+      "msh_self_activation_ward_counters_paid_ability_without_moving_source",
+      "msh_self_activation_departed_target_fizzles_without_moving_source_or_repaying_tap"
+    ],
+    "Owned privacy/rollback/copy/origin interactions": [
+      "msh_self_activation_owned_announcement_target_payment_and_wrong_stamp_atomicity",
+      "msh_self_activation_copied_packet_preserves_origin_and_independent_targets_without_costs",
+      "msh_self_activation_controller_change_preserves_packet_controller_and_origin",
+      "msh_self_activation_real_loki_observes_target_acquisition_once",
+      "msh_self_activation_full_nonactor_privacy_and_old_packet_context_absence",
+      "msh_self_activation_copiable_values_do_not_copy_resolved_activation_grants",
+      "msh_self_activation_exiled_printed_template_is_not_borrowed_by_forge"
+    ]
+  },
+  "focused_validation": {
+    "command": "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-iron-fist-supported-resource.json -- cargo test --lib msh_self_ -- --nocapture",
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "groups": 52,
+    "new_groups": 28,
+    "directly_affected_static_marvel_groups": 24,
+    "both_seats": true,
+    "ordinary_supported_setup": true,
+    "native_seconds": 0.61,
+    "guard_seconds": 34.00647096801549,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2711007232,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "input_count": 11862,
+    "input_map": "<cache>/rustmage-msh-iron-fist-supported-inputs.json",
+    "input_sha256": "3e6e5b4c8a72f2203d368a87d4ca5f74ebf6d6e40f0ee64212870618eb8afb33",
+    "inputs_changed": [],
+    "log": "<cache>/rustmage-msh-iron-fist-supported.log",
+    "log_sha256": "609a900be09d31bff5bda344a33b017ae8bd37e2aba6a17356e2166edc35eddb",
+    "resource_report": "<cache>/rustmage-msh-iron-fist-supported-resource.json",
+    "resource_sha256": "f28c0979dcf1d28adc5de113b11d4dada006fa53b95869ca2e3d1da5e61bba83",
+    "test_module": "src/engine_msh_self_granted_activation_tests.rs",
+    "test_module_sha256": "e8fe3abe9c2b16764e0865339def0943050efb952b549a87f3f6fbacb0ed12f0",
+    "new_test_functions": [
+      "msh_self_activation_paid_body_and_no_unacquired_printed_template",
+      "msh_self_activation_paid_tap_damage_and_distinct_owned_context",
+      "msh_self_activation_spell_relation_and_target_negatives",
+      "msh_self_activation_other_target_atomic_self_land_and_artifact_rejection",
+      "msh_self_activation_any_other_creature_and_planeswalker_damage",
+      "msh_self_activation_multiple_grants_untap_reuses_same_instance_without_once_history",
+      "msh_self_activation_summoning_sickness_then_real_haste_permission",
+      "msh_self_activation_current_power_is_resolution_time_not_announcement",
+      "msh_self_activation_departure_lki_and_new_incarnation_do_not_rebind",
+      "msh_self_activation_bounded_copy_preserves_granted_program_and_current_power",
+      "msh_self_activation_layer6_removal_and_restoration_preserve_exact_instances",
+      "msh_self_activation_original_spell_countered_still_acquires_independent_ability",
+      "msh_self_activation_source_gone_before_grant_cannot_bestow_on_returned_object",
+      "msh_self_activation_negative_current_power_clamps_to_zero",
+      "msh_self_activation_opponent_turn_and_end_turn_expiry_hide_template",
+      "msh_self_activation_owned_announcement_target_payment_and_wrong_stamp_atomicity",
+      "msh_self_activation_copied_packet_preserves_origin_and_independent_targets_without_costs",
+      "msh_self_activation_full_nonactor_privacy_and_old_packet_context_absence",
+      "msh_self_activation_cast_mana_and_sorcery_timing_failures_atomic",
+      "msh_self_activation_ward_counters_paid_ability_without_moving_source",
+      "msh_self_activation_source_tap_is_reserved_in_actual_and_borrowed_funding",
+      "msh_self_activation_copiable_values_do_not_copy_resolved_activation_grants",
+      "msh_self_activation_controller_change_preserves_packet_controller_and_origin",
+      "msh_self_activation_real_loki_observes_target_acquisition_once",
+      "msh_self_activation_exiled_printed_template_is_not_borrowed_by_forge",
+      "msh_self_activation_multiple_target_groups_acquire_one_instance_per_cast",
+      "msh_self_activation_departed_target_fizzles_without_moving_source_or_repaying_tap",
+      "msh_self_activation_current_global_activation_prohibition_applies_to_acquired_instances"
+    ],
+    "authored_card_module_rustfmt_and_diff_check": true
+  },
+  "development_failures": [
+    "First compile used the wrong CounterAmounts loyalty accessor; no tests executed.",
+    "Initial42-case run40pass/two fixture failures: seeded planeswalker lacked loyalty and Negate used Stack rather than Spell target.",
+    "Expanded52 run51pass/one fixture failure: Shock cast under Grand Abolisher. Corrected ordering acquires ability before Abolisher enters.",
+    "Gated52 and ordinary supported52 runs both passed; all six consuming input maps remained fixed."
+  ],
+  "sources": {
+    "full_design": "<cache>/rustmage-msh-storm-self-grants-design-96d3d12d.json",
+    "design_sha256": "8094cfa6dbe39b0b6911edcd837167a5dd3eecb264ee030456b32b59a06dbcf4",
+    "full_fixture_cache": "<cache>/rustmage-msh-iron-fist-fixture-sources.json",
+    "fixture_sha256": "96fd1179c4acbfca4f473f4f29e0898e980f6250a431502ed3da645c2cedee4e",
+    "fixture_records": 25,
+    "direct_and_helper_java_records": 25,
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "rules": {
+      "primary": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "read": [
+        "115.9b",
+        "611.2c",
+        "508.1a-d",
+        "509.1",
+        "604.3a",
+        "613.4a-c"
+      ],
+      "notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes"
+    }
+  },
+  "tested_source_pins": {
+    "data/standard/coverage.json": "ff61614d6d94e015bd5ea3acc8e03f55b087d52eab6e5a16d60947450f10dba4",
+    "src/card_definitions/mod.rs": "52c2a1ec00b4238af02d9040626ee1d8cfe438a628824fae84728b26dbac5c4f",
+    "src/card_definitions/msh/iron_fist_living_weapon.json": "15bb2dff63f802981914259716cfba9737898e832f7e54cfcdf607cbf3d46e01",
+    "src/card_definitions/msh/iron_fist_living_weapon.rs": "2f1bf31335248964e7390f7115d63a08ef7d1c165f73bf0a2373f36e1aba6f8e",
+    "src/cards.rs": "fec11d7d476a5339e7a8c9933a2c50d540fd5c432c46321d67b48fb8005a22da",
+    "src/engine.rs": "7d811c4e8a56e09998d86fdfe7fd2eb783ad923931a51d6883bd2a50c1dca035",
+    "src/engine_activations.rs": "7c190107e386bd61c5e1969e59b392ffa3b13cc991685b6f1d8e25be33bd32ba",
+    "src/engine_borrowed_activations.rs": "c225de7fc68744905f1b89974c768cd4fb01e8389da07dc2a335bcc1fd3c6d1f",
+    "src/engine_characteristic_query.rs": "51ceb471ab73e53813cb643115da5b36181984c6900afd9164d97184db351183",
+    "src/engine_funding.rs": "a91e2a745a21907ae9f20807162662d928d75dc5f2adea60cfb1f4807c3848e0",
+    "src/engine_mobilize.rs": "5036f56862dcda09c4e16df2a95350edd63be1dce71f6abad6a7a880c92a9c85",
+    "src/engine_msh_self_granted_activation_tests.rs": "e8fe3abe9c2b16764e0865339def0943050efb952b549a87f3f6fbacb0ed12f0",
+    "src/engine_programs.rs": "1cba7c0c2602e3aeeaa6e551db95956a7a382d42abb13a892b6882bf241905af",
+    "src/engine_self_granted.rs": "cefd89ddc403e53e23066b0955c918e3d56cde816f891eabf2d32629129dda8d",
+    "src/engine_self_granted_activations.rs": "17e6cbf8d88b354b0ddace9ccd2d7167e3b990f8b78c7f2b42be9244f5de362e",
+    "src/engine_targeting.rs": "5663afd7deea7e065fd1a42c1424d96897d7acadc18acbbd8aee365b6135dc6c",
+    "src/engine_warp.rs": "48e6a4d7426459376b385402685bab2587e00b42eed510a2a5f81e46a15ddf06",
+    "src/generated/catalogue.rs": "c6fbc7316871a1ef02e151d32f5f93bd270cde76e5aeb9f8cc690075ab37a849",
+    "src/policy.rs": "022c17208064f272f4b5c205669348d997974729d3a071f4a4a6b25af8449275"
+  },
+  "compatibility": {
+    "old_trace_rows": 2535,
+    "trace_export_or_rebaseline": "none; old table byte-identical to base",
+    "metadata_and_membership": "unchanged",
+    "definitions": 5403,
+    "token_recipes": 125,
+    "new_payload": "Optional acquired-activation context/action plus typed Activated self-grant; coordinated152, no independent bump."
+  },
+  "qualifications": [
+    "Bounded copy, signed-power and continuous-control helper transitions are explicitly labeled; payment/damage and ordinary timing/targeting remain actual legal actions.",
+    "Liliana fixture is placed with its printed six loyalty; no claim of a paid Liliana cast.",
+    "Full-set games, performance, aggregate validation/release/CI and final independent published-head checks remain deferred."
+  ],
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-iron-fist-preservation.json",
+    "sha256": "36897ad85b6f8f8a4a3feb251c6a99c386ae2746d1977de468d24b23cbf59a67",
+    "required_paths": 4461,
+    "parent_exact": 4452,
+    "cleanup": "<cache>/rustmage-msh-iron-fist-cleanup.json",
+    "cleanup_sha256": "cd631618f167a490b7688319c7fc6500f63c0c06bebd28232333d750b472fb0e",
+    "processes_inspected": 309,
+    "denied_process_count": 99,
+    "target_refs": [],
+    "removed_files": 165,
+    "removed_bytes": 39839153,
+    "preserved_natives": {
+      "/home/altf4/.cache/rustmage-msh-iron-fist-gated52-native": "2d2dc5fbb1bc4f7ac696e21d10e183fb57072dcf08fb5bb568d2ed86ece98006",
+      "/home/altf4/.cache/rustmage-msh-iron-fist-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "9978b0223121535c2e6ee48bf60312a5126eb2316f5ea51140e7d947a0eac7af"
+    },
+    "preserved_libraries": {
+      "/home/altf4/.cache/rustmage-msh-iron-fist-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "terminal_resource_reports": 6
+  },
+  "measured_implementation_interval": {
+    "start_utc": "2026-10-25T16:56:18.316832+00:00",
+    "end_utc": "2026-10-25T17:15:11.621650+00:00",
+    "elapsed_seconds": 1133.304818,
+    "scope": "One Iron Fist whole card, acquired-activation core and28new focused groups; includes development compile/test iterations.",
+    "cards_per_hour": 3.176550512114738
+  },
+  "publication": "Source branch only; no new PR or main merge. Technical evidence contains no private review material."
+}

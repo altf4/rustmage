@@ -11,6 +11,7 @@ pub(super) struct TargetCardFacts {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    pub linked_copy: Option<Box<linked_copies::LinkedCopyCapture>>,
     pub cascade: Option<Box<cascade::CascadeView>>,
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
@@ -664,6 +665,7 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
+                    TriggerCondition::CastFromHand(_) => unreachable!("unwrapped event"),
                     TriggerCondition::SelfEntersIfCast => same && event.was_cast,
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
@@ -685,6 +687,7 @@ impl Game {
                     | TriggerCondition::Foraged
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
+                    | TriggerCondition::DelayedSpellCastSourcePower
                     | TriggerCondition::Ward
                     | TriggerCondition::SelfTargeted { .. }
                     | TriggerCondition::CardDrawn { .. }
@@ -832,6 +835,7 @@ impl Game {
                     }
                     self.bind_stat_subject(event.after, source.card.triggers()[index].program);
                     self.bind_entering_conniver(&entered, source.card.triggers()[index].program);
+                    self.bind_entering_copy(&entered, source.card.triggers()[index].program);
                     if same && source.card.x_symbols() > 0 {
                         self.state.pending_triggers.last_mut().unwrap().x = Some(event.x);
                     }
@@ -1009,10 +1013,12 @@ impl Game {
             gift: None,
             source_move: None,
             borrowed_slot: None,
+            self_granted_activation: None,
             target_controller_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
+            cast_creature_subjects: None,
             copy_event: None,
             target_allocations: None,
             captured_artifact_copy: None,
@@ -1052,6 +1058,7 @@ impl Game {
             draw_event: None,
             life_event: None,
             source_counter_payment: None,
+            exiled_symbol_cards: None,
             source_counter_lki: card_quantities::counter_quantity_facts(
                 definition.triggers()[index].program,
                 |kind| source.counters.get(kind),
@@ -1196,6 +1203,7 @@ impl Game {
                     let object = &self.state.objects[id as usize];
                     match target {
                         CastTarget::Source => reference == source.reference,
+                        CastTarget::PermanentKinds(kinds) => self.current_kinds(id) & kinds != 0,
                         CastTarget::OpponentOrCreature => {
                             self.is_creature(id) && object.controller != source.controller
                         }
@@ -1258,6 +1266,12 @@ impl Game {
                         CastRelation::Any => true,
                     };
                     if related
+                        && (!ability.condition.requires_hand_cast()
+                            || stack.is_some_and(|i| {
+                                self.state.stack[i]
+                                    .cast
+                                    .is_some_and(|c| c.origin == Zone::Hand)
+                            }))
                         && self.cast_payment_condition(
                             ability.condition,
                             source.reference,
@@ -1290,7 +1304,8 @@ impl Game {
                             || ability.program.iter().any(|instruction| {
                                 matches!(
                                     instruction,
-                                    Instruction::GainLifeScaled(_, AmountValue::SpellColors)
+                                    Instruction::ChangeCastSpellTargets
+                                        | Instruction::GainLifeScaled(_, AmountValue::SpellColors)
                                         | Instruction::DamageScaled(
                                             AmountValue::CastSpellManaValue
                                         )
@@ -1331,6 +1346,7 @@ impl Game {
             self.queue_instant_sorcery_storm(index);
         }
         self.temporary_cast_triggers(caster, card, stack);
+        self.capture_cast_creature_subjects(stack, first_trigger);
         self.capture_copy_cast(stack, first_trigger);
         if let Some(index) = stack {
             self.capture_mana_copies(index);
@@ -1893,6 +1909,7 @@ impl Game {
                 )
             });
         self.state.resolving = Some(Resolution {
+            linked_copy: None,
             cascade: None,
             target_card_facts,
             immediate_blink_return: None,
@@ -2184,6 +2201,9 @@ impl Game {
                         .get_or_insert_default()
                         .push(delayed);
                 }
+                Instruction::CopyEnteringPermanentThenAnimate(spec) => {
+                    self.copy_entering_then_animate(&item, spec);
+                }
                 Instruction::CreateCapturedArtifactCopy => {
                     if let Some(recipe) = item.captured_artifact_copy.as_deref() {
                         self.stage_copy_creation(item.controller, *recipe, 1);
@@ -2192,8 +2212,20 @@ impl Game {
                 Instruction::CopyNextInstantSorcery { ability } => {
                     self.remember_next_spell_copy(&item, ability)
                 }
-                Instruction::CopyCastSpell { .. } | Instruction::CopyStormSpell => {
+                Instruction::CopyPaidExiledCardsFree { maximum_casts } => {
+                    if self.copy_paid_exiled_cards_free(&item, maximum_casts) {
+                        return;
+                    }
+                }
+                Instruction::CopyCastSpell { .. }
+                | Instruction::CopyCastSpellChosenX
+                | Instruction::CopyStormSpell => {
                     if self.copy_captured_spell(&item) {
+                        return;
+                    }
+                }
+                Instruction::ChangeCastSpellTargets => {
+                    if self.change_cast_spell_targets(&item) {
                         return;
                     }
                 }
@@ -3834,6 +3866,10 @@ impl Game {
                     self.exile_targets_play(&item, true, true, true)
                 }
                 Instruction::ExileUntilSourceLeaves => self.exile_until_source_leaves(&item),
+                Instruction::ExileAndCaptureAttachedCopy => {
+                    self.exile_and_capture_attached_copy(&item)
+                }
+                Instruction::ApplyCapturedAttachedCopy => self.apply_captured_attached_copy(),
                 Instruction::ExileGraveyard(set) => {
                     let players: Vec<_> = self.program_players(set, &item).collect();
                     let ids: Vec<_> = self
@@ -4265,6 +4301,9 @@ impl Game {
                     self.return_granted_source(&item, counter, role)
                 }
                 Instruction::GrantSelfAbility(kind) => self.grant_self_ability(&item, kind),
+                Instruction::GrantCastCreatureKeywords(keywords) => {
+                    self.grant_cast_creature_keywords(&item, keywords);
+                }
                 Instruction::GrantKeywords { subject, keywords } => {
                     let ids = self.keyword_subjects(&item, subject);
                     self.grant_keyword_effects(&ids, item.object, keywords);
