@@ -30,6 +30,7 @@ pub(super) struct RoleState {
     pub animations: Vec<AnimationView>,
     pub keyword_effects: Vec<KeywordEffectView>,
     pub source_linked_effects: Vec<SourceLinkedEffectView>,
+    pub resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
     pub harnessed: Vec<ObjectRef>,
@@ -56,6 +57,8 @@ impl RoleState {
             + self.animations.len() * std::mem::size_of::<AnimationView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
             + self.source_linked_effects.len() * std::mem::size_of::<SourceLinkedEffectView>()
+            + self.resolved_ability_modifications.len()
+                * std::mem::size_of::<ResolvedAbilityModificationView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.harnessed.len() * std::mem::size_of::<ObjectRef>()

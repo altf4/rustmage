@@ -42,7 +42,10 @@ impl Game {
     }
     pub(super) fn mode_choice_fundable(&self, a: &Announcement, index: usize) -> bool {
         let mode = &a.item.modes().expect("modal announcement")[index];
-        if !self.teamwork_mode_allowed(&a.item, index)
+        if a.item
+            .bounded_mode_count(index)
+            .is_some_and(|count| u32::from(count) > a.item.x.unwrap_or(0))
+            || !self.teamwork_mode_allowed(&a.item, index)
             || !self.modal_choice_unused(&a.item, index)
             || !self.item_targets_available(&a.item, mode.targets)
         {

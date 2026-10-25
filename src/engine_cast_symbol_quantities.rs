@@ -12,7 +12,8 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
     program.iter().any(|instruction| match *instruction {
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
-        | Instruction::ModalOncePerTurn(modes) => modes.iter().any(|m| selected(m.program)),
+        | Instruction::ModalOncePerTurn(modes)
+        | Instruction::ModalUpToX { modes, .. } => modes.iter().any(|m| selected(m.program)),
         Instruction::SelectLibraryTo(effect)
         | Instruction::SelectLibraryThenMayTransform(effect) => {
             effect.maximum_mana_value.is_some_and(amount)

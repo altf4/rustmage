@@ -119,7 +119,9 @@ impl FundingState<'_> {
             return false;
         }
         let spec = spec.in_zone(o.zone);
-        self.reference(r.card) == r
+        (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+            || (self.game.sneak_attacker(self.actor, r) && self.attacking(r.card)))
+            && self.reference(r.card) == r
             && (r != source
                 || !matches!(
                     spec.kind,
@@ -779,7 +781,9 @@ impl FundingState<'_> {
                 amount = usize::from(n);
                 spec.kind = EffectChoiceKind::ExileGraveyard;
             }
-            EffectChoiceKind::ReturnToHand => destination = Zone::Hand,
+            EffectChoiceKind::ReturnUnblockedAttacker | EffectChoiceKind::ReturnToHand => {
+                destination = Zone::Hand
+            }
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeOrDiscard { .. }

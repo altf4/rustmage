@@ -33,6 +33,9 @@ impl Game {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Miracle) {
                 return a.miracle_cost.expect("miracle cost");
             }
+            if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
+                return a.item.source_card.sneak_cost().expect("Sneak cost");
+            }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.item.source_card.warp_cost().expect("fixed Warp cost");
             }

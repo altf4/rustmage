@@ -731,6 +731,8 @@ pub enum EffectChoiceKind {
     Sacrifice,
     /// One controlled Equipment attached to this exact activated source.
     SacrificeAttachedEquipment,
+    /// Non-targeted return payment for Sneak, after blockers are declared.
+    ReturnUnblockedAttacker,
     ReturnToHand,
     Discard,
     DiscardNamed(&'static str),
@@ -1125,6 +1127,11 @@ pub(crate) enum Instruction {
     PayXReflexive {
         ability: u16,
     },
+    /// One reflexive trigger after one or more unit generic payments, with a finite bound.
+    PayXReflexiveLimited {
+        ability: u16,
+        maximum: u32,
+    },
     MayPayMana {
         cost: ManaCost,
         skip: usize,
@@ -1251,6 +1258,11 @@ pub(crate) enum Instruction {
     },
     /// Definition-only triggered header whose modes may each be chosen once per source incarnation.
     ModalOnce(&'static [SpellMode]),
+    /// Finite, nonrepeating combinations bounded by the packet's captured X.
+    ModalUpToX {
+        modes: &'static [SpellMode],
+        counts: &'static [u8],
+    },
     /// Triggered modes each available once during the current actual turn.
     ModalOncePerTurn(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.
@@ -1363,6 +1375,8 @@ pub(crate) enum Instruction {
         origin: TargetZone,
     },
     ReturnSourceWithCounterAndEquipment(CounterKind),
+    /// Return the exact death-event card, then modify only its actual entrant.
+    ReturnSourceBlankWithHaste,
     ReturnSourceToBattlefield {
         tapped: bool,
     },
@@ -3522,6 +3536,9 @@ impl Card {
     }
     pub fn inset_parent(self) -> Option<Card> {
         self.adventure_parent().or_else(|| self.omen_parent())
+    }
+    pub(crate) fn sneak_cost(self) -> Option<ManaCost> {
+        authored::rules(self).and_then(|r| r.extras.sneak_cost)
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
         generated::warp_cost(self)

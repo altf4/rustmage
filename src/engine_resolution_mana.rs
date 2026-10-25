@@ -289,8 +289,10 @@ impl Game {
                 self.lose_life(request.payer, i128::from(life));
             }
             let r = self.state.resolving.as_ref().unwrap();
-            if let Some(Instruction::PayXReflexive { ability }) =
-                r.program.get(r.pc.saturating_sub(1))
+            if let Some(
+                Instruction::PayXReflexive { ability }
+                | Instruction::PayXReflexiveLimited { ability, .. },
+            ) = r.program.get(r.pc.saturating_sub(1))
             {
                 let (item, ability) = (r.item.clone(), *ability);
                 self.queue_reflexive(&item, ability, None);

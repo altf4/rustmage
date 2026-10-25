@@ -1800,7 +1800,7 @@ impl Game {
                             || c.bargain == Some(true)
                             || c.evidence == Some(true)
                             || matches!(c.gift, Some(GiftDeclaration::Promised { .. }))
-                            || c.method == CastMethod::Warp
+                            || matches!(c.method, CastMethod::Warp | CastMethod::Sneak)
                             || item.source_card.entry_counter_rules().iter().any(|r| {
                                 matches!(
                                     r.amount,
@@ -1815,7 +1815,12 @@ impl Game {
                         || item.source_card.entry_choice().is_some()
                         || self.has_entry_counter_replacements(item.source_card)
                     {
-                        let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
+                        let mut movement = self.entry_move(
+                            item.card,
+                            Zone::Battlefield,
+                            item.cast.is_some_and(|c| c.method == CastMethod::Sneak),
+                        );
+                        movement.attacking = item.cast.and_then(|c| c.sneak_defender);
                         movement.warp_controller = item
                             .cast
                             .filter(|c| c.method == CastMethod::Warp)
@@ -2529,7 +2534,8 @@ impl Game {
                 }
                 Instruction::Modal(_)
                 | Instruction::ModalOnce(_)
-                | Instruction::ModalOncePerTurn(_) => {
+                | Instruction::ModalOncePerTurn(_)
+                | Instruction::ModalUpToX { .. } => {
                     unreachable!("unselected modal ability executed")
                 }
                 Instruction::Explore(subject) => {
@@ -2708,6 +2714,9 @@ impl Game {
                             self.remember_library_top(owner, event.after);
                         }
                     }
+                }
+                Instruction::ReturnSourceBlankWithHaste => {
+                    self.return_source_blank_with_haste(&item)
                 }
                 Instruction::ReturnSourceWithCounterAndEquipment(counter) => {
                     self.return_source_with_equipment(&item, counter);
@@ -3578,7 +3587,7 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::PayXReflexive { .. } => {
+                Instruction::PayXReflexive { .. } | Instruction::PayXReflexiveLimited { .. } => {
                     self.state.pending = Pending::ResolutionX {
                         player: item.controller,
                     };

@@ -72,6 +72,13 @@ impl Announcement {
         {
             return Some(spec);
         }
+        if self
+            .item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::Sneak)
+        {
+            return Some(sneak::COST);
+        }
         match self.item.kind {
             StackKind::Spell if self.graveyard_origin_counter_cost().is_some() => Some(
                 Game::creature_counter_spec(self.graveyard_origin_counter_cost().unwrap()),
@@ -125,6 +132,15 @@ impl Announcement {
                     .is_some_and(|c| c.method == CastMethod::Miracle) =>
             {
                 std::iter::once(self.miracle_cost.expect("miracle cost")).chain([].iter().copied())
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Sneak) =>
+            {
+                std::iter::once(self.item.source_card.sneak_cost().expect("Sneak cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
                 std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
@@ -714,6 +730,20 @@ impl Game {
     }
 
     pub(super) fn choose_mode(&mut self, mode: u16) {
+        if self
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .item
+            .bounded_mode_count(usize::from(mode))
+            == Some(0)
+        {
+            // CR700.2b/603.3c: choosing no modes removes the triggered ability.
+            assert!(self.state.announcing.take().unwrap().trigger);
+            self.continue_trigger_order();
+            return;
+        }
         let plan = self
             .state
             .announcing
@@ -1428,6 +1458,7 @@ impl Game {
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
+                sneak_defender: None,
                 flash_surcharge: false,
                 offspring: None,
                 kicker: None,

@@ -1,0 +1,309 @@
+{
+  "schema": 1,
+  "scope": "Two complete MSH cards with individual focused paid tests and narrowly affected old cases; final integration deferred.",
+  "base": "884f5480564f8c2ee84f9e1997a22a05be4116ab",
+  "tested_runtime": "df8a623f2650ee0b725e039c89f574dd92eba7f8",
+  "complete_cards": [
+    "Hawkeye, Master Marksman",
+    "The Ruinous Wrecking Crew"
+  ],
+  "new_ids": [],
+  "identity_manifest_note": "Only existing Crew4492 fixed colored components changed from allzero to B/R, matching printed {X}{B}{R}; corresponding owned pin updated. No ID, alias, recipe, color, subtype or other row changes.",
+  "wire_schema": 152,
+  "wire_note": "No public shape change: finite modes reuse ChooseMode/mode_choices, bounded payment reuses ChooseX and existing resolution payment views. Schema file remains exact base.",
+  "source_sha256": {
+    "data/catalogue-identities.json": "c5ef0e8b156c813b669da5871dc4e64b21feb30e4f9df26a4b05f721b86c25d8",
+    "data/standard/coverage.json": "ff49bdb488e32f091b20584ab85ba3d238bdd78f7a6bf6a7a3c65ea2a23ba8e7",
+    "src/card_definitions/msh/hawkeye_master_marksman.json": "e84697e9079eb338445b15df7079bf41da19e5977f20aec671097638dbe4965f",
+    "src/card_definitions/msh/hawkeye_master_marksman.rs": "6a77bb1bc6ac627ece7d653b9d3672563c6686d3a1362905cb5dc385371c6570",
+    "src/card_definitions/msh/the_ruinous_wrecking_crew.json": "b8667d144738f3547d07eed50e57978db8599bcc1fc0779c0e277991d2ddcda5",
+    "src/card_definitions/msh/the_ruinous_wrecking_crew.rs": "4891b7332da48d7d54d954e2dff6bd6a199d1f13b5e9dfaa0504632f46fcd26c",
+    "src/cards.rs": "d7e35b7e5317cad2a37ac52faa215a1bb0b5c8e34d04b20e7bb5607fd0857156",
+    "src/engine.rs": "5d670c96f35133fcce389af85d7a9bd42ffe0d3f448de63e1a75223568f06777",
+    "src/engine_card_quantities.rs": "19b33296eb335d257bfbee7906104ddca118690e594a98f95296cc1657303e81",
+    "src/engine_cast_symbol_quantities.rs": "287dcf0043fce660fdaefb7fae7849ede52d22074c27632b4a9def7c47987c72",
+    "src/engine_msh_hawkeye_wrecking_tests.rs": "56d491d0ee690a2509b90dffb9055f6b9f1c3be35e7b8edef5ef46cac2fe7604",
+    "src/engine_programs.rs": "bc3416ffba8cff728c1b2561d5e20a25a4b4f73cadae202c4a93f9b3f63d72bb",
+    "src/engine_resolution_mana.rs": "44712cfdd2e7a77cac0c3c55ab25e88dafac114f36d581fe8901041ccf77239f",
+    "src/engine_scalar_x.rs": "0549497b81937a7940167f9717ef2b42d603b3cd9649be3445fb48b6f5f11c81",
+    "src/engine_source_quantities.rs": "c6134b239377bfb73378bba5dda58a97b28cd8383a486618a55778137d3e5e94",
+    "src/engine_targeting.rs": "10309ef1f9ee3c050dc09ad13d57e78c05675835187dd94938822015c0c9e1ba",
+    "src/engine_tiered.rs": "750baadcbd4a65a889f9908506ac4efd51911fde4b64c7c9f4df3a0948f89537",
+    "src/generated/catalogue.rs": "852b6739bd908dfa342ac26a0d5671c6b53d5190bf59aded0e5cf28da9a6e041"
+  },
+  "source_cache": {
+    "path": "<cache>/rustmage-msh-hawkeye-wrecking-sources.json",
+    "sha256": "8816efd3dde10d18c77fefac3df08c2b7f2d8b3ab1b0f43f2d16835665c9f54b",
+    "full_frozen_oracle": true,
+    "java_files": 27,
+    "read_coverage": "24 complete fresh main/helper reads, one exact full ManaCostsImpl read reused from Bruce/Kang, and explicitly ranged StaticFilters/CardUtil with full bodies retained."
+  },
+  "owned_provenance": {
+    "schema": 1,
+    "tested_source": "df8a623f2650ee0b725e039c89f574dd92eba7f8",
+    "fixed_inputs": 11153,
+    "changed": [],
+    "checks": [
+      {
+        "command": [
+          "python3",
+          "scripts/link_catalogue.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "output": "{\"schema\": 1, \"catalogue_version\": \"7c49e369e584b680bd49a64db7a1efcd3af2ac86ed4cb430b4d8e5c38077eed2\", \"standard_legal_cards\": 5164, \"implemented_standard_cards\": 2543, \"implemented_total\": 2549, \"token_definitions\": 125, \"emblem_definitions\": 3, \"adventure_definitions\": 40, \"omen_definitions\": 13}\n"
+      },
+      {
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "--config",
+          "skip_children=true",
+          "src/card_definitions/msh/hawkeye_master_marksman.rs",
+          "src/card_definitions/msh/the_ruinous_wrecking_crew.rs",
+          "src/cards.rs",
+          "src/engine.rs",
+          "src/engine_card_quantities.rs",
+          "src/engine_cast_symbol_quantities.rs",
+          "src/engine_msh_hawkeye_wrecking_tests.rs",
+          "src/engine_programs.rs",
+          "src/engine_resolution_mana.rs",
+          "src/engine_scalar_x.rs",
+          "src/engine_source_quantities.rs",
+          "src/engine_targeting.rs",
+          "src/engine_tiered.rs"
+        ],
+        "exit_code": 0,
+        "output": ""
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check",
+          "884f5480564f8c2ee84f9e1997a22a05be4116ab",
+          "HEAD"
+        ],
+        "exit_code": 0,
+        "output": ""
+      }
+    ],
+    "owned": [
+      {
+        "path": "src/card_definitions/msh/hawkeye_master_marksman.json",
+        "sha256": "e84697e9079eb338445b15df7079bf41da19e5977f20aec671097638dbe4965f",
+        "definition_sha256": "6a77bb1bc6ac627ece7d653b9d3672563c6686d3a1362905cb5dc385371c6570",
+        "java_source": "Mage.Sets/src/mage/cards/h/HawkeyeMasterMarksman.java",
+        "java_sha256": "70edf7fcc2e5cfd8f82fd62e908bc780546e68508ec30855d810bd19ebeaa2ff",
+        "dependencies": 14
+      },
+      {
+        "path": "src/card_definitions/msh/the_ruinous_wrecking_crew.json",
+        "sha256": "b8667d144738f3547d07eed50e57978db8599bcc1fc0779c0e277991d2ddcda5",
+        "definition_sha256": "4891b7332da48d7d54d954e2dff6bd6a199d1f13b5e9dfaa0504632f46fcd26c",
+        "java_source": "Mage.Sets/src/mage/cards/t/TheRuinousWreckingCrew.java",
+        "java_sha256": "615ac7aef53c1f8bcfca8d02c4569d327b2a4ed7de6e8975f246ae7a543034ea",
+        "dependencies": 17
+      }
+    ],
+    "java_pins": {
+      "Mage.Sets/src/mage/cards/h/HawkeyeMasterMarksman.java": "70edf7fcc2e5cfd8f82fd62e908bc780546e68508ec30855d810bd19ebeaa2ff",
+      "Mage.Sets/src/mage/cards/t/TheRuinousWreckingCrew.java": "615ac7aef53c1f8bcfca8d02c4569d327b2a4ed7de6e8975f246ae7a543034ea",
+      "Mage/src/main/java/mage/abilities/Mode.java": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc",
+      "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c",
+      "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b",
+      "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f",
+      "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+      "Mage/src/main/java/mage/abilities/effects/common/EntersBattlefieldWithXCountersEffect.java": "b4aae4bf8b6f794367dbed4450268a52dd4c494c8fd6aa6e7d62a14eacab30d7",
+      "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f",
+      "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25",
+      "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717",
+      "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+      "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37",
+      "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00",
+      "Mage/src/main/java/mage/abilities/effects/common/SacrificeAllEffect.java": "edfea847c85bbbee218fd9e81bc9c2d310ce3bc2221d31eef237e9c66accfc62",
+      "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235",
+      "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559",
+      "Mage/src/main/java/mage/target/TargetPlayer.java": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba",
+      "Mage/src/main/java/mage/target/TargetPermanent.java": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+      "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f",
+      "Mage/src/main/java/mage/target/common/TargetOpponent.java": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a",
+      "Mage/src/main/java/mage/target/common/TargetSacrifice.java": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7",
+      "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da",
+      "Mage/src/main/java/mage/filter/FilterOpponent.java": "45813e5fd75e1b9a5401f9927d811a9ebf05ea2364938b8f7c1020da7b6f1f7f",
+      "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+      "Mage/src/main/java/mage/filter/StaticFilters.java": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+      "Mage/src/main/java/mage/util/CardUtil.java": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    },
+    "unchanged_sha256": {
+      "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+      "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+      "src/policy.rs": "ba2ae389f944055168986417b286abab3e99f0328856daf06e2036071b2241fa",
+      "src/assurance/msh_games.rs": "bdf8b3f53b7c3b6c509b4116b4539acc70045b8ee648987ef78c4c98b904d50d",
+      "src/assurance/card_traces.json": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3",
+      "src/observation_schema.rs": "c15acddb16eda7cc57d17687e7db11a4911af89195695a4f846541b56831adf5"
+    },
+    "metadata_delta": "Only existing Crew4492 fixed colored components changed from allzero to B/R, matching printed {X}{B}{R}; corresponding owned pin updated. No ID, alias, recipe, color, subtype or other row changes.",
+    "rustfmt_files": 13
+  },
+  "mechanics": [
+    "Private triggered ModalUpToX finite combination table uses captured item.x and explicit mode-count table; existing group targeting and printed instruction order retained",
+    "Zero selected modes remove the trigger perCR700.2b/603.3c; ordinary prior Modal/ModalOnce/ModalOncePerTurn behavior unchanged",
+    "Private bounded unit-generic resolution payment preserves old unbounded PayXReflexive behavior, queues one reflexive only after positive payment and keeps captured controller/source facts",
+    "Crew uses existing scalar castX, pre-entry counter replacements, ETB packet X capture and APNAP simultaneous sacrifice engine"
+  ],
+  "primary_rules": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": {
+      "603.12a": [
+        "603.12a Normally, if the trigger event or events occur multiple times during the resolution of the spell or ability that created it, the reflexive triggered ability will trigger once for each of those times. However, if a resolving spell or ability includes a choice to pay a cost multiple times and creates a triggered ability that triggers when that payment is made, paying that cost one or more times causes the reflexive triggered ability to trigger only once."
+      ],
+      "603.3c": [
+        "603.3c If a triggered ability is modal, its controller announces the mode choice when putting the ability on the stack. If one of the modes would be illegal (due to an inability to choose legal targets, for example), that mode can\u2019t be chosen. If no mode is chosen, the ability is removed from the stack. (See rule 700.2.)"
+      ],
+      "700.2.": [
+        "700.2. A spell or ability is modal if it has two or more options in a bulleted list preceded by instructions for a player to choose a number of those options, such as \u201cChoose one \u2014.\u201d Each of those options is a mode. Modal cards printed prior to the Khans of Tarkir\u2122 set didn\u2019t use bulleted lists for the modes; these cards have received errata in the Oracle card reference so the modes do appear in a bulleted list."
+      ],
+      "700.2a": [
+        "700.2a The controller of a modal spell or activated ability chooses the mode(s) as part of casting that spell or activating that ability. If one of the modes would be illegal (due to an inability to choose legal targets, for example), that mode can\u2019t be chosen. (See rule 601.2b.)"
+      ],
+      "700.2b": [
+        "700.2b The controller of a modal triggered ability chooses the mode(s) as part of putting that ability on the stack. If one of the modes would be illegal (due to an inability to choose legal targets, for example), that mode can\u2019t be chosen. If no mode is chosen, the ability is removed from the stack. (See rule 603.3c.)"
+      ],
+      "700.2c": [
+        "700.2c If a spell or ability targets one or more targets only if a particular mode is chosen for it, its controller will need to choose those targets only if they chose that mode. Otherwise, the spell or ability is treated as though it did not have those targets. (See rule 601.2c.)"
+      ],
+      "700.2d": [
+        "700.2d If a player is allowed to choose more than one mode for a modal spell or ability, that player normally can\u2019t choose the same mode more than once. However, some modal spells include the instruction \u201cYou may choose the same mode more than once.\u201d If a particular mode is chosen multiple times, the spell is treated as if that mode appeared that many times in sequence. If that mode requires a target, the same player or object may be chosen as the target for each of those modes, or different targets may be chosen."
+      ],
+      "608.2b": [
+        "608.2b If the spell or ability specifies targets, it checks whether the targets are still legal. A target that\u2019s no longer in the zone it was in when it was targeted is illegal. Other changes to the game state may cause a target to no longer be legal; for example, its characteristics may have changed or an effect may have changed the text of the spell. If the source of an ability has left the zone it was in, its last known information is used during this process. If all its targets, for every instance of the word \u201ctarget,\u201d are now illegal, the spell or ability doesn\u2019t resolve. It\u2019s removed from the stack and, if it\u2019s a spell, put into its owner\u2019s graveyard. Otherwise, the spell or ability will resolve normally. Illegal targets, if any, won\u2019t be affected by parts of a resolving spell\u2019s effect for which they\u2019re illegal. Other parts of the effect for which those targets are not illegal may still affect them. If the spell or ability creates any continuous effects that affect game rules (see rule 613.11), those effects don\u2019t apply to illegal targets. If part of the effect requires information about an illegal target, it fails to determine any such information. Any part of the effect that requires that information won\u2019t happen."
+      ]
+    },
+    "release_notes": "https://media.wizards.com/2026/downloads/MSH_Release_Notes_N6hMZoes90/zfGb4BJ8Bf_EN_MTGMSH_ReleaseNotes_20260513.pdf",
+    "release_notes_read": "Hawkeye page25: combined payment1/2/3/none then one reflexive with later modes/targets; Crew page48-49: no repeated modes, printed order, destroyed token cannot later sacrifice"
+  },
+  "tests": {
+    "whole_pair_groups": 27,
+    "whole_pair_seconds": 0.44,
+    "affected_groups": 60,
+    "affected_seconds": 0.81,
+    "affected_filters": [
+      "msh_vision",
+      "sos_final_tester",
+      "msh_ability_copy_core",
+      "msh_source_quantities"
+    ],
+    "both_seats": true,
+    "ordinary_supported_final_run": true,
+    "obligations": {
+      "Hawkeye, Master Marksman": [
+        "Actual paid1R2/2 legendary Human Archer Hero; reach permits blocking a flyer when a ground creature cannot, and first strike kills the flyer before its normal damage",
+        "Actual paid DependableQuinjet Crew cost taps Hawkeye and another2power creature; ability starts without modes or targets; real Wasp tap queues the ability before its later ability removal, and that captured packet still resolves",
+        "Controller chooses and pays0/1/2/3 unit generic mana during resolution, with maximum3 and atomic rejection of4/short payments; zero and declining payment create no reflexive; positive payment creates exactly one separate reflexive",
+        "All8 nonrepeating mode combinations tested, each at most selected payment count; paying more permits choosing fewer; selecting zero modes removes the triggered ability instead of an empty stack packet",
+        "Net targets any creature and blocks actual block declaration this turn, expires at cleanup, and remains a rule restriction through later real Wasp ability removal",
+        "Explosive targets either player and deals2damage from captured source; actual paid Murder response removes Hawkeye but does not cancel that damage; captured controller remains payer/controller through explicitly bounded control change",
+        "Boomerang discards then draws even with empty hand; full observer/owned choices retained; all targets becoming illegal cancels untargeted rummage, partial legality preserves remaining selected modes",
+        "Ward counters the whole single modal reflexive packet, including damage mode; no repeat event when already tapped, and a new untap-to-tap transition creates a new trigger",
+        "Actual Forest and CastleDoom mana abilities available during payment; artifact-spell-only mana cannot pay resolution cost; valid green mana pays exact amount and restricted lot remains",
+        "Parent-disposed raw/index replay plus full both-observer equality and restore at X/payment/mode/private discard choices; wrong actor and illegal-action atomicity through shared scenario checks"
+      ],
+      "The Ruinous Wrecking Crew": [
+        "Actual paidBR+X0..5 casting and exact colored payment; missingB and excessiveX rejected atomically; stack mana value2+X and battlefield fixed mana value2",
+        "Enters withX +1/+1 counters; real DoublingSeason doubles counters without increasing captured mode limit; source departure/counter clearing does not erase capturedX",
+        "All16 finite nonrepeating mode combinations tested in printed order; X0 none removes trigger, X>4 cannot repeat a mode; opponent-only life target and any token target enforced",
+        "Rummage discards then draws, including empty hand; target opponent loses2life; destroy targets own or opposing artifact token and excludes nontoken artifact",
+        "Destroy creature token mode happens before sacrifice choices so destroyed token cannot be selected; each player chooses their own creature APNAP, with no movement after first choice and simultaneous final sacrifice",
+        "Crew itself may be sacrificed; source departure does not cancel trigger; partially illegal token target leaves other legal targeted and untargeted modes, all illegal targets cancel rummage",
+        "Actual Zombify noncast entry hasX0 and no old counters; actual SelfReflection copy token hasX0 and no copied counters, with genuine legend-menu choice keeping token",
+        "Owned parent-disposed raw/index final sacrifice selection and restore; private discards and both-seat public choice ownership use existing scenario helpers"
+      ]
+    },
+    "profile": "Focused testopt0, one Cargo job/test thread,6GiB shared guard"
+  },
+  "fixed_inputs": {
+    "source": "df8a623f2650ee0b725e039c89f574dd92eba7f8",
+    "terminal": true,
+    "exit_code": 0,
+    "inputs": 11153,
+    "changed": []
+  },
+  "resource_guard": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib",
+      "msh_hawkeye_wrecking",
+      "--",
+      "--nocapture"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 31.182744543999434,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2748395520,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "affected_guard": {
+    "command": [
+      "<cache>/rustmage-msh-hawkeye-wrecking-focused-target/debug/deps/rustmage-55e16bd14e329fbf",
+      "msh_vision",
+      "sos_final_tester",
+      "msh_ability_copy_core",
+      "msh_source_quantities",
+      "--nocapture"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 0.817142321029678,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 17948672,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-hawkeye-wrecking-preservation.json",
+    "sha256": "45817c8b33b5c2b30912fbf6b99c469b30c698f9902cbce6caea80fb04a67e35",
+    "prior_required": 4587,
+    "required": 4622,
+    "retained": {
+      "<cache>/rustmage-msh-hawkeye-wrecking-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-hawkeye-wrecking-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "6b4a9d6f84980e2f43bdbd466b15d516a664591ae25c3e1eb8b1c5e348cb0a54"
+    }
+  },
+  "cleanup": {
+    "created_utc": "2026-10-25T18:35:20.692120+00:00",
+    "only_terminal_target": true,
+    "target": "<cache>/rustmage-msh-hawkeye-wrecking-focused-target",
+    "processes": 569,
+    "maps_denied": 48,
+    "accessible_references": [],
+    "removed_files": 165,
+    "removed_path_bytes": 39842064,
+    "preserved": {
+      "<cache>/rustmage-msh-hawkeye-wrecking-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-hawkeye-wrecking-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "6b4a9d6f84980e2f43bdbd466b15d516a664591ae25c3e1eb8b1c5e348cb0a54"
+    }
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T18:13:28+00:00",
+    "final_focused_terminal_utc": "2026-10-25T18:32:44.793375+00:00",
+    "seconds": 1156.793375,
+    "complete_physical_cards": 2,
+    "cards_per_hour": 6.224102035508286,
+    "scope": "Isolated pair branch creation through final ordinary supported focused terminal, including source/helper reads and development; not a simulation benchmark"
+  },
+  "limits": [
+    "No aggregate/default/full native, full Trace baselines/exports, release, Clippy, CI or full-set corpus validation in this phase.",
+    "Final composition, cross-family interactions and final-head independent nonauthor reviews remain with the parent task.",
+    "Canonical token setup, source control/departure and tap/untap boundary setup include explicitly bounded engine seams; actual card casting/payment, main tap events, combat, copying, reanimation, mana production and choices use legal actions.",
+    "No other cards admitted and no IDs/aliases/recipes changed. Policy, set membership, frozen Oracle and recorder files remain byte exact."
+  ]
+}

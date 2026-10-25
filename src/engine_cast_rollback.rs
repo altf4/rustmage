@@ -67,6 +67,7 @@ impl Game {
             | Action::AnnounceExile { card }
             | Action::AnnounceFlashSurcharge { card }
             | Action::AnnounceWarp { card }
+            | Action::AnnounceSneak { card, .. }
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
             | Action::AnnounceBack { card }
