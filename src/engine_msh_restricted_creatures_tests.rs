@@ -15,7 +15,7 @@ fn seed(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     g.state.objects[id as usize].card = card;
     id
 }
-fn game(p: Player) -> Game {
+pub(super) fn game(p: Player) -> Game {
     let mut g = setup(p);
     for s in &mut g.state.players {
         s.mana = [0; 6]
@@ -38,7 +38,7 @@ fn packet(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     id
 }
-fn paid(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
+pub(super) fn paid(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
     let id = packet(g, p, name, targets);
     settle(g);
     id
@@ -428,13 +428,7 @@ fn msh_restricted_creatures_shang_allows_new_intrinsic_and_printed_mana_without_
         until(&mut g, |g| {
             matches!(g.state.pending, Pending::Attackers { .. })
         });
-        reject(
-            &mut g,
-            Action::Attack {
-                card: s,
-                defender: Target::Player(p.other()),
-            },
-        );
+        reject(&mut g, Action::Attack { card: s });
     }
 }
 #[test]
@@ -464,6 +458,17 @@ fn msh_restricted_creatures_shang_restricted_mana_pays_creature_hand_cycling() {
         checked(&mut g, announce(scientist, 0));
         finish(&mut g);
         assert_eq!(g.object_view(scientist).zone, Zone::Graveyard);
+        until(&mut g, |g| {
+            g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::ChooseSearch { .. }))
+        });
+        let a = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseSearch { .. }))
+            .unwrap();
+        checked(&mut g, a);
         settle(&mut g);
         assert_eq!(g.hand_count(p), count);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
@@ -503,5 +508,174 @@ fn msh_restricted_creatures_shang_rejects_spells_noncreature_equip_and_channel()
         let m = seed(&mut g, p, "Mjölnir, Hammer of Thor", Zone::Hand);
         g.state.players[p.index()].mana[3] += 1;
         reject(&mut g, announce(m, 1));
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_attached_cost_and_queue_survive_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        paid(&mut g, p, SHANG, &[]);
+        let e = paid(&mut g, p, "S.H.I.E.L.D. Spy Kit", &[]);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        equip(&mut g, p, e, r);
+        let victim = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        removal(&mut g, p, r, e, victim);
+        assert_eq!(g.object_view(e).zone, Zone::Graveyard);
+        paid(&mut g, p.other(), "Murder", &[Target::Card(r)]);
+        assert_eq!(g.object_view(r).zone, Zone::Graveyard);
+        assert_eq!(
+            g.stats(victim),
+            Stats {
+                power: 6,
+                toughness: 6
+            }
+        );
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_target_departure_does_not_refund_tap_or_sacrifice() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        paid(&mut g, p, SHANG, &[]);
+        let e = paid(&mut g, p, "S.H.I.E.L.D. Spy Kit", &[]);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        equip(&mut g, p, e, r);
+        let victim = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        removal(&mut g, p, r, e, victim);
+        paid(&mut g, p.other(), "Unsummon", &[Target::Card(victim)]);
+        assert_eq!(g.object_view(victim).zone, Zone::Hand);
+        assert_eq!(g.object_view(e).zone, Zone::Graveyard);
+        assert!(g.object_view(r).tapped);
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_self_target_loses_equipment_before_minus_four() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let r = paid(&mut g, p, RONIN, &[]);
+        paid(&mut g, p, SHANG, &[]);
+        let e = paid(&mut g, p, "S.H.I.E.L.D. Spy Kit", &[]);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        equip(&mut g, p, e, r);
+        removal(&mut g, p, r, e, r);
+        assert_eq!(g.object_view(e).zone, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.object_view(r).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn msh_restricted_creatures_ronin_equipment_mana_funds_equip_inherited_by_non_equipment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let e = named(&mut g, p.other(), "S.H.I.E.L.D. Spy Kit", Zone::Battlefield);
+        let f = packet(&mut g, p, "Territory Forge", &[]);
+        until(&mut g, |g| {
+            g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(e),
+            })
+        });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(e),
+            },
+        );
+        settle(&mut g);
+        let b = g
+            .borrowed_ability_views()
+            .into_iter()
+            .find(|b| {
+                b.source.card == f
+                    && b.definition == Card::from_name("S.H.I.E.L.D. Spy Kit").unwrap()
+            })
+            .unwrap();
+        let r = paid(&mut g, p, RONIN, &[]);
+        checked(&mut g, mana(r, [2, 0, 0, 0, 0, 0]));
+        finish(&mut g);
+        checked(
+            &mut g,
+            Action::AnnounceBorrowedAbility {
+                card: f,
+                exiled: b.exiled,
+                ability: b.ability,
+                counter_payment: Counters::default(),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(r),
+            },
+        );
+        finish(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [1, 0, 0, 0, 0, 0]);
+        settle(&mut g);
+        assert_eq!(g.object_view(f).attached_to, None);
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_permission_moves_to_current_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let s = paid(&mut g, p, SHANG, &[]);
+        let own = paid(&mut g, p, "Llanowar Elves", &[]);
+        let foreign = named(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+        g.state.objects[foreign as usize].summoning_sick = true;
+        paid(&mut g, p, "Harmless Offering", &[Target::Card(s)]);
+        assert_eq!(g.object_view(s).controller, p.other());
+        reject(&mut g, Action::TapMana { card: own });
+        priority(&mut g, p.other());
+        checked(&mut g, Action::TapMana { card: foreign });
+        assert_eq!(g.state.players[p.other().index()].mana, [0, 0, 0, 0, 1, 0]);
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_departure_removes_permission_but_not_produced_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let s = paid(&mut g, p, SHANG, &[]);
+        let elf = paid(&mut g, p, "Llanowar Elves", &[]);
+        checked(&mut g, mana(s, [0, 0, 2, 0, 0, 0]));
+        finish(&mut g);
+        paid(&mut g, p.other(), "Murder", &[Target::Card(s)]);
+        priority(&mut g, p);
+        reject(&mut g, Action::TapMana { card: elf });
+        let w = named(&mut g, p, "Winter Soldier, Icy Assassin", Zone::Graveyard);
+        checked(&mut g, announce(w, 0));
+        finish(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(w).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_real_lands_fund_new_creature_tap_ability() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        paid(&mut g, p, SHANG, &[]);
+        let r = paid(&mut g, p, "Reptil, Dinomorpher", &[]);
+        let land = named(&mut g, p, "Forest", Zone::Battlefield);
+        let before = g.snapshot();
+        let views = [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap());
+        assert!(g.legal_actions().contains(&announce(r, 0)));
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(
+            [Player::P0, Player::P1].map(|p| serde_json::to_value(g.observe(p)).unwrap()),
+            views
+        );
+        checked(&mut g, announce(r, 0));
+        checked(&mut g, Action::FinishTargets);
+        let shang = (0..g.state.objects.len())
+            .find(|&i| g.state.objects[i].card == Card::from_name(SHANG).unwrap())
+            .unwrap() as CardId;
+        checked(&mut g, mana(shang, [0, 0, 0, 0, 2, 0]));
+        finish(&mut g);
+        checked(&mut g, Action::TapMana { card: land });
+        finish(&mut g);
+        settle(&mut g);
+        assert!(g.object_view(land).tapped);
+        assert_eq!(g.stats(r).power, 3);
     }
 }
