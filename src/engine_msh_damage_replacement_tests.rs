@@ -865,3 +865,77 @@ fn msh_damage_wolverine_suppression_stops_healing_and_restoration_resumes_it() {
         assert_eq!(g.object_view(id).damage, 2);
     }
 }
+#[test]
+fn msh_damage_hawkeye_negative_power_has_order_sensitive_doubling() {
+    for p in [Player::P0, Player::P1] {
+        for double_first in [false, true] {
+            let mut g = setup(p);
+            let (_, hammer, skrull) = unworthy_equipped(&mut g, p);
+            let hawk = paid(&mut g, p, HAWK, &[]);
+            g.set_counters(hawk, Counters::of(CounterKind::MinusOne, 3));
+            let victim = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+            activate(
+                &mut g,
+                p,
+                skrull,
+                2,
+                [0, 0, 0, 1, 0, 4],
+                Some(Target::Card(victim)),
+            );
+            until(&mut g, |g| {
+                matches!(g.state.pending, Pending::Replacement { .. })
+            });
+            let source = g.object_ref(if double_first { hammer } else { hawk });
+            checked(&mut g, Action::ChooseReplacement { source, ability: 0 });
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(victim).damage,
+                if double_first { 7 } else { 6 }
+            );
+        }
+    }
+}
+#[test]
+fn msh_damage_mjolnir_distinct_nonlegendary_copy_providers_each_double_once() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let (_, hammer, skrull) = unworthy_equipped(&mut g, p);
+        // Bounded existing copy-recipe boundary; no admitted card is claimed to produce this exception.
+        let definition = Card::from_name(HAMMER).unwrap();
+        let mut recipe = CopyRecipe::new(definition);
+        recipe.overrides = Some(CopyOverrides {
+            legendary: Some(false),
+            ..CopyOverrides::NONE
+        });
+        let refs = g.create_copy_groups_inner(
+            p,
+            &[TokenGroupView {
+                token: definition,
+                amount: 1,
+            }],
+            &[Some(recipe)],
+            None,
+        );
+        assert_eq!(refs.len(), 1);
+        let copy = refs[0];
+        assert!(g.attach_equipment(copy, g.object_ref(skrull)));
+        settle(&mut g);
+        assert_ne!(copy, g.object_ref(hammer));
+        let victim = named(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+        activate(
+            &mut g,
+            p,
+            skrull,
+            2,
+            [0, 0, 0, 1, 0, 4],
+            Some(Target::Card(victim)),
+        );
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::Replacement { .. })
+        });
+        let source = g.object_ref(hammer);
+        g = orphan(g, Action::ChooseReplacement { source, ability: 0 });
+        settle(&mut g);
+        assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+    }
+}
