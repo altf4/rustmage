@@ -1395,7 +1395,7 @@
   "guard": {
     "command": [
       "python3",
-      "/tmp/rustmage-msh-final-traces-4-driver.py"
+      "<temp>/rustmage-msh-final-traces-4-driver.py"
     ],
     "terminal": true,
     "exit_code": 0,
@@ -1634,10 +1634,98 @@
   "full_native_not_executed_in_this_trace_job": true,
   "pending": [
     "Natural252-game corpus currently halted on a grounded slow funding query; diagnostic owner is preparing a semantics-preserving fix without changing workloads.",
-    "Final aggregate ordinary native suite and fresh strict trace confirmation.",
     "Required validate.py --release with fixed inputs and global native time bound.",
-    "Final published batch and two independent nonauthor final-head gates."
+    "Final published batch and two independent nonauthor final-head gates.",
+    "Final aggregate ordinary native suite after the grounded funding correction."
   ],
-  "artifact_custody": "All required4651 parent paths remain in place; terminal own-target cleanup and successor manifest follow strict confirmation.",
-  "portable_locations": "<cache>, <worktree>, <temp> denote original retained locations without moving artifacts."
+  "artifact_custody": {
+    "manifest": "<cache>/rustmage-msh-final-source-integration-preservation.json",
+    "manifest_sha256": "d918d33541c279c28fffb7b935df993f0a8987b5fe8d600140a5ac6e54a68bff",
+    "required_paths": 4663,
+    "all4651_prior_paths_and_hashes_exact": true,
+    "new_terminal_resource_reports": 10,
+    "retained_native_and_shared_libraries": [
+      {
+        "path": "<cache>/rustmage-msh-final-union-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-final-union-focus-target/debug/deps/rustmage-55e16bd14e329fbf",
+        "sha256": "afdc520687934945bd01157ee3e9267f4f8d7af5559318fffd9b22e5cd363607"
+      }
+    ],
+    "target_sealed_do_not_reuse": true,
+    "qualification": "Accessible own-user exe/cwd/maps/fd scan found no target consumers;326 denied inspections are explicitly reported. Only this author-owned terminal target was cleaned."
+  },
+  "portable_locations": "<cache>, <worktree>, <temp> denote original retained locations without moving artifacts.",
+  "accepted_trace_baseline": {
+    "commit": "64a3bf5daa7fb0261135151def1f56758331244c",
+    "rows": 2584,
+    "schema": 152,
+    "sha256": "d3660f0ceb907d6420effb08d17c49e20a684e508cbe37736242224ac1827f30",
+    "ordinary_strict_confirmation": {
+      "terminal": true,
+      "head": "64a3bf5daa7fb0261135151def1f56758331244c",
+      "exit_code": 0,
+      "seconds": 45.30096457398031,
+      "fixed_inputs": 11943,
+      "changed_inputs": [],
+      "ordinary_trace_assertion": true,
+      "recording_environment": false,
+      "baseline_sha256": "d3660f0ceb907d6420effb08d17c49e20a684e508cbe37736242224ac1827f30",
+      "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development; single trace filter only",
+      "test_result_lines": [
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2532 filtered out; finished in 7.88s"
+      ]
+    },
+    "guard": {
+      "command": [
+        "python3",
+        "<temp>/rustmage-msh-final-traces-strict-driver.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 45.54041168600088,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 3025186816,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "log": "<cache>/rustmage-msh-final-traces-strict.log"
+  },
+  "cleanup": {
+    "created_utc": "2026-10-25T19:20:31.843312+00:00",
+    "terminal": true,
+    "known_guarded_consumers_terminal": true,
+    "own_user_processes_scanned": 395,
+    "accessible_fd_maps_exe_cwd_target_refs": [],
+    "denied_inspections": 326,
+    "target": "<cache>/rustmage-msh-final-union-focus-target",
+    "parent_manifest": "<cache>/rustmage-msh-photon-zemo-preservation.json",
+    "parent_manifest_sha256": "2a3d34cf3bf7eeddc4bfe3ea293563ee666b299cafbdd99646c96b846fcf7433",
+    "prior_required": 4651,
+    "all_prior_paths_and_hashes_exact": true,
+    "missing_prior": [],
+    "changed_prior": [],
+    "removed_files": 993,
+    "removed_path_allocated_bytes": 128471040,
+    "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation.",
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-final-union-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      },
+      {
+        "path": "<cache>/rustmage-msh-final-union-focus-target/debug/deps/rustmage-55e16bd14e329fbf",
+        "sha256": "afdc520687934945bd01157ee3e9267f4f8d7af5559318fffd9b22e5cd363607"
+      }
+    ]
+  },
+  "integration_measurement": {
+    "start_utc": "2026-10-25T18:54:28+00:00",
+    "end_utc": "2026-10-25T19:21:03.594296+00:00",
+    "elapsed_seconds": 1595.594296,
+    "scope": "Four cumulative source families merged,49 new bounded trace rows accounted,100 unique focused shared/affected groups, static compatibility/lints, full2535 inherited trace audit and strict2584 confirmation. This interval is integration work, not49 newly authored cards or pure simulation throughput."
+  }
 }
