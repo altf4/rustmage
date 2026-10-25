@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "68990609a46b5ef55d61be6114fe58a7cad853b5b066d7233b0d771ca32e30d6",
+  "catalogue_version": "0357646bf381588625ae0ec2244828393a3b9feb153c85afa1a2c050b375e42e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2510,
-  "implemented_total": 2516,
+  "implemented_standard_cards": 2512,
+  "implemented_total": 2518,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 205,
-      "gated": 68
+      "complete": 207,
+      "gated": 66
     },
     "one": {
       "total": 1,
@@ -15253,8 +15253,8 @@
     {
       "name": "Grim Reaper, Lethal Legionnaire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/grim_reaper_lethal_legionnaire.rs",
       "set": "msh"
     },
@@ -27629,8 +27629,8 @@
     {
       "name": "Red Hulk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/red_hulk.rs",
       "set": "msh"
     },

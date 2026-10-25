@@ -692,6 +692,7 @@ impl Game {
                     | TriggerCondition::CounterThresholdCrossed { .. }
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::CreatureDamaged { .. }
+                    | TriggerCondition::SelfDamaged
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
                     | TriggerCondition::SelfLeaves
@@ -2394,6 +2395,18 @@ impl Game {
                         && self.state.objects[item.card as usize].controller == item.controller
                     {
                         self.sacrifice_batch(&[(item.controller, item.card)]);
+                    }
+                }
+                Instruction::PutSourceCounterReflexive {
+                    kind,
+                    amount,
+                    ability,
+                } => {
+                    self.put_source_counter_reflexive(&item, kind, amount, ability);
+                }
+                Instruction::ReturnTargetAttackingWithCounter(counter) => {
+                    if self.start_target_attacking_return(&item, counter) {
+                        return;
                     }
                 }
                 Instruction::MayTapSourceReflexive { .. } => {

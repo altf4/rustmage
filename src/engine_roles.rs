@@ -67,6 +67,19 @@ impl Game {
         reflexive.kind = StackKind::TriggeredAbility { ability };
         reflexive.targets.clear();
         reflexive.mode = None;
+        if let Some((_, program)) = reflexive.program()
+            && let Some(facts) = card_quantities::counter_quantity_facts(program, |kind| {
+                self.source_counter_quantity_live(reflexive.object, kind)
+                    .unwrap_or_else(|| {
+                        item.source_counter_lki
+                            .as_ref()
+                            .and_then(|rows| rows.iter().find(|row| row.kind == kind))
+                            .map_or(0, |row| row.count)
+                    })
+            })
+        {
+            reflexive.source_counter_lki = Some(facts);
+        }
         reflexive.reflexive_subject =
             subject.map(|object| Box::new(ReflexiveSubjectView { object }));
         self.state.pending_triggers.push(reflexive);

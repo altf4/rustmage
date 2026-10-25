@@ -47,9 +47,16 @@ pub(super) struct CounterPlacement {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct CounterBatch {
+    completion: Option<Box<CounterReflexiveCompletion>>,
     placements: Vec<CounterPlacement>,
     next: usize,
     used: Vec<(ObjectRef, u16)>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct CounterReflexiveCompletion {
+    item: SpellView,
+    kind: CounterKind,
+    ability: u16,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TokenGroupView {
@@ -159,6 +166,9 @@ impl ReplacementState {
                     .map(|p| p.amount.owned_bytes())
                     .sum::<usize>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                + b.completion.as_ref().map_or(0, |c| {
+                    std::mem::size_of::<CounterReflexiveCompletion>() + c.item.owned_bytes()
+                })
         };
         let token_bytes = |b: &TokenBatch| {
             b.groups.len() * std::mem::size_of::<TokenGroupView>()
@@ -504,7 +514,20 @@ impl Game {
     ) -> Vec<ReplacementEffectView> {
         counter_replacements(self, p, used)
     }
-    fn commit_counter_placements(&mut self, placements: Vec<CounterPlacement>) {
+    fn commit_counter_placements(
+        &mut self,
+        placements: Vec<CounterPlacement>,
+        completion: Option<Box<CounterReflexiveCompletion>>,
+    ) {
+        let completed = completion.as_ref().is_some_and(|c| {
+            placements.iter().any(|p| {
+                p.entry_index.is_none()
+                    && p.object == c.item.object
+                    && p.amount.get(c.kind) > 0
+                    && self.on_battlefield(p.object.card)
+                    && self.object_ref(p.object.card) == p.object
+            })
+        });
         let mut lore = Vec::new();
         // Commit the complete world before any placement observer sees it.
         for p in &placements {
@@ -543,11 +566,23 @@ impl Game {
         for (object, before) in lore {
             self.lore_counters_added(object, before);
         }
+        if completed {
+            let completion = completion.unwrap();
+            self.queue_reflexive(&completion.item, completion.ability, None);
+        }
     }
     pub(super) fn stage_counter_placements(
         &mut self,
+        placements: Vec<CounterPlacement>,
+        mode: ResumeMode,
+    ) {
+        self.stage_counter_placements_inner(placements, mode, None);
+    }
+    fn stage_counter_placements_inner(
+        &mut self,
         mut placements: Vec<CounterPlacement>,
         mode: ResumeMode,
+        completion: Option<Box<CounterReflexiveCompletion>>,
     ) {
         placements.retain(|p| p.amount.has_any());
         if placements.is_empty() {
@@ -559,7 +594,7 @@ impl Game {
                 .iter()
                 .all(|p| self.counter_replacements(p, &[]).is_empty())
         {
-            self.commit_counter_placements(placements);
+            self.commit_counter_placements(placements, completion);
             return;
         }
         let state = self.state.replacements.get_or_insert_with(|| {
@@ -576,10 +611,48 @@ impl Game {
             "one owned replacement continuation at a time"
         );
         state.work.push_back(Work::Counters(CounterBatch {
+            completion,
             placements,
             next: 0,
             used: Vec::new(),
         }));
+    }
+    pub(super) fn put_source_counter_reflexive(
+        &mut self,
+        item: &SpellView,
+        kind: CounterKind,
+        amount: u64,
+        ability: u16,
+    ) {
+        if amount == 0
+            || !self.on_battlefield(item.card)
+            || self.object_ref(item.card) != item.object
+        {
+            return;
+        }
+        let o = &self.state.objects[item.card as usize];
+        let placement = CounterPlacement {
+            placed_by: item.controller,
+            object: item.object,
+            card: o.card,
+            owner: o.owner,
+            controller: o.controller,
+            subtypes: self.granted_subtypes(item.card),
+            kind: self.current_kinds(item.card),
+            amount: Counters::of(kind, amount),
+            effect: true,
+            entry_index: None,
+            private: false,
+        };
+        self.stage_counter_placements_inner(
+            vec![placement],
+            ResumeMode::Program,
+            Some(Box::new(CounterReflexiveCompletion {
+                item: item.clone(),
+                kind,
+                ability,
+            })),
+        );
     }
     pub(super) fn activation_cost_counters(
         &mut self,
@@ -999,6 +1072,7 @@ impl Game {
                             self.created_token_counter_placements(player, &created, &counters);
                         if !placements.is_empty() {
                             state.work.push_front(Work::Counters(CounterBatch {
+                                completion: None,
                                 placements,
                                 next: 0,
                                 used: Vec::new(),
@@ -1106,7 +1180,7 @@ impl Game {
                         let Some(Event::Counters(batch)) = state.active.take() else {
                             unreachable!()
                         };
-                        self.commit_counter_placements(batch.placements);
+                        self.commit_counter_placements(batch.placements, batch.completion);
                         continue;
                     }
                     let p = &batch.placements[batch.next];
@@ -1230,6 +1304,7 @@ impl Game {
                                     );
                                     if !placements.is_empty() {
                                         state.work.push_front(Work::Counters(CounterBatch {
+                                            completion: None,
                                             placements,
                                             next: 0,
                                             used: Vec::new(),

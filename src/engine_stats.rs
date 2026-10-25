@@ -111,6 +111,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::CreatureDamaged { .. }
+                    | TriggerCondition::SelfDamaged
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn

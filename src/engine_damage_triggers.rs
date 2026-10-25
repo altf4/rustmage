@@ -203,7 +203,7 @@ impl Game {
                 .any(|ability| {
                     matches!(
                         ability.condition.event(),
-                        TriggerCondition::CreatureDamaged { .. }
+                        TriggerCondition::CreatureDamaged { .. } | TriggerCondition::SelfDamaged
                     )
                 })
         }) {
@@ -214,7 +214,7 @@ impl Game {
             let Target::Card(id) = event.target else {
                 continue;
             };
-            if event.amount <= 0 || !self.on_battlefield(id) || !self.is_creature(id) {
+            if event.amount <= 0 || !self.on_battlefield(id) {
                 continue;
             }
             let amount = hits.entry(self.object_ref(id)).or_insert(0u128);
@@ -229,16 +229,22 @@ impl Game {
         for (source, grant) in sources {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
-                let TriggerCondition::CreatureDamaged { relation } = ability.condition.event()
-                else {
-                    continue;
+                let relation = match ability.condition.event() {
+                    TriggerCondition::CreatureDamaged { relation } => Some(relation),
+                    TriggerCondition::SelfDamaged => None,
+                    _ => continue,
                 };
                 for (&recipient, &amount) in &hits {
                     let controller = self.state.objects[recipient.card as usize].controller;
                     if !match relation {
-                        CastRelation::You => controller == source.controller,
-                        CastRelation::Opponent => controller != source.controller,
-                        CastRelation::Any => true,
+                        None => recipient == source.reference,
+                        Some(CastRelation::You) => {
+                            self.is_creature(recipient.card) && controller == source.controller
+                        }
+                        Some(CastRelation::Opponent) => {
+                            self.is_creature(recipient.card) && controller != source.controller
+                        }
+                        Some(CastRelation::Any) => self.is_creature(recipient.card),
                     } {
                         continue;
                     }
