@@ -1,3 +1,5 @@
+#[path = "engine_hand_exile.rs"]
+mod hand_exile;
 #[path = "engine_mana_announcements.rs"]
 mod mana_announcements;
 #[path = "engine_turn_facts.rs"]
@@ -5072,6 +5074,7 @@ impl Game {
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 } else {
                     self.complete_optional_tap_reflexive();
+                    self.complete_optional_discard_exile_play();
                 }
                 self.run_program();
             }
@@ -7774,3 +7777,7 @@ mod msh_land_origins_tests;
 #[cfg(test)]
 #[path = "engine_msh_twelfth_combined_tests.rs"]
 mod msh_twelfth_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_hand_exile_tests.rs"]
+mod msh_hand_exile_tests;

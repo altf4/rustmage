@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "68990609a46b5ef55d61be6114fe58a7cad853b5b066d7233b0d771ca32e30d6",
+  "catalogue_version": "9835b7851ea144208626243727385b2fe2c3bfe2d14af888083cd9f6e855e834",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2510,
-  "implemented_total": 2516,
+  "implemented_standard_cards": 2512,
+  "implemented_total": 2518,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 205,
-      "gated": 68
+      "complete": 207,
+      "gated": 66
     },
     "one": {
       "total": 1,
@@ -16365,8 +16365,8 @@
     {
       "name": "Hex Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/hex_magic.rs",
       "set": "msh"
     },
@@ -22997,8 +22997,8 @@
     {
       "name": "Moonstone, Harsh Mistress",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/moonstone_harsh_mistress.rs",
       "set": "msh"
     },
