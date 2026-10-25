@@ -509,6 +509,10 @@ impl FundingState<'_> {
             || goal.reserve.is_some()
             || self.continuation.is_some()
             || self.entry_projection.is_some()
+            || self.controls().is_some()
+            || self.payment_source.is_some()
+            || self.cost_group.is_some()
+            || !self.sacrifice_group.is_empty()
             || self.game.state.borrowed_links.is_some()
             || !self.game.state.exile_links.is_empty()
         {
