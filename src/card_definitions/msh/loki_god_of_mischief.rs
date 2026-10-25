@@ -1,4 +1,4 @@
-// Real immutable core consumer; complete:false keeps this entire card gated.
+// Directly authored full frozen Oracle and pinned XMage body; shared rules are typed.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 1),
     triggers: &[TriggeredAbility {

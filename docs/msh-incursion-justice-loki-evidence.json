@@ -1,0 +1,274 @@
+{
+  "schema": 1,
+  "scope": "Three whole complete candidates after shared-core checkpoint; full-set acceptance remains open",
+  "base": "e5f576b58e0c98fd430fc7932b56530339e4d088",
+  "shared_core_checkpoint": "d7a8ac35a08bf07992d1862286aeb1212ce015f2",
+  "tested_runtime_head": "06ef2e739200732caac1f2c7a43105403567f20d",
+  "new_complete_candidates": [
+    "Multiversal Incursion",
+    "Justice, Vance Astrovik",
+    "Loki, God of Mischief"
+  ],
+  "MSH_candidate_flags_in_this_child": 225,
+  "MSH_denominator": 281,
+  "whole_set_acceptance": false,
+  "cards": {
+    "Multiversal Incursion": {
+      "oracle_id": "d3678fce-6897-4f2c-bf50-243facb6581b",
+      "facts_sha256": "ae1af4a2274c84d24e50aee6cd0e5ad68ff374269719b7f12f11bfb34bf56687",
+      "definition": "src/card_definitions/msh/multiversal_incursion.rs",
+      "definition_sha256": "18b60a14cff0a7aaa6974565566d9f417b9f09cf6529b40f2f45dfd5c9ed5970",
+      "provenance": "src/card_definitions/msh/multiversal_incursion.json",
+      "provenance_sha256": "c35629f18be0a4c0f610ea1c29823b676d22c640f02a055283facb9fa538e342",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/m/MultiversalIncursion.java",
+      "java_sha256": "b1602b2d17f075c88dd1cca7540c2a1a2804333ecaf58fdc8336cd5a8e9b4f89"
+    },
+    "Justice, Vance Astrovik": {
+      "oracle_id": "184dba74-63ed-4820-9174-68adf26bfabf",
+      "facts_sha256": "dd280756055552b0f9f12ac51904714237ecc02edffa8be6f788c355c27d1f3b",
+      "definition": "src/card_definitions/msh/justice_vance_astrovik.rs",
+      "definition_sha256": "024a612cb43d25fb883a38174c46f1b6fa67d6b8791a051f28f7ccb8972bce04",
+      "provenance": "src/card_definitions/msh/justice_vance_astrovik.json",
+      "provenance_sha256": "bf1ac05cb309b7938a0f96e961404451310ebda418ee49c2e78769323c501428",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/j/JusticeVanceAstrovik.java",
+      "java_sha256": "682109695fb29b881e1891ee05898ad49a58f28f9ddefef83f3814cdfee190b2"
+    },
+    "Loki, God of Mischief": {
+      "oracle_id": "c112852f-61d5-4b94-b864-c7d0b5333b29",
+      "facts_sha256": "db4d2ad730c6b860e9c28d1d7dae2184623f4062bd37e3552aa6056b95ade4bf",
+      "definition": "src/card_definitions/msh/loki_god_of_mischief.rs",
+      "definition_sha256": "ea96f1edd040ad6757b34f876067f4bb68bcd1b5df7b6d266817ab6b83fee6f6",
+      "provenance": "src/card_definitions/msh/loki_god_of_mischief.json",
+      "provenance_sha256": "736b2c54bda4c7a4db11f333ef924dda64a6a64ab836b116435fdde4e91100f0",
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/l/LokiGodOfMischief.java",
+      "java_sha256": "0d00d1ba380824e45c84639eb517bb19fbfc038134a032332242dbde91e45b89"
+    }
+  },
+  "printed_clause_to_meaningful_rules_scenario": {
+    "Multiversal Incursion": {
+      "For each current nontoken creature you control": "msh_incursion_core_paid_control_and_physical_token_selection_with_owned_restore; msh_three_cards_incursion_uses_resolution_time_creatures_after_paid_flash_and_return",
+      "Create full copies without external counters, tap, grants or animation": "msh_three_cards_incursion_copies_no_counters_tap_grants_or_external_animation; msh_incursion_core_paid_dfc_blueprint_keeps_both_faces_and_nonlegendary_exception",
+      "Except not legendary, preserving other copy exceptions": "msh_incursion_core_nonlegendary_preserves_flat_replacement_types_after_paid_taskmaster",
+      "One simultaneous creation event with replacements": "msh_incursion_core_frozen_batch_new_and_old_mister_fantastic_observe_once; msh_incursion_core_mixed_recipe_replacements_apply_to_one_whole_event",
+      "Exact seven mana and sorcery legality": "msh_three_cards_incursion_exact_seven_mana_and_sorcery_timing_atomicity"
+    },
+    "Justice, Vance Astrovik": {
+      "Printed 2/2 and flying": "msh_three_cards_justice_paid_optional_entry_restrictions_self_owner_and_counter; msh_three_cards_justice_paid_flying_changes_actual_block_legality_and_damage",
+      "Entry up to one nonland nontoken permanent to owner hand, including self or opposing owner": "msh_three_cards_justice_paid_optional_entry_restrictions_self_owner_and_counter",
+      "Other controlled nonland return adds one +1/+1 counter per event": "msh_return_target_core_justice_paid_returns_count_tokens_and_other_only; msh_return_target_core_justice_whole_batch_freezes_control_and_owner",
+      "Prebatch source/control/suppression and return-cost lookback": "msh_return_target_core_justice_source_batch_departure_queues_old_incarnation; msh_return_target_core_justice_looks_back_at_suppression_before_aura_leaves; msh_return_target_core_justice_actual_borrowed_maze_return_cost_is_nonland",
+      "Queued source and target departure": "msh_three_cards_justice_paid_queued_entry_source_and_target_departure"
+    },
+    "Loki, God of Mischief": {
+      "Printed 2/1 and paid two mana": "msh_three_cards_loki_paid_cast_observes_real_justice_trigger_targets_before_return",
+      "Player or permanent becomes target of an ability you control": "msh_return_target_core_loki_real_paid_player_target_and_source_independence; msh_three_cards_loki_paid_raw_activation_and_each_players_turn_reset; msh_three_cards_loki_paid_cast_observes_real_justice_trigger_targets_before_return",
+      "Ability controller rather than chooser, genuine final retarget and copy acquisition": "msh_return_target_core_loki_actual_retarget_uses_ability_controller_not_chooser; msh_return_target_core_loki_bounded_copied_ability_player_and_permanent_entity_acquisition",
+      "Draw exactly one privately, before causing ability, independent of source": "msh_three_cards_loki_paid_cast_observes_real_justice_trigger_targets_before_return; msh_return_target_core_loki_real_target_then_sacrificed_observer_keeps_draw_packet; msh_three_cards_loki_paid_source_return_keeps_queue_and_recast_is_new_instance",
+      "Only once each turn, including opponent turn and consumed countered packet": "msh_three_cards_loki_paid_raw_activation_and_each_players_turn_reset; msh_three_cards_loki_countered_trigger_still_consumes_once_bounded_counter_boundary",
+      "Exclusions, suppression, exact references and origin restoration": "msh_return_target_core_loki_spells_opposing_abilities_and_nontargets_do_not_trigger; msh_return_target_core_loki_suppression_does_not_consume_once_and_restoration_registers; msh_return_target_core_loki_exact_incarnation_reacquisition_and_stale_reference; msh_return_target_core_loki_copy_origin_acquisition_and_expiry_restore_once_history"
+    }
+  },
+  "source_reading": {
+    "core_evidence": "docs/msh-incursion-justice-loki-core-evidence.json",
+    "core_evidence_sha256": "cf787ec540b0762abe0f7067aa0210e37c81078e747a7722436e4c7bcb55d4a2",
+    "full_Oracle_direct_and_helper_audits": [
+      {
+        "path": "<cache>/rustmage-msh-incursion-justice-loki-design-e5f576b5.json",
+        "sha256": "aa383fba470c9b70b9279c3810e1473d7a0b0728f6f961729e3adb7d3225f78a",
+        "coverage": "Full3 Oracle/direct classes;42 reverified Java pins,40 full Java bodies including direct classes and explicitly ranged StaticFilters/GameEvent infrastructure;25 base Rust snapshots refreshed. Five additional full fixture Java bodies included."
+      },
+      {
+        "path": "<cache>/rustmage-msh-incursion-return-target-core-fixture-audit-e5f576b5.json",
+        "sha256": "0631a7b1bf55403badfa76b8e142d2568f2323fa4720190fcc66e6bb51ac77eb",
+        "coverage": "Five further full direct fixture Java bodies and10 full frozen fixture Oracle records."
+      }
+    ],
+    "whole_fixture_audit": "<cache>/rustmage-msh-incursion-justice-loki-whole-fixture-audit.json",
+    "whole_fixture_audit_sha256": "da697c07bdf9374596c65d2f5fd77f5ad890db438ca47ae648757dd09e5abe43",
+    "whole_fixture_coverage": "Four further full direct Java bodies/current typed definitions/full frozen Oracle. Main three complete Oracle/direct/helper pins retained unchanged."
+  },
+  "core_runtime_delta_after_checkpoint": "None. Engine change only links the dedicated test module; definitions keep the same typed bodies, paired flags become true, and test-only physical setup now accepts either staging or admitted cards.",
+  "tests": {
+    "whole_module": "src/engine_msh_incursion_justice_loki_cards_tests.rs",
+    "whole_module_sha256": "e4f51dbfe9566b8906c27e9b95c70680c4dee8de3007c3902a89d4e2a47fc3f0",
+    "whole_groups": 10,
+    "whole_functions": [
+      "msh_three_cards_justice_paid_optional_entry_restrictions_self_owner_and_counter",
+      "msh_three_cards_justice_paid_flying_changes_actual_block_legality_and_damage",
+      "msh_three_cards_justice_paid_queued_entry_source_and_target_departure",
+      "msh_three_cards_loki_paid_cast_observes_real_justice_trigger_targets_before_return",
+      "msh_three_cards_loki_paid_raw_activation_and_each_players_turn_reset",
+      "msh_three_cards_loki_paid_source_return_keeps_queue_and_recast_is_new_instance",
+      "msh_three_cards_loki_countered_trigger_still_consumes_once_bounded_counter_boundary",
+      "msh_three_cards_incursion_exact_seven_mana_and_sorcery_timing_atomicity",
+      "msh_three_cards_incursion_uses_resolution_time_creatures_after_paid_flash_and_return",
+      "msh_three_cards_incursion_copies_no_counters_tap_grants_or_external_animation"
+    ],
+    "core_module": "src/engine_msh_incursion_justice_loki_core_tests.rs",
+    "core_module_sha256": "e2890df962d3dfd4478fc6a507649d6837029892e09fae8104d9189da4a3417d",
+    "core_groups": 22,
+    "all_groups": 32,
+    "seats": "Both seats in every family",
+    "paid_ownership_privacy": "Existing checked helpers verify wrong actor, raw/index orphan branches, stale revision and restore. Dedicated entry-target branches drop parents/restore; private Loki draw remains hidden to the nonactor, while returned public identities remain known."
+  },
+  "bounded_qualifications": [
+    "No admitted ability-copy producer exists; copied real ability acquisition is an explicitly bounded production-hook fixture.",
+    "No admitted ability-counter producer exists; one countered-trigger once-history check uses the existing production counter helper after actual paid cast/target/cost actions. No unsupported producer is executed.",
+    "Distinct automatic CastRollback ability-target scenario was not found reachable; failed-payment atomicity and owned preannouncement restore are tested.",
+    "Future replacement rules redirecting arbitrary departures into hand must extend the current requested-hand observer opt-in."
+  ],
+  "proof": {
+    "path": "<cache>/rustmage-msh-incursion-justice-loki-cards-proof.json",
+    "sha256": "e78a679854753e363ada0923712ad5f97a55b25c39816e32a4b848680cc76b6a",
+    "rows": 2528,
+    "normal_schema": 150,
+    "previous_schema": 149,
+    "historical_schema": 148,
+    "inherited_published_full_rows_exact": 2525,
+    "direct_parent_tables": 17,
+    "all_full_structs_exact": true,
+    "no_field_stripping": true,
+    "no_recorder_changes": true,
+    "new_rows": {
+      "Justice, Vance Astrovik": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Battlefield",
+        "journal": "091bbc1cbc70f60f",
+        "observations": "81a0bdcc0f5faafe"
+      },
+      "Loki, God of Mischief": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "b6cf3749b9ab6fcf",
+        "observations": "29b80aac22f8b9aa"
+      },
+      "Multiversal Incursion": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Graveyard",
+        "journal": "79397f3e65b5c440",
+        "observations": "3cfe0c55560b1821"
+      }
+    },
+    "trace_files": {
+      "150": {
+        "path": "<cache>/rustmage-msh-incursion-justice-loki-cards-strict-traces.json",
+        "sha256": "f4defcbeb3e549aca9e561cb07de68ca4dbeb8a88506d93033bc67c469b85f85",
+        "rows": 2528
+      },
+      "149": {
+        "path": "<cache>/rustmage-msh-incursion-justice-loki-cards-strict-traces.previous-schema.json",
+        "sha256": "30226cae74fa91f34e28338043d588b8a721db74b3ce2a1e9c446db0292741f9",
+        "rows": 2528
+      },
+      "148": {
+        "path": "<cache>/rustmage-msh-incursion-justice-loki-cards-strict-legacy-traces.previous-schema.json",
+        "sha256": "97763cf16cf2b19d7b7ebd6074c45fc07eb7b03c9007b77618887ebd17686977",
+        "rows": 2528
+      }
+    }
+  },
+  "validation": {
+    "profile": "repository defaults",
+    "native": 1624,
+    "native_execution_seconds": 15.29,
+    "commands": {
+      "native": {
+        "exit": 0,
+        "seconds": 186.87462997436523
+      },
+      "clippy": {
+        "exit": 0,
+        "seconds": 20.519964456558228
+      },
+      "format": {
+        "exit": 0,
+        "seconds": 1.8583869934082031
+      },
+      "card-format": {
+        "exit": 0,
+        "seconds": 1.0956449508666992
+      },
+      "source": {
+        "exit": 0,
+        "seconds": 0.7888693809509277
+      },
+      "link": {
+        "exit": 0,
+        "seconds": 0.5262966156005859
+      },
+      "runner-contracts": {
+        "exit": 0,
+        "seconds": 0.4451637268066406
+      },
+      "legacy-full-traces": {
+        "exit": 0,
+        "seconds": 2.0626683235168457
+      }
+    },
+    "fixed_input_count": 11821,
+    "changed_inputs": [],
+    "guard_report": "<cache>/rustmage-msh-incursion-justice-loki-cards-strict-resource.json",
+    "guard_report_sha256": "32007761041883722271261d92c2f132d55eacf953d9ffa6ce5d65fdcc13771d",
+    "guard_elapsed_seconds_including_queue": 1222.950470092008,
+    "driver_elapsed_seconds": 214.3691864013672,
+    "memory_limit_bytes": 6442450944,
+    "peak_bytes": 2707648512,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "development_focus": "32/32 green before flag promotion; profile0 was focus only.",
+    "fixed_input_manifest": {
+      "path": "<cache>/rustmage-msh-incursion-justice-loki-cards-strict-inputs.json",
+      "sha256": "5b7f258703204e168a195da3a7b92a883f4641936747987b147ba04cf47d5c4c"
+    }
+  },
+  "identity": {
+    "definitions": 5403,
+    "token_recipes": 125,
+    "new_ids": 0,
+    "membership_metadata_policy_globals_unchanged": true,
+    "only_three_flags_enabled": true,
+    "coordinated_schema": 150,
+    "new_public_payload_from_these_cards": false
+  },
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-incursion-justice-loki-cards-preservation.json",
+    "manifest_sha256": "8fd41cd0c040526f984d07c7a189521f5ab9d984cf1f348f91cf4da9c91b196f",
+    "prior_required_exact": 3988,
+    "required_exact": 3995,
+    "new_shared_libraries": {
+      "<cache>/rustmage-msh-incursion-justice-loki-cards-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-incursion-justice-loki-cards-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "useful_natives": {
+      "<cache>/rustmage-msh-incursion-justice-loki-cards-default-native-06ef2e73-32groups": "fe128c5af37af46fdcedf7e59d69b62cc4e47916ecda0de4bf653107b87d7940",
+      "<cache>/rustmage-msh-incursion-justice-loki-cards-profile0-native-pre-admission32": "68950e602231e58ee98dfff2b8c979ea0a10720c0d6cc8402faea5cec9a3b4b4"
+    },
+    "cleanup_report": "<cache>/rustmage-msh-incursion-justice-loki-cards-cleanup.json",
+    "cleanup_report_sha256": "6bf04b17691b4534186961baff0032af83c031dc976061c1b3befe75f1cebc9e",
+    "own_processes_inspected": 210,
+    "permission_limited_inspections": 5,
+    "accessible_target_references": [],
+    "disposable_files_removed": 1186,
+    "disposable_path_bytes_removed": 264651671
+  },
+  "throughput": {
+    "scope": "Three whole cards plus their shared core and32 both-seat families, including read/audit/queue/build time",
+    "core_and_whole_start_utc": "2026-10-25T11:47:36.551554+00:00",
+    "whole_stage_start_utc": "2026-10-25T12:37:17+00:00",
+    "end_utc": "2026-10-25T13:16:41.937971+00:00",
+    "core_and_whole_elapsed_seconds": 5345.386417,
+    "whole_stage_elapsed_seconds": 2364.937971,
+    "cards_per_hour_including_core": 2.0204339139360674,
+    "native_workload": "1624 heterogeneous native rules tests; not full-set games or all-Standard simulation performance"
+  }
+}

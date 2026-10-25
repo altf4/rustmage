@@ -8029,3 +8029,7 @@ mod msh_broad_legal_games_tests;
 #[cfg(test)]
 #[path = "engine_msh_counter_three_tests.rs"]
 mod msh_counter_three_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_incursion_justice_loki_cards_tests.rs"]
+mod msh_incursion_justice_loki_cards_tests;

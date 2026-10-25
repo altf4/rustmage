@@ -9159,6 +9159,14 @@
     "journal": "17b1007f413b3222",
     "observations": "fc9c09c7defc5ced"
   },
+  "Justice, Vance Astrovik": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "091bbc1cbc70f60f",
+    "observations": "81a0bdcc0f5faafe"
+  },
   "K'un-Lun Warrior": {
     "root": "main",
     "status": "completed",
@@ -9934,6 +9942,14 @@
     "zone": "Battlefield",
     "journal": "ed7be8a75ee8050c",
     "observations": "876824997306d9e2"
+  },
+  "Loki, God of Mischief": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "29b80aac22f8b9aa"
   },
   "Lonely Arroyo": {
     "root": "main",
@@ -11438,6 +11454,14 @@
     "zone": "Graveyard",
     "journal": "adcea180f71f0045",
     "observations": "7e2bc2335fecc061"
+  },
+  "Multiversal Incursion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "79397f3e65b5c440",
+    "observations": "3cfe0c55560b1821"
   },
   "Murder": {
     "root": "main",
