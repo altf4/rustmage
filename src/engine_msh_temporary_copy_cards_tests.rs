@@ -1070,3 +1070,228 @@ fn msh_copy_cards_shuri_copies_runtime_token_blueprint_without_its_noncopyable_h
         assert!(!g.on_battlefield(token));
     }
 }
+
+/// Real paid entry and first-main copy; optional unrelated Aura forces layer-six evaluation.
+pub(super) fn paid_subtype_cda_fixture(
+    p: Player,
+    blueprint: &str,
+    layer_six: bool,
+) -> (Game, CardId) {
+    let mut g = setup(p);
+    let original = paid(&mut g, p, blueprint, &[]);
+    let task = paid(&mut g, p, TASK, &[]);
+    next_main(&mut g, p);
+    trigger(&mut g, task, Some(original));
+    settle(&mut g);
+    if layer_six {
+        let bear = paid(&mut g, p, "Bear Cub", &[]);
+        paid(&mut g, p, "Witness Protection", &[Target::Card(bear)]);
+    }
+    (g, task)
+}
+
+#[test]
+fn msh_copy_subtype_cda_paid_taskmaster_excludes_intrinsic_changeling_in_both_query_paths() {
+    for p in [Player::P0, Player::P1] {
+        for blueprint in ["Three Tree Mascot", "Barkform Harvester"] {
+            for layer_six in [false, true] {
+                let (g, task) = paid_subtype_cda_fixture(p, blueprint, layer_six);
+                assert_eq!(g.evaluated_abilities().is_some(), layer_six);
+                assert!(!g.keywords(task).contains(Keywords::CHANGELING));
+                assert!(!g.object_view(task).keywords.contains(Keywords::CHANGELING));
+                assert!(!g.has_subtype(task, "Merfolk"));
+                assert!(!g.has_subtype(task, "Hero"));
+                assert!(g.has_subtype(task, "Human") && g.has_subtype(task, "Mercenary"));
+                assert!(g.has_subtype(task, "Villain"));
+                if blueprint == "Barkform Harvester" {
+                    assert!(g.keywords(task).contains(Keywords::REACH));
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn msh_copy_subtype_cda_paid_absorbing_additive_types_keep_changeling() {
+    for p in [Player::P0, Player::P1] {
+        for blueprint in ["Three Tree Mascot", "Barkform Harvester"] {
+            let mut g = setup(p);
+            let original = paid(&mut g, p, blueprint, &[]);
+            let source = paid(&mut g, p, ABSORB, &[]);
+            next_main(&mut g, p);
+            trigger(&mut g, source, Some(original));
+            settle(&mut g);
+            assert!(g.keywords(source).contains(Keywords::CHANGELING));
+            assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+            assert!(g.has_subtype(source, "Merfolk") && g.has_subtype(source, "Hero"));
+            assert_eq!(stats(&g, source), (4, 4));
+            let bear = paid(&mut g, p, "Bear Cub", &[]);
+            paid(&mut g, p, "Witness Protection", &[Target::Card(bear)]);
+            assert!(g.evaluated_abilities().is_some());
+            assert!(
+                g.object_view(source)
+                    .keywords
+                    .contains(Keywords::CHANGELING)
+            );
+        }
+    }
+}
+
+#[test]
+fn msh_copy_subtype_cda_external_keyword_grant_survives_intrinsic_filter_and_restore() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, task) = paid_subtype_cda_fixture(p, "Barkform Harvester", false);
+        let snapshot = g.snapshot();
+        // The legacy gained-keyword component is also later than the intrinsic baseline.
+        g.state.objects[task as usize].gained_keywords = Keywords::CHANGELING;
+        assert!(g.object_view(task).keywords.contains(Keywords::CHANGELING));
+        g.restore(&snapshot).unwrap();
+        // Bounded existing resolution-grant API, not an invented playable grant card.
+        g.grant_keyword_effects(&[task], g.object_ref(task), Keywords::CHANGELING);
+        assert!(g.object_view(task).keywords.contains(Keywords::CHANGELING));
+        assert!(g.keywords(task).contains(Keywords::REACH));
+        let mut child = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        drop(g);
+        assert!(
+            child
+                .object_view(task)
+                .keywords
+                .contains(Keywords::CHANGELING)
+        );
+        child.restore(&snapshot).unwrap();
+        assert!(
+            !child
+                .object_view(task)
+                .keywords
+                .contains(Keywords::CHANGELING)
+        );
+    }
+}
+
+#[test]
+fn msh_copy_subtype_cda_undercover_conditional_all_types_remains_live() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, task) = paid_subtype_cda_fixture(p, "Undercover Skrull", false);
+        assert!(!g.has_subtype(task, "Merfolk"));
+        for _ in 0..2 {
+            let bear = paid(&mut g, p, "Bear Cub", &[]);
+            paid(&mut g, p, "Murder", &[Target::Card(bear)]);
+        }
+        assert!(g.has_subtype(task, "Merfolk") && g.has_subtype(task, "Hero"));
+        assert!(!g.keywords(task).contains(Keywords::CHANGELING));
+        assert_eq!(stats(&g, task), (3, 3));
+        paid(&mut g, p, "Rest in Peace", &[]);
+        assert!(!g.has_subtype(task, "Merfolk"));
+        assert!(!g.keywords(task).contains(Keywords::CHANGELING));
+        assert_eq!(stats(&g, task), (1, 1));
+    }
+}
+
+#[test]
+fn msh_copy_subtype_cda_paid_molten_then_shuri_flat_copy_never_restores_changeling() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, task) = paid_subtype_cda_fixture(p, "Barkform Harvester", false);
+        paid_packet(&mut g, p, "Molten Duplication", &[Target::Card(task)]);
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::Legend { .. })
+        });
+        let copied = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, object)| object.zone == Zone::Battlefield && object.is_copy_token())
+            .map(|(i, _)| i as CardId)
+            .unwrap();
+        let copied_ref = g.object_ref(copied);
+        checked(&mut g, Action::KeepLegend { object: copied_ref });
+        settle(&mut g);
+        assert!(
+            !g.object_view(copied)
+                .keywords
+                .contains(Keywords::CHANGELING)
+        );
+        assert!(g.object_view(copied).keywords.contains(Keywords::REACH));
+        assert!(!g.has_subtype(copied, "Merfolk"));
+        let shuri_source = paid(&mut g, p, SHURI, &[]);
+        paid(
+            &mut g,
+            p,
+            "Impolite Entrance",
+            &[Target::Card(shuri_source)],
+        );
+        let recipient = paid(&mut g, p, "Arc Reactor", &[]);
+        shuri(&mut g, p, shuri_source, recipient, copied);
+        settle(&mut g);
+        assert!(
+            !g.object_view(recipient)
+                .keywords
+                .contains(Keywords::CHANGELING)
+        );
+        assert!(g.object_view(recipient).keywords.contains(Keywords::REACH));
+        assert!(!g.has_subtype(recipient, "Merfolk"));
+        assert!(!ability_world::CharacteristicWorld::legendary(
+            &g, recipient
+        ));
+    }
+}
+
+#[test]
+fn msh_copy_subtype_cda_taskmaster_cannot_spend_hero_mana_on_copied_mascot_activation() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, task) = paid_subtype_cda_fixture(p, "Three Tree Mascot", false);
+        // The original changeling could otherwise legally convert Hero-only mana
+        // through its own Hero activation before the enclosing Taskmaster cost.
+        let original = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(i, object)| {
+                *i != task as usize
+                    && object.zone == Zone::Battlefield
+                    && object.card.name() == "Three Tree Mascot"
+            })
+            .map(|(i, _)| i as CardId)
+            .unwrap();
+        paid(&mut g, p, "Murder", &[Target::Card(original)]);
+        let tower = named(&mut g, p, "Avengers Tower", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: tower });
+        g.state.players[p.index()].mana = [0; 6];
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: tower,
+                ability: 1,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 1, 0, 0, 0, 0],
+            },
+        );
+        reject(
+            &mut g,
+            Action::AnnounceMana {
+                card: task,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        g.state.players[p.index()].mana[5] = 1;
+        checked(
+            &mut g,
+            Action::ActivateMana {
+                card: task,
+                ability: 0,
+                payment: [0, 0, 0, 0, 0, 1],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 1, 0]);
+        assert!(!g.object_view(task).keywords.contains(Keywords::CHANGELING));
+    }
+}

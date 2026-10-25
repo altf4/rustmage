@@ -754,9 +754,8 @@ impl<'g> FundingState<'g> {
         if let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) {
             return evaluation.result.objects[target.id as usize].keywords;
         }
-        let mut keywords = target
-            .object
-            .keywords()
+        let mut keywords = ability_world::CharacteristicWorld::intrinsic_keywords(self, target.id)
+            .union(target.object.gained_keywords)
             .union(ability_world::CharacteristicWorld::copied_keywords(
                 self, target.id,
             ))

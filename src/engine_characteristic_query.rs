@@ -478,8 +478,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             }
         }
         let target = self.object(id);
-        let mut keywords = target
-            .keywords()
+        let mut keywords = CharacteristicWorld::intrinsic_keywords(self, id)
+            .union(target.gained_keywords)
             .union(CharacteristicWorld::copied_keywords(self, id))
             .union(self.attachment_bonus(id).1)
             .union(CharacteristicWorld::counter_subtype_keywords(self, id))

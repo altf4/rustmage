@@ -81,6 +81,9 @@ pub(super) trait CharacteristicWorld {
             .and_then(|value| value.name)
             .unwrap_or_else(|| self.definition(id).name())
     }
+    fn intrinsic_keywords(&self, id: CardId) -> Keywords {
+        self.recipe(id).intrinsic_keywords()
+    }
     fn copied_keywords(&self, id: CardId) -> Keywords {
         let recipe = self.recipe(id);
         let keywords = recipe

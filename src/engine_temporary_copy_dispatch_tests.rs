@@ -53,6 +53,7 @@ fn creature_recipe(card: Card) -> CopyRecipe {
             }),
             ..CopyOverrides::NONE
         }),
+        faces: None,
     }
 }
 #[test]

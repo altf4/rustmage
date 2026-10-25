@@ -278,3 +278,39 @@ fn msh_temporary_copy_funding_effective_copy_token_entry_kinds_govern_tap_counte
         assert_eq!(game.object_view(id), outcomes.remove(0));
     }
 }
+
+#[test]
+fn msh_copy_subtype_cda_funding_raw_and_evaluated_keywords_equal_paid_actual() {
+    for player in [Player::P0, Player::P1] {
+        for blueprint in ["Three Tree Mascot", "Barkform Harvester"] {
+            for layer_six in [false, true] {
+                let (game, task) =
+                    super::super::msh_temporary_copy_cards_tests::paid_subtype_cda_fixture(
+                        player, blueprint, layer_six,
+                    );
+                let snapshot = game.snapshot();
+                let mut request = goal(player);
+                request.source = Some((
+                    game.object_ref(task),
+                    0,
+                    Counters::default(),
+                    game.state.objects[task as usize].card,
+                    game.copy_ability_origin(game.object_ref(task)),
+                ));
+                let world = FundingState::from_game(&game, &request);
+                let resource = world.resources.iter().find(|r| r.id == task).unwrap();
+                assert_eq!(world.keywords(resource), game.keywords(task));
+                assert!(!world.keywords(resource).contains(Keywords::CHANGELING));
+                let query = characteristic_query::CharacteristicQuery::in_world(&world);
+                assert_eq!(query.object_view(task), game.object_view(task));
+                assert!(
+                    !ability_world::CharacteristicWorld::subtypes(&world, task).has(
+                        ability_world::CharacteristicWorld::definition(&world, task),
+                        "Merfolk"
+                    )
+                );
+                assert_eq!(game.snapshot(), snapshot);
+            }
+        }
+    }
+}

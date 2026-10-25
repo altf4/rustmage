@@ -40,6 +40,7 @@ mod copies;
 mod prepared;
 #[path = "engine_stack_copies.rs"]
 mod stack_copies;
+use copies::CopyFaces;
 pub use copies::CopyRecipe;
 #[path = "engine_copy_grant_origins.rs"]
 mod copy_grant_origins;
@@ -774,9 +775,6 @@ impl Object {
     }
     fn is_token(&self) -> bool {
         self.copy_kind != CopyKind::Physical && (self.is_copy_token() || self.card.is_token())
-    }
-    fn keywords(&self) -> Keywords {
-        self.card.keywords().union(self.gained_keywords)
     }
     fn untap(&mut self) {
         if self.tapped {
@@ -7860,3 +7858,7 @@ mod msh_temporary_copy_cards_tests;
 #[cfg(test)]
 #[path = "engine_msh_thirteenth_combined_tests.rs"]
 mod msh_thirteenth_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_copy_identity_regression_tests.rs"]
+mod msh_copy_identity_regression_tests;
