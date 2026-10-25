@@ -214,3 +214,17 @@ packet remains a triggered ability; when there are no legal optional recipients,
 announcement can finish automatically. The scalar consumption walkers inspect
 this header for any existing opt-in quantity facts. This does not introduce an
 English parser or public state field.
+
+## Recent graveyard targets and targeted-player searches
+
+Use `TargetPredicate::EnteredGraveyardThisTurn` inside an ordinary graveyard
+object rule to test the existing exact-incarnation entry history. Combine it
+with the required owner, type and permanent predicates. History records actual
+final graveyard destinations from every origin and clears on departure or a new
+turn; a same-slot reentry never rebinds an already announced target.
+
+`Instruction::SearchTargetPlayer` makes the legal player in the selected target
+group perform an ordinary owned search. Keep `SearchTargetController` for the
+controller captured from a card target. Use explicit target groups when a spell
+also has independent creature targets; losing a player target must not redirect
+the search to the spell controller or cancel effects on surviving targets.

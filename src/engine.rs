@@ -7729,3 +7729,7 @@ mod msh_library_top_tests;
 #[cfg(test)]
 #[path = "engine_msh_eleventh_combined_tests.rs"]
 mod msh_eleventh_combined_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_recent_targets_tests.rs"]
+mod msh_recent_targets_tests;

@@ -975,6 +975,11 @@ impl Game {
                 let object = &self.state.objects[id as usize];
                 return match *predicate {
                     TargetPredicate::OwnedByController => object.owner == controller,
+                    TargetPredicate::EnteredGraveyardThisTurn => {
+                        object.zone == Zone::Graveyard
+                            && !object.is_token()
+                            && self.graveyard_entry_this_turn(self.object_ref(id))
+                    }
                     TargetPredicate::ManaValueAtMostLifeGained => {
                         u128::from(object.card.fixed_mana_value())
                             <= self.state.players[controller.index()].life_gained_this_turn

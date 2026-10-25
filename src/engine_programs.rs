@@ -3127,10 +3127,17 @@ impl Game {
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
                 Instruction::Search(spec)
                 | Instruction::SearchTargetController(spec)
+                | Instruction::SearchTargetPlayer(spec)
                 | Instruction::SearchRequired(spec)
                 | Instruction::SearchDifferentNames(spec) => {
                     let player = if matches!(instruction, Instruction::SearchTargetController(_)) {
                         let Some(player) = self.resolution_target_controller() else {
+                            continue;
+                        };
+                        player
+                    } else if matches!(instruction, Instruction::SearchTargetPlayer(_)) {
+                        let Some(player) = self.program_players(PlayerSet::Targeted, &item).next()
+                        else {
                             continue;
                         };
                         player

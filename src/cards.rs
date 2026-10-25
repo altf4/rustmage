@@ -232,6 +232,7 @@ impl TargetRule {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetPredicate {
     OwnedByController,
+    EnteredGraveyardThisTurn,
     ManaValueAtMostLifeGained,
     OtherThanSource,
     Blocking,
@@ -1327,6 +1328,8 @@ pub(crate) enum Instruction {
     },
     Search(SearchSpec),
     SearchTargetController(SearchSpec),
+    /// The legal player target in the currently selected target group searches.
+    SearchTargetPlayer(SearchSpec),
     MayTargetController {
         skip: usize,
     },
