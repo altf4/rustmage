@@ -156,7 +156,7 @@ mod evidence;
 pub use evidence::{EvidenceEventView, EvidenceView};
 #[path = "engine_library_selection.rs"]
 mod library_selection;
-pub use library_selection::LibrarySelectionView;
+pub use library_selection::{EntryTransformChoiceView, LibrarySelectionView};
 
 #[path = "engine_forage.rs"]
 mod forage;
@@ -2237,6 +2237,8 @@ pub struct Observation {
     pub targeting_group: Option<u16>,
     pub library_choice: Option<LibraryChoiceView>,
     pub library_selection: Option<LibrarySelectionView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_transform: Option<EntryTransformChoiceView>,
     pub target_library: Option<TargetLibraryView>,
     pub last_target_library_move: Option<TargetLibraryMovement>,
     pub recovery_choice: Option<RecoveryChoiceView>,
@@ -5114,6 +5116,10 @@ impl Game {
                 self.choose_optional_search(actor, accept);
             }
             Action::ChooseOptional { accept } => {
+                if self.complete_library_entry_transform(accept) {
+                    self.run_program();
+                    return;
+                }
                 let Pending::EffectOptional { skip_to, .. } = self.state.pending else {
                     unreachable!()
                 };
@@ -7028,6 +7034,7 @@ impl Game {
                 options
             },
             library_selection: self.library_selection_view(viewer),
+            entry_transform: self.entry_transform_choice_view(),
             target_library: self.target_library_view(viewer),
             last_target_library_move: s.last_target_library_move.as_deref().copied(),
             library_choice: if owns_choice {
@@ -7862,3 +7869,7 @@ mod msh_thirteenth_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_copy_identity_regression_tests.rs"]
 mod msh_copy_identity_regression_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_hand_entry_core_tests.rs"]
+mod msh_hand_entry_core_tests;
