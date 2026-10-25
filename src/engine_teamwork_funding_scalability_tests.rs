@@ -300,7 +300,7 @@ fn msh_teamwork_funding_scalability_small_independent_shared_resource_oracle_and
                 for active in [None, Some(0), Some(1)] {
                     let mut g = setup(p);
                     paid_iron(&mut g, p);
-                    g.create_tokens(p, Card::MshDoombotToken, robots, false);
+                    g.create_tokens(p, Card::MshDoombotToken, robots.into(), false);
                     settle(&mut g);
                     let spell = named(&mut g, p, "Atlantis Attacks", Zone::Hand);
                     g.state.players[p.index()].mana = [0, blue, 0, 0, 0, 0];
