@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "09a6a1f7ffb5148b00c0f12a0a3ea950f793109e954cb11003d39517ace6ad84",
+  "catalogue_version": "6db0e60f4d2a4d2b981ed3de80e46675f883195f399ecee9f61be2ac4fd36bd7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2519,
-  "implemented_total": 2525,
+  "implemented_standard_cards": 2522,
+  "implemented_total": 2528,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 214,
-      "gated": 59
+      "complete": 217,
+      "gated": 56
     },
     "one": {
       "total": 1,
@@ -18613,8 +18613,8 @@
     {
       "name": "Justice, Vance Astrovik",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/justice_vance_astrovik.rs",
       "set": "msh"
     },
@@ -20517,8 +20517,8 @@
     {
       "name": "Loki, God of Mischief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/loki_god_of_mischief.rs",
       "set": "msh"
     },
@@ -23213,8 +23213,8 @@
     {
       "name": "Multiversal Incursion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/multiversal_incursion.rs",
       "set": "msh"
     },

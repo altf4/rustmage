@@ -47,7 +47,9 @@ fn gated_source(game: &mut Game, player: Player, name: &str, zone: Zone) -> Card
         INCURSION | "Justice, Vance Astrovik" | "Loki, God of Mischief"
     ));
     let card = Card::from_name(name).unwrap();
-    assert!(!card.is_supported());
+    if card.is_supported() {
+        return named(game, player, name, zone);
+    }
     let id = CardId::try_from(game.state.objects.len()).unwrap();
     game.state.objects.push(Object {
         card,
@@ -75,11 +77,10 @@ fn gated_source(game: &mut Game, player: Player, name: &str, zone: Zone) -> Card
     id
 }
 fn bounded_incursion_cast(game: &mut Game, player: Player) {
-    // An explicitly injected complete:false definition is outside accepted
-    // legal-deck construction. Its real typed body is nevertheless exercised
-    // through ordinary checked announcement, exact payment and resolution.
+    // The core checkpoint exercised this same real typed body with an explicit
+    // gated physical fixture. Following admission it uses ordinary supported
+    // fixture construction and the same checked exact paid cast.
     let card = Card::from_name(INCURSION).unwrap();
-    assert!(!card.is_supported());
     let id = gated_source(game, player, INCURSION, Zone::Hand);
     priority(game, player);
     let (colored, generic) = card.cost();
