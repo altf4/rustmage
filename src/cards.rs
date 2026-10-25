@@ -660,7 +660,7 @@ pub enum EffectChoiceKind {
     Discard,
     DiscardNamed(&'static str),
     /// One controlled permanent matching the sacrifice filter, or one private hand card.
-    /// Resolution-only; the flag restricts the discard route, not the permanent.
+    /// The flag restricts the discard route, not the permanent, for resolution or activation costs.
     SacrificeOrDiscard {
         nonland: bool,
     },

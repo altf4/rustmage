@@ -1,0 +1,257 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Six whole-card candidates; frozen parent and interaction evidence at publication; final full release validation, CI and independent reviews pending",
+  "base_main": "319802ddc91d45b4bfc3d07090b49326ee897960",
+  "recording_runtime_head": "611968c7b939d9e3897e19512201e297661c7daf",
+  "membership": {
+    "frozen_oracle_identities": 281,
+    "frozen_printings": 448,
+    "merged_admission_flags_at_base": 166,
+    "new_whole_card_candidates": 6,
+    "combined_admission_flags": 172,
+    "remaining_gated": 109,
+    "acceptance": "Pending entire-pool obligations, interactions, complete legal MSH-only games and performance"
+  },
+  "complete_candidate_cards": [
+    "Arnim Zola, Bio-Fanatic",
+    "Bullseye, Death Dealer",
+    "Jennifer Walters // The Sensational She-Hulk",
+    "K'un-Lun Warrior",
+    "Punishing Punch",
+    "Rewrite History"
+  ],
+  "parents": [
+    {
+      "label": "mandatory cost union",
+      "head": "335798e8ed9f4bc92e2d9267f1de57dc942663b1",
+      "pull_request": "https://github.com/altf4/rustmage/pull/506",
+      "evidence": "docs/msh-mandatory-cost-union-evidence.json"
+    },
+    {
+      "label": "power damage and activation guard",
+      "head": "66b903c0034af14d65a37d02cedcd76c04e935bc",
+      "pull_request": "https://github.com/altf4/rustmage/pull/507",
+      "evidence": "docs/msh-punch-zola-evidence.json"
+    },
+    {
+      "label": "simultaneous tap events",
+      "head": "a02d47c8791b22f9ca48aca47ea50e431f05113c",
+      "pull_request": "https://github.com/altf4/rustmage/pull/508",
+      "evidence": "docs/msh-tap-event-batches-evidence.json"
+    },
+    {
+      "label": "creature damage received",
+      "head": "30286580c50d5015e5e36a24a997cc022e096b8a",
+      "pull_request": "https://github.com/altf4/rustmage/pull/509",
+      "evidence": "docs/msh-jennifer-core-evidence.json"
+    }
+  ],
+  "shared_rules": [
+    "A private additional-cost union normalizes only the chosen artifact-sacrifice or hand-discard route, preserving funding reservations, clause completion, private payment and source LKI. Existing public choice/action vocabulary is reused.",
+    "A post-commit simultaneous tap event batches actual changed objects; attacking, crew, teamwork, ordinary/ordered convoke and effects share it. Ordered convoke reserves selected references and commits the complete mana clause together. ETB tapped and virtual funding emit no event.",
+    "Scaled current-power damage validates both target groups before resolution and multiplies before replacements; an activation-only graveyard-card guard is shared by actual and borrowed funding, without a later resolution recheck.",
+    "Creature-damage packets capture exact victims and positive actual amounts after replacement/prevention and lifelink, before SBAs. Optional once-per-turn reflections retain captured amounts and current/latest-departure source facts."
+  ],
+  "integration_refinements": [
+    "Preserve all parent test module registrations and regenerate conflicting catalogue artifacts with the linker.",
+    "Remove a duplicate convoke eligibility scan after applying the shared scan to both ordered and ordinary paths.",
+    "Keep the original 281-card obligation inventory as an explicitly historical baseline; it is not the current admission or set-acceptance report."
+  ],
+  "integration_scenario": {
+    "source": "src/engine_msh_sixth_combined_tests.rs",
+    "sha256": "1545855daf896c2c1a32d1b2399251a8dc7689252d531a98ffa64ac184d256e1",
+    "coverage": "Both seats: all six cards are paid and interact. K'un-Lun discard enables Arnim; Arnim tap loots through Rewrite; Bullseye discards Punch before tapping, advancing Rewrite to sacrifice and return Punch before damage; She-Hulk reflects the frozen two damage once; the recovered Punch is paid with its graveyard discount and deals doubled Bullseye power. Every mutation checks raw/index owned branches, parent disposal and restore.",
+    "passed": true,
+    "resource_report": "<cache>/rustmage-build-reports/8667344a3c9041deab61eedd1602cd46.json",
+    "seconds": 110.01077737304149,
+    "memory_peak_bytes": 2317205504,
+    "oom_events": 0
+  },
+  "rules_scenarios": {
+    "base_native": 802,
+    "mandatory_cost_union": 12,
+    "power_damage_and_activation_guard": 13,
+    "tap_batches": 14,
+    "jennifer": 19,
+    "combined": 1,
+    "new_total": 59,
+    "expected_full_native_total": 861,
+    "at_publication": "All focused parent cases and the combined interaction pass. The ordinary integrated full run is pending."
+  },
+  "wire_and_identity": {
+    "schema": 143,
+    "real_wire_change": "Optional boxed SpellView.damage_received: DamageReceivedView { recipient: ObjectRef, amount: u128 }; absent values omitted from serialization. Ordinary packets add one 8-byte empty slot; a present payload occupies 32 bytes.",
+    "catalogue_definitions": 5397,
+    "verified_java_blobs": 1154,
+    "token_recipes": 119,
+    "metadata_audit": {
+      "base": "319802ddc91d45b4bfc3d07090b49326ee897960",
+      "old_ids": 5396,
+      "new_total": 5397,
+      "old_card_rows_identical_except_explicit_jennifer_face_overlay": true,
+      "old_intrinsic_colors_aliases_token_recipes_emblems_creature_types_and_constants_preserved": true,
+      "appended": [
+        {
+          "id": 5396,
+          "name": "The Sensational She-Hulk",
+          "category": "back_face",
+          "path": "msh/the_sensational_she_hulk.rs"
+        }
+      ],
+      "added_aliases": [
+        [
+          "Jennifer Walters",
+          2263
+        ],
+        [
+          "The Sensational She-Hulk",
+          5396
+        ]
+      ],
+      "added_constants": {
+        "MshSensationalSheHulk": 5396
+      },
+      "old_metadata_sha256": "c1cd27d34f452e2b0f10335d69cff731ea0250b356a8c4f82705038a78fa77cd",
+      "new_metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133"
+    }
+  },
+  "trace_proof": {
+    "main_inherited": 2469,
+    "candidate": 2475,
+    "parent_full_trace_checks": [
+      {
+        "label": "merged main",
+        "head": "319802ddc91d45b4bfc3d07090b49326ee897960",
+        "count": 2469,
+        "schema": 142,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "875c9bc250cc499e7fa8e256494d862137eafcad09366cfd259942762f0e25da"
+      },
+      {
+        "label": "mandatory cost union",
+        "head": "335798e8ed9f4bc92e2d9267f1de57dc942663b1",
+        "count": 2471,
+        "schema": 142,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "9e0e208113118088504dca360ca0bc3df1597ada8f385c0537ddecd5083bafd6"
+      },
+      {
+        "label": "power damage and activation guard",
+        "head": "66b903c0034af14d65a37d02cedcd76c04e935bc",
+        "count": 2471,
+        "schema": 142,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "d187a60046cbf04f828bb7763e562029dab885294926144fcf619f6714fb5de8"
+      },
+      {
+        "label": "simultaneous tap events",
+        "head": "a02d47c8791b22f9ca48aca47ea50e431f05113c",
+        "count": 2470,
+        "schema": 142,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "9e3eff2b07935754d14d7bc695e39ed31d6d670adb0daedc466adaae5d1ce805"
+      },
+      {
+        "label": "creature damage received",
+        "head": "30286580c50d5015e5e36a24a997cc022e096b8a",
+        "count": 2470,
+        "schema": 143,
+        "all_full_trace_structs_equal": true,
+        "changed": [],
+        "removed": [],
+        "baseline_sha256": "f551abf594421783b45f98cfa1de22fb1a6d964bb3e9c7ad2c7ca35f529b8d44"
+      }
+    ],
+    "added": [
+      "Arnim Zola, Bio-Fanatic",
+      "Bullseye, Death Dealer",
+      "Jennifer Walters // The Sensational She-Hulk",
+      "K'un-Lun Warrior",
+      "Punishing Punch",
+      "Rewrite History"
+    ],
+    "removed": [],
+    "normal143_sha256": "4722634e71961d11cd7287a4224a176c629f98621c2fcb1078bf1932e298b58a",
+    "previous142_sha256": "4d4c5bfb5308b24035961b49811528d2a9d51c464d5ca66596cb383ce298a798",
+    "old_fields_stripped": false,
+    "trace_recorder_changed": false,
+    "new_rows": {
+      "Arnim Zola, Bio-Fanatic": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "4324aa4c9fd9325c",
+        "observations": "f263c22f0293d3d8"
+      },
+      "Bullseye, Death Dealer": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 8,
+        "zone": "Battlefield",
+        "journal": "e404ff90c0dbbc24",
+        "observations": "4ee53bbf37dbaf88"
+      },
+      "Jennifer Walters // The Sensational She-Hulk": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "ce93789b5fa64c9f",
+        "observations": "2d8d77f6bb4d497a"
+      },
+      "K'un-Lun Warrior": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Battlefield",
+        "journal": "3d3ee93213b6a8c8",
+        "observations": "c3e2541b5a6d7eea"
+      },
+      "Punishing Punch": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 6,
+        "zone": "Graveyard",
+        "journal": "1a39953da3451863",
+        "observations": "b246e9806c0bb962"
+      },
+      "Rewrite History": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "5a37305467443acc",
+        "observations": "45179d5e5baa7eb9"
+      }
+    }
+  },
+  "recording": {
+    "helper_changed": false,
+    "normal_schema": 143,
+    "previous_schema": 142,
+    "normal": "<cache>/rustmage-msh-sixth-cohort-traces.json",
+    "previous": "<cache>/rustmage-msh-sixth-cohort-traces.previous-schema.json",
+    "resource_report": "<cache>/rustmage-build-reports/a8c4774e2add4c0baee65be1ffeb6e91.json",
+    "expected_exit_101": "The ordinary comparison catches mixed-parent rows retaining schema 142 observation hashes. All full Trace structs of all five parents were separately proven exact at their corresponding schema before accepting the normal 143 table.",
+    "inherited_behavior_changes_accepted": false
+  },
+  "validation_at_publication": {
+    "source_provenance": "Pass: 5397 definitions and 1154 authenticated Java blobs",
+    "linker": "Regenerated; no manual generated edits",
+    "combined": "Pass",
+    "full_release": "Pending on the fixed final published integration head",
+    "final_independent_reviews": "Pending two nonauthor reviews of the complete final published integration head; preliminary parent audits do not satisfy this gate",
+    "ci": "Pending on final published integration head"
+  },
+  "created_utc": "2026-10-25T00:08:40.719293+00:00"
+}
