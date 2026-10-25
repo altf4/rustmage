@@ -1,0 +1,159 @@
+{
+  "scope": "Two complete individual cards with directly affected restricted-mana, Equipment and granted-mana checks. No aggregate/full-set acceptance.",
+  "base": "7189c1e2",
+  "tested_source": "0180acbf719e7ef4fb8bb2338a496129212947e8",
+  "cards": [
+    "Ronin, Shadow Stalker",
+    "Shang-Chi, Master of Kung Fu"
+  ],
+  "complete": true,
+  "sources": {
+    "full_oracle": 2,
+    "full_direct_java": 2,
+    "full_read_semantic_helpers": 24,
+    "audit": "<cache>/rustmage-msh-restricted-creature-mana-design-7189c1e2.json",
+    "audit_sha256": "59fe1b89ea453f7ec0e7b787bdfe08a7d1959af76ef4552790f257dd0459c392",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "primary_release_notes": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "rules": [
+      "CR106.6 mana spending restrictions",
+      "CR118.4 life payment",
+      "CR602.5a activation tap/untap restriction",
+      "CR702.6 equip is a specific activated keyword ability",
+      "CR702.10 attack/activation haste clauses differ"
+    ],
+    "official_Shang_Chi_notes": "Activation permission does not grant haste or allow attacking. Creature sources include cards in hand and graveyard.",
+    "scoped_exact_pins_rehashed": 26
+  },
+  "implementation": {
+    "Ronin": "Printed3/3. Actual pay2life adds2 of exactly one color with once-per-turn use on exact incarnation; no tap cost. Mana lot can fund Equipment spells or an equip slot, including an equip ability inherited by a non-Equipment source. Other Equipment activations, channel, non-Equipment spells and triggered ward costs remain ineligible. Tap plus sacrifice a controlled current Equipment attached to exact Ronin is an ordinary owned additional cost, followed by target -4/-4 EOT, sorcery only.",
+    "Shang_Chi": "Printed2/2. A live rule permission permits tap-cost activations of current controlled creatures immediately, including itself, intrinsic mana, printed, inherited and attached granted activations. Actual keywords and attack permission never acquire haste. Tap adds2 of one color restricted to activated abilities with current/LKI creature-source facts, including hand/graveyard creature cards.",
+    "shared_payment": "Mana restrictions are captured independently of producer lifetime in existing owned lots. Immutable activated-slot equip identity is retained separately from source card types. Existing typed battlefield AttachSource-only activated programs identify equip; entry attachments, animation, channel and other programs are distinct. Actual payment, source-departure LKI and speculative funding reconstruct the same purpose.",
+    "shared_cost": "SacrificeAttachedEquipment qualifies the exact attachment before normalizing to ordinary sacrifice. Actual candidates, selected-cost payment, borrowed reservations and virtual source-incarnation checks agree.",
+    "readiness": "CharacteristicWorld.activation_keywords is an activation-only query. Its synthetic haste flag never appears in actual characteristic keywords, observations or attack rules. Virtual provider departure and suppression recompute the permission without changing the parent.",
+    "wire": 152,
+    "actual_public_additions": [
+      "ManaRestrictionView::EquipmentSpellOrEquip",
+      "ManaRestrictionView::CreatureActivation",
+      "EffectChoiceKind::SacrificeAttachedEquipment"
+    ],
+    "new_actions": 0,
+    "new_catalogue_ids": 0,
+    "scoped_authored_rustfmt_files": 17
+  },
+  "focused": {
+    "groups": 59,
+    "new_individual_groups": 27,
+    "directly_affected_existing_groups": 32,
+    "both_seats": true,
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "actual_terminal_exit": 0,
+    "new_rules_seconds": 0.25,
+    "summed_rules_seconds": 0.59,
+    "confirmation_guard_seconds": 23.69766130798962,
+    "confirmation_driver_seconds": 0.7599716186523438,
+    "confirmation_memory_peak_bytes": 36769792,
+    "build_and_first_ordinary_execution_guard_seconds": 53.34045941603836,
+    "build_memory_peak_bytes": 2786213888,
+    "memory_max_bytes": 6442450944,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "fixed_inputs": 11866,
+    "changed": [],
+    "input_map": "<cache>/rustmage-msh-restricted-creatures-final-confirm-inputs.json",
+    "input_map_sha256": "a6ecdc1c55f9f7e6fb780942296633d96e4d1454f6654cf20ed09f0dd51916d8",
+    "runs": [
+      {
+        "filter": "msh_restricted_creatures_",
+        "exit_code": 0
+      },
+      {
+        "filter": "engine::funding::restricted_mana_tests::",
+        "exit_code": 0
+      },
+      {
+        "filter": "msh_attachment_core_",
+        "exit_code": 0
+      },
+      {
+        "filter": "big_lotus_ring_grants_paid_sacrifice_mana_and_funding_tracks_departure",
+        "exit_code": 0
+      },
+      {
+        "filter": "big_lotus_vista_funding_recomputes_monocolor_after_virtual_sacrifice",
+        "exit_code": 0
+      }
+    ],
+    "tests": [
+      "msh_restricted_creatures_ronin_paid_body_life_one_color_and_immediate_mana",
+      "msh_restricted_creatures_ronin_once_each_turn_life_affordability_and_reset",
+      "msh_restricted_creatures_ronin_mana_pays_real_equipment_spell_and_equip",
+      "msh_restricted_creatures_ronin_rejects_non_equipment_spells_and_channel",
+      "msh_restricted_creatures_ronin_restriction_survives_producer_departure",
+      "msh_restricted_creatures_ronin_paid_attached_sacrifice_gives_minus_four_until_cleanup",
+      "msh_restricted_creatures_ronin_cost_only_current_controlled_attached_equipment",
+      "msh_restricted_creatures_ronin_tap_sorcery_and_equipment_cost_are_real_starting_requirements",
+      "msh_restricted_creatures_shang_paid_self_mana_immediate_without_haste_or_attack",
+      "msh_restricted_creatures_shang_allows_new_intrinsic_and_printed_mana_without_granting_haste",
+      "msh_restricted_creatures_shang_suppression_and_restoration_control_live_permission",
+      "msh_restricted_creatures_shang_restricted_mana_pays_creature_hand_cycling",
+      "msh_restricted_creatures_shang_restricted_mana_pays_graveyard_creature_activation",
+      "msh_restricted_creatures_shang_rejects_spells_noncreature_equip_and_channel",
+      "msh_restricted_creatures_ronin_attached_cost_and_queue_survive_source_departure",
+      "msh_restricted_creatures_ronin_target_departure_does_not_refund_tap_or_sacrifice",
+      "msh_restricted_creatures_ronin_self_target_loses_equipment_before_minus_four",
+      "msh_restricted_creatures_ronin_equipment_mana_funds_equip_inherited_by_non_equipment",
+      "msh_restricted_creatures_shang_permission_moves_to_current_controller",
+      "msh_restricted_creatures_shang_departure_removes_permission_but_not_produced_mana",
+      "msh_restricted_creatures_shang_real_land_and_restricted_mana_fund_creature_ability",
+      "msh_restricted_creatures_shang_allows_attached_granted_tap_activation_and_its_mana_cost",
+      "msh_restricted_creatures_ronin_nested_mana_funds_only_equipment_spell_without_mutating_queries",
+      "msh_restricted_creatures_restricted_mana_cannot_pay_target_ward_trigger",
+      "msh_restricted_creatures_ronin_actual_bounce_recast_new_incarnation_resets_once_use",
+      "msh_restricted_creatures_funding_virtual_haste_provider_departure_matches_actual",
+      "msh_restricted_creatures_funding_attached_equipment_exact_reservation_uses_source_incarnation"
+    ],
+    "matrix": [
+      "Real paid bodies, all five same-color choices, split/colorless rejection, immediate mana/no stack, life affordability and once each turn/reset/new incarnation",
+      "Actual Equipment spell/equip payment and nested cost funding, inherited equip from non-Equipment, producer departure and persistent spending restrictions",
+      "Sacrifice exact attached controlled Equipment versus foreign/other-bearer/stale-incarnation negatives, tap/sickness/sorcery costs, source/target departure after costs, self-target and EOT expiry",
+      "Immediate self/other creature, intrinsic/printed/granted tap activations; real life source suppression/restoration and current-controller permission; no haste keyword or attack permission",
+      "Creature-source hand cycling and graveyard return payments, nested real-land funding, ordinary spell/noncreature Equip/channel/triggered ward rejection",
+      "Owned raw/index branch with parent disposal/restore during nested mana and granted/additional choices, wrong-actor and illegal-action atomicity, both observations, virtual provider departure and exact cost-reservation incarnation"
+    ],
+    "bounded_fixtures": "Numeric mana initially pays exact printed costs; principal effects, costs, movement, Equipment, suppression/control changes, hand/graveyard abilities and combat timing use real supported actions. One virtual invalid attachment generation and a fresh foreign Elf sickness precondition are explicitly bounded.",
+    "development_attempts": "Compile-only invalid test Attack.defender field corrected. Subsequent failures were fixture assumptions: completed single-target announcements already advanced; Winter Soldier actually costs3WB and returns with finality, so the intended3-mana graveyard-source case uses actual2B Project Deathlok instead; Witness must be cast on its controller turn; Offering has two target groups; nested pure mana uses the existing ActivateMana action. A missed attached-granted readiness call was updated and specifically tested. Final27 gated groups passed. First ordinary driver executed all59 native tests green but incorrectly expected5 attachment tests instead of16, then exited1 at its count assertion. Corrected confirmation used the exact unchanged compiled native and source, all59 green/driver0; no rebuild or gameplay source correction."
+  },
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-restricted-creatures-preservation.json",
+    "sha256": "62177befab1ef7af053c8b72ff18530b48e19d5e9f7e1134040450784c8734f0",
+    "required_paths": 4571,
+    "prior_paths_rehashed_exact": 4563,
+    "retained": {
+      "<cache>/rustmage-msh-restricted-creatures-dev-target/debug/deps/rustmage-55e16bd14e329fbf": "711fda884c4e04598e8aae15e36ebf777a1d106a950063f878c1f39066fcd7cc",
+      "<cache>/rustmage-msh-restricted-creatures-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "removed_files": 165,
+    "removed_path_allocated_bytes": 40366080,
+    "own_processes_inspected": 267,
+    "accessible_target_refs": [],
+    "denied_inspections": 202,
+    "cleaned_target_must_not_be_reused": true
+  },
+  "implementation_interval": {
+    "start_utc": "2026-10-25T17:58:20.267921+00:00",
+    "end_utc": "2026-10-25T18:14:48.181015+00:00",
+    "hours": 0.2744203038888889,
+    "cards": 2,
+    "cards_per_hour": 7.288090464362243,
+    "scope": "Durable full-source design through final ordinary-supported focused confirmation; authoring, development compiles and serialized queue included. Not simulation throughput."
+  },
+  "deferred": [
+    "Iron Fist self-granted readiness integration with the same activation-only helper",
+    "Cross-family combined rules after final source integration",
+    "Full native/default/trace migration/release/CI",
+    "Two independent nonauthor final published-PR reviews",
+    "Entire281-card clause/game/performance acceptance"
+  ],
+  "main_merged": false,
+  "pr": "https://github.com/altf4/rustmage/pull/516"
+}
