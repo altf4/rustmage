@@ -1,0 +1,252 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T13:41:37.396936+00:00",
+  "scope": "Two complete typed MSH producer candidates; whole281 acceptance remains open.",
+  "base": "f57178b70cfaad32ab04cbb0ca06cbaef0540ab3",
+  "shared_core_checkpoint": "cc194981f97f585d8f3e25e7c23fb104dda31600",
+  "tested_runtime_head": "439b4d6aebbe46b7d5884db4d3f3585f49520661",
+  "new_complete_candidates": [
+    "Thanos, the Mad Titan",
+    "Trickster's Stratagem"
+  ],
+  "child_candidate_flags": 224,
+  "MSH_denominator": 281,
+  "set_acceptance": false,
+  "source_reading": {
+    "core_evidence": "docs/msh-parity-library-core-evidence.json",
+    "core_evidence_sha256": "b686c7eb4bdb296a60512fc0a819c15d00c18377a1f668d1aaf3f5e4eee06116",
+    "additional_ward_fixture_audit": "<cache>/rustmage-msh-parity-library-cards-ward-fixture-audit.json",
+    "additional_ward_fixture_audit_sha256": "35d9d7b093ffb5c9e0b47529bc9dc8f43d1f7ddf8ad87be3d17f9b11467835cd",
+    "main_scope": "Complete frozen Oracle and pinned direct Java classes and referenced helpers read before typed authoring; full source pins/read ranges retained in shared-core evidence."
+  },
+  "implementation": {
+    "shared_runtime_delta_after_core": "None. Two complete flags, ordinary admitted setup in existing core/whole tests, and a shared owned-step helper visibility change only.",
+    "direct_definitions": {
+      "thanos_the_mad_titan": {
+        "rust_sha256": "4fe13e67ec9e5f18485f4bde4545240b8a29d8435bc6ea128e328ea5e1730f72",
+        "provenance_sha256": "c48792e66a268cf37ff5931f367d9e52a6b0e9d19d026d21221dc69a3e39ebb8"
+      },
+      "trickster_s_stratagem": {
+        "rust_sha256": "128aa4b8cdccc1a447d73beda3fc9ea3b1e65aacc627685616d5a39ba0cf6c1e",
+        "provenance_sha256": "0fc16122fcce25ddbe74139dbbfc8cd000340034461e7565bd4182e6b3895832"
+      }
+    },
+    "new_ids": 0,
+    "wire_schema": 150,
+    "identity_membership_policy_recorder_changed": false
+  },
+  "printed_obligation_matrix": {
+    "Thanos, the Mad Titan": {
+      "4/4 deathtouch lifelink and exact RWB cast": "msh_parity_paid_thanos_printed_combat_deathtouch_and_lifelink; msh_parity_paid_thanos_exact_entry_discount_colorless_sickness_tap_and_lifetime_use",
+      "CWUBRG power-up, printed cost reduction only on entry turn, once lifetime": "msh_parity_paid_thanos_exact_entry_discount_colorless_sickness_tap_and_lifetime_use; msh_parity_paid_thanos_later_full_cost_and_opponent_turn_activation",
+      "Put two counters before mandatory odd/even, every other current creature matching represented mana value": "msh_parity_paid_thanos_real_counter_replacements_finish_before_mandatory_parity; core ten groups cover simultaneous batch/current creature copies/source exclusion and source departure",
+      "Untargeted destruction ignores ward/hexproof, indestructible and zone replacements obey shared rules": "msh_parity_paid_thanos_untargeted_destruction_ignores_ward_and_hexproof; core actual RIP/Progenitus, conditional Doom and copied MDFC groups",
+      "Captured packet survives source departure; blink new incarnation independent": "msh_parity_paid_thanos_removed_and_new_incarnation_does_not_receive_old_counters_or_exclusion; real paid bounce/recast in exact-entry group"
+    },
+    "Trickster's Stratagem": {
+      "3U sorcery, opponent mandatory creature, up to one separate own creature": "whole legality/timing and independent-group groups",
+      "Owner chooses second or bottom, then own target connives": "whole both destinations and land/nonland discards; msh_parity_paid_strat_real_stolen_owner_chooses_its_own_library_destination",
+      "Partial/all illegal targets and poison ward countering": "whole four validity combinations; msh_parity_paid_strat_poison_ward_and_private_owned_resolution_menus",
+      "Connive nonland discard replacement still pays counter": "msh_parity_paid_strat_nonland_discard_exile_replacement_still_pays_connive",
+      "Private owner and discard menus owned raw/index orphans, full views, restore/stale/illegal atomicity": "msh_parity_paid_strat_poison_ward_and_private_owned_resolution_menus and shared core privacy groups"
+    }
+  },
+  "rules_tests": {
+    "whole_groups": 12,
+    "shared_core_groups": 10,
+    "seats": "Both seats in every group",
+    "whole_module": "src/engine_msh_parity_library_paid_tests.rs",
+    "whole_sha256": "827c950cbac74837e10690211fd5e03a7baba24bb5cc56fad37518c99dc3906c",
+    "whole_functions": [
+      "msh_parity_paid_thanos_exact_entry_discount_colorless_sickness_tap_and_lifetime_use",
+      "msh_parity_paid_thanos_later_full_cost_and_opponent_turn_activation",
+      "msh_parity_paid_thanos_removed_and_new_incarnation_does_not_receive_old_counters_or_exclusion",
+      "msh_parity_paid_strat_owner_choice_then_optional_connive_land_and_nonland",
+      "msh_parity_paid_strat_partial_and_all_invalid_targets_after_real_responses",
+      "msh_parity_paid_strat_target_relations_mandatory_first_optional_second_and_sorcery_timing",
+      "msh_parity_paid_thanos_untargeted_destruction_ignores_ward_and_hexproof",
+      "msh_parity_paid_thanos_printed_combat_deathtouch_and_lifelink",
+      "msh_parity_paid_thanos_real_counter_replacements_finish_before_mandatory_parity",
+      "msh_parity_paid_strat_real_stolen_owner_chooses_its_own_library_destination",
+      "msh_parity_paid_strat_nonland_discard_exile_replacement_still_pays_connive",
+      "msh_parity_paid_strat_poison_ward_and_private_owned_resolution_menus"
+    ],
+    "bounded_limits": [
+      "Initial object/library/mana scenario setup is explicit; all tested card casts and power-up/cost/choice actions are ordinary checked paid actions.",
+      "One source reentry/control isolation boundary and explicit shared opcode continuations remain bounded; actual paid Unsummon/bounce/recast independently covers new-incarnation power-up reset.",
+      "These scenarios are not natural set-only whole games or whole-set performance certification."
+    ]
+  },
+  "validation": {
+    "default_profile": true,
+    "native": 1626,
+    "native_execution_seconds": 12.01,
+    "phases": [
+      {
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit": 0,
+        "seconds": 16.903485714981798,
+        "log": "<cache>/rustmage-msh-parity-library-cards-final/00.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "fmt",
+          "--all",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 1.6254128670552745,
+        "log": "<cache>/rustmage-msh-parity-library-cards-final/01.log"
+      },
+      {
+        "command": [
+          "rustfmt",
+          "--edition",
+          "2024",
+          "--check",
+          "src/card_definitions/msh/thanos_the_mad_titan.rs",
+          "src/card_definitions/msh/trickster_s_stratagem.rs"
+        ],
+        "exit": 0,
+        "seconds": 0.009832955955062062,
+        "log": "<cache>/rustmage-msh-parity-library-cards-final/02.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/check_sources.py"
+        ],
+        "exit": 0,
+        "seconds": 0.632009516004473,
+        "log": "<cache>/rustmage-msh-parity-library-cards-final/03.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/link_catalogue.py",
+          "--check"
+        ],
+        "exit": 0,
+        "seconds": 0.4701192210195586,
+        "log": "<cache>/rustmage-msh-parity-library-cards-final/04.log"
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/test_assurance_runner.py"
+        ],
+        "exit": 0,
+        "seconds": 0.42978537699673325,
+        "log": "<cache>/rustmage-msh-parity-library-cards-final/05.log"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "seconds": 155.9431307039922,
+        "log": "<cache>/rustmage-msh-parity-library-cards-final/06.log"
+      }
+    ],
+    "fixed_inputs": 11821,
+    "changed_inputs": [],
+    "driver_seconds": 176.17678809701465,
+    "guard": {
+      "command": [
+        "python3",
+        "<temp>/msh-parity-library-cards-strict.py",
+        "rustmage-msh-parity-library-cards-final",
+        "final"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 176.34359745000256,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2704306176,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "guard_report": "<cache>/rustmage-msh-parity-library-cards-final-resource.json",
+    "guard_sha256": "6ec15a3732921e4a98d1eb532fbfeaee83ae4d8d09264fb2742411277b082334",
+    "report": "<cache>/rustmage-msh-parity-library-cards-final/result.json",
+    "report_sha256": "8f801078e823b20e024e39a508136c2187d9c172c7fc1053dfff778364a00792",
+    "preaccept": "1625 rules passed; sole expected missing-two-row baseline failure, all six static phases zero; full inherited equality checked before accepting only two rows.",
+    "focused": "All twelve whole paid groups passed with flags false before promotion; focus profile0 was development only."
+  },
+  "full_trace_proof": {
+    "parent_rows": 2525,
+    "normal150_rows": 2527,
+    "previous149_rows": 2527,
+    "new_keys": [
+      "Thanos, the Mad Titan",
+      "Trickster's Stratagem"
+    ],
+    "missing": [],
+    "full_normal150_parent_differences": [],
+    "full_previous149_parent_differences": [],
+    "normal150_exact_accepted": true,
+    "summary": [
+      "test result: ok. 1626 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.01s"
+    ],
+    "failures": [],
+    "normal_sha256": "4bd62e4973ebc41c60e2dd3359b520dbe253863e2a1989a88107bf68ac6cfbde",
+    "previous_sha256": "01de8b8a9738dbfeb3dd204a1e07be2703f746904a5af654314879ba16118762",
+    "parent_proof_exact": true,
+    "normal_schema": 150,
+    "previous_schema": 149,
+    "no_field_stripping": true,
+    "recorder_changed": false,
+    "normal_export": "<cache>/rustmage-msh-parity-library-cards-final/normal150.json",
+    "previous_export": "<cache>/rustmage-msh-parity-library-cards-final/normal150.previous-schema.json"
+  },
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-parity-library-cards-preservation.json",
+    "manifest_sha256": "20a788e0462313ade4451b2fba9b41caa0b20922d502725b68203c947dddf368",
+    "prior_required": 4072,
+    "required": 4082,
+    "retained": {
+      "<cache>/rustmage-msh-parity-library-cards-default-target/debug/deps/rustmage-b764cd26223fba2c": "4c92808da4c9cef6421aaba1b8c87db2f08fa208e0ea7b0f21096eec8c5b4eeb",
+      "<cache>/rustmage-msh-parity-library-cards-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-parity-library-cards-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "a5ce603aa0526fbe147d2c8c06908fa284df4a99676e2c79836f2145c0957581",
+      "<cache>/rustmage-msh-parity-library-cards-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "cleanup": {
+      "terminal_consumers": true,
+      "accessible_target_references": [],
+      "own_processes_inspected": 184,
+      "denied_inspections": 169,
+      "removed_files": 1184,
+      "removed_path_allocated_bytes": 166821888,
+      "qualification": "Sum of st_blocks by removed path; no deduplicated physical reclaim claim.",
+      "retained": {
+        "<cache>/rustmage-msh-parity-library-cards-default-target/debug/deps/rustmage-b764cd26223fba2c": "4c92808da4c9cef6421aaba1b8c87db2f08fa208e0ea7b0f21096eec8c5b4eeb",
+        "<cache>/rustmage-msh-parity-library-cards-default-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "<cache>/rustmage-msh-parity-library-cards-focus-target/debug/deps/rustmage-55e16bd14e329fbf": "a5ce603aa0526fbe147d2c8c06908fa284df4a99676e2c79836f2145c0957581",
+        "<cache>/rustmage-msh-parity-library-cards-focus-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    }
+  },
+  "throughput": {
+    "scope": "Whole-producer proof stage from first focused invocation through final default checks and artifact cleanup. Earlier source audit, shared-core authoring, and initial whole-test drafting excluded; broader gameplay investigation overlapped this interval.",
+    "start_utc": "2026-10-25T12:42:40.809788+00:00",
+    "end_utc": "2026-10-25T13:41:37.396936+00:00",
+    "elapsed_seconds": 3536.587148,
+    "cards": 2,
+    "cards_per_hour": 2.0358610430600366,
+    "native_workload": "1626 heterogeneous native rules tests including assertions and replay; no pure simulation benchmark."
+  },
+  "remaining": "Feature integration, cross-family paid scenarios, legal MSH-only natural games, default aggregate/release/CI, two independent final published-head nonauthor reviews, and remaining49 gated cards plus existing-pool full obligation/game/performance acceptance."
+}
