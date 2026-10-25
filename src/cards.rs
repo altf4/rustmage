@@ -457,6 +457,11 @@ pub(crate) enum ManaProduction {
         color: u8,
         subtype: &'static str,
     },
+    /// Split an exact small amount among allowed mana colors, including repetitions.
+    Combination {
+        mask: u8,
+        amount: u32,
+    },
     Choice {
         mask: u8,
         amount: u32,
@@ -489,6 +494,35 @@ impl ManaProduction {
                 panic!("dynamic mana requires a characteristic world")
             }
             Self::Fixed(mana) => emit(mana),
+            Self::Combination { mask, amount } => {
+                fn combinations(
+                    mask: u8,
+                    left: u32,
+                    mana: &mut Mana,
+                    emit: &mut impl FnMut(Mana) -> bool,
+                ) -> bool {
+                    let index = mask.trailing_zeros() as usize;
+                    if index >= 6 {
+                        return left == 0 && emit(*mana);
+                    }
+                    let remaining = mask & !(1 << index);
+                    if remaining == 0 {
+                        mana[index] = left;
+                        let done = emit(*mana);
+                        mana[index] = 0;
+                        return done;
+                    }
+                    for count in 0..=left {
+                        mana[index] = count;
+                        if combinations(remaining, left - count, mana, emit) {
+                            return true;
+                        }
+                    }
+                    mana[index] = 0;
+                    false
+                }
+                combinations(mask & 63, amount, &mut [0; 6], &mut emit)
+            }
             Self::Choice { mask, amount } => {
                 for index in 0..6 {
                     if mask & (1 << index) != 0 {
@@ -780,6 +814,12 @@ pub(crate) enum MillAmount {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ManaCost {
     pub colored: Mana,
+    pub generic: u32,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct TargetActivationReduction {
+    pub rule: TargetRule,
     pub generic: u32,
 }
 
@@ -2917,6 +2957,7 @@ pub(crate) enum ActivationGuard {
     OwnTurn,
     ControlSubtypeAny(&'static [&'static str]),
     ControlLandsAtLeast(u16),
+    ControlCreatureToughnessAtLeast(u16),
     SourceEnteredOrControlsBasicLand,
     HandSizeAtLeast(u16),
     GraveyardCardsAtLeast { kind: u16, minimum: u16 },
@@ -2929,6 +2970,7 @@ impl ActivationGuard {
             | Self::CastInstantSorceryThisTurn
             | Self::OwnTurn
             | Self::ControlLandsAtLeast(_)
+            | Self::ControlCreatureToughnessAtLeast(_)
             | Self::SourceEnteredOrControlsBasicLand
             | Self::HandSizeAtLeast(_)
             | Self::GraveyardCardsAtLeast { .. }
@@ -3709,6 +3751,17 @@ impl Card {
         authored::RULES[self.index()]
             .extras
             .power_up_mana_cost_alternatives
+    }
+    pub(crate) fn activation_target_reduction(
+        self,
+        ability: u16,
+    ) -> Option<TargetActivationReduction> {
+        authored::RULES[self.index()]
+            .extras
+            .activation_target_reductions
+            .iter()
+            .find(|(index, _)| *index == ability)
+            .map(|(_, rule)| *rule)
     }
     pub(crate) fn activation_counter_discount(self, ability: u16) -> Option<CounterKind> {
         authored::RULES[self.index()]

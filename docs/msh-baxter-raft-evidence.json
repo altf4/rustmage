@@ -1,0 +1,522 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "source_base": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+  "tested_runtime_content_head": "40331d349923cbbcac696492f67d23967db49a18",
+  "scope": "Two complete isolated source candidates for existing aggregate draftPR516. No extra PR or main merge. Final aggregate release/CI, independent reviews and full-set games remain integrator gates. No whole-set acceptance claimed.",
+  "complete_candidates": [
+    "Baxter Building",
+    "Raft Security Officer"
+  ],
+  "observation_wire_unchanged": 148,
+  "wire_reason": "Only private typed production/guard/per-ability cost rules and existing private Announcement.total_cost changed. Exact split vectors use existing Mana actions/views. Selected activated total uses the existing cost/payment observation fields. No new public field, action shape or schema change.",
+  "new_ids": [],
+  "metadata": {
+    "definitions": 5403,
+    "token_recipes": 125,
+    "physical_count": 5183,
+    "manifest_bytes_unchanged": true,
+    "catalogue_version": "46ce484e9cbb91b6cc839266c65d97329470a0fd7dfe1655b4942fe74334b87c",
+    "manifest_sha256": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1"
+  },
+  "candidate_set_flags": {
+    "total": 281,
+    "admitted": 215,
+    "gated": 66,
+    "qualification": "Isolated source flags: frozen base213; these2 only. Concurrent source candidates excluded. Independent set acceptance remains open."
+  },
+  "oracle": [
+    {
+      "oracle_id": "71bc69a5-7cec-4abd-b97d-13f8e1f9afac",
+      "name": "Baxter Building",
+      "layout": "normal",
+      "mana_cost": "",
+      "cmc": 0.0,
+      "type_line": "Land",
+      "oracle_text": "{T}: Add {C}.\n{4}, {T}: Add four mana in any combination of colors.\n{4}, {T}: Draw a card. Activate only if you control a creature with toughness 4 or greater.",
+      "colors": [],
+      "color_identity": [],
+      "keywords": [],
+      "produced_mana": [
+        "B",
+        "C",
+        "G",
+        "R",
+        "U",
+        "W"
+      ],
+      "reference_printing": {
+        "id": "1abc652f-8e9d-4df7-bc4e-d8b515a40fec",
+        "set": "msh",
+        "collector_number": "261",
+        "released_at": "2026-06-26"
+      }
+    },
+    {
+      "oracle_id": "60754d4b-2add-4928-8d30-8ce9c0f54f91",
+      "name": "Raft Security Officer",
+      "layout": "normal",
+      "mana_cost": "{1}{W}",
+      "cmc": 2.0,
+      "type_line": "Creature \u2014 Human Soldier",
+      "oracle_text": "{2}, {T}: Tap target creature. This ability costs {1} less to activate if it targets a creature with power 3 or less.",
+      "power": "1",
+      "toughness": "3",
+      "colors": [
+        "W"
+      ],
+      "color_identity": [
+        "W"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "f9b9f9d6-b50c-4b29-80be-284ba773c70b",
+        "set": "msh",
+        "collector_number": "33",
+        "released_at": "2026-06-26"
+      }
+    }
+  ],
+  "printed_obligations": {
+    "Baxter Building": [
+      "Ordinary untapped land play; no mana casting cost. Land color identity colorless does not restrict its colored production.",
+      "Tap for one colorless immediately, independent of toughness witness.",
+      "Pay4 generic plus tap for exactly4 mana in ANY combination of WUBRG, including repetitions/splits, excluding colorless. Must seed4 before ability resolves; cannot use its own future output or first tap it forC and then tap it again for the filter.",
+      "Pay4 generic plus tap for one draw using stack; starts only if controller CURRENTLY controls effective creature with toughness>=4, including animated self or a tapped creature, counters/CDA/lords/current control. Damage marked does not reduce toughness.",
+      "Once begun legally, do not recheck witness during mana-payment/cost changes or at resolution. Draw goes to captured activating controller despite source/witness removal, blink, control change or suppression. First two modes are mana abilities, draw is not."
+    ],
+    "Raft Security Officer": [
+      "Pay1W for Human Soldier1/3. Ordinary creature tap-cost summoning sickness/haste.",
+      "Pay2 generic plus tap to target any legal creature, including self, own/opposing, already tapped, any current power. On resolution tap surviving legal exact target; never untap or require target untapped.",
+      "Mandatory1 generic reduction if chosen creature has current effective power<=3 at cost-lock time; negative/zero count,4 does not. This changes cost, not target legality.",
+      "Determine/lock discount after choosing target, before mana abilities and tap/cost events. Subsequent power change cannot demand refund/top-up, prevent effect or alter frozen total.",
+      "Source removal/control/abilities changes after activation do not cancel captured packet; target leave-and-return/new incarnation is illegal. Usual hexproof/protection and ward targeting apply. Self-target ability normally costs1 and tap occurs as cost before redundant tap effect."
+    ]
+  },
+  "source_evidence": {
+    "direct_java_and_helpers": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BaxterBuilding.java",
+        "sha256": "7544eb45ba1f54419d88a9f45de7287788b5fdc626f8ec0c1406929dcb0f5e19",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RaftSecurityOfficer.java",
+        "sha256": "f084e686ee7aaa9c2c2b95933bd2ad1518a57bd3fad28804eb31c0f680b3f45b",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/ActivateIfConditionActivatedAbility.java",
+        "sha256": "9f9d45f4e624eaa78c99f720c00a3302f6936e7b5246bf76ae15f9e75ba327b0",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+        "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaInAnyCombinationEffect.java",
+        "sha256": "fb802b6605624db7d5995595779e3a8a882077a9a8b91124ebbf9013d19a440e",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+        "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+        "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+        "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/CostAdjuster.java",
+        "sha256": "277da78431453809a3c0f3af150ceca2043854ccb3963675297f8ccd1a17e29a",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+        "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+        "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+        "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+        "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+        "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ToughnessPredicate.java",
+        "sha256": "dde981d3b674374b3638ade013cc0c706d21f4c4e93309422dc53b76c83b8ff2",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+        "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+        "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+        "sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+        "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/ActivatedAbilityImpl.java",
+        "sha256": "abda1cc51790a3a40291e5ce3867cc12a0b98019813ac42ac8e7c822d8d4128b",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+        "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+        "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+        "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+        "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+        "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/mana/ManaEffect.java",
+        "sha256": "9332af88b954f2fdab1b7fc0bc71ac41d534eeb5ba12dceb4bd924b08f8f88e3",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+        "read_coverage": "Full class body read, including card-specific nested adjuster and complete directly relevant helper implementation."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/util/CardUtil.java",
+        "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+        "read_coverage": "Full source cached; audited relevant methods only: lines110-309 generic adjustAbilityCost/adjustCost/reduceCost and1085-1117 selected/possible target helpers. Remaining utility body not newly audited."
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TerritoryForge.java",
+        "sha256": "fb4dbafda5abce26fed3e2c1c4a7b64c7c4769d081f74d03e5a38b19a5225ddf",
+        "read_coverage": "Complete card body and nested static inheritance effect read. Used only to establish exact currently admitted borrower and legal exile filters."
+      }
+    ],
+    "full_class_reads": 29,
+    "partial_utility_read": "CardUtil full body pinned/cached, only exact relevant generic cost adjustment and possible-target method ranges audited; no claim all utility methods newly read.",
+    "oracle_frozen_equal": true,
+    "audit_json": "<cache>/rustmage-msh-baxter-raft-design-98279302.json",
+    "audit_sha256": "93f1d59266a3127bf34af00371bf7665d9b77fdb7fd21dffaba19f06a1cfa303",
+    "input_revalidation_file": "<cache>/rustmage-msh-baxter-raft-input-audit.json",
+    "input_revalidation_sha256": "28640044a331e2b3569bbad892eba505fedcd071f6924f5f6adbe0e091bffe6f",
+    "revalidation_summary": "Both complete Oracle bodies and all30 Java pins exact. Relevant Rust interfaces unchanged from read-only audit except unrelated engine.rs land-origin plumbing/tests.",
+    "source_check_definitions": 5403,
+    "source_check_blobs": 1277,
+    "java_verified": true
+  },
+  "authoritative_rules": [
+    {
+      "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "published": "2026-06-12",
+      "sections": "Baxter Building full text and both rulings, lines425-433. No Raft Security Officer entry found.",
+      "summary": "Baxter guard is only an activation starting restriction; no other player acts in the activation process and the toughness condition is not checked again afterward."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+      "effective": "2026-09-25",
+      "rules": [
+        "602.1b",
+        "602.2a-b",
+        "602.5a",
+        "601.2c",
+        "601.2e-h",
+        "605.1a",
+        "605.3a-c",
+        "608.2b"
+      ],
+      "summary": "Targets precede legality/total-cost determination; total locks before mana abilities and payments. Tap cost creature sickness applies to Raft or animated Baxter. Baxter first two abilities resolve immediately without stack/response; draw is ordinary nonmana activated ability. Raft has one ordinary creature target, exact-incarnation rechecked on resolution.",
+      "verification": "Current rules page links this dated PDF. TXT direct open failed; PDF primary source read instead."
+    }
+  ],
+  "java_discrepancies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateIfConditionActivatedAbility.java",
+      "method": "getEffects",
+      "finding": "Returns empty effects when condition is false at effect lookup. That recheck would suppress Baxter draw after the last toughness4 witness leaves. Do not reproduce: official Baxter ruling expressly says never check condition again after activation. canActivate starting condition remains useful evidence."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/r/RaftSecurityOfficer.java",
+      "finding": "Adjuster distinguishes existential cheap possible target during can-play queries from actual chosen target at cost setting. Keep that distinction. Rules require current power when total is determined, never recompute after mana production, tap payment or resolution."
+    }
+  ],
+  "shared_mechanics": [
+    "Distinct private ManaProduction::Combination enumerates weak compositions deterministically with early-stop callback. Baxter admits exactly70 four-mana distributions over WUBRG, excludingC; existing monochrome Choice semantics unchanged. No dynamic amount or scalar API added.",
+    "Generic CharacteristicWorld controlled-creature toughness threshold reads final effective kinds/controller/stats in actual and funding worlds. It is an activation starting restriction, without retaining a witness or rechecking after mana/payment/resolution.",
+    "Per-ability one-target generic reduction preserves any creature target, including source itself. Existential pretarget feasibility differs from selected-target feasibility; direct and announced/borrowed routes share exact target-dependent costs. Captured total is set after target selection and before mana abilities/payment. Existing source discounts remain separate.",
+    "Existing immediate mana and nested funding continuation paths, captured source/controller/definition/slot, target incarnation legality, ward association, suppression/readiness, land play and draw privacy reused."
+  ],
+  "meaningful_tests": {
+    "new_groups": 30,
+    "actual_groups": 27,
+    "funding_groups": 3,
+    "both_seats": true,
+    "named_groups": [
+      "msh_baxter_raft_combination_all_seventy_exact_unique_and_early_exit",
+      "msh_baxter_raft_baxter_normal_land_play_colorless_immediate_and_atomic",
+      "msh_baxter_raft_all_split_productions_are_real_paid_actions",
+      "msh_baxter_raft_actual_land_seed_mixed_colors_funds_paid_iron",
+      "msh_baxter_raft_converter_cannot_self_fund_or_double_tap",
+      "msh_baxter_raft_converter_in_mana_window_funds_spell_and_preserves_parent",
+      "msh_baxter_raft_baxter_toughness_live_guard_draw_and_no_resolution_recheck",
+      "msh_baxter_raft_baxter_lord_current_control_type_and_damage_guard",
+      "msh_baxter_raft_baxter_guard_not_rechecked_when_mana_witness_sacrificed",
+      "msh_baxter_raft_animated_land_sickness_and_suppression",
+      "msh_baxter_raft_raft_paid_body_sickness_haste_and_self_target",
+      "msh_baxter_raft_raft_power_threshold_negative_zero_three_four_paid",
+      "msh_baxter_raft_selected_target_not_any_cheap_target_controls_cost",
+      "msh_baxter_raft_no_legal_cheap_target_no_false_affordability",
+      "msh_baxter_raft_direct_actions_have_target_specific_exact_payment",
+      "msh_baxter_raft_target_cost_locks_before_actual_mana_sacrifice",
+      "msh_baxter_raft_later_target_power_change_never_reprices_or_restricts_effect",
+      "msh_baxter_raft_source_leave_control_change_and_target_blink",
+      "msh_baxter_raft_already_tapped_target_and_noncreature_rejection",
+      "msh_baxter_raft_actual_forge_inherits_baxter_modes_and_guard",
+      "msh_baxter_raft_bounded_artifact_raft_actual_forge_discount_and_host_self_target",
+      "msh_baxter_raft_full_nonactor_observation_draw_privacy_and_atomic_short_payment",
+      "msh_baxter_raft_orphan_raw_index_restore_owns_locked_target_cost",
+      "msh_baxter_raft_artifact_spell_only_lots_cannot_pay_either_activation",
+      "msh_baxter_raft_orphan_production_announcement_retains_exact_split",
+      "msh_baxter_raft_ward_is_separate_from_discount_and_keeps_activation_payer",
+      "msh_baxter_raft_baxter_opponent_turn_and_controlled_effective_witness_only",
+      "msh_baxter_raft_funding_toughness_guard_virtual_lord_departure_matches_actual",
+      "msh_baxter_raft_funding_net_zero_converter_reaches_mixed_colors_not_more_quantity",
+      "msh_baxter_raft_funding_locked_target_discount_survives_virtual_artifact_departure"
+    ],
+    "paid_routes": "Normal Baxter land play; immediateC; all70 split productions as actual paid actions; four real basic-land seed mana converted to mixedWUBR and paid2UR Iron; direct converter during spell payment; insufficient seed and source doubletap rejects; exact paid Baxter draw; actual Creature Treasure sacrifice during payment removes its sole toughness witness; actual1W Raft, haste/tap restriction, direct and announced costs, negative/zero/3/4 power thresholds, self and already-tapped targets; actual Treasure sacrifice changes Iron targetpower4\u21923 after costlock; both ward pay/decline outcomes with captured activating payer.",
+    "control_layers_and_borrowing": "Live lord/counters/toughness and marked damage, controller and source departure/blink/suppression, opponent-turn draw, source-independent Raft packet, targetblink fizzle, actual Territory Forge borrowing Baxter land, explicitly bounded artifact-type Raft then actual Forge borrowing and animatedhostself target. Funding virtual lord and artifact departures compare full characteristic views without parent mutation.",
+    "privacy_atomicity_owned": "Full nonactor observations with differing private library top before/after draw; foreign actors checked on every paid helper action; invalidtarget/production/powerdiscount/payment atomicity; restricted ArtifactSpell mana lots cannot pay either activation; owned raw/indexed branches after parent disposal at selected-cost and chosen-production payment roots, restore retained state; every checked action also validates raw/index/restore behavior.",
+    "bounded_fixtures": "Earlier-layer animation builds signed-power/toughness boundary cases, creature Treasure witness and animated/suppressed Baxter. Raft needs an explicitly bounded artifact-type fixture before Forge can exile it; ordinary Raft is neither artifact nor land. Post-lock counters are a bounded state mutation with no claimed priority window. Virtual nonmana-lord departure prepares full funding entry projection to retain the selected provider. No gated card admitted as a fixture or invented borrower behavior."
+  },
+  "trace_proof": {
+    "base": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+    "wire_unchanged": 148,
+    "parent_rows": 2516,
+    "candidate_rows": 2518,
+    "full_parent_rows_exact": true,
+    "changed_full_parent_rows": [],
+    "trace_fields_compared": [
+      "decisions",
+      "journal",
+      "observations",
+      "root",
+      "status",
+      "zone"
+    ],
+    "added_only": [
+      "Baxter Building",
+      "Raft Security Officer"
+    ],
+    "recorder_modified": false,
+    "fields_stripped": [],
+    "parent_sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+    "fresh_normal_sha256": "19575053e0252530881ddb758d0850e1d33140417001c0da50d281228d5c3226",
+    "protected_byte_exact": {
+      "data/catalogue-identities.json": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+      "data/observation-schema.txt": "5211de14b1b0a656f782d9622cd441ed0dd9fb24d13f0299d431bdad4c61e341",
+      "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+      "src/assurance/regressions.rs": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185",
+      "src/policy.rs": "93702545f58aa2d9f4b50c1011b08c4696764de7934faab67889113e38df5dea"
+    }
+  },
+  "validation": {
+    "native_tests": 1446,
+    "strict_clippy_all_targets": true,
+    "cargo_fmt_check": true,
+    "explicit_two_card_rustfmt_check": true,
+    "linker_check": true,
+    "sources_check": true,
+    "git_diff_check": true,
+    "inputs_fixed_through_actual_terminal": true,
+    "resource_runs": [
+      {
+        "log": "<cache>/rustmage-msh-baxter-raft-native-final.log",
+        "log_sha256": "d5ef0042516227d852464d525b1f96a14b67d22920c3331a7033a2db6b89c89b",
+        "report": "<cache>/rustmage-build-reports/ed7b686a966c41cfbd10d912cab13b5d.json",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--",
+          "--nocapture"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 450.48123878304614,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2586914816,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "log": "<cache>/rustmage-msh-baxter-raft-clippy.log",
+        "log_sha256": "c8254c5bb58bbf1e2f593a076544e95ba78d92df1a288f095b8ab6506e206bda",
+        "report": "<cache>/rustmage-build-reports/910fea1f8fe54093ba4ca70f14a97099.json",
+        "command": [
+          "cargo",
+          "clippy",
+          "--all-targets",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 163.14219966798555,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2004922368,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "log": "<cache>/rustmage-msh-baxter-raft-checks-final.log",
+        "log_sha256": "3ab36dda15b8a27110cfde9f136186770cb0e4c4d3bbe217d688d814c15c84cb",
+        "report": "<cache>/rustmage-build-reports/ef43e2a66ea54096b085d520708edef0.json",
+        "command": [
+          "cargo",
+          "fmt",
+          "--",
+          "--check"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 134.2676273160032,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 119324672,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    ],
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_probe": false,
+    "qualification": "Author full-native/lint/source gates. Integrator performs final combined release/CI/reviews and set-game assurance."
+  },
+  "development_corrections": [
+    "First compiler run found only a bounded animation tuple width mismatch (i32 instead of existingi128); corrected test fixture.",
+    "Focused2 identified immediate in-payment mana action API mismatch, missing full projection for a virtual nonmana provider fixture, returned physical land contributing independently to handcount, and an unrelated untappedBaxterC source in Raft restricted-mana negative case. Fixed fixtures; no runtime workaround.",
+    "Focused3 all27 groups passed; three final paid ward/opponent-turn/orphan-production groups were added before full native validation.",
+    "Initial fresh full-native export used the stale2516 table; a new2518 table was installed only after full exact equality of every parent row, with only the two expected additions. No recorder edits, removed fields or blessed drift."
+  ],
+  "cleanup": {
+    "active_fd_maps_exe_cwd_matches": [],
+    "unreadable_proc_maps": 47,
+    "scan_qualification": "No matching readable consumer; unreadable proc maps reported. All owned consuming sessions separately observed at terminal before cleanup.",
+    "files_removed": 1019,
+    "allocated_bytes_freed": 126001152,
+    "allocation_qualification": "Sum of removed path st_blocks, not deduplicated physical reclamation.",
+    "preserved_target_files": [
+      {
+        "path": "<cache>/rustmage-msh-baxter-raft-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      {
+        "path": "<cache>/rustmage-msh-baxter-raft-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "7d987ec79d7cd87154444093dbb9efef69508354bb48bba84c763ac4fa2a8f1d",
+        "bytes": 36509224
+      }
+    ],
+    "prior_artifacts_reverified": 577,
+    "prior_missing": [],
+    "prior_changed": []
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T06:37:38+00:00",
+    "end_utc": "2026-10-25T07:17:18.304096+00:00",
+    "elapsed_seconds": 2380.304096,
+    "whole_card_candidates": 2,
+    "candidate_cards_per_hour": 3.0248235980013205,
+    "scope": "Branch creation through implementation, fixture corrections, guarded shared build queues, full native/strict lint/source checks and terminal cleanup/evidence cutoff. Excludes prior read-only design and later aggregate integration/reviews/release/CI/set-games.",
+    "native_suite_wall_seconds": 7.94,
+    "simulation": "No new simulation throughput measurement. Native rules-suite execution time is not an all-set simulation benchmark."
+  },
+  "remaining_blockers": "No known missing printed obligation for this pair after author validation. Aggregate assurance and all66 remaining gated identities plus complete set-only gameplay/performance still block whole-set acceptance."
+}

@@ -164,6 +164,8 @@ mod spell_costs;
 #[path = "engine_target_costs.rs"]
 mod target_costs;
 pub use additional_costs::AdditionalCostView;
+#[path = "engine_activation_target_costs.rs"]
+mod activation_target_costs;
 #[path = "engine_activations.rs"]
 mod activations;
 #[path = "engine_power_up.rs"]
@@ -7778,3 +7780,7 @@ mod msh_twelfth_combined_tests;
 #[cfg(test)]
 #[path = "engine_msh_red_grim_tests.rs"]
 mod msh_red_grim_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_baxter_raft_tests.rs"]
+mod msh_baxter_raft_tests;

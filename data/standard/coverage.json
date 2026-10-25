@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0357646bf381588625ae0ec2244828393a3b9feb153c85afa1a2c050b375e42e",
+  "catalogue_version": "4d31575c1fd28b8107221a31e9b578e0ff1793e3be9837b9d80ea7f43e517fec",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2512,
-  "implemented_total": 2518,
+  "implemented_standard_cards": 2514,
+  "implemented_total": 2520,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 207,
-      "gated": 66
+      "complete": 209,
+      "gated": 64
     },
     "one": {
       "total": 1,
@@ -3021,8 +3021,8 @@
     {
       "name": "Baxter Building",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/baxter_building.rs",
       "set": "msh"
     },
@@ -26893,8 +26893,8 @@
     {
       "name": "Raft Security Officer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/raft_security_officer.rs",
       "set": "msh"
     },
