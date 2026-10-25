@@ -8025,3 +8025,7 @@ mod msh_incursion_justice_loki_core_tests;
 #[cfg(test)]
 #[path = "engine_msh_broad_legal_games_tests.rs"]
 mod msh_broad_legal_games_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_counter_three_tests.rs"]
+mod msh_counter_three_tests;
