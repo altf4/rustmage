@@ -14,7 +14,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
         || observation.payment_request.is_some();
     let resolution_mana_score = |payment: crate::Mana, production: crate::Mana| {
         let request = observation.resolution_payment.as_ref().unwrap();
-        let pool = observation.players[actor.index()].mana;
+        let pool = observation.players[request.payer.index()].mana;
         let deficit = |pool: crate::Mana| {
             std::iter::once(request.cost)
                 .chain(request.alternatives.iter().copied())
