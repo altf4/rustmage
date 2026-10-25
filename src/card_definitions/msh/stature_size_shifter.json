@@ -3,10 +3,61 @@
   "catalogue_id": 4120,
   "oracle_id": "bd49a05c-ed51-4d69-ab9b-11192442ec17",
   "facts_sha256": "f1054d8b4d14261afaf42c232f4e2b84ae55e1b0cb41f38ed1be90a5c4252c31",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7a1351cf523efca92ac4172acab1c040a3f60b261a3cd43ca41f80942783ce93"
   },
-  "physical_metadata_sha256": "b871a9d8df9591fd71ae5e354a19e9a5e0a352707f19a17f5acf3037973ef6a2"
+  "physical_metadata_sha256": "b871a9d8df9591fd71ae5e354a19e9a5e0a352707f19a17f5acf3037973ef6a2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StatureSizeShifter.java",
+  "java_sha256": "af15ac1e67f8112156742d1392aff8c04bc6cd1662a54e4aa43558178d35df9b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceMatchesFilterCondition.java",
+      "sha256": "30cc4e1338f78c1c24ceb55906ae9deeb24423c0bd057e236fa20def3c14d9ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalRestrictionEffect.java",
+      "sha256": "1fa2a1d2f8bdcfdd9e3b62d643b7c07d1dd174162686bdff05615432d5e28aa8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+      "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+      "sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+      "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    }
+  ],
+  "remaining_obligations": []
 }

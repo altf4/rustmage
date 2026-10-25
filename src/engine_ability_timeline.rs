@@ -34,6 +34,7 @@ impl Card {
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
+                            | StaticAbilityFragment::SourceGraveyardAllTypes { .. }
                             | StaticAbilityFragment::SourceCounterKeywords { .. }
                             | StaticAbilityFragment::SourcePlusOnePlacedKeywords(..)
                             | StaticAbilityFragment::PlusOnePlacedKeywords { .. }

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "bfbdce3b005f02f09be5feaa87af06cbd0bfda5d2ade00c90226541418d53de1",
+  "catalogue_version": "735ca2499f3c524f856eacef976e9bf0907b754e9433b001e8d1dbabb68d3476",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2471,
-  "implemented_total": 2477,
+  "implemented_standard_cards": 2473,
+  "implemented_total": 2479,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 166,
-      "gated": 107
+      "complete": 168,
+      "gated": 105
     },
     "one": {
       "total": 1,
@@ -33165,8 +33165,8 @@
     {
       "name": "Stature, Size Shifter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/stature_size_shifter.rs",
       "set": "msh"
     },
@@ -38333,8 +38333,8 @@
     {
       "name": "Undercover Skrull",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/undercover_skrull.rs",
       "set": "msh"
     },
