@@ -1,0 +1,393 @@
+{
+  "schema": 1,
+  "scope": "One complete typed Leader card plus the directly affected selected-group connive correction; final set integration deferred.",
+  "base": "4546e517744f022474b94757c5f0a28b91d2d91c",
+  "tested_runtime": "0317cc31b75b738199356c42035617ce944176cc",
+  "source_branch": "codex/msh-leader-connive-replacement",
+  "complete_cards": [
+    {
+      "name": "Leader, Super-Genius",
+      "oracle_id": "bec686dd-a9ea-4db5-bc20-8e40420b9a9b",
+      "definition": "src/card_definitions/msh/leader_super_genius.rs",
+      "provenance": "src/card_definitions/msh/leader_super_genius.json",
+      "printed_obligations": [
+        {
+          "clause": "Legendary1/3 Gamma Scientist Villain;2UU; no activated ability",
+          "tests": [
+            "msh_leader_body_cost_combat_self_nonland_and_land_discard",
+            "msh_leader_creature_mana_cost_requires_two_blue_and_no_false_activation"
+          ]
+        },
+        {
+          "clause": "If a creature you control would connive, draw exactly one before the original connive; noncreatures still perform normal connive without this replacement.",
+          "tests": [
+            "msh_leader_body_cost_combat_self_nonland_and_land_discard",
+            "msh_leader_source_connive_live_control_uses_new_controller_and_counter_placer",
+            "msh_leader_source_connive_latest_departure_kind_controller_and_incarnation",
+            "msh_leader_entering_noncreature_kindred_still_connives_without_replacement",
+            "msh_leader_live_noncreature_entrant_loses_creature_before_connive",
+            "msh_leader_multiple_replacements_choose_once_owned_orphan_restore",
+            "msh_leader_first_extra_draw_miracle_pause_before_underlying_draw_and_private_choices",
+            "msh_leader_counterfactual_current_creature_kind_beats_printed_noncreature",
+            "msh_leader_extra_draw_empty_or_short_library_still_discards_then_loses"
+          ]
+        },
+        {
+          "clause": "Beginning of combat on your turn: target creature you control connives.",
+          "tests": [
+            "msh_leader_combat_only_own_turn_and_own_creature_target",
+            "msh_leader_source_gone_does_not_replace_queued_combat_connive",
+            "msh_leader_target_departure_reentry_never_rebinds",
+            "msh_leader_target_control_or_type_change_fizzles",
+            "msh_leader_current_provider_controller_and_queued_trigger_captured_controller"
+          ]
+        }
+      ]
+    }
+  ],
+  "source_pins": {
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "direct": {
+      "path": "Mage.Sets/src/mage/cards/l/LeaderSuperGenius.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8179fae00d6ebea43810ab06e2991a87e028b04112f6828b4fa6bd4fecccb67",
+      "read_scope": "full body"
+    },
+    "full_helpers": [
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/keyword/ConniveTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "346bded28edee4c31d82766c2cfe989fa1a72d101c5ffcac2c78dbc5a5c3982f",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/keyword/ConniveSourceEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "469ee6e08805cc7745bde31232b310bde37a9fea5ea8bac89c8a3ddeeda7af53",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/targetpointer/NthTargetPointer.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "d3f06450efa592e446dbcab29c913f7946e36b31d5d0a7f6b1d3e5ac824ebc73",
+        "read_scope": "full body"
+      }
+    ],
+    "audit_cache": "<cache>/rustmage-msh-leader-source-audit.json",
+    "audit_cache_sha256": "5da6a5f8ad46935941970d26474d4250432bea687a060ba199a7840197608d42",
+    "oracle_inventory": {
+      "path": "data/standard/cards.json",
+      "sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0"
+    },
+    "primary": [
+      {
+        "source": "MagicCompRules 20260925",
+        "rules": [
+          "701.50a-e",
+          "614.5",
+          "616.1"
+        ],
+        "cache": "<cache>/rustmage-MagicCompRules-20260925.txt",
+        "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
+      },
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "scope": "General Connive notes; no separate Leader card-specific entry"
+      }
+    ],
+    "numbering_note": [
+      "Pinned XMage comments use older connive rule number701.47; frozen 20260925 primary rules number it701.50. Current701.50c repeats each remaining instruction, including departed permanents. No corresponding behavioral discrepancy for this selected one-conniver card."
+    ]
+  },
+  "shared_rules": [
+    "Event-local ConniveDraw replacement providers are chosen with the existing replacement action. Each exact provider/slot applies once, including interrupted first draws. Original connive draws and private discard occur afterward.",
+    "Latest actual battlefield departure saves an opt-in conniver creature-kind fact alongside its exact controller. Live objects use current effective kinds, departed objects use the latest exact-incarnation facts; copied queued packets retain/capture their own facts.",
+    "Subject::Targets connive selects only the active target group and exact live objects. This repairs Trickster Stratagem and the same group shape in Mechanical Mobster."
+  ],
+  "wire": {
+    "schema": 152,
+    "new_actions": false,
+    "actual_field": "EventObjectView.conniver_creature:Option<bool>, serde-omitted whenNone; only Controller-kind actual departed connivers emitSome. Existing other event families keepNone.",
+    "public_replacement_kind": "Connive using existing ReplacementChoiceView",
+    "private_state": "ConniveSequence used provider keys/draw_started and nonserialized ConniverView creature bit; owned byte accounting includes used initialized elements."
+  },
+  "verification": {
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development",
+    "all_test_processes_terminal": true,
+    "groups": [
+      {
+        "name": "whole",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_leader_",
+          "--",
+          "--nocapture"
+        ],
+        "seconds": 30.728364299982786,
+        "exit_code": 0,
+        "log": "<cache>/rustmage-msh-leader-final2-focus-whole.log",
+        "passed": 21,
+        "rules_seconds": 0.13,
+        "log_sha256": "15096bef6ee676a891eae6241304fbe07563bdc5fa9d59b0349c5e7357776ecf"
+      },
+      {
+        "name": "baron",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_baron_",
+          "--",
+          "--nocapture"
+        ],
+        "seconds": 0.1345422609592788,
+        "exit_code": 0,
+        "log": "<cache>/rustmage-msh-leader-final2-focus-baron.log",
+        "passed": 14,
+        "rules_seconds": 0.09,
+        "log_sha256": "82eae93fdc0e67d542a90c046ef8a50422253589ce81b9a12f55374fa725092f"
+      },
+      {
+        "name": "modok",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_modok_",
+          "--",
+          "--nocapture"
+        ],
+        "seconds": 0.05013811099343002,
+        "exit_code": 0,
+        "log": "<cache>/rustmage-msh-leader-final2-focus-modok.log",
+        "passed": 2,
+        "rules_seconds": 0.01,
+        "log_sha256": "2bf75d4c7a24f2d8d620ec634dc34e72a32b24c3144c08c386ae1a7499b4537d"
+      },
+      {
+        "name": "counter-placer",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_connive_",
+          "--",
+          "--nocapture"
+        ],
+        "seconds": 0.048291491984855384,
+        "exit_code": 0,
+        "log": "<cache>/rustmage-msh-leader-final2-focus-counter-placer.log",
+        "passed": 1,
+        "rules_seconds": 0.01,
+        "log_sha256": "1645b68f0fa9d85cd00cc55aea6708339181855d37b1beb1692334e164eaf82e"
+      },
+      {
+        "name": "stratagem",
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_parity_paid_strat_",
+          "--",
+          "--nocapture"
+        ],
+        "seconds": 0.09294261096511036,
+        "exit_code": 0,
+        "log": "<cache>/rustmage-msh-leader-final2-focus-stratagem.log",
+        "passed": 6,
+        "rules_seconds": 0.04,
+        "log_sha256": "7f1f75833abc89a4baaabef88d848b064e29cfa7d61fb3b3bd69e38be0c77948"
+      }
+    ],
+    "new_groups": 21,
+    "total_focused_tests": 44,
+    "fixed_inputs": 11152,
+    "changed_inputs": [],
+    "fixed_manifest": "<cache>/rustmage-msh-leader-final2-focus-inputs.json",
+    "fixed_manifest_sha256": "0dcb8c551eb5a8a77b653040e12d608b7cc6b3199e1b9cdb1aa979ba470978de",
+    "guard": {
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 54.06765066302614,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2687102976,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "guard_command": "CARGO_PROFILE_TEST_OPT_LEVEL=0 CARGO_TARGET_DIR=<cache>/rustmage-msh-leader-dev-target python3 scripts/resource_guard.py --report <cache>/rustmage-msh-leader-final2-focus-guard.json -- python3 <cache>/rustmage-msh-leader-final2-focus-driver.py",
+    "guard_report": "<cache>/rustmage-msh-leader-final2-focus-guard.json",
+    "guard_report_sha256": "73e959d23e29a22ec23e6ec49178bbeb4f87361cfffe6212f1211417098a3d70",
+    "format": "Explicit edition2024 rustfmt for the authored card and changed/new Rust modules; git diff --check.",
+    "metadata": "python3 scripts/link_catalogue.py only after the gated focused matrix passed and Leader completionflag changed; generated metadata changes only its completion and catalogue digest/counts.",
+    "unchanged_bytes": {
+      "data/catalogue-identities.json": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+      "data/sets/msh.json": "29e173bafc5707b638f2a40d564055297b4c1b8f0d4a5228054dc2ed16170361",
+      "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+      "data/standard/xmage-inventory.json": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+      "src/policy.rs": "42ad15b08931d607956682555e602c7be4c4e57cd28be73f98ad241acfb97984",
+      "src/assurance/card_traces.json": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3",
+      "src/assurance/regressions.rs": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185"
+    }
+  },
+  "bounded_fixtures": [
+    "Initial gated Leader seeded through an ordinary object and battlefield move, then removed for the final supported paid run.",
+    "Gated Boggart Mischief immutable Kindred metadata uses an ordinary earlier-layer Villain subtype row and optional animation. No Boggart behavior is exercised or admitted.",
+    "Production nonlegendary copy executor creates a second replacement provider; no copy-card admission implied.",
+    "Baron packet clone tests exact copied event facts; copy executor itself is not exercised by that probe."
+  ],
+  "negative_and_owned_evidence": [
+    "Target opponent/noncreature invalid; target changes control/type or leaves/reenters before resolution; no rebind to a new object.",
+    "Current/LKI recipient controller differs from owner and ability controller. Live or latest departed creature kind controls replacement eligibility, including initially noncreature Kindred metadata animated before departure.",
+    "Copied entrant packets are present before actual departure so central capture updates both; accepted once guard is shared.",
+    "Multiple providers and miracle pause use independent raw/index branches with parent disposal and restore. Invalid choices preserve snapshots, statebytes, revisions, and both full observations.",
+    "Private hand counterfactuals preserve the opponent full observation. Counter placement after opponent discard replacements remains attributed to the actual conniver controller.",
+    "Empty/one-card libraries still complete the discard and counter operation before natural empty-draw loss."
+  ],
+  "observed_development_failures": [
+    {
+      "stage": "focus",
+      "kind": "Compile-only test error: used Observation.miracle_choice instead of actual field miracle."
+    },
+    {
+      "stage": "focus2",
+      "kind": "All17 stopped at the support-checking seeded-fixture assertion while Leader was gated; no gameplay result claimed."
+    },
+    {
+      "stage": "focus3",
+      "kind": "15/17 passed; two tests stopped at Ghost hybrid-cost announcement menu. Replaced that ancillary entrant with ordinary paid Aerial Doombot."
+    },
+    {
+      "stage": "focus4",
+      "kind": "20 gated-stage groups green, with the future supported-cost group explicitly skipped until Leader flagtrue; final supported runs execute it."
+    },
+    {
+      "stage": "final-focus",
+      "kind": "20 supported groups and23 affected groups green."
+    },
+    {
+      "stage": "final2-focus",
+      "kind": "21 supported groups and23 affected groups green; this exact runtime is pinned above."
+    }
+  ],
+  "cleanup": {
+    "report": "<cache>/rustmage-msh-leader-cleanup.json",
+    "report_sha256": "be1e15259312ef9629fa01460ded0c233a18c2eb40198e2a4515e3dcb8c6f775",
+    "parent": "<cache>/rustmage-msh-cast-target-copy-cards-optin-preservation.json",
+    "parent_sha256": "df345b0a82d2fbfd197eeb7846646be567e3fee0c6fea3796348cb06b7735c98",
+    "all4306_prior_paths_exact": true,
+    "manifest": "<cache>/rustmage-msh-leader-preservation.json",
+    "manifest_sha256": "34f400ac8ff13d17aa8a78b62e1f6e75e5fb55e41683515cb5c7b93430a98c7a",
+    "required_paths": 4314,
+    "independent_extension": "This extends4306 directly. Union with the concurrent Hist extension is required before the next custody checkpoint.",
+    "terminal": true,
+    "accessible_target_process_refs": [],
+    "denied_inspections": 169,
+    "removed_path_allocated_bytes": 40361984,
+    "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation.",
+    "retained": [
+      {
+        "path": "<cache>/rustmage-msh-leader-dev-target/debug/deps/rustmage-55e16bd14e329fbf",
+        "sha256": "07b40e09584d85bb2fd9eded3efdda61a4339d5bb553e8b52499c5ade6a5c1ed"
+      },
+      {
+        "path": "<cache>/rustmage-msh-leader-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ],
+    "do_not_reuse_cleaned_target": true
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T15:45:44+00:00",
+    "end_utc": "2026-10-25T16:03:54.719652+00:00",
+    "elapsed_seconds": 1090.719652,
+    "scope": "One card, one inherited connive target-group correction, source audit/authoring/focused development/cleanup; no simulation or full-set throughput extrapolation.",
+    "focused_rules_seconds": 0.28
+  },
+  "deferred": [
+    "Full native, aggregate static, all prior fullTrace exports, release, CI and final integration are deferred until the set implementation is complete.",
+    "No new IDs, tokens, membership or policy changes. No new accepted trace table; prior2535 table remains byteexact.",
+    "Full-set281-card printed obligations and final integrated gameplay/performance acceptance remain open.",
+    "Root attachment consumers are absent from this branch: at final integration initialize conniver_creature:None at their new EventObjectView constructors. No cross-worktree edit made."
+  ]
+}
