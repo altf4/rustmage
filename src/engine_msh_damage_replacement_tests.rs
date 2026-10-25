@@ -751,11 +751,18 @@ fn msh_damage_mjolnir_trample_assigns_before_doubling_and_hawkeye_excludes_comba
         until(&mut g, |g| {
             matches!(g.state.pending, Pending::EffectDiscard { .. })
         });
-        let discard = g.state.players[p.index()]
-            .hand
-            .iter()
-            .copied()
-            .find(|&id| g.state.objects[id as usize].card == Card::from_name("Forest").unwrap())
+        let discard = g
+            .legal_actions()
+            .into_iter()
+            .find_map(|a| match a {
+                Action::Discard { card }
+                    if g.state.objects[card as usize].card
+                        == Card::from_name("Forest").unwrap() =>
+                {
+                    Some(card)
+                }
+                _ => None,
+            })
             .unwrap();
         checked(&mut g, Action::Discard { card: discard });
         until(&mut g, |g| g.state.pending == Pending::Blockers);
