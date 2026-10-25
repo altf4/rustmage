@@ -1793,7 +1793,6 @@ pub(crate) enum AmountValue {
     SourcePower,
     SourceToughness,
     SourceEquipmentCount,
-    LegendaryCreaturesYouControl,
     #[allow(
         dead_code,
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
@@ -1858,6 +1857,7 @@ pub(crate) enum StatValue {
     AllAttackingCreatures,
     SourceModified,
     SourceEquipmentCount,
+    LegendaryCreaturesYouControl,
     Tokens(CountFilter),
     AtLeast {
         value: &'static StatValue,
