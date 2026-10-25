@@ -2,6 +2,7 @@
 use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum HandChoiceKind {
+    DeployCreatures,
     RevealSubset,
     DiscardRevealed,
     ExileRevealedOrCreature,
@@ -54,12 +55,11 @@ impl Game {
     }
     fn set_hand_interaction(&mut self, interaction: HandInteraction) {
         let actor = interaction.actor;
-        assert!(
-            self.state
-                .linked_choices
-                .as_ref()
-                .is_none_or(|s| s.hand.is_none())
-        );
+        assert!(self
+            .state
+            .linked_choices
+            .as_ref()
+            .is_none_or(|s| s.hand.is_none()));
         self.state.linked_choices.get_or_insert_default().hand = Some(Box::new(interaction));
         self.state.pending = Pending::HandCardChoice { player: actor };
     }
@@ -148,6 +148,7 @@ impl Game {
         }
         let o = &self.state.objects[reference.card as usize];
         match interaction.kind {
+            HandChoiceKind::DeployCreatures => unreachable!(),
             HandChoiceKind::RevealSubset | HandChoiceKind::DiscardRevealed => {
                 o.zone == Zone::Hand && Some(o.owner) == interaction.victim && !o.is_token()
             }
@@ -162,6 +163,9 @@ impl Game {
         }
     }
     pub(super) fn visit_hand_card_choices(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        if self.hand_deployment().is_some() {
+            return self.visit_hand_deployment(emit);
+        }
         let interaction = self
             .state
             .linked_choices
@@ -187,6 +191,10 @@ impl Game {
             })
     }
     pub(super) fn choose_hand_card(&mut self, object: Option<ObjectRef>) {
+        if self.hand_deployment().is_some() {
+            self.choose_hand_deployment(object);
+            return;
+        }
         let mut interaction = self
             .state
             .linked_choices
@@ -215,7 +223,7 @@ impl Game {
                 HandChoiceKind::ExileRevealedOrCreature => {
                     self.exile_objects_until_source_leaves(interaction.source, &[object])
                 }
-                HandChoiceKind::RevealSubset => unreachable!(),
+                HandChoiceKind::RevealSubset | HandChoiceKind::DeployCreatures => unreachable!(),
             }
         }
         self.run_program();
@@ -223,6 +231,9 @@ impl Game {
     pub(super) fn hand_choice_view(&self, viewer: Player) -> Option<HandChoiceView> {
         if !matches!(self.state.pending,Pending::HandCardChoice{player} if player==viewer) {
             return None;
+        }
+        if self.hand_deployment().is_some() {
+            return self.hand_deployment_view(viewer);
         }
         let interaction = self.state.linked_choices.as_ref()?.hand.as_ref()?;
         Some(HandChoiceView {

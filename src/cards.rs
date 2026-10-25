@@ -1376,6 +1376,11 @@ pub(crate) enum Instruction {
     MayMill(u16),
     RecoverMilled(RecoveryFilter),
     CollectGraveyard,
+    ExileAllCreaturesRemember,
+    DeployHandCreaturesEach,
+    ReturnExiledResultToHands,
+    ExileDamagedLibraryUntilNonland,
+    MayCounterSourceOtherwiseCast,
     RevealTargetHandSubsetDiscard(AmountValue),
     RevealTargetHandExileUntilSourceLeaves,
     RevealHandDiscard {

@@ -9,6 +9,9 @@ pub struct ExilePlayPermission {
     pub player: Player,
     pub expiry: ExilePlayExpiry,
     pub spend_any_mana: bool,
+    /// A cast permission never authorizes a land play.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub cast_only: bool,
     pub exile_on_graveyard: bool,
 }
 /// Deadline boundaries refer to actual turns, never to skipped turn candidates.
@@ -46,6 +49,16 @@ impl Game {
                 && p.object == self.object_ref(card)
                 && p.expiry.active(self.state.turn)
         })
+    }
+    pub(super) fn can_play_exiled_land(&self, player: Player, card: CardId) -> bool {
+        self.can_play_foreign_stash(player, card)
+            || self.can_play_adventure(player, card)
+            || self.state.exile_permissions.iter().any(|p| {
+                p.player == player
+                    && p.object == self.object_ref(card)
+                    && p.expiry.active(self.state.turn)
+                    && !p.cast_only
+            })
     }
     pub(super) fn exile_cast_modifiers(&self, player: Player, card: CardId) -> (bool, bool) {
         if self.state.objects[card as usize].zone != Zone::Exile {
@@ -144,6 +157,7 @@ impl Game {
                 player,
                 expiry,
                 spend_any_mana: false,
+                cast_only: false,
                 exile_on_graveyard: false,
             },
         );

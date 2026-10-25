@@ -2872,6 +2872,11 @@ impl Game {
                         })
                         .collect();
                 }
+                Instruction::ExileAllCreaturesRemember => self.exile_all_creatures_remember(),
+                Instruction::DeployHandCreaturesEach => { self.start_hand_deployment(); return; },
+                Instruction::ReturnExiledResultToHands => self.return_exiled_result_to_hands(),
+                Instruction::ExileDamagedLibraryUntilNonland => self.exile_damaged_library_until_nonland(&item),
+                Instruction::MayCounterSourceOtherwiseCast => { if self.offer_source_counter_or_cast(&item) { return; } },
                 Instruction::RevealTargetHandSubsetDiscard(amount) => {
                     if self.start_hand_subset_discard(&item, amount) {
                         return;

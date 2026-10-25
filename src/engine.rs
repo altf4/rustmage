@@ -1,3 +1,6 @@
+#[path = "engine_library_hand_exchange.rs"]
+mod library_hand_exchange;
+pub use library_hand_exchange::HandDeploymentView;
 #[path = "engine_hand_choices.rs"]
 mod hand_choices;
 pub use hand_choices::{HandChoiceKind, HandChoiceView};
@@ -2199,6 +2202,8 @@ pub struct Observation {
     pub library_piles: Option<LibraryPilesView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hand_choice: Option<HandChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hand_deployment: Option<HandDeploymentView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
     pub mana_lots: Vec<ManaLotView>,
@@ -3484,7 +3489,7 @@ impl Game {
                         if obj.card.is_land()
                             && sorcery
                             && (obj.zone == Zone::Hand
-                                || self.can_play_exiled(actor, card)
+                                || self.can_play_exiled_land(actor, card)
                                 || self.has_graveyard_cast(actor, card, GraveyardCastKind::Play)
                                 || self.can_play_static_land(actor, card))
                             && (!s.land_played
@@ -3695,6 +3700,7 @@ impl Game {
                         continue;
                     }
                     if obj.card.is_land() {
+                        if obj.zone == Zone::Exile && !self.can_play_exiled_land(actor, card) { continue; }
                         if sorcery
                             && (!s.land_played
                                 || self
@@ -5281,6 +5287,7 @@ impl Game {
                     self.complete_optional_tap_reflexive();
                     self.complete_optional_discard_exile_play();
                 }
+                self.complete_optional_source_counter_cast(accept);
                 self.run_program();
             }
             Action::Concede => unreachable!(),
@@ -6731,6 +6738,7 @@ impl Game {
                 .map_or_else(Vec::new, |v| v.clone()),
             keep_types: self.keep_types_view(),
             hand_choice: self.hand_choice_view(viewer),
+            hand_deployment: self.public_hand_deployment_view(),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
                 c.links
                     .iter()
@@ -8127,3 +8135,7 @@ mod msh_leader_tests;
 #[cfg(test)]
 #[path = "engine_msh_hand_choices_tests.rs"]
 mod msh_hand_choices_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_widow_worlds_tests.rs"]
+mod msh_widow_worlds_tests;

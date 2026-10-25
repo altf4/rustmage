@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4d35ddb2227811ced101b7e511e5ae36ded5f9047efd32ffe5432b94717ceefd",
+  "catalogue_version": "ce9089bdf6a3c0efe8d7257df4c4383b862441d60c351cd5c183b105a72ca075",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2536,
-  "implemented_total": 2542,
+  "implemented_standard_cards": 2538,
+  "implemented_total": 2544,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 231,
-      "gated": 42
+      "complete": 233,
+      "gated": 40
     },
     "one": {
       "total": 1,
@@ -3677,8 +3677,8 @@
     {
       "name": "Black Widow, Super Spy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/black_widow_super_spy.rs",
       "set": "msh"
     },
@@ -41117,8 +41117,8 @@
     {
       "name": "Worlds Within Worlds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/worlds_within_worlds.rs",
       "set": "msh"
     },

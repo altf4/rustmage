@@ -45,6 +45,7 @@ pub struct LinkedExileView {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ChoiceState {
     pub hand: Option<Box<super::hand_choices::HandInteraction>>,
+    pub deployment: Option<Box<super::library_hand_exchange::HandDeployment>>,
     piles: Option<Piles>,
     keep_types: Option<KeepTypes>,
     // Some(None) means tracking this instruction but no successful own sacrifice.
@@ -57,6 +58,7 @@ impl ChoiceState {
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.hand.as_ref().map_or(0, |h| h.bytes())
+            + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hideaway_controllers.len() * std::mem::size_of::<(ObjectRef, u8)>()
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, ObjectRef, u8)>()
             + self.links.len() * std::mem::size_of::<LinkedExileView>()
@@ -72,6 +74,7 @@ impl Game {
     pub(super) fn abandon_linked_choices(&mut self) {
         if let Some(data) = self.state.linked_choices.as_mut() {
             data.hand = None;
+            data.deployment = None;
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
