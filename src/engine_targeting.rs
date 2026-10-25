@@ -207,7 +207,13 @@ impl Announcement {
                             reduction,
                             self.activation_discount,
                             if self.power_up_costs.is_some() {
-                                self.item.x.unwrap_or(0)
+                                u64::from(self.item.x.unwrap_or(0))
+                                    * u64::from(match self.item.kind {
+                                        StackKind::ActivatedAbility { ability } => {
+                                            self.item.source_card.activation(ability).x_symbols()
+                                        }
+                                        _ => 0,
+                                    })
                             } else {
                                 0
                             },
@@ -532,6 +538,33 @@ impl Game {
         let TargetRule::Grouped { constraint, .. } = rule else {
             return true;
         };
+        if let TargetGroupConstraint::TotalManaValueAtMost(maximum) = constraint {
+            let mut total = 0u128;
+            for bound in chosen.iter().filter(|b| b.group == group) {
+                let Target::Card(id) = bound.target else {
+                    return false;
+                };
+                total += u128::from(
+                    self.copiable_recipe(self.object_ref(id))
+                        .definition
+                        .fixed_mana_value(),
+                );
+            }
+            if !chosen
+                .iter()
+                .any(|b| b.group == group && b.target == target)
+            {
+                let Target::Card(id) = target else {
+                    return false;
+                };
+                total += u128::from(
+                    self.copiable_recipe(self.object_ref(id))
+                        .definition
+                        .fixed_mana_value(),
+                );
+            }
+            return total <= u128::from(maximum);
+        }
         if let TargetGroupConstraint::OtherThanGroup(first) = constraint {
             return chosen
                 .iter()
@@ -544,7 +577,9 @@ impl Game {
             return false;
         };
         match constraint {
-            TargetGroupConstraint::OtherThanGroup(_) => unreachable!(),
+            TargetGroupConstraint::OtherThanGroup(_) | TargetGroupConstraint::TotalManaValueAtMost(_) => unreachable!(),
+            TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
+                && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
@@ -564,6 +599,22 @@ impl Game {
         bound: BoundTarget,
         plan: TargetPlan,
     ) -> bool {
+        if let Some(TargetSpec {
+            rule:
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::ControllerOfPlayerGroup(_),
+                    ..
+                },
+            ..
+        }) = plan.group(bound.group)
+        {
+            return self.target_group_compatible(
+                plan.group(bound.group).unwrap().rule,
+                bound.group,
+                &item.targets,
+                bound.target,
+            );
+        }
         if let Some(TargetSpec {
             rule:
                 TargetRule::Grouped {
@@ -623,6 +674,38 @@ impl Game {
             })
     }
 
+    pub(super) fn retain_resolution_target_budgets(&self, item: &mut SpellView, plan: TargetPlan) {
+        let failed: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::TotalManaValueAtMost(maximum),
+                    ..
+                } = plan.group(bound.group)?.rule
+                else {
+                    return None;
+                };
+                let total: u128 = item
+                    .targets
+                    .iter()
+                    .filter(|b| b.group == bound.group)
+                    .map(|b| match b.target {
+                        Target::Card(id) => u128::from(
+                            self.copiable_recipe(self.object_ref(id))
+                                .definition
+                                .fixed_mana_value(),
+                        ),
+                        _ => u128::MAX,
+                    })
+                    .fold(0u128, u128::saturating_add);
+                (total > u128::from(maximum)).then_some(bound.group)
+            })
+            .collect();
+        if !failed.is_empty() {
+            item.targets.retain(|b| !failed.contains(&b.group));
+        }
+    }
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
         let cost = a.cost_options().nth(index as usize).unwrap();
@@ -940,8 +1023,10 @@ impl Game {
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
+                    | TargetGroupConstraint::ControllerOfPlayerGroup(_)
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
-                    TargetGroupConstraint::OtherThanGroup(_) => None,
+                    TargetGroupConstraint::OtherThanGroup(_)
+                    | TargetGroupConstraint::TotalManaValueAtMost(_) => None,
                 };
                 return zone.is_none_or(|zone| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone)))
                     && self.target_matches_without_hand(

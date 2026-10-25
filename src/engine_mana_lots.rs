@@ -631,7 +631,7 @@ impl Game {
             self.state.mana_lots.as_mut().unwrap().choice = None;
             return self.apply_transaction(actor, action);
         }
-        if self.actor() != Some(actor) {
+        if self.semantic_actor() != Some(actor) {
             return Err(Error::WrongActor);
         }
         let Action::ChooseManaLotSpend { amount } = action else {
@@ -808,7 +808,7 @@ impl Game {
     /// Concrete color payments still use the established public actions. Their
     /// eligibility depends on what is being paid for, including raw shortcuts.
     pub(super) fn mana_action_payable(&self, action: &Action) -> bool {
-        let Some(actor) = self.actor() else {
+        let Some(actor) = self.semantic_actor() else {
             return false;
         };
         let (payment, purpose) = match action {

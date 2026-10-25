@@ -1608,6 +1608,11 @@ impl Game {
         })
     }
     pub(super) fn choose_replacement(&mut self, source: ObjectRef, ability: u16) {
+        if self.state.replacements.is_none() {
+            self.apply_connive_replacement(source, ability);
+            self.run_program();
+            return;
+        }
         let mut state = self.state.replacements.take().unwrap();
         match state.active.as_mut().unwrap() {
             Event::Damage(batch) => {
@@ -1732,6 +1737,14 @@ impl Game {
         self.advance_replacements(true);
     }
     pub(super) fn visit_replacement_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        if self.state.replacements.is_none() {
+            return self.connive_replacements().into_iter().any(|c| {
+                emit(Action::ChooseReplacement {
+                    source: c.source,
+                    ability: c.ability,
+                })
+            });
+        }
         let active = self
             .state
             .replacements
@@ -1780,6 +1793,9 @@ impl Game {
         if !matches!(self.state.pending, Pending::Replacement { .. }) {
             return None;
         }
+        if self.state.replacements.is_none() {
+            return self.connive_replacement_choice();
+        }
         match self.state.replacements.as_ref()?.active.as_ref()? {
             Event::Damage(batch) => Some(ReplacementChoiceView {
                 kind: if self.damage_event_order(batch).is_empty() {
@@ -1811,7 +1827,7 @@ impl Game {
             }),
             Event::Counters(batch) => {
                 let p = &batch.placements[batch.next];
-                if p.private && viewer != p.owner {
+                if p.private && !self.shares_information(viewer, p.owner) {
                     return None;
                 }
                 Some(ReplacementChoiceView {

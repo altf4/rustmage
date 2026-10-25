@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e6e07fe86ee147437cd70cc4b0560ac46d2c10172a6ae531249515c60e323cee",
+  "catalogue_version": "39d70d295eb08cf05342315588360f43fd6a8c18933f781e891b27b0b7efb035",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2542,
-  "implemented_total": 2548,
+  "implemented_standard_cards": 2562,
+  "implemented_total": 2568,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 237,
-      "gated": 36
+      "complete": 257,
+      "gated": 16
     },
     "one": {
       "total": 1,
@@ -2005,8 +2005,8 @@
     {
       "name": "Armor Wars",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/armor_wars.rs",
       "set": "msh"
     },
@@ -3677,8 +3677,8 @@
     {
       "name": "Black Widow, Super Spy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/black_widow_super_spy.rs",
       "set": "msh"
     },
@@ -4773,8 +4773,8 @@
     {
       "name": "Bruce Banner // The Incredible Hulk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/bruce_banner_the_incredible_hulk.rs",
       "set": "msh"
     },
@@ -6389,8 +6389,8 @@
     {
       "name": "Cloak and Dagger, Entwined",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/cloak_and_dagger_entwined.rs",
       "set": "msh"
     },
@@ -6885,8 +6885,8 @@
     {
       "name": "Construct a Cosmic Cube",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/construct_a_cosmic_cube.rs",
       "set": "msh"
     },
@@ -7077,8 +7077,8 @@
     {
       "name": "Cosmic Cube",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/cosmic_cube.rs",
       "set": "msh"
     },
@@ -9261,8 +9261,8 @@
     {
       "name": "Doom Reigns Supreme",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/doom_reigns_supreme.rs",
       "set": "msh"
     },
@@ -18045,8 +18045,8 @@
     {
       "name": "Iron Man Armor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/iron_man_armor.rs",
       "set": "msh"
     },
@@ -18693,8 +18693,8 @@
     {
       "name": "Kang the Conqueror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/kang_the_conqueror.rs",
       "set": "msh"
     },
@@ -19253,8 +19253,8 @@
     {
       "name": "Klaw, Sonic Subjugator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/klaw_sonic_subjugator.rs",
       "set": "msh"
     },
@@ -19909,8 +19909,8 @@
     {
       "name": "Leader, Super-Genius",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/leader_super_genius.rs",
       "set": "msh"
     },
@@ -28717,8 +28717,8 @@
     {
       "name": "Robot Domination",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/robot_domination.rs",
       "set": "msh"
     },
@@ -32533,8 +32533,8 @@
     {
       "name": "Spider-Woman, Secret Agent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/spider_woman_secret_agent.rs",
       "set": "msh"
     },
@@ -34285,8 +34285,8 @@
     {
       "name": "Super-Soldier Serum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/super_soldier_serum.rs",
       "set": "msh"
     },
@@ -36245,8 +36245,8 @@
     {
       "name": "The Super Hero Civil War",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_super_hero_civil_war.rs",
       "set": "msh"
     },
@@ -36365,8 +36365,8 @@
     {
       "name": "The Wondrous Wasp",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/the_wondrous_wasp.rs",
       "set": "msh"
     },
@@ -37253,8 +37253,8 @@
     {
       "name": "Tony Stark // The Invincible Iron Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/tony_stark_the_invincible_iron_man.rs",
       "set": "msh"
     },
@@ -39525,8 +39525,8 @@
     {
       "name": "Vision Quest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/vision_quest.rs",
       "set": "msh"
     },
@@ -41109,16 +41109,16 @@
     {
       "name": "World War Hulk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/world_war_hulk.rs",
       "set": "msh"
     },
     {
       "name": "Worlds Within Worlds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/worlds_within_worlds.rs",
       "set": "msh"
     },

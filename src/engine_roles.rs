@@ -29,6 +29,7 @@ pub(super) struct RoleState {
     pub creature_types: Vec<subtypes::CreatureTypesEffectView>,
     pub animations: Vec<AnimationView>,
     pub keyword_effects: Vec<KeywordEffectView>,
+    pub source_linked_effects: Vec<SourceLinkedEffectView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
     pub harnessed: Vec<ObjectRef>,
@@ -54,6 +55,7 @@ impl RoleState {
             + self.creature_types.len() * std::mem::size_of::<subtypes::CreatureTypesEffectView>()
             + self.animations.len() * std::mem::size_of::<AnimationView>()
             + self.keyword_effects.len() * std::mem::size_of::<KeywordEffectView>()
+            + self.source_linked_effects.len() * std::mem::size_of::<SourceLinkedEffectView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.harnessed.len() * std::mem::size_of::<ObjectRef>()
@@ -231,6 +233,7 @@ impl Game {
                 }
             }
         }
+        self.retimestamp_self_granted_statics(source);
     }
     pub(super) fn record_role(&mut self, aura: ObjectRef, recipient: ObjectRef, timestamp: u64) {
         let r = self.state.roles.get_or_insert_with(Default::default);

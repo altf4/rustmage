@@ -143,10 +143,13 @@ pub(crate) struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TargetGroupConstraint {
     SameGraveyard,
+    /// Controlled by the player chosen in a distinct target group.
+    ControllerOfPlayerGroup(u16),
     /// Attached to the exact object selected in another target group.
     AttachedToGroup(u16),
     DifferentControllers,
     OtherThanGroup(u16),
+    TotalManaValueAtMost(u64),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -982,6 +985,10 @@ pub(crate) enum Instruction {
         next_turn: bool,
     },
     ExileEachLibraryTopCastFree,
+    ExileTargetLibraryTopCastFree {
+        amount: u16,
+        maximum_casts: u16,
+    },
     CastTargetedGraveyardFree,
     CounterRelatedUnlessPayLife(u32),
     /// One captured ward payer may discard a card or pay this mana cost.
@@ -1095,6 +1102,9 @@ pub(crate) enum Instruction {
         filter: SearchFilter,
         skip: usize,
     },
+    PutHandAndAttachEquipment {
+        filter: SearchFilter,
+    },
     PutHandCreature,
     PutHandPermanent {
         maximum: AmountValue,
@@ -1187,6 +1197,9 @@ pub(crate) enum Instruction {
         required_all: bool,
     },
     AdditionalCombat,
+    ExtraTurn {
+        power_up_prohibited: bool,
+    },
     TransformSource,
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.
@@ -1381,6 +1394,16 @@ pub(crate) enum Instruction {
     MayMill(u16),
     RecoverMilled(RecoveryFilter),
     CollectGraveyard,
+    CastLibraryTopUpToAttackingPower(u16),
+    BottomLookedLibraryRandom,
+    ControlTargetPlayerNextTurn,
+    ExileAllCreaturesRemember,
+    DeployHandCreaturesEach,
+    ReturnExiledResultToHands,
+    ExileDamagedLibraryUntilNonland,
+    MayCounterSourceOtherwiseCast,
+    RevealTargetHandSubsetDiscard(AmountValue),
+    RevealTargetHandExileUntilSourceLeaves,
     RevealHandDiscard {
         excluded_kinds: u16,
     },
@@ -1390,6 +1413,9 @@ pub(crate) enum Instruction {
     AttachEquipmentByGroups {
         equipment: u16,
         recipient: u16,
+    },
+    AttachEquipmentToAttached {
+        group: u16,
     },
     TapAttached,
     PutGrantorCounter(CounterKind),
@@ -1430,6 +1456,10 @@ pub(crate) enum Instruction {
     Scry(u16),
     Surveil(u16),
     AnimateSource(AnimationSpec),
+    AnimateSourceWithAbilityIfNoncreature {
+        spec: AnimationSpec,
+        kind: crate::engine::SelfGrantedAbilityKind,
+    },
     AnimateTargets(AnimationSpec),
     /// Change creature subtypes, base stats and keywords without adding a card type.
     ChangeSourceCreatureForm(AnimationSpec),
@@ -1445,6 +1475,11 @@ pub(crate) enum Instruction {
     AnimateSourceIfNoncreature {
         spec: AnimationSpec,
         ability: u16,
+    },
+    SearchLibraryAndGraveyardWithXCounters {
+        filter: SearchFilter,
+        counter: CounterKind,
+        haste_at: Option<u32>,
     },
     Search(SearchSpec),
     SearchTargetController(SearchSpec),
@@ -1546,6 +1581,8 @@ pub(crate) enum Instruction {
         counter: Option<(CounterKind, u64)>,
         role: Option<Card>,
     },
+    /// Bestow a real self-owned static ability, rather than a resolved stat modifier.
+    GrantSelfAbility(crate::engine::SelfGrantedAbilityKind),
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,
@@ -1605,6 +1642,9 @@ pub(crate) enum Instruction {
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
     Tap,
+    GainControlTargetsUntilSourceLeaves,
+    RemoveTargetAbilitiesUntilSourceLeaves,
+    PreventTargetUntapWhileSourceControlled,
     Untap,
     /// One simultaneous placement on battlefield permanents matching the count predicate.
     PutFilteredCounters {
@@ -2067,6 +2107,8 @@ pub(crate) enum ReplacementFilter {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReplacementSpec {
+    /// Draw one card before the original creature connive proceeds.
+    ConniveDraw,
     /// Add one of each positive kind, only for the provider controller placing
     /// counters on their own permanent. General providers do not apply entering.
     CountersPlacedByController,
@@ -2709,6 +2751,8 @@ pub(crate) enum TriggerCondition {
     /// The physical source spell itself was cast; stack copies never dispatch it.
     SelfCast,
     CardsLeaveGraveyard,
+    /// One post-event batch of creature cards entering the controller's graveyard.
+    CreatureCardsEnterYourGraveyard,
     ReturnDeath(ReturnDeathFilter),
     /// Delayed ability carried by a produced mana unit, independent of its source.
     ManaSpentForSpell,
@@ -2891,6 +2935,7 @@ pub(crate) enum TriggerCondition {
     /// One event per player attacked by at least one declared matching creature.
     AttackPlayer(CreatureFilter),
     GrantedAttacks,
+    AttachedAttacksOrBlocks,
     SelfBecomesTapped,
     /// One event after the complete simultaneous tap group, using post-event types.
     ControlledCreaturesBecomeTapped,

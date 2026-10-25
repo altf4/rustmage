@@ -169,7 +169,7 @@ impl Game {
         let Pending::ZoneReplacement { player } = self.state.pending else {
             return None;
         };
-        (viewer == player).then(|| {
+        self.shares_information(viewer, player).then(|| {
             self.state
                 .zone_rules
                 .as_ref()

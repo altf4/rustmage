@@ -496,6 +496,7 @@ impl Game {
             .find(|saved| saved.object == object)
             .unwrap() = row.clone();
         self.materialize_copy_row(&row, true);
+        self.retimestamp_self_granted_statics(object);
         true
     }
     pub(super) fn transform_under_temporary_copy(

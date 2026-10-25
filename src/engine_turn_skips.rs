@@ -17,7 +17,27 @@ impl Game {
         }
     }
     pub(super) fn advance_to_actual_turn(&mut self) {
-        let mut next = self.state.active.other();
+        let extra = self
+            .state
+            .turn_schedule
+            .as_ref()
+            .is_some_and(|s| !s.pending.is_empty());
+        let mut next = self
+            .scheduled_next_turn()
+            .unwrap_or_else(|| self.state.active.other());
+        if extra
+            && self
+                .state
+                .turn_schedule
+                .as_ref()
+                .is_some_and(|s| s.current.is_some())
+        {
+            if self.state.turn_skips.as_deref() == Some(&[0; 2]) {
+                self.state.turn_skips = None;
+            }
+            self.state.active = next;
+            return;
+        }
         if let Some(skips) = self.state.turn_skips.as_mut() {
             // Skip whole alternating cycles in constant time, even for very large
             // accumulated counts. Skipped turns produce no turn events or numbers.

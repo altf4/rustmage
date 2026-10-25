@@ -9,6 +9,9 @@ pub struct ExilePlayPermission {
     pub player: Player,
     pub expiry: ExilePlayExpiry,
     pub spend_any_mana: bool,
+    /// A cast permission never authorizes a land play.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub cast_only: bool,
     pub exile_on_graveyard: bool,
 }
 /// Deadline boundaries refer to actual turns, never to skipped turn candidates.
@@ -46,6 +49,16 @@ impl Game {
                 && p.object == self.object_ref(card)
                 && p.expiry.active(self.state.turn)
         })
+    }
+    pub(super) fn can_play_exiled_land(&self, player: Player, card: CardId) -> bool {
+        self.can_play_foreign_stash(player, card)
+            || self.can_play_adventure(player, card)
+            || self.state.exile_permissions.iter().any(|p| {
+                p.player == player
+                    && p.object == self.object_ref(card)
+                    && p.expiry.active(self.state.turn)
+                    && !p.cast_only
+            })
     }
     pub(super) fn exile_cast_modifiers(&self, player: Player, card: CardId) -> (bool, bool) {
         if self.state.objects[card as usize].zone != Zone::Exile {
@@ -144,6 +157,7 @@ impl Game {
                 player,
                 expiry,
                 spend_any_mana: false,
+                cast_only: false,
                 exile_on_graveyard: false,
             },
         );
@@ -180,29 +194,35 @@ impl Game {
     }
 
     pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) {
-        if !self.on_battlefield(item.object.card)
-            || self.object_ref(item.object.card) != item.object
-        {
-            return;
-        }
-        let ids: Vec<_> = item
+        let objects = item
             .targets
             .iter()
             .copied()
-            .filter(|&bound| self.same_target_object(bound))
-            .filter_map(|bound| {
-                if let Target::Card(id) = bound.target {
-                    Some(id)
-                } else {
-                    None
-                }
-            })
+            .filter(|&b| self.same_target_object(b))
+            .filter_map(|b| b.object)
+            .collect::<Vec<_>>();
+        self.exile_objects_until_source_leaves(item.object, &objects);
+    }
+    /// A non-target hand choice and an ordinary bound target share the same exact
+    /// movement/link transaction. Only an actual arrival in exile creates a link.
+    pub(super) fn exile_objects_until_source_leaves(
+        &mut self,
+        source: ObjectRef,
+        objects: &[ObjectRef],
+    ) {
+        if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+            return;
+        }
+        let ids: Vec<_> = objects
+            .iter()
+            .filter(|r| self.object_ref(r.card) == **r)
+            .map(|r| r.card)
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
-            if event.moved {
+            if event.moved && event.destination == Zone::Exile {
                 self.state.exile_links.push(ExileLink {
-                    source: item.object,
+                    source,
                     exiled: event.after,
                     return_zone: event.before.zone,
                 });
@@ -217,6 +237,7 @@ impl Game {
         death_sources: &[ObjectView],
     ) {
         self.record_entry_turn_facts(events);
+        self.creature_cards_enter_graveyard_triggers(events);
         self.graveyard_departure_triggers(events, death_sources);
         self.returned_hand_triggers(events);
         for event in events {

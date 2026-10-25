@@ -1,3 +1,21 @@
+#[path = "engine_zone_search.rs"]
+mod zone_search;
+pub use zone_search::ZoneSearchView;
+#[path = "engine_library_cast_look.rs"]
+mod library_cast_look;
+pub use library_cast_look::LibraryCastLookView;
+#[path = "engine_player_control.rs"]
+mod player_control;
+pub use player_control::{ControlledPlayer, PlayerControlView};
+#[path = "engine_library_hand_exchange.rs"]
+mod library_hand_exchange;
+pub use library_hand_exchange::HandDeploymentView;
+#[path = "engine_hand_choices.rs"]
+mod hand_choices;
+pub use hand_choices::{HandChoiceKind, HandChoiceView};
+#[path = "engine_self_granted.rs"]
+mod self_granted;
+pub use self_granted::{SelfGrantedAbilityKind, SelfGrantedAbilityView};
 #[path = "engine_hand_exile.rs"]
 mod hand_exile;
 #[path = "engine_mana_announcements.rs"]
@@ -5,6 +23,9 @@ mod mana_announcements;
 #[path = "engine_turn_facts.rs"]
 mod turn_facts;
 pub use turn_facts::TurnFactsView;
+#[path = "engine_turn_schedule.rs"]
+mod turn_schedule;
+pub use turn_schedule::{ExtraTurnView, TurnScheduleView};
 #[path = "engine_turn_skips.rs"]
 mod turn_skips;
 pub use mana_announcements::ManaAnnouncementView;
@@ -289,6 +310,9 @@ pub use ability_evaluation::{AbilityAvailabilityView, GrantedAbilityView};
 mod ability_order;
 #[path = "engine_ability_timeline.rs"]
 mod ability_timeline;
+#[path = "engine_source_linked_effects.rs"]
+mod source_linked_effects;
+pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
 #[path = "engine_ability_world.rs"]
 mod ability_world;
 pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
@@ -531,6 +555,8 @@ define_actions! {
         payment: Mana,
     },
     DeclineResolutionMana,
+    // Required private reveal selection, revealed discard, or optional exile.
+    ChooseHandCard { object: Option<ObjectRef> },
     ChooseRevealedDiscard { object: ObjectRef },
     RecoverMilled {
         object: Option<ObjectRef>,
@@ -675,6 +701,7 @@ define_actions! {
     ChooseSearch {
         card: CardId,
     },
+    ChooseSearchZones { library:bool, graveyard:bool },
     FinishSearch,
     ChooseSearchBattlefield { card: CardId },
     ChooseSearchDestination { destination: crate::SearchDestination },
@@ -1593,6 +1620,9 @@ enum Pending {
     MilledSelection {
         player: Player,
     },
+    HandCardChoice {
+        player: Player,
+    },
     RevealedDiscard {
         player: Player,
         victim: Player,
@@ -1647,6 +1677,9 @@ enum Pending {
         player: Player,
     },
     EffectSearch {
+        player: Player,
+    },
+    LibraryGraveyardSearch {
         player: Player,
     },
     EffectMana {
@@ -1719,6 +1752,8 @@ struct State {
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
     ending_turn: bool,
     turn_skips: Option<Box<[u64; 2]>>,
+    player_control: Option<Box<player_control::PlayerControlState>>,
+    turn_schedule: Option<Box<TurnScheduleView>>,
     zone_rules: Option<Box<zone_replacements::ZoneState>>,
     mana_lots: Option<Box<mana_lots::ManaState>>,
     controls: Option<Box<continuous_control::ControlState>>,
@@ -1728,6 +1763,8 @@ struct State {
     damage_prevention_prohibited: bool,
     #[allow(clippy::box_collection)]
     temporary_abilities: Option<Box<Vec<TemporaryAbilityView>>>,
+    #[allow(clippy::box_collection)]
+    self_granted_abilities: Option<Box<Vec<self_granted::Row>>>,
     #[allow(clippy::box_collection)]
     suspected: Option<Box<Vec<ObjectRef>>>,
     #[allow(clippy::box_collection)]
@@ -1888,6 +1925,9 @@ pub struct ObjectView {
     /// A temporary copy retains its physical identity in `temporary_copy`.
     pub kinds: u16,
     pub colors: u8,
+    /// Frozen layer-four supertype change, absent when the recipe is sufficient.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_legendary: Option<bool>,
     pub granted_subtypes: GrantedSubtypes,
     pub entry_choice: Option<EntryChoiceValue>,
     pub saddled: bool,
@@ -1945,10 +1985,12 @@ impl ObjectView {
         self.token.is_some()
     }
     pub fn is_legendary(&self) -> bool {
-        self.copy_recipe
-            .and_then(|recipe| recipe.overrides)
-            .and_then(|value| value.legendary)
-            .unwrap_or_else(|| self.card.is_legendary())
+        self.effective_legendary.unwrap_or_else(|| {
+            self.copy_recipe
+                .and_then(|recipe| recipe.overrides)
+                .and_then(|value| value.legendary)
+                .unwrap_or_else(|| self.card.is_legendary())
+        })
     }
     /// Captured rules name, retained even after this object changes or leaves play.
     pub fn name(&self) -> &'static str {
@@ -2190,6 +2232,12 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub player_control: Option<PlayerControlView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub library_cast_look: Option<LibraryCastLookView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zone_search: Option<ZoneSearchView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_choice: Option<SourceCounterChoiceView>,
     /// Frozen relevant public events; present only with a public historical observer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2203,6 +2251,10 @@ pub struct Observation {
     pub cast_costs: Option<CastCostTransaction>,
     pub mana_rollback: Option<ManaRollbackView>,
     pub library_piles: Option<LibraryPilesView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hand_choice: Option<HandChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hand_deployment: Option<HandDeploymentView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
     pub mana_lots: Vec<ManaLotView>,
@@ -2213,6 +2265,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub toughness_combat_damage: Option<[bool; 2]>,
     pub additional_combats: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub turn_schedule: Option<TurnScheduleView>,
     pub must_be_blocked: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
@@ -2221,6 +2275,8 @@ pub struct Observation {
     pub damage_prevention_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub self_granted_abilities: Option<Vec<SelfGrantedAbilityView>>,
     pub suspected: Vec<ObjectRef>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub zone_replacement_choice: Option<ZoneReplacementChoiceView>,
@@ -2290,6 +2346,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hand_size_timeline: Option<HandSizeTimelineView>,
     pub keyword_effects: Vec<KeywordEffectView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_linked_effects: Option<Vec<SourceLinkedEffectView>>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
     pub resolving: Option<SpellView>,
@@ -2473,6 +2531,8 @@ impl Game {
                 paradigm: None,
                 ending_turn: false,
                 turn_skips: None,
+                player_control: None,
+                turn_schedule: None,
                 mana_lots: None,
                 linked_choices: None,
                 zone_rules: None,
@@ -2533,6 +2593,7 @@ impl Game {
                 resolution_free_casts: None,
                 miracle: None,
                 temporary_abilities: None,
+                self_granted_abilities: None,
                 suspected: None,
                 death_exile_replacements: None,
                 roles: None,
@@ -2620,7 +2681,9 @@ impl Game {
         Ok(())
     }
 
-    pub fn actor(&self) -> Option<Player> {
+    /// Player whose game decisions must currently be made. Resources and
+    /// object controllers continue to belong to this semantic player.
+    pub fn semantic_actor(&self) -> Option<Player> {
         match self.state.pending {
             Pending::OpeningHand { player: p, .. }
             | Pending::OptionalSearch(p)
@@ -2675,9 +2738,11 @@ impl Game {
             | Pending::Role { player }
             | Pending::Legend { player }
             | Pending::MilledSelection { player }
+            | Pending::HandCardChoice { player }
             | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
+            | Pending::LibraryGraveyardSearch { player }
             | Pending::EquipmentAttachment { player }
             | Pending::EffectLibrarySelection { player }
             | Pending::EffectLibrary { player }
@@ -2698,6 +2763,11 @@ impl Game {
             Pending::Blockers => Some(self.state.active.other()),
             Pending::Terminal => None,
         }
+    }
+
+    /// External decision maker, including a player controlling another player.
+    pub fn actor(&self) -> Option<Player> {
+        self.semantic_actor().map(|p| self.decision_controller(p))
     }
 
     /// Complete legal space, including damage assignments and scalar-X intervals.
@@ -2739,7 +2809,7 @@ impl Game {
     /// representatives. Use legal_action_space for the complete parametric space.
     pub fn legal_actions_into(&self, out: &mut Vec<Action>) {
         out.clear();
-        if self.actor().is_none() {
+        if self.semantic_actor().is_none() {
             return;
         }
         self.visit_actions(|a| {
@@ -2759,6 +2829,16 @@ impl Game {
     /// Mutation happens only after complete validation. Rejected actions leave state
     /// and revision unchanged. No user-supplied IDs are used to index before validation.
     pub fn apply(&mut self, actor: Player, action: Action) -> Result<(), Error> {
+        // Conceding is always the caller's own choice, even while controlled.
+        if action != Action::Concede && self.state.outcome.is_none() && self.actor() != Some(actor)
+        {
+            return Err(Error::WrongActor);
+        }
+        let actor = if action == Action::Concede {
+            actor
+        } else {
+            self.semantic_actor().unwrap_or(actor)
+        };
         let deferred_action = self.state.mana_lots.is_some().then(|| action.clone());
         // Cold mechanic presence avoids an extra action clone in ordinary games.
         let zone_action = self.state.zone_rules.is_some().then(|| action.clone());
@@ -2870,7 +2950,7 @@ impl Game {
             self.state.outcome = Some(Outcome::Winner(actor.other()));
             self.state.pending = Pending::Terminal;
         } else {
-            if self.actor() != Some(actor) {
+            if self.semantic_actor() != Some(actor) {
                 return Err(Error::WrongActor);
             }
             let legal = if let Action::PayCosts { payment } = &action {
@@ -2987,7 +3067,7 @@ impl Game {
     }
     fn visit_unfiltered_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
         let s = &self.state;
-        let Some(actor) = self.actor() else {
+        let Some(actor) = self.semantic_actor() else {
             return false;
         };
         if emit(Action::Concede) {
@@ -2997,6 +3077,7 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, Card, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::LibraryGraveyardSearch { .. } => return self.visit_zone_search(&mut emit),
             Pending::ZoneReplacement { .. } => {
                 if self.zone_choice_actions(&mut emit) {
                     return true;
@@ -3493,7 +3574,7 @@ impl Game {
                         if obj.card.is_land()
                             && sorcery
                             && (obj.zone == Zone::Hand
-                                || self.can_play_exiled(actor, card)
+                                || self.can_play_exiled_land(actor, card)
                                 || self.has_graveyard_cast(actor, card, GraveyardCastKind::Play)
                                 || self.can_play_static_land(actor, card))
                             && (!s.land_played
@@ -3704,6 +3785,9 @@ impl Game {
                         continue;
                     }
                     if obj.card.is_land() {
+                        if obj.zone == Zone::Exile && !self.can_play_exiled_land(actor, card) {
+                            continue;
+                        }
                         if sorcery
                             && (!s.land_played
                                 || self
@@ -4316,6 +4400,7 @@ impl Game {
                     }
                 }
             }
+            Pending::HandCardChoice { .. } => return self.visit_hand_card_choices(&mut emit),
             Pending::RevealedDiscard {
                 victim,
                 excluded_kinds,
@@ -5167,6 +5252,7 @@ impl Game {
                     .blocking
                     .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
                 self.state.blocks.append(&mut self.state.selected_blocks);
+                self.attachment_block_triggers(actor);
                 for attacker in &mut self.state.attackers {
                     attacker.blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
                 }
@@ -5240,14 +5326,30 @@ impl Game {
             }
             Action::SelectMilled { object } => self.select_milled(object),
             Action::FinishMilledSelection => self.finish_milled_selection(),
+            Action::ChooseHandCard { object } => self.choose_hand_card(object),
             Action::ChooseRevealedDiscard { object } => {
                 let cause = self.state.resolving.as_ref().unwrap().item.controller;
                 self.discard_batch_caused(&[object.card], None, Some(cause));
                 self.run_program();
             }
             Action::RecoverMilled { object } => self.recover_milled(object),
-            Action::ChooseSearch { card } => self.choose_search(card),
-            Action::FinishSearch => self.finish_search(actor),
+            Action::ChooseSearchZones { library, graveyard } => {
+                self.choose_search_zones(library, graveyard)
+            }
+            Action::ChooseSearch { card } => {
+                if self.has_zone_search() {
+                    self.choose_zone_search_card(card)
+                } else {
+                    self.choose_search(card)
+                }
+            }
+            Action::FinishSearch => {
+                if self.has_zone_search() {
+                    self.finish_zone_search()
+                } else {
+                    self.finish_search(actor)
+                }
+            }
             Action::ChooseSearchBattlefield { card } => self.choose_search_battlefield(actor, card),
             Action::ChooseSearchDestination { destination } => {
                 self.choose_search_destination(actor, destination)
@@ -5298,6 +5400,7 @@ impl Game {
                     self.complete_optional_tap_reflexive();
                     self.complete_optional_discard_exile_play();
                 }
+                self.complete_optional_source_counter_cast(accept);
                 self.run_program();
             }
             Action::Concede => unreachable!(),
@@ -6197,6 +6300,7 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.begin_player_control_turn();
         self.expire_temporary_copies(false);
         self.reset_copy_turn_uses();
         self.prune_modal_history();
@@ -6383,6 +6487,7 @@ impl Game {
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_spell_copies();
         self.expire_temporary_controls();
+        self.state.self_granted_abilities = None;
         if let Some(grants) = &mut self.state.temporary_abilities {
             grants.retain(|grant| grant.permanent);
             if grants.is_empty() {
@@ -6726,7 +6831,11 @@ impl Game {
     /// projected only to their actor; known revealed hand incarnations are public.
     pub fn observe(&self, viewer: Player) -> Observation {
         let s = &self.state;
-        let owns_choice = self.actor() == Some(viewer);
+        let owns_choice = self
+            .semantic_actor()
+            .is_some_and(|p| self.shares_information(viewer, p));
+        let makes_decision = self.actor() == Some(viewer);
+        let choice_player = self.choice_information_player(viewer);
         let query = self.characteristic_query();
         let objects = s
             .objects
@@ -6737,12 +6846,15 @@ impl Game {
                     && o.zone != Zone::Outside
                     && o.zone != Zone::Library
                     && (o.zone != Zone::Hand
-                        || o.owner == viewer
+                        || self.shares_information(viewer, o.owner)
                         || s.known_hand.contains(&self.object_ref(*i as CardId)))
             })
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            player_control: self.player_control_view(),
+            library_cast_look: self.library_cast_look_view(viewer),
+            zone_search: self.zone_search_view(viewer),
             turn_facts: self.turn_facts_view(),
             paradigms: self.paradigm_views(),
             resolved_spell_names: self.resolved_spell_name_views(),
@@ -6756,17 +6868,19 @@ impl Game {
                 .state
                 .announcing
                 .as_ref()
-                .filter(|a| a.item.controller == viewer)
+                .filter(|a| self.shares_information(viewer, a.item.controller))
                 .and_then(|a| a.cast_costs.as_deref())
                 .cloned(),
             casualty_declarations: self
                 .state
                 .announcing
                 .as_ref()
-                .filter(|a| a.item.controller == viewer)
+                .filter(|a| self.shares_information(viewer, a.item.controller))
                 .and_then(|a| a.casualty.as_deref())
                 .map_or_else(Vec::new, |v| v.clone()),
             keep_types: self.keep_types_view(),
+            hand_choice: self.hand_choice_view(viewer),
+            hand_deployment: self.public_hand_deployment_view(),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
                 c.links
                     .iter()
@@ -6868,6 +6982,7 @@ impl Game {
                 .temporary_controls
                 .as_ref()
                 .map_or_else(Vec::new, |v| v.as_ref().clone()),
+            self_granted_abilities: self.self_granted_ability_views(),
             temporary_abilities: s
                 .temporary_abilities
                 .as_ref()
@@ -6900,6 +7015,7 @@ impl Game {
                     .then_some(r.toughness_combat_damage)
             }),
             additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
+            turn_schedule: s.turn_schedule.as_deref().cloned(),
             must_be_blocked: s
                 .combat_rules
                 .as_ref()
@@ -6980,9 +7096,11 @@ impl Game {
                 Pending::EffectLibrary { .. } => "library_choice",
                 Pending::EquipmentAttachment { .. } => "equipment_attachment",
                 Pending::EffectLibrarySelection { .. } => "library_selection",
+                Pending::HandCardChoice { .. } => "hand_card_choice",
                 Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::MilledSelection { .. } => "milled_selection",
+                Pending::LibraryGraveyardSearch { .. } => "library_graveyard_search",
                 Pending::EffectSearch { .. } => {
                     if s.resolving
                         .as_ref()
@@ -7089,7 +7207,11 @@ impl Game {
                 .as_ref()
                 .and_then(|r| r.cascade.as_deref().cloned()),
             miracle: self.miracle_choice_view(viewer),
-            resolution_free_casts: s.resolution_free_casts.as_deref().cloned(),
+            resolution_free_casts: s
+                .resolution_free_casts
+                .as_deref()
+                .filter(|f| f.origin != Zone::Library || self.shares_information(viewer, f.player))
+                .cloned(),
             graveyard_type_uses: s
                 .graveyard_type_uses
                 .as_ref()
@@ -7113,7 +7235,7 @@ impl Game {
                 .map_or_else(Vec::new, |w| w.delayed.iter().map(|d| d.view).collect()),
             plot_payment: self
                 .plot_payment()
-                .filter(|p| p.controller == viewer)
+                .filter(|p| self.shares_information(viewer, p.controller))
                 .copied(),
             triggered_this_turn: s.triggered_this_turn.clone(),
             ability_resolutions: s
@@ -7143,6 +7265,7 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.ability_timestamps.clone()),
             keyword_effects: self.keyword_effect_views(viewer),
+            source_linked_effects: self.source_linked_effect_views(),
             role_timestamps: s
                 .roles
                 .as_ref()
@@ -7313,7 +7436,7 @@ impl Game {
                         destination: choice.spec.destination,
                         tapped: choice.spec.tapped,
                         reveal: choice.spec.reveal,
-                        cards: s.players[viewer.index()]
+                        cards: s.players[choice_player.index()]
                             .library
                             .iter()
                             .map(|&id| query.object_view(id))
@@ -7329,7 +7452,7 @@ impl Game {
                 .and_then(|r| r.search.as_ref())
                 .filter(|choice| choice.destination_pending && (choice.spec.reveal || owns_choice))
                 .map(|choice| SearchDestinationChoiceView {
-                    player: self.actor().unwrap(),
+                    player: self.semantic_actor().unwrap(),
                     cards: choice
                         .selected
                         .iter()
@@ -7391,7 +7514,13 @@ impl Game {
             effect_discards: s
                 .resolving
                 .as_ref()
-                .map(|resolution| resolution.selected_discards[viewer.index()].clone())
+                .map(|resolution| {
+                    [Player::P0, Player::P1]
+                        .into_iter()
+                        .filter(|&p| self.shares_information(viewer, p))
+                        .flat_map(|p| resolution.selected_discards[p.index()].iter().copied())
+                        .collect()
+                })
                 .unwrap_or_default(),
             attackers: if owns_choice && s.pending == Pending::Attackers {
                 s.selected_attackers.iter().map(|a| a.card).collect()
@@ -7429,7 +7558,7 @@ impl Game {
                 None
             },
             outcome: s.outcome,
-            actions: if owns_choice {
+            actions: if makes_decision {
                 self.legal_actions()
             } else {
                 Vec::new()
@@ -7442,6 +7571,9 @@ impl Game {
     pub fn state_bytes(&self) -> usize {
         let s = &self.state;
         std::mem::size_of::<State>()
+            + s.player_control.as_ref().map_or(0, |_| {
+                std::mem::size_of::<player_control::PlayerControlState>()
+            })
             + s.library_top
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<library_top::LibraryTopState>())
@@ -7452,12 +7584,14 @@ impl Game {
                 std::mem::size_of::<Vec<ObjectRef>>()
                     + rows.len() * std::mem::size_of::<ObjectRef>()
             })
+            + turn_schedule::owned_bytes(&s.turn_schedule)
             + s.turn_skips
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<[u64; 2]>())
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
             + self.control_bytes()
+            + self_granted::owned_bytes(&s.self_granted_abilities)
             + self.temporary_ability_bytes()
             + self.suspected_bytes()
             + self.death_exile_bytes()
@@ -7652,9 +7786,10 @@ impl Game {
                             })
                             .unwrap_or(0)
                         + resolution.selection.as_ref().map_or(0, |f| f.bytes())
-                        + resolution.return_attachment.as_ref().map_or(0, |_| {
-                            std::mem::size_of::<return_attachment::ReturnAttachment>()
-                        })
+                        + resolution
+                            .return_attachment
+                            .as_ref()
+                            .map_or(0, |frame| frame.owned_bytes())
                         + resolution
                             .selected_discards
                             .iter()
@@ -8181,3 +8316,51 @@ mod msh_restricted_creatures_tests;
 #[cfg(test)]
 #[path = "engine_msh_kingpin_tests.rs"]
 mod msh_kingpin_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_armor_hulk_sagas_tests.rs"]
+mod msh_armor_hulk_sagas_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_graveyard_plans_tests.rs"]
+mod msh_graveyard_plans_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_leader_tests.rs"]
+mod msh_leader_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_hand_choices_tests.rs"]
+mod msh_hand_choices_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_widow_worlds_tests.rs"]
+mod msh_widow_worlds_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_source_linked_sting_tests.rs"]
+mod msh_source_linked_sting_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_civil_war_tests.rs"]
+mod msh_civil_war_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_serum_tests.rs"]
+mod msh_serum_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_armor_tony_tests.rs"]
+mod msh_armor_tony_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_bruce_kang_tests.rs"]
+mod msh_bruce_kang_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_cosmic_cube_tests.rs"]
+mod msh_cosmic_cube_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_vision_quest_tests.rs"]
+mod msh_vision_quest_tests;

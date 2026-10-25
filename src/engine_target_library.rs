@@ -178,7 +178,8 @@ impl Game {
         }
     }
     pub(super) fn target_library_view(&self, viewer: Player) -> Option<TargetLibraryView> {
-        if self.actor() != Some(viewer) {
+        let viewer = self.choice_information_player(viewer);
+        if self.semantic_actor() != Some(viewer) {
             return None;
         }
         let f = self.state.resolving.as_ref()?.target_library.as_ref()?;

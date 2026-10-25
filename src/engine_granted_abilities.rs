@@ -28,7 +28,8 @@ impl Game {
                 !a.condition.is_granted()
                     && matches!(
                         a.condition.event(),
-                        TriggerCondition::SpellCast { .. }
+                        TriggerCondition::CreatureCardsEnterYourGraveyard
+                            | TriggerCondition::SpellCast { .. }
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::PlayerDamaged { .. }
                             | TriggerCondition::CreatureDamaged { .. }

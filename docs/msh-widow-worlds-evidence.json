@@ -1,0 +1,472 @@
+{
+  "schema": 1,
+  "scope": "Two whole typed cards: combat-damage exile/counter-or-cast permission and APNAP private hand choices followed by simultaneous battlefield entry. Focused card acceptance; final set integration deferred.",
+  "base": "38ac9a4e7c82655334422917c41199bd29183820",
+  "tested_runtime": "fa11a5d3df723424039d692cbff37e9f6b9b5dfa",
+  "source_branch": "codex/msh-widow-worlds",
+  "complete_cards": [
+    "Black Widow, Super Spy",
+    "Worlds Within Worlds"
+  ],
+  "oracle": [
+    {
+      "oracle_id": "579f9a86-a1af-4c2a-a7e5-8fea0bd0eb61",
+      "name": "Black Widow, Super Spy",
+      "layout": "normal",
+      "mana_cost": "{1}{B}",
+      "cmc": 2.0,
+      "type_line": "Legendary Creature \u2014 Human Spy Hero",
+      "oracle_text": "Menace\nWhenever Black Widow deals combat damage to a player, that player exiles cards from the top of their library until they exile a nonland card. You may put a +1/+1 counter on Black Widow. If you don't, you may cast the exiled nonland card until end of turn and mana of any type can be spent to cast that spell.",
+      "power": "2",
+      "toughness": "1",
+      "colors": [
+        "B"
+      ],
+      "color_identity": [
+        "B"
+      ],
+      "keywords": [
+        "Menace"
+      ],
+      "reference_printing": {
+        "id": "63ce0909-7d7d-410d-ab6c-c87fa3e23877",
+        "set": "msh",
+        "collector_number": "89",
+        "released_at": "2026-06-26"
+      }
+    },
+    {
+      "oracle_id": "e25062ba-7176-4d59-ac3e-26d19b26f02a",
+      "name": "Worlds Within Worlds",
+      "layout": "normal",
+      "mana_cost": "{5}{G}{U}",
+      "cmc": 7.0,
+      "type_line": "Sorcery",
+      "oracle_text": "Exile all creatures. Each player may put any number of creature cards from their hand onto the battlefield. Then put all cards exiled this way into their owners' hands. Exile Worlds Within Worlds.",
+      "colors": [
+        "G",
+        "U"
+      ],
+      "color_identity": [
+        "G",
+        "U"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "4765e39c-cbf2-4605-9bf1-3baad7d92cfb",
+        "set": "msh",
+        "collector_number": "241",
+        "released_at": "2026-06-26"
+      }
+    }
+  ],
+  "source_pins": {
+    "design": {
+      "path": "<cache>/rustmage-msh-widow-worlds-source-design.json",
+      "sha256": "760446b2ece651cdcf1dc5c5dde1930448c3f9c4dca6750c42f313a7c09e4e56"
+    },
+    "oracle_inventory": {
+      "path": "data/standard/cards.json",
+      "sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0"
+    },
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java": [
+      {
+        "path": "Mage.Sets/src/mage/cards/b/BlackWidowSuperSpy.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "658148fcc1f7071329d08107096f6b5bae1184ee3d96c20ea74ebe8787e7f96d",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/w/WorldsWithinWorlds.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "0c28b5033b1521327e06e7686b9aa6bc66184db0de2b8d898bb3a6a22e3b56ba",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSpellEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "a7e5f14c36dc0938ad32916c58ae5c50971810fbdb26b8a69f4bfcfdd243b78c",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/target/TargetCard.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/CanPlayCardControllerEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "f038661e1695132acc06c2886f17d98832360a6d92fbd59d3956fe87d4e78387",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/YouMaySpendManaAsAnyColorToCastTargetEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c0e147f9570a3e6b96caac5560728bbf4372c4e86f12bee956777c59020fd214",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/cards/CardsImpl.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/cards/Cards.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "2ceaf2939456fd7356ea668af3c3aa642d7319455cf24ebf690109dce09db3d3",
+        "read_scope": "full body"
+      },
+      {
+        "path": "Mage/src/main/java/mage/util/CardUtil.java",
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+        "read_scope": "scoped complete makeCardPlayable overloads only, not full utility file"
+      }
+    ],
+    "primary": [
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "sections": [
+          "Black Widow, Super Spy",
+          "Worlds Within Worlds"
+        ],
+        "paraphrase": "Widow pays normal costs and timing. Worlds APNAP hand selections remain hidden, followed by simultaneous creature entry, exact initial exiles return, then self exile."
+      },
+      {
+        "cache": "<cache>/rustmage-MagicCompRules-20260925.txt",
+        "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+        "rules": [
+          "101.4",
+          "101.4a",
+          "118.12",
+          "400.7",
+          "608.2e"
+        ]
+      }
+    ],
+    "definitions": [
+      {
+        "path": "src/card_definitions/msh/black_widow_super_spy.rs",
+        "sha256": "d134c8f43ea201f93500f8315e9d06435ddf8533c1b3b8d417b53c7fb2453bc6"
+      },
+      {
+        "path": "src/card_definitions/msh/black_widow_super_spy.json",
+        "sha256": "d2d180e12c426aaf34beb613c84a1ad91f448ac4959de9c1494f81b137f36be4"
+      },
+      {
+        "path": "src/card_definitions/msh/worlds_within_worlds.rs",
+        "sha256": "d7e6c148d205abc05c1151821b720dddc82292ff6e476a87c374a45f1ded671f"
+      },
+      {
+        "path": "src/card_definitions/msh/worlds_within_worlds.json",
+        "sha256": "9efb4e30d55008f12ddea44ccab17437e51b61f2ee051c70225178ade8c35c15"
+      }
+    ],
+    "executor": {
+      "path": "src/engine_library_hand_exchange.rs",
+      "sha256": "d7e1676eefb509cfa0f3f4a221ff1d325fcb9d33f71f9eafee8b54e451429d5a"
+    }
+  },
+  "shared_mechanics": [
+    "Worlds freezes actual exile results after one simultaneous effective-creature battlefield movement. Only exact nontoken arrivals in exile are later returned to owner hands.",
+    "Each player makes a private any-number creature-card selection in APNAP order using the existing ChooseHandCard action; identities remain hidden until one central EntryMove vector commits. Committed face-down selection counts become public under CR101.4/101.4a and survive entry choices.",
+    "Ordinary EntryMove handles current owner control, choices and replacement pauses. It is compatible with Tony's separately authored optional attachment completion: no duplicate callback/batch framework or cross-worktree modification.",
+    "Black Widow uses the actual captured damaged player, exiles until the first actual nonland exile, then offers the exact live source counter cost. Decline or departed source grants ordinary spell-only any-type mana permission for that exact exile incarnation until cleanup.",
+    "Optional counter acceptance follows CR118.12, so counter replacement changes do not switch to the declined branch. Counters use the central replacement executor and captured ability controller as placer."
+  ],
+  "wire": {
+    "schema": 152,
+    "public_deltas": [
+      "ExilePlayPermission.cast_only:bool, serde-skipped false; older permission wire shape remains unchanged when absent.",
+      "HandChoiceKind::DeployCreatures within the existing actor-only hand_choice view.",
+      "Optional Observation.hand_deployment exposes only APNAP actor and completed per-player selection counts, not selected identities. Omitted outside this operation."
+    ],
+    "actions": "No new Action: reuse ChooseHandCard(Some exact ref) and None to commit each optional hand selection.",
+    "policy": "No policy changes; same existing action score arms.",
+    "private_state": "Owned HandDeployment in cold ChoiceState. Selected refs move into central entry state; public committed counts remain through entry pauses.",
+    "schema_note": "Same coordinated unpublished152 allocation, no153. No new accepted Trace table."
+  },
+  "obligations": [
+    {
+      "card": "Black Widow, Super Spy",
+      "clause": "1B legendary Human Spy Hero2/1; menace actual combat and single-blocker restriction; only combat damage to player triggers",
+      "evidence": [
+        "msh_widow_worlds_widow_body_payment_and_actual_unblocked_combat",
+        "msh_widow_worlds_widow_noncombat_and_creature_damage_do_not_trigger",
+        "msh_widow_worlds_widow_menace_forbids_exactly_one_blocker"
+      ]
+    },
+    {
+      "card": "Black Widow, Super Spy",
+      "clause": "Captured damaged-player library, all lands/empty, first actual nonland result, copied packets",
+      "evidence": [
+        "msh_widow_worlds_widow_exact_damaged_library_lands_until_first_nonland",
+        "msh_widow_worlds_widow_empty_all_lands_and_source_gone",
+        "msh_widow_worlds_widow_copied_damage_packets_keep_distinct_exile_results"
+      ]
+    },
+    {
+      "card": "Black Widow, Super Spy",
+      "clause": "Optional exact-source counter vs permission, replacement, current controller/source departure/blink, exact expiry",
+      "evidence": [
+        "msh_widow_worlds_widow_counter_branch_preserves_counter_replacement_order",
+        "msh_widow_worlds_widow_captured_controller_and_old_incarnation",
+        "msh_widow_worlds_widow_permission_exact_expiry_and_source_independence"
+      ]
+    },
+    {
+      "card": "Black Widow, Super Spy",
+      "clause": "Normal costs/timing and mandatory additional cost, any-type mana including colorless paying colored requirements, spell-only route independent of source; failed payment atomic",
+      "evidence": [
+        "msh_widow_worlds_widow_paid_foreign_any_type_spell_and_ordinary_timing",
+        "msh_widow_worlds_widow_cast_only_route_does_not_invent_land_play",
+        "msh_widow_worlds_widow_permission_keeps_mandatory_discard_and_failed_payment_atomic",
+        "msh_widow_worlds_actual_colored_costs_reject_generic_only_atomically"
+      ]
+    },
+    {
+      "card": "Worlds Within Worlds",
+      "clause": "5GU untargeted sorcery; exile all current effective creatures simultaneously; owner/card/token/attachment consequences",
+      "evidence": [
+        "msh_widow_worlds_worlds_all_creatures_then_private_apnap_one_batch_and_return",
+        "msh_widow_worlds_worlds_returns_owner_not_old_controller_and_no_old_counters",
+        "msh_widow_worlds_worlds_effective_creatures_excludes_moon_land",
+        "msh_widow_worlds_worlds_tokens_cease_equipment_stays_and_aura_dies"
+      ]
+    },
+    {
+      "card": "Worlds Within Worlds",
+      "clause": "APNAP each player any number of creature cards privately, zero/many/restrictions/stale refs; completed counts public, identities hidden",
+      "evidence": [
+        "msh_widow_worlds_worlds_all_creatures_then_private_apnap_one_batch_and_return",
+        "msh_widow_worlds_worlds_zero_creatures_and_zero_hand_choices_still_exiles_spell",
+        "msh_widow_worlds_worlds_multiple_cards_restrictions_and_stale_references",
+        "msh_widow_worlds_worlds_choices_owned_orphan_and_hidden_counterfactual",
+        "msh_widow_worlds_worlds_active_player_selects_before_nonactive_spell_controller"
+      ]
+    },
+    {
+      "card": "Worlds Within Worlds",
+      "clause": "One simultaneous battlefield entry, entry choice/replacement pauses before exact initial exiles return to owner hands; spell exiles itself; copies independent",
+      "evidence": [
+        "msh_widow_worlds_worlds_entry_choice_pauses_before_originals_return",
+        "msh_widow_worlds_worlds_simultaneous_entry_lord_and_own_etb_observers",
+        "msh_widow_worlds_worlds_entry_tapped_replacement_and_no_cast_event",
+        "msh_widow_worlds_worlds_exact_initial_exile_does_not_recover_new_incarnation",
+        "msh_widow_worlds_worlds_actual_paid_copy_has_independent_transaction_and_exile_cleanup",
+        "msh_widow_worlds_worlds_source_departure_return_happens_before_hand_selection"
+      ]
+    },
+    {
+      "card": "Both",
+      "clause": "Illegal actions atomic, full both-view privacy, raw/index branches and parent disposal/restore",
+      "evidence": [
+        "msh_widow_worlds_widow_optional_owned_privacy_and_atomicity",
+        "msh_widow_worlds_worlds_choices_owned_orphan_and_hidden_counterfactual",
+        "msh_widow_worlds_worlds_entry_choice_pauses_before_originals_return",
+        "msh_widow_worlds_actual_colored_costs_reject_generic_only_atomically"
+      ]
+    }
+  ],
+  "focused_tests": {
+    "module": "src/engine_msh_widow_worlds_tests.rs",
+    "module_sha256": "a2f2cef9a8eb1f16eee705784035a5627a0458df46e2611e50f14c9a6dfdf482",
+    "new_groups": 28,
+    "new_groups_both_seats": true,
+    "all_new_functions": [
+      "msh_widow_worlds_widow_body_payment_and_actual_unblocked_combat",
+      "msh_widow_worlds_widow_noncombat_and_creature_damage_do_not_trigger",
+      "msh_widow_worlds_widow_exact_damaged_library_lands_until_first_nonland",
+      "msh_widow_worlds_widow_counter_branch_preserves_counter_replacement_order",
+      "msh_widow_worlds_widow_empty_all_lands_and_source_gone",
+      "msh_widow_worlds_widow_captured_controller_and_old_incarnation",
+      "msh_widow_worlds_widow_paid_foreign_any_type_spell_and_ordinary_timing",
+      "msh_widow_worlds_widow_permission_exact_expiry_and_source_independence",
+      "msh_widow_worlds_widow_optional_owned_privacy_and_atomicity",
+      "msh_widow_worlds_widow_cast_only_route_does_not_invent_land_play",
+      "msh_widow_worlds_worlds_all_creatures_then_private_apnap_one_batch_and_return",
+      "msh_widow_worlds_worlds_zero_creatures_and_zero_hand_choices_still_exiles_spell",
+      "msh_widow_worlds_worlds_multiple_cards_restrictions_and_stale_references",
+      "msh_widow_worlds_worlds_choices_owned_orphan_and_hidden_counterfactual",
+      "msh_widow_worlds_worlds_entry_choice_pauses_before_originals_return",
+      "msh_widow_worlds_worlds_simultaneous_entry_lord_and_own_etb_observers",
+      "msh_widow_worlds_worlds_returns_owner_not_old_controller_and_no_old_counters",
+      "msh_widow_worlds_worlds_entry_tapped_replacement_and_no_cast_event",
+      "msh_widow_worlds_worlds_effective_creatures_excludes_moon_land",
+      "msh_widow_worlds_worlds_tokens_cease_equipment_stays_and_aura_dies",
+      "msh_widow_worlds_worlds_exact_initial_exile_does_not_recover_new_incarnation",
+      "msh_widow_worlds_worlds_active_player_selects_before_nonactive_spell_controller",
+      "msh_widow_worlds_widow_menace_forbids_exactly_one_blocker",
+      "msh_widow_worlds_widow_copied_damage_packets_keep_distinct_exile_results",
+      "msh_widow_worlds_widow_permission_keeps_mandatory_discard_and_failed_payment_atomic",
+      "msh_widow_worlds_worlds_actual_paid_copy_has_independent_transaction_and_exile_cleanup",
+      "msh_widow_worlds_worlds_source_departure_return_happens_before_hand_selection",
+      "msh_widow_worlds_actual_colored_costs_reject_generic_only_atomically"
+    ],
+    "existing_filters": [
+      "msh_hand_choices_",
+      "sos_milled_land_play_respects_allowance_and_cast_prohibitions",
+      "sos_milled_exile_replacement_remains_playable_and_expires_exactly",
+      "sos_effects_scrollsmith_hybrid_targets_normal_paid_cast_and_deadline",
+      "sos_effects_suspend_owner_permissions_token_and_full_target_fizzle"
+    ],
+    "existing_group_count": 27,
+    "total_groups": 55,
+    "final_all_passed": true,
+    "new_rules_seconds": 0.14,
+    "summed_rules_seconds": 0.29,
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 development",
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-msh-widow-worlds-final2-driver.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 30.460959296964575,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2723545088,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "driver_seconds": 30.327143832982983,
+    "fixed_inputs": 11156,
+    "changed_inputs": [],
+    "inputs": {
+      "path": "<cache>/rustmage-msh-widow-worlds-final2-inputs.json",
+      "sha256": "555961c5db7cfa4dd91f8925fde399171180aa16fb5749f5e4416ee0b3fbf29e"
+    },
+    "log": {
+      "path": "<cache>/rustmage-msh-widow-worlds-final2.log",
+      "sha256": "ee9a4ffd4ea37ac10f64559aa47fb4cbeb922449df2fd697cb3da4e4e4ff993f"
+    },
+    "checks": {
+      "path": "<cache>/rustmage-msh-widow-worlds-final2-checks.json",
+      "sha256": "789bac5a3f908653b702279f5ea7b75494e234d0d9db2c667fa6f834ab774326"
+    },
+    "resource_report": {
+      "path": "<cache>/rustmage-msh-widow-worlds-final2-guard.json",
+      "sha256": "4d1a1d56596c71eeec4fada5400664008b0ea9c765c653ca3710b8a9c61c0717"
+    }
+  },
+  "development_history": [
+    "Two compile-only test fixture API corrections: CreatureType::from_name rather than an enum member; existing copy choice phase is Retarget. Runtime compiled afterward.",
+    "First executable27-group matrix passed25; two failures were fixture flow assumptions. A no-target damage trigger can already be on stack after prepare_triggers; a no-target spell copy commits without a retarget menu. Corrected test capture/pumping only.",
+    "Gated27 matrix then passed. After enabling both cards and metadata-only linking, removed all gated fixture fallbacks; actual supported28 plus27 affected regressions passed.",
+    "Added the completed selection-count public view under CR101.4a and both-view assertions through entry choice. Same final55 tests passed with all inputs fixed."
+  ],
+  "test_precision": [
+    "Actual paid Worlds copied by supported Choreographed Sparks has a distinct physical spell-copy object and independent exile/entry/return transaction. The no-target copy needs no retarget menu.",
+    "Garruk's Uprising sees Dwynen enter at4 power because an Elf lord from the same batch applies before entry triggers are frozen; selecting Dwynen first would miss the draw under sequential entry. This tests simultaneous entry rather than only final stats.",
+    "A real Cloak departure returns its previously linked creature before Worlds starts hand selection; that newly returned creature is not included in the already completed initial exile event.",
+    "The cast-only land-route regression seeds a permission row on an actual Forest as a bounded interface probe. There is no admitted fixed-{C} cost spell or playable land-back MDFC in this branch; any-type payment is exercised by actual colorless mana paying colored spell costs, not claimed unavailable catalogue routes."
+  ],
+  "boundary_qualification": "Production object moves during suspended resolution and direct copied triggered packets are explicitly bounded executor probes, not response-priority claims. Final ordinary cast/payment paths use supported cards. These are scenario fixtures, not natural Standard games.",
+  "metadata": {
+    "command": "python3 scripts/link_catalogue.py",
+    "purpose": "Metadata-only typed definition wiring after complete flag changes.",
+    "new_tokens": 0,
+    "new_ids": 0,
+    "membership_changes": false,
+    "policy_changes": false,
+    "recorder_changes": false,
+    "accepted_trace_changes": false,
+    "existing_trace_sha256": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3"
+  },
+  "cleanup": {
+    "report": {
+      "path": "<cache>/rustmage-msh-widow-worlds-cleanup.json",
+      "sha256": "cde9f7c1895d98f0002fdd11ca039fc5e97fa1202ff36e5ef8fc593d734436a5"
+    },
+    "preservation": {
+      "path": "<cache>/rustmage-msh-widow-worlds-preservation.json",
+      "sha256": "d6626fd73ba1cea13b0e0d651aa854699c9d27e4a2f78b47d720ef83bb2a370c"
+    },
+    "required_artifacts": 4452,
+    "details": {
+      "created_utc": "2026-10-25T17:12:53.096004+00:00",
+      "terminal": true,
+      "known_guarded_consumers_terminal": true,
+      "own_user_processes_scanned": 242,
+      "accessible_fd_maps_exe_cwd_target_refs": [],
+      "denied_inspections": 205,
+      "target": "<cache>/rustmage-msh-widow-worlds-dev-target",
+      "parent_manifest": "<cache>/rustmage-msh-damage-replacements-preservation.json",
+      "parent_manifest_sha256": "e689e1fad09467b0a95917b9b583aeb096793d414be577b474d65307057f95f6",
+      "prior_required": 4444,
+      "all_prior_paths_and_hashes_exact": true,
+      "missing_prior": [],
+      "changed_prior": [],
+      "removed_files": 165,
+      "removed_path_allocated_bytes": 40366080,
+      "allocation_qualification": "Sum of removed st_blocks by path, not deduplicated physical reclamation.",
+      "preserved_target_files": [
+        {
+          "path": "<cache>/rustmage-msh-widow-worlds-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+          "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+        },
+        {
+          "path": "<cache>/rustmage-msh-widow-worlds-dev-target/debug/deps/rustmage-55e16bd14e329fbf",
+          "sha256": "c2dbb1e03339d9840d27a5bbf4dc6c05421ce2e35741b620593517e23e7552fe"
+        }
+      ]
+    }
+  },
+  "throughput": {
+    "start_utc": "2026-10-25T16:55:36.544867+00:00",
+    "end_utc": "2026-10-25T17:14:25.770376+00:00",
+    "elapsed_seconds": 1129.225509,
+    "scope": "Two cards: full-source audit, shared/typed authoring, focused development, supported paid confirmation, provenance/evidence and terminal cleanup. Not pure simulation throughput; no full-set extrapolation."
+  },
+  "deferred": [
+    "Final integration, DEFAULT/all-native, aggregate Clippy/static, full old Trace exports, release/CI and final batch acceptance are deferred until all remaining cards are implemented.",
+    "Full281 Oracle identity behavior/interactions/performance acceptance remains open.",
+    "No new IDs/tokens, main merge or additional PR."
+  ]
+}

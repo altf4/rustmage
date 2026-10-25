@@ -41,6 +41,7 @@ impl Card {
                             | StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | StaticAbilityFragment::ChosenCreatureType
                             | StaticAbilityFragment::AttachedSubtype(..)
+                            | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
@@ -113,6 +114,7 @@ impl Game {
             .push(AbilitySourceTimestampView { source, timestamp });
     }
     pub(super) fn forget_ability_source(&mut self, reference: ObjectRef) {
+        self.forget_source_linked_effects(reference);
         if let Some(state) = &mut self.state.roles {
             state
                 .ability_timestamps

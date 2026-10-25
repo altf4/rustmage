@@ -1,0 +1,261 @@
+{
+  "schema": 1,
+  "scope": "Two complete MSH cards; focused paid tests only. Aggregate validation is deferred to the final combined implementation.",
+  "base": "6a782a266f7dcc987ac0f58d03f1303ae282ec43",
+  "tested_source_head": "68111f6ad4afed6747832dcde5cd2e44995e4a83",
+  "complete_cards": [
+    "The Wondrous Wasp",
+    "Spider-Woman, Secret Agent"
+  ],
+  "wire_schema": 152,
+  "new_ids": [],
+  "source_sha256": {
+    "data/observation-schema.txt": "a6ade98870a92fc7e8bfd6eee3662e7823131fe83fdcdab6b73af38144accd49",
+    "data/standard/coverage.json": "1a451acde9bea8e770ffd7ed527b1e535f92145033f4e0ebe7f5e7a476d467c4",
+    "src/card_definitions/msh/spider_woman_secret_agent.json": "0b140eb8626910ac1f802bf073d3d3dfe4187dfed943b8bd8842743f4498efb6",
+    "src/card_definitions/msh/spider_woman_secret_agent.rs": "6b6fb7746b0dfc50d915b9951ebc2c7d2b4445ce86ca448dc1436375b3641f8f",
+    "src/card_definitions/msh/the_wondrous_wasp.json": "3b1ec8174f69e0f003e866d0fc8abd1cdd10ded33c07a6e4fe669b07e5d718f2",
+    "src/card_definitions/msh/the_wondrous_wasp.rs": "5cec4ad5d31df5c42f5c83b49fb5d19e4fbe2d1791b4f6da2f5c24822e888074",
+    "src/cards.rs": "c1b2d6664047a071d963fc10c410bce587881613e95f598a06e3b34cb957b3f6",
+    "src/engine.rs": "ad043dcd5fd5344c4a024989b0df2a167e360c6d230344ddd004a785060adc83",
+    "src/engine_ability_evaluation.rs": "6c0021159f079893e94a1800d9d91836076a1b7e06a5cd0672b2c0827b6f8321",
+    "src/engine_ability_timeline.rs": "d0e5b9d4168d3bc8c76aa612cce6524d4ecd88fc0157f0b176f0a8456a342658",
+    "src/engine_ability_world.rs": "8588194b7e9bbdfe283736104e7a68efd66d713a1c1614ffcd787a7d81052097",
+    "src/engine_effect_choices.rs": "2ce2689f52e33bd2e1d1717c776e0ab7f7140182568d718b070538289e8a5e79",
+    "src/engine_funding.rs": "2a330eb7259204bcd3b58b91bf07931b2c3120c5e3752ea47e06cc4b6f63aa63",
+    "src/engine_funding_entries.rs": "6e8a475f47a5eed92a0cbbd748dfe4080ab532fe081e66702afcb0dc3dd32770",
+    "src/engine_msh_source_linked_sting_tests.rs": "b582291df2478fa806ee364b3514c650603c0dc90c601b34386970352a4ff20a",
+    "src/engine_programs.rs": "1b654e7817ffecf786e4e83d5499d6eec6232c54415ac4a4e900a00c459704e5",
+    "src/engine_roles.rs": "216f8fa236c231fa0b32b20f0f01008917684a28373b3e69e5b694a9a814a337",
+    "src/engine_source_linked_effects.rs": "aa7672801ab6c96d89e745fe50e10c80d1e709a9539c73c3c52e83c45f7044b8",
+    "src/engine_untap_rules.rs": "b73bf1b0db346dc590d2d8847c665fb515662ce286827cca695a2be9769237f3",
+    "src/engine_zone_effects.rs": "23e8a554f3fcb1073c45369529533d1e88d2652f834468f0a1717fe35572ea51",
+    "src/generated/catalogue.rs": "3a27be530c19f5ded8c91ece4b14c082a9d0eb525796e8717961e120920341f7"
+  },
+  "unchanged_sha256": {
+    "data/catalogue-identities.json": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+    "src/assurance/regressions.rs": "128a09ac152f82d893401ae3aee89d329bd3679d3e1f5f1aa060e5240bac0185",
+    "src/assurance/msh_games.rs": "bdf8b3f53b7c3b6c509b4116b4539acc70045b8ee648987ef78c4c98b904d50d",
+    "src/assurance/card_traces.json": "383414176604a8eed742a63198092a5a032a169f3f15b8a28d3898c48a777ef3"
+  },
+  "java_pins": {
+    "Mage.Sets/src/mage/cards/t/TheWondrousWasp.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/t/TheWondrousWasp.java",
+      "sha256": "1152937a14ddd740f8e6500c5da74688d4c21f5998219af0bafa0bb357b97a6a"
+    },
+    "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
+      "sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
+    },
+    "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    "Mage/src/main/java/mage/abilities/effects/ContinuousEffectsList.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectsList.java",
+      "sha256": "a0a23a2b220b656ed0ad8c642f1ff169518e72e793842c646c144ab63a2d615a"
+    },
+    "Mage/src/main/java/mage/constants/Duration.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/Duration.java",
+      "sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747"
+    },
+    "Mage.Sets/src/mage/cards/s/SpiderWomanSecretAgent.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/s/SpiderWomanSecretAgent.java",
+      "sha256": "fd3ed2e6f86846adcbed2213eb8cce874a5eb67588c2a178ed8024e6af304757"
+    },
+    "Mage/src/main/java/mage/target/TargetPermanent.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    }
+  },
+  "mechanics": [
+    "Exact source and recipient incarnation with captured controller and independent resolution timestamp",
+    "Resolution-created layer-six ability removal allows later grants, survives source suppression and controller changes, ends on source departure",
+    "External all-cause untap prohibition ends irreversibly on source control loss or departure",
+    "Speculative worlds retain exact source/recipient identities and ended-duration history in funding keys; actual paid sacrifice restores disabled mana before subsequent payment",
+    "Optional land untaps exclude prohibited choices and use central simultaneous untap/stun handling",
+    "Sparse optional public effect view is omitted when absent"
+  ],
+  "tests": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib",
+      "msh_sting_",
+      "--",
+      "--nocapture"
+    ],
+    "profile": "test opt-level0; one job/test thread; guarded6GiB",
+    "result": "13 passed; 0 failed; ordinary supported identities",
+    "native_test_seconds": 0.18,
+    "groups": [
+      "msh_sting_wasp_paid_flash_optional_body_and_flying",
+      "msh_sting_wasp_paid_both_relations_remove_then_later_grant",
+      "msh_sting_wasp_source_absent_or_blinked_before_resolution_taps_only",
+      "msh_sting_wasp_target_incarnation_and_multiple_effect_timestamps",
+      "msh_sting_spider_paid_hybrid_flash_target_legality",
+      "msh_sting_spider_every_untap_cause_and_stun_remains",
+      "msh_sting_spider_control_duration_irreversible_suppression_independent",
+      "msh_sting_wasp_actual_and_funding_mana_restore_after_departure",
+      "msh_sting_public_duration_privacy_orphan_and_restore",
+      "msh_sting_wasp_self_target_and_control_change_preserve_resolved_removal",
+      "msh_sting_both_invalid_target_and_spider_source_departure_before_resolution",
+      "msh_sting_wasp_prospective_paid_sacrifice_restores_funding_and_actual_mana",
+      "msh_sting_spider_paid_finale_cannot_choose_prohibited_animated_land"
+    ],
+    "red_regression": {
+      "log": "<cache>/rustmage-msh-sting-focus-8-red.log",
+      "sha256": "387e7d54de2a4253cadd4b3808afd42474fabdd9e4620bdee0451e93d33cdca9",
+      "result": "12 passed; one failed: prohibited SelectLand returned Ok instead of IllegalAction"
+    },
+    "obligations": {
+      "The Wondrous Wasp": [
+        "paid1U2/1 Flash on opponent turn; actual flying blocker restriction",
+        "optional zero/one any-controller creature including source itself",
+        "tap independent of ended duration; source absence/blink; target hexproof/fizzle/incarnation",
+        "earlier abilities removed; later Take Up the Shield and haste grants retained",
+        "source suppression/control changes do not stop removal",
+        "paid Lotus Ring equips and sacrifices Wasp, speculative4G/actual3G+Elf1G funding, actual paid Wildwood Scourge"
+      ],
+      "Spider-Woman, Secret Agent": [
+        "paid both hybrid alternatives3W/3U1/4 Flash on opponent turn",
+        "mandatory opponent creature; own creature/noncreature/zero rejected atomically",
+        "tap survives source departure while untap prohibition does not start",
+        "effect and untap-step prohibitions; stun not consumed",
+        "source suppression does not end; recipient control changes remain affected; source control loss ends permanently",
+        "paid Finale optional untap prohibited animated-land selection rejected; separate healthy land untaps"
+      ]
+    },
+    "shared": [
+      "both seats",
+      "actual costs and legal-action menus",
+      "wrong actor/illegal action snapshots and owned indexed replay through existing checked helper",
+      "full public/private observation checks",
+      "orphan raw/index branch, parent disposal, restore and stale-revision rejection"
+    ]
+  },
+  "fixed_inputs": {
+    "tested_head": "68111f6ad4afed6747832dcde5cd2e44995e4a83",
+    "inputs": 11851,
+    "changed": [],
+    "authored_runtime_rustfmt": 0,
+    "format_scope": [
+      "src/card_definitions/msh/spider_woman_secret_agent.rs",
+      "src/card_definitions/msh/the_wondrous_wasp.rs",
+      "src/cards.rs",
+      "src/engine.rs",
+      "src/engine_ability_evaluation.rs",
+      "src/engine_ability_timeline.rs",
+      "src/engine_ability_world.rs",
+      "src/engine_effect_choices.rs",
+      "src/engine_funding.rs",
+      "src/engine_funding_entries.rs",
+      "src/engine_msh_source_linked_sting_tests.rs",
+      "src/engine_programs.rs",
+      "src/engine_roles.rs",
+      "src/engine_source_linked_effects.rs",
+      "src/engine_untap_rules.rs",
+      "src/engine_zone_effects.rs"
+    ],
+    "generated_linkage_check": "scripts/link_catalogue.py --check; generated files retain linker output, not hand formatting"
+  },
+  "source_verification": {
+    "definitions": 5403,
+    "source_blobs": 1343,
+    "java_verified": true,
+    "catalogue_version": "9ff4dcc26b5cd76152f69960ecfd7033c71b36b100122cb8c8e74a23a33cbabf"
+  },
+  "resource_guard": {
+    "command": [
+      "cargo",
+      "test",
+      "--lib",
+      "msh_sting_",
+      "--",
+      "--nocapture"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 30.441911499015987,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2664796160,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T14:55:49+00:00",
+    "final_focused_terminal_utc": "2026-10-25T15:16:57.899589+00:00",
+    "seconds": 1268.899589,
+    "complete_cards": 2,
+    "cards_per_hour": 5.674207843091987,
+    "scope": "isolated pair source authoring through final focused terminal; not a set or game simulation benchmark"
+  },
+  "preservation": {
+    "manifest": "<cache>/rustmage-msh-source-linked-sting-preservation.json",
+    "sha256": "704b095ee05f84c8942d5a0aa6fb13e1147e1544d39720b395ad878a70093f7c",
+    "required_paths": 4278,
+    "parent_paths": 4249,
+    "retained": {
+      "<cache>/rustmage-msh-sting-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-sting-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "faae42446b3bb225eae16161df9818ec005ea8a10f3dcf217e0fbc9fb2fb0fe2"
+    }
+  },
+  "cleanup": {
+    "created_utc": "2026-10-25T15:20:58.561631+00:00",
+    "target": "<cache>/rustmage-msh-sting-focused-target",
+    "only_terminal_target": true,
+    "processes": 523,
+    "maps_denied": 48,
+    "accessible_references": [],
+    "removed_files": 165,
+    "removed_path_bytes": 39838276,
+    "preserved": {
+      "<cache>/rustmage-msh-sting-focused-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-sting-focused-target/debug/deps/rustmage-55e16bd14e329fbf": "faae42446b3bb225eae16161df9818ec005ea8a10f3dcf217e0fbc9fb2fb0fe2"
+    }
+  },
+  "limits": [
+    "No DEFAULT/full native/old-trace/aggregate/release/CI runs in this phase, per current workflow.",
+    "No complete-set acceptance claim.",
+    "Animated land, age and combat-step boundaries are explicitly labeled bounded fixtures.",
+    "Full final aggregate validation and final published-batch independent reviews remain outstanding."
+  ]
+}

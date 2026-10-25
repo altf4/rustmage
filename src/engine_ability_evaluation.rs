@@ -291,6 +291,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         .union(world.copied_keywords(i as CardId))
                 },
                 grants: Vec::new(),
+                self_grants: Vec::new(),
                 mana: Vec::new(),
             }
         })
@@ -385,6 +386,19 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         }
     }
     if let Some(state) = world.roles() {
+        for row in &state.source_linked_effects {
+            if row.kind == SourceLinkedEffectKind::RemoveAbilities
+                && source_linked_effects::active(world, row)
+            {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: row.timestamp,
+                    recipients: vec![row.recipient.card],
+                    action: LayerSixAction::Remove,
+                });
+            }
+        }
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
             if (matches!(object.zone, Zone::Battlefield | Zone::Stack)
@@ -447,6 +461,22 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                             timestamp: grant.timestamp,
                         }],
                     },
+                });
+            }
+        }
+    }
+    if let Some(grants) = &game.state.self_granted_abilities {
+        for grant in grants.iter() {
+            if world.object(grant.recipient.card).zone == Zone::Battlefield
+                && world.reference(grant.recipient.card) == grant.recipient
+                && grant.expires_turn == game.state.turn
+            {
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: grant.timestamp,
+                    recipients: vec![grant.recipient.card],
+                    action: LayerSixAction::GrantSelf(grant.timestamp),
                 });
             }
         }

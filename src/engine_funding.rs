@@ -196,6 +196,7 @@ struct EntryFundingKey {
 #[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
     payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
+    source_linked_effects: Vec<SourceLinkedEffectView>,
     entries: Option<EntryFundingKey>,
     histories: Option<(u64, [bool; 2], i128)>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
@@ -639,6 +640,14 @@ impl<'g> FundingState<'g> {
             named_counters: game.state.named_counters.clone(),
             counter_placement_history: game.state.counter_placement_history.clone(),
         };
+        if game
+            .state
+            .roles
+            .as_ref()
+            .is_some_and(|r| !r.source_linked_effects.is_empty())
+        {
+            result.prepare_entry_projection();
+        }
         result.set_purpose(result.purpose);
         result.set_cost_context(game.state.announcing.as_ref());
         if let Some(a) = game.state.announcing.as_ref()
@@ -1198,6 +1207,18 @@ impl<'g> FundingState<'g> {
             }
         }
     }
+    pub(super) fn prune_source_linked_projection(&mut self) {
+        let retained: Vec<_> = self
+            .roles()
+            .into_iter()
+            .flat_map(|r| &r.source_linked_effects)
+            .filter(|row| source_linked_effects::active(self, row))
+            .copied()
+            .collect();
+        if let Some(p) = &mut self.entry_projection {
+            p.roles.source_linked_effects = retained;
+        }
+    }
     fn remember_payment_departure(&mut self, id: CardId) {
         let reference = self.reference(id);
         if let Some(p) = &mut self.entry_projection {
@@ -1339,6 +1360,7 @@ impl<'g> FundingState<'g> {
             object.zone = Zone::Exile;
         }
         self.refresh_control_projection();
+        self.prune_source_linked_projection();
         for (pool, produced) in self.mana.iter_mut().zip(step.production) {
             *pool = pool
                 .checked_add(u128::from(produced))
@@ -1347,7 +1369,10 @@ impl<'g> FundingState<'g> {
     }
     fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
-        let linked = self.game.state.borrowed_links.is_some()
+        let linked = self
+            .roles()
+            .is_some_and(|r| !r.source_linked_effects.is_empty())
+            || self.game.state.borrowed_links.is_some()
             || self.named_counters.is_some()
             || self.counter_placement_history.is_some()
             || self
@@ -1396,7 +1421,12 @@ impl<'g> FundingState<'g> {
                 // Unattached, unmodified basic lands remain interchangeable even
                 // when an unrelated Aura is present. Keep exact identities for
                 // attachment participants, nonbasics and named-counter worlds.
-                identity: (self.power_sensitive
+                identity: (self.roles().is_some_and(|roles| {
+                    roles
+                        .source_linked_effects
+                        .iter()
+                        .any(|row| row.source.card == r.id || row.recipient.card == r.id)
+                }) || self.power_sensitive
                     || self
                         .game
                         .temporary_copy_row(self.game.object_ref(r.id))
@@ -1449,6 +1479,9 @@ impl<'g> FundingState<'g> {
         });
         FundingKey {
             payment_departures: self.payment_departures.clone(),
+            source_linked_effects: self
+                .roles()
+                .map_or_else(Vec::new, |r| r.source_linked_effects.clone()),
             histories: self.power_sensitive.then_some((
                 self.creatures_died,
                 self.graveyard_left,
@@ -2223,7 +2256,8 @@ impl Game {
         &self,
         viewer: Player,
     ) -> Option<PaymentRequestView> {
-        if self.actor() != Some(viewer)
+        let viewer = self.choice_information_player(viewer);
+        if self.semantic_actor() != Some(viewer)
             || matches!(
                 self.state.pending,
                 Pending::Saddle { .. } | Pending::Crew { .. }
@@ -2485,7 +2519,18 @@ impl Game {
                             |c| c.generic,
                         )
                         .checked_add(if announcement.has_x_cost() && power_up.is_none() {
-                            announcement.item.x.unwrap_or(0)
+                            announcement
+                                .item
+                                .x
+                                .unwrap_or(0)
+                                .checked_mul(
+                                    announcement
+                                        .item
+                                        .source_card
+                                        .activation(ability)
+                                        .x_symbols(),
+                                )
+                                .capacity("activation X cost exhausted")
                         } else {
                             0
                         })
@@ -2836,7 +2881,9 @@ impl Game {
         let Action::ActivateMana { payment, .. } = action else {
             return;
         };
-        let Some(actor) = self.actor() else { return };
+        let Some(actor) = self.semantic_actor() else {
+            return;
+        };
         if *payment == [0; 6]
             || self.mana_lots(actor).is_empty()
             || self
@@ -3132,3 +3179,19 @@ mod shield_harness_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_restricted_creatures_funding_tests.rs"]
 mod msh_restricted_creatures_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_serum_funding_tests.rs"]
+mod msh_serum_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_self_granted_static_tests.rs"]
+mod msh_self_granted_static_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_armor_tony_funding_tests.rs"]
+mod msh_armor_tony_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_vision_quest_funding_tests.rs"]
+mod msh_vision_quest_funding_tests;

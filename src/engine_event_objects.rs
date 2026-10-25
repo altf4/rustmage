@@ -33,6 +33,9 @@ pub enum EventObjectFacts {
 pub struct EventObjectView {
     pub object: ObjectRef,
     pub facts: EventObjectFacts,
+    /// Only saved on the actual departure of an untargeted conniver.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub conniver_creature: Option<bool>,
 }
 fn actor(view: &ObjectView) -> DamageSource {
     DamageSource {
@@ -120,6 +123,7 @@ impl Game {
                 e.facts = match e.facts {
                     EventObjectFacts::DamageActor(_) => EventObjectFacts::DamageActor(*damage),
                     EventObjectFacts::Controller(_) => {
+                        e.conniver_creature = Some(stats.creature);
                         EventObjectFacts::Controller(damage.controller)
                     }
                     EventObjectFacts::CreatureComparison(_) => {
@@ -149,6 +153,7 @@ impl Game {
                 Some(Box::new(EventObjectView {
                     object: entering.reference,
                     facts: EventObjectFacts::Controller(entering.controller),
+                    conniver_creature: None,
                 }));
         }
     }
@@ -164,6 +169,7 @@ impl Game {
             facts: EventObjectFacts::CreatureComparison(CreatureComparisonFacts::from_view(
                 entering,
             )),
+            conniver_creature: None,
         }));
     }
     fn comparison_facts(
@@ -230,6 +236,7 @@ impl Game {
                         Some(Box::new(EventObjectView {
                             object: recipient,
                             facts,
+                            conniver_creature: None,
                         }));
                 }
             }

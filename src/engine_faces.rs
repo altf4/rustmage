@@ -135,6 +135,7 @@ impl Game {
             self.set_copy_recipe(object, recipe);
         }
         self.register_battlefield_providers(object.card);
+        self.retimestamp_self_granted_statics(object);
         self.refresh_controllers();
     }
     pub(super) fn remove_face_providers(&mut self, id: CardId) {

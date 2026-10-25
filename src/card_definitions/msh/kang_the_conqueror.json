@@ -3,10 +3,50 @@
   "catalogue_id": 2311,
   "oracle_id": "da6e24a4-8adc-41a1-b5eb-3e31dc1250c9",
   "facts_sha256": "74935864dad224ea8a2ab79e5ae6cbad8ac48c95693806ec479ee0dad9b0c88a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f21bc45cc2bdf00b07a776cbe3eccc155155ba344517a5a806f15206f8a096a3"
   },
-  "physical_metadata_sha256": "5878d51b4dfc11bb64be9ea359a7a7604465cd19796c508a7e75bde28c0721c0"
+  "physical_metadata_sha256": "5878d51b4dfc11bb64be9ea359a7a7604465cd19796c508a7e75bde28c0721c0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KangTheConqueror.java",
+  "java_sha256": "a7bf8c66505e7810c5f07c2f843bc1c0d92139ab04e8eefbfc64e2ecb975c29b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/turn/AddExtraTurnControllerEffect.java",
+      "sha256": "aa00be1d559a93aaaf8b77bb7047455c84fc74c603b6c6cbe9916edc29f8c28e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/turn/TurnMod.java",
+      "sha256": "f15213fe573eb67e7650c78d93726021700267839219ff022dd72fb304826698"
+    }
+  ]
 }

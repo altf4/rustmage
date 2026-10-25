@@ -36,13 +36,13 @@ pub(super) fn reduce(
     base: ManaCost,
     reduction: ManaCost,
     generic: u32,
-    x: u32,
+    x: u64,
 ) -> Option<ManaCost> {
     let colored = std::array::from_fn(|i| base.colored[i].saturating_sub(reduction.colored[i]));
     let excess = (0..6)
         .map(|i| u64::from(reduction.colored[i].saturating_sub(base.colored[i])))
         .sum::<u64>();
-    let raw = u64::from(base.generic) + u64::from(x);
+    let raw = u64::from(base.generic).checked_add(x)?;
     let reduction = excess + u64::from(reduction.generic) + u64::from(generic);
     Some(ManaCost {
         colored,
@@ -56,7 +56,7 @@ pub(super) struct ActivationManaCosts {
     base: Option<ManaCost>,
     reduction_index: usize,
     generic_discount: u32,
-    x: u32,
+    x: u64,
 }
 impl Iterator for ActivationManaCosts {
     type Item = ManaCost;
@@ -148,8 +148,9 @@ impl Game {
         slot: Option<u64>,
     ) -> bool {
         !definition.power_up_abilities().contains(&ability)
-            || u64::from(self.power_up_count(object, definition, ability, slot))
-                < self.power_up_limit(object.card)
+            || !self.power_up_prohibited_this_turn()
+                && u64::from(self.power_up_count(object, definition, ability, slot))
+                    < self.power_up_limit(object.card)
     }
     pub(super) fn power_up_generic_discount(
         &self,
@@ -227,7 +228,7 @@ impl Game {
             base: None,
             reduction_index: 0,
             generic_discount: self.activation_generic_discount(source, definition, ability),
-            x,
+            x: u64::from(x) * u64::from(definition.activation(ability).x_symbols()),
         }
     }
     pub(super) fn record_power_up_use(&mut self, item: &SpellView, ability: u16) {

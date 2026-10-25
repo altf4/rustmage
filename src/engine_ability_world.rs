@@ -96,10 +96,28 @@ pub(super) trait CharacteristicWorld {
         }
     }
     fn legendary(&self, id: CardId) -> bool {
-        self.recipe(id)
+        let intrinsic = self
+            .recipe(id)
             .overrides
             .and_then(|value| value.legendary)
-            .unwrap_or_else(|| self.definition(id).is_legendary())
+            .unwrap_or_else(|| self.definition(id).is_legendary());
+        intrinsic
+            || self.object(id).zone == Zone::Battlefield
+                && self.attachment_sources().iter().any(|&source| {
+                    let aura = self.object(source);
+                    aura.zone == Zone::Battlefield
+                        && self.kinds(source) & 1 == 0
+                        && aura.attached_to == Some(self.reference(id))
+                        && aura.card.static_ability_groups().iter().any(|group| {
+                            group.first_layer == crate::cards::AbilityLayer::Type
+                                && group.fragments.iter().any(|fragment| {
+                                    matches!(
+                                        fragment,
+                                        crate::cards::StaticAbilityFragment::AttachedLegendary
+                                    )
+                                })
+                        })
+                })
     }
     fn intrinsic_mana_color(&self, id: CardId) -> Option<usize> {
         let card = self.definition(id);
@@ -321,7 +339,10 @@ pub(super) trait CharacteristicWorld {
     }
     fn has_ability_removal(&self) -> bool {
         self.roles().is_some_and(|state| {
-            state.ability_removal_sources.iter().any(|&source| {
+            state.source_linked_effects.iter().any(|row| {
+                row.kind == SourceLinkedEffectKind::RemoveAbilities
+                    && source_linked_effects::active(self, row)
+            }) || state.ability_removal_sources.iter().any(|&source| {
                 self.object(source.card).zone == Zone::Battlefield
                     && self.reference(source.card) == source
             })
@@ -349,6 +370,16 @@ pub(super) trait CharacteristicWorld {
             })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
+        if self.roles().is_some_and(|state| {
+            state.source_linked_effects.iter().any(|row| {
+                row.recipient == self.reference(id)
+                    && row.kind == SourceLinkedEffectKind::RemoveAbilities
+                    && source_linked_effects::active(self, row)
+            })
+        }) {
+            return ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
+                .printed;
+        }
         // Only an exact attached removal provider can remove printed abilities.
         // Unrelated sources need no whole-world layer-six evaluation. Keep the
         // full evaluator for candidates: competing effects may blank a provider.

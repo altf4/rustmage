@@ -54,8 +54,9 @@ const FLAGS_MASK: u32 = SUPPRESS_PRINTED | LAND_ONLY | ALL_CREATURE_TYPES;
 const COPY_HUMAN: u32 = ALL_CREATURE_TYPES << 1;
 const COPY_VILLAIN: u32 = COPY_HUMAN << 1;
 const COPY_MERCENARY: u32 = COPY_VILLAIN << 1;
-const ADDED_MASK: u32 = JOB_MASK | COPY_HUMAN | COPY_VILLAIN | COPY_MERCENARY;
-const _: () = assert!(JOB_TYPES.len() + 3 <= u32::BITS as usize);
+const ADDED_SOLDIER: u32 = COPY_MERCENARY << 1;
+const ADDED_MASK: u32 = JOB_MASK | COPY_HUMAN | COPY_VILLAIN | COPY_MERCENARY | ADDED_SOLDIER;
+const _: () = assert!(JOB_TYPES.len() + 4 <= u32::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
     added: u32,
@@ -140,6 +141,7 @@ impl GrantedSubtypes {
             "Human" => COPY_HUMAN,
             "Villain" => COPY_VILLAIN,
             "Mercenary" => COPY_MERCENARY,
+            "Soldier" => ADDED_SOLDIER,
             _ => 0,
         }
     }
@@ -171,6 +173,7 @@ impl Serialize for GrantedSubtypes {
                     (COPY_HUMAN, "Human"),
                     (COPY_VILLAIN, "Villain"),
                     (COPY_MERCENARY, "Mercenary"),
+                    (ADDED_SOLDIER, "Soldier"),
                 ] {
                     if self.0 & bit != 0 {
                         out.serialize_element(subtype)?;

@@ -461,6 +461,7 @@ impl Game {
             return;
         }
         self.temporary_departure_triggers(event);
+        self.forget_self_grants(event);
         if event.before.zone == Zone::Battlefield {
             // A self-departure trigger needs only its frozen pre-event source.
             // This also covers exile/bounce paths which do not collect death observers.
@@ -678,6 +679,7 @@ impl Game {
                     | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
                     | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CardsLeaveGraveyard
+                    | TriggerCondition::CreatureCardsEnterYourGraveyard
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::CreatureExploresCardYou { .. }
                     | TriggerCondition::Foraged
@@ -731,6 +733,7 @@ impl Game {
                     | TriggerCondition::EquippedAttacks
                     | TriggerCondition::EquippedAttacksAlone
                     | TriggerCondition::GrantedAttacks
+                    | TriggerCondition::AttachedAttacksOrBlocks
                     | TriggerCondition::AttachedCreatureBecomesTapped
                     | TriggerCondition::AttachedBecomesUntapped
                     | TriggerCondition::SelfBecomesTapped
@@ -1214,6 +1217,7 @@ impl Game {
     }
 
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
+        self.consume_resolution_cast_quota(caster, stack);
         self.consume_turn_cast_grants(caster, card);
         let first_trigger = self.state.pending_triggers.len();
         let spell_owner =
@@ -1553,6 +1557,17 @@ impl Game {
     /// Reuse the live attachment index once per completed declaration. No arena scan
     /// or mutable granted-ability graph; every queued packet owns its provenance.
     fn attachment_attack_triggers(&mut self, actor: Player, alone: Option<ObjectRef>) {
+        self.attachment_combat_triggers(actor, alone, false);
+    }
+    pub(super) fn attachment_block_triggers(&mut self, actor: Player) {
+        self.attachment_combat_triggers(actor, None, true);
+    }
+    fn attachment_combat_triggers(
+        &mut self,
+        actor: Player,
+        alone: Option<ObjectRef>,
+        blocking: bool,
+    ) {
         let grants: Vec<_> = self
             .state
             .attachment_sources
@@ -1564,11 +1579,15 @@ impl Game {
                     || !self.on_battlefield(recipient.card)
                     || self.object_ref(recipient.card) != recipient
                     || self.state.objects[recipient.card as usize].controller != actor
-                    || !self
-                        .state
-                        .attackers
-                        .iter()
-                        .any(|a| a.card == recipient.card)
+                    || if blocking {
+                        !self.state.blocking.contains(&recipient.card)
+                    } else {
+                        !self
+                            .state
+                            .attackers
+                            .iter()
+                            .any(|a| a.card == recipient.card)
+                    }
                 {
                     return None;
                 }
@@ -1579,10 +1598,19 @@ impl Game {
             let giver = self.object_view(id);
             for (index, ability) in giver.card.triggers().iter().enumerate() {
                 let granted = match ability.condition.event() {
-                    TriggerCondition::EquippedAttacks => false,
-                    TriggerCondition::EquippedAttacksAlone if alone == Some(recipient) => false,
-                    TriggerCondition::GrantedAttacks => true,
-                    TriggerCondition::SelfAttacks if ability.condition.is_granted() => true,
+                    TriggerCondition::AttachedAttacksOrBlocks => false,
+                    TriggerCondition::EquippedAttacks if !blocking => false,
+                    TriggerCondition::EquippedAttacksAlone
+                        if !blocking && alone == Some(recipient) =>
+                    {
+                        false
+                    }
+                    TriggerCondition::GrantedAttacks if !blocking => true,
+                    TriggerCondition::SelfAttacks
+                        if !blocking && ability.condition.is_granted() =>
+                    {
+                        true
+                    }
                     _ => continue,
                 };
                 // Supported games have two players, owner==controller, and only
@@ -1591,7 +1619,7 @@ impl Game {
                     grantor: giver.reference,
                     granting_card: giver.card,
                     recipient,
-                    defender: Some(actor.other()),
+                    defender: (!blocking).then_some(actor.other()),
                     granted,
                     origin: giver.copied_grant_origin(),
                 });
@@ -1717,6 +1745,7 @@ impl Game {
                     .is_some_and(|group| self.item_target_matches(&item, group.rule, bound.target))
         });
         item.targets = targets;
+        self.retain_resolution_target_budgets(&mut item, spec);
         let valid = !was_targeted || !item.targets.is_empty();
         if !valid {
             if item.kind == StackKind::Spell {
@@ -2078,6 +2107,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::RevealTargetHandExileUntilSourceLeaves
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
@@ -2801,6 +2831,14 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ExileTargetLibraryTopCastFree {
+                    amount,
+                    maximum_casts,
+                } => {
+                    if self.exile_target_top_cast_free(&item, amount, maximum_casts) {
+                        return;
+                    }
+                }
                 Instruction::ExileEachLibraryTopCastFree => {
                     self.exile_each_top_cast_free(item.controller);
                     return;
@@ -2904,6 +2942,43 @@ impl Game {
                         })
                         .collect();
                 }
+                Instruction::CastLibraryTopUpToAttackingPower(amount) => {
+                    self.cast_library_by_attacking_power(&item, amount);
+                    return;
+                }
+                Instruction::BottomLookedLibraryRandom => self.finish_library_cast_look(),
+                Instruction::ControlTargetPlayerNextTurn => {
+                    for player in self
+                        .program_players(PlayerSet::Targeted, &item)
+                        .collect::<Vec<_>>()
+                    {
+                        self.schedule_player_control(player, item.controller);
+                    }
+                }
+                Instruction::ExileAllCreaturesRemember => self.exile_all_creatures_remember(),
+                Instruction::DeployHandCreaturesEach => {
+                    self.start_hand_deployment();
+                    return;
+                }
+                Instruction::ReturnExiledResultToHands => self.return_exiled_result_to_hands(),
+                Instruction::ExileDamagedLibraryUntilNonland => {
+                    self.exile_damaged_library_until_nonland(&item)
+                }
+                Instruction::MayCounterSourceOtherwiseCast => {
+                    if self.offer_source_counter_or_cast(&item) {
+                        return;
+                    }
+                }
+                Instruction::RevealTargetHandSubsetDiscard(amount) => {
+                    if self.start_hand_subset_discard(&item, amount) {
+                        return;
+                    }
+                }
+                Instruction::RevealTargetHandExileUntilSourceLeaves => {
+                    if self.start_revealed_hand_exile(&item) {
+                        return;
+                    }
+                }
                 Instruction::RevealHandDiscard { excluded_kinds } => {
                     let Some(victim) = self.program_players(PlayerSet::Targeted, &item).next()
                     else {
@@ -2982,6 +3057,11 @@ impl Game {
                 Instruction::TapAttached => {
                     if let Some(id) = self.attached_permanent(&item) {
                         self.tap_objects(&[id]);
+                    }
+                }
+                Instruction::AttachEquipmentToAttached { group } => {
+                    if self.attach_selected_equipment_to_attached(&item, group) {
+                        return;
                     }
                 }
                 Instruction::AttachEquipmentByGroups {
@@ -3161,6 +3241,9 @@ impl Game {
                     self.state.damage_prevention_prohibited = true;
                 }
                 Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::ExtraTurn {
+                    power_up_prohibited,
+                } => self.add_extra_turn(item.controller, power_up_prohibited),
                 Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::ActivationX | Instruction::SourceCounterCost { .. } => (),
@@ -3265,6 +3348,9 @@ impl Game {
                     self.event_object_damage_players(&item, players, amount);
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::AnimateSourceWithAbilityIfNoncreature { spec, kind } => {
+                    self.animate_source_with_ability_if_noncreature(&item, spec, kind)
+                }
                 Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),
                 Instruction::ChangeSourceCreatureForm(spec) => self.change_source_form(
                     &item,
@@ -3283,6 +3369,14 @@ impl Game {
                     self.animate_source_if_noncreature(&item, spec, ability)
                 }
                 Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
+                Instruction::SearchLibraryAndGraveyardWithXCounters {
+                    filter,
+                    counter,
+                    haste_at,
+                } => {
+                    self.start_zone_search(&item, filter, counter, haste_at);
+                    return;
+                }
                 Instruction::Search(spec)
                 | Instruction::SearchTargetController(spec)
                 | Instruction::SearchTargetPlayer(spec)
@@ -3613,6 +3707,19 @@ impl Game {
                 }
                 Instruction::PutHandPermanent { maximum, tapped } => {
                     if self.start_hand_permanent(&item, maximum, tapped) {
+                        return;
+                    }
+                }
+                Instruction::PutHandAndAttachEquipment { filter } => {
+                    if self.start_filtered_hand_entry(&item, filter, 0) {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .choice
+                            .as_mut()
+                            .unwrap()
+                            .equipment_recipient = Some(item.object);
                         return;
                     }
                 }
@@ -4148,6 +4255,7 @@ impl Game {
                 Instruction::ReturnGrantedSource { counter, role } => {
                     self.return_granted_source(&item, counter, role)
                 }
+                Instruction::GrantSelfAbility(kind) => self.grant_self_ability(&item, kind),
                 Instruction::GrantKeywords { subject, keywords } => {
                     let ids = self.keyword_subjects(&item, subject);
                     self.grant_keyword_effects(&ids, item.object, keywords);
@@ -4509,6 +4617,18 @@ impl Game {
                         .map(|id| (self.object_ref(id), counters.clone()))
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
+                Instruction::GainControlTargetsUntilSourceLeaves => {
+                    self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::Control);
+                }
+                Instruction::RemoveTargetAbilitiesUntilSourceLeaves => {
+                    self.resolve_source_linked_effect(
+                        &item,
+                        SourceLinkedEffectKind::RemoveAbilities,
+                    );
+                }
+                Instruction::PreventTargetUntapWhileSourceControlled => {
+                    self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::PreventUntap);
                 }
                 Instruction::Tap | Instruction::Untap => {
                     if instruction == Instruction::Untap {

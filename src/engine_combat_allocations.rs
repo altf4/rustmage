@@ -242,8 +242,17 @@ impl Game {
     }
 }
 impl ActivatedAbility {
+    pub(super) fn x_symbols(&self) -> u32 {
+        u32::try_from(
+            self.program
+                .iter()
+                .take_while(|i| **i == Instruction::ActivationX)
+                .count(),
+        )
+        .expect("activation X header count")
+    }
     pub(super) fn has_x_cost(&self) -> bool {
-        self.program.first() == Some(&Instruction::ActivationX)
+        self.x_symbols() != 0
     }
 }
 impl Announcement {

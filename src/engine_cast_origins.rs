@@ -141,7 +141,7 @@ impl Game {
         if self.library_top_deferred(owner) {
             return None;
         }
-        if viewer == owner && self.can_look_library_top(viewer) {
+        if self.shares_information(viewer, owner) && self.can_look_library_top(owner) {
             self.state.players[owner.index()]
                 .library
                 .last()
@@ -295,6 +295,12 @@ impl Game {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
+    /// Successful spells still permitted by this immediate casting instruction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub casts_remaining: Option<u16>,
+    /// Exact proposed child; only its committed cast consumes a quota.
+    #[serde(skip)]
+    pub(super) pending_cast: Option<u64>,
     pub alternative_cost: Option<ManaCost>,
     pub maximum_mana_value: Option<u64>,
     pub origin: Zone,
@@ -319,6 +325,8 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            casts_remaining: None,
+            pending_cast: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Graveyard,
@@ -345,6 +353,8 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            casts_remaining: None,
+            pending_cast: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Exile,
@@ -368,6 +378,9 @@ impl Game {
         let Some(free) = &self.state.resolution_free_casts else {
             return false;
         };
+        if free.casts_remaining == Some(0) {
+            return false;
+        }
         for &object in &free.remaining {
             if self.object_ref(object.card) != object
                 || self.state.objects[object.card as usize].zone != free.origin
@@ -454,6 +467,11 @@ impl Game {
             .retain(|&r| r != object);
         self.reveal_hideaway_object(object);
         let mut item = self.cast_item(player, object.card, [0; 6]);
+        if let Some(free) = self.state.resolution_free_casts.as_mut()
+            && free.casts_remaining.is_some()
+        {
+            free.pending_cast = Some(item.id);
+        }
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = if alternative_cost.is_some() {
             CastMethod::Miracle
@@ -483,5 +501,72 @@ impl Game {
         if rows.is_empty() {
             self.state.graveyard_type_uses = None;
         }
+    }
+}
+
+impl Game {
+    pub(super) fn consume_resolution_cast_quota(&mut self, player: Player, stack: Option<usize>) {
+        let Some(id) = stack.map(|i| self.state.stack[i].id) else {
+            return;
+        };
+        if let Some(free) = self.state.resolution_free_casts.as_mut()
+            && free.player == player
+            && free.pending_cast == Some(id)
+            && let Some(left) = &mut free.casts_remaining
+        {
+            *left = left.checked_sub(1).expect("a legal quota cast");
+            free.pending_cast = None;
+        }
+    }
+    pub(super) fn exile_target_top_cast_free(
+        &mut self,
+        item: &SpellView,
+        amount: u16,
+        maximum_casts: u16,
+    ) -> bool {
+        let target = item
+            .targets
+            .iter()
+            .filter(|b| {
+                self.target_spec(item)
+                    .group(b.group)
+                    .is_some_and(|spec| self.item_target_matches(item, spec.rule, b.target))
+            })
+            .find_map(|b| {
+                if let Target::Player(p) = b.target {
+                    Some(p)
+                } else {
+                    None
+                }
+            });
+        let Some(owner) = target else {
+            return false;
+        };
+        let ids = exile::top_library_cards(
+            &self.state.players[owner.index()].library,
+            u128::from(amount),
+        );
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let remaining = events
+            .iter()
+            .filter(|e| e.moved && e.destination == Zone::Exile)
+            .map(|e| e.after)
+            .collect();
+        self.finish_zone_events(&events, &[]);
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            casts_remaining: Some(maximum_casts),
+            pending_cast: None,
+            alternative_cost: None,
+            maximum_mana_value: None,
+            origin: Zone::Exile,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player: item.controller,
+            remaining,
+        }));
+        self.state.pending = Pending::ResolutionCasts {
+            player: item.controller,
+        };
+        true
     }
 }

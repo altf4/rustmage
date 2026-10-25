@@ -557,7 +557,7 @@ impl Game {
     }
     pub(super) fn additional_cost_view(&self, viewer: Player) -> Option<AdditionalCostView> {
         let a = self.state.announcing.as_ref()?;
-        if viewer != a.item.controller {
+        if !self.shares_information(viewer, a.item.controller) {
             return None;
         }
         let spec = a.additional_cost()?;
