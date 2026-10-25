@@ -1875,6 +1875,9 @@ impl<'g> FundingState<'g> {
         if !self.obligations(goal) {
             return false;
         }
+        if self.pure_tap_teamwork_deficit(goal) {
+            return false;
+        }
         let purpose = self.payment_purpose(goal);
         let adjusted = cast_origins::payment_goal(self, goal, purpose);
         if (if self.has_ordered_convoke() {

@@ -470,6 +470,120 @@ impl FundingState<'_> {
                 .any(|r| !r.paid && r.clause == CastCostClause::Mana)
         })
     }
+    /// A deliberately narrow negative bound across future mana-source moves.
+    /// Unknown providers and non-tap mutations retain the complete search.
+    pub(super) fn pure_tap_teamwork_deficit(&self, goal: &FundingGoal) -> bool {
+        let Some(c) = &self.cast_costs else {
+            return false;
+        };
+        let mut minimum = None;
+        let mut has_mana = false;
+        for row in c.clauses.iter().filter(|row| !row.paid) {
+            match row.clause {
+                CastCostClause::Teamwork(n) => minimum = Some(minimum.unwrap_or(0).max(n)),
+                CastCostClause::Mana => has_mana = true,
+                _ => return false,
+            }
+        }
+        let Some(minimum) = minimum.filter(|_| has_mana) else {
+            return false;
+        };
+        let mut upper = saddle::PowerSum::default();
+        for resource in &self.resources {
+            let o = &resource.object;
+            if o.zone == Zone::Battlefield
+                && o.controller == c.actor
+                && !o.tapped
+                && CharacteristicWorld::kinds(self, resource.id) & 1 != 0
+            {
+                let power = self.power(resource.id);
+                if power > 0 {
+                    upper.add(power);
+                }
+            }
+        }
+        if upper.enough(minimum) {
+            return false;
+        }
+        if goal.source.is_some()
+            || goal.reserve.is_some()
+            || self.continuation.is_some()
+            || self.entry_projection.is_some()
+            || self.game.state.borrowed_links.is_some()
+            || !self.game.state.exile_links.is_empty()
+        {
+            return false;
+        }
+        if self
+            .roles()
+            .is_some_and(|r| !r.base_stats.is_empty() || !r.live_static.is_empty())
+        {
+            return false;
+        }
+        // Inspect every resource and every immutable mana activation, including
+        // hidden/nonbattlefield/unavailable routes. Pure taps cannot introduce
+        // a new route, recipient, incarnation or counter configuration.
+        for resource in &self.resources {
+            let card = resource.object.card;
+            if self
+                .mana_activations(resource.id)
+                .any(|(_, a, borrowed)| borrowed.is_some() || !Self::only_tap_mana(a))
+                || CharacteristicWorld::granted_mana(self, resource.id)
+                    .iter()
+                    .any(|g| g.sacrifice)
+            {
+                return false;
+            }
+            if resource.object.zone != Zone::Battlefield {
+                continue;
+            }
+            if card.dynamic_stats().is_some()
+                || !card.scaling_modifiers().is_empty()
+                || !card.static_modifiers().is_empty()
+                || !card.enchanted_modifiers().is_empty()
+                || card.base_stat_setter().is_some()
+                || card.attachment_bonus().is_some()
+                || card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|g| g.fragments)
+                    .any(|f| {
+                        !matches!(
+                            f,
+                            crate::cards::StaticAbilityFragment::IntrinsicKeywords(_)
+                                | crate::cards::StaticAbilityFragment::Changeling
+                                | crate::cards::StaticAbilityFragment::SpellImprovise(_)
+                                | crate::cards::StaticAbilityFragment::LandMana { .. }
+                                | crate::cards::StaticAbilityFragment::NoMaximumHandSize
+                                | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
+                                | crate::cards::StaticAbilityFragment::SpendAnyManaForCreatures
+                        )
+                    })
+            {
+                return false;
+            }
+        }
+        // In this flat class base exceptions, fixed animation/base values,
+        // counters, growth, choices and copy layers remain immutable. No mana
+        // step changes turn/combat/attachment state. Further taps can only
+        // remove a candidate from this exact positive-power upper sum.
+        true
+    }
+    fn only_tap_mana(a: &ActivatedAbility) -> bool {
+        let c = a.cost;
+        a.origin == ActivationOrigin::Battlefield
+            && c.tap
+            && !c.sacrifice
+            && !c.exile_self
+            && !c.discard
+            && c.life == 0
+            && c.remove.is_none()
+            && c.loyalty.is_none()
+            && c.additional.is_none()
+            && !a.exhaust
+            && !a.once_per_turn
+            && matches!(a.program, [Instruction::AddMana(_)])
+    }
     fn mana_clause_payable(&self, c: &CostContext) -> bool {
         let Some(cost) = c.mana else {
             return false;
