@@ -1095,6 +1095,18 @@ impl Game {
                         targets,
                     )
             }
+            CastFilter::ManaSymbols { filter, color } => {
+                card.mana_symbols_of_color(color) > 0
+                    && self.cast_filter_matches_value(
+                        spell_owner,
+                        *filter,
+                        card,
+                        mana_value,
+                        caster,
+                        source,
+                        targets,
+                    )
+            }
             CastFilter::AnyOf(filters) => filters.iter().any(|f| {
                 self.cast_filter_matches_value(
                     spell_owner,
@@ -1244,6 +1256,7 @@ impl Game {
                         let chosen_x = stack.and_then(|i| self.state.stack[i].x);
                         self.state.pending_triggers.last_mut().unwrap().x = chosen_x;
                         if ability.condition.mana_spent_rule().is_some()
+                            || cast_symbol_quantities::selected(ability.program)
                             || ability.program.iter().any(|instruction| {
                                 matches!(
                                     instruction,

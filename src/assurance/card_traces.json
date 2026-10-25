@@ -11423,6 +11423,14 @@
     "journal": "0fccf4cdd9b9200d",
     "observations": "dfbb4833a596e348"
   },
+  "Namor the Sub-Mariner": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3fba902266e1c58c",
+    "observations": "046d669ed95c34fe"
+  },
   "Narset's Rebuke": {
     "root": "main",
     "status": "completed",

@@ -64,7 +64,7 @@ impl Game {
                         thresholds(*f, base, symbols, end, cuts);
                     }
                 }
-                CastFilter::Targeted { filter, .. } => {
+                CastFilter::ManaSymbols { filter, .. } | CastFilter::Targeted { filter, .. } => {
                     thresholds(*filter, base, symbols, end, cuts)
                 }
                 _ => {}
@@ -292,6 +292,11 @@ impl Game {
                 .cast_event
                 .as_ref()
                 .map_or(0, |e| u128::from(e.mana_value)),
+            AmountValue::CastSpellManaSymbols(color) => {
+                item.cast_event.as_ref().map_or(0, |event| {
+                    u128::from(event.card.mana_symbols_of_color(color))
+                })
+            }
             AmountValue::SpellColors => item
                 .cast_event
                 .as_ref()

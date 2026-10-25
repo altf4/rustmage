@@ -344,6 +344,7 @@ impl Game {
             | AmountValue::ChosenX
             | AmountValue::ManaSpent
             | AmountValue::CastSpellManaValue
+            | AmountValue::CastSpellManaSymbols(_)
             | AmountValue::SpellColors
             | AmountValue::ColorsSpent
             | AmountValue::SacrificedToughness

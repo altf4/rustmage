@@ -7623,3 +7623,10 @@ mod msh_doom_tests;
 #[cfg(test)]
 #[path = "engine_msh_ninth_combined_tests.rs"]
 mod msh_ninth_combined_tests;
+
+#[path = "engine_cast_symbol_quantities.rs"]
+mod cast_symbol_quantities;
+
+#[cfg(test)]
+#[path = "engine_msh_namor_tests.rs"]
+mod msh_namor_tests;

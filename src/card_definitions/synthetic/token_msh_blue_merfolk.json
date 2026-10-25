@@ -1,0 +1,14 @@
+{
+  "name": "@token/msh-blue-merfolk",
+  "catalogue_id": 5398,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "0b4a892d5b7ff9568a9f879900951c4e841cc29ebb0a34ab94e9df40d9c4d817",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/MerfolkToken.java",
+  "java_sha256": "bf4402a2fc55df7f50f08bc0d30255ba8d4ded5b14c4b465375fac73da852f32",
+  "rules_notes": [
+    "CR111.4: actual rules name Merfolk Token. Blue only, 1/1 Creature Merfolk, no abilities. Factory alias distinct from the old white-blue recipe; no old alias was changed."
+  ]
+}

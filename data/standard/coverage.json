@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "b75a7350ad3e6ce0a59c958293bfbbb2c3d013a9375921b23e2dd3a2bec4601d",
+  "catalogue_version": "07f20aa9ab5dfe61199f31aca4d3065087b41f6bd023d2b5f6aecb9075a87bf3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2491,
-  "implemented_total": 2497,
-  "token_definitions": 120,
+  "implemented_standard_cards": 2492,
+  "implemented_total": 2498,
+  "token_definitions": 121,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
   "omen_definitions": 13,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 186,
-      "gated": 87
+      "complete": 187,
+      "gated": 86
     },
     "one": {
       "total": 1,
@@ -23445,8 +23445,8 @@
     {
       "name": "Namor the Sub-Mariner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/namor_the_sub_mariner.rs",
       "set": "msh"
     },
