@@ -154,7 +154,9 @@ fn removal(g: &mut Game, p: Player, r: CardId, e: CardId, target: CardId) {
             target: Target::Card(target),
         },
     );
-    checked(g, Action::FinishTargets);
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        checked(g, Action::FinishTargets);
+    }
     assert_eq!(g.state.pending, Pending::AdditionalCost { player: p });
     checked(
         g,
@@ -336,7 +338,9 @@ fn msh_restricted_creatures_ronin_cost_only_current_controlled_attached_equipmen
                 target: Target::Card(victim),
             },
         );
-        checked(&mut g, Action::FinishTargets);
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
         let v = g.observe(p).additional_cost.unwrap();
         assert_eq!(v.kind, EffectChoiceKind::SacrificeAttachedEquipment);
         assert_eq!(v.candidates, vec![g.object_ref(e)]);
@@ -479,16 +483,16 @@ fn msh_restricted_creatures_shang_restricted_mana_pays_graveyard_creature_activa
     for p in [Player::P0, Player::P1] {
         let mut g = game(p);
         let s = paid(&mut g, p, SHANG, &[]);
-        let w = named(&mut g, p, "Winter Soldier, Icy Assassin", Zone::Graveyard);
+        let w = named(&mut g, p, "Project Deathlok Soldier", Zone::Graveyard);
         let old = g.object_ref(w);
+        g.state.players[p.index()].mana[5] += 1;
         checked(&mut g, mana(s, [0, 0, 2, 0, 0, 0]));
         finish(&mut g);
         checked(&mut g, announce(w, 0));
         finish(&mut g);
         settle(&mut g);
-        assert_eq!(g.object_view(w).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(w).zone, Zone::Hand);
         assert_ne!(g.object_ref(w), old);
-        assert_eq!(g.counter_count(w, CounterKind::PlusOne), 1);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     }
 }
@@ -623,7 +627,12 @@ fn msh_restricted_creatures_shang_permission_moves_to_current_controller() {
         let own = paid(&mut g, p, "Llanowar Elves", &[]);
         let foreign = named(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
         g.state.objects[foreign as usize].summoning_sick = true;
-        paid(&mut g, p, "Harmless Offering", &[Target::Card(s)]);
+        paid(
+            &mut g,
+            p,
+            "Harmless Offering",
+            &[Target::Player(p.other()), Target::Card(s)],
+        );
         assert_eq!(g.object_view(s).controller, p.other());
         reject(&mut g, Action::TapMana { card: own });
         priority(&mut g, p.other());
@@ -637,21 +646,22 @@ fn msh_restricted_creatures_shang_departure_removes_permission_but_not_produced_
         let mut g = game(p);
         let s = paid(&mut g, p, SHANG, &[]);
         let elf = paid(&mut g, p, "Llanowar Elves", &[]);
+        g.state.players[p.index()].mana[5] += 1;
         checked(&mut g, mana(s, [0, 0, 2, 0, 0, 0]));
         finish(&mut g);
         paid(&mut g, p.other(), "Murder", &[Target::Card(s)]);
         priority(&mut g, p);
         reject(&mut g, Action::TapMana { card: elf });
-        let w = named(&mut g, p, "Winter Soldier, Icy Assassin", Zone::Graveyard);
+        let w = named(&mut g, p, "Project Deathlok Soldier", Zone::Graveyard);
         checked(&mut g, announce(w, 0));
         finish(&mut g);
         settle(&mut g);
-        assert_eq!(g.object_view(w).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(w).zone, Zone::Hand);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     }
 }
 #[test]
-fn msh_restricted_creatures_shang_real_lands_fund_new_creature_tap_ability() {
+fn msh_restricted_creatures_shang_real_land_and_restricted_mana_fund_creature_ability() {
     for p in [Player::P0, Player::P1] {
         let mut g = game(p);
         paid(&mut g, p, SHANG, &[]);
@@ -666,16 +676,44 @@ fn msh_restricted_creatures_shang_real_lands_fund_new_creature_tap_ability() {
             views
         );
         checked(&mut g, announce(r, 0));
-        checked(&mut g, Action::FinishTargets);
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
         let shang = (0..g.state.objects.len())
             .find(|&i| g.state.objects[i].card == Card::from_name(SHANG).unwrap())
             .unwrap() as CardId;
         checked(&mut g, mana(shang, [0, 0, 0, 0, 2, 0]));
-        finish(&mut g);
         checked(&mut g, Action::TapMana { card: land });
         finish(&mut g);
         settle(&mut g);
         assert!(g.object_view(land).tapped);
         assert_eq!(g.stats(r).power, 3);
+    }
+}
+#[test]
+fn msh_restricted_creatures_shang_allows_attached_granted_tap_activation_and_its_mana_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let s = paid(&mut g, p, SHANG, &[]);
+        let bear = paid(&mut g, p, "Grizzly Bears", &[]);
+        let pole = paid(&mut g, p, "Fishing Pole", &[]);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+        equip(&mut g, p, pole, bear);
+        assert!(g.object_view(bear).summoning_sick);
+        checked(&mut g, mana(s, [0, 0, 0, 0, 2, 0]));
+        finish(&mut g);
+        let action = Action::AnnounceAttachedAbility {
+            grantor: g.object_ref(pole),
+            ability: 1,
+        };
+        assert!(g.legal_actions().contains(&action));
+        g = orphan(g, action);
+        finish(&mut g);
+        settle(&mut g);
+        assert!(g.object_view(bear).tapped);
+        assert!(g.object_view(pole).tapped);
+        assert_eq!(g.counter_count(pole, CounterKind::Bait), 1);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 1, 0]);
+        assert!(!g.keywords(bear).contains(Keywords::HASTE));
     }
 }

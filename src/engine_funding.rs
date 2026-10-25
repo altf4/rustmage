@@ -3128,3 +3128,7 @@ mod msh_super_adaptoid_funding_tests;
 #[cfg(test)]
 #[path = "engine_shield_harness_funding_tests.rs"]
 mod shield_harness_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_restricted_creatures_funding_tests.rs"]
+mod msh_restricted_creatures_funding_tests;
