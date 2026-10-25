@@ -180,16 +180,24 @@ fn msh_us_agent_control_change_keeps_trigger_controller_and_cross_controller_att
 #[test]
 fn msh_us_agent_nontarget_attachment_ignores_hexproof_and_ward_but_obeys_protection() {
     for p in [Player::P0, Player::P1] {
-        for keywords in [Keywords::HEXPROOF, Keywords::PROTECTION_EVERYTHING] {
+        for keywords in [
+            Keywords::HEXPROOF,
+            Keywords::PROTECTION_EVERYTHING,
+            Keywords::NONE,
+        ] {
             let mut g = setup(p);
             let s = start(&mut g, p, 2);
             stack_etb(&mut g, s);
             g.state.objects[s as usize].gained_keywords = keywords;
+            if keywords == Keywords::NONE {
+                let harness = named(&mut g, p, "Falcon's Wing Harness", Zone::Battlefield);
+                assert!(g.attach_equipment(g.object_ref(harness), g.object_ref(s)));
+            }
             settle(&mut g);
             let sh = shields(&g, p)[0];
             assert_eq!(
                 g.object_view(sh).attached_to.is_some(),
-                keywords == Keywords::HEXPROOF
+                keywords != Keywords::PROTECTION_EVERYTHING
             );
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         }

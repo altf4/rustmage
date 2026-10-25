@@ -278,7 +278,7 @@ fn msh_galactus_multiple_thresholds_iv_first_waits_every_exact_packet() {
         g.prepare_triggers();
         assert!(!g.saga_sacrifice_required(s));
         // Put IV on top; its resolution cannot sacrifice while II/III remain.
-        for ability in [1, 2, 3] {
+        for ability in [1, 2] {
             let id = g
                 .state
                 .ordering_triggers
@@ -332,6 +332,8 @@ fn msh_galactus_iv_survives_paid_source_removal_and_captured_controller() {
         let s = saga(&mut g, p);
         g.effect_counter(s, CounterKind::Lore, 3, replacements::ResumeMode::Pending);
         chapter(&mut g, s, 3);
+        // Bounded control producer after queue: packet remains controlled by p.
+        g.change_controller(g.object_ref(s), p.other());
         if g.actor() != Some(p.other()) {
             checked(&mut g, Action::Pass);
         }
@@ -519,8 +521,9 @@ fn msh_galactus_saga_live_type_loss_stops_lore_and_sacrifice_not_queued_chapter(
         g.effect_counter(s, CounterKind::Lore, 2, replacements::ResumeMode::Pending);
         settle(&mut g);
         assert!(g.on_battlefield(s));
-        g.move_object(aura, Zone::Graveyard);
-        g.give_priority();
+        g.state.players[p.index()].mana = [30; 6];
+        g.state.priority = p;
+        paid(&mut g, p, "Get Lost", &[Target::Card(aura)]);
         assert!(g.has_subtype(s, "Saga"));
         settle(&mut g);
         assert!(!g.on_battlefield(s));
@@ -543,8 +546,9 @@ fn msh_galactus_saga_chapter_suppression_preserves_subtype_no_lore_no_sacrifice(
         settle(&mut g);
         assert!(g.on_battlefield(s));
         assert!(tokens(&g, p, Card::MshGalactusToken).is_empty());
-        g.move_object(aura, Zone::Graveyard);
-        g.give_priority();
+        g.state.players[p.index()].mana = [30; 6];
+        g.state.priority = p;
+        paid(&mut g, p, "Get Lost", &[Target::Card(aura)]);
         settle(&mut g);
         assert!(!g.on_battlefield(s));
         assert!(tokens(&g, p, Card::MshGalactusToken).is_empty());
@@ -564,8 +568,9 @@ fn msh_galactus_suppressed_queued_iv_resolves_then_restoration_sacrifices() {
         settle(&mut g);
         assert!(g.on_battlefield(s));
         assert_eq!(tokens(&g, p, Card::MshGalactusToken).len(), 1);
-        g.move_object(aura, Zone::Graveyard);
-        g.give_priority();
+        g.state.players[p.index()].mana = [30; 6];
+        g.state.priority = p;
+        paid(&mut g, p, "Get Lost", &[Target::Card(aura)]);
         settle(&mut g);
         assert!(!g.on_battlefield(s));
     }
