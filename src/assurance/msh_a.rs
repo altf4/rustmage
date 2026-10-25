@@ -2283,7 +2283,8 @@ fn msh_cosmic_cube_private_six_card_offer_has_power_limit_and_bottoms_remainder(
             "Mountain",
         ],
     );
-    put(&mut g, p, "Cosmic Cube", Zone::Battlefield);
+    spell(&mut g, p, "Cosmic Cube", [0, 0, 0, 0, 0, 5], None);
+    resolved(&mut g);
     let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
     attack(&mut g, &[bear]);
     until(&mut g, |g| {
@@ -2911,5 +2912,74 @@ fn msh_printed_keyword_bindings_use_shared_combat_and_replacement_proofs() {
             g.keywords(id).contains(expected),
             "{name}: literal printed keyword binding"
         );
+    }
+}
+
+#[test]
+fn msh_a_literal_creature_costs_and_bodies_supplement_full_ability_scenarios() {
+    // Literal values transcribed from the pinned Oracle faces. This table checks
+    // paid casting and base bodies; the separate families prove printed abilities.
+    for (name, mana, power, toughness) in [
+        ("A.I.M. Scientists", [0, 1, 0, 0, 0, 3], 3, 3),
+        ("A.I.M. Synthoids", [0, 0, 0, 0, 0, 2], 1, 3),
+        ("Abomination, Terrifying Titan", [0, 0, 0, 1, 0, 3], 4, 4),
+        ("Absorbing Man", [0, 1, 0, 0, 1, 1], 4, 4),
+        ("Aerial Doombot", [0, 1, 0, 0, 0, 0], 1, 1),
+        ("Agent 13, Sharon Carter", [1, 0, 0, 0, 0, 2], 3, 2),
+        ("Agent Maria Hill", [1, 0, 0, 0, 0, 0], 2, 1),
+        ("Agent Phil Coulson", [1, 0, 0, 0, 0, 1], 2, 2),
+        ("Agent of Atlas", [1, 0, 0, 0, 0, 1], 2, 2),
+        ("Agents of HYDRA", [0, 0, 1, 0, 0, 1], 1, 1),
+        ("Agents of S.H.I.E.L.D.", [1, 0, 0, 0, 0, 2], 2, 4),
+        ("Ant-Man's Army", [0, 0, 0, 0, 1, 2], 3, 2),
+        ("Ant-Man, Colony Commander", [0, 1, 0, 0, 1, 1], 2, 2),
+        ("Ares, God of War", [0, 0, 1, 1, 0, 1], 4, 3),
+        ("Arnim Zola, Bio-Fanatic", [0, 0, 1, 0, 0, 2], 2, 3),
+        ("Atlantean Cavalry", [0, 1, 0, 0, 0, 2], 3, 2),
+        ("Attuma, Atlantean Warlord", [0, 2, 0, 0, 0, 2], 3, 4),
+        ("Baron Helmut Zemo", [0, 0, 3, 0, 0, 0], 3, 3),
+        ("Baron Strucker, HYDRA Overlord", [0, 0, 1, 0, 0, 2], 2, 2),
+        ("Beast, Erudite Aerialist", [0, 0, 0, 0, 1, 3], 3, 3),
+        ("Black Panther, Vanguard", [1, 0, 0, 0, 1, 2], 4, 4),
+        ("Black Widow, Double Agent", [1, 0, 1, 0, 0, 1], 3, 2),
+        ("Black Widow, Super Spy", [0, 0, 1, 0, 0, 1], 2, 1),
+        ("Bold Biochemist", [0, 1, 0, 0, 0, 1], 1, 3),
+        ("Brave Brawler", [1, 0, 0, 0, 0, 1], 2, 1),
+        ("Bruce Banner", [0, 1, 0, 0, 0, 0], 1, 1),
+        ("Bullseye, Death Dealer", [0, 0, 1, 0, 0, 2], 2, 3),
+        ("Captain America, Living Legend", [1, 1, 0, 0, 0, 1], 3, 4),
+        ("Captain America, Super-Soldier", [2, 0, 0, 0, 0, 1], 3, 2),
+        (
+            "Captain America, Wings of Freedom",
+            [1, 0, 0, 0, 0, 2],
+            3,
+            1,
+        ),
+        ("Captain Mar-Vell, Space-Born", [1, 0, 0, 0, 0, 4], 4, 4),
+        (
+            "Captain Marvel, Earth's Protector",
+            [2, 0, 0, 0, 0, 3],
+            5,
+            4,
+        ),
+        ("Cloak and Dagger, Entwined", [1, 0, 1, 0, 0, 1], 2, 2),
+        ("Colleen Wing, Street Samurai", [1, 0, 0, 0, 0, 1], 2, 2),
+        ("Crimson Operative", [0, 0, 0, 1, 0, 3], 3, 2),
+        ("Crossbones, Malicious Mercenary", [0, 0, 1, 0, 0, 3], 3, 3),
+        ("Crowd of True Believers", [1, 0, 0, 0, 0, 0], 1, 2),
+        ("Daredevil, Man Without Fear", [1, 0, 0, 1, 0, 2], 3, 4),
+        ("Doc Samson, Super Psychiatrist", [0, 0, 0, 0, 1, 4], 3, 6),
+        ("Doctor Doom", [0, 0, 2, 0, 0, 4], 3, 3),
+        ("Echo, Perceptive Prodigy", [0, 1, 0, 0, 0, 2], 1, 4),
+    ] {
+        let mut g = scenario(Player::P0);
+        let id = spell(&mut g, Player::P0, name, mana, None);
+        until(&mut g, |g| g.object_view(id).zone == Zone::Battlefield);
+        assert_eq!(
+            stats(&g, id),
+            (power, toughness),
+            "{name}: independent base body"
+        );
+        assert!(g.is_creature(id), "{name}");
     }
 }
