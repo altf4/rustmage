@@ -46,6 +46,11 @@ impl Game {
         controller: Player,
     ) -> bool {
         match rule {
+            TargetRule::YourAbilityFromSourceKinds { kinds } => {
+                item.kind != StackKind::Spell
+                    && item.controller == controller
+                    && self.ability_source_kinds(item) & kinds != 0
+            }
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
             TargetRule::Spell => item.kind == StackKind::Spell,
             TargetRule::YourSpellKinds { kinds } => {
@@ -128,6 +133,7 @@ impl Game {
         if let Some(r) = choice
             && r.victim.is_none()
             && r.item.is_copy
+            && r.item.kind == StackKind::Spell
             && self.object_ref(r.item.card) == r.item.object
             && self.state.objects[r.item.card as usize].zone == Zone::Stack
             && !self.state.stack.iter().any(|s| s.id == r.item.id)
@@ -355,6 +361,40 @@ impl Game {
             self.release_stack_copy_state();
             false
         }
+    }
+    /// Copy an ability packet, never its physical source. All declared choices,
+    /// paid-cost facts and immutable program/origin contexts remain owned.
+    pub(super) fn copy_target_ability(&mut self, item: &SpellView, group: u16) -> bool {
+        let Some(template) = item
+            .targets
+            .iter()
+            .find(|bound| bound.group == group)
+            .and_then(|bound| self.bound_stack_item(bound))
+            .filter(|candidate| candidate.kind != StackKind::Spell)
+            .cloned()
+        else {
+            return false;
+        };
+        let mut copy = template.clone();
+        copy.id = self.next_stack_id();
+        copy.controller = item.controller;
+        copy.is_copy = true;
+        self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
+            item: copy,
+            template,
+            remaining: 0,
+            victim: None,
+        });
+        self.advance_copy_targets()
+    }
+    fn ability_source_kinds(&self, item: &SpellView) -> u16 {
+        self.state
+            .objects
+            .get(item.object.card as usize)
+            .filter(|source| source.generation == item.object.generation)
+            .map_or(item.source_facts.kinds, |_| {
+                self.current_kinds(item.object.card)
+            })
     }
     pub(super) fn copy_captured_spell(&mut self, item: &SpellView) -> bool {
         let Some(event) = &item.copy_event else {

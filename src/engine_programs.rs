@@ -2057,6 +2057,7 @@ impl Game {
                 Instruction::Fight { .. }
                     | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
+                    | Instruction::CopyTargetAbility { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::PowerDamage { .. }
                     | Instruction::ScaledPowerDamage { .. }
@@ -3059,6 +3060,11 @@ impl Game {
                     exceptions,
                 } => {
                     if self.copy_target_spell(&item, group, retarget, exceptions) {
+                        return;
+                    }
+                }
+                Instruction::CopyTargetAbility { group } => {
+                    if self.copy_target_ability(&item, group) {
                         return;
                     }
                 }

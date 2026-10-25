@@ -189,6 +189,10 @@ pub(crate) enum TargetRule {
     YourSpellKinds {
         kinds: u8,
     },
+    /// An independent stack ability, qualified by its actual source or exact LKI.
+    YourAbilityFromSourceKinds {
+        kinds: u16,
+    },
     SpellKinds {
         kinds: u8,
         excluded: u8,
@@ -1157,6 +1161,9 @@ pub(crate) enum Instruction {
         group: u16,
         retarget: bool,
         exceptions: CopyExceptions,
+    },
+    CopyTargetAbility {
+        group: u16,
     },
     FlipCoinsSkipTurns {
         coins: u16,

@@ -65,6 +65,7 @@ impl Game {
         let mut reflexive = item.clone();
         reflexive.id = self.next_stack_id();
         reflexive.kind = StackKind::TriggeredAbility { ability };
+        reflexive.is_copy = false;
         reflexive.targets.clear();
         reflexive.mode = None;
         if let Some((_, program)) = reflexive.program()
