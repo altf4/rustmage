@@ -96,7 +96,7 @@ fn main(g: &mut Game, p: Player) {
 fn extort(g: &mut Game, p: Player, pool: Mana) -> CardId {
     priority(g, p);
     g.state.players[p.index()].mana = pool;
-    let c = named(g, p, "Ornithopter", Zone::Hand);
+    let c = named(g, p, "Mox Jasper", Zone::Hand);
     cast(g, c, None, &[]);
     until(g, |g| {
         g.legal_actions().contains(&Action::DeclineResolutionMana)
@@ -196,7 +196,7 @@ fn msh_kingpin_extort_queued_source_departure_keeps_captured_controller_and_paym
         let mut g = game(p);
         let k = paid(&mut g, p, KING, &[]);
         g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 0];
-        let c = named(&mut g, p, "Ornithopter", Zone::Hand);
+        let c = named(&mut g, p, "Mox Jasper", Zone::Hand);
         cast(&mut g, c, None, &[]);
         until(&mut g, |g| {
             g.state.pending == Pending::Priority
@@ -372,5 +372,197 @@ fn msh_kingpin_rule_uses_current_stats_and_current_controller_with_signed_values
         let other = named(&mut g, p.other(), "Aegis Turtle", Zone::Battlefield);
         assert_eq!(g.combat_assignment_amount(own), 5);
         assert_eq!(g.combat_assignment_amount(other), 0);
+    }
+}
+#[test]
+fn msh_kingpin_extort_does_not_trigger_for_land_or_opponent_spell() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        paid(&mut g, p, KING, &[]);
+        let land = named(&mut g, p, "Forest", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: land });
+        assert!(g.state.pending_triggers.is_empty());
+        paid(&mut g, p.other(), "Shock", &[Target::Player(p)]);
+        assert_eq!(g.state.players[p.index()].life, 18);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        assert!(g.state.pending_triggers.is_empty());
+    }
+}
+#[test]
+fn msh_kingpin_extort_cannot_spend_restricted_equipment_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        paid(&mut g, p, KING, &[]);
+        let r = paid(&mut g, p, "Ronin, Shadow Stalker", &[]);
+        checked(
+            &mut g,
+            Action::AnnounceMana {
+                card: r,
+                ability: 0,
+                counter_payment: Counters::default(),
+                production: [2, 0, 0, 0, 0, 0],
+            },
+        );
+        let c = named(&mut g, p, "Mox Jasper", Zone::Hand);
+        cast(&mut g, c, None, &[]);
+        until(&mut g, |g| {
+            g.legal_actions().contains(&Action::DeclineResolutionMana)
+        });
+        reject(
+            &mut g,
+            Action::PayResolutionMana {
+                payment: [1, 0, 0, 0, 0, 0],
+            },
+        );
+        checked(&mut g, Action::DeclineResolutionMana);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 18);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+#[test]
+fn msh_kingpin_real_copied_extort_instances_each_offer_one_independent_payment() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = game(p);
+        let k = paid(&mut g, p, KING, &[]);
+        let t = paid(&mut g, p, "Taskmaster, Mercenary Mimic", &[]);
+        next_turn(&mut g);
+        next_turn(&mut g);
+        until(&mut g, |g| {
+            g.state
+                .announcing
+                .as_ref()
+                .is_some_and(|a| a.item.card == t)
+                && g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Card(k),
+                })
+        });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(k),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            checked(&mut g, Action::FinishTargets);
+        }
+        settle(&mut g);
+        assert_eq!(
+            g.stats(t),
+            Stats {
+                power: 1,
+                toughness: 5
+            }
+        );
+        priority(&mut g, p);
+        extort(&mut g, p, [2, 0, 0, 0, 0, 0]);
+        pay(&mut g, [1, 0, 0, 0, 0, 0]);
+        until(&mut g, |g| {
+            g.legal_actions().contains(&Action::DeclineResolutionMana)
+        });
+        pay(&mut g, [1, 0, 0, 0, 0, 0]);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 22);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+#[test]
+fn msh_kingpin_actual_first_strike_uses_toughness_before_ordinary_retaliation() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, k) = ready(p);
+        let bear = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        attack(&mut g, &[k], true);
+        paid(&mut g, p, "Sure Strike", &[Target::Card(k)]);
+        assert_eq!(
+            g.stats(k),
+            Stats {
+                power: 4,
+                toughness: 5
+            }
+        );
+        assert_eq!(g.combat_assignment_amount(k), 5);
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: bear,
+                attacker: k,
+            },
+        );
+        checked(&mut g, Action::FinishBlockers);
+        endcombat(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(k).damage, 0);
+    }
+}
+#[test]
+fn msh_kingpin_actual_double_strike_assigns_toughness_in_both_damage_steps() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, k) = ready(p);
+        attack(&mut g, &[k], true);
+        paid(&mut g, p, "Twinblade Blessing", &[Target::Card(k)]);
+        assert_eq!(g.stats(k).power, 1);
+        endcombat(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 10);
+    }
+}
+#[test]
+fn msh_kingpin_actual_trample_assignment_uses_toughness_before_damage_replacements() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, k) = ready(p);
+        paid(&mut g, p, "Overrun", &[]);
+        let bear = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        attack(&mut g, &[k], true);
+        assert_eq!(
+            g.stats(k),
+            Stats {
+                power: 4,
+                toughness: 8
+            }
+        );
+        until(&mut g, |g| g.state.pending == Pending::Blockers);
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: bear,
+                attacker: k,
+            },
+        );
+        checked(&mut g, Action::FinishBlockers);
+        endcombat(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.other().index()].life, 14);
+    }
+}
+#[test]
+fn msh_kingpin_combat_rule_does_not_change_real_noncombat_power_damage() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, k) = ready(p);
+        let victim = named(&mut g, p.other(), "Aegis Turtle", Zone::Battlefield);
+        attack(&mut g, &[k], true);
+        paid(
+            &mut g,
+            p,
+            "Bite Down",
+            &[Target::Card(k), Target::Card(victim)],
+        );
+        assert_eq!(g.object_view(victim).damage, 1);
+        assert_eq!(g.combat_assignment_amount(k), 5);
+        assert_eq!(g.stats(k).power, 1);
+        endcombat(&mut g);
+        assert_eq!(g.state.players[p.other().index()].life, 15);
+    }
+}
+#[test]
+fn msh_kingpin_time_stop_expires_paid_rule_at_real_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        let (mut g, k) = ready(p);
+        attack(&mut g, &[k], true);
+        assert!(g.observe(p).toughness_combat_damage.is_some());
+        paid(&mut g, p, "Time Stop", &[]);
+        assert_eq!(g.observe(p).toughness_combat_damage, None);
+        assert_eq!(g.combat_assignment_amount(k), 1);
+        assert_eq!(g.state.active, p.other());
+        assert_eq!(g.state.players[p.other().index()].life, 20);
     }
 }
