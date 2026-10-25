@@ -9127,6 +9127,14 @@
     "journal": "3d3ee93213b6a8c8",
     "observations": "dbe9bef86f1a67aa"
   },
+  "Ka-Zar of the Savage Land": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "1707eabb445652c2",
+    "observations": "0e959d595fb34d1a"
+  },
   "Kaito, Cunning Infiltrator": {
     "root": "main",
     "status": "completed",
@@ -11095,6 +11103,14 @@
     "journal": "d96ad4ca883f316e",
     "observations": "9d71ca607e0c621c"
   },
+  "Mole Man, Moloid Master": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "e669d69c55fa8010"
+  },
   "Molecular Modifier": {
     "root": "main",
     "status": "completed",
@@ -11598,6 +11614,14 @@
     "zone": "Battlefield",
     "journal": "21c94e12108ffb3f",
     "observations": "eab4b7775b410d28"
+  },
+  "Night Nurse, Healer of Heroes": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "920ad036dadf0036"
   },
   "Nightblade Brigade": {
     "root": "main",
@@ -13711,6 +13735,14 @@
     "journal": "3fe985ca52f16c8d",
     "observations": "2241bf5e9e1ba03a"
   },
+  "Restorative Technique": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "4e3ecd79df95ffa0",
+    "observations": "76157b03121ef1b9"
+  },
   "Restore with Empathy": {
     "root": "main",
     "status": "completed",
@@ -15735,6 +15767,14 @@
     "journal": "0d39482255511c19",
     "observations": "53aeea2eb0eae61e"
   },
+  "Speed, Young Avenger": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "63aa3fa2f48f03ba"
+  },
   "Spell Pierce": {
     "root": "stack",
     "status": "completed",
@@ -15822,6 +15862,14 @@
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
     "observations": "51a81a9fcb6766d6"
+  },
+  "Spider-Man, To the Rescue": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 11,
+    "zone": "Battlefield",
+    "journal": "43e402f78de7c2e8",
+    "observations": "cb480bbd9aae077e"
   },
   "Spider-Rex, Daring Dino": {
     "root": "main",
