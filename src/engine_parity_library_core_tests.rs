@@ -162,10 +162,10 @@ fn msh_parity_library_core_both_parities_current_creatures_both_controllers_and_
                     ("@token/msh-moloid", 0),
                     ("Llanowar Elves", 1),
                     ("Bear Cub", 2),
-                    ("Gray Ogre", 3),
+                    ("Brazen Scourge", 3),
                     ("Hill Giant", 4),
-                    ("Air Elemental", 5),
-                    ("Colossal Dreadmaw", 6),
+                    ("Serra Angel", 5),
+                    ("Shivan Dragon", 6),
                 ] {
                     let id = named(&mut g, owner, name, Zone::Battlefield);
                     victims.push((id, value));
@@ -200,7 +200,7 @@ fn msh_parity_library_core_departed_source_and_new_incarnation_do_not_cancel_cho
                 g.move_object(source, Zone::Battlefield);
             }
             assert_ne!(g.object_ref(source), old);
-            let victim = named(&mut g, p.other(), "Gray Ogre", Zone::Battlefield);
+            let victim = named(&mut g, p.other(), "Brazen Scourge", Zone::Battlefield);
             parity(&mut g, p, source, Some(item));
             assert_eq!(g.object_view(source).counters.plus_one, 0);
             checked(
@@ -227,15 +227,15 @@ fn msh_parity_library_core_effective_copy_cost_exact_exclusion_and_indestructibl
         let victim = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
         g.apply_temporary_copy(
             g.object_ref(victim),
-            CopyRecipe::new(Card::from_name("Gray Ogre").unwrap()),
+            CopyRecipe::new(Card::from_name("Brazen Scourge").unwrap()),
             CopyDeadline::EndOfTurn,
         );
         g.apply_temporary_copy(
             g.object_ref(source),
-            CopyRecipe::new(Card::from_name("Gray Ogre").unwrap()),
+            CopyRecipe::new(Card::from_name("Brazen Scourge").unwrap()),
             CopyDeadline::EndOfTurn,
         );
-        let protected = named(&mut g, p.other(), "Gray Ogre", Zone::Battlefield);
+        let protected = named(&mut g, p.other(), "Brazen Scourge", Zone::Battlefield);
         g.grant_keyword_effects(
             &[protected],
             g.object_ref(protected),
@@ -423,7 +423,7 @@ fn msh_parity_library_core_simultaneous_conditional_indestructible_is_frozen_bef
             Card::from_name(if value % 2 == 0 {
                 "Bear Cub"
             } else {
-                "Gray Ogre"
+                "Brazen Scourge"
             })
             .unwrap(),
         )
