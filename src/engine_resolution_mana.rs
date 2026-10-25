@@ -102,6 +102,7 @@ impl Game {
                             recipient: reference,
                             defender: None,
                             granted: true,
+                            origin: giver.copied_grant_origin(),
                         });
                         if self.queue_trigger_from(&source, index, Some(grant)) {
                             self.state

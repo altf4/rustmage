@@ -90,6 +90,7 @@ impl Game {
                 recipient: grant.recipient,
                 defender: None,
                 granted: true,
+                origin: grant.origin,
             };
             let event = grant.granting_card.triggers()[usize::from(grant.ability)]
                 .condition

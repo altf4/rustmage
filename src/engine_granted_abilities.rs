@@ -8,10 +8,11 @@ impl Game {
             && !self.is_creature(grantor)
             && self.on_battlefield(recipient.card)
             && self.object_ref(recipient.card) == recipient
-            && if giver.card.aura().is_some() {
+            && if ability_world::CharacteristicWorld::is_aura(self, grantor) {
                 self.aura_can_enchant(giver.card, giver.controller, recipient)
             } else {
-                self.is_creature(recipient.card)
+                ability_world::CharacteristicWorld::is_equipment(self, grantor)
+                    && self.is_creature(recipient.card)
             })
         .then_some(recipient)
     }
@@ -50,6 +51,7 @@ impl Game {
                         recipient,
                         defender: None,
                         granted: true,
+                        origin: giver.copied_grant_origin(),
                     }),
                 ));
             }

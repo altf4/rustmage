@@ -159,10 +159,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 _ => Stats::default(),
             }
         };
-        if let Some((power, toughness)) = self
-            .copy_recipe(self.object_ref(id))
-            .and_then(|r| r.exceptions.base)
-        {
+        if let Some((power, toughness)) = self.recipe(id).exceptions.base {
             stats = Stats {
                 power: i128::from(power),
                 toughness: i128::from(toughness),
@@ -170,9 +167,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         // Layer 7a applies in every zone, before setters and additive modifiers.
         if let Some(base) = object.card.dynamic_stats()
-            && !self
-                .copy_recipe(self.object_ref(id))
-                .is_some_and(|r| r.exceptions.base.is_some())
+            && self.recipe(id).exceptions.base.is_none()
             && self.continuous_fragment_available(id, |fragment| {
                 matches!(fragment, StaticAbilityFragment::DynamicStats(..))
             })
@@ -485,7 +480,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         let target = self.object(id);
         let mut keywords = target
             .keywords()
-            .union(self.copied_keywords(self.object_ref(id)))
+            .union(CharacteristicWorld::copied_keywords(self, id))
             .union(self.attachment_bonus(id).1)
             .union(CharacteristicWorld::counter_subtype_keywords(self, id))
             .union(CharacteristicWorld::source_conditional_keywords(self, id))
@@ -828,7 +823,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             kinds: self.current_kinds(id),
             colors: CharacteristicWorld::colors(self, id),
             granted_subtypes: self.granted_subtypes(id),
-            entry_choice: self.entry_value(self.object_ref(id)),
+            entry_choice: self.raw_entry_value(self.object_ref(id)),
             saddled: self.is_saddled(self.object_ref(id)),
             id,
             reference: self.object_ref(id),
@@ -845,14 +840,21 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             counters: self.counter_amounts(id).to_owned(),
             used_abilities: obj.used_abilities,
             exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
-            entered_this_turn: self.entered_this_turn(self.object_ref(id)),
+            entered_this_turn: CharacteristicWorld::entered_this_turn(self, self.object_ref(id)),
             power_up_uses: self.power_up_use_views(self.object_ref(id)),
-            face: self
-                .game
-                .face_view_for(self.object_ref(id), definition, obj.zone),
+            face: self.game.face_view_for(
+                self.object_ref(id),
+                if obj.zone == Zone::Battlefield && self.object_ref(id) == self.game.object_ref(id)
+                {
+                    self.physical_definition(id)
+                } else {
+                    definition
+                },
+                obj.zone,
+            ),
             attached_to: obj.attached_to,
             modified: self.is_modified(id),
-            attacking: self.state.attackers.iter().any(|a| a.card == id),
+            attacking: CharacteristicWorld::attacking(self, id),
             power: stats.power,
             toughness: stats.toughness,
             power_above_base: obj.zone == Zone::Battlefield
@@ -863,12 +865,29 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             } else {
                 self.keywords(id)
             },
-            copy_recipe: if obj.is_copy_token() {
-                self.copy_recipe(self.object_ref(id))
+            copy_recipe: self.stored_recipe(id),
+            temporary_copy: if obj.zone == Zone::Battlefield {
+                self.temporary_copy_view(self.object_ref(id)).map(Box::new)
             } else {
                 None
             },
-            token: self.object_token_info(id),
+            provided_ability_origin: if obj.zone == Zone::Battlefield {
+                self.copied_grant_origin(self.reference(id))
+            } else {
+                None
+            },
+            token: if !obj.is_token() {
+                None
+            } else if obj.is_copy_token() {
+                Some(
+                    self.stored_recipe(id)
+                        .or_else(|| (obj.zone == Zone::Outside).then(|| CopyRecipe::new(obj.card)))
+                        .expect("live runtime copy has an exact-incarnation recipe")
+                        .token_info(),
+                )
+            } else {
+                obj.card.token_info().copied()
+            },
             emblem: obj.card.emblem_info(),
         }
     }
@@ -880,6 +899,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn object(&self, id: CardId) -> &Object {
         self.world.object(id)
+    }
+    fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
+        self.world.stored_recipe(id)
     }
     fn controls(&self) -> Option<&continuous_control::ControlState> {
         self.world.controls()
@@ -901,6 +923,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn entry_values(&self) -> &[entry_choices::ChoiceRow] {
         self.world.entry_values()
+    }
+    fn entered_this_turn(&self, source: ObjectRef) -> bool {
+        self.world.entered_this_turn(source)
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
         self.world.plus_one_placed_this_turn(object, player)

@@ -49,6 +49,12 @@ const SUPPRESS_PRINTED: u32 = 1 << JOB_TYPES.len();
 const LAND_ONLY: u32 = SUPPRESS_PRINTED << 1;
 const ALL_CREATURE_TYPES: u32 = LAND_ONLY << 1;
 const FLAGS_MASK: u32 = SUPPRESS_PRINTED | LAND_ONLY | ALL_CREATURE_TYPES;
+// Preserve all existing bit positions. Copy exceptions use previously unused
+// high bits, keeping the common borrowed subtype value at its original size.
+const COPY_HUMAN: u32 = ALL_CREATURE_TYPES << 1;
+const COPY_VILLAIN: u32 = COPY_HUMAN << 1;
+const COPY_MERCENARY: u32 = COPY_VILLAIN << 1;
+const ADDED_MASK: u32 = JOB_MASK | COPY_HUMAN | COPY_VILLAIN | COPY_MERCENARY;
 const _: () = assert!(JOB_TYPES.len() + 3 <= u32::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
@@ -72,7 +78,8 @@ impl GrantedSubtypes {
     /// Membership supplied by this overlay, excluding retained printed types.
     /// Use ObjectView::has_subtype for the full effective characteristic.
     pub fn contains(self, subtype: &str) -> bool {
-        (self.flag(ALL_CREATURE_TYPES) && crate::cards::is_creature_type(subtype))
+        (self.added & Self::copy_type_bit(subtype) != 0)
+            || (self.flag(ALL_CREATURE_TYPES) && crate::cards::is_creature_type(subtype))
             || self.chosen.is_some_and(|t| t.name() == subtype)
             || self
                 .creature_types
@@ -104,7 +111,44 @@ impl GrantedSubtypes {
         self.chosen = None;
         self.creature_types = Some(types);
     }
+    fn apply_copy_types(&mut self, types: Option<CopyTypes>) {
+        if let Some(types) = types {
+            if types.replace {
+                *self = Self::default();
+                self.set_flag(SUPPRESS_PRINTED, true);
+            }
+            if types.human_villain {
+                self.insert("Human");
+                self.insert("Villain");
+            }
+            if types.mercenary {
+                self.insert("Mercenary");
+            }
+            if types.nightmare {
+                self.insert("Nightmare");
+            }
+            if types.golem {
+                self.insert("Golem");
+            }
+            if types.fractal {
+                self.insert("Fractal");
+            }
+        }
+    }
+    fn copy_type_bit(subtype: &str) -> u32 {
+        match subtype {
+            "Human" => COPY_HUMAN,
+            "Villain" => COPY_VILLAIN,
+            "Mercenary" => COPY_MERCENARY,
+            _ => 0,
+        }
+    }
     fn insert(&mut self, subtype: &str) {
+        let copy = Self::copy_type_bit(subtype);
+        if copy != 0 {
+            self.added |= copy;
+            return;
+        }
         let i = JOB_TYPES
             .iter()
             .position(|s| *s == subtype)
@@ -123,6 +167,15 @@ impl Serialize for GrantedSubtypes {
                         out.serialize_element(subtype)?;
                     }
                 }
+                for (bit, subtype) in [
+                    (COPY_HUMAN, "Human"),
+                    (COPY_VILLAIN, "Villain"),
+                    (COPY_MERCENARY, "Mercenary"),
+                ] {
+                    if self.0 & bit != 0 {
+                        out.serialize_element(subtype)?;
+                    }
+                }
                 out.end()
             }
         }
@@ -131,7 +184,7 @@ impl Serialize for GrantedSubtypes {
         out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
         out.serialize_field("all_creature_types", &self.flag(ALL_CREATURE_TYPES))?;
         out.serialize_field("chosen", &self.chosen)?;
-        out.serialize_field("added", &Added(self.added & JOB_MASK))?;
+        out.serialize_field("added", &Added(self.added & ADDED_MASK))?;
         out.serialize_field("creature_types", &self.creature_types)?;
         out.end()
     }
@@ -161,7 +214,6 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> GrantedSubtypes {
-    let game = world.game();
     let target = world.object(id);
     let lookup = |source| Some(world.object(source));
     let counter_count = |source, kind| world.counter_count(source, kind);
@@ -172,24 +224,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
         card: id,
         generation: target.generation,
     };
-    if game
-        .copy_recipe(reference)
-        .is_some_and(|r| r.exceptions.nightmare)
-    {
-        mask.insert("Nightmare");
-    }
-    if game
-        .copy_recipe(reference)
-        .is_some_and(|r| r.exceptions.golem)
-    {
-        mask.insert("Golem");
-    }
-    if game
-        .copy_recipe(reference)
-        .is_some_and(|r| r.exceptions.fractal)
-    {
-        mask.insert("Fractal");
-    }
+    mask.apply_copy_types(Some(world.recipe(id).copy_types()));
     // Copy exceptions already exist while an owned token awaits entry.
     // Later continuous type changes apply only on the battlefield.
     if target.zone != Zone::Battlefield {
@@ -411,15 +446,7 @@ impl Game {
 impl Game {
     pub(super) fn entry_choice_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
         let mut result = GrantedSubtypes::default();
-        if m.before.copy_recipe.is_some_and(|r| r.exceptions.nightmare) {
-            result.insert("Nightmare");
-        }
-        if m.before.copy_recipe.is_some_and(|r| r.exceptions.golem) {
-            result.insert("Golem");
-        }
-        if m.before.copy_recipe.is_some_and(|r| r.exceptions.fractal) {
-            result.insert("Fractal");
-        }
+        result.apply_copy_types(m.before.copy_recipe.map(CopyRecipe::copy_types));
         if m.before.card.static_ability_groups().iter().any(|g| {
             g.fragments
                 .iter()

@@ -46,6 +46,7 @@ impl Game {
                                 recipient: spell.object,
                                 defender: None,
                                 granted: true,
+                                origin: self.copied_grant_origin(self.object_ref(id)),
                             },
                             ability,
                         ));

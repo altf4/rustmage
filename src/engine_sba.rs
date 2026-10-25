@@ -74,8 +74,12 @@ impl Game {
             if self.current_kinds(id) & 64 != 0 && object.counters.loyalty == 0 {
                 batch.deaths.push(id);
             }
-            if object.card.aura().is_some() {
-                if !self.printed_abilities_available(id)
+            if ability_world::CharacteristicWorld::is_aura(self, id) {
+                // CR303.4d/704.5p: a creature Aura first becomes unattached;
+                // the next SBA sees the unattached Aura and puts it away.
+                if self.is_creature(id) && object.attached_to.is_some() {
+                    batch.detached.push(self.object_ref(id));
+                } else if !self.printed_abilities_available(id)
                     || !object.attached_to.is_some_and(|target| {
                         self.aura_can_enchant(object.card, object.controller, target)
                     })
@@ -83,7 +87,8 @@ impl Game {
                     batch.deaths.push(id);
                 }
             } else if let Some(target) = object.attached_to
-                && (self.is_creature(id)
+                && (!ability_world::CharacteristicWorld::is_equipment(self, id)
+                    || self.is_creature(id)
                     || target == self.object_ref(id)
                     || !self.on_battlefield(target.card)
                     || self.object_ref(target.card) != target
@@ -94,7 +99,7 @@ impl Game {
             {
                 batch.detached.push(self.object_ref(id));
             }
-            if object.card.is_legendary() {
+            if ability_world::CharacteristicWorld::legendary(self, id) {
                 legends[object.controller.index()]
                     .entry(crate::card_names::comparison_key(self.object_name(id)))
                     .or_default()
@@ -312,6 +317,7 @@ impl Game {
         for source in batch.detached {
             if self.object_ref(source.card) == source {
                 self.state.objects[source.card as usize].attached_to = None;
+                self.renew_copy_grant_origin(source, false);
             }
         }
         // Cancellation belongs to the frozen event, never a newly returned object.

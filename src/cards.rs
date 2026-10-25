@@ -23,6 +23,18 @@ pub struct CopyExceptions {
     pub fractal: bool,
     pub base: Option<(i16, i16)>,
 }
+/// A layer-one copy between independently selected exact objects. Group absence
+/// at resolution is intentional: losing either required group prevents the copy.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct InPlaceCopySpec {
+    /// None copies the ability source; Some selects this target group.
+    pub recipient_group: Option<u16>,
+    pub blueprint_group: u16,
+    pub overrides: crate::engine::CopyOverrides,
+    pub add_kinds: u16,
+    pub base: Option<(i16, i16)>,
+    pub next_turn: bool,
+}
 impl CopyExceptions {
     pub const NONE: Self = Self {
         sacrifice_abilities: 0,
@@ -900,6 +912,7 @@ pub(crate) enum Instruction {
         life: u32,
     },
     CreateTemporaryArtifactCopy,
+    BecomeCopy(InPlaceCopySpec),
     CreateCopyToken {
         subject: Subject,
         amount: u16,

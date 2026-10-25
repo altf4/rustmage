@@ -72,6 +72,7 @@ impl Game {
                     expires_turn: self.state.turn,
                     permanent: true,
                     timestamp,
+                    origin: item.source_ability_origin.map(|_| timestamp),
                 });
         }
     }
@@ -156,12 +157,14 @@ impl Game {
         let actor = self.state.objects[recipient.card as usize].controller;
         let mut item = self.activation_item(actor, recipient.card, ability);
         item.source_card = giver;
+        item.source_ability_origin = self.copied_grant_origin(grantor);
         item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
             grantor,
             granting_card: giver,
             recipient,
             defender: None,
             granted: true,
+            origin: item.source_ability_origin,
         }));
         self.open_payment_announcement(item, Counters::default(), None);
     }

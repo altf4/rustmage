@@ -39,7 +39,14 @@ mod prepared;
 #[path = "engine_stack_copies.rs"]
 mod stack_copies;
 pub use copies::CopyRecipe;
+#[path = "engine_copy_grant_origins.rs"]
+mod copy_grant_origins;
+#[path = "engine_temporary_copy.rs"]
+mod temporary_copy;
 pub use prepared::PreparationView;
+pub use temporary_copy::{
+    CopyDeadline, CopyLayerView, CopyOverrides, CopyTypes, TemporaryCopyView,
+};
 #[path = "engine_copy_characteristics.rs"]
 mod copy_characteristics;
 pub use crate::cards::CopyExceptions;
@@ -726,6 +733,8 @@ enum CopyKind {
     Token,
     Spell,
     Card,
+    /// Physical card with an effective definition that may itself be synthetic.
+    Physical,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -760,7 +769,7 @@ impl Object {
         matches!(self.copy_kind, CopyKind::Spell | CopyKind::Card)
     }
     fn is_token(&self) -> bool {
-        self.is_copy_token() || self.card.is_token()
+        self.copy_kind != CopyKind::Physical && (self.is_copy_token() || self.card.is_token())
     }
     fn keywords(&self) -> Keywords {
         self.card.keywords().union(self.gained_keywords)
@@ -870,6 +879,10 @@ pub struct AttachmentTriggerView {
     pub defender: Option<Player>,
     /// True when the actual creature owns an ability granted by the Equipment.
     pub granted: bool,
+    /// Copied static grantor or copy-created grant effect; never the recipient's
+    /// independent layer-one acquisition. Frozen with this granted packet.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<u64>,
 }
 
 /// Exact public source movement observed by a zone-change trigger (CR400.7e).
@@ -904,6 +917,10 @@ pub struct SpellView {
     pub copy_event: Option<Box<stack_copies::CopyEvent>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_copy_recipe: Option<Box<CopyRecipe>>,
+    /// A newly acquired copied ability is independent even for an identical
+    /// blueprint. Printed abilities retain None through removal and restoration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_ability_origin: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub captured_artifact_copy: Option<Box<CopyRecipe>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1697,6 +1714,8 @@ struct State {
     entered_this_turn: Option<SharedVec<ObjectRef>>,
     power_up_uses: power_up::Rows,
     copy_recipes: copies::Rows,
+    temporary_copies: temporary_copy::Rows,
+    copy_grant_origins: copy_grant_origins::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
     nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
@@ -1819,7 +1838,8 @@ pub struct ObjectView {
     /// Frozen effective nonkeyword abilities only while a removal effect exists.
     /// None is the allocation-free complete printed/default-grant case.
     pub abilities: Option<Box<AbilityAvailabilityView>>,
-    /// Current card-type bits; Card remains the immutable printed identity.
+    /// Current card-type bits; Card is the effective immutable rules definition.
+    /// A temporary copy retains its physical identity in `temporary_copy`.
     pub kinds: u16,
     pub colors: u8,
     pub granted_subtypes: GrantedSubtypes,
@@ -1856,13 +1876,33 @@ pub struct ObjectView {
     pub keywords: Keywords,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub copy_recipe: Option<CopyRecipe>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub temporary_copy: Option<Box<TemporaryCopyView>>,
+    /// Identity of a continuously provided ability after this object has copied.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub provided_ability_origin: Option<u64>,
     pub token: Option<TokenInfo>,
     pub emblem: Option<&'static EmblemInfo>,
 }
 
 impl ObjectView {
+    pub(super) fn copied_grant_origin(&self) -> Option<u64> {
+        self.provided_ability_origin
+    }
+    pub(super) fn temporary_copy_bytes(&self) -> usize {
+        self.temporary_copy.as_ref().map_or(0, |view| {
+            std::mem::size_of::<TemporaryCopyView>()
+                + view.layers.len() * std::mem::size_of::<CopyLayerView>()
+        })
+    }
     pub fn is_token(&self) -> bool {
         self.token.is_some()
+    }
+    pub fn is_legendary(&self) -> bool {
+        self.copy_recipe
+            .and_then(|recipe| recipe.overrides)
+            .and_then(|value| value.legendary)
+            .unwrap_or_else(|| self.card.is_legendary())
     }
     /// Captured rules name, retained even after this object changes or leaves play.
     pub fn name(&self) -> &'static str {
@@ -2035,6 +2075,8 @@ pub struct ExileLink {
 pub struct TriggerUse {
     pub source: ObjectRef,
     pub ability: u16,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<u64>,
 }
 
 /// Every integer in this inclusive range is a legal damage assignment.
@@ -2371,6 +2413,8 @@ impl Game {
                 entered_this_turn: None,
                 power_up_uses: None,
                 copy_recipes: None,
+                temporary_copies: None,
+                copy_grant_origins: None,
                 graveyard_entries: None,
                 nightmare_cull: None,
                 stack_copy_data: None,
@@ -2813,6 +2857,7 @@ impl Game {
         }
         self.finish_library_visibility();
         self.clear_finished_cast_rollback();
+        self.refresh_copy_grant_availability();
         self.prune_modal_history();
         self.revision = self.revision.checked_add(1).capacity("revision exhausted");
         Ok(())
@@ -3294,7 +3339,8 @@ impl Game {
                         )
                         && self.printed_abilities_available(card)
                         && !obj.tapped
-                        && obj.card.mana_color().is_some()
+                        && ability_world::CharacteristicWorld::intrinsic_mana_color(self, card)
+                            .is_some()
                         && (!self.is_creature(card)
                             || !obj.summoning_sick
                             || self.keywords(card).contains(Keywords::HASTE))
@@ -4459,7 +4505,8 @@ impl Game {
             }
             Action::TapMana { card } => {
                 self.tap_objects(&[card]);
-                let color = self.state.objects[card as usize].card.mana_color().unwrap();
+                let color =
+                    ability_world::CharacteristicWorld::intrinsic_mana_color(self, card).unwrap();
                 let pool = &mut self.state.players[actor.index()].mana[color];
                 *pool = pool
                     .checked_add(1)
@@ -5347,7 +5394,13 @@ impl Game {
     }
 
     pub(super) fn opponent_entry_requires_tapped(&self, card: Card, controller: Player) -> bool {
-        let kinds = card.kind_mask();
+        self.opponent_entry_kinds_require_tapped(card.kind_mask(), controller)
+    }
+    pub(super) fn opponent_entry_kinds_require_tapped(
+        &self,
+        kinds: u16,
+        controller: Player,
+    ) -> bool {
         self.state.static_sources.iter().any(|&id| {
             let source = &self.state.objects[id as usize];
             source.zone == Zone::Battlefield
@@ -5363,8 +5416,7 @@ impl Game {
     }
 
     fn enters_tapped_for(&self, id: CardId, controller: Player) -> bool {
-        let object = &self.state.objects[id as usize];
-        self.opponent_entry_requires_tapped(object.card, controller)
+        self.opponent_entry_kinds_require_tapped(self.current_kinds(id), controller)
             || self.self_entry_requires_tapped(id, controller)
     }
 
@@ -5783,6 +5835,10 @@ impl Game {
             self.state.first_strikers.retain(|&card| card != id);
             // A surviving attacker remains blocked after its last blocker leaves.
         }
+        // Every departure observer above used the old complete layer-one facts.
+        // The new incarnation carries the underlying physical definition only.
+        self.forget_temporary_copy(before.reference);
+        self.forget_copy_grant_origin(before.reference);
         let obj = &mut self.state.objects[id as usize];
         // CR608.3f/707.10f: a resolving permanent-spell copy becomes a token.
         // This is an entry, not token creation, so creation replacements do not apply.
@@ -5844,8 +5900,8 @@ impl Game {
                     entered_with_plus_one,
                 );
             }
-            let (owner, card) = entry_identity;
-            self.record_nonland_entry(owner, card);
+            let (owner, _) = entry_identity;
+            self.record_nonland_entry(owner, self.current_kinds(id));
             self.register_battlefield_sources(id);
         } else if destination == Zone::Graveyard {
             self.register_graveyard_sources(id);
@@ -5920,8 +5976,8 @@ impl Game {
 
     // Both normal zone moves and token batches record actual entry once. All
     // entries in a simultaneous batch are recorded before entry observers run.
-    fn record_nonland_entry(&mut self, controller: Player, card: Card) {
-        if !card.is_land() {
+    fn record_nonland_entry(&mut self, controller: Player, kinds: u16) {
+        if kinds & 2 == 0 {
             let count =
                 &mut self.state.players[controller.index()].nonland_permanents_entered_this_turn;
             *count = count
@@ -5931,6 +5987,8 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        self.expire_temporary_copies(false);
+        self.reset_copy_turn_uses();
         self.prune_modal_history();
         self.state.entered_this_turn = None;
         self.state
@@ -6142,6 +6200,7 @@ impl Game {
             obj.growth = Stats::default();
             obj.gained_keywords = Keywords::NONE;
         }
+        let expired_copies = self.expire_temporary_copies(true);
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
         if !self.state.pending_triggers.is_empty()
@@ -6154,7 +6213,7 @@ impl Game {
                 )
                 .into_iter()
                 .any(|lost| lost)
-            || (expired_vehicles || expired_animations) && self.sba_required()
+            || (expired_vehicles || expired_animations || expired_copies) && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
                     && self.is_creature(id as CardId)
@@ -7184,6 +7243,8 @@ impl Game {
             + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + copies::owned_bytes(&s.copy_recipes)
+            + temporary_copy::owned_bytes(&s.temporary_copies)
+            + copy_grant_origins::owned_bytes(&s.copy_grant_origins)
             + s.graveyard_entries.as_ref().map_or(0, |r| {
                 std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
             })

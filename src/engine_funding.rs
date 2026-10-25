@@ -40,6 +40,7 @@ pub(super) struct FundingState<'g> {
     other_life: i128,
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
+    copy_recipes: copies::Rows,
     counter_placement_history: counter_placement_history::Rows,
     convoke: bool,
     power_sensitive: bool,
@@ -53,6 +54,12 @@ pub(super) struct FundingState<'g> {
     borrowed_uses: Vec<(ObjectRef, u64)>,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
+        let reference = self.reference(id);
+        let rows = self.copy_recipes.as_ref()?;
+        let index = rows.binary_search_by_key(&id, |row| row.object.card).ok()?;
+        (rows[index].object == reference).then_some(rows[index].recipe)
+    }
     fn static_sources(&self) -> &[CardId] {
         self.entry_projection
             .as_ref()
@@ -103,7 +110,7 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
             || self
                 .entry_projection
                 .as_ref()
-                .is_some_and(|p| p.order.contains(&source))
+                .is_some_and(|p| p.entered.contains(&source) || p.order.contains(&source))
     }
     fn game(&self) -> &Game {
         self.game
@@ -140,7 +147,7 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
         self.resources
             .iter()
             .find(|resource| resource.id == id)
-            .is_some_and(|resource| resource.attacking)
+            .is_some_and(|resource| resource.attacking && resource.object.zone == Zone::Battlefield)
     }
 }
 
@@ -182,6 +189,7 @@ struct ResourceKey {
 #[derive(Hash, PartialEq, Eq)]
 struct EntryFundingKey {
     order: Vec<ObjectRef>,
+    entered: Vec<ObjectRef>,
     values: Vec<(ObjectRef, EntryChoiceValue)>,
     consumed: Vec<ObjectRef>,
 }
@@ -439,6 +447,38 @@ impl<'g> FundingState<'g> {
     fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
     }
+    fn project_copy_departure(&mut self, before: ObjectRef, after: ObjectRef) {
+        let index = self.copy_recipes.as_ref().and_then(|rows| {
+            rows.binary_search_by_key(&before.card, |row| row.object.card)
+                .ok()
+                .filter(|&index| rows[index].object == before)
+        });
+        let recipe = self.game.temporary_copy_row(before).map_or_else(
+            || index.map(|index| self.copy_recipes.as_ref().unwrap()[index].recipe),
+            |row| row.original_recipe,
+        );
+        if let Some(index) = index {
+            self.copy_recipes.as_mut().unwrap().remove(index);
+        }
+        if let Some(recipe) = recipe {
+            let rows = self.copy_recipes.get_or_insert_default();
+            let index = rows.partition_point(|row| row.object.card < after.card);
+            rows.insert(
+                index,
+                copies::CopyRow {
+                    object: after,
+                    recipe,
+                },
+            );
+        }
+        if self
+            .copy_recipes
+            .as_ref()
+            .is_some_and(|rows| rows.is_empty())
+        {
+            self.copy_recipes = None;
+        }
+    }
     fn from_game_with_convoke(game: &'g Game, goal: &FundingGoal, convoke: bool) -> Self {
         // A prerequisite need not itself produce mana (e.g. a changeling for
         // Mox Jasper). Keep only relevant owned witnesses, including removable
@@ -517,6 +557,7 @@ impl<'g> FundingState<'g> {
             })
             .collect();
         let mut result = Self {
+            copy_recipes: game.state.copy_recipes.clone(),
             cast_costs: None,
             entry_projection: None,
             continuation: None,
@@ -716,12 +757,9 @@ impl<'g> FundingState<'g> {
         let mut keywords = target
             .object
             .keywords()
-            .union(
-                self.game
-                    .copied_keywords(ability_world::CharacteristicWorld::reference(
-                        self, target.id,
-                    )),
-            )
+            .union(ability_world::CharacteristicWorld::copied_keywords(
+                self, target.id,
+            ))
             .union(ability_world::CharacteristicWorld::counter_subtype_keywords(self, target.id))
             .union(ability_world::CharacteristicWorld::source_conditional_keywords(self, target.id))
             .union(ability_world::CharacteristicWorld::placement_history_keywords(self, target.id));
@@ -954,7 +992,8 @@ impl<'g> FundingState<'g> {
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
                     || self.keywords(entry).contains(Keywords::HASTE))
-                && let Some(color) = object.card.mana_color()
+                && let Some(color) =
+                    ability_world::CharacteristicWorld::intrinsic_mana_color(self, entry.id)
             {
                 let mut production = [0; 6];
                 production[color] = 1;
@@ -1260,11 +1299,15 @@ impl<'g> FundingState<'g> {
             if !preserve_departure_counters {
                 // The slow path still needs the old face for replacement planning.
                 // Normalize only when this step commits the virtual departure.
+                self.game.restore_projected_copy_identity(reference, object);
                 if !object.is_token() && !object.is_spell_copy() {
                     object.card = object.card.front_face();
                 }
                 object.counters = InitialCounters::default();
                 live_counters::set(&mut self.named_counters, reference, None);
+            }
+            if !preserve_departure_counters {
+                self.project_copy_departure(reference, reference);
             }
         }
         if let Some(external) = step.external {
@@ -1333,6 +1376,10 @@ impl<'g> FundingState<'g> {
                 // attachment participants, nonbasics and named-counter worlds.
                 identity: (self.power_sensitive
                     || self
+                        .game
+                        .temporary_copy_row(self.game.object_ref(r.id))
+                        .is_some()
+                    || self
                         .entry_value(ObjectRef {
                             card: r.id,
                             generation: r.object.generation,
@@ -1387,6 +1434,7 @@ impl<'g> FundingState<'g> {
             )),
             entries: self.entry_projection.as_ref().map(|p| EntryFundingKey {
                 order: p.order.clone(),
+                entered: p.entered.clone(),
                 values: p.entry_values.iter().map(|r| (r.object, r.value)).collect(),
                 consumed: p.consumed.clone(),
             }),
@@ -3005,3 +3053,7 @@ mod msh_declaration_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_improvise_funding_tests.rs"]
 mod msh_improvise_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_temporary_copy_funding_tests.rs"]
+mod temporary_copy_funding_tests;

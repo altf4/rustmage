@@ -265,7 +265,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     object
                         .card
                         .keywords()
-                        .union(game.copied_keywords(world.reference(i as CardId)))
+                        .union(world.copied_keywords(i as CardId))
                 },
                 grants: Vec::new(),
                 mana: Vec::new(),

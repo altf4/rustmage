@@ -36,14 +36,85 @@ pub(super) trait CharacteristicWorld {
             .as_deref()
             .map_or(&[], |rows| rows.as_slice())
     }
-    fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
+    fn raw_entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
         self.entry_values()
             .iter()
             .find(|r| r.object == object)
             .map(|r| r.value)
     }
+    fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
+        // A copied linked ability does not inherit choices made for an earlier
+        // ability instance, even when its printed definition is identical.
+        self.ability_origin(object.card)
+            .is_none()
+            .then(|| self.raw_entry_value(object))
+            .flatten()
+    }
 
     fn object(&self, id: CardId) -> &Object;
+    /// The immutable layer-one definition is materialized in both actual and
+    /// speculative objects; physical identity lives separately while copying.
+    fn definition(&self, id: CardId) -> Card {
+        self.object(id).card
+    }
+    fn ability_origin(&self, id: CardId) -> Option<u64> {
+        (self.object(id).zone == Zone::Battlefield)
+            .then(|| self.game().copy_ability_origin(self.reference(id)))
+            .flatten()
+    }
+    fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
+        self.game().copy_recipe(self.reference(id))
+    }
+    fn is_aura(&self, id: CardId) -> bool {
+        self.kinds(id) & 32 != 0 && self.subtypes(id).has(self.definition(id), "Aura")
+    }
+    fn is_equipment(&self, id: CardId) -> bool {
+        self.kinds(id) & 16 != 0 && self.subtypes(id).has(self.definition(id), "Equipment")
+    }
+    fn recipe(&self, id: CardId) -> CopyRecipe {
+        self.stored_recipe(id)
+            .unwrap_or_else(|| CopyRecipe::new(self.definition(id)))
+    }
+    fn copiable_name(&self, id: CardId) -> &'static str {
+        self.recipe(id)
+            .overrides
+            .and_then(|value| value.name)
+            .unwrap_or_else(|| self.definition(id).name())
+    }
+    fn copied_keywords(&self, id: CardId) -> Keywords {
+        let recipe = self.recipe(id);
+        let keywords = recipe
+            .overrides
+            .map_or(Keywords::NONE, |value| value.keywords);
+        if recipe.exceptions.sacrifice_abilities != 0 {
+            keywords.union(Keywords::HASTE)
+        } else {
+            keywords
+        }
+    }
+    fn legendary(&self, id: CardId) -> bool {
+        self.recipe(id)
+            .overrides
+            .and_then(|value| value.legendary)
+            .unwrap_or_else(|| self.definition(id).is_legendary())
+    }
+    fn intrinsic_mana_color(&self, id: CardId) -> Option<usize> {
+        let card = self.definition(id);
+        let color = card.mana_color()?;
+        // CR305.6 belongs to the current basic land subtype. The same shortcut
+        // also represents printed mana on Llanowar Elves, which survives losing Elf.
+        if card.is_basic_land()
+            && (self.kinds(id) & 2 == 0
+                || !self.subtypes(id).has(
+                    card,
+                    ["Plains", "Island", "Swamp", "Mountain", "Forest"][color],
+                ))
+        {
+            None
+        } else {
+            Some(color)
+        }
+    }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
             &self.game().state.named_counters,
@@ -384,6 +455,7 @@ pub(super) trait CharacteristicWorld {
     }
     fn attached(&self, source: ObjectRef, recipient: CardId) -> bool {
         self.attachment_link(source, self.reference(recipient))
+            && (self.is_aura(source.card) || self.is_equipment(source.card))
             && self.kinds(source.card) & 1 == 0
             && self.kinds(recipient) & 1 != 0
     }

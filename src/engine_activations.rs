@@ -485,8 +485,9 @@ impl Game {
             captured_artifact_copy: None,
             source_copy_recipe: self
                 .copy_recipe(self.object_ref(card))
-                .filter(|r| r.exceptions != CopyExceptions::NONE)
+                .filter(|r| r.exceptions != CopyExceptions::NONE || r.overrides.is_some())
                 .map(Box::new),
+            source_ability_origin: self.copy_ability_origin(self.object_ref(card)),
             mana_copy_sources: None,
             is_copy: false,
             delayed_sacrifice: None,
@@ -581,7 +582,7 @@ impl Game {
         if let Some(slot) = item.borrowed_slot {
             self.record_borrowed_use(item.object, slot, definition.exhaust);
         } else {
-            object.used_abilities |= 1u64 << ability;
+            self.record_copy_activation_use(item, ability);
         }
         self.record_power_up_use(item, ability);
         self.pay_counters(item.card, &counter_payment);

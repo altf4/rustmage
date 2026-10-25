@@ -98,6 +98,7 @@ impl Game {
                 copy_event: None,
                 captured_artifact_copy: None,
                 source_copy_recipe: None,
+                source_ability_origin: None,
                 target_allocations: None,
                 mana_copy_sources: None,
                 is_copy: false,

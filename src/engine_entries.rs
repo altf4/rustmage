@@ -103,7 +103,11 @@ impl EntryBatch {
             + self
                 .moves
                 .iter()
-                .map(|m| m.counters.owned_bytes() + m.before.counters.owned_bytes())
+                .map(|m| {
+                    m.counters.owned_bytes()
+                        + m.before.counters.owned_bytes()
+                        + m.before.temporary_copy_bytes()
+                })
                 .sum::<usize>()
             + self
                 .tap_events
@@ -262,8 +266,10 @@ impl Game {
             let mut effects = self.entry_tap_effects(movement);
             if effects.is_empty() {
                 movement.tapped |= intrinsic_tapped
-                    || self
-                        .opponent_entry_requires_tapped(movement.before.card, movement.controller);
+                    || self.opponent_entry_kinds_require_tapped(
+                        movement.before.kinds,
+                        movement.controller,
+                    );
             } else {
                 // The incoming event retains instruction-level tapped entry;
                 // intrinsic/global tapped replacements have not yet applied.
@@ -783,7 +789,7 @@ impl Game {
                     owner: m.before.owner,
                     controller: m.controller,
                     subtypes: Self::entry_choice_subtypes(m),
-                    kind: m.before.card.kind_mask(),
+                    kind: m.before.kinds,
                     amount: m.counters.clone(),
                     effect: true,
                     entry_index: Some(index),

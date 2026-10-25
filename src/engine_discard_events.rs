@@ -31,6 +31,7 @@ impl DiscardContext {
                 .iter()
                 .map(|s| {
                     s.counters.owned_bytes()
+                        + s.temporary_copy_bytes()
                         + s.abilities.as_ref().map_or(0, |a| {
                             std::mem::size_of::<AbilityAvailabilityView>()
                                 + a.grants.len() * std::mem::size_of::<GrantedAbilityView>()

@@ -33,7 +33,7 @@ pub struct EntryTapView {
 }
 impl Game {
     pub(super) fn entry_tap_effects(&self, movement: &entries::EntryMove) -> Vec<EntryTapEffect> {
-        let kinds = movement.before.card.kind_mask();
+        let kinds = movement.before.kinds;
         let mut effects = Vec::new();
         for &id in &self.state.static_sources {
             let source = &self.state.objects[id as usize];

@@ -25,12 +25,7 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
 impl Game {
     #[cfg(test)]
     pub(super) fn entry_value(&self, object: ObjectRef) -> Option<EntryChoiceValue> {
-        self.state
-            .entry_values
-            .as_ref()?
-            .iter()
-            .find(|row| row.object == object)
-            .map(|row| row.value)
+        CharacteristicWorld::entry_value(self, object)
     }
     pub(super) fn set_entry_value(&mut self, object: ObjectRef, value: EntryChoiceValue) {
         self.clear_entry_value(object);
@@ -250,6 +245,7 @@ impl Game {
             source.zone == Zone::Battlefield
                 && self.object_ref(row.object.card) == row.object
                 && source.card.named_activation_lock()
+                && self.copy_ability_origin(row.object).is_none()
                 && self.printed_abilities_available(row.object.card)
                 && matches!(row.value, EntryChoiceValue::CardName(chosen) if chosen.matches(name))
         })

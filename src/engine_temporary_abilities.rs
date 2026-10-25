@@ -12,6 +12,8 @@ pub struct TemporaryAbilityView {
     pub expires_turn: u32,
     pub permanent: bool,
     pub timestamp: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<u64>,
 }
 impl Game {
     pub(super) fn grant_source_permanent_trigger(
@@ -38,6 +40,7 @@ impl Game {
                 expires_turn: self.state.turn,
                 permanent: true,
                 timestamp,
+                origin: item.source_ability_origin.map(|_| timestamp),
             });
     }
     /// Each stored grant identifies one ability. Scanning its definition's whole
@@ -115,6 +118,7 @@ impl Game {
                 recipient: grant.recipient,
                 defender: None,
                 granted: true,
+                origin: grant.origin,
             });
             if self.queue_trigger_from(&source, usize::from(grant.ability), Some(context)) {
                 let chosen_x = stack.and_then(|i| self.state.stack[i].x);
@@ -162,6 +166,7 @@ impl Game {
                 expires_turn: self.state.turn,
                 permanent: false,
                 timestamp,
+                origin: item.source_ability_origin.map(|_| timestamp),
             };
             self.state
                 .temporary_abilities
@@ -212,6 +217,7 @@ impl Game {
                     recipient: grant.recipient,
                     defender: Some(actor.other()),
                     granted: true,
+                    origin: grant.origin,
                 })),
             );
         }
@@ -252,6 +258,7 @@ impl Game {
                     recipient: grant.recipient,
                     defender: None,
                     granted: true,
+                    origin: grant.origin,
                 };
                 self.queue_zone_trigger_from(
                     &event.before,
