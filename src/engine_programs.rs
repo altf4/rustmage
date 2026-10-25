@@ -2385,7 +2385,9 @@ impl Game {
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
                 }
-                Instruction::Modal(_) | Instruction::ModalOnce(_) => {
+                Instruction::Modal(_)
+                | Instruction::ModalOnce(_)
+                | Instruction::ModalOncePerTurn(_) => {
                     unreachable!("unselected modal ability executed")
                 }
                 Instruction::Explore(subject) => {

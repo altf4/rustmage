@@ -29,7 +29,9 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
     let mut result = (false, false);
     for instruction in program {
         match *instruction {
-            Instruction::Modal(modes) | Instruction::ModalOnce(modes) => {
+            Instruction::Modal(modes)
+            | Instruction::ModalOnce(modes)
+            | Instruction::ModalOncePerTurn(modes) => {
                 for mode in modes {
                     let nested = selected(mode.program);
                     result.0 |= nested.0;
