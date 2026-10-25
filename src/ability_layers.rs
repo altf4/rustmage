@@ -96,6 +96,16 @@ pub(crate) enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
+    /// One source-local conditional effect may span type and stat layers.
+    SourceGraveyardAllTypes {
+        kind: u16,
+        minimum: u16,
+    },
+    SourceGraveyardBonus {
+        kind: u16,
+        minimum: u16,
+        stats: Stats,
+    },
     AttachedSubtype(&'static str),
     AttachmentStats(Stats),
     AttachmentTurnStats(Stats),
@@ -143,6 +153,8 @@ pub(crate) enum StaticAbilityFragment {
     AttacksEachCombat,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
+    /// Rules restriction evaluated after all derived power modifications.
+    CannotBeBlockedIfSourcePowerAtMost(i128),
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,

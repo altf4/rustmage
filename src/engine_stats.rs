@@ -53,10 +53,13 @@ impl Game {
         }) {
             self.state.counter_sources.push(id);
         }
-        if triggers
-            .iter()
-            .any(|a| a.condition.event() == TriggerCondition::ControlledCreaturesBecomeTapped)
-        {
+        if triggers.iter().any(|a| {
+            matches!(
+                a.condition.event(),
+                TriggerCondition::ControlledCreaturesBecomeTapped
+                    | TriggerCondition::ControlledCreatureFirstTapOwnTurn
+            )
+        }) {
             self.state.tap_sources.push(id);
         }
         if triggers
@@ -180,6 +183,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
+                            | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
@@ -191,6 +195,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }
+                            | crate::cards::StaticAbilityFragment::SourceGraveyardBonus { .. }
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)

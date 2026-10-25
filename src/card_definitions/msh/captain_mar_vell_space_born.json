@@ -3,10 +3,60 @@
   "catalogue_id": 646,
   "oracle_id": "b74c072d-77ac-460d-9d9c-75b25874f58b",
   "facts_sha256": "b89a1c92584868759b31c9a0ed87246955f0434034a07720065bc3db4b6b8fc3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e1e9b7e64364bd93e1dbb9a0e0a4c5a8eb763f598723f05ebe75e9deaddce981"
   },
-  "physical_metadata_sha256": "45ab68d6d570720a8340ad85d58acd2d79a968d19815c29a4ed9ac286c2be381"
+  "physical_metadata_sha256": "45ab68d6d570720a8340ad85d58acd2d79a968d19815c29a4ed9ac286c2be381",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaptainMarVellSpaceBorn.java",
+  "java_sha256": "150f711365c0013683f6d8e7d2f5e011443bd8a1fbb05330a205b43401d2a4a7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalAsThoughEffect.java",
+      "sha256": "40e0a82ae35b35c5434d1eb480e46ecff91ca69113a8cbc8e606dd1328bba618"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastAsThoughItHadFlashAllEffect.java",
+      "sha256": "2e3ffc07fbe4e802fc19aec06b070c450381c4bf797a8f4458841e7df9f81cc9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+      "sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+      "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterNonlandCard.java",
+      "sha256": "84443dc244a44b44937d5ba9e4e51ff0b34e73795c11f2e985820daaed5b46ae"
+    }
+  ],
+  "rules_notes": [
+    "Opponent spell history uses actual cast events, including spells cast before Mar-Vell entered and spells later countered, and resets on each actual turn. Copied spells and activated abilities are not casts.",
+    "As-though casting permission uses the live source controller and printed-ability availability. It changes spell timing, never costs, targeting, land play or activated-ability timing. Existing unguarded grants retain their behavior.",
+    "Official release notes: https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes. No public field, schema or identity is added."
+  ]
 }

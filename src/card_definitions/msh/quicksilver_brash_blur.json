@@ -3,10 +3,36 @@
   "catalogue_id": 3315,
   "oracle_id": "b76ce131-e51a-445e-8216-00df5904ab93",
   "facts_sha256": "2eef362e3108bed1e86d2ab7aac9cfcff7210b05df73c121976fb80a189f8845",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "3af0f2d6d5c3baef94128c07f109403365eba9678d477139c0f2b0b79139ffac"
-  },
-  "physical_metadata_sha256": "dab1d915e5f4a96d61a5014de391783f869f7cfc8a9bd35d07821d20ce708ec9"
+  "complete": true,
+  "physical_metadata_sha256": "dab1d915e5f4a96d61a5014de391783f869f7cfc8a9bd35d07821d20ce708ec9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuicksilverBrashBlur.java",
+  "java_sha256": "b38942b3560a949b1f37905eac4a2421a0fdb4752d791b765f9179d9c5d5af1a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LeylineAbility.java",
+      "sha256": "48b322b6ac483a9ca62225f3a3400c10a9dc0231cd04ed15fa684fa0238f4e7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PowerUpAbility.java",
+      "sha256": "e671eabf9dd80506318f31e703463632d3ba7203f688fc96a98793dd31be7c63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    }
+  ]
 }

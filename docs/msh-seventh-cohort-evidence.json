@@ -1,0 +1,211 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Eight complete candidate cards and integrated shared rules; final published-head release, independent reviews and CI remain pending",
+  "base_main": "b6dfb877bfaf818b8cffa50087fd23b0e2a6ec25",
+  "recording_runtime_head": "af69ee92d3b2387a95d2da49ee9f5fd686c4a4a9",
+  "parent_published_heads": {
+    "511": "54df75b31c9f6dc4c757e046c7630ec9588e0ee9",
+    "512": "11021cad7998fe571b10ed8bd41c3d9004645aae",
+    "513": "5498a00b92e0107ab06af8bc131d688a490a218d",
+    "514": "875cf7d3332a143807ce3e489e6d084046fedbb9"
+  },
+  "cards": [
+    "Captain America, Living Legend",
+    "Captain Mar-Vell, Space-Born",
+    "Jessica Jones, Private Eye",
+    "Quicksilver, Brash Blur",
+    "S.H.I.E.L.D. Flying Car",
+    "Stature, Size Shifter",
+    "Thirst for Knowledge",
+    "Undercover Skrull"
+  ],
+  "membership": {
+    "frozen_identities": 281,
+    "frozen_printings": 448,
+    "merged_flags_at_base": 172,
+    "candidate_flags": 180,
+    "candidate_remaining_gated": 101,
+    "new_candidates": 8,
+    "entire_pool_acceptance": false
+  },
+  "shared_rules": [
+    "Exact-incarnation owned first-tap history, simultaneous post-commit taps and intervening resolution check",
+    "Current-controller opponent-cast-dependent as-though spell timing",
+    "Filtered optional private discard preserving legacy unfiltered empty-hand handling",
+    "Post-derived-power blocking restriction and conditional Type-starting all-types/stat group in actual and funding worlds",
+    "Full-width scalar library exile bounded before conversion"
+  ],
+  "parent_evidence": [
+    "docs/msh-thirst-evidence.json",
+    "docs/msh-existing-seventh-evidence.json",
+    "docs/msh-stature-skrull-evidence.json",
+    "docs/msh-first-tap-marvell-evidence.json"
+  ],
+  "scenarios": {
+    "new_parent_scenarios": 70,
+    "new_combined_scenarios": 1,
+    "expected_all_native": 932,
+    "combined_test": "msh_seventh_combined_paid_discard_types_first_tap_stun_timing_blink_and_power_up",
+    "combined_passed": true,
+    "both_seats": true,
+    "combined_guard": "<cache>/rustmage-build-reports/a646f55a26d34eacb32de6a71b67009f.json",
+    "interaction": "Paid spells and activations combine conditional timing, private artifact/fallback discard, graveyard typing, first-tap/stun, power counters, crew and delayed exact-incarnation blink; checked owned raw/index branches after parent disposal and restore"
+  },
+  "trace_proof": {
+    "base": "b6dfb877bfaf818b8cffa50087fd23b0e2a6ec25",
+    "parent_full_trace_checks": [
+      {
+        "label": "main",
+        "head": "b6dfb877bfaf818b8cffa50087fd23b0e2a6ec25",
+        "rows": 2475,
+        "sha256": "4722634e71961d11cd7287a4224a176c629f98621c2fcb1078bf1932e298b58a",
+        "all_full_trace_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "label": "511",
+        "head": "54df75b31c9f6dc4c757e046c7630ec9588e0ee9",
+        "rows": 2476,
+        "sha256": "6249a1353eaa3555a448d10d7f3fb6b93ddacfd3da62a4ae95a03742656d8d90",
+        "all_full_trace_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "label": "512",
+        "head": "11021cad7998fe571b10ed8bd41c3d9004645aae",
+        "rows": 2478,
+        "sha256": "0fd61d97fad6a94bfc4e1c26cc0623b3c24ab15c1b1f7f3ca78c0269ec9d426d",
+        "all_full_trace_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "label": "513",
+        "head": "5498a00b92e0107ab06af8bc131d688a490a218d",
+        "rows": 2477,
+        "sha256": "a062c4bd9b574dec65bbcdcdda5b99250c9fe0c926315642b32eeff27308047e",
+        "all_full_trace_structs_exact": true,
+        "changed": [],
+        "removed": []
+      },
+      {
+        "label": "514",
+        "head": "875cf7d3332a143807ce3e489e6d084046fedbb9",
+        "rows": 2477,
+        "sha256": "00d29a312ecf3bf0cb635ebbb1b05d7eddc117d7f7ca947763890bcd5fa3d14a",
+        "all_full_trace_structs_exact": true,
+        "changed": [],
+        "removed": []
+      }
+    ],
+    "total": 2483,
+    "added": [
+      "Captain America, Living Legend",
+      "Captain Mar-Vell, Space-Born",
+      "Jessica Jones, Private Eye",
+      "Quicksilver, Brash Blur",
+      "S.H.I.E.L.D. Flying Car",
+      "Stature, Size Shifter",
+      "Thirst for Knowledge",
+      "Undercover Skrull"
+    ],
+    "new_rows": {
+      "Captain America, Living Legend": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "e625fc58634bfdee",
+        "observations": "2e953ce950d63dba"
+      },
+      "Captain Mar-Vell, Space-Born": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "db7b0f4bd7e53672",
+        "observations": "b34ce2936873785a"
+      },
+      "Jessica Jones, Private Eye": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "543918deceb4be8c",
+        "observations": "46c02d17c20515de"
+      },
+      "Quicksilver, Brash Blur": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "c4b8f6d37ca7169e",
+        "observations": "7666a2b995442f0b"
+      },
+      "S.H.I.E.L.D. Flying Car": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Battlefield",
+        "journal": "091bbc1cbc70f60f",
+        "observations": "2078b7601916ee0a"
+      },
+      "Stature, Size Shifter": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "77fe8ec276f5ddde",
+        "observations": "c731e2301933efeb"
+      },
+      "Thirst for Knowledge": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Graveyard",
+        "journal": "32679895e58d2d8e",
+        "observations": "09b7b16b694fe61a"
+      },
+      "Undercover Skrull": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "100cb581dd613f1f",
+        "observations": "4ba9f48169be5e36"
+      }
+    },
+    "normal143_sha256": "d74b7400e84e85e6d845b5dd38e2eedf9321f15f9198efa80b4d516d4d6b0ed5",
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "metadata_byte_identical": true,
+    "no_trace_projection": true,
+    "recorder_unchanged": true
+  },
+  "wire_and_identity": {
+    "schema": 143,
+    "new_ids": [],
+    "new_public_fields": 0,
+    "catalogue_definitions": 5397,
+    "token_recipes": 119,
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "metadata_and_schema_byte_identical_to_base": true
+  },
+  "validation": {
+    "strict_fresh_integrated_trace_export": "Pass; all 2483 full rows exactly match the checked-in table",
+    "full_release": "Pending final published head",
+    "two_independent_nonauthor_reviews": "Pending final published head",
+    "ci": "Pending final published head"
+  },
+  "resource_safety": {
+    "memory_max_bytes": 6442450944,
+    "combined_peak_bytes": 2341158912,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "fixed_inputs": "All consuming jobs terminated before edits; full release will retain exact shared libraries and reports"
+  },
+  "remaining_scope": "101 gated cards plus full-pool rules evidence, legal MSH-only complete games, deterministic replay, privacy, owned search and measured performance remain required"
+}

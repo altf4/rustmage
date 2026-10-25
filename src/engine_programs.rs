@@ -710,6 +710,7 @@ impl Game {
                     | TriggerCondition::AttachedBecomesUntapped
                     | TriggerCondition::SelfBecomesTapped
                     | TriggerCondition::ControlledCreaturesBecomeTapped
+                    | TriggerCondition::ControlledCreatureFirstTapOwnTurn
                     | TriggerCondition::SelfCast
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::ManaSpentForSpell
@@ -1259,12 +1260,13 @@ impl Game {
     /// Apply one simultaneous tap event, then collect source-owned triggers.
     /// Entry status and virtual mana funding never use this transition.
     pub(super) fn tap_objects(&mut self, ids: &[CardId]) {
-        // Mana taps and single-target effects are the common path. Avoid both
-        // allocation and evaluated object views for cards with no tap observer.
+        // Mana taps and single-target effects are the common path. Record exact
+        // turn history without evaluating views when no observer needs them.
         if let &[id] = ids {
             let object = &mut self.state.objects[id as usize];
             if object.zone == Zone::Battlefield && !object.tapped {
                 object.tapped = true;
+                self.record_tap(self.object_ref(id));
                 self.tapped_triggers(id);
                 self.tapped_batch_triggers(&[id]);
             }
@@ -1275,20 +1277,14 @@ impl Game {
             let object = &mut self.state.objects[id as usize];
             if object.zone == Zone::Battlefield && !object.tapped {
                 object.tapped = true;
-                if !self.state.tap_sources.is_empty()
-                    || object.card.triggers().iter().any(|ability| {
-                        matches!(
-                            ability.condition.event(),
-                            TriggerCondition::SelfBecomesTapped
-                        )
-                    })
-                {
-                    changed.push(id);
-                }
+                changed.push(id);
             }
         }
         // Every observer sees the complete simultaneous tapped result. No queued
         // effect resolves until the surrounding action or instruction completes.
+        for &id in &changed {
+            self.record_tap(self.object_ref(id));
+        }
         for &id in &changed {
             self.tapped_triggers(id);
         }
@@ -1315,8 +1311,30 @@ impl Game {
                 continue;
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::ControlledCreaturesBecomeTapped {
-                    self.queue_trigger(&source, index);
+                match ability.condition.event() {
+                    TriggerCondition::ControlledCreaturesBecomeTapped => {
+                        self.queue_trigger(&source, index);
+                    }
+                    TriggerCondition::ControlledCreatureFirstTapOwnTurn
+                        if self.state.active == source.controller =>
+                    {
+                        for &id in changed {
+                            let object = &self.state.objects[id as usize];
+                            let reference = self.object_ref(id);
+                            if object.controller == source.controller
+                                && self.object_kinds(id, object) & 1 != 0
+                                && self.first_tap(reference)
+                                && self.queue_trigger(&source, index)
+                            {
+                                self.state
+                                    .pending_triggers
+                                    .last_mut()
+                                    .unwrap()
+                                    .entering_object = Some(reference);
+                            }
+                        }
+                    }
+                    _ => {}
                 }
             }
         }
@@ -1552,7 +1570,7 @@ impl Game {
                 item.controller,
                 item.object,
                 item.source_tapped,
-            ))
+            ) || !self.tap_event_guard(&item))
         {
             self.give_priority();
             return;
@@ -3055,15 +3073,20 @@ impl Game {
                     self.random_linked_exile_to_battlefield(item.object, item.controller)
                 }
                 Instruction::ExileTopPlayScaled { amount, next_turn } => {
-                    let count = self.item_amount(amount, &item).min(u128::from(u16::MAX)) as u16;
+                    let count = self.item_amount(amount, &item);
                     self.exile_top_play(item.controller, count, next_turn);
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
-                    self.exile_top_play(item.controller, amount, next_turn);
+                    self.exile_top_play(item.controller, u128::from(amount), next_turn);
                 }
                 Instruction::ExileTargetLibraryPlay { amount } => {
                     for player in self.program_players(PlayerSet::Targeted, &item) {
-                        self.exile_top_play_from(player, item.controller, amount, false);
+                        self.exile_top_play_from(
+                            player,
+                            item.controller,
+                            u128::from(amount),
+                            false,
+                        );
                     }
                 }
                 Instruction::IfAmountAtLeast {
@@ -3613,6 +3636,11 @@ impl Game {
                         self.tap_objects(&ids);
                     } else {
                         self.untap_objects(&ids, untap_rules::UntapCause::Effect);
+                    }
+                }
+                Instruction::UntapEventObject => {
+                    if let Some(id) = self.entering_subject(&item) {
+                        self.untap_objects(&[id], untap_rules::UntapCause::Effect);
                     }
                 }
                 Instruction::UntapSource | Instruction::TapSource => {

@@ -1,0 +1,338 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "source_base": "b6dfb877bfaf818b8cffa50087fd23b0e2a6ec25",
+  "tested_runtime_head": "eb2660584d92d298306ac0d11aff5fb9e0604569",
+  "scope": "One whole candidate and its filtered private discard core. Full release validation, two independent nonauthor reviews of the final published integration head, CI and integration remain required. Full-set acceptance is not claimed.",
+  "complete_candidates": [
+    "Thirst for Knowledge"
+  ],
+  "new_ids": [],
+  "observation_schema_unchanged": 143,
+  "physical_metadata_unchanged_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+  "catalogue_version": "7642042c09e03005a478789127d9bce79a582f106d886980901f899004b6dbae",
+  "candidate_set_flags": {
+    "total": 281,
+    "admitted": 173,
+    "gated": 108,
+    "qualification": "Candidate branch only; parent main has172 flags and109 gated."
+  },
+  "printed_obligations": [
+    "Instant for exactly {2}{U}, no targets; draw three cards before either discard route.",
+    "May discard exactly one artifact card from own hand, including an artifact creature or artifact land. Payment skips the ordinary two-card fallback.",
+    "May decline even with artifacts available, then discard exactly two arbitrary cards, including two artifacts. Perform as much as possible if fewer cards remain.",
+    "A replaced artifact discard still pays the optional cost. No priority window or SBA occurs in the middle of resolution; delayed draw/discard triggers wait until the spell finishes."
+  ],
+  "oracle": {
+    "name": "Thirst for Knowledge",
+    "catalogue_id": 4533,
+    "oracle_id": "939e6f71-185e-41f2-9d54-72cce06f1dce",
+    "mana_cost": "{2}{U}",
+    "type_line": "Instant",
+    "oracle_text": "Draw three cards. Then discard two cards unless you discard an artifact card.",
+    "facts_sha256": "5a4e57579954b73ef132eec595039926c6128f151accad586d9930a018aa6941"
+  },
+  "source_evidence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "direct": {
+      "path": "Mage.Sets/src/mage/cards/t/ThirstForKnowledge.java",
+      "sha256": "4dcb9bcfa13f05df0e0a70819084ed1886545315b263785fa08e75b6246dd167"
+    },
+    "helpers_read_in_full": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/CostImpl.java",
+        "sha256": "ac24e04444dec48d936fed7a03970a8b7e765ef7f368c7b4024747e6fdd83df7"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+        "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+        "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+        "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+        "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+        "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+        "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterArtifactCard.java",
+        "sha256": "b83bf74eb3350828f9e0d61a716272f06439b9752ece9b10b041b03ee0dc32d4"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+        "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+      }
+    ],
+    "rules_sources": [
+      "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+      "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf#118.12",
+      "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf#704.4"
+    ],
+    "rules_notes": [
+      "CR118.12a treats unless as an optional cost with an unpaid fallback. CR118.11 retains payment when a replacement changes its action.",
+      "CR704.4/704.5b defer empty-library loss until resolution completes. The official MSH release notes explicitly allow the two-card route to discard two artifacts."
+    ]
+  },
+  "shared_core": [
+    "Ordinary EffectChoiceKind::Discard now applies its typed hand filter through existing additional-cost candidate matching, preserving owner, exact incarnation, selected exclusion, kinds and other typed restrictions.",
+    "Optional Discard with a nondefault typed filter retains its amount quota and actor phase even with no eligible card. It never auto-skips or clamps a hidden eligibility quota to zero. Only decline is available when no matching card exists.",
+    "Reuse Draw three, optional artifact-filtered ChooseObjects discard one with optional_skip 1, existing Skip(1), and mandatory Discard two. No new instruction, public action, choice kind, field, wire version, catalogue identity or English parser.",
+    "Unfiltered discard affordability follows public hand count, so existing automatic fallback is preserved for an unrestricted filter. All 30 inherited authored Discard filters were audited field by field and are unrestricted. All 2,475 full inherited bounded Trace structs remain exactly equal."
+  ],
+  "focused_rules": {
+    "passed": 10,
+    "log": "<cache>/rustmage-msh-thirst-focused-final.log",
+    "tests": [
+      "msh_thirst_paid_instant_on_either_turn_draws_three_before_artifact_payment",
+      "msh_thirst_artifact_land_is_eligible_and_other_zones_or_nonartifacts_are_atomic",
+      "msh_thirst_decline_allows_any_two_including_two_artifacts_as_one_private_batch",
+      "msh_thirst_optional_phase_is_identical_publicly_with_or_without_matching_hand_card",
+      "msh_thirst_short_or_empty_library_finishes_discard_before_empty_draw_loss",
+      "msh_thirst_replaced_artifact_discard_pays_once_through_exile_or_shuffle",
+      "msh_thirst_fallback_discard_is_own_caused_and_replacement_preserves_two_card_batch",
+      "msh_thirst_draw_and_discard_triggers_wait_until_the_entire_spell_finishes",
+      "msh_thirst_countered_paid_spell_never_draws_or_offers_payment",
+      "msh_thirst_failed_draw_still_allows_artifact_payment_before_next_sba"
+    ],
+    "guard_id": "33b7d0732797492fa2dc76b42a578a1c",
+    "guard": {
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "msh_thirst"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 306.59124111098936,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2316279808,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "coverage": [
+      "Both seats and both active-turn relationships; actual paid {2}{U} cast, draw all three before optional discard, hidden drawn card identities.",
+      "Artifact land metadata in hand, plain artifact and artifact creature; wrong owner/zone and nonartifact rejection with unchanged snapshots and state bytes. The unsupported Scene of the Crime fixture tests only its pinned artifact-land metadata and is not admitted.",
+      "Decline with zero, one or two artifacts, then discard arbitrary two-card combinations simultaneously. Partial selection stays in hand, cannot be selected twice and cannot be declined as if optional. Complete nonactor observations match after choosing either different hidden card first.",
+      "Complete nonactor observation equality with identical-size artifact versus nonartifact private hands; optional view/quota exists even with zero candidates.",
+      "Zero/one/two-card libraries: finish as-much-as-possible discard before empty draw loss; Herald of Eternal Dawn prevents loss only at the next actual SBA. Artifact payment is still offered after failed draws.",
+      "Actual Darksteel Colossus self-shuffle and Rest in Peace competing replacements in both chosen orders: replacement suspension stays private, source stays on stack until done, one discard pays and fallback never runs.",
+      "Own-caused Wilt-Leaf Liege fallback does not use opponent-caused battlefield replacement; two-card discard batch survives exile replacement.",
+      "Mischievous Mystic second-draw and Marauding Mako simultaneous-discard observers wait until complete resolution, then produce one token and two counters.",
+      "Paid Negate response counters the spell before any draw or discard. Shared checked actions cover wrong actor, stale indexed action after restore, parent disposal, owned raw/index branches and replay at every mutation."
+    ]
+  },
+  "strict_traces": {
+    "base": "b6dfb877bfaf818b8cffa50087fd23b0e2a6ec25",
+    "schema": 143,
+    "old_rows": 2475,
+    "new_rows": 2476,
+    "comparison": "Complete Trace structs, all fields; no projections or stripped fields.",
+    "changed": {},
+    "removed": [],
+    "added": [
+      "Thirst for Knowledge"
+    ],
+    "old_sha256": "4722634e71961d11cd7287a4224a176c629f98621c2fcb1078bf1932e298b58a",
+    "new_sha256": "6249a1353eaa3555a448d10d7f3fb6b93ddacfd3da62a4ae95a03742656d8d90",
+    "new_rows_full": {
+      "Thirst for Knowledge": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Graveyard",
+        "journal": "32679895e58d2d8e",
+        "observations": "09b7b16b694fe61a"
+      }
+    },
+    "export_log": "<cache>/rustmage-msh-thirst-trace-export.log",
+    "audit": "<cache>/rustmage-msh-thirst-trace-audit.json",
+    "ordinary_strict_log": "<cache>/rustmage-msh-thirst-trace-final.log",
+    "ordinary_compiled_pass": true,
+    "guard_id": "2bf790ec777f45ab8180e328e0b9b83c",
+    "guard": {
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "supported_cards_retain_bounded_cast_and_entry_traces"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 0.7941948050283827,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 36003840,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "source_checks": {
+    "definitions": 5397,
+    "authenticated_java_blobs": 1156,
+    "link_check": true,
+    "changed_file_format_check": true,
+    "diff_check": true,
+    "log": "<cache>/rustmage-msh-thirst-source-checks.log"
+  },
+  "limitations": [
+    "No Titania implementation or downstream filtered-discard expansion was performed. Existing unrelated unsupported cards remain gated.",
+    "The inherited complete-card trace corpus is a bounded cast/entry regression workload, not independent proof of every inherited card or complete MSH-only games.",
+    "No generic draw-replacement system was added. Paid discard replacements and their owned continuation are tested directly; draw interruption machinery remains inherited.",
+    "No simulation throughput was measured for this one-card branch; full release and final published-head reviews are integration gates."
+  ],
+  "discard_regressions": {
+    "passed": 40,
+    "log": "<cache>/rustmage-msh-thirst-discard-final.log",
+    "guard_id": "093a2974c82a4d34a72713a6da304050",
+    "guard": {
+      "command": [
+        "cargo",
+        "test",
+        "--lib",
+        "discard"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 2.3991088249604218,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 24498176,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "unchanged_legacy_empty_hand_ward_regression": "sos_tragedy_ward_discard_payment_decline_and_empty_hand"
+  },
+  "clippy": {
+    "all_targets": true,
+    "warnings_denied": true,
+    "log": "<cache>/rustmage-msh-thirst-clippy-final.log",
+    "guard_id": "d264449c22b544a5be7f500b7ad4e4a9",
+    "guard": {
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 36.06133359699743,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1810726912,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "existing_discard_filter_audit": {
+    "inherited_authored_count": 30,
+    "all_fields_default": true,
+    "new_nondefault_filter": "msh/thirst_for_knowledge.rs",
+    "correction": "An initial general optional-phase change exposed an extra phase in the existing empty-hand Tragedy Feaster ward test. After that consuming job terminated, the change was narrowed to nondefault typed filters; the existing test was retained unchanged and all 40 discard cases pass. Public hand-count affordability keeps its original automatic fallback."
+  },
+  "failed_attempts_retained": [
+    {
+      "guard_id": "6d560f3467aa40a49084f434f2f1ebe4",
+      "log": "<cache>/rustmage-msh-thirst-focused.log",
+      "reason": "Test-only SharedVec-to-Vec collection mismatch; corrected after terminal compilation."
+    },
+    {
+      "guard_id": "3e0f8a5912a94441812e75a5c0eeffe8",
+      "log": "<cache>/rustmage-msh-thirst-trace-export.log",
+      "reason": "Expected 2476/2475 new-row count failure; all 2475 complete inherited Trace structs proved exact before baseline acceptance."
+    },
+    {
+      "guard_id": "3b31feb4c75f40a2b311ae22a4bfa06d",
+      "log": "<cache>/rustmage-msh-thirst-discard-regressions.log",
+      "reason": "The existing Tragedy Feaster empty-hand ward regression caught a needless phase change for unrestricted public hand-count affordability; the implementation was narrowed without changing this regression."
+    }
+  ],
+  "completed_target_cleanup": {
+    "terminal_consumers_confirmed": true,
+    "active_references": [],
+    "removed_regular_files": 1019,
+    "removed_path_allocated_bytes": 124596224,
+    "measurement_note": "Sum of st_blocks*512 by path, not a deduplicated physical reclaim measurement.",
+    "retained": [
+      {
+        "path": "<cache>/rustmage-msh-thirst-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+        "bytes": 4099760
+      },
+      {
+        "path": "<cache>/rustmage-msh-thirst-target/debug/deps/rustmage-b764cd26223fba2c",
+        "sha256": "65c5e6e2c5719f83117c99ff67d0d45127db3601517ba3396bb53b2c971eacea",
+        "bytes": 31660312
+      }
+    ],
+    "finished_utc": "2026-10-25T00:44:49.625959+00:00"
+  },
+  "tested_runtime_files": [
+    {
+      "path": "src/card_definitions/msh/thirst_for_knowledge.rs",
+      "sha256": "45914236060ba05dc02d4ca3dac9fbd3ec8b6f1bc88e590c5feae7aeb9baaa4c"
+    },
+    {
+      "path": "src/card_definitions/msh/thirst_for_knowledge.json",
+      "sha256": "8bb7cb891b69c2d823879cd92dfc310b5d02ac2e213d887c9d175951d9464d03"
+    },
+    {
+      "path": "src/engine_effect_choices.rs",
+      "sha256": "11b4b2d8f80cebbf0b4a055abef416a4c11fb74df5672e07246b18a6ef94b29c"
+    },
+    {
+      "path": "src/engine_msh_thirst_tests.rs",
+      "sha256": "cc332b727c864ea0b95fb9a4d98760c60ac7e554987cc00df579a6197296fc5e"
+    },
+    {
+      "path": "src/engine.rs",
+      "sha256": "03304ac6b2ed6003e9be3e9537de528138cf2cd85c764f75cd583f1ab8ef2fe9"
+    },
+    {
+      "path": "src/assurance/card_traces.json",
+      "sha256": "6249a1353eaa3555a448d10d7f3fb6b93ddacfd3da62a4ae95a03742656d8d90"
+    },
+    {
+      "path": "src/generated/catalogue.rs",
+      "sha256": "c23fe8756f230ecedb1c6c0c80e5320ee316b2737c2a14aae49b1a193321640c"
+    },
+    {
+      "path": "data/standard/coverage.json",
+      "sha256": "87a367da4f4779466c28cc232faa7ed2fa7ca39ac16852f7ebe399297ff87d1d"
+    }
+  ],
+  "implementation_throughput": {
+    "started_utc": "2026-10-25T00:16:12+00:00",
+    "evidence_cutoff_utc": "2026-10-25T00:45:36.373398+00:00",
+    "seconds": 1764.373398,
+    "whole_candidates": 1,
+    "candidate_cards_per_hour": 2.0403844243405445,
+    "scope": "One new whole candidate including source authoring, actual failed interaction investigation, build queues and final focused/strict/Clippy checks. Excludes earlier cache-only design, subsequent publication, final release/review gates and integration. No merged or set acceptance throughput is claimed."
+  }
+}

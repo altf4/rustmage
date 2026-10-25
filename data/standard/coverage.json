@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f6282bc78e022c2bb6f947315cbd3004e3bed55bcab53f6cc60f37b83a276726",
+  "catalogue_version": "c9ea1b94cff22b39b03f33914a3103e52656eb6f4e196f3a0c792e92876a5981",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2469,
-  "implemented_total": 2475,
+  "implemented_standard_cards": 2477,
+  "implemented_total": 2483,
   "token_definitions": 119,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 164,
-      "gated": 109
+      "complete": 172,
+      "gated": 101
     },
     "one": {
       "total": 1,
@@ -5341,8 +5341,8 @@
     {
       "name": "Captain America, Living Legend",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/captain_america_living_legend.rs",
       "set": "msh"
     },
@@ -5373,8 +5373,8 @@
     {
       "name": "Captain Mar-Vell, Space-Born",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/captain_mar_vell_space_born.rs",
       "set": "msh"
     },
@@ -18397,8 +18397,8 @@
     {
       "name": "Jessica Jones, Private Eye",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/jessica_jones_private_eye.rs",
       "set": "msh"
     },
@@ -26725,8 +26725,8 @@
     {
       "name": "Quicksilver, Brash Blur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/quicksilver_brash_blur.rs",
       "set": "msh"
     },
@@ -29293,8 +29293,8 @@
     {
       "name": "S.H.I.E.L.D. Flying Car",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/s_h_i_e_l_d_flying_car.rs",
       "set": "msh"
     },
@@ -33165,8 +33165,8 @@
     {
       "name": "Stature, Size Shifter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/stature_size_shifter.rs",
       "set": "msh"
     },
@@ -36469,8 +36469,8 @@
     {
       "name": "Thirst for Knowledge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/thirst_for_knowledge.rs",
       "set": "msh"
     },
@@ -38333,8 +38333,8 @@
     {
       "name": "Undercover Skrull",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/undercover_skrull.rs",
       "set": "msh"
     },

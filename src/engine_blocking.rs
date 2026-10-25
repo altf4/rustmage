@@ -2,6 +2,25 @@
 use super::*;
 
 impl Game {
+    fn source_power_forbids_block(&self, attacker: CardId) -> bool {
+        self.state.objects[attacker as usize]
+            .card
+            .static_ability_groups()
+            .iter()
+            .flat_map(|group| group.fragments)
+            .any(|fragment| {
+                let crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(
+                    maximum,
+                ) = *fragment
+                else {
+                    return false;
+                };
+                self.continuous_fragment_available(attacker, |candidate| {
+                    std::ptr::eq(candidate, fragment)
+                }) && self.stats(attacker).power <= maximum
+            })
+    }
+
     pub(super) fn can_be_blocker(&self, id: CardId) -> bool {
         self.state.objects.get(id as usize).is_some_and(|b| {
             b.zone == Zone::Battlefield
@@ -28,7 +47,8 @@ impl Game {
             return false;
         }
         let keywords = self.keywords(attacker);
-        if self.blocker_subtype_excluded(attacker, blocker)
+        if self.source_power_forbids_block(attacker)
+            || self.blocker_subtype_excluded(attacker, blocker)
             || self.live_static_forbids_block(blocker, attacker)
             || keywords.contains(Keywords::CANT_BE_BLOCKED)
             || keywords.contains(Keywords::PROTECTION_EVERYTHING)

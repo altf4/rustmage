@@ -1328,6 +1328,8 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     UntapSource,
+    /// Untap the exact non-targeted object captured by an event packet.
+    UntapEventObject,
     TapSource,
     UntapCreatures(CreatureFilter),
     UntapPlayerCreatures(PlayerSet),
@@ -2669,6 +2671,8 @@ pub(crate) enum TriggerCondition {
     SelfBecomesTapped,
     /// One event after the complete simultaneous tap group, using post-event types.
     ControlledCreaturesBecomeTapped,
+    /// Per-creature own-turn tap, with a first-tap intervening condition.
+    ControlledCreatureFirstTapOwnTurn,
     AttachedBecomesUntapped,
     AttackDeclared {
         minimum: u16,
@@ -3672,6 +3676,9 @@ impl Card {
     /// Timing permission is an as-though effect, not a granted Flash keyword.
     pub(crate) fn cast_timing_grants(self) -> &'static [CastFilter] {
         generated::cast_timing_grants(self)
+    }
+    pub(crate) fn cast_timing_requires_opponent_spell(self) -> bool {
+        authored::rules(self).is_some_and(|r| r.extras.cast_timing_requires_opponent_spell)
     }
     pub(crate) fn cost_reductions(self) -> &'static [SpellReduction] {
         generated::cost_reductions(self)

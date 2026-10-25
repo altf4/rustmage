@@ -295,6 +295,24 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             }
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
+                    if let StaticAbilityFragment::SourceGraveyardBonus {
+                        kind,
+                        minimum,
+                        stats: bonus,
+                    } = *fragment
+                        && source == id
+                        && activations::graveyard_cards_at_least(
+                            self,
+                            object.controller,
+                            kind,
+                            minimum,
+                        )
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                    {
+                        stats += bonus;
+                    }
                     if let StaticAbilityFragment::SourceCounterBonus {
                         kind,
                         minimum,

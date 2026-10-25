@@ -3,10 +3,56 @@
   "catalogue_id": 642,
   "oracle_id": "67aa946d-e694-494e-ba0c-44880d5bc03e",
   "facts_sha256": "f6e96b66ad2fa3287c8de171c5dfa0ac48935dbe243ce2b6e3f0e3d0a1300111",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4b8d222e580d31c691e73898ffc1699016a0b4d35686e2d0146f04c00d1d3a67"
   },
-  "physical_metadata_sha256": "bfe9fc415891e4c2e44b688d313312d5b4a5dab48226c5312eabaac03e155281"
+  "physical_metadata_sha256": "bfe9fc415891e4c2e44b688d313312d5b4a5dab48226c5312eabaac03e155281",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaptainAmericaLivingLegend.java",
+  "java_sha256": "7820b996cdcbd92dcf44512508c955f77a0c1969647dbd7066e70c28ac0dbbe4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+      "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ],
+  "rules_notes": [
+    "Complete first-tap history records every actual battlefield tap since turn start, even before observer entry or under a different controller. ETB tapped, duplicates, already tapped objects and virtual funding are quiet.",
+    "Intervening first-tap condition is checked at trigger and resolution using the exact non-targeted event object. Source departure, control change or later ability removal does not revoke a queued packet.",
+    "The Java watcher counts by physical UUID across zone changes. CR400.7 requires a new object after departure/reentry, so Rust keys history by exact incarnation rather than reproducing that aliasing.",
+    "Oracle and official release notes: https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes. No new catalogue identity or public wire field is required."
+  ]
 }

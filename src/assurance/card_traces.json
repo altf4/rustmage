@@ -2591,6 +2591,22 @@
     "journal": "e9faa30ff25cc76d",
     "observations": "5a107dfb9fc67e91"
   },
+  "Captain America, Living Legend": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "e625fc58634bfdee",
+    "observations": "2e953ce950d63dba"
+  },
+  "Captain Mar-Vell, Space-Born": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "db7b0f4bd7e53672",
+    "observations": "b34ce2936873785a"
+  },
   "Captain Marvel, Earth's Protector": {
     "root": "main",
     "status": "completed",
@@ -8871,6 +8887,14 @@
     "journal": "2af928f35a52b81c",
     "observations": "32e6768ace7e6816"
   },
+  "Jessica Jones, Private Eye": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "46c02d17c20515de"
+  },
   "Jet, Freedom Fighter": {
     "root": "main",
     "status": "completed",
@@ -12879,6 +12903,14 @@
     "journal": "f385416f7e57ec16",
     "observations": "50dcd5d58d7b25a9"
   },
+  "Quicksilver, Brash Blur": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "c4b8f6d37ca7169e",
+    "observations": "7666a2b995442f0b"
+  },
   "Quill-Blade Laureate": {
     "root": "main",
     "status": "completed",
@@ -14062,6 +14094,14 @@
     "zone": "Battlefield",
     "journal": "7cab70b24f8e18ec",
     "observations": "c664b828465225aa"
+  },
+  "S.H.I.E.L.D. Flying Car": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "091bbc1cbc70f60f",
+    "observations": "2078b7601916ee0a"
   },
   "S.H.I.E.L.D. Helicarrier": {
     "root": "main",
@@ -15943,6 +15983,14 @@
     "journal": "a0f047f38ebb7293",
     "observations": "cfbf8b451601fdfa"
   },
+  "Stature, Size Shifter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "77fe8ec276f5ddde",
+    "observations": "c731e2301933efeb"
+  },
   "Staunch Crewmate": {
     "root": "main",
     "status": "completed",
@@ -17343,6 +17391,14 @@
     "journal": "b6cf3749b9ab6fcf",
     "observations": "83de5fd3712e2b64"
   },
+  "Thirst for Knowledge": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "32679895e58d2d8e",
+    "observations": "09b7b16b694fe61a"
+  },
   "Thistledown Players": {
     "root": "main",
     "status": "completed",
@@ -18214,6 +18270,14 @@
     "zone": "Battlefield",
     "journal": "bb652b9252f64f35",
     "observations": "ac77bf19e5882079"
+  },
+  "Undercover Skrull": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "100cb581dd613f1f",
+    "observations": "4ba9f48169be5e36"
   },
   "Underground Mortuary": {
     "root": "main",

@@ -1,16 +1,11 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Whole printed body and first-tap trigger from pinned Oracle/XMage, with exact object history.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(3, 4),
     keywords: Keywords::VIGILANCE,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ControlledCreatureFirstTapOwnTurn,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::UntapEventObject],
+    }],
     ..CardRules::EMPTY
 };

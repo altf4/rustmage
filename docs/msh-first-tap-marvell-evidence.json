@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "scope": "Two complete candidate cards and their private first-tap/conditional-timing cores; final combined release and reviews pending",
+  "base_main": "b6dfb877bfaf818b8cffa50087fd23b0e2a6ec25",
+  "recording_runtime_head": "a0997dff270f8937dc9a3106563434a1e7b425c7",
+  "final_native_head": "f017870a9dfad6f693574059297aaf1eb2bc761c",
+  "cards": [
+    "Captain America, Living Legend",
+    "Captain Mar-Vell, Space-Born"
+  ],
+  "membership": {
+    "frozen_identities": 281,
+    "frozen_printings": 448,
+    "merged_flags_at_base": 172,
+    "candidate_flags": 174,
+    "candidate_remaining_gated": 107,
+    "new_candidates": 2,
+    "entire_pool_acceptance": false
+  },
+  "shared_rules": [
+    "Record every actual battlefield untapped-to-tapped transition since turn start in sparse copy-on-write exact-incarnation rows, even before observer entry, under another controller or while not a creature; duplicates, already tapped, entry-tapped and virtual funding are quiet. Cap history at first versus repeated and clear on actual new turn.",
+    "Captain collects one independent nontarget packet for each controlled creature on its controller turn, checking first-tap history at trigger and resolution. Existing entering_object and a private UntapEventObject instruction retain exact recipients; queued abilities survive observer control/departure/suppression.",
+    "Mar-Vell composes existing as-though spell filters with one private immutable requires-opponent-spell flag. Read actual opponent cast count relative to current source controller and printed ability availability; old unconditional grants keep their behavior. No costs, land timing or activation timing are changed."
+  ],
+  "scenarios": {
+    "new_total": 19,
+    "first_tap": 13,
+    "marvell": 6,
+    "both_seats": true,
+    "all_msh_run": {
+      "passed": 334,
+      "guard": "<cache>/rustmage-build-reports/3c11948b1c0542ff9bede186fcf52bdb.json",
+      "note": "Before the additional self-crewing parameter of the existing crew scenario"
+    },
+    "final_all_native": {
+      "passed": 880,
+      "execution_seconds": 4.46,
+      "guard": "<cache>/rustmage-build-reports/c766166eab5e42fe9236245c0254601e.json",
+      "includes_ordinary_strict_trace_test": true
+    },
+    "first_tap_coverage": [
+      "Paid body/vigilance and real mana first/second taps; real crew includes the source itself plus Rewrite History; convoke reserves without history and commits actual contributors together",
+      "History before observer, prior foreign controller/opposing turn/noncreature land plus paid animation; duplicate/already-tapped and entry-tapped quiet",
+      "Actual Out Cold simultaneous victims with stun preventing untap; intervening retap; source theft, paid removal and flash suppression after queue, prior printed suppression",
+      "Recipient blink and exact reentry, turn reset, copy-on-write divergence after parent disposal, checked raw/index/restore and atomic illegal actions"
+    ],
+    "marvell_coverage": [
+      "Paid body, flying blocker legality and vigilance; own cast/opposing mana ability do not qualify",
+      "Actual opposing spell cast then priority pass permits creature, sorcery, artifact and Aura responses before the opposing spell resolves",
+      "History before entry, actual turn reset, suppression/departure, unchanged affordability and land restriction, current-controller relation, full hidden-hand observation comparison"
+    ],
+    "helpers": "Existing assurance big_helpers checked actions test wrong actor, indexed/raw branches after dropping a parent, snapshot restore and stale revision"
+  },
+  "source": {
+    "definitions": 5397,
+    "authenticated_java_blobs": 1160,
+    "complete_unique_direct_and_relevant_helper_files": 15,
+    "rules_authority": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "oracle_and_java_pins": "Paired JSON records in src/card_definitions/msh",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "discrepancy": "The pinned Captain watcher counts physical UUID across zone changes; CR400.7 requires a new exact object after reentry, so history uses ObjectRef incarnation."
+  },
+  "wire_and_identity": {
+    "schema": 143,
+    "new_public_fields": 0,
+    "new_ids": [],
+    "catalogue_definitions": 5397,
+    "token_recipes": 119,
+    "metadata_sha256": "3057af9a68dc7d8bd82150887c16f59c52b28e376c29ded78ed7c4452152e133",
+    "metadata_and_schema_byte_identical_to_base": true,
+    "private_owned_history_accounted_in_state_bytes": true
+  },
+  "trace_proof": {
+    "base": "b6dfb877bfaf818b8cffa50087fd23b0e2a6ec25",
+    "runtime_head": "a0997dff270f8937dc9a3106563434a1e7b425c7",
+    "schema": 143,
+    "inherited": 2475,
+    "candidate": 2477,
+    "all_full_trace_structs_equal": true,
+    "changed": {},
+    "removed": [],
+    "added": [
+      "Captain America, Living Legend",
+      "Captain Mar-Vell, Space-Born"
+    ],
+    "base_sha256": "4722634e71961d11cd7287a4224a176c629f98621c2fcb1078bf1932e298b58a",
+    "candidate_sha256": "00d29a312ecf3bf0cb635ebbb1b05d7eddc117d7f7ca947763890bcd5fa3d14a",
+    "new_rows": {
+      "Captain America, Living Legend": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "e625fc58634bfdee",
+        "observations": "2e953ce950d63dba"
+      },
+      "Captain Mar-Vell, Space-Born": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "db7b0f4bd7e53672",
+        "observations": "b34ce2936873785a"
+      }
+    },
+    "recorder_changed": false
+  },
+  "validation": {
+    "source_link_format": "Pass",
+    "all_target_clippy": "Pass at fixed final runtime; <cache>/rustmage-build-reports/1d1c5d15d8e04072b7347acb28eacf11.json",
+    "full_release": "Pending final published combined integration",
+    "two_independent_nonauthor_reviews": "Pending final published combined integration",
+    "parent_ci": "Pending publication"
+  },
+  "resource_safety": {
+    "memory_max_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "final_native_peak_bytes": 2328473600,
+    "final_clippy_peak_bytes": 1809231872,
+    "fixed_inputs": "Every consuming job was polled to terminal before source/baseline edits; the initial queued job was explicitly stopped and polled before fixing a known constant typo, not restarted on observation timeout.",
+    "logs": "<cache>/rustmage-msh-first-tap-marvell-*.log"
+  },
+  "cleanup": {
+    "report": "<cache>/rustmage-msh-first-tap-focused-cleanup.json",
+    "no_active_target_consumers": true,
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 124628992,
+    "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+    "preserved_shared_libraries": [
+      {
+        "path": "<cache>/rustmage-msh-first-tap-target/debug/deps/libserde_derive-31145c71f3b23723.so",
+        "sha256": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+      }
+    ],
+    "preserved_native_binary": {
+      "path": "<cache>/rustmage-msh-first-tap-target/debug/deps/rustmage-b764cd26223fba2c",
+      "sha256": "91dfd0d2f74e17fd2d9f0fdaf41aabd12e582f8a635b1b647b9eeb37773132d6"
+    }
+  },
+  "throughput": {
+    "scope": "Two complete candidates, private cores, 19 new scenarios, all 880 native tests, Clippy and source checks; includes build queues and fixture correction, excludes earlier cache design and final integration/review/CI gates",
+    "start_utc": "2026-10-25T00:18:15+00:00",
+    "evidence_cutoff_utc": "2026-10-25T00:54:37.020406+00:00",
+    "seconds": 2182.020406,
+    "candidate_cards_per_hour": 3.2996941642717155,
+    "simulation_claim": false
+  },
+  "created_utc": "2026-10-25T00:54:37.020406+00:00"
+}
