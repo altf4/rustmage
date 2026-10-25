@@ -50,6 +50,13 @@ fn activate(g: &mut Game, p: Player, id: CardId, ability: u16, payment: Mana, ta
             counter_payment: Counters::default(),
         },
     );
+    while g
+        .legal_actions()
+        .iter()
+        .any(|a| matches!(a, Action::ChooseActivationCost { .. }))
+    {
+        choose(g, |a| matches!(a, Action::ChooseActivationCost { .. }));
+    }
     for &target in targets {
         act(g, Action::ChooseTarget { target });
     }

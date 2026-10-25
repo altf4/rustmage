@@ -69,8 +69,8 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     id
 }
 fn act(g: &mut Game, action: Action) {
-    g.apply(g.actor().expect("nonterminal scenario"), action)
-        .unwrap();
+    g.apply(g.actor().expect("nonterminal scenario"), action.clone())
+        .unwrap_or_else(|error| panic!("{action:?}: {error:?}; pending {:?}", g.state.pending));
 }
 fn choose(g: &mut Game, predicate: impl Fn(&Action) -> bool) {
     let a = g
