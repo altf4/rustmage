@@ -1,0 +1,602 @@
+{
+  "scope": "Gated-only shared in-place temporary-copy core checkpoint; no newly supported cards.",
+  "created_utc": "2026-10-25T09:10:25.331740+00:00",
+  "runtime_head": "e95fb989c6a03b52d87d77beac1e466da2085a60",
+  "base": "c0994f29ac31e961f4c0e4fd6bdf219d133cfbe0",
+  "branch": "codex/msh-temporary-copy",
+  "status": {
+    "new_supported_cards": [],
+    "gated_consumers": [
+      "Absorbing Man",
+      "Shuri, Wakandan Inventor",
+      "Taskmaster, Mercenary Mimic"
+    ],
+    "metadata_definitions": 5403,
+    "token_recipes": 125,
+    "new_ids": [],
+    "set_membership_policy_and_trace_recorder_exact_base": true
+  },
+  "staging": "Real immutable Absorbing Man first-main copy program is present as an authorized core constructor, while Effect::Unsupported and complete:false remain; Shuri and Taskmaster bodies unchanged.",
+  "printed_obligations": {
+    "Absorbing Man": [
+      "Pay printed 1GU; legendary Human Villain 4/4 with vigilance.",
+      "Trigger at beginning of YOUR FIRST main phase; optional zero or one target.",
+      "Target union: any artifact OR non-Aura enchantment OR land. Artifact Aura qualifies via artifact branch. Controller unrestricted.",
+      "Until captured controller next turn, exact source becomes snapshot copy; source must remain same incarnation.",
+      "Name exactly Absorbing Man; legendary 4/4 Human Villain creature IN ADDITION to copied types; vigilance added. Preserve unrelated copiable characteristics.",
+      "Duration survives control changes; copy changes and expiry do not fabricate ETB/LTB; reindex copied providers."
+    ],
+    "Taskmaster, Mercenary Mimic": [
+      "Pay printed 2UB; legendary Human Mercenary Villain 3/5.",
+      "Photographic Reflexes is an ability word; first-main trigger optional zero or one target.",
+      "Target creature permanent OR creature CARD in any graveyard; latter uses card face values, not former battlefield LKI or tokens.",
+      "Until captured controller next turn, exact source becomes snapshot copy.",
+      "Name Taskmaster, Mercenary Mimic; legendary Human Mercenary Villain CREATURE, with replacement-type wording rather than in-addition wording. Preserve copied P/T and applicable P/T CDA; omit overwritten-type CDA.",
+      "All copied activated/static/triggered abilities and relevant CDAs work; same-incarnation, expiry and physical reversion required."
+    ],
+    "Shuri, Wakandan Inventor": [
+      "Pay printed 1U; legendary Human Artificer Hero 2/1.",
+      "Artifact spells YOU CAST cost generic1 less; stack calculation, alternate/free casts, increases and actual/funding share live reducer. Does not reduce activated ability cost.",
+      "Pay generic1 and tap exact source, including summoning sickness/haste and cost atomicity. Activate only as sorcery.",
+      "First controlled artifact target becomes copy of second controlled artifact target EOT, except not legendary; SAME object allowed.",
+      "Recheck both target groups, captured target incarnations and control/type/protection; source departure does not cancel a valid queued activation.",
+      "Snapshot before self-copy; overlapping copy timestamps, full abilities, cleanup restoration and legend SBA correct."
+    ]
+  },
+  "core_design": [
+    "Flat immutable copiable recipe with typed name, legendary, kind, creature-subtype, keyword and fixed-P/T exceptions; later token exceptions compose after existing overrides.",
+    "Effective definition is materialized for shared actual/speculative rule readers. Cold exact-incarnation COW rows retain the physical face, physical token status, original recipe, dormant layers and per-instance restricted-use state. The hot Object gains no fields; CopyKind retains its u8 representation.",
+    "Layer-one acquisition identity, static provider chronology and independent hand-size chronology remain distinct. Pure physical retimestamp updates all retained static/hand timestamps without acquiring new intrinsic abilities; hidden layers restore their existing hand chronology.",
+    "Copied intrinsic and separately granted programs retain independent origins. A cold opt-in provided-grant row survives the final overlay. Transform timestamp changes preserve uninterrupted grants; actual reattachment/new copy/restore creates a new grant instance. Recipient copying/control changes preserve independent grants.",
+    "No copied entry or departure is fabricated. Current providers/targets/layers/legend rules/attachments refresh. Actual departures freeze copied facts before physical normalization. Copy expiry retains generation, counters, damage/tap/combat state and physical identity; ordinary cleanup and turn-ending cleanup perform resulting SBAs.",
+    "Owned funding worlds retain recipe and physical identity across virtual departures/entries. Exact entry history covers nonproviders while retaining the existing exact provider-entry order witness. Current type predicates govern basic-land mana, entry counters/tap and nonland/artifact history."
+  ],
+  "primary_backed_inference": {
+    "statement": "A new copy effect, even of an identical blueprint, creates a fresh intrinsic ability acquisition. Suppression/control changes do not reset an uninterrupted instance. Expiry restores the older intrinsic origin/history, whereas a restored static grant creates a new recipient grant instance. Queued packets retain their captured origin/program.",
+    "status": "Explicit inference from primary rules and official analogous rulings; no primary ruling directly states the entire Vision-trigger acquisition case. CR602.5c is not applied directly as a triggered-ability rule.",
+    "authorities": [
+      {
+        "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+        "rules": [
+          "113.2c",
+          "113.7/113.7a",
+          "113.10",
+          "115.3",
+          "205.1a",
+          "303.4d",
+          "305.6",
+          "602.5b-c",
+          "607.5/607.5a",
+          "608.2b",
+          "613.1a/f",
+          "613.7a/b/e/g",
+          "707.2",
+          "707.9",
+          "714.3c/714.4"
+        ]
+      },
+      {
+        "url": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+        "entries": [
+          "Absorbing Man",
+          "Shuri, Wakandan Inventor",
+          "Taskmaster, Mercenary Mimic",
+          "The Vision"
+        ]
+      },
+      {
+        "url": "https://media.wizards.com/2023/downloads/WOE_Release_Notes_9S5bvPQTjRwh/EN_MTGWOE_ReleaseNotes_20230518.pdf",
+        "entry": "Likeness Looter new restricted activated-ability instance after recopying"
+      }
+    ]
+  },
+  "source_discrepancies": [
+    "Shuri may choose one artifact for both target groups (CR115.3); the pinned Java AnotherTargetPredicate incorrectly prohibits that. If either target becomes illegal the copy has no effect; both illegal means the ability does not resolve.",
+    "Absorbing Man retains copied types and adds Human/Villain/Creature, fixed4/4 excludes a copied P/T CDA. Taskmaster replaces types and preserves copied P/T/CDA as applicable.",
+    "The generic Java CopyPermanentEffect Aura reattachment branch does not bypass the creature-Aura detach/SBA rule for an Absorbing-style copy."
+  ],
+  "source_provenance": {
+    "full_oracle": [
+      {
+        "oracle_id": "ec8e310f-e871-498f-8d80-c3617c5e1433",
+        "name": "Absorbing Man",
+        "mana_cost": "{1}{G}{U}",
+        "type_line": "Legendary Creature \u2014 Human Villain"
+      },
+      {
+        "oracle_id": "a8c047fc-20a9-4c62-b8a6-9ead56d60ad0",
+        "name": "Shuri, Wakandan Inventor",
+        "mana_cost": "{1}{U}",
+        "type_line": "Legendary Creature \u2014 Human Artificer Hero"
+      },
+      {
+        "oracle_id": "dcd97730-b793-4c0c-b158-625ac3656b4a",
+        "name": "Taskmaster, Mercenary Mimic",
+        "mana_cost": "{2}{U}{B}",
+        "type_line": "Legendary Creature \u2014 Human Mercenary Villain"
+      }
+    ],
+    "design_cache": {
+      "path": "<cache>/rustmage-msh-temporary-copy-design-a29274fe.json",
+      "sha256": "a3c34d39e09d818e0a1703b227150b16a4c4ee64b0cc5f4e63a9dbceac73177b",
+      "contains": "Full three Oracle bodies, full25 Java enclosing bodies and prior runtime snapshots; read coverage is stated per pin."
+    },
+    "java_pins": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/AbsorbingMan.java",
+        "sha256": "e2d325401ded31301eb5ebe249a909fa4e07c198936844b74d665ca7562db89e",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/ShuriWakandanInventor.java",
+        "sha256": "568babeaeb6a5916538fc1f3e1532e9ee3fccfaa1fe29b8e68d0721a9a1fb379",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
+        "sha256": "256e2224f1087a614a7e4826dcdd43873e9e5b50236b9904affb8408698fe8fe",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CopyEffect.java",
+        "sha256": "4e27230c09fc613d065b165fb57332f3ac4f8bf1fb2f7b33212f155535d8df0b",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/util/functions/CopyApplier.java",
+        "sha256": "82b30d931a3e310abd321918f97eb3ec6d8bf1e93bd665e7ddc66ed032a2fcdf",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/other/AnotherTargetPredicate.java",
+        "sha256": "0bd31702560d09b13d609b0d6b4ca2a84fe7a880970798a8e1b3fd6b76f3e47c",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+        "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+        "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/constants/Duration.java",
+        "sha256": "2cd81a07ff7ef291a2ffef0b9a55e3c5ade0f0b5ad8a996ebc1f0d34eef52747",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+        "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+        "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+        "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+        "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+        "sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47",
+        "read_coverage": "complete body read in current copy audit"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+        "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetObject.java",
+        "sha256": "04f411662058b88bb5feeaec7aa4c29d20b934da2f073731cf8af29f7ecd25f3",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/TargetImpl.java",
+        "sha256": "4366d56a414e29c40704e8b734f760d1ec6657d57b0abf8998f51f50d566f915",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+        "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+        "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+        "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+        "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/constants/CardType.java",
+        "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+        "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5",
+        "read_coverage": "complete helper read in prior Galactus/John audit; full body and exact hash revalidated now"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/game/GameImpl.java",
+        "sha256": "592ad774bce5257b688c0f54e1e9e586c3d984d4ff2b2b2782f5b0154a78657c",
+        "read_coverage": "exact copyPermanent overloads and main method read; complete enclosing file cached, remainder not claimed read"
+      }
+    ],
+    "taskmaster_direct_source": "Absent at frozen revision; no invented Java class or pin.",
+    "taskmaster_absence": {
+      "inventory_row": {
+        "oracle_id": "dcd97730-b793-4c0c-b158-625ac3656b4a",
+        "name": "Taskmaster, Mercenary Mimic",
+        "xmage_name": null,
+        "implementations": [],
+        "printings": []
+      },
+      "tree_scope": "Mage.Sets/src/mage/cards at pinned revision",
+      "tree_listing_sha256": "9f14c0049034604d85f38a27093c8c85b362eda5fcc1917cdcd29bd791ad1c58",
+      "case_insensitive_taskmaster_filename_matches": [
+        "Mage.Sets/src/mage/cards/d/DemonicTaskmaster.java",
+        "Mage.Sets/src/mage/cards/e/EternalTaskmaster.java",
+        "Mage.Sets/src/mage/cards/g/GoblinTaskmaster.java",
+        "Mage.Sets/src/mage/cards/h/HideousTaskmaster.java",
+        "Mage.Sets/src/mage/cards/k/KoboldTaskmaster.java",
+        "Mage.Sets/src/mage/cards/o/OgreTaskmaster.java",
+        "Mage.Sets/src/mage/cards/s/StrongholdTaskmaster.java"
+      ]
+    }
+  },
+  "validation": {
+    "runtime_head": "e95fb989c6a03b52d87d77beac1e466da2085a60",
+    "profile": "repository defaults",
+    "native_passed": 1463,
+    "new_core_groups": 47,
+    "native_rules_seconds": 9.54,
+    "native_rules_groups_per_second": 153.35429769392036,
+    "workload_limit": "Native rules-test throughput only; not an all-Standard or game-simulation benchmark. No card implementation rate is claimed for a checkpoint admitting zero cards.",
+    "strict_commands": {
+      "native": {
+        "exit": 0,
+        "seconds": 144.81784200668335
+      },
+      "clippy": {
+        "exit": 0,
+        "seconds": 37.04736018180847
+      },
+      "format": {
+        "exit": 0,
+        "seconds": 1.5309019088745117
+      },
+      "card-format": {
+        "exit": 0,
+        "seconds": 0.9458727836608887
+      },
+      "source": {
+        "exit": 0,
+        "seconds": 0.6308362483978271
+      },
+      "link": {
+        "exit": 0,
+        "seconds": 0.4618971347808838
+      },
+      "runner-contracts": {
+        "exit": 0,
+        "seconds": 0.4448857307434082
+      }
+    },
+    "fixed_input_files": 11797,
+    "changed_inputs": [],
+    "all_authored_card_format_files": 5403,
+    "resource_guard": {
+      "path": "<cache>/rustmage-build-reports/07911874862d4b2e8348ebe3d7b45c8e.json",
+      "sha256": "e09fd1820e1dddd3064b9f8b047020e732cd58615e06d78cd86265c446816bba",
+      "terminal": true,
+      "seconds": 186.21102463197894,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2632663040,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "checks_cache": {
+      "path": "<cache>/rustmage-msh-temporary-copy-core-strict-checks.json",
+      "sha256": "da1188cf789858143eab096b683552973645cf82ed2a2de9507ca21ed5c30c6d"
+    },
+    "input_manifest": {
+      "path": "<cache>/rustmage-msh-temporary-copy-core-strict-inputs.json",
+      "sha256": "6aae1c3985a42c92dc4e2dc197027d56e9f860daa14f4bbd84cbcee85d6b808a",
+      "kept_in_cache_only": true
+    },
+    "focus_runs": "Earlier narrow iterations used an explicitly authorized separate profile0 target. Final native/export/Clippy/static evidence uses repository defaults.",
+    "bounded_fixture_limits": "Temporary-copy/lore events and the restricted static-grant modal packet are explicitly bounded core fixtures. Paid spells, equipment actions, mana funding, library land plays and owned branch/restore use ordinary rules APIs and existing helpers. No playable card is claimed to grant the bounded Vision modal program.",
+    "groups": [
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_deadlines_use_captured_controller_and_actual_next_turn"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_owned_layers_reveal_older_origin_without_rebinding_source"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_physical_token_identity_and_owned_expiry"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_real_token_remains_token_when_copying_physical_card"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_provider_index_refresh_has_no_entry_event"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_frozen_name_is_copiable_and_reverts_on_original_only"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_additive_and_replacement_types_survive_copy_of_copy"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_public_blueprint_private_hand_and_orphan_raw_index_restore"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_hidden_setter_retains_time_against_paid_lasting_wisdom"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_hidden_infinity_stays_before_later_finite_provider"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_later_copy_obeys_earlier_removal_and_independent_grant_order"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_copied_intrinsic_vigilance_and_fixed_pt_obey_paid_suppression"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_legend_exceptions_drive_target_legality_and_sba_without_card_mutation"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_paid_murder_preserves_real_card_and_real_token_departures"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_actual_cleanup_and_captured_next_turn_use_existing_identity"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_cleanup_copy_expiry_causes_sba_before_turn_advance"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_paid_time_stop_uses_same_eot_expiry_boundary"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_identical_vision_recopy_has_new_modes_then_restores_older_history"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_printed_vision_history_returns_with_its_original_instance"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_paid_removal_and_control_change_preserve_vision_origin"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_queued_vision_packet_retains_old_origin_after_identical_recopy"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_paid_power_up_and_exhaust_belong_to_independent_origins"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_paid_counter_triggers_limit_each_acquisition_then_restore_old_use"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_linked_entry_choice_is_preserved_as_fact_but_not_inherited"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_paid_equipping_retimes_hidden_setter_without_new_acquisition"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_paid_queued_transform_changes_physical_face_beneath_copy_only"
+      },
+      {
+        "file": "src/engine_temporary_copy.rs",
+        "test": "msh_temporary_copy_bounded_paid_copied_transform_cannot_turn_a_single_faced_card_over"
+      },
+      {
+        "file": "src/engine_temporary_copy_dispatch_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_vaultborn_death_applies_later_artifact_exception"
+      },
+      {
+        "file": "src/engine_temporary_copy_dispatch_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_molten_copy_adds_artifact_after_replacement_types"
+      },
+      {
+        "file": "src/engine_temporary_copy_dispatch_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_equipment_losing_equipment_detaches_without_rebinding"
+      },
+      {
+        "file": "src/engine_temporary_copy_dispatch_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_aura_distinguishes_creature_aura_from_removed_aura_type"
+      },
+      {
+        "file": "src/engine_temporary_copy_dispatch_tests.rs",
+        "test": "msh_temporary_copy_bounded_typed_instruction_composes_groups_source_and_flat_exceptions"
+      },
+      {
+        "file": "src/engine_temporary_copy_dispatch_tests.rs",
+        "test": "msh_temporary_copy_bounded_copied_land_providers_refresh_without_creating_entry_events"
+      },
+      {
+        "file": "src/engine_temporary_copy_dispatch_tests.rs",
+        "test": "msh_temporary_copy_bounded_copied_cost_provider_actual_payment_and_funding_are_live"
+      },
+      {
+        "file": "src/engine_temporary_copy_dispatch_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_forge_links_return_only_to_the_original_intrinsic_origin"
+      },
+      {
+        "file": "src/engine_temporary_copy_dispatch_tests.rs",
+        "test": "msh_temporary_copy_bounded_saga_acquisition_has_no_entry_lore_and_queued_chapter_survives_expiry"
+      },
+      {
+        "file": "src/engine_temporary_copy_funding_tests.rs",
+        "test": "msh_temporary_copy_funding_full_departure_views_match_real_physical_and_token_objects"
+      },
+      {
+        "file": "src/engine_temporary_copy_funding_tests.rs",
+        "test": "msh_temporary_copy_funding_virtual_treasure_sacrifice_restores_physical_identity"
+      },
+      {
+        "file": "src/engine_temporary_copy_funding_tests.rs",
+        "test": "msh_temporary_copy_funding_replacement_types_remove_basic_land_mana_but_keep_printed_elf_mana"
+      },
+      {
+        "file": "src/engine_temporary_copy_funding_tests.rs",
+        "test": "msh_temporary_copy_funding_effective_copy_token_entry_kinds_govern_tap_counters_and_history"
+      },
+      {
+        "file": "src/engine_temporary_copy_grant_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_grantor_transform_preserves_grant_but_reattach_renews"
+      },
+      {
+        "file": "src/engine_temporary_copy_grant_tests.rs",
+        "test": "msh_temporary_copy_bounded_restored_intrinsic_and_external_grant_origins_are_independent"
+      },
+      {
+        "file": "src/engine_temporary_copy_grant_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_pole_grant_uses_grantor_origin_and_old_queued_context"
+      },
+      {
+        "file": "src/engine_temporary_copy_grant_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_rod_packet_keeps_old_program_after_grantor_copy_changes"
+      },
+      {
+        "file": "src/engine_temporary_copy_grant_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_malice_grant_returns_physical_card_after_copied_recipient_dies"
+      },
+      {
+        "file": "src/engine_temporary_copy_grant_tests.rs",
+        "test": "msh_temporary_copy_bounded_paid_hall_resolution_grant_survives_recipient_copy_and_control_change"
+      },
+      {
+        "file": "src/engine_temporary_copy_grant_tests.rs",
+        "test": "msh_temporary_copy_bounded_restricted_grant_history_is_not_recipient_copy_history"
+      }
+    ]
+  },
+  "trace_proof": {
+    "normal149_parent": "530c5205465b05d9f70c5f69313b152358ba5d4c",
+    "normal_schema": 149,
+    "previous_schema": 148,
+    "full_Trace_structs": 2516,
+    "normal149_sha256": "960a1397e96079bdd75d9c45c71c6628c83870d05b87d761d070920685361728",
+    "previous148_sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+    "base148_sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+    "six149_sha256": "6e496077cc408eb84e3a877884a06473e6bf08dcfa540e78031e2bf866070cf6",
+    "changed": [],
+    "removed": [],
+    "no_field_stripping": true,
+    "recorder_unchanged": true
+  },
+  "trace_acceptance": "All2516 inherited previous148 FULL Trace structs equal exactc099; all2516 normal149 rows equal the matching FULL rows of independent530c. Accepted only after that proof, then regenerated and reproved after the exact-entry-witness correction. No recorder edits or stripped fields.",
+  "cleanup": {
+    "terminal_consumers": true,
+    "removed_files": 1186,
+    "removed_bytes": 259545045,
+    "own_user_processes_inspected": 187,
+    "permission_denied_processes": [
+      "4299",
+      "4313",
+      "4688",
+      "6612",
+      "204298"
+    ],
+    "process_scan_limit": "Inspected readable own-user executable/cwd/fd/maps references; listed processes denied inspection. No references to either target were observed. All guarded consumer jobs were separately confirmed terminal.",
+    "target_references_observed": [],
+    "prior_required_rehashed_exact": 586,
+    "total_required_rehashed_exact": 625,
+    "preserved_libraries": {
+      "<cache>/rustmage-msh-temporary-copy-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa",
+      "<cache>/rustmage-msh-temporary-copy-focus-unoptimized-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_useful_natives": {
+      "<cache>/rustmage-msh-temporary-copy-core-default-native-e95fb989": "912b83e754cefe29cb6a57178ccba652832279adff8587a3a59719bd738021a9",
+      "<cache>/rustmage-msh-temporary-copy-core-precheckpoint-focus-native-91701317": "1e65501007aa1acf75bee1c6461559dbaa63824d2f5118b3478964b88a16aba9"
+    },
+    "terminal_resource_reports": 35,
+    "cleanup_cache": {
+      "path": "<cache>/rustmage-msh-temporary-copy-core-cleanup.json",
+      "sha256": "3b74bdfee4e20072e0a49246808d59adfaa13656ad0385971555966d1442c53a"
+    },
+    "preservation_manifest": {
+      "path": "<cache>/rustmage-msh-temporary-copy-core-preservation.json",
+      "sha256": "0ad7d6eba7f0bc0bf899ccdd5345c06b2ced411d7f92b884790470d8d54e2d4b"
+    }
+  },
+  "remaining": "Core review/integration must precede whole-card completion and admission of all three consumers. Whole-set/all-Standard acceptance, final integration release/CI and independent nonauthor final published-batch reviews remain with the aggregate workflow. No main merge or additional PR is part of this checkpoint."
+}
