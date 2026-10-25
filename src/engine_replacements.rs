@@ -109,12 +109,13 @@ struct TokenBatch {
 }
 impl TokenBatch {
     fn artifact_at(&self, index: usize) -> bool {
-        self.groups[index].token.is_artifact()
-            || self
-                .recipes
-                .get(index)
-                .and_then(|r| *r)
-                .is_some_and(|r| r.exceptions.artifact || r.exceptions.golem)
+        self.recipes
+            .get(index)
+            .and_then(|recipe| *recipe)
+            .map_or_else(
+                || self.groups[index].token.is_artifact(),
+                |recipe| recipe.kinds() & 16 != 0,
+            )
     }
 }
 #[derive(Clone, Debug, PartialEq, Eq)]

@@ -313,6 +313,38 @@ fn msh_copy_identity_token_of_dfc_under_single_face_copy_retains_two_frozen_face
         settle_keeping_new_copy(&mut g);
         assert_eq!(g.object_view(original).name(), "Arc Reactor");
         assert!(g.object_view(original).face.is_some());
+        // BOUNDED captured-source continuation: the real paid overlay's owned
+        // face template must survive a departure, even without public copy
+        // exceptions or an active transform ability on the Arc definition.
+        let snapshot = g.snapshot();
+        let mut orphan = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        let captured = orphan.activation_item(p, original, 0);
+        assert!(captured.source_copy_recipe.is_some());
+        let faces = orphan
+            .copiable_recipe(orphan.object_ref(original))
+            .face_structure();
+        orphan.move_object(original, Zone::Graveyard);
+        assert_eq!(
+            orphan
+                .recipe_for_subject(&captured, Subject::Source)
+                .unwrap()
+                .face_structure(),
+            faces
+        );
+        orphan.restore(&snapshot).unwrap();
+        assert_eq!(
+            orphan
+                .copiable_recipe(orphan.object_ref(original))
+                .face_structure(),
+            faces
+        );
+        assert_eq!(
+            orphan.object_view(original).face,
+            g.object_view(original).face
+        );
         // Molten may target an artifact even though the active copy is no
         // longer a creature. No static type or token identity is fabricated.
         paid(&mut g, p, "Molten Duplication", &[Target::Card(original)]);

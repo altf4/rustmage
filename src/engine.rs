@@ -40,6 +40,7 @@ mod copies;
 mod prepared;
 #[path = "engine_stack_copies.rs"]
 mod stack_copies;
+use copies::CopyFaces;
 pub use copies::CopyRecipe;
 #[path = "engine_copy_grant_origins.rs"]
 mod copy_grant_origins;

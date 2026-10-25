@@ -370,7 +370,15 @@ impl Game {
     fn materialize_copy_row(&mut self, row: &Row, refresh: bool) {
         let active = row.layers.last();
         let recipe = active
-            .map(|layer| layer.value.recipe)
+            .map(|layer| {
+                let physical = row
+                    .original_recipe
+                    .unwrap_or_else(|| CopyRecipe::new(row.physical_card));
+                layer
+                    .value
+                    .recipe
+                    .with_copy_effect_faces(physical.face_structure())
+            })
             .or(row.original_recipe);
         let definition = active.map_or(row.physical_card, |layer| layer.value.recipe.definition);
         let kind = if active.is_some() {
@@ -503,7 +511,7 @@ impl Game {
         };
         row.physical_card = other;
         if let Some(recipe) = &mut row.original_recipe {
-            recipe.definition = other;
+            assert_eq!(recipe.turn_face(), Some(other));
         }
         self.retimestamp_temporary_copy(object);
         self.refresh_controllers();

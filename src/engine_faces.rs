@@ -18,6 +18,16 @@ pub struct FaceView {
     pub transforms: u64,
 }
 impl Game {
+    pub(super) fn physical_copy_faces(&self, object: ObjectRef) -> CopyFaces {
+        let recipe = if let Some(row) = self.temporary_copy_row(object) {
+            row.original_recipe
+                .unwrap_or_else(|| CopyRecipe::new(row.physical_card))
+        } else {
+            self.copy_recipe(object)
+                .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card))
+        };
+        recipe.face_structure()
+    }
     pub(super) fn capture_transform_stack_serial(&self, item: &mut SpellView) {
         if !item.is_copy
             && item
@@ -48,10 +58,22 @@ impl Game {
         definition: Card,
         zone: Zone,
     ) -> Option<FaceView> {
-        definition.other_face()?;
+        let faces = if self.object_ref(object.card) == object {
+            self.physical_copy_faces(object)
+        } else {
+            CopyRecipe::new(definition).face_structure()
+        };
+        let CopyFaces::Double {
+            physical_front,
+            back_up,
+            ..
+        } = faces
+        else {
+            return None;
+        };
         Some(FaceView {
-            physical_card: definition.front_face(),
-            back: definition.face_parent().is_some(),
+            physical_card: physical_front,
+            back: back_up,
             transforms: if zone == Zone::Battlefield {
                 self.transform_serial(object)
             } else {
@@ -85,7 +107,7 @@ impl Game {
         {
             return;
         }
-        let Some(other) = self.physical_definition(item.card).other_face() else {
+        let Some((_, other)) = self.physical_copy_faces(item.object).turned() else {
             return;
         };
         if other.kind_mask() & (1 | 2 | 16 | 32 | 64 | 128) == 0 {
@@ -110,7 +132,7 @@ impl Game {
         self.remove_face_providers(item.card);
         self.state.objects[item.card as usize].card = other;
         if let Some(mut recipe) = self.copy_recipe(item.object) {
-            recipe.definition = other;
+            assert_eq!(recipe.turn_face(), Some(other));
             self.set_copy_recipe(item.object, recipe);
         }
         self.register_battlefield_providers(item.card);

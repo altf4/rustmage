@@ -3,8 +3,18 @@ use super::*;
 
 impl Game {
     pub(super) fn copiable_recipe(&self, object: ObjectRef) -> CopyRecipe {
-        self.copy_recipe(object)
-            .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card))
+        let recipe = self
+            .copy_recipe(object)
+            .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card));
+        let faces = self.physical_copy_faces(object);
+        if self
+            .temporary_copy_row(object)
+            .is_some_and(|row| !row.layers.is_empty())
+        {
+            recipe.with_copy_effect_faces(faces)
+        } else {
+            recipe.with_faces(faces)
+        }
     }
     pub(super) fn recipe_for_subject(
         &self,
