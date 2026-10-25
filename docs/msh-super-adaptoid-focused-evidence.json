@@ -1,0 +1,97 @@
+{
+  "scope": "One complete individual card and directly affected legendary-count/keyword-counter interactions. No aggregate validation.",
+  "base": "2be5ecc9",
+  "tested_source": "c1e8b6665f3929d65aecf35beff2b399e5adc22a",
+  "cards": [
+    "Super-Adaptoid"
+  ],
+  "complete": true,
+  "source": {
+    "full_oracle": 1,
+    "full_direct_java": 1,
+    "full_read_semantic_helpers": 25,
+    "audit": "<cache>/rustmage-msh-super-adaptoid-design-2be5ecc9.json",
+    "sha256": "80ffbe6b0812a6becd2fccc4b2f24c8db439a95461691d115d1c0da772eb6a71",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "primary": "https://magic.wizards.com/en/news/feature/marvel-super-heroes-release-notes",
+    "primary_scope": "Super-Adaptoid all-zone CDA note; CR122.1b/613.7c existing counter chronology.",
+    "fixture_audit": "<cache>/rustmage-msh-super-adaptoid-fixture-sources.json",
+    "fixture_sha256": "439615b9baea00931c26ca73206876cef656027b3651060ef0a36fb450599fe7"
+  },
+  "implementation": {
+    "CDA": "Power-only layer7a expression counts current controlled battlefield legendary creatures in all zones, including itself only while on battlefield; current copy overrides and borrowed actual/funding legendary queries apply. Toughness remains2.",
+    "counters": "SelfEntersOrAttacks chooses another mandatory target creature. At resolution, compare current donor/source keyword masks, then place one of each missing11mapped kind through ordinary owned counter placements and replacements. No counters for an already held keyword, regardless of origin. Exact source/target generations are required.",
+    "wire": 152,
+    "actual_new_payload": null,
+    "new_ids": 0,
+    "new_actions": 0,
+    "policy_change": false
+  },
+  "focused": {
+    "groups": 12,
+    "both_seats": true,
+    "passed": 12,
+    "failed": 0,
+    "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0; development only",
+    "command": "python3 scripts/resource_guard.py --report <cache>/rustmage-msh-super-adaptoid-final-focus-resource.json -- python3 <temp>/msh-super-adaptoid-focus.py (cargo test --lib msh_adaptoid_ -- --nocapture)",
+    "actual_terminal_exit": 0,
+    "native_seconds": 0.24,
+    "guard_seconds": 30.354163380048703,
+    "memory_peak_bytes": 2711678976,
+    "memory_max_bytes": 6442450944,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "fixed_inputs": 11857,
+    "changed": [],
+    "input_map": "<cache>/rustmage-msh-super-adaptoid-final-focus-inputs.json",
+    "input_sha256": "69b49c8f02118a0cf5b3a49ee666b91440c5a92c7068535abdc8a1c7d6ecce9e",
+    "earlier_attempts": "First compile failed because count variant was placed in AmountValue instead of StatValue; corrected. Next run8/10 failed two illegal sorcery Aura fixtures; actual paid High Fae Trickster made responses legal. Corrected gated10green followed by final ordinary-supported12green. Earlier reports retained as failures.",
+    "bounded_preconditions": "Initial donor keyword counters and selected hot/cold source counters are explicit bounded preconditions. Main card, flash-timing provider, temporary flying, actual copy, control, attack and replacement actions use paid ordinary supported definitions.",
+    "ownership_privacy": "Checked paid actions exercise wrong actors, raw/index equality and restore. Explicit parent-disposed branches cover target selection, attack and counter-replacement choice; invalid targets/mana compare snapshot/bytes/both observations. Virtual legendary departure recomputes power without changing parent snapshot or either view."
+  },
+  "tests": [
+    "msh_adaptoid_paid_real_lands_mandatory_other_creature_and_no_target_entry",
+    "msh_adaptoid_cda_counts_current_controlled_legendary_creatures_in_every_zone",
+    "msh_adaptoid_all_eleven_current_target_keywords_get_one_counter_each",
+    "msh_adaptoid_current_source_keywords_prevent_duplicate_and_batch_uses_replacements",
+    "msh_adaptoid_real_entry_haste_then_declared_attack_gains_real_donor_keywords",
+    "msh_adaptoid_target_must_still_be_current_creature_and_source_exact_incarnation",
+    "msh_adaptoid_live_donor_keywords_rechecked_after_queued_ability_and_hexproof_fizzles",
+    "msh_adaptoid_ability_removal_after_trigger_preserves_packet_and_new_counter_timestamp",
+    "msh_adaptoid_real_taskmaster_copy_keeps_live_cda_and_intrinsic_legendary_override",
+    "msh_adaptoid_existing_temporary_flying_prevents_permanent_flying_counter",
+    "msh_adaptoid_keywordless_creature_is_still_a_mandatory_legal_target",
+    "msh_adaptoid_funding_virtual_legendary_departure_recomputes_without_parent_mutation"
+  ],
+  "custody": {
+    "manifest": "<cache>/rustmage-msh-super-adaptoid-preservation.json",
+    "sha256": "0cb6353108e365ea0cb5305ae030dc49d86c5637ca425a42f59ed06b83ec9187",
+    "required_paths": 4320,
+    "prior_paths_rehashed_exact": 4314,
+    "retained": {
+      "<cache>/rustmage-msh-super-adaptoid-dev-target/debug/deps/rustmage-55e16bd14e329fbf": "e8b6798c4e169ab4fd7c159f4be74b4894ead4c134bd3461443cbca6df71ffea",
+      "<cache>/rustmage-msh-super-adaptoid-dev-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "removed_files": 165,
+    "removed_path_allocated_bytes": 40366080,
+    "own_processes_inspected": 186,
+    "accessible_target_refs": [],
+    "denied_inspections": 169,
+    "cleaned_target_must_not_be_reused": true
+  },
+  "implementation_interval": {
+    "start_utc": "2026-10-25T15:52:44.158080+00:00",
+    "end_utc": "2026-10-25T16:01:58.059344+00:00",
+    "hours": 0.15386146222222222,
+    "cards": 1,
+    "cards_per_hour": 6.499353285462083,
+    "scope": "Durable design packet through final supported result, including source authoring/tests/development compilation/serial queue; earlier source reading excluded. Not simulation throughput."
+  },
+  "deferred": [
+    "Serum effective-legendary cross-interaction after final source integration",
+    "Full native/default/trace migrations/release/CI",
+    "Final two independent nonauthor PR reviews",
+    "Entire281-card clause/game/performance acceptance"
+  ],
+  "main_merged": false,
+  "pr": "https://github.com/altf4/rustmage/pull/516"
+}
