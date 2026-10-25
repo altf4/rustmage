@@ -314,3 +314,102 @@ fn msh_copy_subtype_cda_funding_raw_and_evaluated_keywords_equal_paid_actual() {
         }
     }
 }
+
+fn projected_paid_copy_faces_departure_matrix(double: bool) {
+    for player in [Player::P0, Player::P1] {
+        for (requested, replacement) in [
+            (Zone::Graveyard, false),
+            (Zone::Exile, false),
+            (Zone::Graveyard, true),
+        ] {
+            let (mut game, id) =
+                super::super::msh_copy_identity_regression_tests::paid_face_token_fixture(
+                    player, double,
+                );
+            if replacement {
+                if game.actor() != Some(player) {
+                    checked(&mut game, Action::Pass);
+                }
+                let rip = named(&mut game, player, "Rest in Peace", Zone::Hand);
+                game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
+                cast(&mut game, rip, None, &[]);
+                assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+                settle(&mut game);
+            }
+            let secret = named(&mut game, player, "Cancel", Zone::Hand);
+            let object = game.object_ref(id);
+            let snapshot = game.snapshot();
+            let views =
+                serde_json::to_value([game.observe(Player::P0), game.observe(Player::P1)]).unwrap();
+            let mut actual = {
+                let parent = game.clone();
+                parent.clone()
+            };
+            let event = actual.move_object_raw(id, requested);
+            let expected = actual.object_view(id);
+            assert_ne!(expected.reference, object);
+            assert_eq!(
+                event.destination,
+                if replacement { Zone::Exile } else { requested }
+            );
+            assert_eq!(expected.face.is_some(), double);
+            assert!(expected.is_token());
+            assert!(expected.temporary_copy.is_none());
+            let mut request = goal(player);
+            request.source = Some((
+                object,
+                0,
+                Counters::default(),
+                game.state.objects[id as usize].card,
+                game.copy_ability_origin(object),
+            ));
+            let mut world = FundingState::from_game(&game, &request);
+            world.prepare_entry_projection();
+            assert!(world.resources.iter().any(|r| r.id == id));
+            assert!(ability_world::CharacteristicWorld::stored_recipe(&world, id).is_some());
+            assert_eq!(
+                characteristic_query::CharacteristicQuery::in_world(&world).object_view(id),
+                game.object_view(id)
+            );
+            let mut visits = 0;
+            world.cost_departures(&[object], requested, &mut |departed| {
+                visits += 1;
+                assert_eq!(
+                    ability_world::CharacteristicWorld::recipe(departed, id).face_structure(),
+                    actual
+                        .copy_recipe(expected.reference)
+                        .unwrap()
+                        .face_structure()
+                );
+                assert_eq!(
+                    characteristic_query::CharacteristicQuery::in_world(departed).object_view(id),
+                    expected
+                );
+                false
+            });
+            assert_eq!(visits, 1);
+            assert_eq!(game.snapshot(), snapshot);
+            assert_eq!(
+                serde_json::to_value([game.observe(Player::P0), game.observe(Player::P1)]).unwrap(),
+                views
+            );
+            assert!(
+                !game
+                    .observe(player.other())
+                    .objects
+                    .iter()
+                    .any(|v| v.id == secret)
+            );
+            actual.restore(&snapshot).unwrap();
+            assert_eq!(actual.object_view(id), game.object_view(id));
+        }
+    }
+}
+#[test]
+fn msh_copy_projected_faces_paid_single_token_full_departure_views_match_actual() {
+    projected_paid_copy_faces_departure_matrix(false);
+}
+#[test]
+fn msh_copy_projected_faces_paid_double_token_full_departure_views_match_actual() {
+    projected_paid_copy_faces_departure_matrix(true);
+}

@@ -17,11 +17,28 @@ pub struct FaceView {
     pub back: bool,
     pub transforms: u64,
 }
+impl FaceView {
+    pub(super) fn from_faces(faces: CopyFaces, transforms: u64) -> Option<Self> {
+        let CopyFaces::Double {
+            physical_front,
+            back_up,
+            ..
+        } = faces
+        else {
+            return None;
+        };
+        Some(Self {
+            physical_card: physical_front,
+            back: back_up,
+            transforms,
+        })
+    }
+}
 impl Game {
     pub(super) fn physical_copy_faces(&self, object: ObjectRef) -> CopyFaces {
         let recipe = if let Some(row) = self.temporary_copy_row(object) {
             row.original_recipe
-                .unwrap_or_else(|| CopyRecipe::new(row.physical_card))
+                .unwrap_or_else(|| CopyRecipe::new(self.physical_definition(object.card)))
         } else {
             self.copy_recipe(object)
                 .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card))
@@ -51,35 +68,6 @@ impl Game {
                 self.state.face_changes = None;
             }
         }
-    }
-    pub(super) fn face_view_for(
-        &self,
-        object: ObjectRef,
-        definition: Card,
-        zone: Zone,
-    ) -> Option<FaceView> {
-        let faces = if self.object_ref(object.card) == object {
-            self.physical_copy_faces(object)
-        } else {
-            CopyRecipe::new(definition).face_structure()
-        };
-        let CopyFaces::Double {
-            physical_front,
-            back_up,
-            ..
-        } = faces
-        else {
-            return None;
-        };
-        Some(FaceView {
-            physical_card: physical_front,
-            back: back_up,
-            transforms: if zone == Zone::Battlefield {
-                self.transform_serial(object)
-            } else {
-                0
-            },
-        })
     }
     pub(super) fn back_cast_available(&self, actor: Player, id: CardId, sorcery: bool) -> bool {
         let o = &self.state.objects[id as usize];
