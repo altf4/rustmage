@@ -7856,3 +7856,7 @@ mod msh_hand_exile_tests;
 #[cfg(test)]
 #[path = "engine_msh_temporary_copy_cards_tests.rs"]
 mod msh_temporary_copy_cards_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_thirteenth_combined_tests.rs"]
+mod msh_thirteenth_combined_tests;
