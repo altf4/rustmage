@@ -2875,6 +2875,12 @@ fn msh_echo_copies_creature_ability_and_changes_only_the_copys_target() {
     }
     target(&mut g, Target::Stack(original));
     finish_targets(&mut g);
+    act(
+        &mut g,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
     until(&mut g, |g| g.observe(p).retarget.is_some());
     act(
         &mut g,
