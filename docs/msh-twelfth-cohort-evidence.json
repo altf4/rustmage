@@ -1,0 +1,681 @@
+{
+  "schema": 1,
+  "set": "MSH",
+  "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+  "tested_integrated_runtime_head": "e236acac27ed9df0614cb1dcafb934a33815e9eb",
+  "integrated_source_head_before_evidence": "6ef32289e8343d5fd0f569f52c1280d93a531373",
+  "main_unchanged": "ea0f564b8074cf2dd9460b3f82758694b07ca074",
+  "delivery": "One open draft PR516. User requires final human approval of the whole remaining batch; no further main merges. Existing main merges remain in place.",
+  "merged_admissions": 180,
+  "merged_gated": 101,
+  "candidate_admissions": 213,
+  "candidate_gated": 68,
+  "unmerged_whole_card_additions_beyond_main": 33,
+  "pool_oracle_identities": 281,
+  "pool_printings": 448,
+  "latest_whole_cards": [
+    "Ka-Zar of the Savage Land",
+    "Mole Man, Moloid Master",
+    "Iron Man, Master of Machines",
+    "Avengers Assemble!",
+    "Night Nurse, Healer of Heroes",
+    "Restorative Technique",
+    "Spider-Man, To the Rescue",
+    "Speed, Young Avenger"
+  ],
+  "parent_evidence": {
+    "land_origins": {
+      "head": "3118ecba9b7955f2c4f6291cdc2b7a41623b71c9",
+      "path": "docs/msh-land-origins-evidence.json",
+      "integrated_evidence_sha256": "2c9f5fb6f7fe4c25172b7cd754f191d7f0481366261a660cc84ac95db5c3048f",
+      "source_parent_evidence_sha256": "0f88a1307bb648207e502f04ec26453635a7e62d26c804848ec21882f0dbdb80"
+    },
+    "hero_artifact_history": {
+      "head": "46741e0163ae2f5bcfae45616e7909c97bde1427",
+      "path": "docs/msh-iron-man-avengers-history-evidence.json",
+      "integrated_evidence_sha256": "82b3969bdddc5de3b26e4b0730f62112cef314b02f164acf8d8f4351db00b86e",
+      "source_parent_evidence_sha256": "82b3969bdddc5de3b26e4b0730f62112cef314b02f164acf8d8f4351db00b86e"
+    },
+    "recent_targets": {
+      "head": "d5733fbafd6fbc182d1fe9853ae9069ad7e80b78",
+      "path": "docs/msh-recent-targets-evidence.json",
+      "integrated_evidence_sha256": "87729e9ee44426783ba1afd0040753ff990d2da30470086caa97cd09c27d7236",
+      "source_parent_evidence_sha256": "1e934a0b2639ef33bd77833a8278761872e2af589accb10f2707ce88eafdbe28"
+    },
+    "reflexive_tap_haste": {
+      "head": "583fa2eb225071fadc32d1c7a3c5bcf3d35e609a",
+      "path": "docs/msh-reflexive-tap-haste-evidence.json",
+      "integrated_evidence_sha256": "72abe8d4e2206ac9801c89e25b909e0d3052a0fb6697fdeac97101af57c2a309",
+      "source_parent_evidence_sha256": "72abe8d4e2206ac9801c89e25b909e0d3052a0fb6697fdeac97101af57c2a309"
+    },
+    "combined_assurance": {
+      "head": "315f7f6b274d5a170920122e15346140185f2159",
+      "path": "docs/msh-twelfth-combined-evidence.json",
+      "integrated_evidence_sha256": "5cdc00e5fecb4bf546d6babd57a3e28888a38ea82b3cd74dd74aba7bdbbf9de1",
+      "source_parent_evidence_sha256": "5cdc00e5fecb4bf546d6babd57a3e28888a38ea82b3cd74dd74aba7bdbbf9de1"
+    }
+  },
+  "shared_mechanics": [
+    "Live normal land permissions from own graveyard or current library top, independent of spell casting and per-source usage, sharing ordinary land timing and allowance; selected top land remains public through suspended entry while next top is deferred",
+    "Exact legendary green2/2 Zabu Cat with own-landfall counter, and green1/1 Moloid Minion with optional attack mill1; ordinary token replacement and legend interactions",
+    "Owned compact frozen artifact-entry/Hero-entry/Hero-attack facts recorded at effective completed entry/declared attack events, even before a later public observer exists; captured-controller intervening guards and truthful opt-in public view",
+    "Exact existing graveyard-entry history reused as a target predicate, plus independent targeted-player private basic-land search and optional creature target groups",
+    "Successful exact-source untapped-to-tapped optional reflexive child; ordinary successful mana-payment reflexive child; resolved EOT haste-only blocker rule independent of recipient ability loss"
+  ],
+  "new_native_groups": {
+    "land_origins": 39,
+    "hero_artifact_history": 30,
+    "recent_targets": 23,
+    "reflexive_tap_haste": 23,
+    "combined_scenario": 1,
+    "legal_natural_game_corpus": 1,
+    "total": 117
+  },
+  "expected_final_native_tests": 1416,
+  "source_authentication": {
+    "definitions": 5403,
+    "java_blobs": 1271,
+    "token_recipes": 125
+  },
+  "wire": {
+    "version": 148,
+    "actual_change": "Optional public Observation.turn_facts appears only with a publicly known relevant battlefield definition or a captured public trigger packet; no hidden-zone observer detection. All old parent trace payloads preserved at prior147.",
+    "other_new_public_fields": false
+  },
+  "trace_proof": {
+    "base": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+    "parents": {
+      "base": {
+        "head": "0c1f30dd28b3906ebf13d6d8c446f6a5428cfbcf",
+        "schema": 147,
+        "full_Trace_exact_matches": 2508,
+        "trace_sha256": "8b0cb3dfdc9cee46637c0c43b639a917135357f1a8de32f0ba1fc5805351b478",
+        "changed": [],
+        "removed": []
+      },
+      "recent_targets": {
+        "head": "d5733fbafd6fbc182d1fe9853ae9069ad7e80b78",
+        "schema": 147,
+        "full_Trace_exact_matches": 2510,
+        "trace_sha256": "621df564b53526e22dd9c23ab0758654fa7067aa5c26e5f8078089775423c833",
+        "changed": [],
+        "removed": []
+      },
+      "reflexive_tap_haste": {
+        "head": "583fa2eb225071fadc32d1c7a3c5bcf3d35e609a",
+        "schema": 147,
+        "full_Trace_exact_matches": 2510,
+        "trace_sha256": "ba5e3fe386b4659df21d5a9c13055f1fa31c0653f0a5b38e4bd0ea37ef5326e8",
+        "changed": [],
+        "removed": []
+      },
+      "hero_artifact_history": {
+        "head": "46741e0163ae2f5bcfae45616e7909c97bde1427",
+        "schema": 148,
+        "full_Trace_exact_matches": 2510,
+        "trace_sha256": "3e80a01d47b13ffc7e355f05f5a11251595eed6a38e8c907fecd5312a5db766e",
+        "changed": [],
+        "removed": []
+      },
+      "land_origins": {
+        "head": "dd7930feffb6d2301e9ce870645432466bf9769a",
+        "schema": 147,
+        "full_Trace_exact_matches": 2510,
+        "trace_sha256": "2c9a344739f65a20767e69219713ba6442f74f86b7ad1bee2d1a777464e38da8",
+        "changed": [],
+        "removed": []
+      }
+    },
+    "normal_schema": 148,
+    "comparison_schema": 147,
+    "normal_sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+    "previous147_sha256": "62a0e1cf82ad55ce83298a858fb1f4142b2f202b72c968b3c459e189b301ea89",
+    "new_rows": {
+      "Avengers Assemble!": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "db7b0f4bd7e53672",
+        "observations": "566293e271622893"
+      },
+      "Iron Man, Master of Machines": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "2cbbc7bfb5d12fad",
+        "observations": "d2567d6e7ccdeab4"
+      },
+      "Ka-Zar of the Savage Land": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 6,
+        "zone": "Battlefield",
+        "journal": "1707eabb445652c2",
+        "observations": "0e959d595fb34d1a"
+      },
+      "Mole Man, Moloid Master": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "7c50116fb450cf1c",
+        "observations": "e669d69c55fa8010"
+      },
+      "Night Nurse, Healer of Heroes": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "ce93789b5fa64c9f",
+        "observations": "920ad036dadf0036"
+      },
+      "Restorative Technique": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 7,
+        "zone": "Graveyard",
+        "journal": "4e3ecd79df95ffa0",
+        "observations": "76157b03121ef1b9"
+      },
+      "Speed, Young Avenger": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 4,
+        "zone": "Battlefield",
+        "journal": "b43781f2834dd88f",
+        "observations": "63aa3fa2f48f03ba"
+      },
+      "Spider-Man, To the Rescue": {
+        "root": "main",
+        "status": "completed",
+        "decisions": 11,
+        "zone": "Battlefield",
+        "journal": "43e402f78de7c2e8",
+        "observations": "cb480bbd9aae077e"
+      }
+    },
+    "rows": 2516,
+    "metadata_sha256": "442243515004af67b1010fc554590bb6f1b5fb54dd0eb0e0ea11aaaf476935d1",
+    "metadata_exact_land_origins_parent": true,
+    "old_metadata_rows_and_globals_exact": true,
+    "catalogue_definitions": 5403,
+    "token_recipes": 125,
+    "new_ids": [
+      {
+        "id": 5401,
+        "identity": "@token/msh-zabu"
+      },
+      {
+        "id": 5402,
+        "identity": "@token/msh-moloid"
+      }
+    ],
+    "old_fields_stripped": false,
+    "recorder_changed": false,
+    "membership_unchanged": true,
+    "policy_unchanged": true,
+    "fixed_input_files": 11788,
+    "fixed_input_changes": [],
+    "native_rules_passed": 1413,
+    "sole_preacceptance_failure": "Expected row count2516 vs2510"
+  },
+  "preacceptance_integration_checks": {
+    "native": 101,
+    "clippy": 0,
+    "format": 0,
+    "card_format": 0,
+    "sources": 0,
+    "link": 0,
+    "diff": 0,
+    "changed": [],
+    "files": 11788,
+    "terminal": true
+  },
+  "preacceptance_integration_guard": {
+    "command": [
+      "python3",
+      "<temp>/msh-twelfth-export-checks.py"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 191.43386275001103,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2636414976,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "preacceptance_note": "All1413 rules groups passed; only the expected new2516-versus2510 baseline cardinality failed before the fresh full table was independently compared and accepted. No gameplay or recorder fix was required.",
+  "final_combined_assurance": {
+    "head": "315f7f6b274d5a170920122e15346140185f2159",
+    "tested_source": "e854797d387ecd1d4b8c1991a4e2ec5d6d1bada1",
+    "evidence": "docs/msh-twelfth-combined-evidence.json",
+    "new_groups": 2,
+    "native_tests": 1416,
+    "native_execution_seconds": 8.32,
+    "all_native_and_static_checks_pass": true,
+    "fixed_input_files": 11789,
+    "normal_schema": 148,
+    "full_rows": 2516,
+    "normal_sha256": "1316e080878f8c91f3b3a99fd368cb1861e284d91940eda32751a0eb231adac8",
+    "all_full_rows_exact_accepted_baseline": true,
+    "no_runtime_card_policy_or_metadata_changes": true
+  },
+  "games": {
+    "new_corpus": {
+      "checked_seconds": 1.1425952480000001,
+      "games": [
+        {
+          "decisions": 697,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 8,
+          "seed": 20261024,
+          "starting_player": "P0",
+          "turn": 21
+        },
+        {
+          "decisions": 443,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 5,
+          "seed": 20261024,
+          "starting_player": "P1",
+          "turn": 15
+        },
+        {
+          "decisions": 388,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 4,
+          "seed": 20261025,
+          "starting_player": "P0",
+          "turn": 13
+        },
+        {
+          "decisions": 458,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 5,
+          "seed": 20261025,
+          "starting_player": "P1",
+          "turn": 14
+        },
+        {
+          "decisions": 719,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 8,
+          "seed": 20261026,
+          "starting_player": "P0",
+          "turn": 22
+        },
+        {
+          "decisions": 910,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 10,
+          "seed": 20261026,
+          "starting_player": "P1",
+          "turn": 26
+        },
+        {
+          "decisions": 310,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 4,
+          "seed": 20261027,
+          "starting_player": "P0",
+          "turn": 12
+        },
+        {
+          "decisions": 334,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 4,
+          "seed": 20261027,
+          "starting_player": "P1",
+          "turn": 13
+        },
+        {
+          "decisions": 662,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 7,
+          "seed": 20261028,
+          "starting_player": "P0",
+          "turn": 20
+        },
+        {
+          "decisions": 723,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 8,
+          "seed": 20261028,
+          "starting_player": "P1",
+          "turn": 22
+        },
+        {
+          "decisions": 722,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 8,
+          "seed": 20261029,
+          "starting_player": "P0",
+          "turn": 22
+        },
+        {
+          "decisions": 564,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 6,
+          "seed": 20261029,
+          "starting_player": "P1",
+          "turn": 18
+        },
+        {
+          "decisions": 508,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 6,
+          "seed": 20261030,
+          "starting_player": "P0",
+          "turn": 18
+        },
+        {
+          "decisions": 671,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 7,
+          "seed": 20261030,
+          "starting_player": "P1",
+          "turn": 21
+        },
+        {
+          "decisions": 637,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 7,
+          "seed": 20261031,
+          "starting_player": "P0",
+          "turn": 19
+        },
+        {
+          "decisions": 943,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 10,
+          "seed": 20261031,
+          "starting_player": "P1",
+          "turn": 25
+        },
+        {
+          "decisions": 644,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 7,
+          "seed": 20261032,
+          "starting_player": "P0",
+          "turn": 21
+        },
+        {
+          "decisions": 1051,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 11,
+          "seed": 20261032,
+          "starting_player": "P1",
+          "turn": 26
+        },
+        {
+          "decisions": 950,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 10,
+          "seed": 20261033,
+          "starting_player": "P0",
+          "turn": 29
+        },
+        {
+          "decisions": 465,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 5,
+          "seed": 20261033,
+          "starting_player": "P1",
+          "turn": 15
+        },
+        {
+          "decisions": 556,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 6,
+          "seed": 20261034,
+          "starting_player": "P0",
+          "turn": 18
+        },
+        {
+          "decisions": 943,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 10,
+          "seed": 20261034,
+          "starting_player": "P1",
+          "turn": 29
+        },
+        {
+          "decisions": 807,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 9,
+          "seed": 20261035,
+          "starting_player": "P0",
+          "turn": 26
+        },
+        {
+          "decisions": 746,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 8,
+          "seed": 20261035,
+          "starting_player": "P1",
+          "turn": 23
+        },
+        {
+          "decisions": 344,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 4,
+          "seed": 20261036,
+          "starting_player": "P0",
+          "turn": 14
+        },
+        {
+          "decisions": 301,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 4,
+          "seed": 20261036,
+          "starting_player": "P1",
+          "turn": 13
+        },
+        {
+          "decisions": 463,
+          "outcome": {
+            "Winner": "P0"
+          },
+          "owned_privacy_checkpoints": 5,
+          "seed": 20261037,
+          "starting_player": "P0",
+          "turn": 15
+        },
+        {
+          "decisions": 526,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 6,
+          "seed": 20261037,
+          "starting_player": "P1",
+          "turn": 17
+        },
+        {
+          "decisions": 512,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 6,
+          "seed": 20261038,
+          "starting_player": "P0",
+          "turn": 16
+        },
+        {
+          "decisions": 555,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 6,
+          "seed": 20261038,
+          "starting_player": "P1",
+          "turn": 17
+        },
+        {
+          "decisions": 671,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 7,
+          "seed": 20261039,
+          "starting_player": "P0",
+          "turn": 20
+        },
+        {
+          "decisions": 609,
+          "outcome": {
+            "Winner": "P1"
+          },
+          "owned_privacy_checkpoints": 7,
+          "seed": 20261039,
+          "starting_player": "P1",
+          "turn": 19
+        }
+      ],
+      "observed_choices_and_land_origins": {
+        "ChooseOptional { accept: true }": 103,
+        "DeclineResolutionMana": 9,
+        "PayResolutionMana { payment: [0, 0, 0, 0, 1, 0] }": 11,
+        "PayResolutionMana { payment: [0, 0, 0, 1, 0, 0] }": 9,
+        "PayResolutionMana { payment: [0, 1, 0, 0, 0, 0] }": 6,
+        "PayResolutionMana { payment: [1, 0, 0, 0, 0, 0] }": 2,
+        "land_from_Graveyard": 3,
+        "land_from_Hand": 490,
+        "land_from_Library": 10
+      },
+      "paid_cast_names": [
+        "Avengers Assemble!",
+        "Iron Man, Master of Machines",
+        "Ka-Zar of the Savage Land",
+        "Mole Man, Moloid Master",
+        "Night Nurse, Healer of Heroes",
+        "Restorative Technique",
+        "Speed, Young Avenger",
+        "Spider-Man, To the Rescue"
+      ],
+      "scope": "32 natural Standard60-card MSH-only four-color mirror games, unchanged observation-only smoke_index, no setup or progress injection, full replay and owned/privacy checks. Bounded evidence, not entire-set acceptance or simulation benchmark."
+    },
+    "aggregate": {
+      "games": 32,
+      "decisions": 19832,
+      "owned_privacy_checkpoints": 218,
+      "successful_paid_card_identities": [
+        "Avengers Assemble!",
+        "Iron Man, Master of Machines",
+        "Ka-Zar of the Savage Land",
+        "Mole Man, Moloid Master",
+        "Night Nurse, Healer of Heroes",
+        "Restorative Technique",
+        "Speed, Young Avenger",
+        "Spider-Man, To the Rescue"
+      ],
+      "ordinary_land_play_origins": {
+        "ChooseOptional { accept: true }": 103,
+        "DeclineResolutionMana": 9,
+        "PayResolutionMana { payment: [0, 0, 0, 0, 1, 0] }": 11,
+        "PayResolutionMana { payment: [0, 0, 0, 1, 0, 0] }": 9,
+        "PayResolutionMana { payment: [0, 1, 0, 0, 0, 0] }": 6,
+        "PayResolutionMana { payment: [1, 0, 0, 0, 0, 0] }": 2,
+        "land_from_Graveyard": 3,
+        "land_from_Hand": 490,
+        "land_from_Library": 10
+      }
+    },
+    "cumulative_bounded_corpora": {
+      "games": 84,
+      "decisions": 47346,
+      "scope": "Prior52 complete supported-pool games plus this32-game four-color mirror sample. All colors are represented across the bounded corpora. This does not certify the full281-card set."
+    },
+    "timing_qualification": "Natural-game timings include complete replay, legal-action and owned/privacy assertions. They are assurance timings, not a pure simulation benchmark."
+  },
+  "cleanup": {
+    "terminal": true,
+    "no_active_target_consumers": true,
+    "accessible_proc_fd_maps_exe_scan_clear": true,
+    "root": "<cache>/rustmage-msh-twelfth-target",
+    "removed_files": 1019,
+    "removed_path_allocated_bytes": 125734912,
+    "allocation_note": "Sum of removed path st_blocks, not deduplicated by inode; not an independent physical reclamation measurement",
+    "preserved_shared_libraries": {
+      "<cache>/rustmage-msh-twelfth-target/debug/deps/libserde_derive-31145c71f3b23723.so": "1b51d29ea297b6ac4899afd5a2b7abad9d0840aa921a3a911a22966b132550fa"
+    },
+    "preserved_native_binary": {
+      "path": "<cache>/rustmage-msh-twelfth-target/debug/deps/rustmage-b764cd26223fba2c",
+      "sha256": "43b72567358976efa6cde50219a5238d564051fec751f60b6108dc27842fc20f"
+    }
+  },
+  "prior_artifact_preservation": {
+    "report": "<cache>/rustmage-msh-twelfth-preservation.json",
+    "required_artifacts": 573,
+    "terminal_validation_reports": 167,
+    "all_exact": true,
+    "missing": [],
+    "changed": []
+  },
+  "implementation_throughput": {
+    "start_utc": "2026-10-25T05:11:53.713550+00:00",
+    "end_utc": "2026-10-25T06:26:31.124797+00:00",
+    "seconds": 4477.411247,
+    "whole_candidate_cards": 8,
+    "cards_per_hour": 6.432288304831696,
+    "scope": "Includes read-only design preparation overlapping prior cohort gates, four concurrent authors, serialized guarded queues/builds, fixture repairs, all whole-card tests, combined scenarios, complete trace comparison and terminal cleanup through aggregate evidence. Excludes later exact published-head release/CI/final independent gates. Not simulation or merged-card throughput."
+  },
+  "remaining": "68 candidate-gated whole cards and entire-set acceptance remain open. Admission flags, metadata, trace smoke tables and bounded game corpora do not prove full-set gameplay. Final exact published-head release and CI are separate gates; this evidence does not authorize merging main.",
+  "recorded_utc": "2026-10-25T06:26:31.124797+00:00"
+}
