@@ -151,6 +151,27 @@ fn msh_parity_paid_thanos_exact_entry_discount_colorless_sickness_tap_and_lifeti
         }
         g.state.players[p.other().index()].mana = [30; 6];
         reject(&mut g, announce(source));
+        let used = g.object_ref(source);
+        paid(&mut g, p, "Unsummon", &[Target::Card(source)]);
+        assert_eq!(g.object_view(source).zone, Zone::Hand);
+        until(&mut g, |g| {
+            g.state.active == p
+                && g.state.step == Step::Main1
+                && g.state.pending == Pending::Priority
+        });
+        priority(&mut g, p);
+        g.state.players[p.index()].mana = [1, 0, 1, 1, 0, 0];
+        cast(&mut g, source, None, &[]);
+        settle(&mut g);
+        assert_ne!(g.object_ref(source), used);
+        assert!(g.object_view(source).power_up_uses.is_empty());
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 0);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 1, 1];
+        checked(&mut g, announce(source));
+        finish(&mut g);
+        choose_parity(&mut g, ManaValueParity::Odd);
+        assert_eq!(g.counter_count(source, CounterKind::PlusOne), 2);
+        assert_eq!(g.object_view(source).power_up_uses[0].count, 1);
     }
 }
 #[test]
