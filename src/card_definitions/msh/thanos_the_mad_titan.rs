@@ -1,4 +1,4 @@
-// Gated typed core consumer; whole-card admission requires the complete paid suite.
+// Direct typed behavior from the full pinned Oracle and XMage implementation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 4),
     keywords: Keywords::DEATHTOUCH.union(Keywords::LIFELINK),

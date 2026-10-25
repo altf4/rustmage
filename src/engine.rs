@@ -8037,3 +8037,7 @@ mod msh_incursion_justice_loki_cards_tests;
 #[cfg(test)]
 #[path = "engine_msh_origin_nick_cards_tests.rs"]
 mod msh_origin_nick_cards_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_parity_library_paid_tests.rs"]
+mod msh_parity_library_paid_tests;

@@ -3,7 +3,7 @@
   "catalogue_id": 4414,
   "oracle_id": "090d815b-b2c8-48cd-a0b3-dc662d5352ac",
   "facts_sha256": "a156630a92fde4f36c18652ee638a41c6a59245180ccec11e0b66545ae9644fb",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "1ca2f9173df6b2f5715067ed3c34a3ddf44bcecb71b4e07cab28c4767f8413f0",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/ThanosTheMadTitan.java",
