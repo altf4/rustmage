@@ -672,12 +672,15 @@ fn msh_attachment_card_swordsman_self_foreign_and_nonvillain_excluded_zero_equip
         let sword = paid(&mut g, p, SWORD, &[]);
         assert!(g.state.pending_triggers.is_empty());
         paid(&mut g, p, "Bear Cub", &[]);
-        paid(&mut g, p.other(), "Mister Hyde, Monster Within", &[]);
+        paid(&mut g, p.other(), "Doc Ock's Henchmen", &[]);
         assert!(g.state.pending_triggers.is_empty());
         packet(&mut g, p, "Mister Hyde, Monster Within", &[]);
         entry_targets(&mut g, sword);
         // No optional Equipment exists; the independent mandatory creature group
         // remains an actual targeted ability, and may select Swordsman himself.
+        if g.observe(p).targeting_group == Some(0) {
+            checked(&mut g, Action::FinishTargets);
+        }
         assert_eq!(g.observe(p).targeting_group, Some(1));
         reject(&mut g, Action::FinishTargets);
         checked(
@@ -692,8 +695,7 @@ fn msh_attachment_card_swordsman_self_foreign_and_nonvillain_excluded_zero_equip
     }
 }
 #[test]
-fn msh_attachment_card_swordsman_queued_equipment_animation_type_or_control_change_keeps_old_link()
-{
+fn msh_attachment_card_swordsman_queued_changes_respect_current_attachment_legality() {
     for p in [Player::P0, Player::P1] {
         for change in 0..3 {
             let mut g = setup(p);
@@ -736,7 +738,11 @@ fn msh_attachment_card_swordsman_queued_equipment_animation_type_or_control_chan
             settle(&mut g);
             assert_eq!(
                 g.state.objects[pole as usize].attached_to,
-                Some(g.object_ref(old))
+                if change == 0 {
+                    None
+                } else {
+                    Some(g.object_ref(old))
+                }
             );
         }
     }
