@@ -7553,3 +7553,7 @@ mod msh_skrull_tests;
 #[cfg(test)]
 #[path = "engine_msh_thirst_tests.rs"]
 mod msh_thirst_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_seventh_combined_tests.rs"]
+mod msh_seventh_combined_tests;
