@@ -414,13 +414,13 @@ fn msh_parity_library_core_simultaneous_conditional_indestructible_is_frozen_bef
         let mut g = setup(p);
         let doom = named(&mut g, p.other(), "Doctor Doom", Zone::Battlefield);
         let value = g.state.objects[doom as usize].card.fixed_mana_value();
-        let choice = if value % 2 == 0 {
+        let choice = if value.is_multiple_of(2) {
             ManaValueParity::Even
         } else {
             ManaValueParity::Odd
         };
         let recipe = CopyRecipe::new(
-            Card::from_name(if value % 2 == 0 {
+            Card::from_name(if value.is_multiple_of(2) {
                 "Bear Cub"
             } else {
                 "Brazen Scourge"
