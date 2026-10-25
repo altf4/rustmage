@@ -5,16 +5,10 @@ use super::*;
 const RONIN: &str = "Ronin, Shadow Stalker";
 const SHANG: &str = "Shang-Chi, Master of Kung Fu";
 fn seed(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    let card = Card::from_name(name).unwrap();
-    if card.is_supported() {
-        return named(g, p, name, zone);
-    }
-    assert!([RONIN, SHANG].contains(&name));
-    assert_eq!(zone, Zone::Hand);
-    let id = named(g, p, "Forest", zone);
-    g.state.objects[id as usize].card = card;
-    id
+    assert!(Card::from_name(name).unwrap().is_supported(), "{name}");
+    named(g, p, name, zone)
 }
+
 pub(super) fn game(p: Player) -> Game {
     let mut g = setup(p);
     for s in &mut g.state.players {

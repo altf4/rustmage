@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "982da31b71ce739283b18108bc1bd48946f473b72646433fc416f39fdc6dd7c6",
+  "catalogue_version": "ae7cc1ecbfa324d7c5aced188b8e5640432d3f8982daea06df0cf5d26ba1d127",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2539,
-  "implemented_total": 2545,
+  "implemented_standard_cards": 2541,
+  "implemented_total": 2547,
   "token_definitions": 125,
   "emblem_definitions": 3,
   "adventure_definitions": 40,
@@ -125,8 +125,8 @@
     },
     "msh": {
       "total": 273,
-      "complete": 234,
-      "gated": 39
+      "complete": 236,
+      "gated": 37
     },
     "one": {
       "total": 1,
@@ -28853,8 +28853,8 @@
     {
       "name": "Ronin, Shadow Stalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/ronin_shadow_stalker.rs",
       "set": "msh"
     },
@@ -30685,8 +30685,8 @@
     {
       "name": "Shang-Chi, Master of Kung Fu",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msh/shang_chi_master_of_kung_fu.rs",
       "set": "msh"
     },
