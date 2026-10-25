@@ -75,7 +75,7 @@
     {
       "path": "<cache>/rustmage-msh-incursion-justice-loki-design-e5f576b5.json",
       "sha256": "aa383fba470c9b70b9279c3810e1473d7a0b0728f6f961729e3adb7d3225f78a",
-      "coverage": "Full3 Oracle/direct classes;42 reverified Java pins,40 full helper bodies and explicitly ranged StaticFilters/GameEvent infrastructure;25 base Rust snapshots refreshed. Five additional full fixture Java bodies included."
+      "coverage": "Full3 Oracle/direct classes;42 reverified Java pins,40 full Java bodies including direct classes and explicitly ranged StaticFilters/GameEvent infrastructure;25 base Rust snapshots refreshed. Five additional full fixture Java bodies included."
     },
     {
       "path": "<cache>/rustmage-msh-incursion-return-target-core-fixture-audit-e5f576b5.json",
