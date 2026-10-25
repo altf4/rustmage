@@ -1640,7 +1640,7 @@ impl Game {
                 .any(|choice| {
                     emit(Action::ChooseDamagePrevention {
                         source: choice.source,
-                        kind: choice.kind,
+                        prevention: choice.kind,
                     })
                 });
         }

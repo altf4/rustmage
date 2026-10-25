@@ -461,7 +461,7 @@ define_actions! {
     FinishEvidence,
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
-    ChooseDamagePrevention { source: ObjectRef, kind: DamagePreventionKind },
+    ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
     ChooseCreatedToken { object: ObjectRef },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
@@ -4464,8 +4464,8 @@ impl Game {
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
             }
-            Action::ChooseDamagePrevention { source, kind } => {
-                self.choose_damage_prevention(source, kind)
+            Action::ChooseDamagePrevention { source, prevention } => {
+                self.choose_damage_prevention(source, prevention)
             }
             Action::ChooseCreatedToken { object } => self.choose_created_token(object),
             Action::ChooseLibraryDestination {

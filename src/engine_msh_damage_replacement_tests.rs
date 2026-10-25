@@ -672,7 +672,7 @@ fn msh_damage_wolverine_prevention_order_exposes_owned_queued_heal_truthfully() 
             }
             let action = Action::ChooseDamagePrevention {
                 source: reference,
-                kind: DamagePreventionKind::ProtectionInstantSorcery,
+                prevention: DamagePreventionKind::ProtectionInstantSorcery,
             };
             g = orphan(g, action);
             settle(&mut g);
