@@ -216,6 +216,7 @@ impl Game {
         events: &[ZoneChange],
         death_sources: &[ObjectView],
     ) {
+        self.record_entry_turn_facts(events);
         self.graveyard_departure_triggers(events, death_sources);
         for event in events {
             if event.moved

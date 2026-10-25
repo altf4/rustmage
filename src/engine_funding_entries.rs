@@ -189,6 +189,10 @@ impl FundingState<'_> {
         };
         match guard {
             StepGuard::Always => true,
+            StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
+            StepGuard::HeroEnteredOrAttackedThisTurn => {
+                state.turn_facts.hero_entered || state.turn_facts.hero_attacked
+            }
             StepGuard::AttachedControllerTurn => {
                 steps::attached_controller_turn(self, source, self.active)
             }
@@ -1442,3 +1446,7 @@ mod msh_namor_funding_tests;
 #[cfg(test)]
 #[path = "engine_msh_galactus_funding_tests.rs"]
 mod msh_galactus_funding_tests;
+
+#[cfg(test)]
+#[path = "engine_msh_turn_facts_funding_tests.rs"]
+mod msh_turn_facts_funding_tests;

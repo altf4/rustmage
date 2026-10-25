@@ -3,10 +3,156 @@
   "catalogue_id": 2231,
   "oracle_id": "94bc796d-8c04-4835-8a99-7e5dce9540ee",
   "facts_sha256": "c8ac4369c0952fb0305f5894e00e54d2a9d256ac4524f292e6924ae7096cded8",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "e1dc588ddecdfb63f716f1a5c3c06c3598ff9ca1ec4afcc4a0d9f6b3cb01d971"
-  },
-  "physical_metadata_sha256": "aefef0ea691dbd2c4188964f4c750822772c9c0eb8ee1caa6954526ab93d2813"
+  "complete": true,
+  "physical_metadata_sha256": "aefef0ea691dbd2c4188964f4c750822772c9c0eb8ee1caa6954526ab93d2813",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IronManMasterOfMachines.java",
+  "java_sha256": "e3e0b3e2ccbb1ae7b00f7fcb67ca51877390c23d89b7d4319833d3c4c9d14f5e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/ArtifactEnteredControllerWatcher.java",
+      "sha256": "a1f364da559cfe59d73e34963271cd4aebcb3780e727886dfcd56b57926b3339"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ArtifactEnteredUnderYourControlCondition.java",
+      "sha256": "dd5f36d0ec21da7009bb16253902186e50db2e60aa79c99584b8f368f8d9886d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/AttackedThisTurnWatcher.java",
+      "sha256": "6c5e923e07c20b5532156598d59f92869d578f7fba9e42c238240b2dcd9b13df"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/PermanentsEnteredBattlefieldWatcher.java",
+      "sha256": "5179d8e5329c11f2d83e74aa2699a92a98d7952ed766ebd4f9532ddf050bfa77"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+      "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+      "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+      "sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterObject.java",
+      "sha256": "3291230fda49cc9fdf35efcf07cb8da4fb61402007d995c42b8a710b1aeed139"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterImpl.java",
+      "sha256": "c37b5da53536d79bca322d9142ad1c3fae0f99cd046c9a7dab6927625a1768cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/CardType.java",
+      "sha256": "91ac0d97c24ca1d348db19c44402567797a1929d2075dfe9fb837d62be2e1f45"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    }
+  ]
 }

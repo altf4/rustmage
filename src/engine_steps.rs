@@ -152,6 +152,10 @@ impl Game {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
             StepGuard::Always => return true,
+            StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
+            StepGuard::HeroEnteredOrAttackedThisTurn => {
+                return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;
+            }
             StepGuard::AttachedControllerTurn => {
                 return attached_controller_turn(self, source, self.state.active);
             }
