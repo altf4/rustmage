@@ -27,9 +27,9 @@ pub(super) fn available<W: CharacteristicWorld + ?Sized>(
     definition.has_improvise() || world.static_sources().iter().any(|&id| {
         let source = world.object(id);
         source.zone == Zone::Battlefield && source.controller == player
-            && world.fragment_available(id, |f| matches!(f, StaticAbilityFragment::SpellImprovise(filter) if filter.matches(definition)))
             && source.card.static_ability_groups().iter().any(|g| g.fragments.iter()
                 .any(|f| matches!(f, StaticAbilityFragment::SpellImprovise(filter) if filter.matches(definition))))
+            && world.fragment_available(id, |f| matches!(f, StaticAbilityFragment::SpellImprovise(filter) if filter.matches(definition)))
     })
 }
 pub(super) fn eligible<W: CharacteristicWorld + ?Sized>(
