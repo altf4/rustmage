@@ -1236,6 +1236,9 @@ impl Game {
     }
 
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
+        // Every committed path classifies the selected spell face, including
+        // manual direct-payment insertion. The physical front may differ.
+        let card = stack.map_or(card, |i| self.state.stack[i].source_card);
         self.consume_resolution_cast_quota(caster, stack);
         self.consume_turn_cast_grants(caster, card);
         let first_trigger = self.state.pending_triggers.len();
@@ -1249,6 +1252,12 @@ impl Game {
             *count = count
                 .checked_add(1)
                 .capacity("qualifying spell count exhausted");
+        }
+        if CastFilter::Creature.matches(card) {
+            let count = &mut self.state.players[caster.index()].creature_spells_cast_this_turn;
+            *count = count
+                .checked_add(1)
+                .capacity("creature spell count exhausted");
         }
         let cast_event = stack.and_then(|i| {
             let item = &self.state.stack[i];

@@ -1995,6 +1995,7 @@ pub(crate) enum StatValue {
         minimum: u16,
     },
     SpellsCastThisTurn,
+    CreatureSpellsCastThisTurn,
     LifeGainOccurredThisTurn,
     CreaturesDiedThisTurn,
     LifeGainedThisTurn,
@@ -2690,6 +2691,11 @@ pub(crate) enum SpellReductionAmount {
     },
     SourcePower,
     EquippedPower,
+}
+/// Permission belonging to the chosen spell, checked before costs (CR601.6a).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum SelfCastTiming {
+    ControlSubtype(&'static str),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct SpellReduction {
@@ -4107,6 +4113,12 @@ impl Card {
     /// Timing permission is an as-though effect, not a granted Flash keyword.
     pub(crate) fn cast_timing_grants(self) -> &'static [CastFilter] {
         generated::cast_timing_grants(self)
+    }
+    pub(crate) fn self_cast_timing(self) -> Option<SelfCastTiming> {
+        authored::rules(self).and_then(|r| r.extras.self_cast_timing)
+    }
+    pub(crate) fn cast_timing_guard(self) -> StepGuard {
+        authored::rules(self).map_or(StepGuard::Always, |r| r.extras.cast_timing_guard)
     }
     pub(crate) fn cast_timing_requires_opponent_spell(self) -> bool {
         authored::rules(self).is_some_and(|r| r.extras.cast_timing_requires_opponent_spell)

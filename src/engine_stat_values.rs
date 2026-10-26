@@ -247,6 +247,9 @@ impl Game {
             StatValue::SpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].spells_cast_this_turn)
             }
+            StatValue::CreatureSpellsCastThisTurn => {
+                i128::from(self.state.players[owner.index()].creature_spells_cast_this_turn)
+            }
             StatValue::CreaturesDiedThisTurn => i128::from(self.state.creatures_died_this_turn),
             StatValue::LifeGainOccurredThisTurn => {
                 i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)

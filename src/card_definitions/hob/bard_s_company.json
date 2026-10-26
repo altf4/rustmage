@@ -3,10 +3,51 @@
   "catalogue_id": 327,
   "oracle_id": "5c5bfbb2-0e63-4e43-b441-c4878983288f",
   "facts_sha256": "cf78e7e552580c4e4cbf0037f89a9b80e311eacb8dfe8a5f1f3407a7491c3515",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d5f4d14bd6218c6ad749d5e569c114aa7053732fec0c213d8489b4d924ca0684"
   },
-  "physical_metadata_sha256": "162ff0c3581b45c0704d5a1de2a25ab8ee4195d41d20e1759941e2c1fec975df"
+  "physical_metadata_sha256": "162ff0c3581b45c0704d5a1de2a25ab8ee4195d41d20e1759941e2c1fec975df",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BardsCompany.java",
+  "java_sha256": "ecb4e99726124c25dcbbddf8c87901727bcd0f2e5715ab2022e9b557685ce183",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastAsThoughItHadFlashIfConditionAbility.java",
+      "sha256": "b7c2ba3aaca09b0fae47d9b0fa3b75dad6419534ac5359c72d82333a773470d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastAsThoughItHadFlashSourceEffect.java",
+      "sha256": "0133a3b283674253c2fbbf1ea6c19cb060ed95fb38176cee61e7222a9aea635a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    }
+  ],
+  "remaining_obligations": []
 }

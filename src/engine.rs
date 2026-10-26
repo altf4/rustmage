@@ -862,6 +862,7 @@ struct PlayerState {
     nonland_permanents_entered_this_turn: u64,
     spells_cast_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
+    creature_spells_cast_this_turn: u64,
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
     card_left_graveyard_this_turn: bool,
@@ -2541,6 +2542,7 @@ impl Game {
             nonland_permanents_entered_this_turn: 0,
             spells_cast_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
+            creature_spells_cast_this_turn: 0,
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
             card_left_graveyard_this_turn: false,
@@ -6460,6 +6462,7 @@ impl Game {
             player.nonland_permanents_entered_this_turn = 0;
             player.spells_cast_this_turn = 0;
             player.instant_sorcery_cast_this_turn = 0;
+            player.creature_spells_cast_this_turn = 0;
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
