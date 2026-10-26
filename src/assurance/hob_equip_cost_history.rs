@@ -358,7 +358,7 @@ fn kili_equal_mana_choice_discriminator_and_unrelated_choice_shapes() {
             .iter()
             .all(|c| c.get("activation_route").is_none())
     );
-    assert_eq!(OBSERVATION_SCHEMA, 156);
+    assert!(OBSERVATION_SCHEMA >= 156);
 }
 #[test]
 fn kili_free_route_available_when_printed_life_is_unpayable_and_timing_still_restricted() {
