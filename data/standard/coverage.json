@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7756513f7015b914378b55aee0481571a8d859845aaeca129323a53a96b402f8",
+  "catalogue_version": "30d699264cbabbb3d8b47b3854dac08e7bc28bf910226dfa0cf5df625e94b27d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2655,
-  "implemented_total": 2661,
+  "implemented_standard_cards": 2656,
+  "implemented_total": 2662,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 141,
-      "gated": 47
+      "complete": 142,
+      "gated": 46
     },
     "hoc": {
       "total": 5,
@@ -13628,8 +13628,8 @@
     {
       "name": "Gandalf, Wandering Wizard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/gandalf_wandering_wizard.rs",
       "set": "hob"
     },

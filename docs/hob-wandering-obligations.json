@@ -185,5 +185,20 @@
       "source_fixed_until_terminal": true
     }
   ],
-  "proof_sha256": "e71da68396917a34fec3e7b99b3945c82855a8865792f0bc1cc8c9ca6a8af9dd"
+  "proof_sha256": "e71da68396917a34fec3e7b99b3945c82855a8865792f0bc1cc8c9ca6a8af9dd",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "7788171a8f181abaa672ac47ad0881f6b90e34e1",
+      "result": "Firm completeOracle/Java/all7pins, officialrulesowner/shufflecorrections, typedsource and22actualpassesapproved; no actionable findings",
+      "proof_sha256": "e71da68396917a34fec3e7b99b3945c82855a8865792f0bc1cc8c9ca6a8af9dd"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "7788171a8f181abaa672ac47ad0881f6b90e34e1",
+      "result": "Firm completeOracle/Java/all7pins, officialrulesowner/shufflecorrections, typedsource and22actualpassesapproved; no actionable findings",
+      "proof_sha256": "e71da68396917a34fec3e7b99b3945c82855a8865792f0bc1cc8c9ca6a8af9dd"
+    }
+  ],
+  "integration_status": "Two independent fullsource/rulesapprovals. Rootregisteredassuranceandregeneratedlinks;147localcandidates46gated,all69inheritedmapped. Nextcoherentdefaultreleasecheckpointandwhole193acceptanceopen."
 }
