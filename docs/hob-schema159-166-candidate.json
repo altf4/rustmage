@@ -40,7 +40,7 @@
       "limitation": "No admitted live selected-entry-prevention fixture; selected-card exclusion from remainder source-audited."
     }
   ],
-  "status": "Historical projections and independent adoption reviews passed; 166-card full release and whole193/final published PR acceptance remain open.",
+  "status": "166-card full release passed at exact 3fa4cf1a; independent terminal receipt audits and whole193/final published PR acceptance remain open.",
   "integrated_recording": {
     "head": "8272485c19ee4e55372df45a36fd86dd6d75c1a0",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated166-1",
@@ -478,5 +478,101 @@
       "hob_review_rules: approved merged source and exact candidate adoption",
       "hob_review_contracts: approved merged source and exact candidate adoption"
     ]
+  },
+  "full_release": {
+    "head": "3fa4cf1a81f20f2ca4ecc9c55ef0cf8fdef86b18",
+    "report": "<cache>/rustmage-validation-5sugglmb/report/result.json",
+    "terminal": true,
+    "success": true,
+    "seconds": 361.4230580859585,
+    "phases": [
+      {
+        "name": "source pins",
+        "exit": 0,
+        "seconds": 0.7160421709995717
+      },
+      {
+        "name": "format",
+        "exit": 0,
+        "seconds": 1.7691528709838167
+      },
+      {
+        "name": "card format",
+        "exit": 0,
+        "seconds": 1.1197480380069464
+      },
+      {
+        "name": "script contracts",
+        "exit": 0,
+        "seconds": 0.6678210719837807
+      },
+      {
+        "name": "clippy",
+        "exit": 0,
+        "seconds": 43.62512343400158
+      },
+      {
+        "name": "native assurance",
+        "exit": 0,
+        "seconds": 178.11981843505055
+      },
+      {
+        "name": "release build",
+        "exit": 0,
+        "seconds": 134.92423166899243
+      },
+      {
+        "name": "simulation sample",
+        "exit": 0,
+        "seconds": 0.11530140100512654
+      },
+      {
+        "name": "Python assurance",
+        "exit": 0,
+        "seconds": 0.16603511001449078
+      }
+    ],
+    "native": {
+      "passed": 1036,
+      "compile_seconds": 154.40248240099754,
+      "execution_seconds": 23.583992765983567
+    },
+    "python": {
+      "tests": 8,
+      "success": true
+    },
+    "inputs": {
+      "files_verified": 11969,
+      "sha256": "0fbd675f92d6169558b4bf09d5c94c7d367b3bf7fe3072e40c54d5c7d6e40134",
+      "changed": [],
+      "active_processes": []
+    },
+    "guard": {
+      "report": "<cache>/rustmage-build-reports/104426fbb7bd4b1198b49d38e8bd3973.json",
+      "seconds": 381.3006109780399,
+      "memory_peak_bytes": 3204521984,
+      "memory_max_bytes": 6442450944,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "library": {
+      "path": "<cache>/rustmage-validation-5sugglmb/report/libraries/librustmage.so",
+      "sha256": "1b7d0ffd04cf61016525f07de1e22e64e4ee5e759b6f48abd51be4e4f7630fa1",
+      "mode": "0555"
+    },
+    "simulation": {
+      "clone_ns": 284.55712,
+      "decisions": 4941,
+      "decisions_per_second": 118044.30615403599,
+      "games": 10,
+      "games_per_second": 238.90772344471966,
+      "initial_state_bytes_excluding_capacity_and_allocator": 21848,
+      "max_decisions_per_game": 655,
+      "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+      "restore_ns": 218.50657,
+      "seconds": 0.041857165
+    },
+    "terminal_independent_reviews": "Pending two independent receipt audits."
   }
 }
