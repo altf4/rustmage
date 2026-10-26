@@ -1,6 +1,6 @@
 {
   "schema": 154,
-  "status": "Schema154 baseline adopted after exact inherited-row audits; integrated release acceptance pending",
+  "status": "Schema154 baseline adopted and integrated checkpoint release validation passed; full-set acceptance remains pending",
   "main_after_522_revert_schema": 152,
   "historical_local_baseline_schema": 153,
   "changes": [
@@ -74,6 +74,31 @@
       "report": "~/.cache/rustmage-validation-lojgf2_v/report/result.json",
       "result": "All-targets Clippy found two redundant u32-to-u32 conversions in graveyard-origin test mana sums. Removed without changing test behavior or library code.",
       "seconds": 27.089363443024922
+    },
+    {
+      "head": "faca97565002e5365de189edcab453c8eecf800a",
+      "report": "~/.cache/rustmage-validation-y3jor6s1/report/result.json",
+      "result": "Terminal success: all nine phases, 672 native tests and 8 Python smoke tests; ordinary strict current-schema trace regression passes. No changed inputs or active processes. This checkpoint admits116/193 HOB identities; full-set acceptance remains pending.",
+      "seconds": 298.5293747949763,
+      "native_compile_seconds": 133.49643156898674,
+      "native_execution_seconds": 14.708275018027052,
+      "release_build_seconds": 129.0061323150294,
+      "files_verified": 11849,
+      "library": {
+        "path": "/home/altf4/.cache/rustmage-validation-y3jor6s1/report/libraries/librustmage.so",
+        "sha256": "2690e37e6a0621aebf264ba78174b5d167d1eddd490cb0ddce9de5c1949e7f2c",
+        "mode": "0555"
+      },
+      "resource_report": "~/.cache/rustmage-build-reports/e5a179def918407cb15a9e08c1f6d4ab.json",
+      "memory_peak_bytes": 3040710656,
+      "oom_events": 0,
+      "simulation": {
+        "workload": "10-game limited-catalogue native Freeform smoke; not full-set acceptance",
+        "decisions": 4941,
+        "seconds": 0.041154013,
+        "decisions_per_second": 120061.19549021866,
+        "games_per_second": 242.98966907552852
+      }
     }
   ]
 }
