@@ -1,0 +1,185 @@
+{
+  "cohort": "HOB Gandalf, Spark Starter and Uncover the Moon-Letters",
+  "base_revision": "6358f190cb0f1c0784d9a7587e17a28e90303d79",
+  "scope": "Two complete paired leaf definitions; no engine/state/schema/identity changes. Root registers assurance and regenerates linkage. Dancing from Dark to Dawn remains gated and its token unreserved.",
+  "sources": {
+    "oracle": "Full pinned data/standard/cards.json entries, including mana costs/types and every printed obligation.",
+    "gandalf": "Full pinned GandalfSparkStarter.java, ETB/reach/divided-damage/target-amount helpers; official Hobbit release notes require positive declared shares and no redistribution on target loss.",
+    "letters": "No XMage class in pinned inventory/tree; paired provenance explicitly records absence. Full reusable SpectacularSkywhale/Opus/cast-trigger/dynamic-draw/discard/mana-spent helpers read; none represented as this absent identity implementation."
+  },
+  "assertions": {
+    "spark_paid_body_reach_and_one_two_three_positive_damage_shares": "Both seats, exact4RR paid,4/3 reach, actual distributions3,2+1,1+1+1, concrete player life and creature damage.",
+    "spark_partial_stale_targets_keep_their_shares_and_source_departure_does_not_cancel": "Both seats, two shares2+1; target leaves/reenters same slot, source leaves; new incarnation unharmed, surviving target receives only1; raw/index owned restore at queued packet.",
+    "spark_rejects_illegal_targets_and_allocations_transactionally_then_all_targets_can_vanish": "Both seats, rejectzero targets/land/duplicate/zero-or-oversized share; owned raw/index allocation branch; partial survivor receives only its share; all-target-loss packet does nothing.",
+    "letters_paid_enchantment_excludes_itself_creatures_opponents_and_allows_repeated_casts": "Both seats, paid3U enchantment no self-trigger; own creature/opponent spell excluded; own two noncreature casts each trigger and can decline without draw/discard.",
+    "letters_draws_actual_retained_payment_after_reduction_counter_and_source_departure": "Both seats, actual Divination MV3 pays3 or1 using actual equipped Glamdring; original spell countered and enchantment leaves; accepted trigger draws exactly retained payment then discards exactlytwo, private hand observations, illegal discard rollback and owned branches.",
+    "letters_free_cast_zero_can_be_accepted_or_declined_and_acceptance_still_discards_two": "Both seats, actual Omniscience free MV3 Divination pays0; countered original preserves zero; decline keeps hand, accept drawszero and discards exactlytwo; mana remains0.",
+    "letters_retains_chosen_x_payment_and_discards_only_available_cards": "Both seats X2 Finale paidUU+2 retains4 after counter; draws4/discards2. Additional zero-draw fixture with one card discards that one and completes."
+  },
+  "shared_contracts": [
+    "Existing TargetAllocation/prepaid-trigger machinery; no new allocation algorithm or wire vocabulary.",
+    "Existing cast_event payment snapshot via ManaSpent minimum0 wrapper; no mana-value substitution or live source lookup.",
+    "Existing optional block, draw/discard, privacy, transactional reject, assurance::contracts::branch_contract roots.",
+    "Countered-cast fixture invokes actual shared counter_stack_item for original paid spell, not a fabricated cast event. Discard actions and all payments use checked legal actions."
+  ],
+  "fixture_preflight": "All selected fixture identities admitted in generated catalogue: Gandalf1677,Uncover4759 after new definitions, BearCub357,HillGiant7,Shock10,Forest4,Divination12,Glamdring1764,Omniscience3020,Finale1511. Verified prepaid triggered-target announcements have no payment window; helpers only pay if an actual payment action exists. Postterminal runtime-shape correction explicitly allocates even a single prepaid target when TargetAmount is pending and identifies the original spell by card+StackKind::Spell rather than stack position.",
+  "validation": {
+    "status": "Coherent family passed20 actual checks:7new+Plan1+Opus1+castrollback6+storm5; two independent fullsource/focused reviews pending.",
+    "sourcecheck": {
+      "definitions": 5414,
+      "source_blobs": 1543,
+      "java_verified": true
+    },
+    "format": "rustfmt edition2024 on all owned Rust; git diff --check before freeze",
+    "initial_run": {
+      "passed": 2,
+      "failed": 5,
+      "ignored": 0,
+      "terminal": true,
+      "exit": 101,
+      "native_seconds": 150.4439799140091,
+      "scenario_seconds": 0.01,
+      "log_directory": "<cache>/rustmage-authoring/hob-spark-letters/run-adf9dd892b164dfcbb568e3deccb2882",
+      "resource_report": "<cache>/rustmage-build-reports/b0926e0cb0844172b1174cf16bd8d044.json",
+      "failure": "Fixture assumption errors: queued Uncover trigger was top stack item, so original-spell lookup by last() read source mana value4 and countered the trigger. Select original by physical card and StackKind::Spell. One-target prepaid divided trigger requires explicit target amount3; helper now handles that legal allocation. No engine/card behavior changed after terminal."
+    },
+    "handoff_run": {
+      "terminal": true,
+      "exit": 120,
+      "new_scenarios_passed": 7,
+      "new_scenarios_failed": 0,
+      "new_scenarios_ignored": 0,
+      "scenario_seconds": 0.01,
+      "scope": "First group only; remaining regressions never started, not a successful coherent-family run",
+      "resource_report": "<cache>/rustmage-build-reports/0afabfd090e740e5a5b82485962748cb.json",
+      "guard_seconds_including_queue": 471.3911823030212,
+      "peak_memory_bytes": 2612928512,
+      "oom_events": 0,
+      "log": "<cache>/rustmage-authoring/hob-spark-letters/run-2fb2a731de5e4427a624f8b28c5cc0d0/0-hob_spark_letters.log",
+      "finding": "Output-channel loss after agent-turn handoff; exit120 immediately after firstgroup and no later logs is consistent with Python stdout flush failure. No cancellation and no source behavior failure. Next persistent-file driver emits all results into cache files and redirects entire outer guard output at launch."
+    },
+    "final_persistent_run": {
+      "results": [
+        {
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "--no-run",
+            "--message-format=json",
+            "--target-dir",
+            "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/target"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.06573850294807926,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/root-persistent-1/compile.log",
+          "name": "compile"
+        },
+        {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/target/debug/deps/rustmage-b764cd26223fba2c",
+            "engine::assurance::hob_spark_letters::",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.03381737199379131,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/root-persistent-1/0.log",
+          "name": "0",
+          "passed": 7
+        },
+        {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/target/debug/deps/rustmage-b764cd26223fba2c",
+            "engine::assurance::msh_c::msh_c_plan_thresholds_grouped_events_and_all_three_saga_chapters",
+            "--nocapture",
+            "--test-threads=1",
+            "--exact"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.017755390028469265,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/root-persistent-1/1.log",
+          "name": "1",
+          "passed": 1
+        },
+        {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/target/debug/deps/rustmage-b764cd26223fba2c",
+            "engine::assurance::sos_wu_audit::sos_audit_wu_opus_frozen_actual_spend_and_deluge_entry_stun",
+            "--nocapture",
+            "--test-threads=1",
+            "--exact"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.03371404600329697,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/root-persistent-1/2.log",
+          "name": "2",
+          "passed": 1
+        },
+        {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/target/debug/deps/rustmage-b764cd26223fba2c",
+            "engine::assurance::sos_cast_rollback::",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.0656542390352115,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/root-persistent-1/3.log",
+          "name": "3",
+          "passed": 6
+        },
+        {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/target/debug/deps/rustmage-b764cd26223fba2c",
+            "engine::assurance::sos_storm::",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.01699674699921161,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/root-persistent-1/4.log",
+          "name": "4",
+          "passed": 5
+        }
+      ],
+      "resource_report": "<cache>/rustmage-build-reports/af0c80aa0c0d4b45bc9d757c3a4733b6.json",
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-spark-letters/root-persistent-1/run.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 74.76527521800017,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 25792512,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "persistent_results": "<cache>/rustmage-authoring/hob-spark-letters/root-persistent-1/results.json",
+      "outer_log": "<cache>/rustmage-authoring/hob-spark-letters/root-persistent-1/outer.log",
+      "source_behavior": "No Rust/card source changed after successful7group in partial exit120 run; persistent rerun reused valid Cargo cache and actually executed all20checks. No baseline/fullrelease/whole193 claim."
+    }
+  },
+  "integration": "No PR/push/merge. Root owns generated linkage/test-module registration, integrated release, and two independent nonauthor reviews.",
+  "remaining_blockers": [],
+  "proof_sha256": "b8b64e1c5a49745077cc4d820c6ec8cf3468355d2a54121bb0305263b9f45d08",
+  "measurement": {
+    "new_candidate_identities": 2,
+    "scope": "Isolated Gandalf/Letters source authorship, retained failedfixture and handoff-run evidence, then cached coherent20check pass. No simulation benchmark measured. Full integrated checkpoint pending."
+  }
+}
