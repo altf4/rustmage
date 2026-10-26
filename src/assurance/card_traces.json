@@ -1287,6 +1287,14 @@
     "journal": "e7478e88be80e379",
     "observations": "a7023b6122601d56"
   },
+  "Balin, Loremaster": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "2fdd5d796574084d",
+    "observations": "d196b67a6836357a"
+  },
   "Ball Lightning": {
     "root": "main",
     "status": "completed",
@@ -2950,6 +2958,14 @@
     "zone": "Battlefield",
     "journal": "262bbd90cbe73a60",
     "observations": "59f453d5061570e5"
+  },
+  "Celebrate the Mountain-king": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 11,
+    "zone": "Battlefield",
+    "journal": "dc03f3f36efcdc18",
+    "observations": "f522ad57b78f8209"
   },
   "Celestial Armor": {
     "root": "main",
@@ -18462,6 +18478,14 @@
     "zone": "Battlefield",
     "journal": "8af54ec46c2d4077",
     "observations": "232708fd9949b990"
+  },
+  "The Great Goblin": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "c4c2e0276f95af2b",
+    "observations": "d31d8a4803036a18"
   },
   "The Huntsman's Redemption": {
     "root": "main",

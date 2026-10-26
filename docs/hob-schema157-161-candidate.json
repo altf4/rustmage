@@ -6,7 +6,10 @@
     "all_nine_pass": true,
     "native_passed": 960,
     "python_passed": 8,
-    "terminal_receipt_reviews": "pending two independent auditors"
+    "terminal_receipt_reviews": [
+      "hob_review_contracts: approved exact cc636931 and seven immutable libraries",
+      "hob_review_rules: approved exact cc636931 and seven immutable libraries"
+    ]
   },
   "cohorts": [
     {
@@ -38,5 +41,79 @@
       "focused_passed": 40
     }
   ],
-  "status": "Leaf reviews approved; combined HOB focused tests, historical trace audits, baseline review and full release remain open."
+  "status": "Reviewed 2676-row baseline adopted; normal full release and whole193/final published PR acceptance remain open.",
+  "integrated_recording": {
+    "head": "cb731d6d3143bff0ec0623d4c38d38355eef16ef",
+    "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated161-1",
+    "focused_passed": 398,
+    "compile_seconds": 28.60326363600325,
+    "guard_seconds": 150.9207107719849,
+    "peak_bytes": 2485866496,
+    "oom_events": 0,
+    "candidate_sha256": "f0dd63f9ef10b410a696531dd9db401a1961908f2bb4a15cd2bdbd5b940a78e2",
+    "candidate_rows": 2676,
+    "historical_audits": {
+      "158": {
+        "schema": 157,
+        "old": 2673,
+        "additions": 3,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "154": {
+        "schema": 157,
+        "old": 2669,
+        "additions": 7,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "147": {
+        "schema": 156,
+        "old": 2662,
+        "additions": 14,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "136": {
+        "schema": 155,
+        "old": 2641,
+        "additions": 35,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "126": {
+        "schema": 154,
+        "old": 2631,
+        "additions": 45,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "105": {
+        "schema": 153,
+        "old": 2610,
+        "additions": 66,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "95": {
+        "schema": 152,
+        "old": 2584,
+        "additions": 92,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      }
+    },
+    "recording_exit_101": "Six recordings reached expected cardinality check 2676 versus committed 2673; no ordinary strict-pass claim.",
+    "independent_reviews": [
+      "hob_review_rules: approved merged source and exact candidate adoption",
+      "hob_review_contracts: approved merged source and exact candidate adoption"
+    ]
+  }
 }
