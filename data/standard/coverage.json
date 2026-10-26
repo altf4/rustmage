@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a3c6a39217a4c562e372c08d16d3ffafb264c18979d2d05a374114780021320c",
+  "catalogue_version": "a5a9cc0b51bdd5848f5e78bb9e58c55e0c326b985b90f5923dab4904ebb30eec",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2665,
-  "implemented_total": 2671,
+  "implemented_standard_cards": 2667,
+  "implemented_total": 2673,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 151,
-      "gated": 37
+      "complete": 153,
+      "gated": 35
     },
     "hoc": {
       "total": 5,
@@ -36516,8 +36516,8 @@
     {
       "name": "Thorin Oakenshield",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/thorin_oakenshield.rs",
       "set": "hob"
     },
@@ -39724,8 +39724,8 @@
     {
       "name": "Vow to Erebor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/vow_to_erebor.rs",
       "set": "hob"
     },

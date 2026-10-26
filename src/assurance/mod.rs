@@ -256,3 +256,5 @@ mod hob_azog_rampager;
 
 mod hob_desolation;
 mod hob_riddles;
+
+mod hob_vow_thorin;
