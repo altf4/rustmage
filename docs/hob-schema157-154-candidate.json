@@ -72,7 +72,7 @@
       "test_threads": 1
     }
   },
-  "status": "Exact reviewed 2669 baseline adopted. Normal default full release next; whole193/final published review remain open.",
+  "status": "Exact audited2669 baseline adopted. First normal fullrelease stopped on proof-only constant assertion Clippy; repaired after natural termination, focused repair and rerun pending.",
   "integrated_focus": {
     "head": "901f3e20fd158c2289c3cc8590b11517bd983724",
     "passed": 350,
@@ -381,6 +381,65 @@
       "reviewer": "hob_review_contracts",
       "revision": "901f3e20fd158c2289c3cc8590b11517bd983724",
       "result": "Firm full integrated source, schema157 wire, exact historical full-row and terminal focused evidence approval; no findings. Default full release pending."
+    }
+  ],
+  "release_attempts": [
+    {
+      "head": "2d0b8ec3428963250a2f454ec03ab91d3e4a9e96",
+      "terminal": true,
+      "success": false,
+      "seconds": 46.56499535997864,
+      "files_verified": 11941,
+      "changed": [],
+      "active_processes": [],
+      "report": "<cache>/rustmage-validation-dtcz9kuf/report/result.json",
+      "phases": [
+        {
+          "exit": 0,
+          "seconds": 0.7674498769920319,
+          "name": "source pins"
+        },
+        {
+          "exit": 0,
+          "seconds": 1.7701561460271478,
+          "name": "format"
+        },
+        {
+          "exit": 0,
+          "seconds": 1.1189641000237316,
+          "name": "card format"
+        },
+        {
+          "exit": 0,
+          "seconds": 0.5664140440057963,
+          "name": "script contracts"
+        },
+        {
+          "exit": 101,
+          "seconds": 42.17722498200601,
+          "name": "clippy"
+        }
+      ],
+      "finding": "Clippy assertions_on_constants flagged proof-only version lower-bound assertion; fix compile-time const assertion after natural termination. No gameplay or baseline change.",
+      "guard": {
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/hob-complete-set/rustmage/scripts/validate.py",
+          "--release",
+          "--python",
+          "smoke",
+          "--target-dir",
+          "<cache>/rustmage-authoring/hob-complete-set/target"
+        ],
+        "terminal": true,
+        "exit_code": 1,
+        "seconds": 46.773209940991364,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2047438848,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
     }
   ]
 }
