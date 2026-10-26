@@ -89,7 +89,7 @@
   },
   "validation": {
     "focused_run": "<cache>/rustmage-authoring/hob-celebrate/run-3",
-    "result": "38 passed across five filters, including four Celebrate scenarios; compile and all filters exit 0; no timeout or orphaned processes",
+    "result": "40 passed across five filters, including four Celebrate scenarios; compile and all filters exit 0; no timeout or orphaned processes",
     "guard_seconds": 67.426500889007,
     "peak_bytes": 2481147904,
     "memory_limit_bytes": 6442450944,
@@ -98,7 +98,7 @@
       "Run 1 failed at compilation because the external assurance module used the private Card tuple constructor; changed fixture to catalogue lookup after termination.",
       "Run 2 compiled and two Celebrate scenarios passed; two failed because fixture give_priority overwrote the pending trigger-order choice. Removed those fixture calls after termination."
     ],
-    "review": "Two independent nonauthor reviews pending."
+    "review": "Approved by hob_review_rules and hob_review_contracts at 18fd5f5f; both verified printed obligations and terminal evidence. The 40-test total corrects receipt arithmetic."
   },
   "fixtures": [
     "Celebrate the Mountain-king",

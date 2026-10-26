@@ -258,3 +258,9 @@ mod hob_desolation;
 mod hob_riddles;
 
 mod hob_vow_thorin;
+
+mod hob_great_goblin;
+
+mod hob_balin;
+
+mod hob_celebrate;

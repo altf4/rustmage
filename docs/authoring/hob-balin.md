@@ -13,7 +13,7 @@ authoritative. Count replaced-to-exile/library/BF discard events, exclude preven
 or skipped moves. No card characteristics are inspected to determine that count.
 
 Rules authority: official 2026-09-25 CR cached at
-`/home/altf4/.cache/rustmage-authoring/rules/MagicCompRules-20260925.txt`, SHA256
+`<cache>/rustmage-authoring/rules/MagicCompRules-20260925.txt`, SHA256
 8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca.
 CR701.9a/c (discard and replacement destinations), 608.2c/h (ordered instructions,
 resolution-time information and LKI), 609.3 (do possible actions), 113.7a (source
@@ -77,7 +77,7 @@ the existing private Miracle suspension. No behavior repair after this pass.
 ## Final terminal evidence
 
 Final receipt directory:
-`/home/altf4/.cache/rustmage-authoring/hob-balin/run-ac6d1a1173344d3cb08c6d30856083b5`.
+`<cache>/rustmage-authoring/hob-balin/run-ac6d1a1173344d3cb08c6d30856083b5`.
 Persistent driver.py, entire outer.log, per-group native logs, results.json and
 resource.json are preserved. Session18489 naturally returned0; resource terminal=true,
 exit_code0, one Cargo job/test thread,6GiB cap, no memoryhigh/max/OOM events,

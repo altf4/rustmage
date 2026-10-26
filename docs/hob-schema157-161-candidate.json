@@ -1,0 +1,42 @@
+{
+  "scope": "161 local HOB candidates; 32 gated. Balin, Great Goblin and Celebrate integrated after158 release. Entire193 and final published PR remain open.",
+  "prior_release": {
+    "head": "cc636931691a217f9486334aa68672ca71942fe8",
+    "report": "<cache>/rustmage-validation-_fdboq98/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 960,
+    "python_passed": 8,
+    "terminal_receipt_reviews": "pending two independent auditors"
+  },
+  "cohorts": [
+    {
+      "card": "The Great Goblin",
+      "leaf": "022ed9ca339a661e8c58f981fb1408c821e21f88",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_passed": 46,
+      "final_card_scenarios": 8
+    },
+    {
+      "card": "Balin, Loremaster",
+      "leaf": "62742984ce15b5edb6677880d0903fe4a2a5453a",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_passed": 63
+    },
+    {
+      "card": "Celebrate the Mountain-king",
+      "leaf": "18fd5f5f726389fef55c84782212b5e58999a1d8",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_passed": 40
+    }
+  ],
+  "status": "Leaf reviews approved; combined HOB focused tests, historical trace audits, baseline review and full release remain open."
+}

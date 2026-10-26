@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a5a9cc0b51bdd5848f5e78bb9e58c55e0c326b985b90f5923dab4904ebb30eec",
+  "catalogue_version": "3e7b34c36ffb0ae0bdffbfaf68192c946ac4203803e3d9c078280359402bf690",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2667,
-  "implemented_total": 2673,
+  "implemented_standard_cards": 2670,
+  "implemented_total": 2676,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 153,
-      "gated": 35
+      "complete": 156,
+      "gated": 32
     },
     "hoc": {
       "total": 5,
@@ -2700,8 +2700,8 @@
     {
       "name": "Balin, Loremaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/balin_loremaster.rs",
       "set": "hob"
     },
@@ -5756,8 +5756,8 @@
     {
       "name": "Celebrate the Mountain-king",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/celebrate_the_mountain_king.rs",
       "set": "hob"
     },
@@ -35820,8 +35820,8 @@
     {
       "name": "The Great Goblin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_great_goblin.rs",
       "set": "hob"
     },
