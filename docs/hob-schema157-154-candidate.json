@@ -72,7 +72,7 @@
       "test_threads": 1
     }
   },
-  "status": "Exact audited2669 baseline adopted. First normal fullrelease stopped on proof-only constant assertion Clippy; repaired after natural termination, focused repair and rerun pending.",
+  "status": "Exact audited2669 baseline adopted. First normal fullrelease stopped on proof-only Clippy constant assertion; equivalent compile-time repair passed 16 focused tests and 2 reviews. Required normal fullrelease rerun next.",
   "integrated_focus": {
     "head": "901f3e20fd158c2289c3cc8590b11517bd983724",
     "passed": 350,
@@ -441,5 +441,38 @@
         "test_threads": 1
       }
     }
-  ]
+  ],
+  "focused_const_repair": {
+    "source_head": "f6df36216d1af05c9f3fe83fdc58280d4f04561d",
+    "passed": 16,
+    "failed": 0,
+    "ignored": 0,
+    "compile_seconds": 28.388512186007574,
+    "scenario_seconds": 0.12,
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-complete-set/repair154-const-1/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 28.589767955010757,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2483077120,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "reports": "<cache>/rustmage-authoring/hob-complete-set/repair154-const-1",
+    "independent_source_reviews": [
+      {
+        "reviewer": "hob_review_rules",
+        "result": "Firm no-behavior-change compile-time version assertion repair approval, actual terminal Clippy failure verified; retained route and serialization proofs; no findings."
+      },
+      {
+        "reviewer": "hob_review_contracts",
+        "result": "Firm no-behavior-change compile-time version assertion repair approval, actual terminal Clippy failure verified; retained route and serialization proofs; no findings."
+      }
+    ]
+  }
 }
