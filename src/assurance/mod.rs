@@ -203,3 +203,5 @@ mod hob_four_effects;
 mod hob_trigger_multiplicity;
 mod hob_warg_company;
 mod hob_weavemaster;
+
+mod hob_death_return;

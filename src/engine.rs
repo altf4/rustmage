@@ -8137,3 +8137,6 @@ pub use library_top::LibraryRevealEvent;
 
 #[path = "engine_graveyard_symbol_cost.rs"]
 mod graveyard_symbol_cost;
+
+#[path = "engine_death_return.rs"]
+mod death_return;

@@ -3,10 +3,36 @@
   "catalogue_id": 2782,
   "oracle_id": "66630640-9605-44da-afdf-eb9d458d056f",
   "facts_sha256": "b83eee92cf8b1e981b74d1beac831ae63a2cdc7279fed7a32ac19beab3280549",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "649baeac46a10161313df6c03c6be70306cfcd12621ae00c97ef31c75d284eb2"
-  },
-  "physical_metadata_sha256": "afb03627ff4763d66193997dcdffe46eeecfc184c9a6a6a00c7024361abe0310"
+  "complete": true,
+  "physical_metadata_sha256": "afb03627ff4763d66193997dcdffe46eeecfc184c9a6a6a00c7024361abe0310",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MirkwoodNurturer.java",
+  "java_sha256": "f1bcbff2fa81cbc498afd922c1c4102a228e89054bd1e76f53f94d14e3f84dc5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

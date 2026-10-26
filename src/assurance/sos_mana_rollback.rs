@@ -240,3 +240,6 @@ fn sos_mana_rollback_irreversible_colossus_sacrifice_keeps_the_entire_mana_event
 
 #[path = "hob_trigger_rollback.rs"]
 mod hob_extra_triggers;
+
+#[path = "hob_death_return_rollback.rs"]
+mod hob_death_return_rollback;

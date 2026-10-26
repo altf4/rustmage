@@ -3,10 +3,41 @@
   "catalogue_id": 1862,
   "oracle_id": "37f82ad8-4f0b-4b17-abcc-03f43d4fdf1c",
   "facts_sha256": "6d0e4e35806b5c7bcbbf50bc413760cb9bdb0ff72b2a2fa2e2bb0b12c3568261",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "eadca3640ffc890a83f8ce940dc67871a1e7acde88496151b05c2939b5e4f1fb"
-  },
-  "physical_metadata_sha256": "07b6d8249e46eece266273a5ac2cc0007561c61cca214e8cd79dcd25356a04ca"
+  "complete": true,
+  "physical_metadata_sha256": "07b6d8249e46eece266273a5ac2cc0007561c61cca214e8cd79dcd25356a04ca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreatFierceBee.java",
+  "java_sha256": "5245aa983954286073a6b3a0242d0023e830905b4ac0f38842f6ef094ba2ebdc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesOneOrMoreTriggeredAbility.java",
+      "sha256": "b49e5371dbfe352ecc94d8a04316431327dc5a33ab4fd0c3dd08685b922bbfb3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/BatchTriggeredAbility.java",
+      "sha256": "e2891aafe6a447fbb1347f9b0a52cf2b8f79bc566e7518933f12bd4ed503ad86"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

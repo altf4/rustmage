@@ -1687,6 +1687,10 @@ pub(crate) enum Instruction {
     ApplyCapturedAttachedCopy,
     ExileGraveyard(PlayerSet),
     ReturnToHand,
+    /// Return selected permanents, skipping a following block if none actually return.
+    ReturnToHandOrSkip {
+        skip: usize,
+    },
     /// Move all legal target groups together, deduplicating exact incarnations.
     ReturnAllTargetsToHand,
     /// Capture a legal graveyard target's subtype, return it, then draw for a match.
@@ -2958,6 +2962,10 @@ pub(crate) enum TriggerCondition {
     CreatureDiesWithMaximumStat {
         relation: CastRelation,
         maximum: i32,
+    },
+    /// One observer trigger for a simultaneous batch containing a matching death.
+    CreatureDiesBatch {
+        filter: CreatureFilter,
     },
     CreatureDiesFiltered {
         filter: CreatureFilter,

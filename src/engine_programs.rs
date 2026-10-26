@@ -711,6 +711,7 @@ impl Game {
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
+                    | TriggerCondition::CreatureDiesBatch { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }
@@ -4900,6 +4901,9 @@ impl Game {
                         })
                         .collect();
                     self.stage_entries(moves, None);
+                }
+                Instruction::ReturnToHandOrSkip { skip } => {
+                    self.return_targets_to_hand_or_skip(&item, skip);
                 }
                 Instruction::ReturnAllTargetsToHand => {
                     // One printed movement shared by multiple targeting clauses.
