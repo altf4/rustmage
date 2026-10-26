@@ -61,5 +61,13 @@
       "historical153_baseline_sha256": "ea4bb2ccf752afca8fefc51460493883ad30b32f7c174ecf60506a13bf23d17c",
       "reverted_main152_baseline_sha256": "d3660f0ceb907d6420effb08d17c49e20a684e508cbe37736242224ac1827f30"
     }
+  ],
+  "acceptance_attempts": [
+    {
+      "head": "f8dd85521d6bc99aba1e467d54a2bca78b9ee522",
+      "report": "~/.cache/rustmage-validation-uktzmpnn/report/result.json",
+      "result": "Stopped at all-targets Clippy because standalone standard_exact_search example omitted new SearchFilter::Legendary arm. Explicit immutable-card predicate added; no library behavior or baseline change.",
+      "seconds": 21.841798941022716
+    }
   ]
 }

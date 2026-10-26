@@ -89,6 +89,7 @@ fn matches(c: Card, f: SearchFilter) -> bool {
         SearchFilter::BasicLand => c.is_land() && c.is_basic_land(),
         SearchFilter::Land => c.is_land(),
         SearchFilter::Creature => c.is_creature(),
+        SearchFilter::Legendary => c.is_legendary(),
         SearchFilter::Artifact => c.is_artifact(),
         SearchFilter::Enchantment => c
             .info()
