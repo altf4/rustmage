@@ -144,6 +144,11 @@ pub(crate) enum StaticAbilityFragment {
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
+    /// Live earlier-layer predicate gates an ordinary creature-group bonus.
+    ConditionalCreatureModifier {
+        condition: StatValue,
+        modifier: StaticModifier,
+    },
     /// Live layer-7c bonus while the exact granting source meets its counter threshold.
     SourceCounterBonus {
         kind: CounterKind,

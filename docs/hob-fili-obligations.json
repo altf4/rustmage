@@ -1,0 +1,71 @@
+{
+  "scope": "Fíli the Pathfinder complete candidate and narrow generic conditional creature-group modifier",
+  "base_revision": "e0d733b6",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "assurance_modules": [
+    "src/assurance/hob_fili.rs",
+    "src/assurance/hob_fili_funding.rs"
+  ],
+  "card": {
+    "name": "Fíli the Pathfinder",
+    "obligations": [
+      "Costs 3W; legendary 2/2 Dwarf Scout",
+      "Storied awards enduring story at three distinct controlled artifact/legendary/Saga qualifiers, then persists",
+      "While current controller has an enduring story all currently controlled creatures including source and tokens get +1/+1",
+      "Ability suppression removes the anthem and can prevent awarding story; restoration restores the effect",
+      "Self entry creates a 2/2 red Dwarf even when the source is a token copy",
+      "Other entry requires controlled nontoken Dwarf; unrelated/opposing/token entries do not qualify or recurse",
+      "Captured entry trigger survives source departure and uses ordinary token replacements"
+    ],
+    "tests": [
+      "hob_fili_paid_self_other_nontoken_and_token_exclusions_have_exact_red_recipe",
+      "hob_fili_token_copy_self_triggers_despite_nontoken_other_filter",
+      "hob_fili_live_story_bonus_suppression_restore_control_and_current_recipients",
+      "hob_fili_legend_qualification_is_live_and_entry_packet_outlives_source_with_replacement"
+    ],
+    "recipe": "Reuses verified @token/hob-dwarf catalogue5407: 2/2 red Creature — Dwarf; no new identity"
+  },
+  "shared_mechanic": {
+    "fragment": "StaticAbilityFragment::ConditionalCreatureModifier { condition: StatValue, modifier: StaticModifier }",
+    "registration": "engine_stats::register_battlefield_sources adds sources carrying this fragment to the small static-source index",
+    "evaluation": "Central CharacteristicQuery evaluates condition, current creature recipients, current controller, source ability availability and ordinary StaticModifier flags against its own CharacteristicWorld. No recursive live Game fallback; no new mutable state or wire field. Printed definition condition uses earlier-layer enduring-story designation.",
+    "funding_test": "hob_fili_funding_group_condition_and_borrowed_power_share_projected_designation",
+    "funding_proof": "A realizable projected Lotus Ring mana sacrifice removes Wasp blanking, restores Fíli, and acquires enduring story in the speculative world only. Query source and other-creature power become3; TapSourcePowerChoice also reads3. Live Game stays unchanged at power2 until the identical TapGrantedMana action is performed, then agrees.",
+    "owned_root": "contracts::branch_contract at pending competing token replacements covers raw/index parity, ancestor disposal, illegal-action rollback, observation parity and restore. Entry packet source departs before resolving replacements."
+  },
+  "coordination": "Disjoint enum/query/registration regions coordinated directly with hob_recruit_storied duplication-fragment owner; does not edit its object_view initializer.",
+  "author_validation": {
+    "source_definitions": 5413,
+    "verified_java_blobs": 1513,
+    "format": "rustfmt --check and git diff --check pass",
+    "runs": 2,
+    "first_run": "Compile-only fixture error: Card(5407) is private in assurance modules; replaced two constructors with ordinary factory-identity lookup. No core/definition change. 22.774545351043344 seconds.",
+    "new_focused_passed": 5,
+    "existing_storied_passed": 14,
+    "failed": 0,
+    "ignored": 0,
+    "both_seats": true,
+    "focused_compile_and_run_seconds": 133.76672241598135,
+    "cached_regression_seconds": 0.16536740004085004,
+    "new_scenarios_seconds": 0.02,
+    "existing_scenarios_seconds": 0.08,
+    "guard_seconds": 133.9738473810139,
+    "memory_peak_bytes": 2539954176,
+    "memory_max_bytes": 6442450944,
+    "oom_events": 0,
+    "logs": [
+      "<cache>/rustmage-authoring/hob-fili/focused-1.log",
+      "<cache>/rustmage-authoring/hob-fili/focused-2.log",
+      "<cache>/rustmage-authoring/hob-fili/storied-regression-2.log"
+    ],
+    "resource_report": "<cache>/rustmage-build-reports/2a45e24b9dfa473280e88ddb66d27516.json"
+  },
+  "throughput": {
+    "scope": "One candidate card plus one shared mechanic; isolated branch creation to final focused/regression terminal report includes read-only blocker analysis, coordination, authoring and guard waits",
+    "elapsed_seconds": 601.3090600967407,
+    "candidate_cards_per_hour": 5.986937897494542,
+    "simulation": "No simulation benchmark run"
+  },
+  "acceptance": "Shared mechanic awaits two independent nonauthor reviews and final integrated release acceptance before expanding dependent cards. No PR or merge was created. Whole-set acceptance remains open."
+}

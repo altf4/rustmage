@@ -3228,3 +3228,7 @@ mod storied_tests;
 #[cfg(test)]
 #[path = "engine_funding_sacrifice_tests.rs"]
 mod sacrifice_tests;
+
+#[cfg(test)]
+#[path = "assurance/hob_fili_funding.rs"]
+mod fili_tests;
