@@ -1922,11 +1922,62 @@ pub struct CreatedTokenChoiceView {
 }
 
 impl Game {
+    fn army_recipients(&self, player: Player) -> Vec<ObjectRef> {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == player
+                    && self.is_creature(*id as CardId)
+                    && self.has_subtype(*id as CardId, "Army")
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect()
+    }
+    pub(super) fn ensure_goblin_army(&mut self, player: Player) {
+        // Preserve the allocation-free existence check of the fixed-amount path.
+        if !self.state.objects.iter().enumerate().any(|(id, object)| {
+            object.zone == Zone::Battlefield
+                && object.controller == player
+                && self.is_creature(id as CardId)
+                && self.has_subtype(id as CardId, "Army")
+        }) {
+            self.create_tokens(player, Card::GoblinArmyToken, 1, false);
+        }
+    }
+    pub(super) fn amass_goblins_for(
+        &mut self,
+        item: &SpellView,
+        player: Player,
+        amount: u64,
+    ) -> bool {
+        let armies = self.army_recipients(player);
+        if armies.len() == 1 {
+            self.finish_amass_goblins(item, armies[0], amount);
+        } else if armies.len() > 1 {
+            let mut filter = evidence::cost(0).filter;
+            filter.subtype = Some("Army");
+            filter.kinds = 1;
+            let mut chooser = item.clone();
+            chooser.controller = player;
+            return self.start_effect_choice(
+                &chooser,
+                EffectChoiceKind::AmassGoblins(amount),
+                PlayerSet::Controller,
+                filter,
+                1,
+                None,
+            );
+        }
+        false
+    }
     pub(super) fn finish_amass_goblins(
         &mut self,
         item: &SpellView,
         recipient: ObjectRef,
-        amount: u16,
+        amount: u64,
     ) {
         // The paused program owns this immutable continuation. Army selection
         // reuses the ordinary public amass choice without a global last result.
@@ -1940,10 +1991,7 @@ impl Game {
             )
         });
         self.effect_counters(
-            vec![(
-                recipient,
-                Counters::of(CounterKind::PlusOne, u64::from(amount)),
-            )],
+            vec![(recipient, Counters::of(CounterKind::PlusOne, amount))],
             ResumeMode::Program,
         );
         if let Some(state) = self.state.replacements.as_mut() {

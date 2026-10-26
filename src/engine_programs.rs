@@ -7,6 +7,7 @@ pub(super) struct TargetCardFacts {
     pub group: u16,
     pub controller: Player,
     pub mana_value: u64,
+    pub power: i128,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -28,6 +29,7 @@ pub(super) struct Resolution {
     pub pc: usize,
     pub target_group: u16,
     pub moved_count: Option<u64>,
+    pub sacrificed_power: Option<Box<i128>>,
     pub discard_after: Option<discard_events::DiscardAfter>,
     pub discards: [usize; 2],
     pub selected_discards: [Vec<CardId>; 2],
@@ -1917,12 +1919,27 @@ impl Game {
             self.record_ability_resolution(&item);
         }
         assert!(self.state.resolving.is_none());
+        let reads_target_power = program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::AmassGoblinsScaled {
+                    amount: AmountValue::TargetCreaturePower,
+                    ..
+                }
+            )
+        });
         let target_card_facts = program
             .iter()
             .any(|instruction| {
                 matches!(
                     instruction,
-                    Instruction::LoseLifeTargetCardManaValue(_)
+                    Instruction::EnsureGoblinArmyFor(PlayerSet::TargetController)
+                        | Instruction::AmassGoblinsScaled {
+                            player: PlayerSet::TargetController,
+                            ..
+                        }
+                        | Instruction::DrawIfTargetController
+                        | Instruction::LoseLifeTargetCardManaValue(_)
                         | Instruction::MayTargetController { .. }
                         | Instruction::SearchTargetController(_)
                         | Instruction::LoseLifeTargetController(_)
@@ -1936,6 +1953,11 @@ impl Game {
                         .filter_map(|bound| match bound.target {
                             Target::Card(card) => Some(TargetCardFacts {
                                 group: bound.group,
+                                power: if reads_target_power && self.is_creature(card) {
+                                    self.stats(card).power
+                                } else {
+                                    0
+                                },
                                 controller: self.state.objects[card as usize].controller,
                                 mana_value: self.state.objects[card as usize]
                                     .card
@@ -1950,6 +1972,7 @@ impl Game {
             linked_copy: None,
             cascade: None,
             target_card_facts,
+            sacrificed_power: None,
             immediate_blink_return: None,
             explore: None,
             evidence: None,
@@ -1985,6 +2008,16 @@ impl Game {
         let controller = item.controller;
         let players = match set {
             PlayerSet::SourceOwner => [Some(self.state.objects[item.card as usize].owner), None],
+            PlayerSet::TargetController => [
+                self.state.resolving.as_ref().and_then(|r| {
+                    r.target_card_facts
+                        .as_ref()?
+                        .iter()
+                        .find(|f| f.group == r.target_group)
+                        .map(|f| f.controller)
+                }),
+                None,
+            ],
             PlayerSet::CastingPlayer => [
                 Some(
                     item.cast_event
@@ -3211,46 +3244,39 @@ impl Game {
                         self.attach_equipment(item.object, target);
                     }
                 }
-                Instruction::EnsureGoblinArmy => {
-                    if !self.state.objects.iter().enumerate().any(|(id, o)| {
-                        o.zone == Zone::Battlefield
-                            && o.controller == item.controller
-                            && self.is_creature(id as CardId)
-                            && self.has_subtype(id as CardId, "Army")
-                    }) {
-                        self.create_tokens(item.controller, Card::GoblinArmyToken, 1, false);
+                Instruction::EnsureGoblinArmy | Instruction::EnsureGoblinArmyFor(_) => {
+                    let players = match instruction {
+                        Instruction::EnsureGoblinArmyFor(players) => players,
+                        _ => PlayerSet::Controller,
+                    };
+                    let recipients: Vec<_> = self.program_players(players, &item).collect();
+                    assert!(recipients.len() <= 1, "one amassing player per instruction");
+                    if let Some(player) = recipients.first().copied() {
+                        self.ensure_goblin_army(player);
                     }
                 }
                 Instruction::AmassGoblins(amount) | Instruction::AmassGoblinsThenAttach(amount) => {
-                    let armies: Vec<_> = self
-                        .state
-                        .objects
-                        .iter()
-                        .enumerate()
-                        .filter(|(id, o)| {
-                            o.zone == Zone::Battlefield
-                                && o.controller == item.controller
-                                && self.is_creature(*id as CardId)
-                                && self.has_subtype(*id as CardId, "Army")
-                        })
-                        .map(|(id, _)| self.object_ref(id as CardId))
-                        .collect();
-                    if armies.len() == 1 {
-                        self.finish_amass_goblins(&item, armies[0], amount);
-                    } else if armies.len() > 1 {
-                        let mut filter = evidence::cost(0).filter;
-                        filter.subtype = Some("Army");
-                        filter.kinds = 1;
-                        if self.start_effect_choice(
-                            &item,
-                            EffectChoiceKind::AmassGoblins(amount),
-                            PlayerSet::Controller,
-                            filter,
-                            1,
-                            None,
-                        ) {
-                            return;
-                        }
+                    if self.amass_goblins_for(&item, item.controller, u64::from(amount)) {
+                        return;
+                    }
+                }
+                Instruction::AmassGoblinsScaled { player, amount } => {
+                    let amount = u64::try_from(self.item_amount(amount, &item))
+                        .capacity("amass counter amount exhausted");
+                    let recipients: Vec<_> = self.program_players(player, &item).collect();
+                    assert!(recipients.len() <= 1, "one amassing player per instruction");
+                    if let Some(player) = recipients.first().copied()
+                        && self.amass_goblins_for(&item, player, amount)
+                    {
+                        return;
+                    }
+                }
+                Instruction::DrawIfTargetController => {
+                    if self
+                        .program_players(PlayerSet::TargetController, &item)
+                        .any(|player| player == item.controller)
+                    {
+                        self.draw_many(item.controller, 1);
                     }
                 }
                 Instruction::CreateTokenChoice(tokens) => {

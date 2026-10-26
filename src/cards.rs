@@ -342,6 +342,8 @@ impl TargetPlan {
 pub(crate) enum PlayerSet {
     /// The immutable owner of the exact source card, independent of controller.
     SourceOwner,
+    /// Frozen controller of the first surviving creature target in this group.
+    TargetController,
     CastingPlayer,
     DrawingPlayer,
     Active,
@@ -702,7 +704,7 @@ pub(crate) struct SearchSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
     /// Non-targeted Army selection during amass.
-    AmassGoblins(u16),
+    AmassGoblins(u64),
     ExileGreatestManaValue,
     ExileGraveyard,
     SacrificeDifferentNames(u16),
@@ -909,6 +911,12 @@ pub(crate) enum Instruction {
     AmassGoblins(u16),
     /// Complete amass, then attach the exact source Equipment to that Army.
     AmassGoblinsThenAttach(u16),
+    EnsureGoblinArmyFor(PlayerSet),
+    AmassGoblinsScaled {
+        player: PlayerSet,
+        amount: AmountValue,
+    },
+    DrawIfTargetController,
     /// Real nonmana variable activation cost; amount is declared before payment.
     SourceCounterCost {
         kind: CounterKind,
@@ -1969,6 +1977,12 @@ pub(crate) enum AmountValue {
     SourceCounterQuantity(CounterKind),
     /// Frozen successful source-counter cost; never the source current counter count.
     PaidSourceCounterQuantity(CounterKind),
+    /// Frozen before the selected sacrifice changes any battlefield object.
+    SacrificedPower,
+    /// Frozen at the beginning of resolution, before target destruction.
+    TargetCreaturePower,
+    /// Exact pre-event source facts for a death trigger, never a new incarnation.
+    SourceLastKnownPower,
     SacrificedToughness,
     Fixed(u16),
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.

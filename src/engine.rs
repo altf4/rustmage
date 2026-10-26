@@ -7882,15 +7882,21 @@ impl Game {
             + s.resolving
                 .as_ref()
                 .map(|resolution| {
-                    resolution.linked_copy.as_ref().map_or(0, |_| {
-                        std::mem::size_of::<linked_copies::LinkedCopyCapture>()
-                    }) + resolution.cascade.as_ref().map_or(0, |row| {
-                        std::mem::size_of::<CascadeView>()
-                            + row.exiled.len() * std::mem::size_of::<ObjectRef>()
-                    }) + resolution
-                        .explore
+                    resolution
+                        .sacrificed_power
                         .as_ref()
-                        .map_or(0, |_| std::mem::size_of::<ExploreChoiceView>())
+                        .map_or(0, |_| std::mem::size_of::<i128>())
+                        + resolution.linked_copy.as_ref().map_or(0, |_| {
+                            std::mem::size_of::<linked_copies::LinkedCopyCapture>()
+                        })
+                        + resolution.cascade.as_ref().map_or(0, |row| {
+                            std::mem::size_of::<CascadeView>()
+                                + row.exiled.len() * std::mem::size_of::<ObjectRef>()
+                        })
+                        + resolution
+                            .explore
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<ExploreChoiceView>())
                         + resolution
                             .immediate_blink_return
                             .as_ref()

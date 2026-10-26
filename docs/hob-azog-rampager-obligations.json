@@ -1,0 +1,353 @@
+{
+  "scope": "Azog, Moria's Ruin and Rhovanion Rampager complete author candidates; scaled/controller-specific real amass and frozen pre-movement target/sacrifice/death power. No further Bolg dependency work.",
+  "base_revision": "2053fbfb010b960c15802a764430ac2e8308fd95",
+  "sources": {
+    "oracle": "data/standard/cards.json",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "full_read": "Both complete Oracle bodies and gated typed definitions/paired records; full pinned helper bodies for real amass, Army factory, entry/attack/death, destroy, draw, optional sacrifice and counter-source effects, plus the four complete analogous classes/effects below. No corresponding Azog or Rhovanion Rampager class exists in the pinned full Java tree; paired records retain historical typed_lift and explicit inventory/class-tree absence instead of inventing class provenance.",
+    "paired_records": [
+      "src/card_definitions/hob/azog_moria_s_ruin.json",
+      "src/card_definitions/hob/rhovanion_rampager.json"
+    ],
+    "additional_full_analogs": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SwordsToPlowshares.java",
+        "sha256": "4e9bc661bc6d71c7e3dc6063e8bab11aef9ae8f7be312b866e22a24d616efe5c"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAndGainLifeEqualPowerTargetEffect.java",
+        "sha256": "935952a842e906b6e1d2b5557936c508c9d19f234e8ac040265af6f5677f526a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/f/FleshCarver.java",
+        "sha256": "c1ee65804d88f08110372780fa2da8ac743671a6e83dd39c779e5cd2dc162592"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DreadhordeButcher.java",
+        "sha256": "1ab60309c5c914297d4d3a928760f29cb5e3f4d65f8d5af1fed8bb307f22e5f6"
+      }
+    ],
+    "rules_authority": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "rules_notes": "Official Azog notes specify last battlefield power and no amassing player when no target was selected. Official Rampager notes specify sacrificed creature last battlefield power. Complete amass section and CR701.47 require Army selection, subtype and token creation even for zero counters.",
+    "comprehensive_rules": {
+      "effective": "2026-09-25",
+      "cached_text_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "rules": [
+        "107.1b signed calculated negative quantities become0",
+        "113.7a independent source abilities/LKI",
+        "608.2h current information or last known information",
+        "701.47a-c real amass, including0/selectedArmy"
+      ]
+    }
+  },
+  "shared_mechanics": {
+    "scaled_amass": "Immutable EnsureGoblinArmyFor(PlayerSet) and AmassGoblinsScaled{player,amount}; common Army selection helper preserves existing allocation-free ensure check. The actual recipient controls Army choice, token creation and counter replacements, independently of original ability controller. Choice completion uses its selected exact recipient; no global last-amassed state. Existing fixed amass and amass-then-attach route through the same helper.",
+    "target_facts": "Existing private optional TargetCardFacts rows gain signed power, queried only for a program that reads it, at resolution before destruction. Frozen controller and power survive target leaving, failed destruction, replacement or linked-return entry suspension. TargetController selects the first surviving fact in current group; no target means no player. DrawIfTargetController uses the same frozen comparison after complete amass.",
+    "sacrifice_power": "New private sparse Resolution.sacrificed_power:Option<Box<i128>> captures chosen sacrifice power before any movement or suspended linked return. AmountValue::SacrificedPower clamps negative result to0; existing exact-source counter instruction applies only to the original object generation. One pre-existing synthetic Resolution test initializer adds None; owned-byte accounting includes allocated i128. No new SpellView/Object/history field.",
+    "death_power": "AmountValue::SourceLastKnownPower reads the existing frozen DamageFacts packet from the real death trigger, not current graveyard stats or a new source incarnation. Existing death registration and zone replacement machinery unchanged."
+  },
+  "wire_coordination": {
+    "observable_delta": "Existing public EffectChoiceKind::AmassGoblins payload widened u16 to u64, same JSON variant/object and legacy values; counter-capacity domain now allows65536 and larger checked u64 quantities. Conversion from calculated u128 uses checked conversion and counter addition uses existing capacity errors/transactional rollback.",
+    "private_only": [
+      "TargetCardFacts.power:i128",
+      "Resolution.sacrificed_power:Option<Box<i128>>",
+      "three private amount expressions and TargetController player selector/instructions"
+    ],
+    "approval": "Root explicitly approved widening to u64 and assigned observable extended domain to root schema157 alongside Beorn; leaf leaves central schema156 unchanged. Root will audit every older row on integration.",
+    "proof": "Actual multi-Army65536 choice serializes {AmassGoblins:65536} and places65536 counters. Actual u64::MAX existing-counter addition failure restores entire destruction/amass action, revision and both observations. No large token counts, loops, allocations or OOM probes."
+  },
+  "cards": {
+    "Azog, Moria's Ruin": {
+      "printed_obligations": [
+        "Paid2B legendary Goblin Soldier1/3; ETB up to1 OTHER target creature, either controller, mandatory destruction if chosen; zero target skips all dependent instructions",
+        "Freeze target current power and current controller at resolution before any movement; its controller amasses that quantity even if destruction fails or is replaced; owner is not beneficiary",
+        "Draw one only if the ability controller controlled target at resolution; source departure does not stop ability, stale/no-longer-creature target fizzles entire ability",
+        "Negative power supplies0 but still performs real Amass0, including new0/0Army creation or Goblin type addition to existing Army"
+      ],
+      "proofs": {
+        "azog_paid_optional_zero_and_other_creature_target_legality": "Both seats: exact paid cost/stats/types/legendary; self/land/player target rejection, optional zero leaves target alive and no amass/draw.",
+        "azog_resolution_controller_owner_failed_destroy_and_negative_zero": "Nine rows per seat: own/enemy target, foreign owner under own control, control changes both ways after targeting, indestructible still amasses/draws, Rest in Peace destruction to exile still amasses/draws, negative newArmy creates then loses0/0, zero existing Army gains Goblin without counters. Exact owner/controller, life-independent draw, zones and counters asserted.",
+        "azog_live_power_before_destroy_paid_response_and_departed_source": "Real paid Giant Growth response changes target2to5 before resolution, Azog leaves, target destroyed and Army gets5; draw1 still happens.",
+        "azog_stale_or_noncreature_target_fizzles_all_later_actions": "Bounce, blink/newgeneration and layer-one noncreature override each invalidate the sole target and cause no amass or draw.",
+        "target_controller_owns_public_army_choice_raw_index_restore": "Opposing target controller chooses between their2Armies, original caster Army rejected; public choice, raw/index children after parent disposal, restore independent continuation; exact chosen Army gets2andGoblin, others unchanged.",
+        "target_controller_token_and_counter_replacements_resume_before_draw": "Two Doubling Seasons for actual receiver; existing/new Army paths; actual replacement pause before draw and owned branch contract. Four newly created Armies yield one final chosen Army with8counters, or existing Army receives8; only own-controller case draws.",
+        "scaled_65536_and_counter_overflow_are_bounded_and_transactional": "Actual scaled65536 multi-Army/publicchoice and counter placement; u64::MAX counter addition returns CapacityExceeded and restores earlier target destruction plus complete snapshot/revision/observations.",
+        "target_facts_survive_destroy_linked_return_suspended_entry": "Animate real paid Banishing Light5/5, destroy it, return linked Adaptive Automaton and suspend for entry type; no premature amass/draw, branch contract preserves private target facts, then5amass and draw1."
+      }
+    },
+    "Rhovanion Rampager": {
+      "printed_obligations": [
+        "Paid2B Wolf3/2; actual self attack triggers optional sacrifice ANOTHER controlled creature; only actual payment puts counters equal to pre-sacrifice creature power on exact source incarnation",
+        "Can decline, have no eligible offering, use foreign-owned controlled creature or sacrifice through zone replacement; negative power gives0 counters; source control change does not redirect exact source counters, source leaving/reentry cannot receive old counters",
+        "Actual death trigger amasses source last-known current power, including counters/modifiers/lords and controller rather than owner; exile instead of death does not trigger"
+      ],
+      "proofs": {
+        "rampager_actual_attack_optional_sacrifice_filters_power_and_incarnation": "Both seats and8rows: paid3/2Wolf, actual attack, decline, ordinary2power, buffed5power, negative power0, Rest in Peace sacrifice still pays, foreign-owned controlled offering, source blink excludes newgeneration, source control change retains original exact source recipient. Self/enemy/noncreature artifact sacrifices rejected; no offering and another creature attacking cause no counters.",
+        "sacrificed_power_owned_across_linked_return_suspended_entry": "Sacrifice animated real Banishing Light5/5 after actual attack. Linked Adaptive Automaton entry suspends program; private saved power5 and zero counters while pending; representative branch contract then resume exactly5counters for8/7 source.",
+        "rampager_death_last_known_power_counters_modifiers_reentry_and_replacement": "Both seats; real paid Murder kills source with2counters+3power modifier, source reenters with50power but old death still amasses8. Negative death power performsnewArmy0; Rest in Peace exile prevents death/amass; foreign source owner still amassesforcontroller; simultaneous lord-first/source death retains pre-batch4power.",
+        "rampager_sacrifice_counter_replacements_then_death_existing_army": "Two Doubling Seasons multiply actual2power sacrifice to8sourcecounters, then last-known11power death amass is multiplied to44counters on existing Army, with Goblin type added."
+      }
+    }
+  },
+  "test_naming": "Every proof key above is prefixed hob_azog_rampager_ in src/assurance/hob_azog_rampager.rs. Twelve test functions contain the described independent table outcomes; all both seats.",
+  "fixture_preflight": {
+    "catalogue_version": "b15f86780f490470f651978514c5b0363908823f4420878e8cc6d93e9825ffb7",
+    "admitted": [
+      {
+        "index": 294,
+        "name": "Azog, Moria's Ruin",
+        "mana_cost": "{2}{B}",
+        "type_line": "Legendary Creature \u2014 Goblin Soldier"
+      },
+      {
+        "index": 3515,
+        "name": "Rhovanion Rampager",
+        "mana_cost": "{2}{B}",
+        "type_line": "Creature \u2014 Wolf"
+      },
+      {
+        "index": 357,
+        "name": "Bear Cub",
+        "mana_cost": "{1}{G}",
+        "type_line": "Creature \u2014 Bear"
+      },
+      {
+        "index": 4,
+        "name": "Forest",
+        "mana_cost": "",
+        "type_line": "Basic Land \u2014 Forest"
+      },
+      {
+        "index": 1824,
+        "name": "Goldvein Pick",
+        "mana_cost": "{2}",
+        "type_line": "Artifact \u2014 Equipment"
+      },
+      {
+        "index": 11,
+        "name": "Giant Growth",
+        "mana_cost": "{G}",
+        "type_line": "Instant"
+      },
+      {
+        "index": 2879,
+        "name": "Murder",
+        "mana_cost": "{1}{B}{B}",
+        "type_line": "Instant"
+      },
+      {
+        "index": 3482,
+        "name": "Rest in Peace",
+        "mana_cost": "{1}{W}",
+        "type_line": "Enchantment"
+      },
+      {
+        "index": 1140,
+        "name": "Doubling Season",
+        "mana_cost": "{4}{G}",
+        "type_line": "Enchantment"
+      },
+      {
+        "index": 1299,
+        "name": "Elvish Archdruid",
+        "mana_cost": "{1}{G}{G}",
+        "type_line": "Creature \u2014 Elf Druid"
+      },
+      {
+        "index": 55,
+        "name": "Adaptive Automaton",
+        "mana_cost": "{3}",
+        "type_line": "Artifact Creature \u2014 Construct"
+      },
+      {
+        "index": 321,
+        "name": "Banishing Light",
+        "mana_cost": "{2}{W}",
+        "type_line": "Enchantment"
+      },
+      {
+        "index": 5405,
+        "name": "@token/goblin_army",
+        "mana_cost": "",
+        "type_line": "Creature \u2014 Goblin Army"
+      }
+    ]
+  },
+  "preflight_policy": "Explicit13named fixtures, unknown or incomplete is an assertion error, no conditional skip. Paired complete records and exact printed2B/source costs checked before queue; driver repeats admission and records it. Actual action shapes, slot types, target optionality, Army choice, counter replacement, sacrifice ObjectRef, public/private fields and lone synthetic Resolution initializer inspected. Banishing Light fixture retains its paid ID, supplies real linked exile and is legally animated as the chosen5/5 creature.",
+  "contracts": "Existing reject helper checks snapshot and both observations for illegal choices. contracts::branch_contract reused at affected Army choice, replacement ordering and each linked-return entry root. Army selection additionally has explicit raw/index child equality, ancestor disposal and restore. Capacity failure checks entire action, revision and both observations. No per-action branching bot.",
+  "author_validation": {
+    "definitions": 5417,
+    "java_blobs_verified": 1558,
+    "source_audit": "Passed before queue and repeated after final terminal; complete paired identities and absence pins verified.",
+    "format": "rustfmt --edition2024 --check and git diff --check pass",
+    "final_new_passed": 12,
+    "final_affected_regressions_passed": 28,
+    "failed": 0,
+    "ignored": 0,
+    "groups": [
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "hob_azog_rampager",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 28.05696508497931,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/focused-3.log",
+        "filter": "hob_azog_rampager"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "hob_plate_company",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.11552076798398048,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/amass-regression-3.log",
+        "filter": "hob_plate_company"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "hob_crooked_",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.21591673704097047,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/target-source-regression-3.log",
+        "filter": "hob_crooked_"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "hob_death_return",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.16618619702057913,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/death-return-regression-3.log",
+        "filter": "hob_death_return"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "late_resolution_overflow_rolls_back_earlier_counter_writes",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06596287002321333,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/capacity-regression-3.log",
+        "filter": "late_resolution_overflow_rolls_back_earlier_counter_writes"
+      }
+    ],
+    "final_scenario_seconds": [
+      0.09,
+      0.09,
+      0.16,
+      0.08,
+      0.0
+    ],
+    "final_guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-azog-rampager/driver-3.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 29.105710904987063,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2534617088,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "resource_report": "<cache>/rustmage-build-reports/f40c97dcef9a498f90d7db5a29256de5.json",
+    "profile_override": "CARGO_PROFILE_TEST_OPT_LEVEL=0 consistently on dedicated stable author target only; no repository profile changes; default integrated acceptance unchanged.",
+    "history": [
+      {
+        "attempt": 1,
+        "natural_terminal": true,
+        "exit": 101,
+        "report": "<cache>/rustmage-build-reports/4e4e7a56b9024be197341319edcce0ac.json",
+        "compile_run_seconds": 21.72437380196061,
+        "outcome": "Compile-only failure: existing hob_storied synthetic Resolution initializer lacked new private field. After terminal, added None and corrected linked fixture ID capture before the first scenario run. No cancellation."
+      },
+      {
+        "attempt": 2,
+        "natural_terminal": true,
+        "exit": 0,
+        "report": "<cache>/rustmage-build-reports/c42d5695498b4457865b9a30a291cc9c.json",
+        "compile_run_seconds": 29.342700577049982,
+        "new_passed": 12,
+        "regressions_passed": 28,
+        "followup": "Post-pass code quality audit preserved old allocation-free Army existence check instead of collecting a temporary Vec for ensure. No semantic change; final run3 verifies final executable source."
+      },
+      {
+        "attempt": 3,
+        "natural_terminal": true,
+        "exit": 0,
+        "new_passed": 12,
+        "regressions_passed": 28,
+        "compile_run_seconds": 28.05696508497931
+      }
+    ],
+    "input_freeze": "Every consuming job kept inputs fixed until its own natural terminal; no cancellation, timeout, orphan, OOM or active-output deletion.",
+    "outer_logs": [
+      "<cache>/rustmage-authoring/hob-azog-rampager/outer-1.log",
+      "<cache>/rustmage-authoring/hob-azog-rampager/outer-2.log",
+      "<cache>/rustmage-authoring/hob-azog-rampager/outer-3.log"
+    ],
+    "persistent_drivers": [
+      "<cache>/rustmage-authoring/hob-azog-rampager/driver-1.py",
+      "<cache>/rustmage-authoring/hob-azog-rampager/driver-2.py",
+      "<cache>/rustmage-authoring/hob-azog-rampager/driver-3.py"
+    ],
+    "final_driver_sha256": "20db9fa3ac1ae4f31a7330c9db7bb7318da7ee138334987319e2610fec6c736b",
+    "final_outer_sha256": "2c96252b20a3c643bb985ecd4a299949102fc4b4e039461abb74eab9be7cca47",
+    "results": "<cache>/rustmage-authoring/hob-azog-rampager/results-3.json",
+    "stable_target": "<cache>/rustmage-authoring/hob-azog-rampager/target",
+    "timing_note": "Final guard29.106s includes shared-slot/driver overhead; five command durations total28.621s. No separately instrumented pure build-slot wait. Focused command includes incremental compile and tests; test log reports27.9s build and0.09s scenarios. No simulation benchmark."
+  },
+  "throughput": {
+    "elapsed_seconds": 852,
+    "candidate_cards_per_hour": 8.450704225352112,
+    "scope": "Isolated clone creation through final natural terminal and ledger, including fullsource reads, engine/card authoring, compile fixture repair, code quality audit and3guard attempts",
+    "simulation": "No simulation throughput or whole-set acceptance claim."
+  },
+  "integration": "Author commit excludes local assurance mod hob_azog_rampager registration and generated coverage/catalogue links. Root adds registration and regenerates. Root schema157 must incorporate approved public u64 domain. Needs TWO independent nonauthor reviews before shared dependency acceptance or expanding further consumers; integrated default release/full-set acceptance pending. No PR/push/merge by author."
+}

@@ -398,6 +398,9 @@ impl Game {
             | AmountValue::CastSpellManaSymbols(_)
             | AmountValue::SpellColors
             | AmountValue::ColorsSpent
+            | AmountValue::SacrificedPower
+            | AmountValue::TargetCreaturePower
+            | AmountValue::SourceLastKnownPower
             | AmountValue::SacrificedToughness
             | AmountValue::SourcePower
             | AmountValue::SourceToughness

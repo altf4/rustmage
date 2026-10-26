@@ -971,7 +971,7 @@ impl Game {
             .unwrap();
         if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
-            if let Some(&recipient) = choice.selected[item.controller.index()].first() {
+            if let Some(&recipient) = choice.selected.iter().flatten().next() {
                 self.finish_amass_goblins(&item, recipient, amount);
             }
         } else if matches!(
@@ -1044,6 +1044,32 @@ impl Game {
                 })
                 .collect();
             if !sacrifices.is_empty() {
+                if self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .program
+                    .iter()
+                    .any(|i| {
+                        matches!(
+                            i,
+                            Instruction::PutCountersScaled {
+                                amount: AmountValue::SacrificedPower,
+                                ..
+                            }
+                        )
+                    })
+                {
+                    // Capture before ANY selected permanent leaves (including lords),
+                    // and before linked zone events can suspend this program.
+                    let power = sacrifices
+                        .iter()
+                        .map(|&(_, id)| self.stats(id).power)
+                        .try_fold(0i128, |sum, value| sum.checked_add(value))
+                        .capacity("sacrificed power exhausted");
+                    self.state.resolving.as_mut().unwrap().sacrificed_power = Some(Box::new(power));
+                }
                 if self
                     .state
                     .resolving

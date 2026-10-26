@@ -349,6 +349,7 @@ fn hob_storied_transient_threshold_inside_one_typed_resolution() {
         linked_copy: None,
         cascade: None,
         target_card_facts: None,
+        sacrificed_power: None,
         immediate_blink_return: None,
         connive: None,
         explore: None,

@@ -333,6 +333,30 @@ impl Game {
             AmountValue::ColorsSpent => (0..5)
                 .filter(|&i| self.item_cast_payment(item)[i] > 0)
                 .count() as u128,
+            AmountValue::SacrificedPower => self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .sacrificed_power
+                .as_deref()
+                .copied()
+                .unwrap_or(0)
+                .max(0) as u128,
+            AmountValue::TargetCreaturePower => {
+                let r = self.state.resolving.as_ref().unwrap();
+                r.target_card_facts
+                    .as_ref()
+                    .and_then(|facts| facts.iter().find(|f| f.group == r.target_group))
+                    .map_or(0, |f| f.power.max(0) as u128)
+            }
+            AmountValue::SourceLastKnownPower => {
+                if item.source_facts.is_creature() {
+                    item.source_facts.power.max(0) as u128
+                } else {
+                    0
+                }
+            }
             AmountValue::SacrificedToughness => item
                 .sacrificed_toughness
                 .as_deref()
