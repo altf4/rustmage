@@ -3,10 +3,35 @@
   "catalogue_id": 4940,
   "oracle_id": "f8961618-ae68-4d13-84eb-8b5464ce4971",
   "facts_sha256": "87422d5e2902466baf2373ddba08c6ce4e04b28696f6ae363de4da835a5b9a27",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6c20f07360e68ed6343d619b8fd820087f593afc5f2e9ea88913750e2c8372b9"
   },
-  "physical_metadata_sha256": "a37ec3902144126526edc16780f36522e3c923f4ee7c2c0bef88f220f793262a"
+  "physical_metadata_sha256": "a37ec3902144126526edc16780f36522e3c923f4ee7c2c0bef88f220f793262a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VowToErebor.java",
+  "java_sha256": "432442e4c7bdbd2c8c9edaa5194ca8df231577cdd5df19f1f3bb9675192a9117",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    }
+  ]
 }

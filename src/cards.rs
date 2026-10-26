@@ -1484,6 +1484,11 @@ pub(crate) enum Instruction {
     DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
     AttachSource,
+    /// One optional nontargeting Equipment attachment to the selected target group.
+    MayAttachControlledEquipment {
+        recipient: u16,
+        required_subtype: Option<&'static str>,
+    },
     AttachEquipmentByGroups {
         equipment: u16,
         recipient: u16,

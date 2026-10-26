@@ -150,6 +150,12 @@ pub(crate) enum StaticAbilityFragment {
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
+    /// A real Ward instance granted by a live conditional static ability.
+    ConditionalWard {
+        condition: StatValue,
+        filter: CountFilter,
+        ability: u16,
+    },
     AttachmentActivation(u16),
     /// Grants an independent tap mana ability to the attached permanent.
     AttachmentMana(ManaProduction),

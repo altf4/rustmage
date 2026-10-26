@@ -471,6 +471,26 @@ pub(super) trait CharacteristicWorld {
                 && self.kinds(id as CardId) & 2 != 0
         })
     }
+    fn conditional_ward_applies(
+        &self,
+        source: ObjectRef,
+        condition: StatValue,
+        filter: CountFilter,
+        id: CardId,
+    ) -> bool {
+        self.object(source.card).zone == Zone::Battlefield
+            && self.reference(source.card) == source
+            && self.value(condition, source.card) != 0
+            && Game::count_object_matches(
+                filter,
+                source,
+                self.object(source.card).controller,
+                id,
+                self.object(id),
+                &|id| self.subtypes(id),
+                &|id, _| self.kinds(id),
+            )
+    }
     fn land_mana_applies(
         &self,
         source: ObjectRef,

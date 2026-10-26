@@ -2205,6 +2205,7 @@ impl Game {
                 instruction,
                 Instruction::Fight { .. }
                     | Instruction::RevealTargetHandExileUntilSourceLeaves
+                    | Instruction::MayAttachControlledEquipment { .. }
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::ReturnAllTargetsToHand
                     | Instruction::CopyTargetSpell { .. }
@@ -3218,6 +3219,14 @@ impl Game {
                 }
                 Instruction::AttachEquipmentToAttached { group } => {
                     if self.attach_selected_equipment_to_attached(&item, group) {
+                        return;
+                    }
+                }
+                Instruction::MayAttachControlledEquipment {
+                    recipient,
+                    required_subtype,
+                } => {
+                    if self.may_attach_controlled_equipment(&item, recipient, required_subtype) {
                         return;
                     }
                 }

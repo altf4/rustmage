@@ -85,6 +85,49 @@ impl Game {
             }
         }
         if source.controller != item.controller {
+            // The active layer-one definition is materialized for copied providers.
+            // Keep blank providers in this conservative gate: restored abilities
+            // must work without reacquiring or rebuilding a derived ward cache.
+            let has_conditional = self.state.static_sources.iter().any(|&provider| {
+                self.on_battlefield(provider)
+                    && self.state.objects[provider as usize]
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                                )
+                            })
+                        })
+            });
+            let conditional = if has_conditional {
+                self.characteristic_query().conditional_ward_grants(id)
+            } else {
+                Vec::new()
+            };
+            for grant in conditional {
+                let event = Box::new(AttachmentTriggerView {
+                    grantor: grant.grantor,
+                    granting_card: grant.granting_card,
+                    recipient: reference,
+                    defender: None,
+                    granted: true,
+                    origin: self.copy_ability_origin(grant.grantor),
+                });
+                if self.queue_trigger_from(&source, usize::from(grant.ability), Some(event)) {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .related_stack = Some(StackLink {
+                        id: item.id,
+                        controller: item.controller,
+                    });
+                }
+            }
             let grants: Vec<_> = self
                 .state
                 .attachment_sources

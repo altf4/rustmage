@@ -872,6 +872,56 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         );
         available
     }
+    pub(super) fn conditional_ward_grants(&self, recipient: CardId) -> Vec<GrantedAbilityView> {
+        let mut grants = Vec::new();
+        for &id in self.world.static_sources() {
+            if !self.on_battlefield(id) {
+                continue;
+            }
+            let source = self.reference(id);
+            for (index, group) in self
+                .object(id)
+                .card
+                .static_ability_groups()
+                .iter()
+                .enumerate()
+            {
+                if self
+                    .evaluation
+                    .as_ref()
+                    .is_some_and(|e| !e.group_available(source, index))
+                {
+                    continue;
+                }
+                for fragment in group.fragments {
+                    if let StaticAbilityFragment::ConditionalWard {
+                        condition,
+                        filter,
+                        ability,
+                    } = *fragment
+                        && self
+                            .world
+                            .conditional_ward_applies(source, condition, filter, recipient)
+                    {
+                        let timestamp = self
+                            .world
+                            .roles()
+                            .and_then(|r| r.ability_timestamps.iter().find(|r| r.source == source))
+                            .expect("conditional Ward provider registered")
+                            .timestamp;
+                        grants.push(GrantedAbilityView {
+                            grantor: source,
+                            granting_card: self.object(id).card,
+                            ability,
+                            grantor_controller: self.object(id).controller,
+                            timestamp,
+                        });
+                    }
+                }
+            }
+        }
+        grants
+    }
     pub(super) fn self_grant_available(&self, source: ObjectRef, timestamp: u64) -> bool {
         self.on_battlefield(source.card)
             && self.object_ref(source.card) == source

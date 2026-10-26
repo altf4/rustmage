@@ -46,6 +46,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::HarnessedTrigger(..)
+                            | StaticAbilityFragment::ConditionalWard { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentActivation(..)
                             | StaticAbilityFragment::AttachmentMana(..)

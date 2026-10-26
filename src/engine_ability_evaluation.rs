@@ -117,6 +117,21 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
+        StaticAbilityFragment::ConditionalWard {
+            condition,
+            filter,
+            ability,
+        } => {
+            if !world.conditional_ward_applies(source, condition, filter, id) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::HarnessedTrigger(ability) => {
             if id != source.card || !world.harnessed(source.card) {
                 return None;
@@ -333,6 +348,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::HarnessedTrigger(..)
+                        | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)

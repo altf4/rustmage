@@ -33,6 +33,35 @@ pub struct EquipmentAttachmentView {
     pub ordering: Option<bool>,
 }
 impl Game {
+    pub(super) fn may_attach_controlled_equipment(
+        &mut self,
+        item: &SpellView,
+        group: u16,
+        subtype: Option<&'static str>,
+    ) -> bool {
+        let recipient = item
+            .targets
+            .iter()
+            .find(|b| b.group == group && self.same_target_object(**b))
+            .and_then(|b| b.object)
+            .filter(|r| {
+                self.on_battlefield(r.card)
+                    && self.is_creature(r.card)
+                    && subtype.is_none_or(|t| self.has_subtype(r.card, t))
+            });
+        let Some(recipient) = recipient else {
+            return false;
+        };
+        self.state.resolving.as_mut().unwrap().return_attachment =
+            Some(Box::new(ReturnAttachment {
+                origin: item.object,
+                player: item.controller,
+                recipient: Some(recipient),
+                entering: false,
+                order: None,
+            }));
+        self.advance_return_attachment()
+    }
     pub(super) fn order_equipment_attachments(
         &mut self,
         item: &SpellView,
