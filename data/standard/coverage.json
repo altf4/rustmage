@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ae291705671096fb5e8058bebf0331b89e2d5dc9ae32c7771327cde315579cd4",
+  "catalogue_version": "c80447b2804fe7bd2c3f60dcf916ef030288849cc52d778f9e8bbfde6a28b295",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2622,
-  "implemented_total": 2628,
+  "implemented_standard_cards": 2624,
+  "implemented_total": 2630,
   "token_definitions": 128,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 80,
-      "complete": 108
+      "gated": 78,
+      "complete": 110
     },
     "hoc": {
       "total": 5,
@@ -15116,8 +15116,8 @@
     {
       "name": "Great Gilded Boat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/great_gilded_boat.rs",
       "set": "hob"
     },
@@ -21660,8 +21660,8 @@
     {
       "name": "Master's Councillors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/master_s_councillors.rs",
       "set": "hob"
     },

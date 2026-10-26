@@ -1,6 +1,6 @@
 {
   "schema": 154,
-  "status": "candidate; full integrated acceptance pending",
+  "status": "Candidate wire audit independently verified at c0b6bdd5; baseline not yet adopted; newer card integration and full release acceptance pending",
   "main_after_522_revert_schema": 152,
   "historical_local_baseline_schema": 153,
   "changes": [
@@ -14,5 +14,28 @@
     "Must compare every inherited main152 trace and historical2610-card schema153 trace before accepting new154 baselines"
   ],
   "historical_acceptance": "Initial26-card schema153 checkpoint was validated at3aa780e4, then #522 was reverted onmain at92de5827. Its work and immutable library remain preserved in this candidate; that PR is not the final delivery.",
-  "final_delivery": "One brand-new PR after the entire193-identity set is complete; do not merge it."
+  "final_delivery": "One brand-new PR after the entire193-identity set is complete; do not merge it.",
+  "verified_audit": {
+    "source_revision": "c0b6bdd5a8df2ab5089bdbf876edf7f9e4f40ae6",
+    "recorded_current_cards": 2628,
+    "historical153_inherited": 2610,
+    "reverted_main152_inherited": 2584,
+    "changed_inherited_rows": 0,
+    "missing_inherited_rows": 0,
+    "new_vs153": 18,
+    "new_vs152": 44,
+    "current_candidates_byte_identical": true,
+    "candidate_sha256": "15fc88ed8e5c6d9578a48dbd6485f12be92b7dd11e22cbe2ca4ccbf506ab8137",
+    "comparison_file": "~/.cache/rustmage-authoring/hob-complete-set/schema154-audit-comparison.json",
+    "recording_log": "~/.cache/rustmage-authoring/hob-complete-set/schema154-audit.log",
+    "recording_exit_codes": [
+      101,
+      101
+    ],
+    "recording_result": "Both strict tests intentionally fail only on2628vs2610 cardinality; independent projected-row comparisons verify no inherited drift. This is not a normal regression pass.",
+    "independent_review": "hob_review_rules verified both candidate bytes/hashes and every inherited row; approves evidence for baseline adoption at those frozen inputs.",
+    "baseline_adoption": "Deferred until selected-sacrifice funding and current additional cards have a coherent final checkpoint.",
+    "historical153_baseline_sha256": "ea4bb2ccf752afca8fefc51460493883ad30b32f7c174ecf60506a13bf23d17c",
+    "reverted_main152_baseline_sha256": "d3660f0ceb907d6420effb08d17c49e20a684e508cbe37736242224ac1827f30"
+  }
 }
