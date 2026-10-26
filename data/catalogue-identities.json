@@ -5418,7 +5418,8 @@
     4,
     4,
     1,
-    16
+    16,
+    0
   ],
   "aliases": [
     [
@@ -6216,6 +6217,10 @@
     [
       "@token/hob-dwarf",
       5407
+    ],
+    [
+      "@token/hob-stone-boulder",
+      5413
     ],
     [
       "@token/hob-wolf",
@@ -28608,6 +28613,12 @@
       "name": "Wolf Token",
       "subtypes": "Wolf",
       "colors": 16
+    },
+    {
+      "factory_identity": "@token/hob-stone-boulder",
+      "name": "Stone Boulder",
+      "subtypes": "Wall",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -183313,6 +183324,35 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5413,
+      "module": "card_5413",
+      "path": "synthetic/token_hob_stone_boulder.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-stone-boulder",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Wall",
+      "oracle_keywords": [
+        "Defender"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
       "basic": false,
       "mana_color": null,
       "colored": [

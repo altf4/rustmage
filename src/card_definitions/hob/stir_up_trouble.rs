@@ -1,16 +1,24 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(one(TargetRule::Creature), &[Instruction::Destroy]),
+    extras: &CardExtras {
+        additional_cost: Some(AdditionalCost {
+            kind: EffectChoiceKind::Sacrifice,
+            filter: SacrificeFilter {
+                keywords: Keywords::NONE,
+                source_only: false,
+                kinds: 17,
+                nonland: false,
+                other: false,
+                tokens: None,
+                artifact_enchantment_or_token: false,
+                subtype: None,
+            },
+        }),
+        additional_mana_alternative: Some(ManaCost {
+            colored: [0; 6],
+            generic: 4,
+        }),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };
