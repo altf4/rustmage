@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "base_revision": "efb4f10db89a77d7e6beb5c7dc3b91c58f17afff",
+  "scope": "Two complete physical HOB candidates, one exact synthetic token and three shared typed mechanics. Focused author evidence; independent reviews and integrated release acceptance remain required.",
+  "module": "engine::assurance::hob_lonely_misty",
+  "cards": [
+    {
+      "name": "The Lonely Mountain",
+      "catalogue_id": 4468,
+      "obligations": [
+        "Actual land play enters tapped without controlled Equipment, untapped with noncreature Equipment including actual token; ordinary artifacts/enemy Equipment do not qualify. Current control and copy subtype loss are observed. Intrinsic tap produces exactly R (corrects missing mana_color metadata).",
+        "Paid 4R tap activation creates an untapped red2/2 plain Dwarf5407; reductions for0/1/3/4/6 Equipment floor generic at0 and preserve R; enemy Equipment excluded.",
+        "Tap, own-turn sorcery timing, empty stack and source control enforced; wrong-color announcements and invalid payment reject transactionally.",
+        "Borrowed Forge activation reads activating source controller Equipment, retains tap and costs.",
+        "Cost locks before an animated Goblin Equipment is sacrificed to Bolg for mana; source reducer disappearance does not reprice announcement."
+      ],
+      "tests": [
+        "lonely_actual_land_entry_equipment_control_and_intrinsic_red_mana",
+        "lonely_paid_activation_live_equipment_count_generic_floor_and_exact_dwarf",
+        "lonely_tap_sorcery_stack_and_current_control_restrictions",
+        "lonely_announced_reduction_locks_before_equipment_sacrificed_for_mana",
+        "lonely_borrowed_ability_counts_equipment_of_actual_activator",
+        "lonely_current_copy_types_and_control_change_entry_and_reduction"
+      ]
+    },
+    {
+      "name": "The Misty Mountains Cold",
+      "catalogue_id": 4479,
+      "obligations": [
+        "Paid2R Saga enters with Lore1; actual subsequent Main1 lore events produce one Treasure each for chaptersII/III/IV. Each trigger first creates Treasure then reads current controlled Treasures. Enemy Treasures excluded.",
+        "Threshold4 sacrifices exact controlled source then creates one untapped red6/6 flying Dragon5416 within same resolution, without reflexive trigger. Existing5/5 or4/4 Dragon factories are not reused.",
+        "Spent Treasures keep total below4: finalIV normal Saga sacrifice never creates Dragon.",
+        "Departed, reentered and now enemy-controlled sources cannot pay old chapter sacrifice; queued effect still creates Treasure.",
+        "Exile-replaced sacrifice succeeds; competing Colossus self-shuffle vs Rest in Peace exile pauses and replay preserves exactly4Treasure/1Dragon under either selected destination. Colossus is an existing in-place-copy fixture retaining the queued Saga packet."
+      ],
+      "tests": [
+        "misty_paid_chapters_one_through_four_and_exact_dragon_same_resolution",
+        "misty_spent_treasures_final_chapter_sba_never_creates_dragon",
+        "misty_current_treasure_count_includes_tokens_and_ignores_opponent",
+        "misty_departed_or_reentered_or_uncontrolled_source_never_pays_old_chapter",
+        "misty_sacrifice_replaced_by_exile_still_completes_without_reflexive_trigger",
+        "misty_sacrifice_competing_replacements_pause_replay_and_owned_continuation"
+      ]
+    }
+  ],
+  "shared_mechanics": [
+    "EntryTapped::UnlessControlsSubtype reads derived subtype/current control in actual and speculative funding worlds. Dedicated projected test independently removes/transfers Equipment while retaining parent.",
+    "Per-activated-slot subtype discount counts controlled battlefield permanents, reused by existing activation cost iterator for enumeration/borrowed/payment declaration; existing captured announcement locks total before mana events. Generic-only reduction uses existing saturation/colored preservation.",
+    "SacrificeSourceOrSkip advances current resolution only on exact-source sacrifice failure. Existing transactional zone replacement suspension/replay handles both replacement selections; no new pending state."
+  ],
+  "contracts": [
+    "Existing contracts::branch_contract at ordinary suspended activation payment, nested mana-paid reducer departure, queued chapter and competing zone replacement roots checks wrong actor/invalid index atomicity, raw/index equality, both observations, independent owned child after parent disposal, snapshot restore and stale revision.",
+    "Both seats for player-relative outcomes; both replacement route choices. Existing Diary, Power-up, Forge, Saga, cast/mana rollback and reflexive-sacrifice regressions pass."
+  ],
+  "wire": "No new public wire fields or vocabulary, no State fields; private immutable descriptors/instructions only. Existing replacement choices reused. Token5416 is explicitly reserved;5415 belongs to integrated Gone Fishing.",
+  "profile": "CARGO_PROFILE_TEST_OPT_LEVEL=0 consistently for this isolated author target; repository profile/default integrated release unchanged. Timings are author compilation evidence, not production simulation performance.",
+  "cache": "<cache>/rustmage-authoring/hob-lonely-misty/target",
+  "runs": [
+    {
+      "path": "<cache>/rustmage-authoring/hob-lonely-misty/run-29cde8e154274ef7a364f5278c8e5d0d",
+      "terminal": true,
+      "exit_code": 101,
+      "guard_seconds": 40.81395986001007,
+      "memory_peak_bytes": 2465570816,
+      "oom_kills": 0,
+      "first_compile_seconds": 33.78,
+      "passing_counts": [
+        11
+      ],
+      "filters": [
+        "hob_lonely_misty"
+      ],
+      "evidence_sha256": {
+        "driver.py": "c13a4f3b419a1f7d9a3efb0b87a53aec210ef3f1c688bd500b0a9267a2da9e1f",
+        "outer.log": "3b4df0f6d3145e5b71aa044ceb355002fe04f6e8ced975b91385ca07d0c06c51",
+        "results.json": "4f5e1c6463696cc708fda532b2e808b373911c4030c4d95f5f52eae10753908a",
+        "resource.json": "8743244a89213bafa84bbb80719ac3562118a88e40645732a910c3527d186efc"
+      }
+    },
+    {
+      "path": "<cache>/rustmage-authoring/hob-lonely-misty/run-46e7cbc35ab540afba67e7184b14c228",
+      "terminal": true,
+      "exit_code": 0,
+      "guard_seconds": 28.777671296033077,
+      "memory_peak_bytes": 2412404736,
+      "oom_kills": 0,
+      "first_compile_seconds": 27.79,
+      "passing_counts": [
+        12,
+        1,
+        9,
+        10,
+        6
+      ],
+      "filters": [
+        "hob_lonely_misty",
+        "hob_lonely_funding",
+        "hob_existing_two",
+        "territory_forge_tests",
+        "sos_cast_rollback"
+      ],
+      "evidence_sha256": {
+        "driver.py": "c13a4f3b419a1f7d9a3efb0b87a53aec210ef3f1c688bd500b0a9267a2da9e1f",
+        "outer.log": "69a7cd9d9515c56e54bc816c5eb5f0a0374c035bd30d48046599ca8b1678f96c",
+        "results.json": "610eb233b25f07abc6c02cd433623f82df994e3187678e6a384ecf4b1376b8ff",
+        "resource.json": "06643cd80e9a0a05ab8043986104fe9137e43ffdc15fb292dbc61c08c6d0eb74"
+      }
+    },
+    {
+      "path": "<cache>/rustmage-authoring/hob-lonely-misty/run-33cb26f55b2d447a84a4c79921c4b203",
+      "terminal": true,
+      "exit_code": 0,
+      "guard_seconds": 1.1012298470013775,
+      "memory_peak_bytes": 32219136,
+      "oom_kills": 0,
+      "first_compile_seconds": 0,
+      "passing_counts": [
+        4,
+        6,
+        6,
+        1
+      ],
+      "filters": [
+        "sos_diary",
+        "power_up",
+        "sos_mana_rollback",
+        "msh_four_plans_fire_real_threshold_events_then_sacrifice_before_reflexive_targets"
+      ],
+      "evidence_sha256": {
+        "driver.py": "5aae04af7fb1bcc4078b1556f0eb4a1d62c6264238d7fd1c71c7c12c333038e5",
+        "outer.log": "7792853f4caa7f11b68e29e5b044497c334dab24acfc862e15ee9bb7244c752a",
+        "results.json": "4d200159e66551b9ffd67249a65821d2ef06635ae6e0ac754d63a28502657a52",
+        "resource.json": "55b017dd64e31cc43389873d3aa6de38eb1bb803ebf56d85950fea75f436c385"
+      }
+    }
+  ],
+  "final_passing_count": 55,
+  "initial_failure": "First run11passed/1failed: fixture attempted Goblin creature type on noncreature Equipment, so Bolg sacrifice could not fund declaration. After natural terminal101 the fixture was changed to existing2/2 Goblin animation retaining Equipment; no card/core fix needed. No cancellation/input mutation while active.",
+  "checks": [
+    "link_catalogue.py passed (generated artifacts excluded from author commit)",
+    "check_sources.py passed5417definitions/1556Java blobs with explicit XMage path",
+    "rustfmt --check selected changed files passed",
+    "git diff --check passed"
+  ],
+  "executable_file_sha256": {
+    "data/catalogue-identities.json": "e429591df8c01f3e8f7b21f775a2ab7afd44cd14a83f73e94cbdf4b610762c0c",
+    "src/cards.rs": "6950b2d9492d341bedfc4fe4cce464cd3aaab3cc01b007fe9ad05c197ba407cf",
+    "src/card_definitions/mod.rs": "deb7b0add4a3fd88115b992a023f6f5cfe3b0c45468e89300395c13ad57c6768",
+    "src/engine.rs": "c64185402178a615c3f552e64fbe853503cac02a2b51ec9842bd18c41f58c6b8",
+    "src/engine_activations.rs": "3feb2e1fbb3f7ab6b8bbc40af6c8877d3e7e36d08d872ebd6070c7715ce8290b",
+    "src/engine_funding_entries.rs": "8aa0df2414f0427ba4af581464bde494685a904fda403723f3df1b0e38c7035e",
+    "src/engine_programs.rs": "58e5f2e477f272b79fe8ecda22e8fea36bf7bdb86697f33666747dad13a9cdff",
+    "src/card_definitions/hob/the_lonely_mountain.rs": "6bd210eb2517dd1bfe11df3322125dc7e36bf58edb6dc2c5d25edca03297bb9f",
+    "src/card_definitions/hob/the_misty_mountains_cold.rs": "87d8a3ed186ffc4054230337c69d0205915d023ed3ff62c8ef6aa56b8ddf3da0",
+    "src/card_definitions/synthetic/token_hob_dragon.rs": "233bc436e06f262157138e4571f77523eefd4292bd287336d9000aea64fada51",
+    "src/assurance/hob_lonely_misty.rs": "b646faefe296a981579919fc4e3b9f17bf3d80dfc05b5b797e80cef69a9c9e4c",
+    "src/assurance/hob_lonely_funding.rs": "e04dc8385fc88b1cacb46b500fc5214cd47a1a6d810a7dfebc21f2ba080aece4"
+  },
+  "throughput": {
+    "interval_start": "2026-10-26T14:27:20-07:00",
+    "interval_end": "2026-10-26T14:38:11-07:00",
+    "seconds": 651,
+    "complete_card_candidates": 2,
+    "scope": "Isolated author checkout through final focused evidence; two independent reviews and full integrated acceptance not included. No simulation benchmark run."
+  },
+  "remaining": [
+    "Two independent nonauthor reviews and parent integrated default release validation. Entire HOB/all-Standard goal remains open."
+  ]
+}

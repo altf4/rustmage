@@ -5421,7 +5421,8 @@
     16,
     0,
     16,
-    2
+    2,
+    8
   ],
   "aliases": [
     [
@@ -6219,6 +6220,10 @@
     [
       "@token/hob-bear",
       5414
+    ],
+    [
+      "@token/hob-dragon",
+      5416
     ],
     [
       "@token/hob-dwarf",
@@ -28639,6 +28644,12 @@
       "name": "Bear Token",
       "subtypes": "Bear",
       "colors": 16
+    },
+    {
+      "factory_identity": "@token/hob-dragon",
+      "name": "Dragon Token",
+      "subtypes": "Dragon",
+      "colors": 8
     }
   ],
   "emblems": [
@@ -156612,7 +156623,7 @@
       "legendary": false,
       "kind": 2,
       "basic": false,
-      "mana_color": null,
+      "mana_color": 3,
       "colored": [
         0,
         0,
@@ -183438,6 +183449,35 @@
         0
       ],
       "generic": 3
+    },
+    {
+      "index": 5416,
+      "module": "card_5416",
+      "path": "synthetic/token_hob_dragon.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-dragon",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Dragon",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

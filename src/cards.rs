@@ -1188,6 +1188,10 @@ pub(crate) enum Instruction {
     },
     SacrificeDelayedTokens,
     SacrificeSource,
+    /// Continue in this resolution only if sacrificing the exact source succeeds.
+    SacrificeSourceOrSkip {
+        skip: usize,
+    },
     /// Queue a separate trigger only after successfully sacrificing this exact source.
     SacrificeSourceReflexive {
         ability: u16,
@@ -3456,6 +3460,7 @@ pub(crate) enum EntryTapped {
     UnlessAtLeastTwo,
     UnlessLowLife,
     UnlessPlaneswalker,
+    UnlessControlsSubtype(&'static str),
     PayLife(u32),
     ChosenXAtMost(u32),
 }
@@ -4087,6 +4092,14 @@ impl Card {
             .iter()
             .find(|(index, _)| *index == ability)
             .map(|(_, rule)| *rule)
+    }
+    pub(crate) fn activation_subtype_discount(self, ability: u16) -> Option<&'static str> {
+        authored::RULES[self.index()]
+            .extras
+            .activation_subtype_discounts
+            .iter()
+            .find(|(index, _)| *index == ability)
+            .map(|(_, subtype)| *subtype)
     }
     pub(crate) fn activation_counter_discount(self, ability: u16) -> Option<CounterKind> {
         authored::RULES[self.index()]

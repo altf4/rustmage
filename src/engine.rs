@@ -5854,6 +5854,13 @@ impl Game {
                             || self.has_subtype(id as CardId, "Island"))
                 })
             }
+            EntryTapped::UnlessControlsSubtype(subtype) => {
+                !self.state.objects.iter().enumerate().any(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == controller
+                        && self.has_subtype(id as CardId, subtype)
+                })
+            }
             EntryTapped::UnlessPlaneswalker => {
                 !self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield

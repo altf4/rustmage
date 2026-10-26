@@ -164,6 +164,8 @@ pub(super) struct CardExtras {
     pub power_up_mana_cost_alternatives: &'static [ManaCost],
     pub activation_target_reductions: &'static [(u16, TargetActivationReduction)],
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
+    /// Reduce generic activation cost once per controlled permanent of this subtype.
+    pub activation_subtype_discounts: &'static [(u16, &'static str)],
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
     pub entry_choice: Option<EntryChoiceKind>,
@@ -253,6 +255,7 @@ impl CardExtras {
         power_up_mana_cost_alternatives: &[],
         activation_target_reductions: &[],
         activation_counter_discounts: &[],
+        activation_subtype_discounts: &[],
         activation_put_counters: &[],
         fixed_entry_counters: &[],
         cast_entry_counters: &[],

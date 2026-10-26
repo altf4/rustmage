@@ -59,7 +59,27 @@ impl Game {
         definition: Card,
         ability: u16,
     ) -> u32 {
+        let subtype_discount =
+            definition
+                .activation_subtype_discount(ability)
+                .map_or(0, |subtype| {
+                    let controller = self.state.objects[source as usize].controller;
+                    u32::try_from(
+                        self.state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .filter(|(id, object)| {
+                                object.zone == Zone::Battlefield
+                                    && object.controller == controller
+                                    && self.has_subtype(*id as CardId, subtype)
+                            })
+                            .count(),
+                    )
+                    .unwrap_or(u32::MAX)
+                });
         self.power_up_generic_discount(source, definition, ability)
+            .saturating_add(subtype_discount)
             .saturating_add(
                 definition
                     .activation_counter_discount(ability)

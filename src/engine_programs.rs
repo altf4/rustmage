@@ -3318,6 +3318,11 @@ impl Game {
                     }
                 }
                 Instruction::SacrificeSource => self.sacrifice_exact_source(&item),
+                Instruction::SacrificeSourceOrSkip { skip } => {
+                    if !self.try_sacrifice_exact_source(&item) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::SacrificeSourceReflexive { ability } => {
                     if self.try_sacrifice_exact_source(&item) {
                         // Departure refreshes the saved packet's LKI, including

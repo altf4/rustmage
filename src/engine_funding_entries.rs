@@ -467,6 +467,11 @@ impl FundingState<'_> {
                     && r.object.card.is_basic_land()
                     && CharacteristicWorld::kinds(self, r.id) & 2 != 0
             }),
+            EntryTapped::UnlessControlsSubtype(subtype) => !self.resources.iter().any(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.controller == owner
+                    && self.subtypes(r.id).has(r.object.card, subtype)
+            }),
             EntryTapped::UnlessPlaneswalker => !self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
                     && r.object.controller == owner
@@ -1564,3 +1569,7 @@ impl<'g> FundingState<'g> {
         found
     }
 }
+
+#[cfg(test)]
+#[path = "assurance/hob_lonely_funding.rs"]
+mod hob_lonely_funding;
