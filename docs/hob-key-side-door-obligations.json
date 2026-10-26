@@ -27,5 +27,10 @@
     "src/engine_funding.rs": "563848a305574c892111167e30d9cd4e34699a53e5da5be7860a9e318a3d4d46",
     "src/assurance/hob_key_side_door.rs": "d44c94b9860865f6beeeeb15d3593c9403bcc7a091bb7544652c07aad844fd0f",
     "data/observation-schema.txt": "1cb3ae0c7cf44aff95d12f73a367a8a51aedeb2a2a4deb4f0c4cb72d5845d2f5"
+  },
+  "strict_all_target_clippy": {
+    "success": true,
+    "log": "<cache>/rustmage-authoring/hob-key/clippy1/clippy.log",
+    "guard": "<cache>/rustmage-build-reports/ab687b2a8c144cbaa6d1b51357c2e991.json"
   }
 }
