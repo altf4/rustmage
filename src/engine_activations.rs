@@ -182,10 +182,7 @@ impl Game {
         actor: Player,
         sorcery: bool,
     ) -> bool {
-        let mut readiness = *ability;
-        if self.first_equip_zero_available(actor, ability) {
-            readiness.cost = ActivationCost::ZERO;
-        }
+        let readiness = self.activation_readiness(actor, ability);
         !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && self.printed_abilities_available(card)
             && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
@@ -328,19 +325,9 @@ impl Game {
                 }
                 continue;
             }
-            if ability.cost.remove.is_some()
-                && self.first_equip_zero_available(actor, ability)
-                && self.targets_available(ability.targets, actor, self.object_ref(card))
-                && emit(Action::AnnounceActivate {
-                    card,
-                    ability: index as u16,
-                    counter_payment: Counters::default(),
-                })
-            {
-                return true;
-            }
-            let done = counter_payments(
-                ability.cost,
+            let done = self.visit_activation_counter_payments(
+                actor,
+                ability,
                 self.counter_amounts(card),
                 |counter_payment| {
                     let fundable = || {

@@ -712,3 +712,70 @@ fn ordinary_equip_preserves_legacy_payment_major_direct_action_order() {
         assert_ne!(rows[0].1, rows[2].1);
     }
 }
+
+#[test]
+fn kili_borrowed_equip_waives_unpayable_printed_life_cost_before_readiness() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        story(&mut g, p);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let precious = put(
+            &mut g,
+            p.other(),
+            "My Precious // Allure of Power",
+            Zone::Battlefield,
+        );
+        // Paid Forge cast and its actual ETB exile create the acquired instance.
+        let forge = crate::engine::territory_forge_tests::forge(&mut g, p, precious);
+        assert_eq!(g.object_view(precious).zone, Zone::Exile);
+        assert!(!g.has_subtype(forge, "Equipment"));
+        let acquired = g
+            .borrowed_ability_views()
+            .into_iter()
+            .find(|a| a.source.card == forge && a.ability == 0)
+            .unwrap();
+        g.state.players[p.index()].life = 1;
+        g.state.players[p.index()].mana = [0; 6];
+        assert!(!g.state.players[p.index()].equip_activated_this_turn);
+        let announce = Action::AnnounceBorrowedAbility {
+            card: forge,
+            exiled: acquired.exiled,
+            ability: acquired.ability,
+            counter_payment: Counters::default(),
+        };
+        assert!(g.legal_actions().contains(&announce));
+        contracts::branch_contract(g.clone());
+        act(&mut g, announce.clone());
+        let choices = g.observe(p).cost_choices;
+        assert_eq!(choices.len(), 1);
+        assert_eq!(
+            choices[0].activation_route,
+            Some(ActivationCostRoute::FirstEquipZero)
+        );
+        contracts::branch_contract(g.clone());
+        route(&mut g, p, ActivationCostRoute::FirstEquipZero);
+        target(&mut g, bear);
+        reject(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        assert!(!g.state.players[p.index()].equip_activated_this_turn);
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 1);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert!(g.state.players[p.index()].equip_activated_this_turn);
+        assert_eq!(
+            g.state.stack.last().unwrap().borrowed_slot,
+            Some(acquired.slot)
+        );
+        contracts::branch_contract(g.clone());
+        settle(&mut g);
+        // An acquired equip can activate even when its source cannot attach.
+        assert_eq!(g.object_view(forge).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(forge).attached_to, None);
+        assert_eq!(g.state.players[p.index()].life, 1);
+        reject(&mut g, announce);
+    }
+}

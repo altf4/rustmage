@@ -107,6 +107,7 @@ impl Game {
         };
         let source = self.object_view(recipient.card);
         for (index, ability) in giver.card.activations().iter().enumerate() {
+            let readiness = self.activation_readiness(actor, ability);
             if ability_world::CharacteristicWorld::activation_prohibited(
                 self,
                 actor,
@@ -126,7 +127,7 @@ impl Game {
                         )
                     },
                     self.state.players[actor.index()].life,
-                    ability,
+                    &readiness,
                     index,
                     actor,
                     false,

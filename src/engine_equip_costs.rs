@@ -1,6 +1,32 @@
 //! Equip cost modifiers and committed player history, separate from attachment effects.
 use super::*;
 impl Game {
+    /// Cost readiness may use a declared replacement, while timing, guards and
+    /// usage limits still belong to the actual acquired ability instance.
+    pub(super) fn activation_readiness(
+        &self,
+        actor: Player,
+        ability: &ActivatedAbility,
+    ) -> ActivatedAbility {
+        let mut readiness = *ability;
+        if self.first_equip_zero_available(actor, ability) {
+            readiness.cost = ActivationCost::ZERO;
+        }
+        readiness
+    }
+    pub(super) fn visit_activation_counter_payments(
+        &self,
+        actor: Player,
+        ability: &ActivatedAbility,
+        available: CounterAmounts<'_>,
+        mut emit: impl FnMut(Counters) -> bool,
+    ) -> bool {
+        // A waived printed fixed-counter cost must not prevent declaration.
+        (ability.cost.remove.is_some()
+            && self.first_equip_zero_available(actor, ability)
+            && emit(Counters::default()))
+            || activations::counter_payments(ability.cost, available, emit)
+    }
     pub(super) fn activation_target_sensitive(definition: Card, ability: u16) -> bool {
         definition.activation(ability).is_equip()
             || definition.activation_target_reduction(ability).is_some()

@@ -54,7 +54,8 @@
     "kili_draw_uses_other_controlled_subtypes_once_each_turn_and_survives_departure": "Enemy qualifying/own nonmatching entries do not draw; own Dwarf and Equipment each draw, later entries do not; reset and queued source departure preserve draw.",
     "kili_prior_equip_without_story_consumes_first_after_story_is_achieved": "Kíli without story cannot waive cost; prior paid equip remains consumed after story is achieved.",
     "kili_printed_trigger_once_cap_survives_bifur_multiplicity_and_resets": "Active Bifur gives Kíli one additional trigger witness, yet printed trigger-once cap yields exactly one draw; later entry zero, next turn exactly one.",
-    "ordinary_equip_preserves_legacy_payment_major_direct_action_order": "No new provider present: two concrete mana payments each enumerate target objects in the prior payment-major order. New dispatch uses sparse active target-side source index only when a modifier can apply."
+    "ordinary_equip_preserves_legacy_payment_major_direct_action_order": "No new provider present: two concrete mana payments each enumerate target objects in the prior payment-major order. New dispatch uses sparse active target-side source index only when a modifier can apply.",
+    "kili_borrowed_equip_waives_unpayable_printed_life_cost_before_readiness": "Both seats: actual paid Territory Forge cast exiles My Precious and acquires its equip; life1/no mana still offers borrowed announcement and only zero route; rejected payment preserves history; paid0 loses no life, commits borrowed slot/global equip history; non-Equipment Forge remains unattached after resolution and repeat cannot waive cost."
   },
   "contract_reuse": [
     "assurance::contracts::branch_contract: raw/index equality, stale revision rejection, independent owned children, parent disposal, both observations and restore at alternative/payment/committed roots.",
@@ -64,7 +65,7 @@
   ],
   "fixture_preflight": "All14 named identities/aliases resolve to admitted definitions; checked exact activated slots: Goldvein Pick0 equip1/bodymana2, Ragged Short Spear0 equip3, My Precious0 equip2+2life, Wizard Staff0 Wizard-only equip1/slot1 ordinary equip3, Trostani hybrid slot1, Sting triggered target shape. Missing Short Sword/Loxodon Warhammer/Stifle candidates were discarded during read-only preflight before any Cargo run.",
   "validation": {
-    "status": "passed final focused family and affected regressions; independent reviews and root integrated release pending",
+    "status": "passed corrected16 plus63 affected regressions; two refreshed independent reviews and root integrated release pending",
     "sourcecheck": {
       "definitions": 5413,
       "source_blobs": 1535,
@@ -145,6 +146,51 @@
       "resource_report": "<cache>/rustmage-build-reports/72c2bc2eaf674145ad2e6fd5f355d476.json",
       "unit": "rustmage-build-639516e978f34005a1b1ec7f720acc84.service",
       "post_previous_terminal_changes": "Narrow direct dispatch to active controlled target-side providers or established source reducers; preserve legacy ordinary equip payment-major order. Fixed-counter printed-route preflight is restricted to captured Kíli alternatives, leaving variable-counter behavior unchanged."
+    },
+    "review_correction_initial_compile": {
+      "exit": 101,
+      "terminal": true,
+      "scenario_count": 0,
+      "seconds": 14.855534884962253,
+      "failure": "New assertion used CharacteristicWorld life trait without importing it. Replaced test-only query with existing direct player-state assertion after process naturally terminated.",
+      "log": "<cache>/rustmage-authoring/hob-equip-cost-history/run-cac0f86155214d448bfd8bc2338e16e3/0-hob_equip_cost_history.log",
+      "resource_report": "<cache>/rustmage-build-reports/9d4b869856594d7498ef645afac2a2ea.json"
+    },
+    "post_review_final": {
+      "passed": 79,
+      "failed": 0,
+      "ignored": 0,
+      "counts": {
+        "9-territory_forge_": 10,
+        "5-sos_mana_rollback": 5,
+        "10-msh_b_cast_target_events_copy_and_grant_without_recasting": 1,
+        "8-ant_man_card_draw_and_variable_counter_cost": 1,
+        "1-hob_equipment": 6,
+        "3-hob_trigger_multiplicity": 13,
+        "11-sos_great_hall_conditional_animation_persists_and_repeated_activation_does_not_stack_grants": 1,
+        "0-hob_equip_cost_history": 16,
+        "7-power_up": 6,
+        "4-hob_cast_timing": 8,
+        "6-msh_c_quake_targets_and_reptil_forms_and_raft_power_boundary": 1,
+        "13-big_inherited_tests": 5,
+        "2-hob_sting": 5,
+        "12-hob_sacrifice_funding_borrowed_activation_needs_projected_haste_before_cost": 1
+      },
+      "focused_compile_and_execution_seconds": 139.06946784997126,
+      "guard_seconds": 140.20617586397566,
+      "scenario_seconds": 0.13,
+      "focused_scenario_seconds": 0.02,
+      "peak_memory_bytes": 2580496384,
+      "memory_max_bytes": 6442450944,
+      "oom_kills": 0,
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "terminal": true,
+      "exit": 0,
+      "log_directory": "<cache>/rustmage-authoring/hob-equip-cost-history/run-aa81197534c34e348dafb44ba57815e2",
+      "resource_report": "<cache>/rustmage-build-reports/6a05768ab0a74aed977a738904ae0e3d.json",
+      "unit": "rustmage-build-62ec189c509c45c3ad56497ff3c888f2.service",
+      "post_terminal_checks": "sourcecheck5413 definitions/1535 immutable Java pins verified; rustfmt edition2024 --check on changed Rust and git diff --check passed."
     }
   },
   "integration": "No PR/push/merge. Root registers hob_equip_cost_history assurance module and regenerates metadata linkage. Root owns final integrated release validation, inherited projection audit and two independent nonauthor reviews.",
@@ -156,5 +202,10 @@
     "elapsed_wall_seconds_including_shared_build_waits": 2252,
     "observed_cards_per_wall_hour": 3.197158081705151,
     "simulation": "No new simulation benchmark claimed. Final focused family executes15 interaction scenarios in reported0.02s; all60 selected scenarios execute in aggregate reported0.08s. Root owns integrated simulation/performance validation."
+  },
+  "review_correction": {
+    "finding": "Independent contract review P1: borrowed activation readiness rejected unpayable printed life before Kíli optional0 could be declared. Initial60 passing scenarios did not cover this acquired-ability entry path.",
+    "support": "One shared activation_readiness helper now supplies replaced printed cost to ordinary, borrowed, self-granted and attachment-granted readiness while preserving timing/guards/usage. Shared fixed-counter candidate visitation includes waived-cost declaration for ordinary and borrowed equip.",
+    "audit": "All object_activation_available_with_kinds call sites inspected. Funding source_obligations intentionally checks selected Printed obligations; zero-route funding omits waived printed source costs. Remaining funding readiness calls enumerate mana-producing abilities, which cannot be equip. Admitted self-granted template is Iron Fist tap damage, and admitted attached templates are non-equip; focused existing regressions exercise these unchanged paths. No card/type eligibility restriction based on actual Forge Equipment status was introduced."
   }
 }

@@ -246,6 +246,7 @@ impl Game {
         ready_object.used_abilities = 0;
         for descriptor in &descriptors {
             let ability = descriptor.rules();
+            let readiness = self.activation_readiness(actor, ability);
             if ability.cost.loyalty.is_some() && loyalty_used {
                 continue;
             }
@@ -278,7 +279,7 @@ impl Game {
                     self.current_kinds(card),
                     || CharacteristicWorld::activation_keywords(self, card),
                     self.state.players[actor.index()].life,
-                    ability,
+                    &readiness,
                     0,
                     actor,
                     sorcery,
@@ -286,8 +287,9 @@ impl Game {
             {
                 continue;
             }
-            if activations::counter_payments(
-                ability.cost,
+            if self.visit_activation_counter_payments(
+                actor,
+                ability,
                 self.counter_amounts(card),
                 |counter_payment| {
                     let fundable = self
