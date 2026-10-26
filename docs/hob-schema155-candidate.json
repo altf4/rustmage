@@ -1,6 +1,6 @@
 {
   "schema": 155,
-  "status": "Integration candidate; baseline not yet adopted or release-accepted",
+  "status": "All current shared cores integrated; final inherited audit and baseline adoption pending",
   "previous_schema": 154,
   "reason": "New public LibrarySelectionView destination battlefield_tapped and remainder shuffle values used by Through the Forest Gate",
   "source_review": "Both independent nonauthors approved four-effect source2b68a3f4 contingent on this schema integration and inherited trace audits",
@@ -44,6 +44,7 @@
       101,
       101
     ],
-    "recording_note": "Explicit recording leaves committed baseline untouched and intentionally fails strict2639vs2631 cardinality; this is not ordinary strict acceptance. Final source cohort must be audited again after pending multiplicity integration."
+    "recording_note": "Explicit recording leaves committed baseline untouched and intentionally fails strict2639vs2631 cardinality; this is not ordinary strict acceptance. Final source cohort must be audited again after pending multiplicity integration.",
+    "independent_reviews": "Both independent nonauthors approved exact0166ba72 after full row/hash and actual terminal evidence checks; multiplicity core excluded from that audit."
   }
 }

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1a37f13d17363617c9b0f2e3a51eabbde2a30801a832f3bb72b27bbff960de0f",
+  "catalogue_version": "8417a5c1c13445bf3bfa7d5623a8a1eec28e8c0cee375043db9136da4ab143da",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2633,
-  "implemented_total": 2639,
+  "implemented_standard_cards": 2635,
+  "implemented_total": 2641,
   "token_definitions": 129,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 69,
-      "complete": 119
+      "gated": 67,
+      "complete": 121
     },
     "hoc": {
       "total": 5,
@@ -3444,8 +3444,8 @@
     {
       "name": "Bifur, Melodic Rider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/bifur_melodic_rider.rs",
       "set": "hob"
     },
@@ -41028,8 +41028,8 @@
     {
       "name": "Wizard's Staff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/wizard_s_staff.rs",
       "set": "hob"
     },

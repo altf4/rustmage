@@ -10,7 +10,7 @@
     "mono_owned": "Reject split colors/colorless; clamp negative/zero power; no stack; raw/index/restore parity at mana root; measure unchanged view/state baseline layouts"
   },
   "assurance_module": "src/assurance/hob_weavemaster.rs",
-  "remaining": "Terminal independent evidence receipts, integrated release and full-set acceptance remain pending",
+  "remaining": "Integrated release and full-set acceptance remain pending",
   "first_focused_run": {
     "filter": "hob_",
     "passed": 111,
@@ -56,6 +56,7 @@
       "hob_review_contracts",
       "hob_review_rules"
     ],
-    "source_result": "Both independent nonauthors approved frozen source/provenance/printed obligations without findings; terminal112-case evidence refresh follows separately."
+    "source_result": "Both independent nonauthors approved frozen source/provenance/printed obligations without findings; terminal112-case evidence refresh follows separately.",
+    "terminal_result": "Both independent nonauthors approved exact0166ba72: physically rehashed source files, verified112/112terminal scenarios and resource guard, and every inherited154/153/152 row; zero findings. Full release and set acceptance remain pending."
   }
 }

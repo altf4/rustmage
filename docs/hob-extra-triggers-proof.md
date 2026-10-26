@@ -70,3 +70,21 @@ Validation ledger:
   formatting and diff whitespace checks passed. A broad first formatting check
   accidentally included generated catalogue linkage and reported its deliberately
   generated format; owned-file check excludes that artifact and passes.
+
+
+Integration review and layout receipt:
+
+- Independent nonauthors `hob_review_contracts` and `hob_review_rules` both approved
+  exact author commit `a031e9c78a0f0e7ce87bbc2a6d095f691a3a386c`, including
+  all printed obligations, full source/absence pins, packet/LKI/owned rollback
+  and actual terminal 40-unique-scenario evidence. No actionable findings.
+- Official CR603.2d explicitly excludes delayed/reflexive abilities created by
+  object abilities. State-trigger exclusion also matches pinned
+  `TriggeredAbilities.java` and `NumberOfTriggersEvent.java` and CR603.8.
+- An already planned nearby integration test measured pre-multiplicity layouts:
+  ObjectView432, SpellView640, State3888 bytes. With this core they are432/656/3920:
+  actual deltas0/+16/+32 bytes, including alignment. Nearby baseline includes the
+  four-effect/Fili immutable rules and Woodland leaf; this is not a separate
+  raw-faca layout build. Log `<cache>/rustmage-authoring/hob-complete-set/schema155-pre-multiplicity-1/focused.log`.
+- Final integrated inherited-schema audit, strict release acceptance and measured
+  smoke performance remain pending; focused timings are not whole-set performance.
