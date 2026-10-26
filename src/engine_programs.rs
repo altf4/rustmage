@@ -1984,6 +1984,7 @@ impl Game {
     ) -> impl Iterator<Item = Player> + use<> {
         let controller = item.controller;
         let players = match set {
+            PlayerSet::SourceOwner => [Some(self.state.objects[item.card as usize].owner), None],
             PlayerSet::CastingPlayer => [
                 Some(
                     item.cast_event
@@ -2754,6 +2755,9 @@ impl Game {
                         self.state.pending = Pending::EffectOptional { player, skip_to };
                         return;
                     }
+                }
+                Instruction::ShuffleSourceIntoOwnerLibrary => {
+                    self.shuffle_source_into_owner_library(&item);
                 }
                 Instruction::BlinkImmediately { counter, tapped } => {
                     self.blink_immediately(&item, counter, tapped)

@@ -340,6 +340,8 @@ impl TargetPlan {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum PlayerSet {
+    /// The immutable owner of the exact source card, independent of controller.
+    SourceOwner,
     CastingPlayer,
     DrawingPlayer,
     Active,
@@ -1716,6 +1718,8 @@ pub(crate) enum Instruction {
     OwnerLibrary,
     OwnerLibrarySecondFromTop,
     ChooseManaValueParityDestroyOthers,
+    /// Shuffle even when the exact source permanent has left (CR701.24c).
+    ShuffleSourceIntoOwnerLibrary,
     ShuffleTargetIntoLibrary,
     ShuffleGraveyardIntoLibrary,
     DoubleTargetPower,
