@@ -1,6 +1,15 @@
 //! Non-targeted battlefield sets, frozen before simultaneous movement or damage.
 use super::*;
 impl Game {
+    pub(super) fn grant_permanent_group_keywords(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        keywords: Keywords,
+    ) {
+        let recipients = self.battlefield_group(item, filters);
+        self.grant_keyword_effects(&recipients, item.object, keywords);
+    }
     pub(super) fn grow_permanent_group_scaled(
         &mut self,
         item: &SpellView,

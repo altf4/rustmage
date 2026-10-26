@@ -3,10 +3,49 @@
   "catalogue_id": 1665,
   "oracle_id": "9efb3aa4-0023-4e0e-8bd4-f4dff1b3be66",
   "facts_sha256": "612340b64ed96df5afe2d8a44c7d15efce36cbb7dd25417aadc7bd804eb01a26",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d154f330c84932b851cbba88a7711af93fabe4217f8007fb2edeb7875ddaad30"
   },
-  "physical_metadata_sha256": "af1f1fd46a12a3442a717bc7608bdaefac4c503a87a413bf9c68970cad4b334d"
+  "physical_metadata_sha256": "af1f1fd46a12a3442a717bc7608bdaefac4c503a87a413bf9c68970cad4b334d",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "9efb3aa4-0023-4e0e-8bd4-f4dff1b3be66",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory has xmage_name:null and implementations:[]; full pinned card-class tree contains no Galion class. Historical typed_lift retained as provenance, not executable evidence."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+      "sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentToughnessValue.java",
+      "sha256": "d9eaa03aff62311cf486e0107bcbb25e640b6503fce37c8f3b515674388daebf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "Galion, Elvenking's Butler",
+    "notes": "Official full text matches pinned Oracle. Rulings specify actual source P/T at resolution, fixed thereafter, layer-7b overwrite ordering, and modifiers/counters afterward. CR113.7a/603.10/107.1b supply source LKI and signed-value rules; analogous Java helpers are pinned separately from the absent identity."
+  }
 }

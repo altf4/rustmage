@@ -1,0 +1,129 @@
+{
+  "scope": "Along the Crooked Way and Galion, Elvenking's Butler complete author candidates; three narrow private shared mechanics",
+  "base_revision": "47b9b3ea",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "source_read": "Full Oracle bodies, Along Java class and all referenced entry/return/target/amass/controlled-permanent keyword helpers; Galion has no class in the pinned inventory or full card tree. Full analogous attack/base-setting/source signed power/source toughness/controlled-other target helpers and Creepy Puppeteer class read. Paired provenance records exact hashes and explicit Galion absence; official Hobbit release notes and CR113.7a/603.10a/107.1b resolve source LKI, timing, layers and signed values.",
+  "shared_rules": {
+    "graveyard_departure": "CreatureCardLeavesYourGraveyard inspects each actual pre-zone creature card, not tokens/emblems, whose owner equals the frozen observer controller. Any destination outside graveyard qualifies. Pre-event observer and additional-trigger witness are reused; queue_zone_trigger_from annotates each original packet; expansion remains only in prepare. Existing CardsLeaveGraveyard batch behavior is preserved.",
+    "permanent_keyword_group": "GrantPermanentGroupKeywords freezes the deduplicated union of current BattlefieldFilter recipients at resolution, including noncreatures; existing exact-object EOT keyword effects apply afterward.",
+    "source_base_stats": "SetBaseStatsFromSource samples both signed actual axes once using the current exact source or its pre-departure LKI. Existing opt-in source_quantity_lki captures toughness; existing source_facts supplies power. Noncreature sources supply zero for undefined axes, live or departed. Existing timestamped layer-7b effects preserve modifiers/counters and expire EOT."
+  },
+  "cards": {
+    "Along the Crooked Way": {
+      "obligations": [
+        "Paid2B enchantment; mandatory ETB target own creature card in graveyard, return to hand; empty graveyard still permits cast; stale target independently leaves graveyard and fizzles return",
+        "One amassGoblins1 per own creature CARD actually leaving graveyard for any reason, including this ETB return, reanimation and paid graveyard cast; tokens, opposing owner and noncreatures excluded",
+        "1B activated, no tap/sorcery restriction: Goblin OR Orc permanents currently controlled at resolution gain menace until EOT; union deduplicates, later entrants excluded, recipient control/type changes do not erase fixed effect"
+      ],
+      "proofs": {
+        "paid_etb_return_causes_amass_and_public_hand_knowledge": "Both seats: exact paid cost, own/other/noncreature legality, public returned-card knowledge, amass1; stale ETB target and empty graveyard outcomes.",
+        "actual_reanimation_and_paid_graveyard_cast_each_trigger": "Paid Zombify and real paid own-graveyard creature cast each independently produce one amass.",
+        "per_card_batches_before_owner_and_card_exclusions": "Mixed owner/controller, token and noncreature exclusion; two qualifying cards to hand/library/exile each give two packets and final seven counters.",
+        "pre_event_observer_and_multiplier_survive_simultaneous_departure": "Bifur+story frozen before simultaneous provider/source/two-graveyard-creature departure retains two originals with witness1 and resolves four amasses; new simultaneous observer cannot look back; branch contract at frozen queue.",
+        "menace_snapshots_union_current_permanents_and_expires": "Paid1B; Goblin, Orc, dual-type and noncreature recipients; entry before/after resolution; source departure; subsequent recipient control/type change; one dual-type effect row; cleanup.",
+        "retained_mana_keeps_graveyard_departure_once_and_reverse_discards": "Real Rubble Rouser mana activation exiles own creature card while Candy Grapple is announced; deliberate casualty failure opens existing rollback; retain creates exact one Army counter, reverse restores card and no Army; representative branch contract."
+      }
+    },
+    "Galion, Elvenking's Butler": {
+      "obligations": [
+        "Paid2GG legendary4/4 Elf Advisor; actual self attack only, up to one OTHER own creature, optional decline",
+        "At resolution use actual current Galion power and toughness, or exact departing source LKI, including signed values and zero undefined axes; source incarnation/control/lords matter",
+        "Fixed EOT base-set effect, not additive: recipient modifiers/counters apply afterward; earlier base setter overwritten, later base setter overrides; copied triggers sample independently; stale/blinked or newly opposing target rejected"
+      ],
+      "proofs": {
+        "paid_attack_optional_other_targets_and_decline": "Both seats: paid cost/stats/types/legendary, actual attack, self/opponent target rejection, decline, another creature attack excluded, EOT reset.",
+        "samples_resolution_axes_then_fixed_base_layer_and_modifiers": "Actual paid Giant Growth responds to attack before resolution; source8 yields recipient13 after its counters/growth; later source growth leaves recipient13 fixed; later paid Witness Protection in legal Main2 overrides base to1 plus modifiers for6.",
+        "signed_departure_lki_incarnation_simultaneous_and_stale_targets": "Nine independent rows per seat: buffed source leaves/reenters; negative live power; simultaneous lord-first departure uses5/5 pre-batch source; target blink/control invalidation; source control change loses lord; signed negative departed axes; live and departed noncreature source both give0/0 rather than printed4/4.",
+        "copied_trigger_samples_independently_with_owned_retarget": "Actual paid Echo copies attack trigger; retarget prompt raw/index siblings and restore after ancestor disposal; copy samples7/5, original later9/6, and copy recipient stays7/5."
+      }
+    }
+  },
+  "contracts": "Both seats throughout. Existing illegal-action snapshot/observation helper reused. Representative owned queue, rollback and retarget branch contracts; explicit retarget raw/index child independence, restore and parent disposal. No new persistent/public wire fields, activation payment changes, token IDs or shared mutable last-result state.",
+  "author_validation": {
+    "source_definitions": 5414,
+    "verified_java_blobs": 1537,
+    "format": "rustfmt --edition2024 --check and git diff --check passed; source audit repeated after final terminal run",
+    "final_new_passed": 10,
+    "final_regressions_passed": 16,
+    "failed": 0,
+    "ignored": 0,
+    "scenario_seconds": 0.04,
+    "final_focused_compile_run_seconds": 139.6795468070195,
+    "final_cached_regression_seconds": [
+      0.1158742859843187,
+      0.11589638097211719,
+      0.11613014398608357
+    ],
+    "regression_filters": [
+      "sos_owlin_surveillance_and_one_trigger_per_graveyard_departure_batch (1)",
+      "hob_extra_triggers (14)",
+      "sos_final_fractalize_replaces_creature_types_colors_and_base_before_modifiers (1)"
+    ],
+    "history": [
+      {
+        "attempt": 1,
+        "report": "<cache>/rustmage-build-reports/cbc8365512ca42599b0fd8d63be42a18.json",
+        "terminal": true,
+        "exit": 101,
+        "new_passed": 8,
+        "new_failed": 2,
+        "compile_run_seconds": 147.68576514697634,
+        "correction": "After natural terminal, removed an invalid internal same-zone move fixture and advanced normal combat to Main2 before the later sorcery-speed Aura; no core fix was required for those failures."
+      },
+      {
+        "attempt": 2,
+        "report": "<cache>/rustmage-build-reports/a8001aef2be34fbaa1f983a82b832183.json",
+        "terminal": true,
+        "exit": 0,
+        "new_passed": 10,
+        "regressions_passed": 16,
+        "compile_run_seconds": 139.2642672189977,
+        "followup": "Post-pass audit found noncreature departure power could retain printed value. Added explicit creature guard and live/departed noncreature assertions before attempt3."
+      },
+      {
+        "attempt": 3,
+        "report": "<cache>/rustmage-build-reports/396bf9abfe2f44fdba8742349a07e849.json",
+        "terminal": true,
+        "exit": 0,
+        "new_passed": 10,
+        "regressions_passed": 16,
+        "compile_run_seconds": 139.6795468070195
+      }
+    ],
+    "final_guard": {
+      "command": [
+        "python3",
+        "-"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 430.18999090697616,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2576187392,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "final_guard_non_command_overhead_seconds": 290.16254328901414,
+    "timing_note": "Guard elapsed includes shared-slot wait; non-command overhead approximates wait plus runner setup, not an independently timed compilation phase. Focused commands include compilation and scenarios; logs report139s test-profile build. All three guard attempts naturally terminal, no cancellation, timeout or orphan; inputs fixed until terminal.",
+    "logs": [
+      "<cache>/rustmage-authoring/hob-crooked-galion/focused-1.log",
+      "<cache>/rustmage-authoring/hob-crooked-galion/focused-2.log",
+      "<cache>/rustmage-authoring/hob-crooked-galion/graveyard-regression-2.log",
+      "<cache>/rustmage-authoring/hob-crooked-galion/multiplicity-regression-2.log",
+      "<cache>/rustmage-authoring/hob-crooked-galion/base-regression-2.log",
+      "<cache>/rustmage-authoring/hob-crooked-galion/focused-3.log",
+      "<cache>/rustmage-authoring/hob-crooked-galion/graveyard-regression-3.log",
+      "<cache>/rustmage-authoring/hob-crooked-galion/multiplicity-regression-3.log",
+      "<cache>/rustmage-authoring/hob-crooked-galion/base-regression-3.log"
+    ]
+  },
+  "integration": "Author commit excludes generated coverage/catalogue and both central assurance registrations. Integrator must add mod hob_crooked_galion in src/assurance/mod.rs and #[path=\"hob_crooked_rollback.rs\"] mod hob_crooked_rollback under src/assurance/sos_mana_rollback.rs; regenerate catalogue links. Two nonauthor reviews and integrated release acceptance pending. No PR, push, merge or full validator by author.",
+  "throughput": {
+    "elapsed_seconds": 3331,
+    "candidate_cards_per_hour": 2.161513059141399,
+    "scope": "Isolated branch creation through final terminal source audit, including source reading, implementation, fixture correction, corner-case audit and shared-slot waits",
+    "simulation": "No simulation benchmark run; not full-set acceptance."
+  }
+}

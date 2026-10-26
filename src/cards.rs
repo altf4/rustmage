@@ -1593,6 +1593,10 @@ pub(crate) enum Instruction {
         power: Option<i128>,
         toughness: Option<i128>,
     },
+    /// Sample signed source P/T once, using departure LKI if its exact object left.
+    SetBaseStatsFromSource {
+        subject: Subject,
+    },
     SetResolvedBaseStats {
         subject: Subject,
         power: Option<ResolvedStatValue>,
@@ -1645,6 +1649,11 @@ pub(crate) enum Instruction {
     GrantSelfAbility(crate::engine::SelfGrantedAbilityKind),
     GrantKeywords {
         subject: Subject,
+        keywords: Keywords,
+    },
+    /// Freeze a union of current battlefield recipients, including noncreatures.
+    GrantPermanentGroupKeywords {
+        filters: &'static [BattlefieldFilter],
         keywords: Keywords,
     },
     GrantCreatures {
@@ -2842,6 +2851,8 @@ pub(crate) enum TriggerCondition {
     /// The physical source spell itself was cast; stack copies never dispatch it.
     SelfCast,
     CardsLeaveGraveyard,
+    /// One trigger per actual creature CARD departing its owner's graveyard.
+    CreatureCardLeavesYourGraveyard,
     /// One post-event batch of creature cards entering the controller's graveyard.
     CreatureCardsEnterYourGraveyard,
     ReturnDeath(ReturnDeathFilter),

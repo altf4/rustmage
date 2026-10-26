@@ -681,6 +681,7 @@ impl Game {
                     | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
                     | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CardsLeaveGraveyard
+                    | TriggerCondition::CreatureCardLeavesYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::CreatureExploresCardYou { .. }
@@ -4302,6 +4303,9 @@ impl Game {
                     power,
                     toughness,
                 } => self.set_base_stats(&item, subject, power, toughness),
+                Instruction::SetBaseStatsFromSource { subject } => {
+                    self.set_base_stats_from_source(&item, subject);
+                }
                 Instruction::SetResolvedBaseStats {
                     subject,
                     power,
@@ -4418,6 +4422,9 @@ impl Game {
                 Instruction::GrantKeywords { subject, keywords } => {
                     let ids = self.keyword_subjects(&item, subject);
                     self.grant_keyword_effects(&ids, item.object, keywords);
+                }
+                Instruction::GrantPermanentGroupKeywords { filters, keywords } => {
+                    self.grant_permanent_group_keywords(&item, filters, keywords);
                 }
                 Instruction::GrantCreatures { filter, keywords } => {
                     let affected: Vec<_> = (0..self.state.objects.len())
