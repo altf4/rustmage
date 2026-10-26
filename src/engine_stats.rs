@@ -29,6 +29,7 @@ impl Game {
         self.register_battlefield_providers(id);
     }
     pub(super) fn register_battlefield_providers(&mut self, id: CardId) {
+        self.register_trigger_multiplier_source(id);
         self.register_zone_rule_card(self.state.objects[id as usize].card);
         self.register_static_base_stats(id);
         self.register_live_static_source(id);
@@ -188,6 +189,7 @@ impl Game {
                     matches!(
                         fragment,
                         crate::cards::StaticAbilityFragment::Storied
+                            | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)

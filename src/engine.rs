@@ -238,6 +238,8 @@ mod convoke;
 mod improvise;
 #[path = "engine_storied.rs"]
 mod storied;
+#[path = "engine_trigger_multiplicity.rs"]
+mod trigger_multiplicity;
 pub use improvise::ImproviseChoiceView;
 #[path = "engine_damage_triggers.rs"]
 mod damage_triggers;
@@ -971,6 +973,11 @@ pub struct ReflexiveSubjectView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellView {
+    // Number of additional instances, zero for ordinary/published packets.
+    // Frozen mana-event packets and typed snapshots retain this owned witness;
+    // the JSON control plane restores opaque snapshot handles, never packets.
+    #[serde(skip)]
+    pub(crate) additional_triggers: usize,
     /// Declared nonmana counter cost; paid is set only by the committed cost executor.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_payment: Option<SourceCounterPaymentView>,
@@ -1925,6 +1932,7 @@ struct State {
     )]
     mana_announcement_stack: Option<Box<Vec<mana_announcements::ManaAnnouncement>>>,
     pending_triggers: Vec<SpellView>,
+    trigger_multiplicity: Option<Box<trigger_multiplicity::TriggerMultiplicityState>>,
     ordering_triggers: Vec<SpellView>,
     next_stack_id: u64,
     passes: u8,
@@ -1962,6 +1970,10 @@ pub struct EndureChoiceView {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    // Internal trigger-time witness. Observations are output-only (Serialize,
+    // never Deserialize); supported snapshots own State and retain this value.
+    #[serde(skip)]
+    pub(crate) additional_triggers: usize,
     pub prepared: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub harnessed: Option<bool>,
@@ -2678,6 +2690,7 @@ impl Game {
                 announcing: None,
                 mana_announcement_stack: None,
                 pending_triggers: Vec::new(),
+                trigger_multiplicity: None,
                 ordering_triggers: Vec::new(),
                 next_stack_id: 0,
                 passes: 0,
@@ -6218,6 +6231,7 @@ impl Game {
             if let Some(data) = &mut self.state.explore_data {
                 data.sources.retain(|&source| source != id);
             }
+            self.forget_trigger_multiplier_source(id);
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
             self.state.attack_sources.retain(|&source| source != id);
@@ -7797,6 +7811,7 @@ impl Game {
             + s.triggered_this_turn.len() * std::mem::size_of::<TriggerUse>()
             + s.replacements.as_ref().map_or(0, |f| f.bytes())
             + s.roles.as_ref().map_or(0, |r| r.bytes())
+            + s.trigger_multiplicity.as_ref().map_or(0, |r| r.bytes())
             + s.hand_size.as_ref().map_or(0, |r| r.bytes())
             + s.sba_batch.as_ref().map(|batch| batch.bytes()).unwrap_or(0)
             + s.entry_batch

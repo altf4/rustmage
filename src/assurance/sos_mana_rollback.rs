@@ -237,3 +237,6 @@ fn sos_mana_rollback_irreversible_colossus_sacrifice_keeps_the_entire_mana_event
         assert!(g.state.cast_rollback.is_none());
     }
 }
+
+#[path = "hob_trigger_rollback.rs"]
+mod hob_extra_triggers;

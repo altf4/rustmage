@@ -3,10 +3,63 @@
   "catalogue_id": 405,
   "oracle_id": "b8d563e4-e2bc-4e8b-8841-6655beff9138",
   "facts_sha256": "f5f29429ac345370c684a67470ef6a4f7944c3f05f98f0ab2a848c48b0984632",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7861dbc999c1a861692080cf4c1b56460011d710c89e0e9dc93d54e1204a88f7"
   },
-  "physical_metadata_sha256": "f2efaa488f472f0704ce0129dbdfcc61c83ec8751ed964351fda504354b2b0bc"
+  "physical_metadata_sha256": "f2efaa488f472f0704ce0129dbdfcc61c83ec8751ed964351fda504354b2b0bc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilities.java",
+      "sha256": "2ab88371eb3382d01344fbf28d80e651ed1479bfa801ce39057c09f14b431f71"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/NumberOfTriggersEvent.java",
+      "sha256": "09c3f80e824860142be1e3869e2e5371d331b8b4db6991f62ab33483e6d8cee6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/h/HarmonicProdigy.java",
+      "sha256": "f1530a3a6d47f441e4b3634b9f1a3c8a8a76cb450f35deea03f9dfa54cb2ed1d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/r/RoamingThrone.java",
+      "sha256": "fe277b630c7b055d2929bf79aab6bd477ee67f325cd18746fdcb02cfc89fa991"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StoriedAbility.java",
+      "sha256": "53a70872b58dc914e94e9795f666e20bc6a2fe7a2db4f555a69def1499a8fbd4"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "Bifur, Melodic Rider",
+    "rules_url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "rules": [
+      "109.2",
+      "603.2d",
+      "603.2h",
+      "603.3a",
+      "603.8",
+      "603.10",
+      "702.6"
+    ]
+  },
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "b8d563e4-e2bc-4e8b-8841-6655beff9138",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory has null xmage_name and empty implementations; pinned git tree has no Bifur Melodic Rider class. Analog helper implementations are evidence, not a claimed card implementation."
+  }
 }

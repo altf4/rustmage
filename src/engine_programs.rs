@@ -1010,6 +1010,16 @@ impl Game {
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
+            // Explicit limits and state-trigger latching also cap extra instances.
+            additional_triggers: if condition.once_per_turn()
+                || matches!(
+                    condition.event(),
+                    TriggerCondition::StateCounterAtLeast { .. }
+                ) {
+                0
+            } else {
+                source.additional_triggers
+            },
             gift: None,
             source_move: None,
             borrowed_slot: None,
@@ -1688,6 +1698,7 @@ impl Game {
             return;
         }
         assert!(self.state.ordering_triggers.is_empty());
+        self.expand_trigger_multiplicity();
         self.state.ordering_triggers = std::mem::take(&mut self.state.pending_triggers);
         self.continue_trigger_order();
     }

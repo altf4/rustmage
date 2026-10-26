@@ -1,7 +1,7 @@
 #[path = "ability_layers.rs"]
 mod ability_layers;
 pub(crate) use ability_layers::{
-    AbilityLayer, AnimationCreatureTypes, AnimationDuration, AnimationSpec,
+    AbilityLayer, AdditionalTriggerScope, AnimationCreatureTypes, AnimationDuration, AnimationSpec,
     AttachedCharacteristics, LandManaRecipients, PermanentForm, StaticAbilityFragment,
     StaticAbilityGroup, UntapRestriction,
 };

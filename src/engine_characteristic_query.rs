@@ -1,6 +1,6 @@
 //! Immutable characteristic evaluation scoped to one borrowed game world.
 //! None records a computed no-removal result. The borrow prevents mutation until
-//! every dependent view has finished; no derived data enters snapshots or branches.
+//! every dependent view has finished; views may retain explicit event witnesses.
 use super::ability_evaluation::AbilityEvaluation;
 use super::ability_world::CharacteristicWorld;
 use super::*;
@@ -893,6 +893,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             self.layered_stats_without_hand(id, None)
         };
         ObjectView {
+            additional_triggers: trigger_multiplicity::additional_triggers(self, id),
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),

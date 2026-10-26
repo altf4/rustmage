@@ -31,6 +31,14 @@ pub(crate) struct StaticAbilityGroup {
     pub fragments: &'static [StaticAbilityFragment],
 }
 
+/// Qualifications belong to the ability's actual permanent source, not the
+/// immutable card which supplied a granted program.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum AdditionalTriggerScope {
+    ControlledSubtype(&'static str),
+    EquippedCreature,
+}
+
 #[derive(Clone, Copy, Debug)]
 #[expect(
     dead_code,
@@ -39,6 +47,10 @@ pub(crate) struct StaticAbilityGroup {
 pub(crate) enum StaticAbilityFragment {
     /// Grants its controller the permanent enduring-story designation at threshold.
     Storied,
+    AdditionalTriggers {
+        scope: AdditionalTriggerScope,
+        condition: StatValue,
+    },
     FreeHandCast,
     GrantInstantSorceryStorm {
         ability: u16,
