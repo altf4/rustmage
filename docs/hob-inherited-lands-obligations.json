@@ -76,7 +76,36 @@
       "command_seconds": 152.6505972360028,
       "log": "<cache>/rustmage-authoring/hob-complete-set/inherited-lands-1/focused.log",
       "resource_report": "<cache>/rustmage-build-reports/41f8080f5bdd4aa78ff62961211a1dcb.json"
+    },
+    {
+      "run": "inherited-lands-2",
+      "source_head": "47b9b3ea91f3fb1bc05a3cc9ce64e1addffd236e",
+      "terminal": true,
+      "exit": 0,
+      "passed": 166,
+      "failed": 0,
+      "ignored": 0,
+      "scenario_seconds": 0.26,
+      "command_seconds": 138.95954855997115,
+      "guard_seconds_including_queue": 363.55259961198317,
+      "peak_memory_bytes": 2577563648,
+      "memory_limit_bytes": 6442450944,
+      "oom_events": 0,
+      "log": "<cache>/rustmage-authoring/hob-complete-set/inherited-lands-2/focused.log",
+      "resource_report": "<cache>/rustmage-build-reports/dc416017612d4a66b7c360828339941e.json"
     }
   ],
-  "status": "Five coherent bounded land scenarios now registered; corrected focused run and two independent reviews pending. Whole193 acceptance open."
+  "status": "Five bounded inherited land scenarios passed within 166 integrated HOB scenarios and received two independent nonauthor approvals. No new identities or behavior changes. Whole193 acceptance remains open.",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "47b9b3ea",
+      "result": "approved; full sources, pins, scenarios and terminal evidence; no findings"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "47b9b3ea",
+      "result": "approved; full sources, pins, scenarios and terminal evidence; no findings"
+    }
+  ]
 }
