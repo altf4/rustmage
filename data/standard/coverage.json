@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1be7c5bc1c31b7667c92f9bec4524cd5a97b58bd4c3f38d1bcc6420e14e806cc",
+  "catalogue_version": "a173bbf9369b3168b7105e7ca60d5ff89e5beb317a52424544e119a914b7354b",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2675,
-  "implemented_total": 2681,
+  "implemented_standard_cards": 2677,
+  "implemented_total": 2683,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 161,
-      "gated": 27
+      "complete": 163,
+      "gated": 25
     },
     "hoc": {
       "total": 5,
@@ -31156,8 +31156,8 @@
     {
       "name": "Silvan Reveler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/silvan_reveler.rs",
       "set": "hob"
     },
@@ -36068,8 +36068,8 @@
     {
       "name": "The Notary Hobbits",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_notary_hobbits.rs",
       "set": "hob"
     },

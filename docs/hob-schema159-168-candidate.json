@@ -1,0 +1,35 @@
+{
+  "scope": "168 local HOB candidates; 25 gated. Entire193 and final published PR remain open.",
+  "schema": 159,
+  "prior_release": {
+    "head": "3fa4cf1a81f20f2ca4ecc9c55ef0cf8fdef86b18",
+    "report": "<cache>/rustmage-validation-5sugglmb/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1036,
+    "python_passed": 8,
+    "terminal_receipt_reviews": "pending two independent auditors"
+  },
+  "cohorts": [
+    {
+      "card": "The Notary Hobbits",
+      "leaf": "545bcc3cfb941c6629db68c39ab451a65c04c418",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_executions": 171,
+      "unique_tests": 152
+    },
+    {
+      "card": "Silvan Reveler",
+      "leaf": "21e4657d2eb247dd44547edcda80e321de6dd15e",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 34,
+      "note": "Two zero-match legacy filters are excluded from pass counts."
+    }
+  ],
+  "status": "Leaf reviews passed; combined focused checks, historical baseline audit, integrated reviews, full release and whole-set acceptance remain open."
+}

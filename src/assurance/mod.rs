@@ -274,3 +274,5 @@ mod hob_bolg;
 mod hob_elrond;
 
 mod hob_getaway_barrel;
+mod hob_notary;
+mod hob_silvan_reveler;
