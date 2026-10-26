@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ac257cdfb06649671a25f65ecb630efe6a75a4aebfd481044c02864fdff51634",
+  "catalogue_version": "2b62fb7d0d4f3f998eeb83a6774571a27b8044ff00235cc7f0e032599543b542",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2658,
-  "implemented_total": 2664,
+  "implemented_standard_cards": 2659,
+  "implemented_total": 2665,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 144,
-      "gated": 44
+      "complete": 145,
+      "gated": 43
     },
     "hoc": {
       "total": 5,
@@ -35588,8 +35588,8 @@
     {
       "name": "The Black Arrow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_black_arrow.rs",
       "set": "hob"
     },
