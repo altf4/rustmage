@@ -1,7 +1,7 @@
 {
   "scope": "147localcandidates,46gated,all69inheritedidentities mapped. Schema156 unchanged; new private typedmechanics and exactDragon5416. Whole193/finalpublishedreviews remainopen.",
   "source_head_before_baseline": "2053fbfb010b960c15802a764430ac2e8308fd95",
-  "status": "Exactaudited2662baseline adopted; firstClippy-onlyfailure fixedafterterminal, bothproofrepairsindependentlyapprovedand20focusedtests pass. Requirednormaldefault/release147 rerun NEXT; no successclaimyet.",
+  "status": "Local147/schema156 full release accepted with two independent terminal receipt reviews. 46gated; entire193 behavior/games/performance and one final unmerged PR still open.",
   "focused_recording": {
     "passed": 305,
     "failed": 0,
@@ -475,6 +475,145 @@
         "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
         "cargo_jobs": 1,
         "test_threads": 1
+      }
+    },
+    {
+      "head": "332876ffc9350881508ee067af97cffc30c851df",
+      "terminal": true,
+      "success": true,
+      "seconds": 320.2120903109899,
+      "input_sha256": "8a75fb85ac0d652827e06b6915727d85722e5c0f12fdd20be59aee7f39d9ca94",
+      "files_verified": 11929,
+      "changed": [],
+      "active_processes": [],
+      "simulation": {
+        "clone_ns": 303.37768,
+        "decisions": 4941,
+        "decisions_per_second": 118632.25865376227,
+        "games": 10,
+        "games_per_second": 240.09766981129786,
+        "initial_state_bytes_excluding_capacity_and_allocator": 21752,
+        "max_decisions_per_game": 655,
+        "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+        "restore_ns": 174.44777,
+        "seconds": 0.041649717
+      },
+      "shared_libraries": {
+        "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/libraries/librustmage.so": "0c19f17012384baf792ed6349c7d5a88367325690fe517de20267851d8d9f981"
+      },
+      "phases": [
+        {
+          "name": "source pins",
+          "exit": 0,
+          "seconds": 0.7166743209818378,
+          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/00.log"
+        },
+        {
+          "name": "format",
+          "exit": 0,
+          "seconds": 1.7193828860181384,
+          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/01.log"
+        },
+        {
+          "name": "card format",
+          "exit": 0,
+          "seconds": 1.1192162389634177,
+          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/02.log"
+        },
+        {
+          "name": "script contracts",
+          "exit": 0,
+          "seconds": 0.7181156169972382,
+          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/03.log"
+        },
+        {
+          "name": "clippy",
+          "exit": 0,
+          "seconds": 17.312449372024275,
+          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/04.log"
+        },
+        {
+          "name": "native assurance",
+          "exit": 0,
+          "seconds": 167.05160329304636,
+          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/05.log"
+        },
+        {
+          "name": "release build",
+          "exit": 0,
+          "seconds": 131.11657553602709,
+          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/06.log"
+        },
+        {
+          "name": "simulation sample",
+          "exit": 0,
+          "seconds": 0.11516482301522046,
+          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/07.log"
+        },
+        {
+          "name": "Python assurance",
+          "exit": 0,
+          "seconds": 0.16515993600478396,
+          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/08.log"
+        }
+      ],
+      "report": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/result.json",
+      "native": {
+        "passed": 892,
+        "compile_seconds": 144.84490880201338,
+        "execution_seconds": 22.12057538301451
+      },
+      "python": {
+        "suite": "contract",
+        "requested_suite": "smoke",
+        "library": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/libraries/librustmage.so",
+        "terminal": true,
+        "tests": 8,
+        "success": true,
+        "seconds": 0.02247210795758292,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "runtime_budget_seconds": 5.0,
+        "budget_exceeded": false,
+        "timeout_seconds": 15.0
+      },
+      "guard": {
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/hob-complete-set/rustmage/scripts/validate.py",
+          "--release",
+          "--python",
+          "smoke",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/hob-complete-set/target"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 320.6178581530112,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 3066802176,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "independent_reviews": [
+        {
+          "reviewer": "hob_review_contracts",
+          "revision": "332876ffc9350881508ee067af97cffc30c851df",
+          "result": "Firm independent nonauthor terminal receipt approval; all9gates,892native,8Python,strict2662baseline,11929unchangedinputs and all5exact0555libraries independently verified. No findings."
+        },
+        {
+          "reviewer": "hob_review_rules",
+          "revision": "332876ffc9350881508ee067af97cffc30c851df",
+          "result": "Firm independent nonauthor terminal receipt approval; all9gates,892native,8Python,strict2662baseline,11929unchangedinputs and all5exact0555libraries independently verified. No findings."
+        }
+      ],
+      "implementation_throughput": {
+        "new_local_candidates": 78,
+        "elapsed_seconds_since_goal_creation": 22823.532210588455,
+        "cards_per_hour": 12.303091274790905,
+        "scope": "69 inherited to147 local candidates; includes core work, author/proof/review, build queues, acceptance and PR522undo. 46 gated; whole193 and finalpublishedPR remain open."
       }
     }
   ],
