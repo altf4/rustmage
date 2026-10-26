@@ -5419,7 +5419,8 @@
     4,
     1,
     16,
-    0
+    0,
+    16
   ],
   "aliases": [
     [
@@ -6213,6 +6214,10 @@
     [
       "@token/hob-axe",
       5406
+    ],
+    [
+      "@token/hob-bear",
+      5414
     ],
     [
       "@token/hob-dwarf",
@@ -28619,6 +28624,12 @@
       "name": "Stone Boulder",
       "subtypes": "Wall",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/hob-bear",
+      "name": "Bear Token",
+      "subtypes": "Bear",
+      "colors": 16
     }
   ],
   "emblems": [
@@ -183353,6 +183364,33 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5414,
+      "module": "card_5414",
+      "path": "synthetic/token_hob_bear.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-bear",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Bear",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [

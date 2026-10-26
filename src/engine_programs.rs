@@ -1348,7 +1348,8 @@ impl Game {
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::PutCountersScaled {
-                                            amount: AmountValue::SpellColors,
+                                            amount: AmountValue::SpellColors
+                                                | AmountValue::CastSpellManaValue,
                                             ..
                                         }
                                 )

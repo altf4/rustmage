@@ -1,0 +1,12 @@
+{
+  "name": "@token/hob-bear",
+  "catalogue_id": 5414,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "048b1373dee2bb6c263472bbcc147be996432bdd2e3f47fe2412e1df5eb6eb4f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/BearToken.java",
+  "java_sha256": "dd660225201bbc2557f9418dedebfab53f0837a73409cc6aef78da563f3bdf24",
+  "xmage_dependencies": []
+}
