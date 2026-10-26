@@ -186,5 +186,11 @@
       "proof_sha256": "495c939aad850f5f52855e765b53d22037210c61cd861e4b65b73f04ebba5535"
     }
   ],
-  "integration_status": "Two independent full source/proof approvals; root registered assurance. Proofmappingnow54of69inherited; no gameplay/admissionchanges. Integratedandwhole193acceptanceopen."
+  "integration_status": "Two independent full source/proof approvals; root registered assurance. Proofmappingnow54of69inherited; no gameplay/admissionchanges. Integratedandwhole193acceptanceopen.",
+  "root_lint_repair": {
+    "reason": "147fullreleaseClippy",
+    "behavior_changed": false,
+    "proof_sha256_after_repair": "12f9c29bf1aa81b68b06b32d250b162b5a794a4a576e27ef9921ae190fcb5e6c",
+    "validation": "Focusedrepaircheckandfullreleasepending; originalsourceapprovals/hashesretainedasprevioussnapshotreceipts"
+  }
 }

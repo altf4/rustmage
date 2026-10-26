@@ -725,7 +725,7 @@ fn hob_inherited_remaining_sackville_optional_other_creature_artifact_token_owne
                 if mode == 0 { Zone::Library } else { Zone::Hand }
             );
             private(&g, p, &[drawn]);
-            let token_sac = matches!(mode, 3 | 4 | 5);
+            let token_sac = matches!(mode, 3..=5);
             assert_eq!(
                 g.state.players[p.other().index()].life,
                 if token_sac { 19 } else { 20 }

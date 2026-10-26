@@ -1,7 +1,7 @@
 {
   "scope": "147localcandidates,46gated,all69inheritedidentities mapped. Schema156 unchanged; new private typedmechanics and exactDragon5416. Whole193/finalpublishedreviews remainopen.",
   "source_head_before_baseline": "2053fbfb010b960c15802a764430ac2e8308fd95",
-  "status": "Exact independentlyreviewed2662candidate adopted; requirednormaldefault/release147validation NEXT, notyetpassed.",
+  "status": "Audited2662baselineadopted; firstfullreleasestoppedat2proof-onlyClippylints. Fixedafterterminal; focusedrepaircheckandrequiredrelease rerun pending. No gameplayortracechanges.",
   "focused_recording": {
     "passed": 305,
     "failed": 0,
@@ -437,5 +437,45 @@
       "verified_before_run": true
     }
   ],
-  "delivery": "PR522undone; singlelocalbranch, no replacementPR/push/merge. OnebrandnewPRonlyafterwhole193implementedandvalidated, leaveunmerged."
+  "delivery": "PR522undone; singlelocalbranch, no replacementPR/push/merge. OnebrandnewPRonlyafterwhole193implementedandvalidated, leaveunmerged.",
+  "release_attempts": [
+    {
+      "head": "cb63f5a9212b47803e4ef6782ba305e42036d98f",
+      "report": "<cache>/rustmage-validation-ivx1owvv/report/result.json",
+      "terminal": true,
+      "success": false,
+      "execution_seconds": 45.35216831701109,
+      "passed_gates": [
+        "sourcepins",
+        "format",
+        "cardformat",
+        "scriptcontracts"
+      ],
+      "failed_gate": "Clippy",
+      "findings": [
+        "Proof-onlyunnecessaryto_vec replaceditercopied ondisjointobject/playersfields",
+        "Proof-only3|4|5 rewritten3..=5"
+      ],
+      "gameplay_and_trace_bytes_unchanged": true,
+      "guard": {
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/hob-complete-set/rustmage/scripts/validate.py",
+          "--release",
+          "--python",
+          "smoke",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/hob-complete-set/target"
+        ],
+        "terminal": true,
+        "exit_code": 1,
+        "seconds": 45.558107923017815,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2003402752,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    }
+  ]
 }

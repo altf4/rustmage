@@ -451,5 +451,11 @@
       "proof_sha256": "0d5ef8e495c6a53746c6dd660db6af7ab89957cdbffd8e8bb4d8addf889d803c"
     }
   ],
-  "integration_status": "Two independent fullsource/proofapprovals; rootregisteredmodule. All69inheritedidentitiesnowmapped toactualrulesproofs, no newgameplay/admissionflags. Integrateddefault/releaseandwhole193acceptanceopen."
+  "integration_status": "Two independent fullsource/proofapprovals; rootregisteredmodule. All69inheritedidentitiesnowmapped toactualrulesproofs, no newgameplay/admissionflags. Integrateddefault/releaseandwhole193acceptanceopen.",
+  "root_lint_repair": {
+    "reason": "147fullreleaseClippy",
+    "behavior_changed": false,
+    "proof_sha256_after_repair": "8afe60e3bd4c43f81eab4a1a43455423dea13e3f8be4237c8586c22da9cba3d0",
+    "validation": "Focusedrepaircheckandfullreleasepending; originalsourceapprovals/hashesretainedasprevioussnapshotreceipts"
+  }
 }

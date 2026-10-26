@@ -58,7 +58,7 @@ fn announce(g: &mut Game, id: CardId) {
     );
 }
 fn library(g: &mut Game, p: Player, names: &[&str]) -> Vec<CardId> {
-    for id in g.state.players[p.index()].library.to_vec() {
+    for id in g.state.players[p.index()].library.iter().copied() {
         g.state.objects[id as usize].zone = Zone::Outside;
     }
     g.state.players[p.index()].library.clear();
