@@ -1758,6 +1758,10 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: AmountValue,
     },
+    /// Draw, discard, and create a Human Soldier if a nonland was discarded.
+    Recruit {
+        token: Card,
+    },
     DrawThenDiscardIfDrew {
         amount: AmountValue,
         discard: u16,

@@ -3888,6 +3888,14 @@ impl Game {
                 Instruction::AddCastEntryCounters { kind, amount } => {
                     self.add_cast_entry_counters(&item, kind, amount)
                 }
+                Instruction::Recruit { token } => {
+                    let player = item.controller;
+                    self.draw_many(player, 1);
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    resolution.discards[player.index()] = 1;
+                    resolution.discard_after =
+                        Some(discard_events::DiscardAfter::Recruit(player, token));
+                }
                 Instruction::DrawThenDiscardIfDrew { amount, discard } => {
                     let player = item.controller;
                     let before = self.state.players[player.index()].cards_drawn_this_turn;

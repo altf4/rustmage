@@ -182,3 +182,4 @@ mod msh_contracts;
 mod msh_d;
 
 mod hob_equipment;
+mod hob_recruit;
