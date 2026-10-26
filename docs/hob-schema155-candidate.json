@@ -20,5 +20,30 @@
     }
   },
   "projection": "Existing recording-only trace path sets prior schema without altering current wire vocabulary; strips enduring_story only below154. Ordinary strict validation never projects. All inherited rows must remain exact for each prior schema.",
-  "delivery": "One brand-new unmerged PR for the complete193-identity set; no intermediate PRs."
+  "delivery": "One brand-new unmerged PR for the complete193-identity set; no intermediate PRs.",
+  "pre_multiplicity_audit": {
+    "source_context": "1cc9bebc plus frozen Woodland leaf/generated metadata; later trigger multiplicity core excluded",
+    "current_rows": 2639,
+    "baselines": {
+      "154": 2631,
+      "153": 2610,
+      "152": 2584
+    },
+    "changed_inherited_rows": 0,
+    "missing_inherited_rows": 0,
+    "all_additions_completed": true,
+    "current_candidates_byte_identical": true,
+    "candidate_sha256": "c47a0f0241b9791d9c79ce9b5889953ca949fbfe3fdbd64c06b17af2d8fea3fc",
+    "comparison": "<cache>/rustmage-authoring/hob-complete-set/schema155-pre-multiplicity-2/comparison.json",
+    "rules_passed": 112,
+    "rules_failed": 0,
+    "rules_ignored": 0,
+    "rules_seconds": 0.16,
+    "recording_exits": [
+      101,
+      101,
+      101
+    ],
+    "recording_note": "Explicit recording leaves committed baseline untouched and intentionally fails strict2639vs2631 cardinality; this is not ordinary strict acceptance. Final source cohort must be audited again after pending multiplicity integration."
+  }
 }

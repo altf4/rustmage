@@ -1,0 +1,61 @@
+{
+  "scope": "Woodland Weavemaster complete candidate with passing focused rules proof",
+  "oracle": "data/standard/cards.json",
+  "xmage_absence": "Exact pinned inventory has null name and no implementations, plus no class in pinned tree. Paired provenance retains historical typed-lift and pins independent source-power/ETB/restriction analogues.",
+  "rules_authority": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+  "tests": {
+    "paid_growth": "Exact1G1/2 vigilance, no self/nonElf/enemy growth, ownotherElf1/1 boost with no counter, cleanup expires, real vigilance attack",
+    "tokens_and_activation": "TokenElf entry qualifies; power-derived monoGreen stored mana pays Elf ability but not nonElf; stored restriction survives source departure",
+    "funding_and_incarnation": "Pure legal cast funding rejects nonElf, funds Elf from tap source, old source trigger cannot boost reentered permanent",
+    "mono_owned": "Reject split colors/colorless; clamp negative/zero power; no stack; raw/index/restore parity at mana root; measure unchanged view/state baseline layouts"
+  },
+  "assurance_module": "src/assurance/hob_weavemaster.rs",
+  "remaining": "Terminal independent evidence receipts, integrated release and full-set acceptance remain pending",
+  "first_focused_run": {
+    "filter": "hob_",
+    "passed": 111,
+    "failed": 1,
+    "ignored": 0,
+    "compile_seconds": 134.2604397199466,
+    "execution_seconds": 0.18,
+    "log": "<cache>/rustmage-authoring/hob-complete-set/schema155-pre-multiplicity-1/focused.log",
+    "failure": "Fixture called generic cast/pay helper with no floating mana. Funding correctly offers announcement but payment requires explicit mana activation. Added that ordinary action before PayCosts; rules definition unchanged.",
+    "trace_recording": "Not reached after fixture failure; no audit/baseline pass claimed."
+  },
+  "pre_multiplicity_layouts": {
+    "source_context": "Root1cc9bebc plus immutable4effects/Fili and Woodland leaf; no ObjectView/SpellView/State fields changed from accepted base",
+    "ObjectView_bytes": 432,
+    "SpellView_bytes": 640,
+    "State_bytes": 3888,
+    "method": "Printed in already planned focused test; no extra baseline build"
+  },
+  "validation": {
+    "log": "<cache>/rustmage-authoring/hob-complete-set/schema155-pre-multiplicity-2/focused.log",
+    "executed_family": "hob_",
+    "all_passed": 112,
+    "own_scenarios": 4,
+    "failed": 0,
+    "ignored": 0,
+    "scenario_execution_seconds": 0.16,
+    "compile_seconds": 135.0587283479981,
+    "guard_seconds": 141.18301665299805,
+    "memory_peak_bytes": 2547343360,
+    "oom_events": 0,
+    "resource_report": "<cache>/rustmage-build-reports/87b7f07159764ee5b0fdc1f9fb417c6b.json",
+    "source_definitions": 5413,
+    "source_blobs": 1521,
+    "source_checks": "All immutable Java pins and explicit absence checked; Rust formatting and whitespace pass"
+  },
+  "source_hashes": {
+    "src/card_definitions/hob/woodland_weavemaster.rs": "903a901422c5c41aeb314333725d251e1c22a3883eb3c7594a1fcbe0af0f6a86",
+    "src/card_definitions/hob/woodland_weavemaster.json": "f1241e6bd7d4ce5bb3193546a32d1e45fb8e3d21fe0496d33060cbfaa7f166c3",
+    "src/assurance/hob_weavemaster.rs": "e427db108b398016408ad9f46fd37298b60df6b3e6fe6b63db70398b647febdd"
+  },
+  "independent_reviews": {
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "source_result": "Both independent nonauthors approved frozen source/provenance/printed obligations without findings; terminal112-case evidence refresh follows separately."
+  }
+}

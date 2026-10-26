@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9736485d12fab6a73a6dd3ad666c159a4db60cd7de8de7c66cc7cb74f40a0be6",
+  "catalogue_version": "1a37f13d17363617c9b0f2e3a51eabbde2a30801a832f3bb72b27bbff960de0f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2631,
-  "implemented_total": 2637,
+  "implemented_standard_cards": 2633,
+  "implemented_total": 2639,
   "token_definitions": 129,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 71,
-      "complete": 117
+      "gated": 69,
+      "complete": 119
     },
     "hoc": {
       "total": 5,
@@ -13460,8 +13460,8 @@
     {
       "name": "Fíli the Pathfinder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/fili_the_pathfinder.rs",
       "set": "hob"
     },
@@ -41084,8 +41084,8 @@
     {
       "name": "Woodland Weavemaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/woodland_weavemaster.rs",
       "set": "hob"
     },
