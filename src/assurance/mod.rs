@@ -264,3 +264,9 @@ mod hob_great_goblin;
 mod hob_balin;
 
 mod hob_celebrate;
+
+mod hob_elven_passage;
+
+mod hob_desert_worm;
+
+mod hob_bolg;

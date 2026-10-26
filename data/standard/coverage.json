@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3e7b34c36ffb0ae0bdffbfaf68192c946ac4203803e3d9c078280359402bf690",
+  "catalogue_version": "9b6f60d650ce3e86ff436ae8576d1b4e82d96bd0abfdfb5b4d234b18d099f5f2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2670,
-  "implemented_total": 2676,
+  "implemented_standard_cards": 2673,
+  "implemented_total": 2679,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 156,
-      "gated": 32
+      "complete": 159,
+      "gated": 29
     },
     "hoc": {
       "total": 5,
@@ -4092,8 +4092,8 @@
     {
       "name": "Bolg of the North",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/bolg_of_the_north.rs",
       "set": "hob"
     },
@@ -8612,8 +8612,8 @@
     {
       "name": "Desert Were-Worm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/desert_were_worm.rs",
       "set": "hob"
     },
@@ -10564,8 +10564,8 @@
     {
       "name": "Elven Passage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/elven_passage.rs",
       "set": "hob"
     },

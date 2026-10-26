@@ -1,0 +1,48 @@
+{
+  "scope": "164 local HOB candidates; 29 gated. Entire193 and final published PR remain open.",
+  "schema": 158,
+  "schema_changes": [
+    "Public HandChoiceKind Behold from Elven Passage",
+    "Public optional SpellView sacrificed_power from Bolg; absent values retain prior shape"
+  ],
+  "prior_release": {
+    "head": "6eaa07a922f0307962bedb8d3f18f9f0ef7101f2",
+    "report": "<cache>/rustmage-validation-5n92eqyx/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 986,
+    "python_passed": 8,
+    "terminal_receipt_reviews": "pending two independent auditors"
+  },
+  "cohorts": [
+    {
+      "card": "Elven Passage",
+      "leaf": "0186e2715fea6dcad6e026837b23594dad8bf6eb",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_passed": 51
+    },
+    {
+      "card": "Desert Were-Worm",
+      "leaf": "1554784af7bb3588813ebfba290992d99217d831",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_executions": 104,
+      "unique_tests": 93
+    },
+    {
+      "card": "Bolg of the North",
+      "leaf": "44d643e74cae44399173eb3c6b0dbb26cfdc719c",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_passed": 29,
+      "limitation": "No admitted live sacrifice-prevention fixture; exact departure check source-audited, replacement-to-exile tested."
+    }
+  ],
+  "status": "Leaf reviews approved; combined HOB focused checks, historical schema projection audit, candidate review, full release and whole-set acceptance remain open."
+}
