@@ -84,7 +84,7 @@
     "old_files_edited": false
   },
   "validation": {
-    "status": "author proofs passed; independent nonauthor review and integration acceptance pending",
+    "status": "Two independent source/focused-evidence approvals received; root registered module; integrated full release pending. No gameplay changes or newly supported identities.",
     "earlier_runs": [
       {
         "log": "~/.cache/rustmage-authoring/hob-inherited-adventures/focused-0.log",
@@ -182,5 +182,13 @@
     }
   ],
   "new_supported_identities": 0,
-  "inherited_identities_tested": 3
+  "inherited_identities_tested": 3,
+  "independent_reviews": {
+    "source_commit": "119fd81a95999dec904fc13105688c391de46b76",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both nonauthors approved full paired-face Oracle/Java/helper audit and all18 pins, meaningful six new outcome/privacy/owned proofs plus shared flying proof, actual terminal7passes and resource5985a5df587d4875b68318ce138b389e. No findings."
+  }
 }

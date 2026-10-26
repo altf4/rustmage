@@ -211,3 +211,6 @@ mod hob_inherited_initial;
 mod hob_cast_timing;
 
 mod hob_inherited_draw;
+
+mod hob_inherited_adventures;
+mod hob_stir_stone;

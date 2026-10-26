@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "1620aada10d1f5f17d5f207aa75d65c5e2623875dd648a7991c8eb4cd338bf9f",
+  "catalogue_version": "b5f28e29c62ff7b204c65e03e105d60e07b05dd47f3f3d3f5d35699cdfd86af9",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2639,
-  "implemented_total": 2645,
-  "token_definitions": 129,
+  "implemented_standard_cards": 2641,
+  "implemented_total": 2647,
+  "token_definitions": 130,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
   "omen_definitions": 13,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 63,
-      "complete": 125
+      "gated": 61,
+      "complete": 127
     },
     "hoc": {
       "total": 5,
@@ -33396,8 +33396,8 @@
     {
       "name": "Stir Up Trouble",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/stir_up_trouble.rs",
       "set": "hob"
     },
@@ -33516,8 +33516,8 @@
     {
       "name": "Stone-Giant of High Pass",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/stone_giant_of_high_pass.rs",
       "set": "hob"
     },

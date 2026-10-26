@@ -80,7 +80,7 @@
       ]
     }
   },
-  "status": "Corrected independent Smaug proof finding; all145 integrated HOB scenarios pass at02c40d0d. Two refreshed independent approvals pending; no new candidates.",
+  "status": "Both independent nonauthors approved source and actual149-case integrated HOB focused evidence at clean c678c2e6; no gameplay changes or new candidate count. Full release and entire193 remain open.",
   "attempts": [
     {
       "run": "inherited-initial-1",
@@ -150,8 +150,30 @@
       "severity": "P2 proof",
       "finding": "Original Smaug test combined sacrifice-one plus transfer-one, leaving count2 and not distinguishing a frozen announcement count.",
       "correction": "Split independent sacrifice-only expected1 and transfer-only expected3, each with creature/player targets and both seats. No gameplay implementation change.",
-      "status": "Corrected sacrifice-only1/transfer-only3 assertions passed for both target classes and seats. Independent refreshed source/evidence reviews pending.",
+      "status": "Resolved and independently approved by both reviewers on c678c2e6; actual terminal149-case run passed.",
       "other_review": "Reviewer verified all13 pins, exact approved Bee/caster integration, meaningful other Bard/Smaug outcomes and actual terminal focused evidence. Integration approved except this proof defect."
     }
-  ]
+  ],
+  "independent_reviews": {
+    "head": "c678c2e6ab5128e6d9781f082f36f7be00b7a3c9",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both approved full printed outcomes, complete listed pinned Java bytes, meaningful assertions and actual149 separate passing test lines,0fail/ignored; resource38fcc84495734acfbd0e2f332503ed27 terminalexit0,peak2565558272/6GiBzeroOOM. Smaug P2 proof finding resolved by independent2to1/2to3 cases."
+  },
+  "integrated_terminal_evidence": {
+    "source_head": "c678c2e6ab5128e6d9781f082f36f7be00b7a3c9",
+    "log": "<cache>/rustmage-authoring/hob-complete-set/inherited-draw-1/focused.log",
+    "hob_passed": 149,
+    "failed": 0,
+    "ignored": 0,
+    "scenario_seconds": 0.22,
+    "compile_and_execution_seconds": 152.40480516600655,
+    "guard_seconds_including_queue": 385.79432398901554,
+    "resource_report": "<cache>/rustmage-build-reports/38fcc84495734acfbd0e2f332503ed27.json",
+    "memory_peak_bytes": 2565558272,
+    "memory_limit_bytes": 6442450944,
+    "oom_events": 0
+  }
 }

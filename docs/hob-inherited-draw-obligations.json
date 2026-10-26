@@ -64,5 +64,27 @@
     "Fateful Discovery": "Paid3UU; own actual paid artifact entry draws once, opponent artifact and own nonartifact excluded; frozen trigger survives observer departure; actual upkeep Treasure token entry counts.",
     "Gleaming Splendor": "Paid1W; actual2Wactivation targets exactlytwo distinct players, both draw exactlyone, duplicates/prematurefinish rejected transactionally. First/second/third ordinal outputs0/1/1ownTreasures, no opponent token; historybeforeprovider and departedsourcepacket covered, representative owned raw/index/restore root."
   },
-  "status": "Four coherent draw scenarios authored; guarded focused proof and two independent reviews pending. Entire inherited69 and set193 acceptance remain open."
+  "status": "Both independent nonauthors approved source and actual149-case integrated HOB focused evidence at clean c678c2e6; no gameplay changes or new candidate count. Full release and entire193 remain open.",
+  "independent_reviews": {
+    "head": "c678c2e6ab5128e6d9781f082f36f7be00b7a3c9",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both approved full printed outcomes, complete listed pinned Java bytes, meaningful assertions and actual149 separate passing test lines,0fail/ignored; resource38fcc84495734acfbd0e2f332503ed27 terminalexit0,peak2565558272/6GiBzeroOOM. Smaug P2 proof finding resolved by independent2to1/2to3 cases."
+  },
+  "integrated_terminal_evidence": {
+    "source_head": "c678c2e6ab5128e6d9781f082f36f7be00b7a3c9",
+    "log": "<cache>/rustmage-authoring/hob-complete-set/inherited-draw-1/focused.log",
+    "hob_passed": 149,
+    "failed": 0,
+    "ignored": 0,
+    "scenario_seconds": 0.22,
+    "compile_and_execution_seconds": 152.40480516600655,
+    "guard_seconds_including_queue": 385.79432398901554,
+    "resource_report": "<cache>/rustmage-build-reports/38fcc84495734acfbd0e2f332503ed27.json",
+    "memory_peak_bytes": 2565558272,
+    "memory_limit_bytes": 6442450944,
+    "oom_events": 0
+  }
 }
