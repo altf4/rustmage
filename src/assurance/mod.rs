@@ -251,3 +251,5 @@ mod hob_black_arrow;
 mod hob_master;
 
 mod hob_roll;
+
+mod hob_azog_rampager;

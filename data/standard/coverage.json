@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9b813a6aacc788e009bf1c09dbede8608647642047586999e3721b17a345f0ba",
+  "catalogue_version": "90658f37df0c03ce4514f28c30cfdacc18a51e13d9f39ef0f0ffa0de9657ded8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2661,
-  "implemented_total": 2667,
+  "implemented_standard_cards": 2663,
+  "implemented_total": 2669,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 147,
-      "gated": 41
+      "complete": 149,
+      "gated": 39
     },
     "hoc": {
       "total": 5,
@@ -2556,8 +2556,8 @@
     {
       "name": "Azog, Moria's Ruin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/azog_moria_s_ruin.rs",
       "set": "hob"
     },
@@ -28324,8 +28324,8 @@
     {
       "name": "Rhovanion Rampager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/rhovanion_rampager.rs",
       "set": "hob"
     },
