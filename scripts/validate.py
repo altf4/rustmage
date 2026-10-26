@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Run bounded card/interaction assurance with separate build and execution timings.
 
-Each run owns a unique Cargo target. Terminal cleanup retains exact shared
-libraries, logs and JSON reports under ~/.cache. Keep source inputs fixed until
-this command has terminated, including after an observation timeout.
+Cargo outputs are reused by default; every run owns separate reports and immutable
+library snapshots under ~/.cache. Use --fresh only for an intentional clean build.
+Keep source inputs fixed until this command has terminated, including after an
+observation timeout.
 """
 import argparse
 import hashlib
@@ -11,14 +12,19 @@ import json
 import math
 import os
 from pathlib import Path
+import shutil
 import signal
 import subprocess
 import sys
 import tempfile
 import time
 
-from resource_limits import bounded_group
-from run_native_tests import active_peers, interrupted, run_command
+if __package__:
+    from .resource_limits import bounded_group
+    from .run_native_tests import active_peers, interrupted, run_command
+else:
+    from resource_limits import bounded_group
+    from run_native_tests import active_peers, interrupted, run_command
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -34,7 +40,23 @@ def source_files():
             if raw and (ROOT/os.fsdecode(raw)).is_file()}
 
 
-def main():
+def snapshot_library(target, report_dir):
+    """Publish a copy, never a hardlink into the mutable Cargo target."""
+    source = target/'release/librustmage.so'
+    if not source.is_file() or source.is_symlink():
+        raise RuntimeError('release build did not produce a regular librustmage.so')
+    directory = report_dir/'libraries'
+    directory.mkdir()
+    library = directory/source.name
+    shutil.copy2(source, library)
+    digest = sha(library)
+    if digest != sha(source):
+        raise RuntimeError('shared library changed while publishing its snapshot')
+    library.chmod(library.stat().st_mode & ~0o222)
+    return library, digest
+
+
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--release', action='store_true',
                         help='also build production library and run the bounded native benchmark')
@@ -44,18 +66,42 @@ def main():
                         help='native benchmark games, only with --release (default: 10)')
     parser.add_argument('--timeout', type=float, default=600,
                         help='total wall-clock budget after acquiring the build slot (seconds)')
-    args = parser.parse_args()
+    targets = parser.add_mutually_exclusive_group()
+    targets.add_argument('--target-dir', type=Path,
+                         help='reuse this Cargo target (default: CARGO_TARGET_DIR or a worktree cache)')
+    targets.add_argument('--fresh', action='store_true',
+                         help='use and clean a disposable target for an intentional clean build')
+    arguments = sys.argv[1:] if argv is None else argv
+    args = parser.parse_args(arguments)
     if args.games < 1 or (not math.isfinite(args.timeout) or args.timeout <= 0):
         parser.error('--games and --timeout must be positive')
     os.chdir(ROOT)
     if bounded_group() is None:
         os.execv(sys.executable, [sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
-                                 sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
+                                 sys.executable, str(Path(__file__).resolve()), *arguments])
     signal.signal(signal.SIGTERM, interrupted)
-    cache = Path(os.environ.get('XDG_CACHE_HOME', Path.home()/'.cache'))
+    cache = Path(os.environ.get('XDG_CACHE_HOME', Path.home()/'.cache')).expanduser().resolve()
+    if cache == ROOT or ROOT in cache.parents:
+        parser.error('XDG_CACHE_HOME must be outside the source checkout')
     cache.mkdir(parents=True, exist_ok=True)
-    target = Path(tempfile.mkdtemp(prefix='rustmage-validation-', dir=cache))
-    report_dir = target/'report'
+    target = None
+    target_preexisting = False
+    if not args.fresh:
+        identity = hashlib.sha256(os.fsencode(ROOT)).hexdigest()[:16]
+        default = cache/'rustmage-targets'/identity/'target'
+        target = Path(args.target_dir or os.environ.get('CARGO_TARGET_DIR') or default).expanduser().resolve()
+        if target == ROOT or ROOT in target.parents:
+            parser.error('--target-dir must be outside the source checkout')
+        if (target/'report/result.json').exists():
+            parser.error('legacy validation target pins library paths; choose a new reusable target')
+        if target.exists() and not target.is_dir():
+            parser.error('--target-dir must name a directory')
+        target_preexisting = target.exists()
+    run_dir = Path(tempfile.mkdtemp(prefix='rustmage-validation-', dir=cache))
+    if args.fresh:
+        target = run_dir/'target'
+    target.mkdir(parents=True, exist_ok=True)
+    report_dir = run_dir/'report'
     report_dir.mkdir()
     env = dict(os.environ, CARGO_TARGET_DIR=str(target), PYTHONDONTWRITEBYTECODE='1')
     files = source_files()
@@ -76,11 +122,12 @@ def main():
     if args.release:
         commands.append(('simulation sample', [str(target/'release/benchmark'), str(args.games)], 15))
     if args.python != 'none':
-        env['RUSTMAGE_LIBRARY'] = str(target/'release/librustmage.so')
         commands.append(('Python assurance', [sys.executable, 'scripts/python_tests.py',
                                                '--suite', args.python,
                                                '--report', str(report_dir/'python.json')], 30))
-    report = dict(head=head, terminal=False, target=str(target), phases=[], timeout_seconds=args.timeout)
+    report = dict(head=head, terminal=False, target=str(target), phases=[], timeout_seconds=args.timeout,
+                  fresh_target=args.fresh, target_preexisting=target_preexisting, shared_libraries={},
+                  input_sha256=hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest())
     started = time.monotonic()
     ok = False
     print(f'Validation report: {report_dir/"result.json"}', flush=True)
@@ -98,12 +145,21 @@ def main():
             if phase['exit']:
                 print(Path(phase['log']).read_text()[-12000:], flush=True)
                 break
+            if name == 'release build':
+                if active_peers():
+                    raise RuntimeError('release build left active processes; preserve outputs')
+                library, digest = snapshot_library(target, report_dir)
+                report['shared_libraries'][str(library)] = digest
+                env['RUSTMAGE_LIBRARY'] = str(library)
             if name == 'simulation sample':
                 report['simulation'] = json.loads(Path(phase['log']).read_text())
         else:
             ok = True
     except KeyboardInterrupt:
         report['interrupted'] = True
+    except (OSError, RuntimeError, ValueError) as error:
+        report['error'] = str(error)
+        print(str(error), file=sys.stderr, flush=True)
     finally:
         current = source_files()
         report['changed'] = sorted(path for path in files.keys() | current.keys()
@@ -114,18 +170,15 @@ def main():
         report['success'] = ok and not report['changed'] and not active
         report['terminal'] = not active
         report['seconds'] = time.monotonic()-started
-        report['shared_libraries'] = {
-            str(path): sha(path) for path in target.rglob('*')
-            if not active and path.is_file() and not path.is_symlink() and '.so' in path.name}
         freed = 0
-        for path in target.rglob('*'):
-            if (not active and path.is_file() and not path.is_symlink() and report_dir not in path.parents
-                    and str(path) not in report['shared_libraries']):
-                freed += path.stat().st_blocks*512
-                path.unlink()
+        if args.fresh and not active:
+            freed = sum(path.stat().st_blocks*512 for path in target.rglob('*')
+                        if path.is_file() and not path.is_symlink())
+            shutil.rmtree(target)
         for path, digest in report['shared_libraries'].items():
             if sha(Path(path)) != digest:
-                raise RuntimeError('retained shared library changed: '+path)
+                report['success'] = False
+                report['error'] = 'retained shared library changed: '+path
         report['cleaned_allocated_bytes'] = freed
         report['complete_cards'] = json.loads((ROOT/'data/standard/coverage.json').read_text())['implemented_standard_cards']
         (report_dir/'result.json').write_text(json.dumps(report, indent=2)+'\n')

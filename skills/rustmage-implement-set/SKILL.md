@@ -78,14 +78,13 @@ that its own definition wires the printed behavior correctly. Exercise legality,
 privacy, transactional failure and owned raw/index branching/restore where affected;
 do not repeat every shared contract at every action of every card.
 
-Make build reuse a prerequisite for routine set work, including full acceptance.
-Inspect the validator's target and cleanup behavior: a fresh target per invocation
-or deletion of reusable compiler artifacts defeats Cargo caching. If the checkout
-still does that, first add and test a reusable-target mode with separate per-run
-reports, then use it. Merely setting `CARGO_TARGET_DIR` cannot override a runner
-that assigns its own target. Do not repeatedly pay for clean builds or run
-`cargo clean` between card batches. Cold builds require a concrete investigation
-or explicit clean-build requirement, not a progress checkpoint.
+Reuse compiler outputs through full acceptance. The validator uses
+`CARGO_TARGET_DIR` or a stable worktree cache by default; pass `--target-dir` to
+share the focused authoring target. Every run still gets separate reports and
+immutable library copies. On older checkouts, inspect target/cleanup behavior
+and fix forced fresh targets before routine set work. Do not run `cargo clean`
+between card batches. `--fresh` requires a concrete investigation or explicit
+clean-build requirement, not a progress checkpoint.
 
 Choose validation by changed behavior and integration state, not card count:
 

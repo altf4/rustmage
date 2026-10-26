@@ -85,6 +85,15 @@ jobs:
           # check_sources reads immutable blobs with one git cat-file process.
           # No full XMage working tree or Java build is needed.
 
+      - name: Cache compiled Rust artifacts
+        if: steps.scope.outputs.code == 'true'
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: ~/.cache/rustmage-ci/rustmage-targets
+          key: rustmage-targets-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('Cargo.lock', 'Cargo.toml', '.cargo/config.toml', 'scripts/rustc_guard.py') }}-${{ github.sha }}
+          restore-keys: |
+            rustmage-targets-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('Cargo.lock', 'Cargo.toml', '.cargo/config.toml', 'scripts/rustc_guard.py') }}-
+
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
         timeout-minutes: 10

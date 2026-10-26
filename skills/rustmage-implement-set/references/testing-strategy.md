@@ -130,19 +130,26 @@ for every consuming job, and poll the same process through terminal completion.
 
 ## Keep acceptance builds cached too
 
-Inspect `scripts/validate.py` before the first full run. At the time this guidance
-was written it unconditionally creates a unique target, overrides
-`CARGO_TARGET_DIR`, and removes completed non-library build outputs. That behavior
-forces recompilation even when authors have a warm cache. Do not use repeated
-clean validation as the routine set workflow.
+The validator reuses `CARGO_TARGET_DIR` when set, otherwise a stable per-worktree
+cache. Use `--target-dir` to select the authoring cache explicitly:
 
-If that behavior is still present, fix the validation runner once as prerequisite
-tooling work. Add an explicit reusable target option and preserve compiler outputs
-in that mode; use the same worktree-owned development target for focused/native
-tests, Clippy and acceptance builds. Keep debug/test/release outputs in their
-normal Cargo profile subdirectories. Acceptance may need its first release build,
-but later runs should reuse compatible artifacts. Do not invent an unsupported
-flag or assume that an environment override works.
+```sh
+python3 scripts/link_catalogue.py
+python3 scripts/validate.py --release --python smoke \
+  --target-dir "$rustmage_author_cache/target"
+```
+
+Keep debug/test/release outputs in their normal Cargo profile subdirectories.
+Acceptance may need its first release build, but later runs should reuse
+compatible artifacts. `--fresh` intentionally creates and cleans a disposable
+target; reserve it for an explicit clean-build requirement or investigation.
+Targets and `XDG_CACHE_HOME` must be outside the source checkout. The runner rejects
+legacy validation targets with `report/result.json` because their original shared
+library paths remain pinned. Choose a new mutable cache instead.
+
+Inspect older checkouts before assuming this interface exists. A runner that
+creates fresh targets or deletes compiler outputs needs that tooling fixed first;
+setting an environment variable cannot override a runner that replaces it.
 
 Keep evidence independent of the cache: every validation run needs a unique
 report/log directory, fresh source/input verification and fresh check results.
@@ -159,15 +166,12 @@ their mutable outputs without invalidating published evidence. Preserve every
 previously required library at its original exact path/hash; do not overwrite a
 target that an existing consumer or report still requires to remain immutable.
 
-Test this runner change with its existing infrastructure helpers: an unchanged
-second invocation reuses the same target without deleting reusable outputs;
-changed inputs invalidate correctly; reports remain distinct; failures/timeouts
-terminate before cleanup; a later rebuild leaves published libraries unchanged.
-Use bounded mocked commands or a tiny isolated fixture
-where appropriate. Do not run the entire card suite multiple times just to test
-cache plumbing, or trigger OOM probes. Keep production check commands unchanged
-apart from target/report plumbing. Honor explicit clean-build checks when actually
-required; a routine batch, PR or set milestone is not itself such a requirement.
+When changing this runner, use its infrastructure tests for cache reuse, distinct
+reports, source drift, terminal cleanup and preservation of published libraries.
+Use bounded mocked commands or a tiny isolated fixture where appropriate. Do not
+run the entire card suite multiple times just to test cache plumbing, or trigger
+OOM probes. Keep production check commands unchanged apart from target/report
+plumbing.
 
 ## Run broad checks at meaningful checkpoints
 
