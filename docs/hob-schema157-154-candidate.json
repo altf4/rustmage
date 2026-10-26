@@ -1,0 +1,76 @@
+{
+  "scope": "154 local candidates,39 gated; Beorn pair, Black Arrow, Master, Roll, Azog/Rampager integrated after147 accepted release. Schema157 reflects permanent self-grants and widened Amass choice domain. Whole193/final published PR remain open.",
+  "source_head_before_receipt": "b5ab6de3",
+  "schema": 157,
+  "source_review_receipts": [
+    {
+      "cohort": "Beorn pair",
+      "leaf": "09a516009237352f311c7766a29c28d624324d9b",
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ],
+      "tests_passed": 68
+    },
+    {
+      "cohort": "Black Arrow",
+      "leaf": "2809d7af08c4c596d303320f6eac8b4f6d82b760",
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ],
+      "tests_passed": 31
+    },
+    {
+      "cohort": "Master of Lake-town",
+      "leaf": "98c74c077889836f62542acd5b480879252240d0",
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ],
+      "tests_passed": 18
+    },
+    {
+      "cohort": "Roll-Roll-Roll-Roll",
+      "leaf": "4466a66ef7c7c70815fd62bee95302945746f76d",
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ],
+      "tests_passed": 25
+    },
+    {
+      "cohort": "Azog and Rhovanion Rampager",
+      "leaf": "e78d430eb19c7bebcd80b1e554da0a8622610f7a",
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ],
+      "tests_passed": 43,
+      "review_finding": "Initial source attributed opponent amass counter placement to caster. Fixed to carry the actual amassing player through direct and paused choices; both reviewers reapproved final source and both-seat replacement/trigger/history tests."
+    }
+  ],
+  "earlier_integrated150_attempt": {
+    "head": "93969346",
+    "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated150-9396-1",
+    "terminal": true,
+    "passed": 324,
+    "failed": 1,
+    "cause": "Older equip proof asserted schema exactly156 despite intentional157; no gameplay failure. Repair ada6689f uses >=156 while preserving exact route and JSON omission assertions. hob_review_contracts independently verified the repair and terminal log.",
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-complete-set/integrated150-9396-1/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 30.037977584986947,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2443485184,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "status": "Focused integrated tests, inherited trace audits, independent integration review and full normal release still pending."
+}
