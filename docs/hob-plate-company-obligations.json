@@ -112,5 +112,20 @@
     "scope": "Isolated branch creation through final terminal report; includes source/API checks, authoring, shared-slot waits, compile comparison fix and copier fixture correction",
     "simulation": "No simulation benchmark run"
   },
-  "acceptance": "Two independent nonauthor reviews and frozen integrated release acceptance remain required. Whole-set goal remains open."
+  "acceptance": "Two independent nonauthor reviews and frozen integrated release acceptance remain required. Whole-set goal remains open.",
+  "independent_integration_receipts": [
+    {
+      "reviewer": "hob_review_contracts",
+      "reviewed_revision": "43025cafb1d7b694406ce495d562cb1c0b088a32",
+      "result": "Approved full cohort, source pins and terminal focused evidence; no remaining actionable findings",
+      "scope": "Local source/focused evidence; integrated traces, full release and final published whole-set reviews remain pending"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "reviewed_revision": "43025cafb1d7b694406ce495d562cb1c0b088a32",
+      "result": "Approved full cohort, source pins and terminal focused evidence; no remaining actionable findings",
+      "scope": "Local source/focused evidence; integrated traces, full release and final published whole-set reviews remain pending"
+    }
+  ],
+  "root_integration": "Registered assurance module and regenerated catalogue on single local whole-set branch. No PR opened, push or merge."
 }

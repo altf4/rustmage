@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b5f28e29c62ff7b204c65e03e105d60e07b05dd47f3f3d3f5d35699cdfd86af9",
+  "catalogue_version": "2975feb58bdb5002a4d7873c16cc14ccd441c47078590b64c59d09e544c3d427",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2641,
-  "implemented_total": 2647,
+  "implemented_standard_cards": 2645,
+  "implemented_total": 2651,
   "token_definitions": 130,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 61,
-      "complete": 127
+      "gated": 57,
+      "complete": 131
     },
     "hoc": {
       "total": 5,
@@ -9924,8 +9924,8 @@
     {
       "name": "Dwarven Mauler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/dwarven_mauler.rs",
       "set": "hob"
     },
@@ -14660,8 +14660,8 @@
     {
       "name": "Goblin Plate Mail",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/goblin_plate_mail.rs",
       "set": "hob"
     },
@@ -19668,8 +19668,8 @@
     {
       "name": "Kíli the Resourceful",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/kili_the_resourceful.rs",
       "set": "hob"
     },
@@ -36660,8 +36660,8 @@
     {
       "name": "Thranduil's Company",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/thranduil_s_company.rs",
       "set": "hob"
     },

@@ -497,5 +497,20 @@
     "format": "Owned Rust rustfmt --edition2024 --check and git diff --check passed.",
     "integration": "Local-only assurance/mod.rs registration excluded from commit; integrator registers module. No generated links, definitions, gameplay source or historical documentation modified.",
     "throughput_scope": "Nine bounded rules scenarios execute in0.01s; no whole-pool simulation throughput claim."
-  }
+  },
+  "independent_integration_receipts": [
+    {
+      "reviewer": "hob_review_contracts",
+      "reviewed_revision": "d55c9fcdf7526c6e371a77fb0a994ba2d821a4e7",
+      "result": "Approved full cohort, source pins and terminal focused evidence; no remaining actionable findings",
+      "scope": "Local source/focused evidence; integrated traces, full release and final published whole-set reviews remain pending"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "reviewed_revision": "d55c9fcdf7526c6e371a77fb0a994ba2d821a4e7",
+      "result": "Approved full cohort, source pins and terminal focused evidence; no remaining actionable findings",
+      "scope": "Local source/focused evidence; integrated traces, full release and final published whole-set reviews remain pending"
+    }
+  ],
+  "root_integration": "Registered assurance module and regenerated catalogue on single local whole-set branch. No PR opened, push or merge."
 }
