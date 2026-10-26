@@ -61,10 +61,31 @@ python3 scripts/run_native_tests.py \
   --report "$HOME/.cache/rustmage-tests/report/native.json"
 ```
 
-The standalone runner retains its target for local iteration; remove disposable
-outputs only after it terminates. The full validator uses its own unique target
-and cleans completed non-library outputs. Every Cargo invocation must remain
-inside `scripts/resource_guard.py`; direct Cargo compilation fails closed.
+The standalone runner retains its target for local iteration. The full validator
+also retains compiler outputs: it uses `CARGO_TARGET_DIR` when set, otherwise a
+stable worktree cache under `~/.cache/rustmage-targets/`. To share the authoring
+target with native tests, Clippy and release acceptance, select it explicitly:
+
+```sh
+python3 scripts/validate.py --release --python smoke \
+  --target-dir "$HOME/.cache/rustmage-tests/target"
+```
+
+Each invocation still executes every required check and writes a unique
+`~/.cache/rustmage-validation-*/report/` directory. Release libraries are copied
+into that report's `libraries/` directory before Python checks, and their exact
+paths/hashes are retained in `result.json`. Later builds may overwrite the mutable
+Cargo outputs without changing those published copies. Targets from the former
+validator that contain `report/result.json` are rejected: their original library
+paths remain pinned, so choose a new cache instead of overwriting them. Targets
+and `XDG_CACHE_HOME` must be outside the source checkout.
+
+Use `--fresh` only for an intentional clean-build investigation. It creates a
+disposable target and cleans it after all consuming processes terminate, while
+retaining reports and copied libraries. Ordinary runs never clean their reusable
+target; remove genuinely disposable outputs only after their users terminate.
+Every Cargo invocation must remain inside `scripts/resource_guard.py`; direct
+Cargo compilation fails closed.
 
 Use `python3 scripts/check_sources.py` for the production metadata and source-pin
 check. `--metadata-only` is an explicit local convenience when the external
@@ -111,9 +132,10 @@ Admission counts and this bounded rewrite do not certify the entire Standard
 pool or every cross-card interaction.
 
 The eight Python contracts finish well below their five-second execution budget
-and 15-second worker timeout. The five infrastructure contracts check actual
-cgroup limits, fail-closed compilation, command status, timeout termination and
-normal-exit detached-child cleanup without OOM allocation probes. Ignored native
+and 15-second worker timeout. Infrastructure contracts check actual cgroup limits,
+fail-closed compilation, command status, timeout termination, detached-child
+cleanup, cache reuse, source drift and immutable library snapshots without OOM
+allocation probes. Ignored native
 cases execute, and zero/skipped Python or script suites fail acceptance.
 
 For an intentional cast/entry baseline change, first add an independent assertion

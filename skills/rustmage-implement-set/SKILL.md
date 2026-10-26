@@ -67,20 +67,61 @@ having every author edit a central generator. Keep the linker metadata-only.
 Use current centralized schema expectations; change a wire schema only for an
 actual wire change.
 
-## Prove the complete behavior
+## Plan tests and separate authoring from acceptance
 
-Use existing scenario helpers for meaningful paid legal actions and adversarial
-interactions. Cover every printed obligation, invalid/partially invalid targets,
-optional choices, timing and relevant controller/source departure cases. Exercise
-both seats, public/private observations, illegal-action atomicity, owned raw and
-indexed branches, parent disposal and restore where affected. Choose tests for
-rules risks, not one bespoke bot per card or parser mutation coverage.
+Before writing tests or selecting validation commands, read
+[references/testing-strategy.md](references/testing-strategy.md). Map each printed
+obligation to an independent outcome assertion or an applicable existing shared
+proof. Use small deterministic scenarios, table cases for genuinely shared rules,
+and representative engine-contract roots. Every changed card still needs evidence
+that its own definition wires the printed behavior correctly. Exercise legality,
+privacy, transactional failure and owned raw/index branching/restore where affected;
+do not repeat every shared contract at every action of every card.
 
-Run the repository's routine validator and focused new rules tests with fixed
-source inputs. Poll running jobs to terminal completion; an observation timeout
-is not a reason to restart them. Use isolated build targets and promptly remove
-terminal disposable artifacts. Preserve active work and required shared libraries
-at their exact paths and hashes. Reuse automated provenance/validation reports.
+Reuse compiler outputs through full acceptance. The validator uses
+`CARGO_TARGET_DIR` or a stable worktree cache by default; pass `--target-dir` to
+share the focused authoring target. Every run still gets separate reports and
+immutable library copies. On older checkouts, inspect target/cleanup behavior
+and fix forced fresh targets before routine set work. Do not run `cargo clean`
+between card batches. `--fresh` requires a concrete investigation or explicit
+clean-build requirement, not a progress checkpoint.
+
+Choose validation by changed behavior and integration state, not card count:
+
+- **Author loop:** after a coherent card family or mechanic change, run its focused
+  rules tests and relevant existing regressions through the resource guard, using
+  one reusable development target per worktree under `~/.cache`. A five-card work
+  chunk, agent handoff or progress update does not trigger full validation.
+- **Shared-rule checkpoint:** test the mechanic and its affected consumers/contracts
+  before expanding dependent card work. Broaden to native assurance when impact is
+  wide or uncertain. Finish the core implementation's acceptance and reviews before
+  integrating it, as required above.
+- **Integrated PR acceptance:** assemble a useful, reviewable mechanic/card cohort,
+  regenerate links, freeze its inputs, then run the full release validator using
+  the verified reusable-target mode, with any additional checks required by the
+  checkout. Every merge candidate needs passing acceptance for its final
+  executable inputs. Repair failures with focused
+  tests first; repeat acceptance after substantive fixes are assembled. Reuse a
+  successful report for the same frozen inputs instead of rerunning it for each
+  worker, reviewer or status report.
+- **Set acceptance:** retain the complete-set game and interaction requirements
+  below. Focused author checks never establish full-set acceptance.
+
+Coordinate one validation owner; other agents can author in separate worktrees
+while a frozen integration checkout is tested. All Cargo commands must use
+`python3 scripts/resource_guard.py -- cargo ...`; the repository's validation
+runners enter it automatically. Preserve its single build/test concurrency and
+6 GiB limit. Keep logs/reports under `~/.cache`. Distinguish build-slot wait,
+compilation, test execution and benchmark time before choosing broader checks.
+Do not launch a fresh full validator to diagnose a slow focused test.
+
+Keep execution inputs fixed until their consuming job terminates. Poll the same
+running process after observation timeouts. Reuse the worktree's development cache
+through authoring, review fixes and acceptance; clean terminal disposable outputs
+when the worktree is retired. Keep newly published libraries in immutable per-run
+paths, separate from mutable compiler outputs. Never delete active outputs or
+overwrite/delete required shared libraries at their exact paths/hashes. Preserve
+useful work and reuse provenance/validation reports.
 
 Obtain two independent nonauthor subagent reviews of the final published PR
 head, covering complete translations and affected shared rules. A reviewer must
@@ -89,8 +130,10 @@ refresh reviews when substantive changes invalidate them, then integrate.
 
 Report merged complete supported cards, shared mechanics unlocked, remaining
 blockers, and measured card implementation throughput with elapsed interval and
-scope. Label simulation benchmarks by workload; do not extrapolate a small
-Freeform smoke benchmark into all-Standard performance. For set acceptance, require every printed obligation of every member card to be
+scope. Include focused/full validation counts and measured wait/build/test time
+so repeated acceptance builds are visible. Label simulation benchmarks by workload;
+do not extrapolate a small Freeform smoke benchmark into all-Standard performance.
+For set acceptance, require every printed obligation of every member card to be
 implemented and tested, plus complete games with set-only legal decks. Exercise
 all colors and the set's mechanics, interactions, legal choices and terminal
 outcomes; retain deterministic replay and owned search checks. A smoke deck or

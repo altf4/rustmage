@@ -40,7 +40,12 @@ Run `python3 scripts/link_catalogue.py`, then
 `python3 scripts/validate.py --release`. The validator runs native rules tests,
 Clippy, format/link consistency and provenance tests, plus the existing native
 smoke benchmark. It reports fixed inputs, coverage and cleanup and preserves every
-shared library at its exact path/hash. The Freeform smoke benchmark is a limited
+published shared library at its exact path/hash. Compiler outputs are reused by
+default; `--target-dir` selects the same external cache used for focused authoring
+tests. Every run still performs all required checks and retains unique reports
+and immutable library copies. `--fresh` is an explicit clean-build option, not a
+routine checkpoint. See [testing.md](testing.md) for cache and library handling.
+The Freeform smoke benchmark is a limited
 regression workload, not full-set or all-Standard acceptance.
 
 [Compiler-removal proof](compiler-removal-results.json) records exact equality of
