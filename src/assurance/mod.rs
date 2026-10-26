@@ -235,3 +235,5 @@ mod hob_dancing;
 mod hob_inherited_artifacts;
 
 mod hob_mariners;
+
+mod hob_inherited_combat;
