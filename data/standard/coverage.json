@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8417a5c1c13445bf3bfa7d5623a8a1eec28e8c0cee375043db9136da4ab143da",
+  "catalogue_version": "ef31fe17717bfdde634033f2d810aed49036fd5beccb5066d4874d5d45f8c8fd",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2635,
-  "implemented_total": 2641,
+  "implemented_standard_cards": 2637,
+  "implemented_total": 2643,
   "token_definitions": 129,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 67,
-      "complete": 121
+      "gated": 65,
+      "complete": 123
     },
     "hoc": {
       "total": 5,
@@ -15100,8 +15100,8 @@
     {
       "name": "Great Fierce Bee",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/great_fierce_bee.rs",
       "set": "hob"
     },
@@ -22460,8 +22460,8 @@
     {
       "name": "Mirkwood Nurturer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/mirkwood_nurturer.rs",
       "set": "hob"
     },
