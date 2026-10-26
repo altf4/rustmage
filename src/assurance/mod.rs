@@ -249,3 +249,5 @@ mod hob_beorn;
 mod hob_black_arrow;
 
 mod hob_master;
+
+mod hob_roll;
