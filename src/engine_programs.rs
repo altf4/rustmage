@@ -702,6 +702,7 @@ impl Game {
                     }
                     TriggerCondition::CastFromHand(_) => unreachable!("unwrapped event"),
                     TriggerCondition::SelfEntersIfCast => same && event.was_cast,
+                    TriggerCondition::SelfNontokenEnters => same && !entered.is_token(),
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
                     TriggerCondition::SelfGiftEnters => same && event.gift.is_some(),
@@ -3394,6 +3395,15 @@ impl Game {
                     if self.start_effect_choice(&item, kind, players, filter, amount, optional_skip)
                     {
                         return;
+                    }
+                }
+                Instruction::CreateNonlegendaryCopyTokens { subject, amount } => {
+                    if let Some(mut recipe) = self.recipe_for_subject(&item, subject) {
+                        recipe.overrides = Some(CopyOverrides {
+                            legendary: Some(false),
+                            ..recipe.overrides.unwrap_or(CopyOverrides::NONE)
+                        });
+                        self.stage_copy_creation(item.controller, recipe, u128::from(amount));
                     }
                 }
                 Instruction::CopyControlledNontokenCreaturesNonlegendary => {

@@ -249,3 +249,6 @@ mod hob_crooked_rollback;
 
 #[path = "hob_elrond_rollback.rs"]
 mod hob_elrond_rollback;
+
+#[path = "hob_notary_rollback.rs"]
+mod notary_tests;

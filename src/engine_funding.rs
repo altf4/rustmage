@@ -3251,3 +3251,7 @@ mod fili_tests;
 #[cfg(test)]
 #[path = "assurance/hob_beorn_funding.rs"]
 mod beorn_tests;
+
+#[cfg(test)]
+#[path = "assurance/hob_notary_funding.rs"]
+mod notary_tests;

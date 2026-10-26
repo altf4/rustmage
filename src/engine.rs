@@ -6267,6 +6267,28 @@ impl Game {
                     item.source_tapped = before.tapped;
                     item.source_attachment = before.attached_to;
                     item.source_facts = DamageFacts::from_view(&before);
+                    // Opt-in copy continuations read the last battlefield blueprint,
+                    // not the blueprint from when the ability originally triggered.
+                    if item.program().is_some_and(|(_, program)| {
+                        program.iter().any(|instruction| {
+                            matches!(
+                                instruction,
+                                Instruction::CreateNonlegendaryCopyTokens {
+                                    subject: Subject::Source,
+                                    ..
+                                }
+                            )
+                        })
+                    }) {
+                        let recipe = before
+                            .copy_recipe
+                            .unwrap_or_else(|| CopyRecipe::new(before.card));
+                        item.source_copy_recipe = (recipe.definition != item.source_card
+                            || recipe.exceptions != CopyExceptions::NONE
+                            || recipe.overrides.is_some()
+                            || recipe.faces.is_some())
+                        .then(|| Box::new(recipe));
+                    }
                 }
             }
             if let Some(data) = &mut self.state.evidence_data {

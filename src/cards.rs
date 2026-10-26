@@ -927,6 +927,11 @@ pub(crate) enum Instruction {
     RemoveCreatureCounterThenDraw,
     /// One simultaneous creation event, with all original recipes frozen first.
     CopyControlledNontokenCreaturesNonlegendary,
+    /// Preserve all copiable values except the legendary supertype.
+    CreateNonlegendaryCopyTokens {
+        subject: Subject,
+        amount: u16,
+    },
     RevealTopDrawIfArtifact,
     ExileTopPlayBoostSourceIfSubtype {
         subtype: &'static str,
@@ -3109,6 +3114,8 @@ pub(crate) enum TriggerCondition {
     SelfDiesWithCounters,
     SelfDies,
     SelfNontokenDies,
+    /// Token status is immutable for an incarnation, including through source LKI.
+    SelfNontokenEnters,
     SelfLeaves,
     SelfEntersOrDies,
     SelfAttacks,
