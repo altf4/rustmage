@@ -757,6 +757,8 @@ pub enum EffectChoiceKind {
     ReturnToHand,
     Discard,
     DiscardNamed(&'static str),
+    /// Discard a legendary card sharing a name with a controlled legendary permanent.
+    DiscardMatchingLegendary,
     /// One controlled permanent matching the sacrifice filter, or one private hand card.
     /// The flag restricts the discard route, not the permanent, for resolution or activation costs.
     SacrificeOrDiscard {

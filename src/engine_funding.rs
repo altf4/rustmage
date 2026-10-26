@@ -760,6 +760,8 @@ impl<'g> FundingState<'g> {
                 group.iter().all(|r| {
                     let o = ability_world::CharacteristicWorld::object(self, r.card);
                     o.generation == r.generation
+                        && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
+                            || additional_costs::legendary_name_match(self, goal.actor, r.card))
                         && Game::additional_object_matches(
                             *spec,
                             goal.actor,
@@ -809,9 +811,11 @@ impl<'g> FundingState<'g> {
                     })
             })
             && goal.reserve.is_none_or(|(r, spec)| {
-                spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+                (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
                     || self.game.sneak_attacker(goal.actor, r)
-                        && ability_world::CharacteristicWorld::attacking(self, r.card)
+                        && ability_world::CharacteristicWorld::attacking(self, r.card))
+                    && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
+                        || additional_costs::legendary_name_match(self, goal.actor, r.card))
             })
             && reserve_obligations(
                 goal,

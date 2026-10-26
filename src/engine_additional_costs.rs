@@ -1,6 +1,23 @@
 //! Owned mandatory spell and activation costs, chosen after targets and paid before cast completion.
 use super::*;
 
+/// Evaluate the complete cost in the actual or projected characteristic world.
+pub(super) fn legendary_name_match<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    card: CardId,
+) -> bool {
+    world.legendary(card)
+        && (0..world.game().state.objects.len()).any(|i| {
+            let id = i as CardId;
+            let o = world.object(id);
+            o.zone == Zone::Battlefield
+                && o.controller == actor
+                && world.legendary(id)
+                && crate::card_names::same_name(world.name(card), world.name(id))
+        })
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct AdditionalCostView {
     pub kind: EffectChoiceKind,
@@ -30,6 +47,7 @@ impl Game {
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => o.owner == actor,
@@ -45,9 +63,16 @@ impl Game {
             || object == source
                 && (matches!(
                     spec.kind,
-                    EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_)
+                    EffectChoiceKind::Discard
+                        | EffectChoiceKind::DiscardNamed(_)
+                        | EffectChoiceKind::DiscardMatchingLegendary
                 ) || spec.filter.other)
             || spec.filter.source_only && object != source
+        {
+            return false;
+        }
+        if spec.kind == EffectChoiceKind::DiscardMatchingLegendary
+            && !legendary_name_match(self, actor, object.card)
         {
             return false;
         }
@@ -80,7 +105,9 @@ impl Game {
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => Zone::Graveyard,
-            EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_) => Zone::Hand,
+            EffectChoiceKind::Discard
+            | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary => Zone::Hand,
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
@@ -600,7 +627,9 @@ impl Game {
             EffectChoiceKind::ExileGraveyard => {
                 self.move_object(object.card, Zone::Exile);
             }
-            EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_) => {
+            EffectChoiceKind::Discard
+            | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary => {
                 self.discard_batch(&[object.card], None)
             }
             EffectChoiceKind::ReturnUnblockedAttacker => {

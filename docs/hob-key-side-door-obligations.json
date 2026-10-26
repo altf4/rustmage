@@ -1,0 +1,31 @@
+{
+  "card": "Key to the Side-Door",
+  "base": "8272485c19ee4e55372df45a36fd86dd6d75c1a0",
+  "scope": "Full card candidate. Independent nonauthor reviews and integrated release remain pending.",
+  "implementation": "Two typed activated abilities; new public discard-choice kind checks a legendary hand card against current names and legendary characteristics of controlled permanents, in actual and projected funding worlds.",
+  "schema": 160,
+  "proofs": "Both seats: paid unblockable target, actual blocking restriction and cleanup expiration, stale target, valid and invalid hand/controller choices, copied name and legendary status, hidden hand, selected-cost and mana funding with matching legend consumed or preserved, exile replacement, owned raw/index branch and restore.",
+  "run_history": [
+    "Run1: three card tests passed under optimized default.",
+    "Run2: six card tests passed opt0.",
+    "Run3: eight card and seven mana rollback tests passed; two additional intended filters matched zero and are not evidence.",
+    "Run4: corrected nonempty groups passed 8 card, 10 sacrifice funding, 6 cast rollback and 7 mana rollback tests.",
+    "Run5: same 31 unique tests passed after adding cleanup expiration; compile and jobs terminal, no failure or ignore."
+  ],
+  "source_limitations": [
+    "No admitted legendary split card exists in the pinned Standard snapshot; ordinary current name comparison uses existing interchangeable-name rules.",
+    "Generated catalogue/coverage and central assurance registration require regeneration at integration."
+  ],
+  "run5_receipts": "<cache>/rustmage-authoring/hob-key/run5",
+  "run5_guard": "<cache>/rustmage-build-reports/5f7d4aaa4d07492f8f210f5bc0cbfbad.json",
+  "source_sha256": {
+    "src/card_definitions/hob/key_to_the_side_door.rs": "7e813af81b78f6a038d3a737b0b11f1cd47b8aa407924f263c03ccc241688854",
+    "src/card_definitions/hob/key_to_the_side_door.json": "d8a36ca348cd1ca14bd055d75c7d97d9e0c4bd2d7dbe26d61ebea1819326ede5",
+    "src/cards.rs": "f1809f8c669ed4f08d7a176771690d75bda6b04837859c9122396c3bfde4706a",
+    "src/engine_additional_costs.rs": "381372367a8fc3bc7ca8149bcb79925a5b5702a0ade845e6877bfee317ff1b91",
+    "src/engine_cast_cost_planning.rs": "4036dbfe90bf60fa0fb5254f2f1003cd0ae75f9b7f165c2499815d77c0429da0",
+    "src/engine_funding.rs": "563848a305574c892111167e30d9cd4e34699a53e5da5be7860a9e318a3d4d46",
+    "src/assurance/hob_key_side_door.rs": "d44c94b9860865f6beeeeb15d3593c9403bcc7a091bb7544652c07aad844fd0f",
+    "data/observation-schema.txt": "1cb3ae0c7cf44aff95d12f73a367a8a51aedeb2a2a4deb4f0c4cb72d5845d2f5"
+  }
+}

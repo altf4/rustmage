@@ -130,9 +130,13 @@ impl FundingState<'_> {
             && (r != source
                 || !matches!(
                     spec.kind,
-                    EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_)
+                    EffectChoiceKind::Discard
+                        | EffectChoiceKind::DiscardNamed(_)
+                        | EffectChoiceKind::DiscardMatchingLegendary
                 ) && !spec.filter.other)
             && (!spec.filter.source_only || r == source)
+            && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
+                || additional_costs::legendary_name_match(self, self.actor, r.card))
             && Game::additional_object_matches(
                 spec,
                 self.actor,
@@ -800,7 +804,8 @@ impl FundingState<'_> {
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
-            | EffectChoiceKind::DiscardNamed(_) => {}
+            | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary => {}
             _ => return false,
         }
         if let Some(n) = counters {
