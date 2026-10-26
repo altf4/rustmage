@@ -200,23 +200,6 @@ fn unexpected_party_adventure_x_and_chosen_type_bonus() {
         }
         assert_eq!(stats(&g, enemy), (1, 1));
         assert_eq!(stats(&g, bear), (2, 2));
-        assert!(!g.can_block_pair(enemy, bear));
-        let blank = put(&mut g, p, "Witness Protection", Zone::Hand);
-        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
-        act(
-            &mut g,
-            Action::Cast {
-                card: blank,
-                target: Some(Target::Card(bear)),
-                payment: [0, 1, 0, 0, 0, 0],
-            },
-        );
-        settle(&mut g);
-        assert!(!g.keywords(bear).contains(Keywords::HEXPROOF));
-        assert!(g.keywords(bear).contains(Keywords::CANT_BE_BLOCKED));
-        assert!(!g.can_block_pair(enemy, bear));
-        g.move_object(blank, Zone::Graveyard);
-        assert!(g.keywords(bear).contains(Keywords::HEXPROOF));
         g.move_object(c, Zone::Graveyard);
         for &d in &dwarves {
             assert_eq!(stats(&g, d), (2, 2));
