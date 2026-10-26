@@ -1221,6 +1221,12 @@ pub(crate) enum Instruction {
         other: i32,
     },
     DamageForExcess(AmountValue),
+    /// Track actual positive damage and the recipient's subtype at that event.
+    DamageForSubtypeDestruction {
+        amount: u16,
+        subtype: &'static str,
+    },
+    DestroyDamagedSubtype,
     CreateExcessTokens(Card),
     ExileExcessPlay {
         next_turn: bool,

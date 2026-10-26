@@ -1,0 +1,328 @@
+{
+  "scope": "The Black Arrow wholecard, one generic post-prevention subtype-qualified destruction continuation usingexistingcoldownedExcessDamage tracker; no newStatefields/publicwire/schema/IDs",
+  "base_revision": "2053fbfb010b960c15802a764430ac2e8308fd95",
+  "oracle_facts": {
+    "oracle_id": "cb2803ee-825b-420e-b404-c7c44f15ec15",
+    "name": "The Black Arrow",
+    "layout": "normal",
+    "mana_cost": "{3}",
+    "cmc": 3.0,
+    "type_line": "Legendary Artifact \u2014 Equipment",
+    "oracle_text": "Flash\nWhen The Black Arrow enters, it deals 1 damage to any target. If a Dragon is dealt damage this way, destroy it.\nEquipped creature gets +1/+1 and has reach.\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Equip",
+      "Flash"
+    ],
+    "reference_printing": {
+      "id": "ab181190-d53d-4972-8cd5-8e54b45f2276",
+      "set": "hob",
+      "collector_number": "171",
+      "released_at": "2026-08-14"
+    }
+  },
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/t/TheBlackArrow.java",
+      "sha256": "bc1135f6d28edb9d350332699bc2287eed61824dfa00f96ce63cf1a5f8de5f18"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+      "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayer.java",
+      "sha256": "f43a3bbef4f7d2f923cddf063aa48211aad59848ccefcdace9b08a40b5cd67ab"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterAnyTarget.java",
+      "sha256": "39d309804844b705a2400ce7086858449831db75048e836f777b66d5d0af18e5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    }
+  ],
+  "shared_regression_source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/g/GoblinNegotiation.java",
+      "sha256": "2b5ddca8b900b9ce27b8e5954be22e80a6e809331f53d6f6ff6315ec7ec9f895"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/GoblinToken.java",
+      "sha256": "16e001f88ad007f0445ce679eea218189f6c226eced65a5144fe17dfe7a72131"
+    }
+  ],
+  "shared_regression_oracle": {
+    "oracle_id": "79824266-bffa-476c-bdd3-976e9d789a42",
+    "name": "Goblin Negotiation",
+    "layout": "normal",
+    "mana_cost": "{X}{R}{R}",
+    "cmc": 2.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Goblin Negotiation deals X damage to target creature. Create a number of 1/1 red Goblin creature tokens equal to the amount of excess damage dealt to that creature this way.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "all_parts": [
+      {
+        "id": "70f8a1de-cd4c-4afa-bf03-0245d375d42e",
+        "component": "token",
+        "name": "Goblin",
+        "type_line": "Token Creature \u2014 Goblin"
+      },
+      {
+        "id": "f2016585-e26c-4d13-b09f-af6383c192f7",
+        "component": "combo_piece",
+        "name": "Goblin Negotiation",
+        "type_line": "Sorcery"
+      }
+    ],
+    "reference_printing": {
+      "id": "f2016585-e26c-4d13-b09f-af6383c192f7",
+      "set": "fdn",
+      "collector_number": "88",
+      "released_at": "2024-11-15"
+    }
+  },
+  "obligations": {
+    "body_entry": "Actuallypaid3flashLegendaryEquipment duringopponentendstep; mandatoryanytarget rejectsland/selfnoncreatureEquipment, player1damage/nonDragoncreature1damage/PWloyalty-1",
+    "Dragon": "Actual1positiveDamageEvent destroysDragon even1damageisnonlethal; prior2damage+Shieldpreventsnewdamage andDragonnotdestroyed; indestructibleDragon takesdamagebutnotdestroyed; exact6/6redtokenDragonceasesoutside",
+    "source_stale": "Departedsourcequeuedabilitystilldamages/destroys, staleDragonreentryexcluded frombothdamage/destroy; parentdisposed/independentvalidstale/restoreexact",
+    "replacement": "Existingdamagebatch ownedqueue afterShieldvsTwinflamereplacementchoice, exactsource/targettracked, positivecommit subtypefrozenbeforeeffectchanges, no olddamageflaginference; zeroactualdamageblocksdestruction; representative raw/index/restoreatpendingreplacement",
+    "Equipment": "Realpaid1 owncreatureEquip,sorcery/timing/targetrestrictions, +1/+1andreachactualblockflyer, staleattachmentexcluded, equipmentdeparture removesbothmodifiers",
+    "legacy": "ActualpaidX5RR GoblinNegotiation5damageintotoughness3creates2red1/1Goblins vsShield0damage/0tokens; existingArchaicexileexcess+prevention+equipregressionsselected"
+  },
+  "implementation_notes": "ExistingprivateExcessDamage extended with optional immutable subtype andqualificationbool; no hot State growth. Actualpositivecommit freezesqualificationafterreplacement/prevention; sharedexistingrecordingretainsdealt scalar. EachnewtargetDamageinstructionclearsoldtracker; playerdamageemittedwithoutcardtracker. Target/postsourceexactrefs andordinarydestructionreplacement path preserved.",
+  "profile": "ConsistentrootAUTHORtestopt0; no repositoryprofilechange; fullrequireddefault/releaseunchanged",
+  "validation": {
+    "status": "Author focused pass; two independent full source/rules reviews and integrated acceptance pending. Whole193 open.",
+    "passed": 31,
+    "groups": {
+      "hob_black_arrow": 7,
+      "sos_agony_colors_actual_excess": 1,
+      "prevention": 1,
+      "hob_equipment": 6,
+      "hob_equip_cost_history": 16
+    },
+    "results": {
+      "compile": {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--no-run",
+          "--message-format=json",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 34.10504937998485,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/compile.jsonl"
+      },
+      "hob_black_arrow": {
+        "command": [
+          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_black_arrow",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.11627555498853326,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/0.log"
+      },
+      "sos_agony_colors_actual_excess": {
+        "command": [
+          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "sos_agony_colors_actual_excess",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.03373486001510173,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/1.log"
+      },
+      "prevention": {
+        "command": [
+          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "prevention",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.033557016984559596,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/2.log"
+      },
+      "hob_equipment": {
+        "command": [
+          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_equipment",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06592931499471888,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/3.log"
+      },
+      "hob_equip_cost_history": {
+        "command": [
+          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_equip_cost_history",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.1156529049621895,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/4.log"
+      }
+    },
+    "guard": {
+      "command": [
+        "python3",
+        "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 75.95926418498857,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2482827264,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "reports": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1",
+    "proof_sha256": "68e41e0ff22995454badc68c6a4ec0290d0d1442ccd522838b21f308216780bc"
+  },
+  "fixtures": [
+    {
+      "name": "The Black Arrow",
+      "path": "hob/the_black_arrow.rs",
+      "mana_cost": "{3}"
+    },
+    {
+      "name": "Bear Cub",
+      "path": "fdn/bear_cub.rs",
+      "mana_cost": "{1}{G}"
+    },
+    {
+      "name": "Ajani, Caller of the Pride",
+      "path": "fdn/ajani_caller_of_the_pride.rs",
+      "mana_cost": "{1}{W}{W}"
+    },
+    {
+      "name": "Forest",
+      "path": "fra/forest.rs",
+      "mana_cost": ""
+    },
+    {
+      "name": "Shivan Dragon",
+      "path": "fdn/shivan_dragon.rs",
+      "mana_cost": "{4}{R}{R}"
+    },
+    {
+      "name": "Shock",
+      "path": "msc/shock.rs",
+      "mana_cost": "{R}"
+    },
+    {
+      "name": "@token/hob-dragon",
+      "path": "synthetic/token_hob_dragon.rs",
+      "mana_cost": ""
+    },
+    {
+      "name": "Twinflame Tyrant",
+      "path": "fdn/twinflame_tyrant.rs",
+      "mana_cost": "{3}{R}{R}"
+    },
+    {
+      "name": "Ravenhill Flock",
+      "path": "hob/ravenhill_flock.rs",
+      "mana_cost": "{3}{U}"
+    },
+    {
+      "name": "Hill Giant",
+      "path": "legacy/hill_giant.rs",
+      "mana_cost": "{3}{R}"
+    },
+    {
+      "name": "Goblin Negotiation",
+      "path": "fdn/goblin_negotiation.rs",
+      "mana_cost": "{X}{R}{R}"
+    }
+  ],
+  "preflight": "Strict explicit11namedfixtures all presentandpairedcomplete,15card/helperpins +2legacyregressionpins byteverified; fullOracle/Java andhelperbodies read. No syntheticfactory changes."
+}

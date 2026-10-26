@@ -6764,6 +6764,7 @@ impl Game {
             if event.amount <= 0 {
                 continue;
             }
+            self.qualify_damage_destruction(event);
             match event.target {
                 Target::Player(p) => {
                     self.lose_life_unobserved(p, event.amount);

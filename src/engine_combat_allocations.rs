@@ -19,6 +19,8 @@ struct ExcessDamage {
     target: ObjectRef,
     lethal: i128,
     dealt: i128,
+    destroy_subtype: Option<&'static str>,
+    qualified_for_destruction: bool,
 }
 impl CombatRulesState {
     pub(super) fn owned_bytes(&self) -> usize {
@@ -60,6 +62,22 @@ impl Game {
         self.apply_damage_batch(&events);
     }
     pub(super) fn damage_for_excess(&mut self, item: &SpellView, amount: AmountValue) {
+        self.damage_for_tracked_target(item, amount, None);
+    }
+    pub(super) fn damage_for_subtype_destruction(
+        &mut self,
+        item: &SpellView,
+        amount: u16,
+        subtype: &'static str,
+    ) {
+        self.damage_for_tracked_target(item, AmountValue::Fixed(amount), Some(subtype));
+    }
+    fn damage_for_tracked_target(
+        &mut self,
+        item: &SpellView,
+        amount: AmountValue,
+        destroy_subtype: Option<&'static str>,
+    ) {
         let source = self.program_damage_source(item);
         let Some(bound) = item
             .targets
@@ -68,19 +86,23 @@ impl Game {
         else {
             return;
         };
-        let Some(target) = bound.object else {
-            return;
-        };
-        let lethal = self.lethal_assignment(source, target.card);
-        self.state
-            .combat_rules
-            .get_or_insert_with(Default::default)
-            .excess = Some(ExcessDamage {
-            source: source.reference,
-            target,
-            lethal,
-            dealt: 0,
-        });
+        if let Some(state) = self.state.combat_rules.as_mut() {
+            state.excess = None;
+        }
+        if let Some(target) = bound.object {
+            let lethal = self.lethal_assignment(source, target.card);
+            self.state
+                .combat_rules
+                .get_or_insert_with(Default::default)
+                .excess = Some(ExcessDamage {
+                source: source.reference,
+                target,
+                lethal,
+                dealt: 0,
+                destroy_subtype,
+                qualified_for_destruction: false,
+            });
+        }
         let amount =
             i128::try_from(self.item_amount(amount, item)).capacity("damage amount exhausted");
         self.apply_damage_batch(&[DamageEvent {
@@ -90,6 +112,61 @@ impl Game {
             combat: false,
             preventable: true,
         }]);
+    }
+    /// Called only for actual positive damage, after replacement/prevention and
+    /// before that event changes life or marked damage. Later type changes do
+    /// not change whether the recipient was a Dragon when it was damaged.
+    pub(super) fn qualify_damage_destruction(&mut self, event: &DamageEvent) {
+        let Target::Card(id) = event.target else {
+            return;
+        };
+        let target = self.object_ref(id);
+        let subtype = self
+            .state
+            .combat_rules
+            .as_ref()
+            .and_then(|r| r.excess.as_ref())
+            .filter(|r| r.source == event.source.reference && r.target == target)
+            .and_then(|r| r.destroy_subtype);
+        if let Some(subtype) = subtype {
+            let qualifies = self.has_subtype(id, subtype);
+            self.state
+                .combat_rules
+                .as_mut()
+                .unwrap()
+                .excess
+                .as_mut()
+                .unwrap()
+                .qualified_for_destruction |= qualifies;
+        }
+    }
+    pub(super) fn destroy_damaged_subtype(&mut self, item: &SpellView) {
+        let tracked = self
+            .state
+            .combat_rules
+            .as_mut()
+            .and_then(|r| r.excess.take());
+        let Some(tracked) = tracked else {
+            return;
+        };
+        if tracked.source != self.program_damage_source(item).reference
+            || tracked.dealt <= 0
+            || !tracked.qualified_for_destruction
+        {
+            return;
+        }
+        let targets: Vec<_> = item
+            .targets
+            .iter()
+            .copied()
+            .filter(|bound| {
+                bound.object == Some(tracked.target)
+                    && self.same_target_object(*bound)
+                    && self.on_battlefield(tracked.target.card)
+                    && !self.effect_destruction_prevented(tracked.target.card)
+            })
+            .collect();
+        self.move_target_batch(&targets, Zone::Graveyard);
     }
     pub(super) fn record_combat_and_excess_damage(&mut self, events: &[DamageEvent]) {
         for event in events.iter().filter(|e| e.amount > 0) {

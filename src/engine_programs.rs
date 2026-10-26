@@ -3345,6 +3345,10 @@ impl Game {
                     self.damage_by_group(&item, first, other)
                 }
                 Instruction::DamageForExcess(amount) => self.damage_for_excess(&item, amount),
+                Instruction::DamageForSubtypeDestruction { amount, subtype } => {
+                    self.damage_for_subtype_destruction(&item, amount, subtype);
+                }
+                Instruction::DestroyDamagedSubtype => self.destroy_damaged_subtype(&item),
                 Instruction::CreateExcessTokens(token) => self.create_excess_tokens(&item, token),
                 Instruction::ExileExcessPlay { next_turn } => {
                     self.exile_excess_play(&item, next_turn)
