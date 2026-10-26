@@ -176,17 +176,17 @@
           "--no-run",
           "--message-format=json",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target"
+          "<cache>/rustmage-authoring/hob-black-arrow/target"
         ],
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
         "seconds": 34.10504937998485,
-        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/compile.jsonl"
+        "log": "<cache>/rustmage-authoring/hob-black-arrow/run-1/compile.jsonl"
       },
       "hob_black_arrow": {
         "command": [
-          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "<cache>/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
           "hob_black_arrow",
           "--nocapture",
           "--test-threads=1"
@@ -195,11 +195,11 @@
         "timed_out": false,
         "orphaned_processes": false,
         "seconds": 0.11627555498853326,
-        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/0.log"
+        "log": "<cache>/rustmage-authoring/hob-black-arrow/run-1/0.log"
       },
       "sos_agony_colors_actual_excess": {
         "command": [
-          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "<cache>/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
           "sos_agony_colors_actual_excess",
           "--nocapture",
           "--test-threads=1"
@@ -208,11 +208,11 @@
         "timed_out": false,
         "orphaned_processes": false,
         "seconds": 0.03373486001510173,
-        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/1.log"
+        "log": "<cache>/rustmage-authoring/hob-black-arrow/run-1/1.log"
       },
       "prevention": {
         "command": [
-          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "<cache>/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
           "prevention",
           "--nocapture",
           "--test-threads=1"
@@ -221,11 +221,11 @@
         "timed_out": false,
         "orphaned_processes": false,
         "seconds": 0.033557016984559596,
-        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/2.log"
+        "log": "<cache>/rustmage-authoring/hob-black-arrow/run-1/2.log"
       },
       "hob_equipment": {
         "command": [
-          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "<cache>/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
           "hob_equipment",
           "--nocapture",
           "--test-threads=1"
@@ -234,11 +234,11 @@
         "timed_out": false,
         "orphaned_processes": false,
         "seconds": 0.06592931499471888,
-        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/3.log"
+        "log": "<cache>/rustmage-authoring/hob-black-arrow/run-1/3.log"
       },
       "hob_equip_cost_history": {
         "command": [
-          "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "<cache>/rustmage-authoring/hob-black-arrow/target/debug/deps/rustmage-55e16bd14e329fbf",
           "hob_equip_cost_history",
           "--nocapture",
           "--test-threads=1"
@@ -247,13 +247,13 @@
         "timed_out": false,
         "orphaned_processes": false,
         "seconds": 0.1156529049621895,
-        "log": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/4.log"
+        "log": "<cache>/rustmage-authoring/hob-black-arrow/run-1/4.log"
       }
     },
     "guard": {
       "command": [
         "python3",
-        "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1/run.py"
+        "<cache>/rustmage-authoring/hob-black-arrow/run-1/run.py"
       ],
       "terminal": true,
       "exit_code": 0,
@@ -264,7 +264,7 @@
       "cargo_jobs": 1,
       "test_threads": 1
     },
-    "reports": "/home/altf4/.cache/rustmage-authoring/hob-black-arrow/run-1",
+    "reports": "<cache>/rustmage-authoring/hob-black-arrow/run-1",
     "proof_sha256": "68e41e0ff22995454badc68c6a4ec0290d0d1442ccd522838b21f308216780bc"
   },
   "fixtures": [
