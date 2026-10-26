@@ -231,3 +231,5 @@ mod hob_spark_letters;
 mod hob_belladonna_queen;
 
 mod hob_dancing;
+
+mod hob_inherited_artifacts;

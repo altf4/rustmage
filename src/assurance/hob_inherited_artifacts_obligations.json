@@ -171,5 +171,20 @@
     "elapsed_wall_seconds_including_source_reads_and_guard": 849,
     "observed_inherited_card_proofs_per_wall_hour": 21.20141342756184,
     "scope": "Assurance authoring, not5 newly implemented/admitted cards. Nine new scenarios reported0.01s,38 selected scenarios aggregate0.08s. No new complete-game simulation throughput claim."
-  }
+  },
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "c9f059f814ceca6efb4e8fa997b1214dc1e06688",
+      "result": "Firm complete five Oracle/Java/currenttypeddefs and19pins plus38actualpasses approved; no actionable findings",
+      "proof_sha256": "495c939aad850f5f52855e765b53d22037210c61cd861e4b65b73f04ebba5535"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "c9f059f814ceca6efb4e8fa997b1214dc1e06688",
+      "result": "Firm complete five Oracle/Java/currenttypeddefs and19pins plus38actualpasses approved; no actionable findings",
+      "proof_sha256": "495c939aad850f5f52855e765b53d22037210c61cd861e4b65b73f04ebba5535"
+    }
+  ],
+  "integration_status": "Two independent full source/proof approvals; root registered assurance. Proofmappingnow54of69inherited; no gameplay/admissionchanges. Integratedandwhole193acceptanceopen."
 }
