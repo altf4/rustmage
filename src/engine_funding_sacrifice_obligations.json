@@ -161,5 +161,15 @@
       "result": "All 37 unique tests passed, but review rejected cross-component atomic departure assumption. Superseded by ordered source-first implementation and native executor parity test in final evidence above."
     }
   ],
-  "integration_caveat": "Stale nonfunctional comment at src/engine_funding.rs1442 says certified simultaneous cost group. Parent owns wording correction before integrated full build; actual implementation uses ordered source and additional components. Keep local independent review and whole-set acceptance distinct."
+  "integration_caveat": "Stale nonfunctional comment at src/engine_funding.rs1442 says certified simultaneous cost group. Parent owns wording correction before integrated full build; actual implementation uses ordered source and additional components. Keep local independent review and whole-set acceptance distinct.",
+  "root_integration": {
+    "author_commit": "6fd60be2c06ca5d70c42c8e10e19496983ff4b0c",
+    "independent_nonauthor_reviews": [
+      "hob_review_rules",
+      "hob_review_contracts"
+    ],
+    "delta": "Root corrected only stale simultaneous-group wording to describe ordered components; behavior unchanged. Bolg admission restored for integrated testing.",
+    "integrated_funding_source_sha256": "41afdb25487409b0a8e3af7f83c888b2d0dc0b5d231b2e789924dd13dc2f3a51",
+    "acceptance": "Expanded inherited trace audit and full release validation remain required at the integrated head."
+  }
 }

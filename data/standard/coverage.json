@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c80447b2804fe7bd2c3f60dcf916ef030288849cc52d778f9e8bbfde6a28b295",
+  "catalogue_version": "66c3d50e76c5f656c41f34bd7b5550cc5feea47c287ebb958d865659ecfeebe3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2624,
-  "implemented_total": 2630,
+  "implemented_standard_cards": 2625,
+  "implemented_total": 2631,
   "token_definitions": 128,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 78,
-      "complete": 110
+      "gated": 77,
+      "complete": 111
     },
     "hoc": {
       "total": 5,
@@ -4100,8 +4100,8 @@
     {
       "name": "Bolg's Company",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/bolg_s_company.rs",
       "set": "hob"
     },

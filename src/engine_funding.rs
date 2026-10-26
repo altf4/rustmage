@@ -1438,8 +1438,8 @@ impl<'g> FundingState<'g> {
                 self.project_copy_departure(reference, reference);
             }
         }
-        // Selected external departures are committed by visit_applied as a
-        // certified simultaneous cost group, with all replacement choices.
+        // visit_applied commits source and selected additional cost components
+        // in executor order, refreshing eligibility and replacement facts between them.
         self.refresh_control_projection();
         self.prune_source_linked_projection();
         if !preserve_departure_counters {
