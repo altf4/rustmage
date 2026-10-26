@@ -1,0 +1,422 @@
+{
+  "scope": "Current native printed obligations for nine inherited HOB identities; no new candidate flags or gameplay changes",
+  "base_revision": "6358f190",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/o/OrdinaryBear.java",
+      "sha256": "bc1344631ba76e9f0c942e172e3f564d573c7b1a6f61c96f266082944240c3b0"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/l/LargeBear.java",
+      "sha256": "cad7d2503ccea308c7fbe6fbadcd2ab69e0b039b11192ba763aacda8e73d422a"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GiganticBigBear.java",
+      "sha256": "ea60e84e83652231e02fd610674e53804086057b20702a2b103c516f940146a8"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/d/DesolationProwler.java",
+      "sha256": "cffc26b880017c7d1632d1b8e24cb2375d70addeeb541b72de1d9de51700e5a0"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/d/DwarvenProvisioner.java",
+      "sha256": "676d3e602d16f0a63e0714684ed2266b57d713827dbf75a2a203850580a1191e"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GuardianOfTheHalls.java",
+      "sha256": "df81a53990162bf1c2bfb8d10e07e5a2ab1e72d3914e6ab24854a373bfc0f82b"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/e/ElvenkingsHarper.java",
+      "sha256": "96a81f9663b35a436c14e82114f3b7084f99d6bcc9d1fa81f3f4c385f21d0f4f"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/d/DoriBearerOfFriends.java",
+      "sha256": "b3cf7840a6ce1f4c0586e268eb9798331365a0cec28cff2199f69db4b174d75a"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/l/LongBodiedGreyDog.java",
+      "sha256": "192fc1d8f084feef5d0271f4d61a69fd3c48db95b868685285eedb9e2c00dab5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/LimitedTimesPerTurnActivatedAbility.java",
+      "sha256": "11b6039cca03fb60836b3339e38e2b2dccfb7a47bfa599964d14ebf12696cdf7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+      "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+      "sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+      "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofBaseAbility.java",
+      "sha256": "eb33a62a2d3a0cfd4fffee6d99691000ed3d9cadd4937b41d0b53c4e5abacdea"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    }
+  ],
+  "oracle_facts": [
+    {
+      "oracle_id": "ed9d4bb1-7335-45fd-b2ea-97b1f6491d7a",
+      "name": "Desolation Prowler",
+      "layout": "normal",
+      "mana_cost": "{1}{B}",
+      "cmc": 2.0,
+      "type_line": "Creature \u2014 Wolf",
+      "oracle_text": "Pay 2 life: This creature gets +2/+2 until end of turn. Activate only once each turn.",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "B"
+      ],
+      "color_identity": [
+        "B"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "63c87009-ff1b-44b9-88b1-e26219094c67",
+        "set": "hob",
+        "collector_number": "64",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "58acd6b2-730c-4472-a34a-f2784977aca8",
+      "name": "Dori, Bearer of Friends",
+      "layout": "normal",
+      "mana_cost": "{2}{R}",
+      "cmc": 3.0,
+      "type_line": "Legendary Creature \u2014 Dwarf Warrior",
+      "oracle_text": "Trample\nWhen Dori enters, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+      "power": "3",
+      "toughness": "2",
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "keywords": [
+        "Treasure",
+        "Trample"
+      ],
+      "produced_mana": [
+        "B",
+        "G",
+        "R",
+        "U",
+        "W"
+      ],
+      "all_parts": [
+        {
+          "id": "d1892b78-7663-4cbd-a732-9a4b0b18d4c8",
+          "component": "token",
+          "name": "Treasure",
+          "type_line": "Token Artifact \u2014 Treasure"
+        },
+        {
+          "id": "d2f60ad0-c887-4585-85f8-afcf72fb80d0",
+          "component": "combo_piece",
+          "name": "Dori, Bearer of Friends",
+          "type_line": "Legendary Creature \u2014 Dwarf Warrior"
+        }
+      ],
+      "reference_printing": {
+        "id": "d2f60ad0-c887-4585-85f8-afcf72fb80d0",
+        "set": "hob",
+        "collector_number": "94",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "8fcab221-8737-4357-b8ee-bad9421739a3",
+      "name": "Dwarven Provisioner",
+      "layout": "normal",
+      "mana_cost": "{1}{W}",
+      "cmc": 2.0,
+      "type_line": "Creature \u2014 Dwarf Citizen",
+      "oracle_text": "{3}{W}: Creatures you control get +1/+1 until end of turn.",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "W"
+      ],
+      "color_identity": [
+        "W"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "1f9a61a1-454e-4d5b-a6dd-1a79fe9dedf3",
+        "set": "hob",
+        "collector_number": "9",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "7d070a95-49ea-4aea-b512-dbb0006a00ee",
+      "name": "Elvenking's Harper",
+      "layout": "normal",
+      "mana_cost": "{1}{U}",
+      "cmc": 2.0,
+      "type_line": "Creature \u2014 Elf Bard",
+      "oracle_text": "{4}{U}: Target creature can't be blocked this turn.",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "U"
+      ],
+      "color_identity": [
+        "U"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "9c50656d-c74a-4e90-9ef7-afa237682516",
+        "set": "hob",
+        "collector_number": "38",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "88d7bd11-7b1d-426c-8552-01448531c6ad",
+      "name": "Gigantic Big Bear",
+      "layout": "normal",
+      "mana_cost": "{5}{G}{G}",
+      "cmc": 7.0,
+      "type_line": "Creature \u2014 Bear",
+      "oracle_text": "This spell can't be countered.\nHexproof, haste",
+      "power": "10",
+      "toughness": "7",
+      "colors": [
+        "G"
+      ],
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [
+        "Hexproof",
+        "Haste"
+      ],
+      "reference_printing": {
+        "id": "7d6ece3d-8e7a-41ad-974f-3c9748de4825",
+        "set": "hob",
+        "collector_number": "126",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "c3fb2829-64f2-4795-b815-edcc5bbbc360",
+      "name": "Guardian of the Halls",
+      "layout": "normal",
+      "mana_cost": "{1}{G}",
+      "cmc": 2.0,
+      "type_line": "Creature \u2014 Elf Soldier",
+      "oracle_text": "Trample\n{5}{G}{G}: Put three +1/+1 counters on this creature.",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "G"
+      ],
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [
+        "Trample"
+      ],
+      "reference_printing": {
+        "id": "4265caec-8c28-44cd-8e6b-90b5af926d3c",
+        "set": "hob",
+        "collector_number": "127",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "73346137-3117-4dc3-b5a4-1aca1da54548",
+      "name": "Large Bear",
+      "layout": "normal",
+      "mana_cost": "{3}{B/G}{B/G}",
+      "cmc": 5.0,
+      "type_line": "Creature \u2014 Bear",
+      "oracle_text": "Reach, trample, haste",
+      "power": "5",
+      "toughness": "5",
+      "colors": [
+        "B",
+        "G"
+      ],
+      "color_identity": [
+        "B",
+        "G"
+      ],
+      "keywords": [
+        "Reach",
+        "Haste",
+        "Trample"
+      ],
+      "reference_printing": {
+        "id": "50202288-f433-4b56-8f60-349bda7b4f6b",
+        "set": "hob",
+        "collector_number": "159",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "6f83da19-fd89-44ec-88f3-0c3fddfbd1b2",
+      "name": "Long-Bodied Grey Dog",
+      "layout": "normal",
+      "mana_cost": "{3}",
+      "cmc": 3.0,
+      "type_line": "Creature \u2014 Dog",
+      "oracle_text": "Flash\nReach\nWhen this creature enters, create a tapped Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+      "power": "2",
+      "toughness": "2",
+      "colors": [],
+      "color_identity": [],
+      "keywords": [
+        "Reach",
+        "Treasure",
+        "Flash"
+      ],
+      "produced_mana": [
+        "B",
+        "G",
+        "R",
+        "U",
+        "W"
+      ],
+      "all_parts": [
+        {
+          "id": "d1892b78-7663-4cbd-a732-9a4b0b18d4c8",
+          "component": "token",
+          "name": "Treasure",
+          "type_line": "Token Artifact \u2014 Treasure"
+        },
+        {
+          "id": "d1a1e520-1fe2-4529-8afb-c187bb80da3c",
+          "component": "combo_piece",
+          "name": "Long-Bodied Grey Dog",
+          "type_line": "Creature \u2014 Dog"
+        }
+      ],
+      "reference_printing": {
+        "id": "d1a1e520-1fe2-4529-8afb-c187bb80da3c",
+        "set": "hob",
+        "collector_number": "1",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "89a2fab8-b074-42aa-a871-d9c5de2d0895",
+      "name": "Ordinary Bear",
+      "layout": "normal",
+      "mana_cost": "{3}{G}",
+      "cmc": 4.0,
+      "type_line": "Creature \u2014 Bear",
+      "oracle_text": "",
+      "power": "4",
+      "toughness": "5",
+      "colors": [
+        "G"
+      ],
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "0feb9817-56e1-465a-851c-b2fe202aa8ae",
+        "set": "hob",
+        "collector_number": "133",
+        "released_at": "2026-08-14"
+      }
+    }
+  ],
+  "obligations": {
+    "Ordinary Bear": "Paid3G4/5Bear; normal summoning sickness attack rejection",
+    "Large Bear": "All3hybridcosts paid5/5; actual same-turn hasty blocked trample combat5 into2/2 yields3playerdamage; reach blocking flyer and tapped exclusion",
+    "Gigantic Big Bear": "Paid5GG10/7 survives actual paid Essence Scatter; enemyShock illegal but own paidGiantGrowth valid; EOT and actual hasty playerdamage",
+    "Desolation Prowler": "Paid1B2/2; life1cannotpay2; paid2life exactly; onceperturn limit including opponentturn reset; EOT growth expires; stale source incarnation unaffected; owned raw/index/parent disposal/restore at actual payment",
+    "Dwarven Provisioner": "Paid1W2/2; paid3W fixed current own creature group includes source/excludesopponent,land,laterentrant; repeat additive; departedsource still grows current group; cleanup",
+    "Guardian of the Halls": "Paid1G2/2trample; repeated5GG puts3permanentcounterseach with correctmana; counters survivecleanup; stale source never receivesoldactivation",
+    "Elvenking's Harper": "Paid1U2/2; paid4U anycontrollercreaturetarget, rejectsland; actual can_block_pair false untilcleanup; departedsourceworks; stale recipient excluded",
+    "Dori, Bearer of Friends": "Paid2R3/2trample; exactly1ownuntappedTreasure; real tap/sac mana each5colors in independentbranches",
+    "Long-Bodied Grey Dog": "Actuallypaid3duringopponentendstep2/2flashreach; exactly1owntappedTreasure cannotactivateuntiluntapped; independent5colormana branches; reachblocks actualflyer"
+  },
+  "preflight": "All15 named physical fixtures complete, full Oracle and all9typedRust/Java classes read;32 sourcepins byte-match pinned revision; no invented token. Shared treasure factory created by actual sourceETB.",
+  "validation": "Pending coherent guarded focused run; two independent reviews pending; whole193 acceptance open"
+}
