@@ -194,3 +194,5 @@ mod hob_hone;
 mod hob_recruit_amass_sagas;
 mod hob_sting;
 mod hob_storied;
+
+mod hob_existing_three;

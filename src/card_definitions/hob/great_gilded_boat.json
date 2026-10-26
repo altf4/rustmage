@@ -3,10 +3,31 @@
   "catalogue_id": 1864,
   "oracle_id": "d4607026-80b2-4fa6-99d5-694cd3b43868",
   "facts_sha256": "01b6b251737c2621ae8002d5ea0dd52e92108c64be6df9180896c0676f042111",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "8ce195f62aaa96a3c45b751e06fe3da3bdcfc8be0f53610473e3ad4a8110b0e4"
-  },
-  "physical_metadata_sha256": "6655051c5f49ff5795a9ab0cf5f44dda03c247ebf7191eddda065f23fa8fafdb"
+  "complete": true,
+  "physical_metadata_sha256": "6655051c5f49ff5795a9ab0cf5f44dda03c247ebf7191eddda065f23fa8fafdb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreatGildedBoat.java",
+  "java_sha256": "7a9059d50145459cdb36a79c9f1de45a8ee8cc6ddd03fc7b67a29bb576daeebf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    }
+  ]
 }

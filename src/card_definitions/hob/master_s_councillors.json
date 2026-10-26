@@ -3,10 +3,41 @@
   "catalogue_id": 2682,
   "oracle_id": "b9079564-5c86-4765-988a-f2334e016fa6",
   "facts_sha256": "fca95d6a6996220d867d2b341ebdf0949db71c3c3d3f55e45afadbf4c4c4f9a0",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "b2698fd179de90fb060c67efe922b666cb50b09adf35bbb5eb9206999eee4ac3"
-  },
-  "physical_metadata_sha256": "e495b92894aa3baaaae3899dc2973e7043a69c7ab1b7f1daf094a5203a50846d"
+  "complete": true,
+  "physical_metadata_sha256": "e495b92894aa3baaaae3899dc2973e7043a69c7ab1b7f1daf094a5203a50846d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MastersCouncillors.java",
+  "java_sha256": "a9873a0817b9b995277819c01201654831a90af2d99b52c3bef363dce2b29a1c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+      "sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/MultipliedValue.java",
+      "sha256": "d8e70d3468d5bfaf3ab1f030aebb4a66738648af642ab39502a5cffffd38c314"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    }
+  ]
 }
