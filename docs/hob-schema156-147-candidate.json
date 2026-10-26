@@ -18,19 +18,19 @@
             "--no-run",
             "--message-format=json",
             "--target-dir",
-            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target"
+            "<cache>/rustmage-authoring/hob-wandering/target"
           ],
           "exit": 0,
           "timed_out": false,
           "orphaned_processes": false,
           "seconds": 27.841096314019524,
-          "log": "/home/altf4/.cache/rustmage-authoring/hob-complete-set/integrated147-2053-1/compile.jsonl"
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/compile.jsonl"
         }
       },
       {
         "hob_rules": {
           "command": [
-            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
             "hob_",
             "--nocapture",
             "--test-threads=1"
@@ -39,14 +39,14 @@
           "timed_out": false,
           "orphaned_processes": false,
           "seconds": 1.869815007026773,
-          "log": "/home/altf4/.cache/rustmage-authoring/hob-complete-set/integrated147-2053-1/focused.log"
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/focused.log"
         }
       },
       {
         "record_previous_schema": 156,
         "result": {
           "command": [
-            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
             "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
             "--exact",
             "--nocapture"
@@ -55,14 +55,14 @@
           "timed_out": false,
           "orphaned_processes": false,
           "seconds": 15.205746708030347,
-          "log": "/home/altf4/.cache/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs156.log"
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs156.log"
         }
       },
       {
         "record_previous_schema": 155,
         "result": {
           "command": [
-            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
             "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
             "--exact",
             "--nocapture"
@@ -71,14 +71,14 @@
           "timed_out": false,
           "orphaned_processes": false,
           "seconds": 15.253588020976167,
-          "log": "/home/altf4/.cache/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs155.log"
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs155.log"
         }
       },
       {
         "record_previous_schema": 154,
         "result": {
           "command": [
-            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
             "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
             "--exact",
             "--nocapture"
@@ -87,14 +87,14 @@
           "timed_out": false,
           "orphaned_processes": false,
           "seconds": 15.257728641969152,
-          "log": "/home/altf4/.cache/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs154.log"
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs154.log"
         }
       },
       {
         "record_previous_schema": 153,
         "result": {
           "command": [
-            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
             "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
             "--exact",
             "--nocapture"
@@ -103,14 +103,14 @@
           "timed_out": false,
           "orphaned_processes": false,
           "seconds": 15.757036752009299,
-          "log": "/home/altf4/.cache/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs153.log"
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs153.log"
         }
       },
       {
         "record_previous_schema": 152,
         "result": {
           "command": [
-            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
             "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
             "--exact",
             "--nocapture"
@@ -119,14 +119,14 @@
           "timed_out": false,
           "orphaned_processes": false,
           "seconds": 15.656064267037436,
-          "log": "/home/altf4/.cache/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs152.log"
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs152.log"
         }
       }
     ],
     "guard": {
       "command": [
         "python3",
-        "/home/altf4/.cache/rustmage-authoring/hob-complete-set/integrated147-2053-1/run.py"
+        "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/run.py"
       ],
       "terminal": true,
       "exit_code": 0,
@@ -465,7 +465,7 @@
           "--python",
           "smoke",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/hob-complete-set/target"
+          "<cache>/rustmage-authoring/hob-complete-set/target"
         ],
         "terminal": true,
         "exit_code": 1,
@@ -499,65 +499,65 @@
         "seconds": 0.041649717
       },
       "shared_libraries": {
-        "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/libraries/librustmage.so": "0c19f17012384baf792ed6349c7d5a88367325690fe517de20267851d8d9f981"
+        "<cache>/rustmage-validation-ishi6jyj/report/libraries/librustmage.so": "0c19f17012384baf792ed6349c7d5a88367325690fe517de20267851d8d9f981"
       },
       "phases": [
         {
           "name": "source pins",
           "exit": 0,
           "seconds": 0.7166743209818378,
-          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/00.log"
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/00.log"
         },
         {
           "name": "format",
           "exit": 0,
           "seconds": 1.7193828860181384,
-          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/01.log"
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/01.log"
         },
         {
           "name": "card format",
           "exit": 0,
           "seconds": 1.1192162389634177,
-          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/02.log"
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/02.log"
         },
         {
           "name": "script contracts",
           "exit": 0,
           "seconds": 0.7181156169972382,
-          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/03.log"
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/03.log"
         },
         {
           "name": "clippy",
           "exit": 0,
           "seconds": 17.312449372024275,
-          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/04.log"
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/04.log"
         },
         {
           "name": "native assurance",
           "exit": 0,
           "seconds": 167.05160329304636,
-          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/05.log"
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/05.log"
         },
         {
           "name": "release build",
           "exit": 0,
           "seconds": 131.11657553602709,
-          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/06.log"
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/06.log"
         },
         {
           "name": "simulation sample",
           "exit": 0,
           "seconds": 0.11516482301522046,
-          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/07.log"
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/07.log"
         },
         {
           "name": "Python assurance",
           "exit": 0,
           "seconds": 0.16515993600478396,
-          "log": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/08.log"
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/08.log"
         }
       ],
-      "report": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/result.json",
+      "report": "<cache>/rustmage-validation-ishi6jyj/report/result.json",
       "native": {
         "passed": 892,
         "compile_seconds": 144.84490880201338,
@@ -566,7 +566,7 @@
       "python": {
         "suite": "contract",
         "requested_suite": "smoke",
-        "library": "/home/altf4/.cache/rustmage-validation-ishi6jyj/report/libraries/librustmage.so",
+        "library": "<cache>/rustmage-validation-ishi6jyj/report/libraries/librustmage.so",
         "terminal": true,
         "tests": 8,
         "success": true,
@@ -586,7 +586,7 @@
           "--python",
           "smoke",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/hob-complete-set/target"
+          "<cache>/rustmage-authoring/hob-complete-set/target"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -627,7 +627,7 @@
     "guard": {
       "command": [
         "python3",
-        "/home/altf4/.cache/rustmage-authoring/hob-complete-set/repair147-clippy-1/run.py"
+        "<cache>/rustmage-authoring/hob-complete-set/repair147-clippy-1/run.py"
       ],
       "terminal": true,
       "exit_code": 0,
