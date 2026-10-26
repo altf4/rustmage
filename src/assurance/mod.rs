@@ -224,3 +224,6 @@ mod hob_plate_company;
 mod hob_inherited_creatures;
 
 mod hob_crooked_galion;
+
+mod hob_inherited_spells;
+mod hob_spark_letters;

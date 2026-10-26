@@ -181,5 +181,20 @@
   "measurement": {
     "new_candidate_identities": 2,
     "scope": "Isolated Gandalf/Letters source authorship, retained failedfixture and handoff-run evidence, then cached coherent20check pass. No simulation benchmark measured. Full integrated checkpoint pending."
-  }
+  },
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "705f95e270c5dd79d78eeb2eb69b4fb6c53884cc",
+      "result": "Full source/Oracle/Java/helper or explicitabsence and actualcoherentfocused evidence approved; no remaining actionable findings",
+      "scope": "Source/focused evidence; rootcombinedcheck and whole193/finalpublished acceptance remain pending"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "705f95e270c5dd79d78eeb2eb69b4fb6c53884cc",
+      "result": "Full source/Oracle/Java/helper or explicitabsence and actualcoherentfocused evidence approved; no remaining actionable findings",
+      "scope": "Source/focused evidence; rootcombinedcheck and whole193/finalpublished acceptance remain pending"
+    }
+  ],
+  "root_integration": "Registered assay module and regenerated links on singlelocalwhole-setbranch; nextcombinedfocusedcheckpending. Lastfullrelease136at6358 exactscoped; no PR/push/merge."
 }

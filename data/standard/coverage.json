@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4b9bd18d674e45ecf11149c536fe8e2f5480d2e2433c5aaa4ac33a65062598e6",
+  "catalogue_version": "72a9e178e1bb0f021efae93537cce9004f05f6a34179ab52d6059b241dbf14ef",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2647,
-  "implemented_total": 2653,
+  "implemented_standard_cards": 2649,
+  "implemented_total": 2655,
   "token_definitions": 130,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 133,
-      "gated": 55
+      "complete": 135,
+      "gated": 53
     },
     "hoc": {
       "total": 5,
@@ -13620,8 +13620,8 @@
     {
       "name": "Gandalf, Spark Starter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/gandalf_spark_starter.rs",
       "set": "hob"
     },
@@ -38276,8 +38276,8 @@
     {
       "name": "Uncover the Moon-Letters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/uncover_the_moon_letters.rs",
       "set": "hob"
     },

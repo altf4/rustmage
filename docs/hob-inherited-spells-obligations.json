@@ -416,5 +416,20 @@
       "finding": "The two card obligations prose strings were swapped; Oracle facts and proof function links were correctly assigned.",
       "resolution": "Swapped only obligations strings back to matching identities after all consuming jobs terminal; no Rust/test/definition changes or new pass claim."
     }
-  ]
+  ],
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "c3d461da3d314dc4738f8c615bcca2d93029320f",
+      "result": "Full source/Oracle/Java/helper or explicitabsence and actualcoherentfocused evidence approved; no remaining actionable findings",
+      "scope": "Source/focused evidence; rootcombinedcheck and whole193/finalpublished acceptance remain pending"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "c3d461da3d314dc4738f8c615bcca2d93029320f",
+      "result": "Full source/Oracle/Java/helper or explicitabsence and actualcoherentfocused evidence approved; no remaining actionable findings",
+      "scope": "Source/focused evidence; rootcombinedcheck and whole193/finalpublished acceptance remain pending"
+    }
+  ],
+  "root_integration": "Registered assay module and regenerated links on singlelocalwhole-setbranch; nextcombinedfocusedcheckpending. Lastfullrelease136at6358 exactscoped; no PR/push/merge."
 }
