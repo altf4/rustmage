@@ -8,6 +8,7 @@ import unittest
 
 from run_native_tests import process_running, run_command
 from resource_limits import MAX_MEMORY, bounded_group
+from test_validate import ValidatorTests
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -67,6 +68,9 @@ class AssuranceRunnerTests(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    suite = unittest.defaultTestLoader.loadTestsFromTestCase(AssuranceRunnerTests)
+    suite = unittest.TestSuite([
+        unittest.defaultTestLoader.loadTestsFromTestCase(AssuranceRunnerTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(ValidatorTests),
+    ])
     result = unittest.TextTestRunner(verbosity=2).run(suite)
     sys.exit(0 if result.wasSuccessful() and result.testsRun > 0 and not result.skipped else 1)
