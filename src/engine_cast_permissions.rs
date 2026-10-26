@@ -284,6 +284,8 @@ impl Game {
             return !self.scalar_x_intervals(actor, card).is_empty();
         }
         let a = Announcement {
+            equip_zero_available: false,
+            activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: 0,
             power_up_costs: None,
             free_hand_permission: None,

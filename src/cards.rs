@@ -3195,6 +3195,20 @@ pub(crate) struct ActivationCost {
     pub loyalty: Option<i32>,
 }
 impl ActivationCost {
+    pub(crate) const ZERO: Self = Self {
+        colored: [0; 6],
+        generic: 0,
+        alternatives: &[],
+        additional: None,
+        mana_component: false,
+        tap: false,
+        sacrifice: false,
+        exile_self: false,
+        discard: false,
+        life: 0,
+        remove: None,
+        loyalty: None,
+    };
     pub(crate) fn mana_options(self) -> ManaCostOptions {
         std::iter::once(ManaCost {
             colored: self.colored,

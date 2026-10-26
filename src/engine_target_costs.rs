@@ -134,10 +134,7 @@ impl Game {
         finished: bool,
     ) -> bool {
         if let StackKind::ActivatedAbility { ability } = a.item.kind
-            && a.item
-                .source_card
-                .activation_target_reduction(ability)
-                .is_some()
+            && Self::activation_target_sensitive(a.item.source_card, ability)
         {
             return self.announcement_activation_target_fundable(a, extra, finished);
         }

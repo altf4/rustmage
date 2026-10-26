@@ -3,10 +3,26 @@
   "catalogue_id": 1215,
   "oracle_id": "70538676-2ffb-4cad-827e-b55e81088678",
   "facts_sha256": "04f693609a04245ba2ab760b95b9027e8303d18de078065c01c8844748f97724",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5cb63867f3520f7074797402511831de1ee619042bf2eb055302e9f485f7f69b"
   },
-  "physical_metadata_sha256": "8dd4196503bd74ea6a95da6755659df25cbdc66648b4cabea1d3d98fe583bf60"
+  "physical_metadata_sha256": "8dd4196503bd74ea6a95da6755659df25cbdc66648b4cabea1d3d98fe583bf60",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DwarvenMauler.java",
+  "java_sha256": "4ae79eacef117e096eec916c711f13522f293fab10a576c6444beda018f05a07",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/ReduceCostEquipTargetSourceEffect.java",
+      "sha256": "921567fc031059e180f1ca5883dfafe07f013ee16b69c1905bf6816f9df3cd13"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    }
+  ],
+  "remaining_obligations": []
 }

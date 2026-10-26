@@ -124,6 +124,8 @@ mod turn_cast_grants;
 pub use turn_cast_grants::PlayerCastGrantsView;
 #[path = "engine_cast_timing.rs"]
 mod cast_timing;
+#[path = "engine_equip_costs.rs"]
+mod equip_costs;
 pub use crate::cards::GraveyardCastKind;
 pub use cast_permissions::GraveyardCastPermissionView;
 #[path = "engine_crew.rs"]
@@ -863,6 +865,7 @@ struct PlayerState {
     spells_cast_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
     creature_spells_cast_this_turn: u64,
+    equip_activated_this_turn: bool,
     cards_drawn_this_turn: u64,
     cards_discarded_this_turn: u64,
     card_left_graveyard_this_turn: bool,
@@ -2134,11 +2137,21 @@ pub struct PendingPaymentView {
     pub counters: Counters,
 }
 
+/// The selected payment obligation, independent of its resulting mana amount.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ActivationCostRoute {
+    Printed,
+    FirstEquipZero,
+}
+
 /// Legal nonhybrid equivalents of a currently announced hybrid spell cost.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellCostChoiceView {
     pub index: u16,
     pub cost: ManaCost,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub activation_route: Option<ActivationCostRoute>,
 }
 
 /// Legal modes of the currently announced modal spell.
@@ -2543,6 +2556,7 @@ impl Game {
             spells_cast_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
             creature_spells_cast_this_turn: 0,
+            equip_activated_this_turn: false,
             cards_drawn_this_turn: 0,
             cards_discarded_this_turn: 0,
             card_left_graveyard_this_turn: false,
@@ -4388,8 +4402,8 @@ impl Game {
             }
             Pending::SpellCost { player: _ } | Pending::ActivationCost { player: _ } => {
                 let a = s.announcing.as_ref().unwrap();
-                for (index, cost) in a.cost_options().enumerate() {
-                    if self.announcement_cost_fundable(a, cost)
+                for (index, _) in a.cost_options().enumerate() {
+                    if self.announcement_cost_choice_fundable(a, index)
                         && emit(if a.item.kind == StackKind::Spell {
                             Action::ChooseSpellCost { cost: index as u16 }
                         } else {
@@ -6463,6 +6477,7 @@ impl Game {
             player.spells_cast_this_turn = 0;
             player.instant_sorcery_cast_this_turn = 0;
             player.creature_spells_cast_this_turn = 0;
+            player.equip_activated_this_turn = false;
             player.cards_drawn_this_turn = 0;
             player.cards_discarded_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
@@ -7476,10 +7491,13 @@ impl Game {
                 let a = s.announcing.as_ref().unwrap();
                 a.cost_options()
                     .enumerate()
-                    .filter(|(_, cost)| self.announcement_cost_fundable(a, *cost))
+                    .filter(|(index, _)| self.announcement_cost_choice_fundable(a, *index))
                     .map(|(index, cost)| SpellCostChoiceView {
                         index: index as u16,
                         cost,
+                        activation_route: a
+                            .equip_zero_available
+                            .then(|| a.activation_route_for_index(index)),
                     })
                     .collect()
             } else {

@@ -11,6 +11,8 @@ pub(super) struct Announcement {
     pub trigger: bool,
     pub payment: Option<Mana>,
     pub cost: Option<ManaCost>,
+    pub equip_zero_available: bool,
+    pub activation_cost_route: ActivationCostRoute,
     pub total_cost: Option<ManaCost>,
     /// Locked before mana abilities or any nonmana payment changes the source.
     pub activation_discount: u32,
@@ -64,6 +66,9 @@ impl Announcement {
         })
     }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
+        if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
+            return None;
+        }
         if self
             .item
             .cast
@@ -123,7 +128,7 @@ impl Announcement {
         }
     }
 
-    pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
+    fn cost_route_options(&self) -> impl Iterator<Item = (ManaCost, ActivationCostRoute)> + '_ {
         let options = match self.item.kind {
             StackKind::Spell
                 if self
@@ -199,16 +204,26 @@ impl Announcement {
                         .capacity("additional mana cost exhausted"),
                 })
         });
+        // Choose the printed base or its replacement before applying the
+        // shared cost modifiers. A route identity survives equal mana totals.
         options
-            .flat_map(move |cost| {
-                std::iter::once(cost).chain(
+            .map(|cost| (cost, ActivationCostRoute::Printed))
+            .chain(self.equip_zero_available.then_some((
+                ManaCost {
+                    colored: [0; 6],
+                    generic: 0,
+                },
+                ActivationCostRoute::FirstEquipZero,
+            )))
+            .flat_map(move |(cost, route)| {
+                std::iter::once((cost, route)).chain(
                     (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
                         .then(|| self.item.source_card.explicit_additional_mana())
                         .flatten()
-                        .map(|extra| Card::add_mana_cost(cost, extra)),
+                        .map(move |extra| (Card::add_mana_cost(cost, extra), route)),
                 )
             })
-            .flat_map(move |cost| {
+            .flat_map(move |(cost, route)| {
                 const ZERO: [ManaCost; 1] = [ManaCost {
                     colored: [0; 6],
                     generic: 0,
@@ -222,7 +237,9 @@ impl Announcement {
                             cost,
                             reduction,
                             self.activation_discount,
-                            if self.power_up_costs.is_some() {
+                            if self.power_up_costs.is_some()
+                                && route == ActivationCostRoute::Printed
+                            {
                                 u64::from(self.item.x.unwrap_or(0))
                                     * u64::from(match self.item.kind {
                                         StackKind::ActivatedAbility { ability } => {
@@ -234,9 +251,10 @@ impl Announcement {
                                 0
                             },
                         )
+                        .map(|cost| (cost, route))
                     })
             })
-            .filter(|cost| {
+            .filter(|(cost, _)| {
                 self.item
                     .cast
                     .is_none_or(|cast| cast.method != CastMethod::GrantedFlashback)
@@ -251,7 +269,7 @@ impl Announcement {
                             generic: self.item.source_card.cost().1,
                         }
             })
-            .filter_map(|cost| {
+            .filter_map(|(cost, route)| {
                 Game::with_tiered_mana(
                     Game::with_flash_surcharge(
                         cost,
@@ -260,17 +278,28 @@ impl Announcement {
                     ),
                     &self.item,
                 )
+                .map(|cost| (cost, route))
             })
-            .chain(extra.and_then(|cost| {
-                Game::with_tiered_mana(
-                    Game::with_flash_surcharge(
-                        cost,
-                        self.item.source_card,
-                        self.item.cast.is_some_and(|c| c.flash_surcharge),
-                    ),
-                    &self.item,
-                )
-            }))
+            .chain(
+                extra
+                    .and_then(|cost| {
+                        Game::with_tiered_mana(
+                            Game::with_flash_surcharge(
+                                cost,
+                                self.item.source_card,
+                                self.item.cast.is_some_and(|c| c.flash_surcharge),
+                            ),
+                            &self.item,
+                        )
+                    })
+                    .map(|cost| (cost, ActivationCostRoute::Printed)),
+            )
+    }
+    pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        self.cost_route_options().map(|(cost, _)| cost)
+    }
+    pub(super) fn activation_route_for_index(&self, index: usize) -> ActivationCostRoute {
+        self.cost_route_options().nth(index).expect("cost option").1
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -728,6 +757,7 @@ impl Game {
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
         let cost = a.cost_options().nth(index as usize).unwrap();
+        a.activation_cost_route = a.activation_route_for_index(index as usize);
         a.cost = Some(cost);
         self.continue_announcement_choices(false);
     }
@@ -1558,6 +1588,8 @@ impl Game {
         }
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
+            equip_zero_available: false,
+            activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
@@ -1639,6 +1671,9 @@ impl Game {
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         let casualty = self.casualty_declarations(&item);
         self.state.announcing = Some(Announcement {
+            equip_zero_available: self.item_first_equip_zero_available(&item)
+                && counters == Counters::default(),
+            activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
@@ -1683,11 +1718,7 @@ impl Game {
             && matches!(self.state.pending, Pending::Targets { .. })
         {
             if let StackKind::ActivatedAbility { ability } = announcement.item.kind
-                && announcement
-                    .item
-                    .source_card
-                    .activation_target_reduction(ability)
-                    .is_some()
+                && Self::activation_target_sensitive(announcement.item.source_card, ability)
                 && announcement.total_cost.is_none()
             {
                 let base = announcement.cost.unwrap_or_else(|| {
@@ -1788,10 +1819,11 @@ impl Game {
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()
             {
-                self.pay_activation(
+                self.pay_activation_route(
                     &mut announcement.item,
                     payment,
                     announcement.counter_payment.clone(),
+                    announcement.activation_cost_route,
                 );
             }
             self.pay_additional_cost(&mut announcement);
@@ -1799,10 +1831,11 @@ impl Game {
         }
         if let Some(payment) = announcement.payment {
             if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
-                self.pay_activation(
+                self.pay_activation_route(
                     &mut announcement.item,
                     payment,
                     announcement.counter_payment.clone(),
+                    announcement.activation_cost_route,
                 );
             } else {
                 let outcome = self.spend_mana_for(

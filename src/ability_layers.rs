@@ -188,6 +188,12 @@ pub(crate) enum StaticAbilityFragment {
     Replacement(u16, ReplacementSpec),
     CastTiming(u16, CastFilter),
     CostReduction(u16, SpellReduction),
+    /// Generic reduction for equip activations targeting this exact permanent.
+    EquipTargetReduction(u32),
+    /// Optional replacement of the first equip activation's whole cost.
+    FirstEquipZeroCost {
+        condition: StatValue,
+    },
     TargetCostReduction(u16, TargetSpellReduction),
     CombatRestriction(u16, CombatRestriction),
     /// Source attacks every combat when independently able to attack.

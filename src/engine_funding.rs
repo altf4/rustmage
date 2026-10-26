@@ -2396,12 +2396,11 @@ impl Game {
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         if let StackKind::ActivatedAbility { ability } = a.item.kind
-            && a.item
-                .source_card
-                .activation_target_reduction(ability)
-                .is_some()
+            && Self::activation_target_sensitive(a.item.source_card, ability)
         {
-            return self.announcement_activation_target_fundable(a, None, false);
+            let mut proposal = a.clone();
+            proposal.cost = Some(cost);
+            return self.announcement_activation_target_fundable(&proposal, None, false);
         }
         if a.item
             .cast
@@ -2567,6 +2566,22 @@ impl Game {
         }
     }
     pub(super) fn funding_goal(&self, announcement: &Announcement) -> FundingGoal {
+        if announcement.activation_cost_route == ActivationCostRoute::FirstEquipZero {
+            // Only the printed equip cost is replaced. Preserve the computed
+            // total after modifiers; the waived printed nonmana costs are not
+            // reintroduced as source obligations during funding.
+            let cost = announcement
+                .total_cost
+                .or(announcement.cost)
+                .expect("selected equip route");
+            return FundingGoal {
+                actor: announcement.item.controller,
+                required: cost.colored,
+                generic: cost.generic,
+                reserve: None,
+                source: None,
+            };
+        }
         match announcement.item.kind {
             StackKind::Spell => {
                 let cost = announcement

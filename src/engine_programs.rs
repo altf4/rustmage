@@ -1092,6 +1092,12 @@ impl Game {
     /// Completed insertion paths share this hook; abilities never count as casts.
     pub(super) fn push_stack_item(&mut self, mut item: SpellView) {
         self.capture_transform_stack_serial(&mut item);
+        if !item.is_copy
+            && let StackKind::ActivatedAbility { ability } = item.kind
+            && item.source_card.activation(ability).is_equip()
+        {
+            self.state.players[item.controller.index()].equip_activated_this_turn = true;
+        }
         let cast = (item.kind == StackKind::Spell && item.cast.is_some() && !item.is_copy)
             .then_some((item.controller, item.source_card));
         if cast.is_some() {

@@ -182,6 +182,10 @@ impl Game {
         actor: Player,
         sorcery: bool,
     ) -> bool {
+        let mut readiness = *ability;
+        if self.first_equip_zero_available(actor, ability) {
+            readiness.cost = ActivationCost::ZERO;
+        }
         !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && self.printed_abilities_available(card)
             && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
@@ -198,7 +202,7 @@ impl Game {
                 self.current_kinds(card),
                 || ability_world::CharacteristicWorld::activation_keywords(self, card),
                 self.state.players[actor.index()].life,
-                ability,
+                &readiness,
                 index,
                 actor,
                 sorcery,
@@ -324,6 +328,17 @@ impl Game {
                 }
                 continue;
             }
+            if ability.cost.remove.is_some()
+                && self.first_equip_zero_available(actor, ability)
+                && self.targets_available(ability.targets, actor, self.object_ref(card))
+                && emit(Action::AnnounceActivate {
+                    card,
+                    ability: index as u16,
+                    counter_payment: Counters::default(),
+                })
+            {
+                return true;
+            }
             let done = counter_payments(
                 ability.cost,
                 self.counter_amounts(card),
@@ -382,10 +397,16 @@ impl Game {
                             return true;
                         }
                     }
+                    // A direct action cannot declare which optional whole-cost
+                    // route it pays; expose the explicit announcement instead.
+                    if self.first_equip_zero_available(actor, ability) {
+                        return false;
+                    }
                     if object
                         .card
                         .activation_target_reduction(index as u16)
                         .is_some()
+                        || self.active_target_equip_reducer(actor, object.card, index as u16)
                     {
                         return self.visit_target_cost_direct_actions(
                             card,
@@ -596,11 +617,25 @@ impl Game {
         payment: Mana,
         counter_payment: Counters,
     ) {
+        self.pay_activation_route(item, payment, counter_payment, ActivationCostRoute::Printed);
+    }
+    pub(super) fn pay_activation_route(
+        &mut self,
+        item: &mut SpellView,
+        payment: Mana,
+        counter_payment: Counters,
+        route: ActivationCostRoute,
+    ) {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             unreachable!()
         };
-        let definition = &item.source_card.activation(ability);
-        self.pay_activation_definition(item, payment, counter_payment, ability, definition);
+        let mut definition = *item.source_card.activation(ability);
+        if route == ActivationCostRoute::FirstEquipZero {
+            assert!(definition.is_equip());
+            assert_eq!(counter_payment, Counters::default());
+            definition.cost = ActivationCost::ZERO;
+        }
+        self.pay_activation_definition(item, payment, counter_payment, ability, &definition);
     }
 
     // The same committed payment routine handles both ordinary authored abilities
