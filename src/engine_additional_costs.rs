@@ -569,7 +569,6 @@ impl Game {
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind {
             EffectChoiceKind::TargetAttackingReturn { .. }
-            | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::HandToTop
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. }

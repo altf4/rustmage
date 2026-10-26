@@ -3,30 +3,10 @@
   "catalogue_id": 5063,
   "oracle_id": "8a2946ad-7a7b-4cda-8591-da8c7da5e072",
   "facts_sha256": "76f7ad5c0cd0c4f329aaca7eee9f980198e653661e9415515ec84425009790ed",
-  "complete": true,
+  "complete": false,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "50e24ddbc0ba5277ca393f5c04eaba0ff12624aeb45fdae27b6e6545dc04b196"
   },
-  "physical_metadata_sha256": "401570a09443e5a118364b978cf3cf8ff082bf4d1f7e4fe677268967e37736ab",
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/w/WilderlandScrounger.java",
-  "java_sha256": "63b50f90a9e80b20f9b6e4f68807d92f44db355830220252fbff4b1058cac3bb",
-  "xmage_dependencies": [
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
-      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
-      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
-      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
-    }
-  ]
+  "physical_metadata_sha256": "401570a09443e5a118364b978cf3cf8ff082bf4d1f7e4fe677268967e37736ab"
 }

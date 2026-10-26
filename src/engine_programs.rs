@@ -3128,48 +3128,6 @@ impl Game {
                         self.attach_equipment(item.object, target);
                     }
                 }
-                Instruction::EnsureGoblinArmy => {
-                    if !self.state.objects.iter().enumerate().any(|(id, o)| {
-                        o.zone == Zone::Battlefield
-                            && o.controller == item.controller
-                            && self.is_creature(id as CardId)
-                            && self.has_subtype(id as CardId, "Army")
-                    }) {
-                        self.create_tokens(item.controller, Card::GoblinArmyToken, 1, false);
-                    }
-                }
-                Instruction::AmassGoblins(amount) => {
-                    let armies: Vec<_> = self
-                        .state
-                        .objects
-                        .iter()
-                        .enumerate()
-                        .filter(|(id, o)| {
-                            o.zone == Zone::Battlefield
-                                && o.controller == item.controller
-                                && self.is_creature(*id as CardId)
-                                && self.has_subtype(*id as CardId, "Army")
-                        })
-                        .map(|(id, _)| self.object_ref(id as CardId))
-                        .collect();
-                    if armies.len() == 1 {
-                        self.finish_amass_goblins(&item, armies[0], amount);
-                    } else if armies.len() > 1 {
-                        let mut filter = evidence::cost(0).filter;
-                        filter.subtype = Some("Army");
-                        filter.kinds = 1;
-                        if self.start_effect_choice(
-                            &item,
-                            EffectChoiceKind::AmassGoblins(amount),
-                            PlayerSet::Controller,
-                            filter,
-                            1,
-                            None,
-                        ) {
-                            return;
-                        }
-                    }
-                }
                 Instruction::CreateTokenChoice(tokens) => {
                     self.state.pending = Pending::TokenChoice {
                         player: item.controller,
@@ -3929,14 +3887,6 @@ impl Game {
                 }
                 Instruction::AddCastEntryCounters { kind, amount } => {
                     self.add_cast_entry_counters(&item, kind, amount)
-                }
-                Instruction::Recruit { token } => {
-                    let player = item.controller;
-                    self.draw_many(player, 1);
-                    let resolution = self.state.resolving.as_mut().unwrap();
-                    resolution.discards[player.index()] = 1;
-                    resolution.discard_after =
-                        Some(discard_events::DiscardAfter::Recruit(player, token));
                 }
                 Instruction::DrawThenDiscardIfDrew { amount, discard } => {
                     let player = item.controller;

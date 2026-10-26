@@ -3,20 +3,10 @@
   "catalogue_id": 2228,
   "oracle_id": "bd4ab393-9538-4230-b2a1-bc77099481c9",
   "facts_sha256": "ffb9780dc9bed19246b41699a0adff617df66e621e5c6857e8548944d77ddb7a",
-  "complete": true,
+  "complete": false,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f90c8d02b84782c85f9560bb60b9e123191574f7fec594ad84c417652e918d37"
   },
-  "physical_metadata_sha256": "b2cb3c74a73567686cd9d8333efd8fa4cc2c3fc66fd69f49d943741ecf19b8d5",
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/i/IronHillsStalwart.java",
-  "java_sha256": "daec94de6018b20553f3cb3baa0550868c181d64c9d4a197f3d397247bcdc4ef",
-  "xmage_dependencies": [
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachTargetToTargetEffect.java",
-      "sha256": "a4d9532e66219ae61d2701afed4d8a1d920be503fce485d7154af0bd90cf40a0"
-    }
-  ]
+  "physical_metadata_sha256": "b2cb3c74a73567686cd9d8333efd8fa4cc2c3fc66fd69f49d943741ecf19b8d5"
 }

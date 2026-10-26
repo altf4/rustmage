@@ -3,46 +3,10 @@
   "catalogue_id": 1366,
   "oracle_id": "84597236-2cfc-4654-b126-a8ee252f4d14",
   "facts_sha256": "db96847ff6f0bf05cdd000268a01fc6b38bd8b513f99d616f319e68399712a6a",
-  "complete": true,
+  "complete": false,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0697fa293d02f0c94d26a8240b485daa1b800a5144f8faa5e8d83460728386cf"
   },
-  "physical_metadata_sha256": "911a665712f880e308d2fc04e476ffffaf953d824682522b3ec4bf62c78e3277",
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/e/EsgarothGarrison.java",
-  "java_sha256": "3cce8c43626b008d78df2a8b66418c71c32d6c669716b66ef794b9886451df6a",
-  "xmage_dependencies": [
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
-      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
-      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
-      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
-      "sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerSourceEffect.java",
-      "sha256": "07d7b0ba8fdb6f3e6eeb405c2768a37677e7fded311795af1425dc2bfdb9bbd1"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
-      "sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3"
-    }
-  ],
-  "remaining_obligations": []
+  "physical_metadata_sha256": "911a665712f880e308d2fc04e476ffffaf953d824682522b3ec4bf62c78e3277"
 }

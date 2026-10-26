@@ -969,12 +969,7 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
-            let item = self.state.resolving.as_ref().unwrap().item.clone();
-            if let Some(&recipient) = choice.selected[item.controller.index()].first() {
-                self.finish_amass_goblins(&item, recipient, amount);
-            }
-        } else if matches!(
+        if matches!(
             choice.kind,
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileGreatestManaValue
         ) || matches!(choice.kind, EffectChoiceKind::TapPermanents(_))

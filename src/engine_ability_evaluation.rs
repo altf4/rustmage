@@ -240,18 +240,6 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
-        // External attachment rules must participate even without ability removal.
-        // They are deliberately absent from EquipmentSpec's granted abilities.
-        || world.attachment_sources().iter().any(|&id| {
-            let source = world.object(id);
-            source.zone == Zone::Battlefield
-                && source.attached_to.is_some()
-                && source.card.static_ability_groups().iter().any(|group| {
-                    group.fragments.iter().any(|fragment| {
-                        matches!(fragment, StaticAbilityFragment::AttachmentRule(_))
-                    })
-                })
-        })
         || world.roles().is_some_and(|r| {
             r.harnessed.iter().any(|reference| {
                 world.reference(reference.card) == *reference

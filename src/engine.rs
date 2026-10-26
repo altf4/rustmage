@@ -498,7 +498,6 @@ define_actions! {
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
-    ChooseArmy { object: ObjectRef },
     FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
@@ -3366,7 +3365,6 @@ impl Game {
                     let object = self.object_ref(index as CardId);
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
-                            EffectChoiceKind::AmassGoblins(_) => Action::ChooseArmy { object },
                             EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
                                 Action::PutHandCreature { object }
                             }
@@ -5377,7 +5375,6 @@ impl Game {
             Action::PutHandCreature { object }
             | Action::PutHandPermanent { object }
             | Action::PutHandLand { object }
-            | Action::ChooseArmy { object }
             | Action::SelectLand { object } => self.choose_effect_object(actor, object),
             Action::FinishLandSelection => {
                 self.finish_land_selection();

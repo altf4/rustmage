@@ -5410,12 +5410,7 @@
     16,
     16,
     10,
-    24,
-    4,
-    0,
-    8,
-    1,
-    4
+    24
   ],
   "aliases": [
     [
@@ -6195,18 +6190,6 @@
       5332
     ],
     [
-      "@token/goblin_army",
-      5405
-    ],
-    [
-      "@token/hob-axe",
-      5406
-    ],
-    [
-      "@token/hob-dwarf",
-      5407
-    ],
-    [
       "@token/komas_coil",
       5335
     ],
@@ -6803,10 +6786,6 @@
       135
     ],
     [
-      "Allure of Power",
-      5409
-    ],
-    [
       "Aloe Alchemist",
       136
     ],
@@ -6865,10 +6844,6 @@
     [
       "An Offer You Can't Refuse",
       150
-    ],
-    [
-      "An Unexpected Party",
-      151
     ],
     [
       "An Unexpected Party // At the Door",
@@ -7289,10 +7264,6 @@
     [
       "At Knifepoint",
       252
-    ],
-    [
-      "At the Door",
-      5408
     ],
     [
       "Atlantean Cavalry",
@@ -18299,10 +18270,6 @@
       2892
     ],
     [
-      "My Precious",
-      2893
-    ],
-    [
       "My Precious // Allure of Power",
       2893
     ],
@@ -28553,24 +28520,6 @@
       "name": "Moloid",
       "subtypes": "Minion",
       "colors": 16
-    },
-    {
-      "factory_identity": "@token/goblin_army",
-      "name": "Goblin Army Token",
-      "subtypes": "Goblin Army",
-      "colors": 4
-    },
-    {
-      "factory_identity": "@token/hob-axe",
-      "name": "Axe",
-      "subtypes": "Equipment",
-      "colors": 0
-    },
-    {
-      "factory_identity": "@token/hob-dwarf",
-      "name": "Dwarf Token",
-      "subtypes": "Dwarf",
-      "colors": 8
     }
   ],
   "emblems": [
@@ -28941,8 +28890,7 @@
     "MshDoombotToken": 5397,
     "MshBlueMerfolkToken": 5398,
     "MshGalactusToken": 5399,
-    "MshSturdyShieldToken": 5400,
-    "GoblinArmyToken": 5405
+    "MshSturdyShieldToken": 5400
   },
   "helper_interface": [
     [
@@ -33456,26 +33404,26 @@
       "path": "hob/an_unexpected_party_at_the_door.rs",
       "set": "hob",
       "category": "physical",
-      "name": "An Unexpected Party",
+      "name": "An Unexpected Party // At the Door",
       "oracle_id": "38503d34-f4f9-4eeb-9b1e-4fec1df921b3",
       "facts_sha256": "6ed037183aeb92f7e276247981bbb3c15fff814104c00bc03db1a2b9e07b222f",
-      "mana_cost": "{2}{W}{W}",
-      "type_line": "Enchantment",
+      "mana_cost": "{2}{W}{W} // {X}{2}{W}",
+      "type_line": "Enchantment // Sorcery — Adventure",
       "oracle_keywords": [],
       "standard_legal": true,
       "legendary": false,
-      "kind": 32,
+      "kind": 36,
       "basic": false,
       "mana_color": null,
       "colored": [
-        2,
+        0,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 2
+      "generic": 0
     },
     {
       "index": 152,
@@ -111618,11 +111566,11 @@
       "path": "hob/my_precious_allure_of_power.rs",
       "set": "hob",
       "category": "physical",
-      "name": "My Precious",
+      "name": "My Precious // Allure of Power",
       "oracle_id": "2e728381-6db0-4c66-883d-82d718fef833",
       "facts_sha256": "d2f08e85f47b8e68d0314b5796c44606a36ea20396e88d260ad5db153c0f9175",
-      "mana_cost": "{3}",
-      "type_line": "Legendary Artifact — Equipment",
+      "mana_cost": "{3} // {1}{B}",
+      "type_line": "Legendary Artifact — Equipment // Instant — Adventure",
       "oracle_keywords": [
         "Equip"
       ],
@@ -111639,7 +111587,7 @@
         0,
         0
       ],
-      "generic": 3
+      "generic": 0
     },
     {
       "index": 2894,
@@ -183069,141 +183017,6 @@
       ],
       "generic": 2,
       "face_parent": 571
-    },
-    {
-      "index": 5405,
-      "module": "card_5405",
-      "path": "synthetic/token_goblin_army.rs",
-      "set": "synthetic",
-      "category": "token",
-      "name": "@token/goblin_army",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "Creature — Goblin Army",
-      "oracle_keywords": [],
-      "standard_legal": false,
-      "legendary": false,
-      "kind": 1,
-      "basic": false,
-      "mana_color": null,
-      "colored": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "generic": 0
-    },
-    {
-      "index": 5406,
-      "module": "card_5406",
-      "path": "synthetic/token_hob_axe.rs",
-      "set": "synthetic",
-      "category": "token",
-      "name": "@token/hob-axe",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "Artifact — Equipment",
-      "oracle_keywords": [],
-      "standard_legal": false,
-      "legendary": false,
-      "kind": 16,
-      "basic": false,
-      "mana_color": null,
-      "colored": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "generic": 0
-    },
-    {
-      "index": 5407,
-      "module": "card_5407",
-      "path": "synthetic/token_hob_dwarf.rs",
-      "set": "synthetic",
-      "category": "token",
-      "name": "@token/hob-dwarf",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "Creature — Dwarf",
-      "oracle_keywords": [],
-      "standard_legal": false,
-      "legendary": false,
-      "kind": 1,
-      "basic": false,
-      "mana_color": null,
-      "colored": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "generic": 0
-    },
-    {
-      "index": 5408,
-      "module": "card_5408",
-      "path": "synthetic/at_the_door.rs",
-      "set": "synthetic",
-      "category": "adventure",
-      "name": "At the Door",
-      "oracle_id": "38503d34-f4f9-4eeb-9b1e-4fec1df921b3",
-      "facts_sha256": "6ed037183aeb92f7e276247981bbb3c15fff814104c00bc03db1a2b9e07b222f",
-      "mana_cost": "{X}{2}{W}",
-      "type_line": "Sorcery — Adventure",
-      "oracle_keywords": [],
-      "standard_legal": false,
-      "legendary": false,
-      "kind": 4,
-      "basic": false,
-      "mana_color": null,
-      "colored": [
-        1,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "generic": 2
-    },
-    {
-      "index": 5409,
-      "module": "card_5409",
-      "path": "synthetic/allure_of_power.rs",
-      "set": "synthetic",
-      "category": "adventure",
-      "name": "Allure of Power",
-      "oracle_id": "2e728381-6db0-4c66-883d-82d718fef833",
-      "facts_sha256": "d2f08e85f47b8e68d0314b5796c44606a36ea20396e88d260ad5db153c0f9175",
-      "mana_cost": "{1}{B}",
-      "type_line": "Instant — Adventure",
-      "oracle_keywords": [],
-      "standard_legal": false,
-      "legendary": false,
-      "kind": 8,
-      "basic": false,
-      "mana_color": null,
-      "colored": [
-        0,
-        0,
-        1,
-        0,
-        0,
-        0
-      ],
-      "generic": 1
     }
   ]
 }

@@ -180,8 +180,3 @@ mod msh_b;
 mod msh_c;
 mod msh_contracts;
 mod msh_d;
-
-mod hob_amass;
-mod hob_equipment;
-mod hob_existing_mechanics;
-mod hob_recruit;

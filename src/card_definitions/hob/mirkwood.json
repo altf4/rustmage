@@ -3,70 +3,10 @@
   "catalogue_id": 2780,
   "oracle_id": "cd49aa99-bf84-4edd-aecc-6dae78b73412",
   "facts_sha256": "82b3847c538d1c0c6ec55ed9adffe85678fc37a0c7346339067f58d88d43e72c",
-  "complete": true,
+  "complete": false,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ecd920a9ff19db057ae9b5c9b0b0e8733ff9ba4aeae26acadcc5479d435334e7"
   },
-  "physical_metadata_sha256": "3090d05998725578c8ab3e4166ae536a9f0d158b040bd24e7eedcaead2ec0a81",
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/m/Mirkwood.java",
-  "java_sha256": "f7b0080ac7251a2e09c98bcccb9dfe52479cbf211bc599fda6873280b8a63e08",
-  "xmage_dependencies": [
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
-      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
-      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
-      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
-      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
-      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
-      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
-      "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
-      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
-      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
-      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
-      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
-    }
-  ]
+  "physical_metadata_sha256": "3090d05998725578c8ab3e4166ae536a9f0d158b040bd24e7eedcaead2ec0a81"
 }

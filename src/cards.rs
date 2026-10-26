@@ -694,8 +694,6 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
-    /// Non-targeted Army selection during amass.
-    AmassGoblins(u16),
     ExileGreatestManaValue,
     ExileGraveyard,
     SacrificeDifferentNames(u16),
@@ -895,10 +893,6 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
-    /// First half of amass: create an Army only if none is controlled.
-    EnsureGoblinArmy,
-    /// Complete amass after token creation and its replacements.
-    AmassGoblins(u16),
     /// Real nonmana variable activation cost; amount is declared before payment.
     SourceCounterCost {
         kind: CounterKind,
@@ -1763,10 +1757,6 @@ pub(crate) enum Instruction {
     AddCastEntryCounters {
         kind: CounterKind,
         amount: AmountValue,
-    },
-    /// Draw, discard, and create a Human Soldier if a nonland was discarded.
-    Recruit {
-        token: Card,
     },
     DrawThenDiscardIfDrew {
         amount: AmountValue,

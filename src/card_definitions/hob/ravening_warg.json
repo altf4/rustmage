@@ -3,35 +3,10 @@
   "catalogue_id": 3397,
   "oracle_id": "8060d231-7477-441d-b249-8e75aa1d7791",
   "facts_sha256": "5936e0d5227633f345c507c5d585e31fd5dc54706b4c1fd536d85eba9ce8eb60",
-  "complete": true,
+  "complete": false,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "54d2b8303f614fdf39f2004bc448f4fc98f885dbd3c621e2be04723849132de5"
   },
-  "physical_metadata_sha256": "fd528250283f282260838e3ab81cc1cfc90c1e6d0816051463f899b777632b17",
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/r/RaveningWarg.java",
-  "java_sha256": "60b2832b57e5077ed4a2e0f9cfd663563a4851cae8607982e0e400ced5739d1c",
-  "xmage_dependencies": [
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
-      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
-      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
-      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
-      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
-    }
-  ]
+  "physical_metadata_sha256": "fd528250283f282260838e3ab81cc1cfc90c1e6d0816051463f899b777632b17"
 }

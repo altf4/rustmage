@@ -163,10 +163,6 @@ enum Event {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
-    AmassSubtype {
-        source: ObjectRef,
-        recipient: ObjectRef,
-    },
     AnimateCreated {
         created: Vec<ObjectRef>,
         spec: AnimationSpec,
@@ -1268,10 +1264,6 @@ impl Game {
                         }
                         continue;
                     }
-                    Some(Work::AmassSubtype { source, recipient }) => {
-                        self.grant_amass_goblin_type(source, recipient);
-                        continue;
-                    }
                     Some(Work::Damage(batch)) => state.active = Some(Event::Damage(batch)),
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
                     Some(Work::Tokens(batch)) => state.active = Some(Event::Tokens(batch)),
@@ -1911,29 +1903,4 @@ impl Game {
 pub struct CreatedTokenChoiceView {
     pub source: ObjectRef,
     pub candidates: Vec<ObjectRef>,
-}
-
-impl Game {
-    pub(super) fn finish_amass_goblins(
-        &mut self,
-        item: &SpellView,
-        recipient: ObjectRef,
-        amount: u16,
-    ) {
-        self.effect_counters(
-            vec![(
-                recipient,
-                Counters::of(CounterKind::PlusOne, u64::from(amount)),
-            )],
-            ResumeMode::Program,
-        );
-        if let Some(state) = self.state.replacements.as_mut() {
-            state.work.push_back(Work::AmassSubtype {
-                source: item.object,
-                recipient,
-            });
-        } else {
-            self.grant_amass_goblin_type(item.object, recipient);
-        }
-    }
 }

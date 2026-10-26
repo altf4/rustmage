@@ -3,36 +3,10 @@
   "catalogue_id": 1475,
   "oracle_id": "edbd3d4e-78a2-4c03-936d-dcb24cf7c87c",
   "facts_sha256": "10ec10a565305c2b410a24cc826a767b61c260ce606a359bd51ffb054766c861",
-  "complete": true,
-  "physical_metadata_sha256": "2de537a086c1ce63d98e8a6eba209a052a9a704eb01b64933b822424b54e7520",
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/f/FearsomeGoblinPair.java",
-  "java_sha256": "2c141837bddc82b2b8486171f730db89671d1db0320b4aa27be7bcc6b77205df",
-  "xmage_dependencies": [
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AmassEffect.java",
-      "sha256": "a233d04025329bb65a90d9f729d776535b6ad4156f616f210e4a2545a37524ff"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeTargetEffect.java",
-      "sha256": "4a5b785143060689d498ae3f97610eac0103c628160a52505c1d6fcad298384f"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/game/permanent/token/GoblinArmyToken.java",
-      "sha256": "4bd14323bc7dcf3264d0c09021f8ab16f26f61c133a09f00952b1fbc4df08a35"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
-      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
-    }
-  ],
-  "rules_authority": {
-    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
-    "section": "Returning Keyword Action: Amass",
-    "notes": "Choose an Army creature. Put counters on it before granting Goblin if it is not already a Goblin. XMage AmassEffect omits the creature filter and grants the type before counters; typed implementation follows the authoritative release notes."
-  }
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "c9d39ada55912eff5dbaaa2a77a140d7791c04ca9faf3e1fbd61a999e6935dd0"
+  },
+  "physical_metadata_sha256": "2de537a086c1ce63d98e8a6eba209a052a9a704eb01b64933b822424b54e7520"
 }

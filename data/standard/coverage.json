@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "29d5157bd4d025f3339dae9583c2e0a3beb03b811c89629db6451ab34e9994ec",
+  "catalogue_version": "938acde740abc88b293e679dd8c06719ee897866c14f5cf6a479eca9766a21cc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2604,
-  "implemented_total": 2610,
-  "token_definitions": 128,
+  "implemented_standard_cards": 2578,
+  "implemented_total": 2584,
+  "token_definitions": 125,
   "emblem_definitions": 3,
-  "adventure_definitions": 42,
+  "adventure_definitions": 40,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 98,
-      "complete": 90
+      "gated": 124,
+      "complete": 64
     },
     "hoc": {
       "total": 5,
@@ -1410,10 +1410,10 @@
       "set": "fdn"
     },
     {
-      "name": "An Unexpected Party",
+      "name": "An Unexpected Party // At the Door",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/an_unexpected_party_at_the_door.rs",
       "set": "hob"
     },
@@ -4292,8 +4292,8 @@
     {
       "name": "Bothersome Noisemaker",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/bothersome_noisemaker.rs",
       "set": "hob"
     },
@@ -9940,8 +9940,8 @@
     {
       "name": "Dwarven Shortsword",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/dwarven_shortsword.rs",
       "set": "hob"
     },
@@ -10028,8 +10028,8 @@
     {
       "name": "Eagle of the Great Shelf",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/eagle_of_the_great_shelf.rs",
       "set": "hob"
     },
@@ -10580,8 +10580,8 @@
     {
       "name": "Elvenking's Halls",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/elvenking_s_halls.rs",
       "set": "hob"
     },
@@ -11132,8 +11132,8 @@
     {
       "name": "Esgaroth Garrison",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/esgaroth_garrison.rs",
       "set": "hob"
     },
@@ -12004,8 +12004,8 @@
     {
       "name": "Fearsome Goblin Pair",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/fearsome_goblin_pair.rs",
       "set": "hob"
     },
@@ -13804,8 +13804,8 @@
     {
       "name": "Gathering of Darkness",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/gathering_of_darkness.rs",
       "set": "hob"
     },
@@ -14700,16 +14700,16 @@
     {
       "name": "Goblin-town",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/goblin_town.rs",
       "set": "hob"
     },
     {
       "name": "Goblin-town Flunkies",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/goblin_town_flunkies.rs",
       "set": "hob"
     },
@@ -18012,24 +18012,24 @@
     {
       "name": "Iron Hills",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/iron_hills.rs",
       "set": "hob"
     },
     {
       "name": "Iron Hills Blacksmith",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/iron_hills_blacksmith.rs",
       "set": "hob"
     },
     {
       "name": "Iron Hills Stalwart",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/iron_hills_stalwart.rs",
       "set": "hob"
     },
@@ -19700,16 +19700,16 @@
     {
       "name": "Lake-town",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/lake_town.rs",
       "set": "hob"
     },
     {
       "name": "Lake-town Lookout",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/lake_town_lookout.rs",
       "set": "hob"
     },
@@ -20548,8 +20548,8 @@
     {
       "name": "Long Lake Nuisance",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/long_lake_nuisance.rs",
       "set": "hob"
     },
@@ -22444,8 +22444,8 @@
     {
       "name": "Mirkwood",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/mirkwood.rs",
       "set": "hob"
     },
@@ -22596,8 +22596,8 @@
     {
       "name": "Misty Mountains Raider",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/misty_mountains_raider.rs",
       "set": "hob"
     },
@@ -23346,10 +23346,10 @@
       "set": "eoe"
     },
     {
-      "name": "My Precious",
+      "name": "My Precious // Allure of Power",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/my_precious_allure_of_power.rs",
       "set": "hob"
     },
@@ -23708,8 +23708,8 @@
     {
       "name": "Nighthowl Pursuer",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/nighthowl_pursuer.rs",
       "set": "hob"
     },
@@ -25100,8 +25100,8 @@
     {
       "name": "Patient Instructor",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/patient_instructor.rs",
       "set": "hob"
     },
@@ -26908,8 +26908,8 @@
     {
       "name": "Rage into the Valley",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/rage_into_the_valley.rs",
       "set": "hob"
     },
@@ -27380,8 +27380,8 @@
     {
       "name": "Ravening Warg",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/ravening_warg.rs",
       "set": "hob"
     },
@@ -40036,8 +40036,8 @@
     {
       "name": "Wargling",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/wargling.rs",
       "set": "hob"
     },
@@ -40708,8 +40708,8 @@
     {
       "name": "Wilderland Scrounger",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/wilderland_scrounger.rs",
       "set": "hob"
     },
@@ -41068,8 +41068,8 @@
     {
       "name": "Wood Elves",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/hob/wood_elves.rs",
       "set": "hob"
     },

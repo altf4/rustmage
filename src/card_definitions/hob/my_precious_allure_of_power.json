@@ -1,37 +1,12 @@
 {
-  "name": "My Precious",
+  "name": "My Precious // Allure of Power",
   "catalogue_id": 2893,
   "oracle_id": "2e728381-6db0-4c66-883d-82d718fef833",
   "facts_sha256": "d2f08e85f47b8e68d0314b5796c44606a36ea20396e88d260ad5db153c0f9175",
-  "complete": true,
+  "complete": false,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "561cfc5309cd7a46710bc430a8f0ce76cba485e9477a1a68cede2dbc41a0755e"
   },
-  "physical_metadata_sha256": "35e256152ab426244fd6dd16d5c3148ad5dc667aca18ca17e0d0c51d1adac5cb",
-  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "java_source": "Mage.Sets/src/mage/cards/m/MyPrecious.java",
-  "java_sha256": "7f5cddecee448a985b443e953bf7a0d90373f0ffd5847acd93a227790d2bb849",
-  "xmage_dependencies": [
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
-      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
-      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
-      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedAttachedEffect.java",
-      "sha256": "93044c1776ed91c3635a9b1261950743b9bd542c3d1b7ebb309a7a9646f5d7d2"
-    }
-  ]
+  "physical_metadata_sha256": "1c042d9e74f4286cab231a5bee718d416e2d469ebd396223c34442d7cf1bd2d9"
 }

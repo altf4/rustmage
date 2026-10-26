@@ -48644,53 +48644,8 @@ pub(super) mod card_5404 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/msh/the_incredible_hulk.rs");
 }
-pub(super) mod card_5405 {
-    use crate::cards::*;
-    #[allow(unused_imports)]
-    use crate::cards::InitialCounters as Counters;
-    // Import only shared helpers: a sibling glob creates quadratic name resolution.
-    #[allow(unused_imports)]
-    use super::{CardRules, CardExtras, generic, one, object};
-    include!("../card_definitions/synthetic/token_goblin_army.rs");
-}
-pub(super) mod card_5406 {
-    use crate::cards::*;
-    #[allow(unused_imports)]
-    use crate::cards::InitialCounters as Counters;
-    // Import only shared helpers: a sibling glob creates quadratic name resolution.
-    #[allow(unused_imports)]
-    use super::{CardRules, CardExtras, generic, one, object};
-    include!("../card_definitions/synthetic/token_hob_axe.rs");
-}
-pub(super) mod card_5407 {
-    use crate::cards::*;
-    #[allow(unused_imports)]
-    use crate::cards::InitialCounters as Counters;
-    // Import only shared helpers: a sibling glob creates quadratic name resolution.
-    #[allow(unused_imports)]
-    use super::{CardRules, CardExtras, generic, one, object};
-    include!("../card_definitions/synthetic/token_hob_dwarf.rs");
-}
-pub(super) mod card_5408 {
-    use crate::cards::*;
-    #[allow(unused_imports)]
-    use crate::cards::InitialCounters as Counters;
-    // Import only shared helpers: a sibling glob creates quadratic name resolution.
-    #[allow(unused_imports)]
-    use super::{CardRules, CardExtras, generic, one, object};
-    include!("../card_definitions/synthetic/at_the_door.rs");
-}
-pub(super) mod card_5409 {
-    use crate::cards::*;
-    #[allow(unused_imports)]
-    use crate::cards::InitialCounters as Counters;
-    // Import only shared helpers: a sibling glob creates quadratic name resolution.
-    #[allow(unused_imports)]
-    use super::{CardRules, CardExtras, generic, one, object};
-    include!("../card_definitions/synthetic/allure_of_power.rs");
-}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5410] = [
+pub(super) static RULES: [&CardRules; 5405] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54096,11 +54051,6 @@ pub(super) static RULES: [&CardRules; 5410] = [
     &card_5402::RULES,
     &card_5403::RULES,
     &card_5404::RULES,
-    &card_5405::RULES,
-    &card_5406::RULES,
-    &card_5407::RULES,
-    &card_5408::RULES,
-    &card_5409::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

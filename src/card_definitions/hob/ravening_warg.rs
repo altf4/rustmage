@@ -1,25 +1,16 @@
-// Direct typed behavior from the complete pinned Oracle and XMage sources.
+// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Creature(2, 2),
+    effect: Effect::Unsupported,
+    triggers: &[],
+    activated: &[],
+    enters: Counters {
+        plus_one: 0,
+        minus_one: 0,
+        stun: 0,
+        loyalty: 0,
+        lore: 0,
+    },
+    entry: EntryTapped::Never,
     keywords: Keywords::DEATHTOUCH,
-    static_groups: &[StaticAbilityGroup {
-        line: 0,
-        first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
-            Keywords::DEATHTOUCH,
-        )],
-    }],
-    triggers: &[TriggeredAbility {
-        condition: TriggerCondition::When {
-            guard: StepGuard::Threshold {
-                value: StepValue::GreatestCreaturePower,
-                minimum: Some(4),
-                maximum: None,
-            },
-            event: &TriggerCondition::SelfAttacks,
-        },
-        targets: TargetPlan::NONE,
-        program: &[Instruction::GainLife(PlayerSet::Controller, 2)],
-    }],
     ..CardRules::EMPTY
 };
