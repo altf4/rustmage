@@ -465,5 +465,20 @@
   ],
   "integration": "Local mod hob_inherited_creatures registered only for author runs and excluded from source commit. Root registers after two approvals; no PR/push/merge.",
   "proof_sha256": "e6b1964224b0eaeb1f20f31ce8314153e5deb3a2f180e99024e34c72041949cd",
-  "preflight_note": "Initial sourcecheck in a /tmp clone failed source-path autodiscovery (/tmp/mage absent); corrected with explicit RUSTMAGE_XMAGE_SOURCE before any guard launch. No test/compile job ran on that preflight failure."
+  "preflight_note": "Initial sourcecheck in a /tmp clone failed source-path autodiscovery (/tmp/mage absent); corrected with explicit RUSTMAGE_XMAGE_SOURCE before any guard launch. No test/compile job ran on that preflight failure.",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "7ebd5a5f983bf3ee180c84e3a062c03c6ef43f0e",
+      "result": "Full Oracle/Rust/Java and pinned helpers plus actual terminal native evidence approved; no actionable findings",
+      "scope": "Current printed obligation proof mapping only, not whole193 acceptance"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "7ebd5a5f983bf3ee180c84e3a062c03c6ef43f0e",
+      "result": "Full Oracle/Rust/Java and pinned helpers plus actual terminal native evidence approved; no actionable findings",
+      "scope": "Current printed obligation proof mapping only, not whole193 acceptance"
+    }
+  ],
+  "status": "Two independent nonauthor approvals. No new admissions or gameplay changes. Integrated creature assurance registration pending next combined focused check; canonical basics reuse actual6358 full-release shared passes. Whole193 acceptance open."
 }

@@ -272,5 +272,19 @@
     }
   ],
   "full_report": "<cache>/rustmage-validation-luin5lob/report/result.json",
-  "status": "Current source and actual full-release native evidence mapped; two independent mapping reviews pending. Whole193 acceptance remains open."
+  "status": "Two independent nonauthor approvals. No new admissions or gameplay changes. Integrated creature assurance registration pending next combined focused check; canonical basics reuse actual6358 full-release shared passes. Whole193 acceptance open.",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "c15b921d90245b8ddf2e03f15bab813d473c176c",
+      "result": "Full Oracle/Rust/Java and pinned helpers plus actual terminal native evidence approved; no actionable findings",
+      "scope": "Current printed obligation proof mapping only, not whole193 acceptance"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "c15b921d90245b8ddf2e03f15bab813d473c176c",
+      "result": "Full Oracle/Rust/Java and pinned helpers plus actual terminal native evidence approved; no actionable findings",
+      "scope": "Current printed obligation proof mapping only, not whole193 acceptance"
+    }
+  ]
 }

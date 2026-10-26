@@ -220,3 +220,5 @@ mod hob_inherited_lands;
 mod hob_equip_cost_history;
 mod hob_inherited_adventures_two;
 mod hob_plate_company;
+
+mod hob_inherited_creatures;
