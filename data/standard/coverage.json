@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "b8328e63e321f4029b3b6899ce9546c835726a245623b6ac3de6f846a911cac2",
+  "catalogue_version": "7756513f7015b914378b55aee0481571a8d859845aaeca129323a53a96b402f8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2653,
-  "implemented_total": 2659,
-  "token_definitions": 131,
+  "implemented_standard_cards": 2655,
+  "implemented_total": 2661,
+  "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
   "omen_definitions": 13,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 139,
-      "gated": 49
+      "complete": 141,
+      "gated": 47
     },
     "hoc": {
       "total": 5,
@@ -35948,8 +35948,8 @@
     {
       "name": "The Lonely Mountain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_lonely_mountain.rs",
       "set": "hob"
     },
@@ -36036,8 +36036,8 @@
     {
       "name": "The Misty Mountains Cold",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_misty_mountains_cold.rs",
       "set": "hob"
     },

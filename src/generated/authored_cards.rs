@@ -48743,8 +48743,17 @@ pub(super) mod card_5415 {
     use super::{CardRules, CardExtras, generic, one, object};
     include!("../card_definitions/synthetic/gone_fishing.rs");
 }
+pub(super) mod card_5416 {
+    use crate::cards::*;
+    #[allow(unused_imports)]
+    use crate::cards::InitialCounters as Counters;
+    // Import only shared helpers: a sibling glob creates quadratic name resolution.
+    #[allow(unused_imports)]
+    use super::{CardRules, CardExtras, generic, one, object};
+    include!("../card_definitions/synthetic/token_hob_dragon.rs");
+}
 #[rustfmt::skip]
-pub(super) static RULES: [&CardRules; 5416] = [
+pub(super) static RULES: [&CardRules; 5417] = [
     &card_0000::RULES,
     &card_0001::RULES,
     &card_0002::RULES,
@@ -54161,6 +54170,7 @@ pub(super) static RULES: [&CardRules; 5416] = [
     &card_5413::RULES,
     &card_5414::RULES,
     &card_5415::RULES,
+    &card_5416::RULES,
 ];
 pub(super) fn mode_costs(card: Card) -> Option<&'static [ManaCost]> { RULES[card.index()].mode_costs }
 pub(super) fn rules(card: Card) -> Option<&'static CardRules> { RULES.get(card.index()).copied() }

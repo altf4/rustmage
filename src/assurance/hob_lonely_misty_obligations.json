@@ -165,5 +165,20 @@
   },
   "remaining": [
     "Two independent nonauthor reviews and parent integrated default release validation. Entire HOB/all-Standard goal remains open."
-  ]
+  ],
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "d399f205438e18adc57f1e5f91fd73296f69d1b3",
+      "result": "Firm fullbothOracle/Java/helperpins, narrowactual+projectedsharedrules, append-onlytokenandintendedredmanafieldcorrection, and55actualpassesapproved; no actionable findings",
+      "proof_sha256": "b646faefe296a981579919fc4e3b9f17bf3d80dfc05b5b797e80cef69a9c9e4c"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "d399f205438e18adc57f1e5f91fd73296f69d1b3",
+      "result": "Firm fullbothOracle/Java/helperpins, narrowactual+projectedsharedrules, append-onlytokenandintendedredmanafieldcorrection, and55actualpassesapproved; no actionable findings",
+      "proof_sha256": "b646faefe296a981579919fc4e3b9f17bf3d80dfc05b5b797e80cef69a9c9e4c"
+    }
+  ],
+  "integration_status": "Two independent fullsource/rulesapprovals. Rootregisteredassuranceandregeneratedlinks;146localcandidates47gated,63of69inheritedmapped. Defaultintegrated/releaseandwhole193acceptanceopen."
 }
