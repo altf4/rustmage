@@ -80,7 +80,7 @@
       ]
     }
   },
-  "status": "Focused author proof pending; historical draw/scaled example receipts do not substitute for these current assertions. Other inherited cards and entire193 remain open.",
+  "status": "Four new inherited-card outcome scenarios passed on integrated e77c8695; independent review pending. Two inherited flags substantiated by current tests, no new candidate count. Entire193 remains open.",
   "attempts": [
     {
       "run": "inherited-initial-1",
@@ -88,6 +88,45 @@
       "seconds": 16.557658937002998,
       "result": "Test compile failed because Card is a public type alias, not a public tuple constructor. After same guarded process terminated, fixture changed to existing Treasure factory identity. No rules change.",
       "resource_report": "<cache>/rustmage-build-reports/4b0979ea2d9e445388b0a0f9814f9441.json"
+    },
+    {
+      "run": "inherited-initial-2",
+      "source_head": "e77c8695",
+      "terminal": true,
+      "exit": 0,
+      "passed": 126,
+      "failed": 0,
+      "ignored": 0,
+      "seconds": 151.3050108620082,
+      "scenario_seconds": 0.21,
+      "filter": "engine::assurance::hob_",
+      "scope": "This narrow module-path filter includes all four new scenarios and new core modules but omits HOB-named tests nested beneath other module paths. Follow-up broad filter below covers those.",
+      "resource_report": "<cache>/rustmage-build-reports/595b9512cb4a457fa265104cb2d128e1.json",
+      "peak_bytes": 2565656576,
+      "memory_limit_bytes": 6442450944,
+      "oom_events": 0
+    },
+    {
+      "run": "inherited-initial-3",
+      "source_head": "e77c8695",
+      "terminal": true,
+      "exit": 0,
+      "hob_filter": "hob_",
+      "hob_passed": 145,
+      "cast_rollback_passed": 6,
+      "mana_rollback_passed": 5,
+      "storm_passed": 5,
+      "failed": 0,
+      "ignored": 0,
+      "guard_seconds": 0.83910352102248,
+      "hob_command_seconds": 0.36626638105371967,
+      "hob_scenario_seconds": 0.3,
+      "note": "Cached coherent root integration check, not full release or simulation. The Bee rollback test appears in both the broad HOB filter and mana rollback execution; counts describe executions, not unique scenarios.",
+      "resource_report": "<cache>/rustmage-build-reports/71e98b3ae4d04075ac0d6f9013b7b617.json",
+      "peak_bytes": 31518720,
+      "memory_limit_bytes": 6442450944,
+      "oom_events": 0,
+      "log_directory": "<cache>/rustmage-authoring/hob-complete-set/inherited-initial-3"
     }
   ]
 }
