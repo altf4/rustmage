@@ -10,6 +10,7 @@ pub struct DiscardTriggerView {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum DiscardAfter {
+    Recruit(Player, Card),
     LoseLife(Player, i128),
     DrawActual { players: [bool; 2], bonus: u16 },
     ConniveCounters(ObjectRef, u64, Player),
@@ -244,6 +245,14 @@ impl Game {
         events: &[ZoneChange],
     ) {
         match after {
+            Some(DiscardAfter::Recruit(player, token)) => {
+                // Discard replacement destinations do not change the frozen card type.
+                if events.iter().any(|event| {
+                    event.moved && event.before.owner == player && event.before.kinds & 2 == 0
+                }) {
+                    self.create_tokens(player, token, 1, false);
+                }
+            }
             Some(DiscardAfter::ChooseLand { player, tapped }) => {
                 // CR400.7j: follow only this effect's first move to a public zone.
                 // Hidden replacement destinations cannot be recovered by identity.

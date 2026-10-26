@@ -3,10 +3,41 @@
   "catalogue_id": 1700,
   "oracle_id": "85e1556d-c4da-4979-a5db-4ce3842c7797",
   "facts_sha256": "bdfc564b74df668348293f5eed598c82beb057a2fbaf42e592c9082d22ae76f6",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "8f8fd98bfbe6f594c1acb8a2cc2e4ca8ef44a6fbb81393bc0ba3fee3d53c2800"
-  },
-  "physical_metadata_sha256": "1ff0e87a5cc88a82dcd0f411b14d72f2520e34489bf84e27dbbe6f0eac4ad4ef"
+  "complete": true,
+  "physical_metadata_sha256": "1ff0e87a5cc88a82dcd0f411b14d72f2520e34489bf84e27dbbe6f0eac4ad4ef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GatheringOfDarkness.java",
+  "java_sha256": "b02fbde52e8156085d98ced47f2dd8edecf24c2d81fddcc6ad5a4f244acf5293",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AmassEffect.java",
+      "sha256": "a233d04025329bb65a90d9f729d776535b6ad4156f616f210e4a2545a37524ff"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeTargetEffect.java",
+      "sha256": "4a5b785143060689d498ae3f97610eac0103c628160a52505c1d6fcad298384f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/GoblinArmyToken.java",
+      "sha256": "4bd14323bc7dcf3264d0c09021f8ab16f26f61c133a09f00952b1fbc4df08a35"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "Returning Keyword Action: Amass",
+    "notes": "Choose an Army creature. Put counters on it before granting Goblin if it is not already a Goblin. XMage AmassEffect omits the creature filter and grants the type before counters; typed implementation follows the authoritative release notes."
+  }
 }

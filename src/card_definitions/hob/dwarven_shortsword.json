@@ -3,10 +3,35 @@
   "catalogue_id": 1217,
   "oracle_id": "9cc52afb-9788-46f6-9f9b-347513f8a64f",
   "facts_sha256": "9b57ffbf4ad526fb0dfdb33618d9b294849a65a945e02d368e72f145b4790c9b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4becf0b96fab5534e63d0a26698dcbc27a6c083dd2cc6721d908e5ebb57a7180"
   },
-  "physical_metadata_sha256": "68e1fcdb71f668f56e7854d1fac939bfad755af990f3c0a241d461507a848a79"
+  "physical_metadata_sha256": "68e1fcdb71f668f56e7854d1fac939bfad755af990f3c0a241d461507a848a79",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DwarvenShortsword.java",
+  "java_sha256": "014ae3909317d117da8a92c54a04c094336ea42f8fbbcf640c36e3792ee7c8d7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Dwarf22Token.java",
+      "sha256": "7e502cfbdf122cf73266739bb9b2c322a05b5ebd7270ef9a92e3e9aa25d9064c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenAttachSourceEffect.java",
+      "sha256": "84a5d669cabd468eb41ca13d77f05eb715b6a25d2c0b19bea64e9e48efaed3cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    }
+  ]
 }

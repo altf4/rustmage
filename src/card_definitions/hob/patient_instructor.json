@@ -3,10 +3,36 @@
   "catalogue_id": 3112,
   "oracle_id": "bddd7e99-ec74-4ca6-9137-155b85695a95",
   "facts_sha256": "7f103b10deb2ab9cbef3d05470f511b53ab0cb9fab7575b4b9b2806012d9f17e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0c3255e8df354e024f818f5872fe19722655e524ec793fa1ce0aaf719d7a67bb"
   },
-  "physical_metadata_sha256": "395aba2e70027c7922d09c70314d3a4725fb27436ac9670beb2813377bf37e9d"
+  "physical_metadata_sha256": "395aba2e70027c7922d09c70314d3a4725fb27436ac9670beb2813377bf37e9d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PatientInstructor.java",
+  "java_sha256": "88ba7eefa03df3f2be63e51a023400d4793bca45ac3defde5b8d1490cfba521a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ],
+  "remaining_obligations": []
 }

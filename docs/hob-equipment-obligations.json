@@ -1,0 +1,11 @@
+{
+  "scope": "Five initial HOB candidates; only their printed obligations and affected existing mechanics",
+  "cards": [
+    {"card": "Iron Hills Blacksmith", "obligations": ["1/1, double strike", "Entry creates colorless Axe Equipment with +1/+0 and equip {2}"], "tests": ["blacksmith_creates_a_real_equippable_axe_and_has_double_strike"]},
+    {"card": "Dwarven Shortsword", "obligations": ["Entry creates red 2/2 Dwarf and attaches to exact created token", "Attachment grants +1/+2", "Equip {2} targets own creature at sorcery timing"], "tests": ["shortsword_creates_attaches_and_can_move_to_another_creature", "shortsword_trigger_creates_token_after_source_departure"], "shared_proof": "Existing JobSelect token-replacement attachment completion and Equip timing contracts"},
+    {"card": "Iron Hills Stalwart", "obligations": ["4/5, reach, trample", "Entry requires own Equipment target and permits zero or one own creature recipient"], "tests": ["stalwart_attaches_only_controlled_equipment_to_optional_controlled_recipient"], "shared_proof": "Existing exact target-incarnation/attachment group resolution contracts"},
+    {"card": "An Unexpected Party // At the Door", "obligations": ["Adventure creates X red 2/2 Dwarves", "Adventure exiles physical card with front-cast permission", "Mandatory as-entry creature type choice", "Only own chosen-type creatures gain +2/+2 while enchantment remains"], "tests": ["unexpected_party_adventure_x_and_chosen_type_bonus"], "shared_proof": "Owned raw/index/restore at pending entry choice; existing chosen-value control/incarnation and Adventure contracts"},
+    {"card": "My Precious // Allure of Power", "obligations": ["Adventure mandatory sacrifice own creature, draw two", "Adventure exiles physical card with front-cast permission", "Equip costs {2} plus 2 life", "Attached creature has hexproof and cannot be blocked"], "tests": ["my_precious_adventure_sacrifice_draw_and_paid_equip"], "shared_proof": "Existing Equip sorcery timing/life payment legality, target privacy, and battlefield blocking restrictions"}
+  ],
+  "acceptance": "Pending focused tests, integrated release validation and two independent nonauthor final-head reviews"
+}

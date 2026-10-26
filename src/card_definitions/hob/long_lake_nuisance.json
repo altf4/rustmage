@@ -3,10 +3,36 @@
   "catalogue_id": 2543,
   "oracle_id": "a833fdf1-db0c-4846-8452-d3b2059c2355",
   "facts_sha256": "81562a95b3d9f6a08d0473110a9e6cf6a6151eb4fb34fafb55cf96d887a27eeb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "75bb6543636c39e1bb92780d99861dd798494bdc6e8075c2dba24fb7f7ca3ddc"
   },
-  "physical_metadata_sha256": "897bfab525d6794aee69cbd861df58b2da8a40615b4e1b7b78281ecb2da0543e"
+  "physical_metadata_sha256": "897bfab525d6794aee69cbd861df58b2da8a40615b4e1b7b78281ecb2da0543e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LongLakeNuisance.java",
+  "java_sha256": "c6d88bb8b116962910c7e8cc12c5636138c2d04fab077d3cfc1c48eab712c629",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "remaining_obligations": []
 }
