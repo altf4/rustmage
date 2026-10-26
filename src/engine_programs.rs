@@ -3072,6 +3072,28 @@ impl Game {
                             self.hand_count(player);
                     }
                 }
+                Instruction::DiscardHandRememberCount(players) => {
+                    let participants: Vec<_> = self.program_players(players, &item).collect();
+                    let ids: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, object)| {
+                            object.zone == Zone::Hand && participants.contains(&object.owner)
+                        })
+                        .map(|(id, _)| id as CardId)
+                        .collect();
+                    // Reset before dispatch: a linked entry may pause the batch, and
+                    // an empty hand must overwrite any earlier instruction result.
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+                    self.discard_batch_with_after(
+                        &ids,
+                        None,
+                        Some(item.controller),
+                        Some(discard_events::DiscardAfter::RememberActual),
+                    );
+                }
                 Instruction::MillLifeEvent => {
                     let player = item.life_event.expect("saved life event").player;
                     self.mill_batch(&[player], MillAmount::LifeEvent, item.controller);

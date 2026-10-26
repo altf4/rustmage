@@ -392,6 +392,7 @@ impl Game {
             | AmountValue::TargetPlayerHandSize
             | AmountValue::TargetPlayerCreatureCount
             | AmountValue::MilledCreatures
+            | AmountValue::MovedCount
             | AmountValue::ChosenX
             | AmountValue::ManaSpent
             | AmountValue::CastSpellManaValue

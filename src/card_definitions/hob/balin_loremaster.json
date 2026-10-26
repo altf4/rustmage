@@ -3,10 +3,60 @@
   "catalogue_id": 312,
   "oracle_id": "0d420e41-43e9-41d6-832c-5a9f410c994e",
   "facts_sha256": "22bf7c6abde8352d5ed27c6f25d4eaeb080b763fdef5196360b2e751f59859fa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e6c63e811f7908cf51ff039258bb9d90df34fc6888c1e228b9f6ac17922ab4e3"
   },
-  "physical_metadata_sha256": "c44046deb53843fea6028d1e34ef82e7d6fb993ad0fbae173ba8398b98678cb5"
+  "physical_metadata_sha256": "c44046deb53843fea6028d1e34ef82e7d6fb993ad0fbae173ba8398b98678cb5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BalinLoremaster.java",
+  "java_sha256": "5af68fffaa083bce248eb11ca50951dafd7c5140ca41dbfb4d407f7fa6948788",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+      "sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanentThisOrAnother.java",
+      "sha256": "f5513101336889bfff822f2b6e4d4fbf901eb76ee91d6f307d87b1d9e28081d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardHandDrawSameNumberSourceEffect.java",
+      "sha256": "3e833459914e3843d5568e937e0d14e718211e0beef9de60ff7e85ab4b8275bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StoriedAbility.java",
+      "sha256": "53a70872b58dc914e94e9795f666e20bc6a2fe7a2db4f555a69def1499a8fbd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/EnduringStoryCondition.java",
+      "sha256": "65a28722b436134cc93b4e712ffb1654e9fed33f6cca4eb29db2ca2facb375de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/designations/EnduringStory.java",
+      "sha256": "08c109de01da1c13a45baf20f627c09d9e356a01541ee85ab7faf4c83b13ff8b"
+    }
+  ],
+  "implementation_notes": [
+    "Oracle counts actual discards, including replaced destinations; XMage helper draws and damages for initial hand size instead. CR701.9c,608.2c/h,609.3 govern actual results. Optional decline has X=0.",
+    "PermanentEntersYou include_source bypasses subtype for Balin itself, and matches other current controlled Dwarves once per actual entry.",
+    "Private remembered move result and existing discard entry context preserve actual count through replacement choices; draw and damage remain separate program instructions."
+  ]
 }

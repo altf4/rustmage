@@ -1461,6 +1461,8 @@ pub(crate) enum Instruction {
         tapped: bool,
     },
     DiscardHand(PlayerSet),
+    /// Discard every selected player's hand; retain actual completed discard count.
+    DiscardHandRememberCount(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
     MillLifeEvent,
@@ -1997,6 +1999,8 @@ pub(crate) enum AmountValue {
     LifeGainedThisTurn,
     LifeEventAmount,
     CardsDiscardedThisTurn,
+    /// Actual result of the preceding remembered zone-move instruction.
+    MovedCount,
     Multiple {
         value: &'static AmountValue,
         factor: u16,
