@@ -1,0 +1,440 @@
+{
+  "scope": "Independent printed-outcome proofs for the final SIX inherited HOB identities. No engine, definitions, provenance/admission flags, IDs, schema or repository profile changes.",
+  "base_revision": "efb4f10d",
+  "oracle_source": "data/standard/cards.json",
+  "source_read": "Complete six Oracle bodies, corresponding full pinned XMage classes, all29 listed semantic helpers, six current typed Rust definitions and paired provenance records read. Existing historical typed_lift remains unchanged; the source evidence below pins current Java evidence for this assurance cohort.",
+  "xmage_classes": [
+    {
+      "name": "Giant's Boulder",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/g/GiantsBoulder.java",
+      "sha256": "e7a5989799244136dfd66001968795583451b378002585f128d8a0d90adeba79"
+    },
+    {
+      "name": "Gundabad Opportunist",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/g/GundabadOpportunist.java",
+      "sha256": "dab5bb5d2a9f427abe67ec62b754c34983b70b27c53128dddb43695278d2ced3"
+    },
+    {
+      "name": "Hobbit Hole",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/h/HobbitHole.java",
+      "sha256": "20e83cb2423db25c43a71581b9210f0ccdd41d055ca83efab88add3106608a75"
+    },
+    {
+      "name": "Stony-Voiced Goblins",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/s/StonyVoicedGoblins.java",
+      "sha256": "dc1b298223f580fc8ef1e76ca435484b156ec898ce04d14f900e9b5860778f4a"
+    },
+    {
+      "name": "The Sackville-Bagginses",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/t/TheSackvilleBagginses.java",
+      "sha256": "e45eeab9c37151261bd4ddf3aa9e94deb8043e0001a710c45b2a4f277dedb66d"
+    },
+    {
+      "name": "Troop of Ponies",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/t/TroopOfPonies.java",
+      "sha256": "45c5a3b4b0cb7991f9f27e9c088d4bd16c1a4c0cfe620e5ee57e2bc3207920f4"
+    }
+  ],
+  "xmage_helper_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "xmage_helpers": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+      "sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+      "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutOntoBattlefieldTappedRestInHandEffect.java",
+      "sha256": "52b593d496c49f76c87e729cc95fb31bf44350f75df260960df6dd4132eea67f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+      "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+      "sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+      "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+    }
+  ],
+  "cards": {
+    "Giant's Boulder": {
+      "printed_obligations": [
+        "Paid1 artifact; own ETB scry2 privately with any top/bottom distribution and chosen ordering",
+        "1 plus tap gives exactly one mana of any COLOR at instant speed, immediate mana ability; no colorless, insufficient and tapped attempts fail transactionally",
+        "7 plus tap plus sacrifice destroys target PERMANENT, either controller, with cost committed before response; illegal player/hand targets, stale incarnation and indestructible respect existing rules"
+      ],
+      "tests": [
+        "hob_inherited_remaining_boulder_paid_scry_two_private_top_bottom_and_order",
+        "hob_inherited_remaining_boulder_one_and_tap_five_colors_immediate_mana_not_colorless",
+        "hob_inherited_remaining_boulder_seven_tap_sacrifice_any_permanent_stale_and_indestructible"
+      ],
+      "independent_outcomes": "Both seats; four scry partitions and explicit reverse selection order, only top2 visible privately, below-card arrangement rejected. All5 colors tested. Destruction of creature/land/artifact/attached enchantment and own permanent, source sacrificed with exact7mana, target not destroyed until resolution, blinked new target and indestructible survive."
+    },
+    "Hobbit Hole": {
+      "printed_obligations": [
+        "Normal untapped land play; tap and sacrifice self, no mana cost, searches own library for basic land onto battlefield tapped then shuffles",
+        "Halflingcycling4 from hand discards self as cost, searches Halfling CARD, reveals only found card in hand, then shuffles; not a spell or normal land play"
+      ],
+      "tests": [
+        "hob_inherited_remaining_hole_land_play_tap_sacrifice_private_basic_search_shuffle_owner",
+        "hob_inherited_remaining_hole_four_hand_discard_halflingcycling_reveal_and_fail_to_find"
+      ],
+      "independent_outcomes": "Both seats; battlefield activation during opposing turn, including foreign-owned source under actor control, sacrifices into owner graveyard but searches controller library and enters controller basic tapped. Nonbasic/instant/opponent library rejected. Qualified search can fail to find and still changes RNG. Cycling rejects3mana, pays4 and discards before response, finds Halfling instead of non-Halfling creature/land, private until explicit commit, found hand identity public, unchosen library hidden; no extra draw, no reactivation from graveyard."
+    },
+    "Gundabad Opportunist": {
+      "printed_obligations": [
+        "Paid3R Goblin Rogue4/2; own ETB exiles exact top card face up, or does nothing for empty library",
+        "Controller may PLAY exact exiled incarnation through end of own NEXT turn, independent of source. Ordinary land limits, timing and mana costs remain; no permission for opponent or replacement incarnation"
+      ],
+      "tests": [
+        "hob_inherited_remaining_opportunist_paid_exile_public_land_and_normal_paid_spell_timing",
+        "hob_inherited_remaining_opportunist_exact_permission_through_next_turn_cleanup_and_empty_library"
+      ],
+      "independent_outcomes": "Both seats; actual exiled Forest land play consumes turn land play; actual paid Bear Cub during own main and Shock during opposing turn, insufficient mana/sorcery timing rejected, Shock exact2life and Bear2/2. Source gone permission remains, public exile, opposite player excluded. Normal turn progression preserves through opposing turn and next own main, next cleanup removes permission; blinked exile object excluded; empty library no permission."
+    },
+    "Stony-Voiced Goblins": {
+      "printed_obligations": [
+        "Paid1B Goblin Bard1/1; ETB EACH OPPONENT discards1 of their own choice, no target, no own discard; empty opponent hand does nothing"
+      ],
+      "tests": [
+        "hob_inherited_remaining_stony_paid_opponent_private_discard_choice_empty_and_source_departure"
+      ],
+      "independent_outcomes": "Both seats, empty/two-card/source-departed rows. Opponent is actor for private choice; source controller cannot see opponent hand, own card rejected; chosen Shock public graveyard, unchosen Forest remains hidden hand, controller own Island stays. Opponent hexproof does not prevent untargeted discard."
+    },
+    "The Sackville-Bagginses": {
+      "printed_obligations": [
+        "Paid1B legendary Halfling Citizen2/2. ETB optional sacrifice ANOTHER controlled creature OR artifact; only successful payment draws1 privately AND creates untapped colorless Treasure artifact token",
+        "Whenever YOU sacrifice a TOKEN, target opponent loses1life; every token type and foreign ownership under own control qualifies, nontoken sacrifice/opponent sacrifice/ordinary token death do not"
+      ],
+      "tests": [
+        "hob_inherited_remaining_sackville_optional_other_creature_artifact_token_owner_and_draw_treasure",
+        "hob_inherited_remaining_sackville_no_offering_opponent_sacrifice_and_nonsacrifice_death_excluded"
+      ],
+      "independent_outcomes": "Both seats; decline and no-eligible-offering yield neither draw nor Treasure. Self/opposing creature/land/attached enchantment rejected. Nontoken creature, noncreature artifact, Wolf token, Treasure token and foreign-owned controlled token offered; draw/creation only after actual sacrifice, queued ETB works after source departure. Token offerings give exact1life and nontokens none; self player rejected as trigger target. Genuine tap/sacrifice of new Treasure produces green mana and exact1life loss. Opponent Treasure sacrifice and actual paid Shock lethal token damage do not trigger. Draw remains private."
+    },
+    "Troop of Ponies": {
+      "printed_obligations": [
+        "Paid2 colorless Horse2/1; activated2 plus tap plus sacrifice, requires readiness; search up to2 basic land cards, reveal, choose1 battlefield tapped and other hand, shuffle"
+      ],
+      "tests": [
+        "hob_inherited_remaining_ponies_paid_tap_sacrifice_zero_one_two_reveal_split_owned_shuffle"
+      ],
+      "independent_outcomes": "Both seats; rejects summoning-sick tap and1mana, exact2mana and source sacrifice committed before search. Zero/one/two actual selections, nonbasic/instant rejected; search private before commit; two selected identities publicly revealed for destination assignment without remaining-library leak. Deliberately choose second selected basic for tapped battlefield, first revealed hand; one result goes tapped battlefield and zero yields no movement. Always shuffle (RNG changes); source cannot reactivate."
+    }
+  },
+  "fixture_preflight": {
+    "catalogue_version": "b8328e63e321f4029b3b6899ce9546c835726a245623b6ac3de6f846a911cac2",
+    "admitted": [
+      {
+        "index": 1740,
+        "name": "Giant's Boulder",
+        "mana_cost": "{1}",
+        "type_line": "Artifact"
+      },
+      {
+        "index": 2053,
+        "name": "Hobbit Hole",
+        "mana_cost": "",
+        "type_line": "Land"
+      },
+      {
+        "index": 1909,
+        "name": "Gundabad Opportunist",
+        "mana_cost": "{3}{R}",
+        "type_line": "Creature \u2014 Goblin Rogue"
+      },
+      {
+        "index": 4166,
+        "name": "Stony-Voiced Goblins",
+        "mana_cost": "{1}{B}",
+        "type_line": "Creature \u2014 Goblin Bard"
+      },
+      {
+        "index": 4493,
+        "name": "The Sackville-Bagginses",
+        "mana_cost": "{1}{B}",
+        "type_line": "Legendary Creature \u2014 Halfling Citizen"
+      },
+      {
+        "index": 4687,
+        "name": "Troop of Ponies",
+        "mana_cost": "{2}",
+        "type_line": "Creature \u2014 Horse"
+      },
+      {
+        "index": 4,
+        "name": "Forest",
+        "mana_cost": "",
+        "type_line": "Basic Land \u2014 Forest"
+      },
+      {
+        "index": 1,
+        "name": "Island",
+        "mana_cost": "",
+        "type_line": "Basic Land \u2014 Island"
+      },
+      {
+        "index": 10,
+        "name": "Shock",
+        "mana_cost": "{R}",
+        "type_line": "Instant"
+      },
+      {
+        "index": 357,
+        "name": "Bear Cub",
+        "mana_cost": "{1}{G}",
+        "type_line": "Creature \u2014 Bear"
+      },
+      {
+        "index": 1824,
+        "name": "Goldvein Pick",
+        "mana_cost": "{2}",
+        "type_line": "Artifact \u2014 Equipment"
+      },
+      {
+        "index": 3086,
+        "name": "Pacifism",
+        "mana_cost": "{1}{W}",
+        "type_line": "Enchantment \u2014 Aura"
+      },
+      {
+        "index": 5412,
+        "name": "@token/hob-wolf",
+        "mana_cost": "",
+        "type_line": "Creature \u2014 Wolf"
+      },
+      {
+        "index": 5302,
+        "name": "@token/b60f6cd3b44b22bd289fe4e2",
+        "mana_cost": "",
+        "type_line": "Artifact \u2014 Treasure"
+      }
+    ]
+  },
+  "action_preflight": "Before queue: exact six printed cost metadata asserted; explicit14fixture whitelist resolved against catalogue and paired complete records with unknown/incomplete assertion errors, no skip fallback. Activation indices/types inspected (u16), mana color masks31, token5302 recipe/activation, legal attached Aura fixtures, sacrifice ObjectRef, ArrangeLibrary, FinishSearch/ChooseSearchBattlefield, EffectDiscard and next-turn expiry paths inspected. Guarded persistent driver repeats admission and saves preflight receipt.",
+  "contracts": "Reuse contracts::branch_contract at public optional sacrifice and revealed search-distribution roots, rather than cloning/replaying every action. Explicit search raw/index children, snapshot restore and equal outcome prove selected-destination continuation. Shared contract helper covers independent children/ancestor disposal. Existing reject helper asserts illegal-action snapshot and both observations unchanged. No new bot or per-action full-contract wrapper.",
+  "author_validation": {
+    "source_definitions": 5416,
+    "verified_java_blobs": 1553,
+    "format": "rustfmt --edition2024 --check and git diff --check passed",
+    "new_passed": 11,
+    "regressions_passed": 6,
+    "failed": 0,
+    "ignored": 0,
+    "first_attempt_natural_terminal": true,
+    "canceled_jobs": 0,
+    "input_drift": false,
+    "profile_override": "CARGO_PROFILE_TEST_OPT_LEVEL=0 consistently for this dedicated author target only; no repository profile edit; integrated acceptance defaults unchanged",
+    "focused_compile_and_run_seconds": 34.40609866799787,
+    "cargo_reported_build_seconds": 34.24,
+    "new_scenario_seconds": 0.07,
+    "regression_scenario_seconds": [
+      0.02,
+      0.01,
+      0.01
+    ],
+    "groups": [
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "hob_inherited_remaining",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 34.40609866799787,
+        "log": "<cache>/rustmage-authoring/hob-inherited-remaining/focused-1.log",
+        "filter": "hob_inherited_remaining"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "sos_effects_",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.11599190201377496,
+        "log": "<cache>/rustmage-authoring/hob-inherited-remaining/exile-search-regression-1.log",
+        "filter": "sos_effects_"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "hob_inherited_artifacts_map_",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.11635347997071221,
+        "log": "<cache>/rustmage-authoring/hob-inherited-remaining/search-activation-regression-1.log",
+        "filter": "hob_inherited_artifacts_map_"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "sos_followon_borrowed_modes_resolution_hand_size_and_actual_replaced_discards",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.11636733502382413,
+        "log": "<cache>/rustmage-authoring/hob-inherited-remaining/discard-regression-1.log",
+        "filter": "sos_followon_borrowed_modes_resolution_hand_size_and_actual_replaced_discards"
+      }
+    ],
+    "resource_guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-inherited-remaining/driver-1.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 35.331999955000356,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2522808320,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "resource_report": "<cache>/rustmage-build-reports/a00d54e15ab341d1ac61eb3b87253d24.json",
+    "outer_log": "<cache>/rustmage-authoring/hob-inherited-remaining/outer-1.log",
+    "outer_sha256": "53805dd076180a26a4e3787700ed4cdbafb27a6d6631aa210c807ee932302710",
+    "persistent_driver": "<cache>/rustmage-authoring/hob-inherited-remaining/driver-1.py",
+    "driver_sha256": "a865ea920b405a95d2ec6194f3dfa485536b7d240b4348dac25b53c1821b36d5",
+    "results": "<cache>/rustmage-authoring/hob-inherited-remaining/results-1.json",
+    "stable_target": "<cache>/rustmage-authoring/hob-inherited-remaining/target",
+    "timing_note": "Guard35.332s includes shared-slot wait and driver/setup; four command durations total34.755s, leaving about0.577s combined wait/setup overhead. No separately measured pure compilation interval or simulation benchmark."
+  },
+  "throughput": {
+    "elapsed_seconds": 385,
+    "proof_cards_per_hour": 56.103896103896105,
+    "scope": "Isolated clone creation through terminal evidence and proof receipt; assurance throughput, not new engine/card implementations",
+    "simulation": "No simulation benchmark or full-set acceptance claimed."
+  },
+  "integration": "Commit owns only src/assurance/hob_inherited_remaining.rs and this ledger. Local mod hob_inherited_remaining registration excluded; root registers it. No generated changes. Request two independent nonauthor reviews; source/focused author proof does not establish integrated release or whole-set acceptance. No PR/push/merge."
+}
