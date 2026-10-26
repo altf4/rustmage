@@ -1,0 +1,191 @@
+{
+  "scope": "Desolation of Smaug whole sorcery using simultaneous non-Dragon damage and tagged combination mana; no new state/wire/IDs",
+  "base_revision": "584c0d2f",
+  "oracle_facts": {
+    "oracle_id": "c9634afc-4a5b-4cf6-b63d-0ff9909dd5a7",
+    "name": "Desolation of Smaug",
+    "layout": "normal",
+    "mana_cost": "{2}{R}{R}",
+    "cmc": 4.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Desolation of Smaug deals 3 damage to each non-Dragon creature.\nAdd four mana in any combination of colors. Spend this mana only to cast Dragon spells.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "B",
+      "G",
+      "R",
+      "U",
+      "W"
+    ],
+    "reference_printing": {
+      "id": "2462358b-52c8-49b2-8d97-d65a9188f8f7",
+      "set": "hob",
+      "collector_number": "93",
+      "released_at": "2026-08-14"
+    }
+  },
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/d/DesolationOfSmaug.java",
+      "sha256": "385c4ffa003acf009c85c7543a21cf23a0219f70d7a97d547b6cf75f8d984af7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaOfAnyColorEffect.java",
+      "sha256": "e9ae10c4ad12c5a3280946079ff7c3278e879af65f0a3afdb6f8841861797bed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+      "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterSpell.java",
+      "sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+    }
+  ],
+  "obligations": {
+    "spell": "Actually paid2RR sorcery, deals3 in single batch to each creature other than current Dragons, both players; shields/replacements/death state actions, no player damage",
+    "mana": "After actual damage resolution add4 mana in any combination WUBRG, restriction applies Dragon spells only including own/opponent controller distinctions, no ability costs/non-Dragon spells; normal step expiry",
+    "owned": "No/multiple damage replacement and mana-choice continuations, illegal mana/underpay rollback, snapshot/raw/index/parentdrop/restore"
+  },
+  "validation": {
+    "status": "Author focused pass; full independent reviews and integrated acceptance pending.",
+    "passed": 17,
+    "groups": {
+      "hob_desolation": 4,
+      "hob_black_arrow": 7,
+      "hob_weavemaster": 4,
+      "msh_c_vehicle_crew": 1,
+      "damage_replacement_doubles_enemy_damage_only": 1
+    },
+    "results": {
+      "compile": {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--no-run",
+          "--message-format=json",
+          "--target-dir",
+          "<cache>/rustmage-authoring/hob-desolation/target"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 27.936731981986668,
+        "log": "<cache>/rustmage-authoring/hob-desolation/run-2/compile.jsonl"
+      },
+      "hob_desolation": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-desolation/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_desolation",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.03259190596872941,
+        "log": "<cache>/rustmage-authoring/hob-desolation/run-2/0.log"
+      },
+      "hob_black_arrow": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-desolation/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_black_arrow",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.0325566380051896,
+        "log": "<cache>/rustmage-authoring/hob-desolation/run-2/1.log"
+      },
+      "hob_weavemaster": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-desolation/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_weavemaster",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.016334386018570513,
+        "log": "<cache>/rustmage-authoring/hob-desolation/run-2/2.log"
+      },
+      "msh_c_vehicle_crew": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-desolation/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "msh_c_vehicle_crew",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.016859801020473242,
+        "log": "<cache>/rustmage-authoring/hob-desolation/run-2/3.log"
+      },
+      "damage_replacement_doubles_enemy_damage_only": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-desolation/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "damage_replacement_doubles_enemy_damage_only",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.008237256959546357,
+        "log": "<cache>/rustmage-authoring/hob-desolation/run-2/4.log"
+      }
+    },
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-desolation/run-2/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 28.09089029103052,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2472640512,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "reports": "<cache>/rustmage-authoring/hob-desolation/run-2",
+    "proof_sha256": "5b6c376e2bbfb8c363ef66a1674cc4ac5e0b97af7575bfd6ee0677129ac6faaf",
+    "earlier_attempt": "run-1 naturally terminal101: 3/4 new scenarios passed; fourth used low-level begin_step without actual mana-clear transition. After termination changed fixture to normal priority passes and reran; no gameplay changes. The originally planned final regression filter matched no test but was never reached because run-1 stopped on that assertion; run-2 selected an existing actual damage-replacement test."
+  },
+  "fixtures": [
+    "Desolation of Smaug",
+    "Forest",
+    "Bear Cub",
+    "Shivan Dragon",
+    "@token/hob-dragon",
+    "Goldvein Pick",
+    "Twinflame Tyrant",
+    "Negate"
+  ]
+}

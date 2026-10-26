@@ -3,10 +3,40 @@
   "catalogue_id": 1056,
   "oracle_id": "c9634afc-4a5b-4cf6-b63d-0ff9909dd5a7",
   "facts_sha256": "8f83f4c2c87e3be4e84258bb930a22ce953077f9587eb9cfd30fac8999b635db",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2518aa7f306dbff770c3aa50ac7d9a47787de01244d869001d54b5cb62fa6335"
   },
-  "physical_metadata_sha256": "325841474e5b51c22ee571ae963ccab5e8d83e61378274572c27e5d1edc51526"
+  "physical_metadata_sha256": "325841474e5b51c22ee571ae963ccab5e8d83e61378274572c27e5d1edc51526",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DesolationOfSmaug.java",
+  "java_sha256": "385c4ffa003acf009c85c7543a21cf23a0219f70d7a97d547b6cf75f8d984af7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaOfAnyColorEffect.java",
+      "sha256": "e9ae10c4ad12c5a3280946079ff7c3278e879af65f0a3afdb6f8841861797bed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+      "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterSpell.java",
+      "sha256": "50fd3169b7ed9ae7f81bce450a44155f4326c657186c1ba6713e2d0f8c3e3a6c"
+    }
+  ]
 }
