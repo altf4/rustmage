@@ -1955,7 +1955,7 @@ impl Game {
     ) -> bool {
         let armies = self.army_recipients(player);
         if armies.len() == 1 {
-            self.finish_amass_goblins(item, armies[0], amount);
+            self.finish_amass_goblins(item, player, armies[0], amount);
         } else if armies.len() > 1 {
             let mut filter = evidence::cost(0).filter;
             filter.subtype = Some("Army");
@@ -1976,6 +1976,7 @@ impl Game {
     pub(super) fn finish_amass_goblins(
         &mut self,
         item: &SpellView,
+        player: Player,
         recipient: ObjectRef,
         amount: u64,
     ) {
@@ -1990,8 +1991,9 @@ impl Game {
                 Some(Instruction::AmassGoblinsThenAttach(_))
             )
         });
-        self.effect_counters(
+        self.effect_counters_by(
             vec![(recipient, Counters::of(CounterKind::PlusOne, amount))],
+            Some(player),
             ResumeMode::Program,
         );
         if let Some(state) = self.state.replacements.as_mut() {

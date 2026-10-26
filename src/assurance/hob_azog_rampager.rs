@@ -15,6 +15,9 @@ const FIXTURES: &[&str] = &[
     "Adaptive Automaton",
     "Banishing Light",
     "@token/goblin_army",
+    "Doc Samson, Super Psychiatrist",
+    "Ant-Man, Colony Commander",
+    "Goblin Plate Mail",
 ];
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     assert!(FIXTURES.contains(&name), "unlisted fixture {name}");
@@ -709,5 +712,144 @@ fn hob_azog_rampager_rampager_sacrifice_counter_replacements_then_death_existing
         finish(&mut g);
         assert_eq!(g.counter_count(a, CounterKind::PlusOne), 44);
         assert!(g.has_subtype(a, "Goblin"));
+    }
+}
+
+fn insects(g: &Game, player: Player) -> usize {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(id, o)| {
+            o.zone == Zone::Battlefield
+                && o.controller == player
+                && o.is_token()
+                && g.has_subtype(*id as CardId, "Insect")
+        })
+        .count()
+}
+#[test]
+fn hob_azog_rampager_actual_amassing_player_places_counters_doc_replacement_history_triggers_and_owned_choice()
+ {
+    for p in [Player::P0, Player::P1] {
+        for army_count in 0..3 {
+            let mut g = scenario(p);
+            for player in [p, p.other()] {
+                fixture(
+                    &mut g,
+                    player,
+                    "Doc Samson, Super Psychiatrist",
+                    Zone::Battlefield,
+                );
+                fixture(
+                    &mut g,
+                    player,
+                    "Ant-Man, Colony Commander",
+                    Zone::Battlefield,
+                );
+            }
+            let existing: Vec<_> = (0..army_count).map(|_| army(&mut g, p.other())).collect();
+            let target = fixture(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let source = azog(&mut g, p);
+            bind(&mut g, target);
+            if army_count == 2 {
+                until(&mut g, |g| {
+                    g.legal_actions().contains(&Action::ChooseArmy {
+                        object: g.object_ref(existing[1]),
+                    })
+                });
+                assert_eq!(g.actor(), Some(p.other()));
+                assert_eq!(g.state.resolving.as_ref().unwrap().item.controller, p);
+                assert_eq!(g.state.resolving.as_ref().unwrap().item.card, source);
+                contracts::branch_contract(g.clone());
+                let saved = g.snapshot();
+                let mut indexed = g.clone();
+                let action = Action::ChooseArmy {
+                    object: g.object_ref(existing[1]),
+                };
+                let index = indexed
+                    .legal_actions()
+                    .iter()
+                    .position(|a| a == &action)
+                    .unwrap();
+                indexed
+                    .apply_index(p.other(), indexed.revision(), index)
+                    .unwrap();
+                act(&mut g, action.clone());
+                finish(&mut g);
+                finish(&mut indexed);
+                assert_eq!(g.snapshot(), indexed.snapshot());
+                indexed.restore(&saved).unwrap();
+                act(&mut indexed, action);
+                finish(&mut indexed);
+                assert_eq!(g.snapshot(), indexed.snapshot());
+            } else {
+                finish(&mut g);
+            }
+            let recipient = if army_count == 0 {
+                armies(&g, p.other())[0]
+            } else {
+                existing[army_count - 1]
+            };
+            assert_eq!(
+                g.counter_count(recipient, CounterKind::PlusOne),
+                3,
+                "target controller's actual Doc Samson adds one counter"
+            );
+            assert_eq!(
+                insects(&g, p.other()),
+                1,
+                "amassing player's Ant-Man triggers"
+            );
+            assert_eq!(
+                insects(&g, p),
+                0,
+                "Azog's controller did not put the counters"
+            );
+            let object = g.object_ref(recipient);
+            for viewer in [p, p.other()] {
+                let rows = g.observe(viewer).counter_placement_history;
+                assert!(
+                    rows.iter()
+                        .any(|r| r.object == object && r.placed_by == p.other() && r.plus_one)
+                );
+                assert!(!rows.iter().any(|r| r.object == object && r.placed_by == p));
+            }
+            assert!(g.put_counter_on_source_this_turn(object, p.other()));
+            assert!(!g.put_counter_on_source_this_turn(object, p));
+            assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+            if army_count == 2 {
+                assert_eq!(g.counter_count(existing[0], CounterKind::PlusOne), 0);
+            }
+        }
+    }
+}
+#[test]
+fn hob_azog_rampager_legacy_fixed_amass_keeps_original_placer_and_controller() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let recipient = army(&mut g, p);
+        for player in [p, p.other()] {
+            fixture(
+                &mut g,
+                player,
+                "Doc Samson, Super Psychiatrist",
+                Zone::Battlefield,
+            );
+            fixture(
+                &mut g,
+                player,
+                "Ant-Man, Colony Commander",
+                Zone::Battlefield,
+            );
+        }
+        paid(&mut g, p, "Goblin Plate Mail", [0, 0, 1, 0, 0, 1], None);
+        finish(&mut g);
+        assert_eq!(g.counter_count(recipient, CounterKind::PlusOne), 2);
+        assert_eq!(insects(&g, p), 1);
+        assert_eq!(insects(&g, p.other()), 0);
+        let object = g.object_ref(recipient);
+        assert!(g.put_counter_on_source_this_turn(object, p));
+        assert!(!g.put_counter_on_source_this_turn(object, p.other()));
     }
 }

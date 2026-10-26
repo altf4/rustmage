@@ -45,7 +45,7 @@
     }
   },
   "shared_mechanics": {
-    "scaled_amass": "Immutable EnsureGoblinArmyFor(PlayerSet) and AmassGoblinsScaled{player,amount}; common Army selection helper preserves existing allocation-free ensure check. The actual recipient controls Army choice, token creation and counter replacements, independently of original ability controller. Choice completion uses its selected exact recipient; no global last-amassed state. Existing fixed amass and amass-then-attach route through the same helper.",
+    "scaled_amass": "Immutable EnsureGoblinArmyFor(PlayerSet) and AmassGoblinsScaled{player,amount}; common Army selection helper preserves existing allocation-free ensure check. The actual recipient controls Army choice, token creation and counter replacements, independently of original ability controller. Choice completion uses its selected exact recipient; no global last-amassed state. Existing fixed amass and amass-then-attach route through the same helper. Review fix: finish_amass_goblins takes the amassing player explicitly and passes Some(player) into effect_counters_by. Multi-Army resume recovers that player from the owned selection seat. The source and resolving ability retain their original controller; counter placer is not inferred from them.",
     "target_facts": "Existing private optional TargetCardFacts rows gain signed power, queried only for a program that reads it, at resolution before destruction. Frozen controller and power survive target leaving, failed destruction, replacement or linked-return entry suspension. TargetController selects the first surviving fact in current group; no target means no player. DrawIfTargetController uses the same frozen comparison after complete amass.",
     "sacrifice_power": "New private sparse Resolution.sacrificed_power:Option<Box<i128>> captures chosen sacrifice power before any movement or suspended linked return. AmountValue::SacrificedPower clamps negative result to0; existing exact-source counter instruction applies only to the original object generation. One pre-existing synthetic Resolution test initializer adds None; owned-byte accounting includes allocated i128. No new SpellView/Object/history field.",
     "death_power": "AmountValue::SourceLastKnownPower reads the existing frozen DamageFacts packet from the real death trigger, not current graveyard stats or a new source incarnation. Existing death registration and zone replacement machinery unchanged."
@@ -76,7 +76,9 @@
         "target_controller_owns_public_army_choice_raw_index_restore": "Opposing target controller chooses between their2Armies, original caster Army rejected; public choice, raw/index children after parent disposal, restore independent continuation; exact chosen Army gets2andGoblin, others unchanged.",
         "target_controller_token_and_counter_replacements_resume_before_draw": "Two Doubling Seasons for actual receiver; existing/new Army paths; actual replacement pause before draw and owned branch contract. Four newly created Armies yield one final chosen Army with8counters, or existing Army receives8; only own-controller case draws.",
         "scaled_65536_and_counter_overflow_are_bounded_and_transactional": "Actual scaled65536 multi-Army/publicchoice and counter placement; u64::MAX counter addition returns CapacityExceeded and restores earlier target destruction plus complete snapshot/revision/observations.",
-        "target_facts_survive_destroy_linked_return_suspended_entry": "Animate real paid Banishing Light5/5, destroy it, return linked Adaptive Automaton and suspend for entry type; no premature amass/draw, branch contract preserves private target facts, then5amass and draw1."
+        "target_facts_survive_destroy_linked_return_suspended_entry": "Animate real paid Banishing Light5/5, destroy it, return linked Adaptive Automaton and suspend for entry type; no premature amass/draw, branch contract preserves private target facts, then5amass and draw1.",
+        "actual_amassing_player_places_counters_doc_replacement_history_triggers_and_owned_choice": "Both seats, fresh/single/multiple opponent Armies, Doc Samson and Ant-Man on both sides. Exactly3Armycounters from2+Doc; recipient Ant-Man creates1Insect, Azog controller Ant-Man creates0; both public history views record recipient placer only. Multiple pending choice raw/index/restore preserves it while resolving.item.controller remains original caster. Separate actual Goblin Plate Mail fixed amass yields2counters with own Doc and own Ant-Man only.",
+        "legacy_fixed_amass_keeps_original_placer_and_controller": "Real paid Goblin Plate Mail with existing own Army, own/opponent Doc and Ant-Man proves old fixed amass retains original placer and controller, exact2counters and1own/noenemyInsect with own placement history."
       }
     },
     "Rhovanion Rampager": {
@@ -93,7 +95,7 @@
       }
     }
   },
-  "test_naming": "Every proof key above is prefixed hob_azog_rampager_ in src/assurance/hob_azog_rampager.rs. Twelve test functions contain the described independent table outcomes; all both seats.",
+  "test_naming": "Every proof key above is prefixed hob_azog_rampager_ in src/assurance/hob_azog_rampager.rs. Fourteen test functions contain the described independent table outcomes; all both seats.",
   "fixture_preflight": {
     "catalogue_version": "b15f86780f490470f651978514c5b0363908823f4420878e8cc6d93e9825ffb7",
     "admitted": [
@@ -174,18 +176,36 @@
         "name": "@token/goblin_army",
         "mana_cost": "",
         "type_line": "Creature \u2014 Goblin Army"
+      },
+      {
+        "index": 1117,
+        "name": "Doc Samson, Super Psychiatrist",
+        "mana_cost": "{4}{G}",
+        "type_line": "Legendary Creature \u2014 Gamma Doctor Hero"
+      },
+      {
+        "index": 175,
+        "name": "Ant-Man, Colony Commander",
+        "mana_cost": "{1}{G}{U}",
+        "type_line": "Legendary Creature \u2014 Human Rogue Hero"
+      },
+      {
+        "index": 1807,
+        "name": "Goblin Plate Mail",
+        "mana_cost": "{1}{B/R}",
+        "type_line": "Artifact \u2014 Equipment"
       }
     ]
   },
-  "preflight_policy": "Explicit13named fixtures, unknown or incomplete is an assertion error, no conditional skip. Paired complete records and exact printed2B/source costs checked before queue; driver repeats admission and records it. Actual action shapes, slot types, target optionality, Army choice, counter replacement, sacrifice ObjectRef, public/private fields and lone synthetic Resolution initializer inspected. Banishing Light fixture retains its paid ID, supplies real linked exile and is legally animated as the chosen5/5 creature.",
+  "preflight_policy": "Explicit16named fixtures, unknown or incomplete is an assertion error, no conditional skip. Paired complete records and exact printed2B/source costs checked before queue; driver repeats admission and records it. Actual action shapes, slot types, target optionality, Army choice, counter replacement, sacrifice ObjectRef, public/private fields and lone synthetic Resolution initializer inspected. Banishing Light fixture retains its paid ID, supplies real linked exile and is legally animated as the chosen5/5 creature. Review fixtures Doc Samson, Ant-Man and Goblin Plate Mail passed strict admission before run4; complete Oracle/typed definitions and pinned Java behavior read.",
   "contracts": "Existing reject helper checks snapshot and both observations for illegal choices. contracts::branch_contract reused at affected Army choice, replacement ordering and each linked-return entry root. Army selection additionally has explicit raw/index child equality, ancestor disposal and restore. Capacity failure checks entire action, revision and both observations. No per-action branching bot.",
   "author_validation": {
     "definitions": 5417,
     "java_blobs_verified": 1558,
     "source_audit": "Passed before queue and repeated after final terminal; complete paired identities and absence pins verified.",
     "format": "rustfmt --edition2024 --check and git diff --check pass",
-    "final_new_passed": 12,
-    "final_affected_regressions_passed": 28,
+    "final_new_passed": 14,
+    "final_affected_regressions_passed": 29,
     "failed": 0,
     "ignored": 0,
     "groups": [
@@ -202,8 +222,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 28.05696508497931,
-        "log": "<cache>/rustmage-authoring/hob-azog-rampager/focused-3.log",
+        "seconds": 28.13379666104447,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/focused-4.log",
         "filter": "hob_azog_rampager"
       },
       {
@@ -219,8 +239,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.11552076798398048,
-        "log": "<cache>/rustmage-authoring/hob-azog-rampager/amass-regression-3.log",
+        "seconds": 0.2165281140478328,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/amass-regression-4.log",
         "filter": "hob_plate_company"
       },
       {
@@ -236,8 +256,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.21591673704097047,
-        "log": "<cache>/rustmage-authoring/hob-azog-rampager/target-source-regression-3.log",
+        "seconds": 0.2668719220091589,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/target-source-regression-4.log",
         "filter": "hob_crooked_"
       },
       {
@@ -253,8 +273,8 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.16618619702057913,
-        "log": "<cache>/rustmage-authoring/hob-azog-rampager/death-return-regression-3.log",
+        "seconds": 0.21597081498475745,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/death-return-regression-4.log",
         "filter": "hob_death_return"
       },
       {
@@ -270,33 +290,51 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.06596287002321333,
-        "log": "<cache>/rustmage-authoring/hob-azog-rampager/capacity-regression-3.log",
+        "seconds": 0.06427603698102757,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/capacity-regression-4.log",
         "filter": "late_resolution_overflow_rolls_back_earlier_counter_writes"
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history",
+          "--",
+          "--include-ignored",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06513199699111283,
+        "log": "<cache>/rustmage-authoring/hob-azog-rampager/placer-regression-4.log",
+        "filter": "msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history"
       }
     ],
     "final_scenario_seconds": [
+      0.12,
       0.09,
-      0.09,
-      0.16,
-      0.08,
-      0.0
+      0.15,
+      0.11,
+      0.0,
+      0.01
     ],
     "final_guard": {
       "command": [
         "python3",
-        "<cache>/rustmage-authoring/hob-azog-rampager/driver-3.py"
+        "<cache>/rustmage-authoring/hob-azog-rampager/driver-4.py"
       ],
       "terminal": true,
       "exit_code": 0,
-      "seconds": 29.105710904987063,
+      "seconds": 29.40610004600603,
       "memory_max_bytes": 6442450944,
-      "memory_peak_bytes": 2534617088,
+      "memory_peak_bytes": 2511626240,
       "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
       "cargo_jobs": 1,
       "test_threads": 1
     },
-    "resource_report": "<cache>/rustmage-build-reports/f40c97dcef9a498f90d7db5a29256de5.json",
+    "resource_report": "<cache>/rustmage-build-reports/7dd85c1e401549748d0aa5f7ab8805d3.json",
     "profile_override": "CARGO_PROFILE_TEST_OPT_LEVEL=0 consistently on dedicated stable author target only; no repository profile changes; default integrated acceptance unchanged.",
     "history": [
       {
@@ -323,31 +361,67 @@
         "exit": 0,
         "new_passed": 12,
         "regressions_passed": 28,
-        "compile_run_seconds": 28.05696508497931
+        "compile_run_seconds": 28.05696508497931,
+        "followup": "Independent review subsequently found P1 counter-placer attribution not covered by those original40tests; corrected and expanded in run4."
+      },
+      {
+        "attempt": 4,
+        "natural_terminal": true,
+        "exit": 0,
+        "new_passed": 14,
+        "regressions_passed": 29,
+        "compile_run_seconds": 28.13379666104447,
+        "outcome": "Reviewer P1 fixed and actual replacement/trigger/history/owned-choice regressions pass on final executable source."
       }
     ],
     "input_freeze": "Every consuming job kept inputs fixed until its own natural terminal; no cancellation, timeout, orphan, OOM or active-output deletion.",
     "outer_logs": [
       "<cache>/rustmage-authoring/hob-azog-rampager/outer-1.log",
       "<cache>/rustmage-authoring/hob-azog-rampager/outer-2.log",
-      "<cache>/rustmage-authoring/hob-azog-rampager/outer-3.log"
+      "<cache>/rustmage-authoring/hob-azog-rampager/outer-3.log",
+      "<cache>/rustmage-authoring/hob-azog-rampager/outer-4.log"
     ],
     "persistent_drivers": [
       "<cache>/rustmage-authoring/hob-azog-rampager/driver-1.py",
       "<cache>/rustmage-authoring/hob-azog-rampager/driver-2.py",
-      "<cache>/rustmage-authoring/hob-azog-rampager/driver-3.py"
+      "<cache>/rustmage-authoring/hob-azog-rampager/driver-3.py",
+      "<cache>/rustmage-authoring/hob-azog-rampager/driver-4.py"
     ],
-    "final_driver_sha256": "20db9fa3ac1ae4f31a7330c9db7bb7318da7ee138334987319e2610fec6c736b",
-    "final_outer_sha256": "2c96252b20a3c643bb985ecd4a299949102fc4b4e039461abb74eab9be7cca47",
-    "results": "<cache>/rustmage-authoring/hob-azog-rampager/results-3.json",
+    "final_driver_sha256": "f848402a974e59a341a47a9457ddcf4c371dc3d9ddcdfa79ab6c87ad308e7307",
+    "final_outer_sha256": "4cce1809556a921da347f4cc70a206a6b3dbc2143d5160e1f4f0e5e103923aa1",
+    "results": "<cache>/rustmage-authoring/hob-azog-rampager/results-4.json",
     "stable_target": "<cache>/rustmage-authoring/hob-azog-rampager/target",
-    "timing_note": "Final guard29.106s includes shared-slot/driver overhead; five command durations total28.621s. No separately instrumented pure build-slot wait. Focused command includes incremental compile and tests; test log reports27.9s build and0.09s scenarios. No simulation benchmark."
+    "timing_note": "Final guard29.406s includes shared-slot/driver overhead; six command durations total28.963s. No separately instrumented pure wait. Focused command includes incremental compile28.13s and tests; Cargo reports27.94s build and0.12s new scenarios. No simulation benchmark."
   },
   "throughput": {
-    "elapsed_seconds": 852,
-    "candidate_cards_per_hour": 8.450704225352112,
-    "scope": "Isolated clone creation through final natural terminal and ledger, including fullsource reads, engine/card authoring, compile fixture repair, code quality audit and3guard attempts",
+    "elapsed_seconds": 1186,
+    "candidate_cards_per_hour": 6.070826306913997,
+    "scope": "Isolated clone creation through post-review P1 correction and final terminal receipt, including review waiting, all4guard attempts and unchanged shared-slot rules",
     "simulation": "No simulation throughput or whole-set acceptance claim."
   },
-  "integration": "Author commit excludes local assurance mod hob_azog_rampager registration and generated coverage/catalogue links. Root adds registration and regenerates. Root schema157 must incorporate approved public u64 domain. Needs TWO independent nonauthor reviews before shared dependency acceptance or expanding further consumers; integrated default release/full-set acceptance pending. No PR/push/merge by author."
+  "integration": "Author commit excludes local assurance mod hob_azog_rampager registration and generated coverage/catalogue links. Root adds registration and regenerates. Root schema157 must incorporate approved public u64 domain. Needs TWO independent nonauthor reviews before shared dependency acceptance or expanding further consumers; integrated default release/full-set acceptance pending. No PR/push/merge by author.",
+  "review_fix": {
+    "original_commit": "cca41ebd2676ad62e2036fc6b3499dd5a5c6fb84",
+    "finding": "Independent rules review P1: opponent-directed Azog amass attributed counter placement to Azog controller through default effect_counters; the temporary chooser controller did not survive as counter cause. This missed recipient Doc Samson replacement and recipient you-put-counter triggers/history, and wrongly qualified original controller triggers.",
+    "implementation": "Explicit player argument for single Army completion; for suspended multiple Army choice recover player from existing choice.selected seat and preserve it into effect_counters_by. No new wire or state fields; original source/ability controller unchanged. Fixed amass still explicitly uses original item.controller.",
+    "new_proof": "Both seats, fresh/single/multiple opponent Armies, Doc Samson and Ant-Man on both sides. Exactly3Armycounters from2+Doc; recipient Ant-Man creates1Insect, Azog controller Ant-Man creates0; both public history views record recipient placer only. Multiple pending choice raw/index/restore preserves it while resolving.item.controller remains original caster. Separate actual Goblin Plate Mail fixed amass yields2counters with own Doc and own Ant-Man only.",
+    "review_status": "Root reports remainder of rules audit had no further findings; both full reviews must refresh exact fixed head.",
+    "source_pins": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DocSamsonSuperPsychiatrist.java",
+        "sha256": "d4a56da881cd4dab11fcf32028e1e16c06bdcb5b547c96bc6e0c7ad961d66673"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/AntManColonyCommander.java",
+        "sha256": "7e806afbf89ea24fb1d976a13cf7cfa9ebffe68d64648b633aad5e53264754a9"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/PutCounterOnPermanentTriggeredAbility.java",
+        "sha256": "f333016822bde02a6e1be7257787d3031615b525220bf0e7403a392289f4e5d3"
+      }
+    ]
+  }
 }

@@ -971,8 +971,17 @@ impl Game {
             .unwrap();
         if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
-            if let Some(&recipient) = choice.selected.iter().flatten().next() {
-                self.finish_amass_goblins(&item, recipient, amount);
+            // The owned selection seat is the amassing player. The resolving
+            // ability retains its original controller, which can be another player.
+            if let Some((player, recipient)) =
+                [Player::P0, Player::P1].into_iter().find_map(|player| {
+                    choice.selected[player.index()]
+                        .first()
+                        .copied()
+                        .map(|recipient| (player, recipient))
+                })
+            {
+                self.finish_amass_goblins(&item, player, recipient, amount);
             }
         } else if matches!(
             choice.kind,
