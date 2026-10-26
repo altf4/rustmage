@@ -140,6 +140,7 @@ impl Game {
     }
     pub(super) fn remove_face_providers(&mut self, id: CardId) {
         self.forget_trigger_multiplier_source(id);
+        self.forget_activation_observer(id);
         self.forget_ability_target_source(id);
         let reference = self.object_ref(id);
         // Keep recipient effects and counters: only the old face's intrinsic providers change.

@@ -714,6 +714,7 @@ impl Game {
                     TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
                     | TriggerCondition::TokensEnterYou
+                    | TriggerCondition::CreatureAbilityActivated
                     | TriggerCondition::CardsLeaveGraveyard
                     | TriggerCondition::CreatureCardLeavesYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
@@ -1144,6 +1145,7 @@ impl Game {
             self.complete_prepared_cast(item.object);
         }
         self.register_stack_graveyard_exile(&item);
+        self.committed_activation_observers(&item);
         self.state.stack.push(item);
         let Some((caster, card)) = cast else { return };
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));

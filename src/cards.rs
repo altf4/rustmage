@@ -2922,6 +2922,8 @@ pub(crate) enum TriggerCondition {
     ControlledAbilityTargetsPlayerOrPermanent,
     /// The physical source spell itself was cast; stack copies never dispatch it.
     SelfCast,
+    /// The controller actually activates an ability of a creature permanent.
+    CreatureAbilityActivated,
     CardsLeaveGraveyard,
     /// One trigger per actual creature CARD departing its owner's graveyard.
     CreatureCardLeavesYourGraveyard,

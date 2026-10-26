@@ -30,6 +30,7 @@ impl Game {
     }
     pub(super) fn register_battlefield_providers(&mut self, id: CardId) {
         self.register_trigger_multiplier_source(id);
+        self.register_activation_observer(id);
         self.register_zone_rule_card(self.state.objects[id as usize].card);
         self.register_static_base_stats(id);
         self.register_live_static_source(id);

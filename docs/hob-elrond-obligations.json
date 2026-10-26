@@ -1,0 +1,308 @@
+{
+  "scope": "Elrond, Moon-Reader complete author candidate, actual committed creature-ability activation observers and simultaneous delayed blink batching. No further card cohort begun.",
+  "base_revision": "901f3e20",
+  "sources": {
+    "oracle": "Complete data/standard/cards.json Oracle body, identity 1290 / 3f4d6f91-95ad-4687-8899-5a21a0abb49e",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "absence": "Pinned inventory xmage_name:null / implementations:[] and full pinned class tree contain no Moon-Reader class; three other Elrond identities are different cards. Paired JSON records absence and five complete read Java analog/helper bodies, not an invented identity class.",
+    "full_java_reads": [
+      "RingsOfBrighthearth.java",
+      "ActivateAbilityTriggeredAbility.java",
+      "ExileReturnBattlefieldNextEndStepTargetEffect.java",
+      "AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "ReturnToBattlefieldUnderOwnerControlTargetEffect.java"
+    ],
+    "authority": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes, complete Elrond section including mana abilities/tokens/new objects; current cached official CR effective2026-09-25 rules602.2,603.2,603.10,605.3,733.1,400.7,113.7a",
+    "source_check": {
+      "definitions": 5417,
+      "source_blobs": 1566,
+      "java_verified": true,
+      "note": "Initial default resolver sought absent /tmp/mage. Explicit RUSTMAGE_XMAGE_SOURCE=/home/altf4/Code/mage passed without source changes."
+    }
+  },
+  "shared_mechanics": {
+    "observer": "Private optional sparse battlefield observer registry (None in ordinary games), registered/forgotten with battlefield and face/copy providers; current actor/current creature classification at actual committed activation. Ordinary/legacy/announced/borrowed nonmana, basic/granted/activated/borrowed mana routes dispatch once. Copies and speculative funding do not dispatch. Current activating ObjectRef overrides the borrowed ability definition; source-departure facts cover sacrifice costs; hand cycling creature cards are excluded. Cold no-observer fast exits avoid characteristic queries on ordinary nonmana/basic mana activation paths.",
+    "limit": "Reuses existing exact-object TriggerUse with ability origin. Same incarnation retains its consumed limit through control and ability loss/restore; new generation and new turn reset naturally. Queueing consumes limit, regardless of later countering.",
+    "payment_replay": "Observers queue during mana payment but cannot stack until enclosing announcement completes. Selective mana replay suppresses recomputation, retains original frozen packets and restores their exact consumed TriggerUse only for kept events; reversed events retain neither. No public history/wire field.",
+    "blink": "All surviving exact legal targets and before-event owners frozen through move_objects_raw before any linked-return entry suspension. Actual moved Exile destinations/generations get independent delayed rows before finish_zone_events. Tokens get no return row. Existing owner/LKI/entry replacement/next-end-step machinery is reused."
+  },
+  "wire": "No new public serialized fields or schema change; immutable private trigger variant and cold private State observer index only. Existing delayed return observations and owned branches retained.",
+  "printed_assertion_map": {
+    "2U legendary Elf Noble 3/3": "Paid exact mana/body/subtypes; independent nonlegendary copiable version plus second printed Elrond validates distinct live observers.",
+    "Whenever YOU activate an ability of a CREATURE": "Both seats, own/opponent, ordinary mana/nonmana, current animated artifact, direct/granted sacrificed mana, borrowed artifact/creature blueprints against animated/unanimated actual Forge, cycling creature card exclusion, actual self-sacrifice LKI.",
+    "Draw one; only once each turn": "Actual hand/counter deltas, multiple qualifying actions, suppression/restore, control change, blink new incarnation, next turn, two observers, copied activation exclusion; countered ability still draws, countered draw still consumes limit, kept/reversed mana replay has exact frozen draw and latch.",
+    "5UU up to TWO OTHER target NONLAND permanents YOU CONTROL": "Exact payment, zero/one/two, source/land/opponent rejection with transactional snapshots, bad payment leaves latch unused, source gone, partial/all stale targets, resolution-current control recheck.",
+    "Exile then return cards under OWNERS at beginning NEXT end step": "Exact owner vs controller, two independent delayed rows, old exile incarnation invalidation, token ceases/no return, entry tapped replacement, activation after an end-step beginning waits for next beginning.",
+    "Owned batching/continuation": "First Banishing Light departs and returns linked Adaptive Automaton with entry type choice; second target is already exiled and both delayed rows stored before suspension. Representative raw/index/restore contract plus parent drop, independent children and restore; returned Banishing Light receives its actual new entry target choice."
+  },
+  "proof_tests": {
+    "elrond_paid_own_zero_target_activation_draws_once_even_if_countered_or_source_gone": "src/assurance/hob_elrond.rs",
+    "elrond_direct_mana_once_suppression_control_and_new_incarnation": "src/assurance/hob_elrond.rs",
+    "elrond_noncreature_ability_and_opponent_creature_excluded_then_current_creature_qualifies": "src/assurance/hob_elrond.rs",
+    "elrond_paid_blink_zero_one_two_and_source_departure_owner_return": "src/assurance/hob_elrond.rs",
+    "elrond_target_legality_failed_payment_partial_and_all_stale": "src/assurance/hob_elrond.rs",
+    "elrond_batched_exile_before_linked_entry_choice_and_owned_restore": "src/assurance/hob_elrond.rs",
+    "elrond_two_observers_independent_limits_and_copied_activation_is_not_activated": "src/assurance/hob_elrond.rs",
+    "elrond_borrowed_ability_uses_actual_source_current_creature": "src/assurance/hob_elrond.rs",
+    "elrond_return_replacement_and_exact_exile_generation": "src/assurance/hob_elrond.rs",
+    "elrond_creature_card_cycling_excluded_and_self_sacrifice_uses_departure_facts": "src/assurance/hob_elrond.rs",
+    "elrond_token_blink_never_returns_and_activation_after_end_waits_next_beginning": "src/assurance/hob_elrond.rs",
+    "elrond_borrowed_nonmana_uses_creature_forge_not_equipment_definition": "src/assurance/hob_elrond.rs",
+    "elrond_granted_mana_sacrificed_creature_qualifies_not_artifact_grantor": "src/assurance/hob_elrond.rs",
+    "elrond_resolution_rechecks_current_target_control": "src/assurance/hob_elrond.rs",
+    "elrond_countered_draw_trigger_still_consumes_exact_once_limit": "src/assurance/hob_elrond.rs",
+    "hob_elrond_retained_mana_replays_draw_and_latch_only_for_kept_event": "src/assurance/hob_elrond_rollback.rs"
+  },
+  "validation": {
+    "protocol": "All Cargo via shared resource_guard,6GiB/jobs1/thread1; stable isolated target with environment test opt0, no repository profile changes; persistent driver and entire stdout/stderr uniquely redirected at launch. Every job polled to natural terminal, zero cancellations, no active input mutation.",
+    "fixture_admission": "Explicit19-name whitelist, unknown/incomplete fail. Run1 admission occurred inside queued driver and independently while queued before compilation; recorded procedural deviation. Runs2-7 repeated strict prequeue admission plus guarded precompile admission. All paired fixtures complete.",
+    "runs": [
+      {
+        "run": 1,
+        "groups": [
+          {
+            "filter": "elrond",
+            "exit": 101,
+            "seconds": 21.944316949986387,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-1.log"
+          }
+        ],
+        "guard_report": "/home/altf4/.cache/rustmage-build-reports/9dfde2ddf7cd453aa8d79b0086d3b2ae.json",
+        "guard": {
+          "command": [
+            "python3",
+            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-1.py"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 66.34903086698614,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 1979424768,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "outcome": "Naturally terminal compile failure: rollback child lacked explicit path; a local variable shadowed hand-count helper. Corrected fixture only."
+      },
+      {
+        "run": 2,
+        "groups": [
+          {
+            "filter": "elrond",
+            "exit": 101,
+            "seconds": 15.397615116962697,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-2.log"
+          }
+        ],
+        "guard_report": "/home/altf4/.cache/rustmage-build-reports/2555346a8e2d488bb4322361002162a8.json",
+        "guard": {
+          "command": [
+            "python3",
+            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-2.py"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 49.65594579000026,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 1940807680,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "outcome": "Naturally terminal compile failure: existing cards_drawn_this_turn is u64; changed test conversion from u32 to u64."
+      },
+      {
+        "run": 3,
+        "groups": [
+          {
+            "filter": "elrond",
+            "exit": 101,
+            "seconds": 27.87200362700969,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-3.log"
+          }
+        ],
+        "guard_report": "/home/altf4/.cache/rustmage-build-reports/bbb6d5382a2e455ebc882a9fd879ea64.json",
+        "guard": {
+          "command": [
+            "python3",
+            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-3.py"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 208.58046052901773,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2541678592,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "outcome": "8 pass/5 fixture failures: paid Elrond left no Forge cast mana; fixture-inserted Aura made hand baseline wrong; returned Banishing Light needed explicit target; 3-power Elrond rescued deliberate failed casualty."
+      },
+      {
+        "run": 4,
+        "groups": [
+          {
+            "filter": "elrond",
+            "exit": 101,
+            "seconds": 28.614046053029597,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-4.log"
+          }
+        ],
+        "guard_report": "/home/altf4/.cache/rustmage-build-reports/551ee4967dc24a1188d354cc9d23b689.json",
+        "guard": {
+          "command": [
+            "python3",
+            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-4.py"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 43.978313445986714,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2551783424,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "outcome": "14 pass/1 fixture failure: borrowed mana tap requested immediately after animating newly cast Forge; cleared fixture summoning sickness, but ordinary-priority action route still wrong."
+      },
+      {
+        "run": 5,
+        "groups": [
+          {
+            "filter": "elrond",
+            "exit": 101,
+            "seconds": 28.47922548803035,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-5.log"
+          }
+        ],
+        "guard_report": "/home/altf4/.cache/rustmage-build-reports/52b1bde74e5b4fe4a46c32715cade754.json",
+        "guard": {
+          "command": [
+            "python3",
+            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-5.py"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 60.065679360996,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2533150720,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "outcome": "15 pass/1 fixture failure: ActivateBorrowedMana is a funding action, not advertised at ordinary priority. Changed to legal AnnounceBorrowedMana plus payment."
+      },
+      {
+        "run": 6,
+        "groups": [
+          {
+            "filter": "elrond",
+            "exit": 101,
+            "seconds": 29.046655818005092,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-6.log"
+          }
+        ],
+        "guard_report": "/home/altf4/.cache/rustmage-build-reports/6987fe24a101452e88c1351cf68d8588.json",
+        "guard": {
+          "command": [
+            "python3",
+            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-6.py"
+          ],
+          "terminal": true,
+          "exit_code": 101,
+          "seconds": 38.48422926402418,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2503847936,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "outcome": "15 pass/1 fixture failure: expanded reverse-direction borrowed test tried Forge on a plain creature; arranged temporary artifact type before actual paid Forge ETB, retaining real creature definition in exile."
+      },
+      {
+        "run": 7,
+        "groups": [
+          {
+            "filter": "elrond",
+            "exit": 0,
+            "seconds": 28.59399880300043,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-7.log"
+          },
+          {
+            "filter": "hob_roll",
+            "exit": 0,
+            "seconds": 0.07932751998305321,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/roll-regression-7.log"
+          },
+          {
+            "filter": "ennis",
+            "exit": 0,
+            "seconds": 0.06490236701210961,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/ennis-regression-7.log"
+          },
+          {
+            "filter": "sos_mana_rollback",
+            "exit": 0,
+            "seconds": 0.5128638950409368,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/mana-regression-7.log"
+          },
+          {
+            "filter": "territory_forge",
+            "exit": 0,
+            "seconds": 0.18322533799801022,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/borrowed-regression-7.log"
+          }
+        ],
+        "guard_report": "/home/altf4/.cache/rustmage-build-reports/42e6e5edc88f4cf6b6b756ae5c8fb6e2.json",
+        "guard": {
+          "command": [
+            "python3",
+            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-7.py"
+          ],
+          "terminal": true,
+          "exit_code": 0,
+          "seconds": 372.2188401569729,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2550259712,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "outcome": "All focused and selected affected regressions pass; naturally terminal, no cancellation."
+      }
+    ],
+    "final_unique_native_tests": 38,
+    "final_group_native_seconds": {
+      "elrond": [
+        "0.28"
+      ],
+      "hob_roll": [
+        "0.03"
+      ],
+      "ennis": [
+        "0.00"
+      ],
+      "sos_mana_rollback": [
+        "0.45"
+      ],
+      "territory_forge": [
+        "0.13"
+      ]
+    },
+    "source_check_command": "RUSTMAGE_XMAGE_SOURCE=/home/altf4/Code/mage python3 scripts/check_sources.py",
+    "generated": "link_catalogue.py run locally; generated catalogue/coverage and central assurance/mod registration excluded from source commit. Rollback child registration in sos_mana_rollback.rs is owned non-generated test linkage.",
+    "full_acceptance": "No leaf full validator or full-set simulation; parent owns final integrated release acceptance."
+  },
+  "measured_scope": {
+    "author_start_utc": "2026-10-26T22:23:31.433857+00:00",
+    "author_end_utc": "2026-10-26T22:53:41.872640+00:00",
+    "elapsed_seconds_including_reads_and_queue": 1810.438783,
+    "complete_card_candidates": 1,
+    "cards_per_author_hour_including_queue": 1.9884682286990092,
+    "simulation_throughput": "Not measured by this leaf; native bounded proof timings are not games/second."
+  },
+  "review_notes": {
+    "status": "Await two independent nonauthor reviews of exact commit before integration. No PR/push/merge.",
+    "limits": "No new public wire; full validator, trace audit and complete-set games remain parent acceptance. Temporary-copy ability-origin changes reuse existing TriggerUse/source_ability_origin contracts; this leaf directly exercises multiple observers, copied activation exclusion, same-object suppression/control and new-incarnation reset, rather than adding every existing temporary-copy contract again."
+  }
+}

@@ -1,0 +1,93 @@
+//! Actual committed activations, distinct from resolution, copies and funding.
+use super::*;
+impl Game {
+    pub(super) fn register_activation_observer(&mut self, id: CardId) {
+        if self.state.objects[id as usize]
+            .card
+            .triggers()
+            .iter()
+            .any(|ability| ability.condition.event() == TriggerCondition::CreatureAbilityActivated)
+        {
+            let sources = self.state.activation_observers.get_or_insert_default();
+            if !sources.contains(&id) {
+                sources.push(id);
+            }
+        }
+    }
+    pub(super) fn forget_activation_observer(&mut self, id: CardId) {
+        if let Some(sources) = &mut self.state.activation_observers {
+            sources.retain(|&source| source != id);
+            if sources.is_empty() {
+                self.state.activation_observers = None;
+            }
+        }
+    }
+    pub(super) fn creature_ability_activated(&mut self, actor: Player, creature: bool) {
+        if !creature
+            || self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.replay.is_some())
+        {
+            return;
+        }
+        let Some(ids) = &self.state.activation_observers else {
+            return;
+        };
+        let observers: Vec<_> = ids
+            .iter()
+            .filter(|&&id| {
+                self.on_battlefield(id) && self.state.objects[id as usize].controller == actor
+            })
+            .map(|&id| self.object_view(id))
+            .collect();
+        for source in observers {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::CreatureAbilityActivated {
+                    self.queue_trigger(&source, index);
+                }
+            }
+        }
+    }
+    pub(super) fn committed_activation_observers(&mut self, item: &SpellView) {
+        if self.state.activation_observers.is_none() {
+            return;
+        }
+        let StackKind::ActivatedAbility { ability } = item.kind else {
+            return;
+        };
+        if item.is_copy {
+            return;
+        }
+        // Borrowing changes the ability definition, not the actual activating object.
+        // A creature CARD cycling from hand is not a creature permanent.
+        let creature = if self.on_battlefield(item.object.card)
+            && self.object_ref(item.object.card) == item.object
+        {
+            self.is_creature(item.object.card)
+        } else {
+            item.source_card.activation(ability).source_zone() == Zone::Battlefield
+                && item.source_facts.is_creature()
+        };
+        self.creature_ability_activated(item.controller, creature);
+    }
+    pub(super) fn restore_activation_observer_use(&mut self, item: &SpellView) {
+        let StackKind::TriggeredAbility { ability } = item.kind else {
+            return;
+        };
+        let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
+        if condition.event() == TriggerCondition::CreatureAbilityActivated
+            && condition.once_per_turn()
+        {
+            let used = TriggerUse {
+                source: item.object,
+                ability,
+                origin: item.source_ability_origin,
+            };
+            if !self.state.triggered_this_turn.contains(&used) {
+                self.state.triggered_this_turn.push(used);
+            }
+        }
+    }
+}

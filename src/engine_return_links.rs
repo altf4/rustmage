@@ -183,33 +183,40 @@ impl Game {
         true
     }
     pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
-        for bound in &item.targets {
-            if !self.same_target_object(*bound) {
-                continue;
-            }
-            let Target::Card(id) = bound.target else {
-                continue;
-            };
-            if !self.on_battlefield(id) {
-                continue;
-            }
-            let object = &self.state.objects[id as usize];
-            let owner = object.owner;
-            let movement = self.move_object(id, Zone::Exile);
-            if movement.moved && movement.destination == Zone::Exile {
+        let ids: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let Target::Card(id) = bound.target else {
+                    return None;
+                };
+                (self.same_target_object(*bound) && self.on_battlefield(id)).then_some(id)
+            })
+            .collect();
+        // Freeze all recipients and their owners before ANY departure. Linked
+        // returns may suspend entry choices only after the entire exile batch.
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile && !event.before.is_token() {
                 self.register_delayed_return(
                     item,
                     ReturnLinkView {
-                        object: movement.after,
+                        object: event.after,
                         zone: Zone::Exile,
                         tapped: false,
-                        controller: if under_owner { owner } else { item.controller },
+                        controller: if under_owner {
+                            event.before.owner
+                        } else {
+                            item.controller
+                        },
                         counter: None,
                     },
                 );
             }
         }
+        self.finish_zone_events(&events, &[]);
     }
+
     pub(super) fn return_death_card(&mut self, item: &SpellView, kind: ReturnKind) {
         let Some(link) = &item.return_link else {
             return;

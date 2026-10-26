@@ -458,6 +458,14 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return;
         };
+        // The local announcement is outside State while an external cost commits.
+        // Preserve its actual pre-departure source, not a borrowed definition.
+        if matches!(a.item.kind, StackKind::ActivatedAbility { .. })
+            && self.on_battlefield(a.item.object.card)
+            && self.object_ref(a.item.object.card) == a.item.object
+        {
+            a.item.source_facts = DamageFacts::from_view(&self.object_view(a.item.object.card));
+        }
         if let EffectChoiceKind::ExileGraveyardSymbols { color, minimum } = spec.kind {
             let group = a.additional_group.as_deref().unwrap();
             assert!(self.graveyard_symbol_total(group, color) >= u128::from(minimum));

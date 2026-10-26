@@ -225,6 +225,8 @@ mod spell_costs;
 #[path = "engine_target_costs.rs"]
 mod target_costs;
 pub use additional_costs::AdditionalCostView;
+#[path = "engine_activation_observers.rs"]
+mod activation_observers;
 #[path = "engine_activation_target_costs.rs"]
 mod activation_target_costs;
 #[path = "engine_activations.rs"]
@@ -1881,6 +1883,7 @@ struct State {
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
+    activation_observers: Option<SharedVec<CardId>>,
     attack_sources: Vec<CardId>,
     tap_sources: Vec<CardId>,
     damage_sources: Vec<CardId>,
@@ -2657,6 +2660,7 @@ impl Game {
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
+                activation_observers: None,
                 attack_sources: Vec::new(),
                 tap_sources: Vec::new(),
                 damage_sources: Vec::new(),
@@ -4850,10 +4854,12 @@ impl Game {
                     .expect("legal granted mana ability");
                 let quality = self.mana_quality(grant.production, card);
                 self.tap_objects(&[card]);
+                let creature = self.is_creature(card);
                 if grant.sacrifice {
                     self.sacrifice_batch(&[(actor, card)]);
                 }
                 self.add_quality_mana(actor, production, quality);
+                self.creature_ability_activated(actor, creature);
                 self.state.passes = 0;
             }
             Action::TapMana { card } => {
@@ -4864,6 +4870,9 @@ impl Game {
                 *pool = pool
                     .checked_add(1)
                     .capacity("mana representation exhausted");
+                if self.state.activation_observers.is_some() {
+                    self.creature_ability_activated(actor, self.is_creature(card));
+                }
                 self.state.passes = 0;
             }
             Action::AnnounceFree {
@@ -5164,6 +5173,7 @@ impl Game {
                 } else {
                     let mut item = self.state.stack.last().unwrap().clone();
                     self.pay_activation(&mut item, payment, counter_payment);
+                    self.committed_activation_observers(&item);
                 }
             }
             Action::BeginCast { card, payment } => {
@@ -6267,6 +6277,7 @@ impl Game {
             self.forget_trigger_multiplier_source(id);
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
+            self.forget_activation_observer(id);
             self.state.attack_sources.retain(|&source| source != id);
             self.state.tap_sources.retain(|&source| source != id);
             self.state.damage_sources.retain(|&source| source != id);
@@ -7888,6 +7899,9 @@ impl Game {
                 .iter()
                 .map(|p| p.library.len() * std::mem::size_of::<CardId>())
                 .sum::<usize>()
+            + s.activation_observers.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<CardId>>() + rows.len() * std::mem::size_of::<CardId>()
+            })
             + (s.stack.len() + s.pending_triggers.len() + s.ordering_triggers.len())
                 * std::mem::size_of::<SpellView>()
             + s.resolving
