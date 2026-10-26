@@ -1,7 +1,7 @@
 {
   "scope": "147localcandidates,46gated,all69inheritedidentities mapped. Schema156 unchanged; new private typedmechanics and exactDragon5416. Whole193/finalpublishedreviews remainopen.",
   "source_head_before_baseline": "2053fbfb010b960c15802a764430ac2e8308fd95",
-  "status": "Audited2662baselineadopted; firstfullreleasestoppedat2proof-onlyClippylints. Fixedafterterminal; focusedrepaircheckandrequiredrelease rerun pending. No gameplayortracechanges.",
+  "status": "Exactaudited2662baseline adopted; firstClippy-onlyfailure fixedafterterminal, bothproofrepairsindependentlyapprovedand20focusedtests pass. Requirednormaldefault/release147 rerun NEXT; no successclaimyet.",
   "focused_recording": {
     "passed": 305,
     "failed": 0,
@@ -477,5 +477,40 @@
         "test_threads": 1
       }
     }
-  ]
+  ],
+  "focused_lint_repair": {
+    "head": "7c790a9b0d71ebcd2d2eb5fd17900204d6dbb364",
+    "passed": 20,
+    "failed": 0,
+    "ignored": 0,
+    "compile_seconds": 27.886658456001896,
+    "profile": "AUTHORopt0only; normalrootacceptancecacheunchanged",
+    "guard": {
+      "command": [
+        "python3",
+        "/home/altf4/.cache/rustmage-authoring/hob-complete-set/repair147-clippy-1/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 28.129905298002996,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2464149504,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "reports": "<cache>/rustmage-authoring/hob-complete-set/repair147-clippy-1",
+    "independent_reviews": [
+      {
+        "reviewer": "hob_review_contracts",
+        "revision": "7c790a9b0d71ebcd2d2eb5fd17900204d6dbb364",
+        "result": "Exact2proofsyntaxfixes semanticallyequivalent; gameplay/provenance/2662baselineunchanged; source/fullreleaseeligibilityrefreshed, nofindings"
+      },
+      {
+        "reviewer": "hob_review_rules",
+        "revision": "7c790a9b0d71ebcd2d2eb5fd17900204d6dbb364",
+        "result": "Exact2proofsyntaxfixes semanticallyequivalent; gameplay/provenance/2662baselineunchanged; source/fullreleaseeligibilityrefreshed, nofindings"
+      }
+    ]
+  }
 }

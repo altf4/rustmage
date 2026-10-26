@@ -456,6 +456,6 @@
     "reason": "147fullreleaseClippy",
     "behavior_changed": false,
     "proof_sha256_after_repair": "8afe60e3bd4c43f81eab4a1a43455423dea13e3f8be4237c8586c22da9cba3d0",
-    "validation": "Focusedrepaircheckandfullreleasepending; originalsourceapprovals/hashesretainedasprevioussnapshotreceipts"
+    "validation": "Bothindependentreviewersapprovedexactequivalent2linefixes at7c790a9b; combined20proofcasespassednaturalterminal0. Nextrequireddefaultrelease pending; originalsource/evidencehashesremainhistorical."
   }
 }
