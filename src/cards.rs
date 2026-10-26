@@ -2902,6 +2902,8 @@ pub(crate) enum ReturnKind {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum TriggerCondition {
+    /// First declaration in the turn whose signed creature-power total reaches this threshold.
+    FirstAttackWithTotalPowerAtLeast(u16),
     /// Pre-event observer and other permanent, with an actual owner-hand result.
     OtherControlledNonlandReturnedToOwnersHand,
     /// Global target acquisition, not a cast-completion or self-target event.

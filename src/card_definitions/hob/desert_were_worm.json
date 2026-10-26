@@ -3,10 +3,66 @@
   "catalogue_id": 1051,
   "oracle_id": "81c2913f-42b7-4cfa-adc0-b3416fbe2ec6",
   "facts_sha256": "221644ee8bf77b9c602a4de0f6bc3f2a2e5f78eecada9bc0e8fca590f68a569e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e24c9ae45cd77ff3d79d26e8354e66731278713daa62f4957cfd79b067f08196"
   },
-  "physical_metadata_sha256": "a3b5e32836012b6975b34101c59369361fa4c2c8302fc7fea1e70de436f07af1"
+  "physical_metadata_sha256": "a3b5e32836012b6975b34101c59369361fa4c2c8302fc7fea1e70de436f07af1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DesertWereWorm.java",
+  "java_sha256": "a1580c30207d98bb09845213f07f28c00dde6fd6d9f9d4cb76766aa09fd7d755",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AdditionalCombatPhaseEffect.java",
+      "sha256": "52f33fcfab80ac5e2027406daace88dec6cd258ea19421a98551e2d34394efd3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllControllerEffect.java",
+      "sha256": "664d70dc64894ba9e46838bace1e88036662b3daee12d0914aa7d8e02c975cc4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterAttackingCreature.java",
+      "sha256": "e42cf80f6c0414aa1547a092102896d5149783e7179f782d77f2e1e0263ad191"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java",
+      "sha256": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    }
+  ],
+  "implementation_notes": [
+    "First qualifying attack is global per-player declaration history, including declarations before this source exists or while its abilities are suppressed. Frozen signed current total is recorded after declaration taps, before attack trigger callbacks; put-attacking creatures are not declared attackers.",
+    "Current controlled Mountain subtype count gives a layer7c +2/+0 modifier, not a characteristic-defining ability.",
+    "Untap all current attacking creatures on resolution, then add combat after this phase; neither source departure nor a later lower total cancels the queued packet.",
+    "XMage uses a game-scope boolean watcher; Rust records provider-independent maximum signed declaration total separately for each player, with reset each turn."
+  ]
 }

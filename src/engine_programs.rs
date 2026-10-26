@@ -761,6 +761,7 @@ impl Game {
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                     | TriggerCondition::AttackDeclared { .. }
+                    | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksIfEquipped
@@ -1537,6 +1538,7 @@ impl Game {
         actor: Player,
         alone: Option<ObjectRef>,
         declared: &[AttackDeclaration],
+        power_event: turn_facts::AttackPowerEvent,
     ) {
         self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
@@ -1552,6 +1554,15 @@ impl Game {
             .collect();
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::FirstAttackWithTotalPowerAtLeast(minimum) =
+                    ability.condition.event()
+                    && power_event
+                        .previous_maximum
+                        .is_none_or(|prior| prior < i128::from(minimum))
+                    && power_event.total >= i128::from(minimum)
+                {
+                    self.queue_trigger(&source, index);
+                }
                 if ability.condition.event() == TriggerCondition::ControlledCreatureAttacksAlone
                     && let Some(attacker) = alone
                     && self.queue_trigger(&source, index)

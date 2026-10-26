@@ -874,6 +874,8 @@ struct PlayerState {
     life_gained_this_turn: u128,
     life_lost_this_turn: u128,
     attacked_this_turn: bool,
+    /// Provider-independent history, not a once-per-source trigger-use flag.
+    greatest_declared_attack_power_this_turn: Option<i128>,
     life: i128,
     poison_counters: u64,
     mana: Mana,
@@ -2565,6 +2567,7 @@ impl Game {
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
             attacked_this_turn: false,
+            greatest_declared_attack_power_this_turn: None,
             life: STARTING_LIFE,
             poison_counters: 0,
             mana: [0; 6],
@@ -6412,12 +6415,12 @@ impl Game {
         }
         self.state.attackers.extend(declared.iter().cloned());
         self.tap_objects(&to_tap);
-        self.record_attack_turn_facts(actor, &declared);
+        let power_event = self.record_attack_turn_facts(actor, &declared);
         for attack in &declared {
             event(self, attack.card);
         }
         if self.state.attack_declared {
-            self.declaration_triggers(actor, alone, &declared);
+            self.declaration_triggers(actor, alone, &declared, power_event);
         }
     }
 
@@ -6493,6 +6496,7 @@ impl Game {
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
             player.attacked_this_turn = false;
+            player.greatest_declared_attack_power_this_turn = None;
         }
         self.state.land_played = false;
         self.state.continuous_land_plays_used = 0;

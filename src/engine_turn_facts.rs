@@ -8,6 +8,13 @@ pub struct TurnFactsView {
     pub hero_attacked: bool,
 }
 
+/// Frozen at declaration, before any per-attacker triggered-ability callbacks.
+#[derive(Clone, Copy, Debug)]
+pub(super) struct AttackPowerEvent {
+    pub previous_maximum: Option<i128>,
+    pub total: i128,
+}
+
 fn guard_uses_facts(guard: StepGuard) -> bool {
     matches!(
         guard,
@@ -62,7 +69,20 @@ impl Game {
         &mut self,
         actor: Player,
         declared: &[AttackDeclaration],
-    ) {
+    ) -> AttackPowerEvent {
+        let total = declared
+            .iter()
+            .filter(|attack| self.is_creature(attack.card))
+            .try_fold(0i128, |total, attack| {
+                total.checked_add(self.stats(attack.card).power)
+            })
+            .capacity("declared attack power representation exhausted");
+        let previous_maximum =
+            self.state.players[actor.index()].greatest_declared_attack_power_this_turn;
+        if !declared.is_empty() {
+            self.state.players[actor.index()].greatest_declared_attack_power_this_turn =
+                Some(previous_maximum.map_or(total, |prior| prior.max(total)));
+        }
         // CR508.1f/k/m: inspect characteristics at the actual attack event, after taps.
         let hero = declared.iter().any(|attack| {
             self.on_battlefield(attack.card)
@@ -71,6 +91,10 @@ impl Game {
                 && self.has_subtype(attack.card, "Hero")
         });
         self.state.players[actor.index()].turn_facts.hero_attacked |= hero;
+        AttackPowerEvent {
+            previous_maximum,
+            total,
+        }
     }
     pub(super) fn turn_facts_view(&self) -> Option<[TurnFactsView; 2]> {
         // Public opt-in only. Never scan hidden hands/libraries for observers.
