@@ -2,7 +2,7 @@
   "schema": 156,
   "previous_schema": 155,
   "source_head": "f5540151d1e3747b36dd3ceb07a3d3fa09318234",
-  "status": "Ordinary strict2651-row baseline and all9 release gates passed at6358f190; two independent adoption/source reviews complete, independent terminal receipt checks pending. Whole193 acceptance remains open.",
+  "status": "Ordinary strict2651-row baseline and all9 release gates passed at6358f190, with two independent nonauthor source/adoption audits and two independent terminal receipt approvals. Whole193 acceptance remains open.",
   "reason": "Optional SpellCostChoiceView.activation_route distinguishes Printed and FirstEquipZero only when K\u00edli offers a zero alternative; None omitted for unrelated choices",
   "projection": "Recording only, schema number adjusted; no schema156 fields removed. Existing enduring_story projection only below154. Ordinary strict validation never projects.",
   "comparison": {
@@ -371,5 +371,26 @@
     "new_candidates_per_hour": 13.769232380797177,
     "interval": "Goal creation1793029352 through release resultmtime1793046869.3163855",
     "scope": "Includes shared mechanics, parallel source work, review, inherited proof authoring, guard queue/build/validation and PR522 undo; isolated unintegrated candidates excluded. Candidate throughput is not whole-set certification."
+  },
+  "independent_terminal_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "executable_head": "6358f190cb0f1c0784d9a7587e17a28e90303d79",
+      "documentation_head": "4c0bb94a58330fa2f388407543cc0cd430954111",
+      "result": "Approved all9 gate results,788individualnative records/logs, actualPython8, ordinarystrictbaseline, fixedinputreport, resourceguard and all4 exactimmutablelibrarypaths/hashes; no findings",
+      "scope": "136/193 local candidate checkpoint only; full193 gameplay/performance and final published batch reviews remain open"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "executable_head": "6358f190cb0f1c0784d9a7587e17a28e90303d79",
+      "documentation_head": "4c0bb94a58330fa2f388407543cc0cd430954111",
+      "result": "Approved all9 gate results,788individualnative records/logs, actualPython8, ordinarystrictbaseline, fixedinputreport, resourceguard and all4 exactimmutablelibrarypaths/hashes; no findings",
+      "scope": "136/193 local candidate checkpoint only; full193 gameplay/performance and final published batch reviews remain open"
+    }
+  ],
+  "completed_leaf_cleanup": {
+    "record": "<cache>/rustmage-authoring/hob-complete-set/retired-leaf-targets-schema156.json",
+    "removed_allocated_bytes": 237158400,
+    "scope": "Three retired isolated leaf compiler targets after full integrated acceptance; no active process referenced these targets, no librustmage.so existed inside. Preserved source checkouts/logs/reports and all4 exact required libraries; active root/author targets untouched."
   }
 }
