@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "490fa8a41d3ed0d5c88590a3414bb16b5a770d3a59545348eb2474d011348001",
+  "catalogue_version": "d5e18aa63de30e70caf88052a2eaf1cfcaab4b667d0d8db51ec390c234d19f9c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2610,
-  "implemented_total": 2616,
+  "implemented_standard_cards": 2611,
+  "implemented_total": 2617,
   "token_definitions": 128,
   "emblem_definitions": 3,
   "adventure_definitions": 42,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 92,
-      "complete": 96
+      "gated": 91,
+      "complete": 97
     },
     "hoc": {
       "total": 5,
@@ -33316,8 +33316,8 @@
     {
       "name": "Sting, Bilbo's Sword",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/sting_bilbo_s_sword.rs",
       "set": "hob"
     },

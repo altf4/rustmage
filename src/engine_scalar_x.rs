@@ -289,6 +289,28 @@ impl Game {
                     }
                 })
                 .unwrap_or(0),
+            AmountValue::TargetPlayerCreatureCount => item
+                .targets
+                .iter()
+                .find_map(|bound| {
+                    if let Target::Player(player) = bound.target {
+                        Some(
+                            self.state
+                                .objects
+                                .iter()
+                                .enumerate()
+                                .filter(|(id, object)| {
+                                    object.zone == Zone::Battlefield
+                                        && object.controller == player
+                                        && self.is_creature(*id as CardId)
+                                })
+                                .count() as u128,
+                        )
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or(0),
             AmountValue::ManaSpent => u128::from(
                 self.item_cast_payment(item)
                     .into_iter()

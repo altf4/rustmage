@@ -384,6 +384,7 @@ impl Game {
             }
             AmountValue::PaidSourceCounterQuantity(_)
             | AmountValue::TargetPlayerHandSize
+            | AmountValue::TargetPlayerCreatureCount
             | AmountValue::MilledCreatures
             | AmountValue::ChosenX
             | AmountValue::ManaSpent

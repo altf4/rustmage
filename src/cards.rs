@@ -1889,6 +1889,8 @@ pub(crate) enum AmountValue {
     ControllerHandDeficit(u16),
     /// Current hand size of the spell's surviving targeted player.
     TargetPlayerHandSize,
+    /// Current creatures controlled by the surviving player in the selected target group.
+    TargetPlayerCreatureCount,
     Sum(&'static [AmountValue]),
     ManaSpent,
     ColorsSpent,

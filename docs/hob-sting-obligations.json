@@ -1,0 +1,52 @@
+{
+  "scope": "Sting, Bilbo's Sword complete candidate and surviving targeted-player creature quantity",
+  "base_revision": "51e56d9d",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "obligations": [
+    "Paid flash cast for2 at opponent end step",
+    "Count current creatures controlled by legal targeted opponent at resolution",
+    "Optional own-creature attachment independent of zero counters or player target failure",
+    "All-targets-illegal fizzle; stale recipient rejects attachment while counting legal opponent",
+    "Old source trigger cannot add counters or attach new source incarnation",
+    "Hone uses ordinary counter replacements and counter-derived stats",
+    "Bearer is modified even with zero hone counters; equip3 obeys sorcery timing and controlled-target restrictions"
+  ],
+  "tests": {
+    "module": "src/assurance/hob_sting.rs",
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "scenario_seconds": "<0.01",
+    "compile_and_tests_seconds": 186.684,
+    "guard_seconds_including_queue": 526.2293184809969,
+    "log": "~/.cache/rustmage-authoring/hob-complete-set/sting-3.log",
+    "resource_report": "~/.cache/rustmage-build-reports/0c60dc07f61e4e328d8890e13f56d5aa.json",
+    "memory_peak_bytes": 3849752576,
+    "oom_events": 0
+  },
+  "prior_runs": [
+    {
+      "log": "~/.cache/rustmage-authoring/hob-complete-set/sting-1.log",
+      "passed": 4,
+      "failed": 1,
+      "reason": "Fixture did not answer the legitimate new entry trigger after source reincarnation."
+    },
+    {
+      "log": "~/.cache/rustmage-authoring/hob-complete-set/sting-2.log",
+      "passed": 4,
+      "failed": 1,
+      "reason": "Fixture answered entry trigger before its target prompt was published; fixed by waiting for explicit target prompt."
+    }
+  ],
+  "review": "Independent rules reviewer found missing zero-bonus EquipmentSpec, repaired and asserted modified state. Both independent source reviewers confirm targeting/incarnation rules; final fixed commit receipt and integrated release acceptance pending. No PR or merge.",
+  "throughput": "One new candidate complete card; compilation and queue timing above. No new simulation benchmark was run.",
+  "tested_source_sha256": {
+    "src/cards.rs": "1ac9478f314c7782b86528a0a691e1237e593cb558f238d6b6b693e3e63baee1",
+    "src/engine_scalar_x.rs": "c6760c86aee4ad341445e2e415130b988660a6cdd42076aac04b5bf083eb060d",
+    "src/engine_stat_values.rs": "837df4673d12534d2a67546d72226947a7b0245b7ae25f534aad3bec01842800",
+    "src/card_definitions/hob/sting_bilbo_s_sword.rs": "b9dedc0795cf6b5b71d5ce4499f937b8e70b9903b71ebd189e16dbf86d359433",
+    "src/card_definitions/hob/sting_bilbo_s_sword.json": "cb8bc2769b546d04552429f01bd5dd1fcc06aa333ae598f776477dcada76eae8",
+    "src/assurance/hob_sting.rs": "36e57b577257a13d66b9b630a92d571726cdf02da50890dc2fc0ec85ada18efb"
+  }
+}

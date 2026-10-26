@@ -188,4 +188,5 @@ mod hob_recruit;
 
 mod hob_graveyard_origin;
 mod hob_hone;
+mod hob_sting;
 mod hob_storied;
