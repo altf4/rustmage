@@ -3,10 +3,35 @@
   "catalogue_id": 1228,
   "oracle_id": "cb4b4b63-682b-4439-9757-84cca7a27db2",
   "facts_sha256": "4e2c5a93f3a06560f2706d9059b896bef08decf6678eb53befeec3db78c7f0aa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c28e0d10c828239973e458a6ad0ee40448c8b0cf5b4c7d7f33e46f423c5c1ce0"
   },
-  "physical_metadata_sha256": "7366f9ab12dabc0debb9a30e0d07fdc9334a5469dc14409d21f39455412f555e"
+  "physical_metadata_sha256": "7366f9ab12dabc0debb9a30e0d07fdc9334a5469dc14409d21f39455412f555e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EagleOfTheGreatShelf.java",
+  "java_sha256": "329e52d7066bd9e38c1e74be02dbb0538c63447ea519199c5af65a189b9763fe",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

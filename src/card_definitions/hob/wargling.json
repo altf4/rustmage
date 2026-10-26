@@ -3,10 +3,40 @@
   "catalogue_id": 4979,
   "oracle_id": "ce107656-f222-4d9a-9ba2-b33b4d47bdb5",
   "facts_sha256": "134d42b35cb83dd323ff84503182add55d4aebdfc383f70a03acfd9a05bba5af",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1ff27d05dbe5f87672c12832420cf840cfbb50740c340b28264d8d8556e96f28"
   },
-  "physical_metadata_sha256": "1a104d1bd2156e23d704d2887a9bbe0e1394a0c8e8aab4f8bbb574197846bb29"
+  "physical_metadata_sha256": "1a104d1bd2156e23d704d2887a9bbe0e1394a0c8e8aab4f8bbb574197846bb29",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/Wargling.java",
+  "java_sha256": "fe418de9fe3180b33057941d37cbfb15f8f2777dd1a6ea4b8403e4c4f39759d9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }
