@@ -3074,6 +3074,14 @@ impl Game {
                             .amount,
                     );
                 }
+                Instruction::DiscardThenReturnLand { tapped } => {
+                    self.state.resolving.as_mut().unwrap().discards[item.controller.index()] = 1;
+                    self.state.resolving.as_mut().unwrap().discard_after =
+                        Some(discard_events::DiscardAfter::ReturnLandFromGraveyard {
+                            player: item.controller,
+                            tapped,
+                        });
+                }
                 Instruction::DiscardThenPutLand {
                     players,
                     amount,

@@ -1,0 +1,204 @@
+{
+  "scope": "Complete Silvan Reveler author candidate; mandatory actual discarded land from graveyard and graveyard-only landfall optional paid exact return. Independent of parked Elrond changes.",
+  "base_revision": "72214630eec9e91e123f5f54e8b652bead100814",
+  "sources": {
+    "oracle": "Full Oracle and physical facts in data/standard/cards.json, identity3869/11932191-4b19-49b1-bfe4-abb7b83b2e59; paired fact and physical metadata SHA unchanged.",
+    "xmage_absence": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "oracle_id": "11932191-4b19-49b1-bfe4-abb7b83b2e59",
+      "inventory_path": "data/standard/xmage-inventory.json",
+      "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+      "evidence": "Pinned inventory xmage_name:null and implementations:[]; full pinned Mage.Sets card tree has no Silvan Reveler class. Historical typed_lift is retained as history, not executable evidence."
+    },
+    "full_source_reads": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/Bloodghast.java",
+        "sha256": "ffa59b6db05372083f8286c50c7249757c4c37974094fe4eac9a76f1a949cf8b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+        "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+        "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+        "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+        "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MindRoots.java",
+        "sha256": "9e8253875f7034861782eba17d3a08fec0a31512a83cb5d5584970198d0e704d"
+      }
+    ],
+    "interpretation": "No pinned Silvan identity class exists. Bloodghast and full LandfallAbility demonstrate graveyard-zone landfall; complete DrawDiscardControllerEffect, DoIfCostPaid, ReturnSourceFromGraveyardToHandEffect and MindRoots provide analogous reusable evidence. MindRoots permits an optional discarded-land choice from any public destination; that behavior is deliberately separate from Silvan mandatory FROM YOUR GRAVEYARD. No exact identity provenance was invented.",
+    "authority": "https://magic.wizards.com/en/news/feature/the-hobbit-prerelease-guide references the official Silvan card image. Official release notes contain no Silvan-specific entry. Cached official CR effective2026-09-25,113.6m establishes graveyard-only ability;400.7 and public-zone following establish actual resulting incarnation,109.5 owner/controller and603 entry-event collection support the remaining rules.",
+    "source_check": {
+      "definitions": 5417,
+      "source_blobs": 1579,
+      "java_verified": true,
+      "catalogue_version": "8b71c19c1f9c77e285142e469c617414dfe0872eea37e0f5e06710024ea79b81"
+    }
+  },
+  "shared_mechanics": {
+    "new_private_instruction": "DiscardThenReturnLand{tapped} sets one mandatory discard for captured item.controller and private DiscardAfter::ReturnLandFromGraveyard{player,tapped}. It reuses owned Resolution discard queues/context; no optional land-choice prompt or global remembered card.",
+    "actual_discard_predicate": "Only moved events whose BEFORE object is a nontoken land owned by the discarding player, whose actual resulting destination is Graveyard, and whose AFTER ObjectRef is still the current exact graveyard incarnation may enter. Actual land entries are staged tapped under the captured player. Exile replacements, unrelated graveyard lands and departed/new incarnations are excluded. The current type of a different card is never substituted for frozen discarded-card facts.",
+    "graveyard_landfall_reuse": "Existing finish_zone_events already includes graveyard sources with InZone conditions in its post-event source snapshots. LandEntersYou checks actual current entered kinds/controller for every entry, including token lands, then common queue logic enforces origin=Graveyard. ReturnSourceToHand(Graveyard) checks exact captured source generation and current zone. MayPayMana1GU/skip1 uses existing ordinary mana-payment continuation and source-independent queued packet. No new index/registration, event variant or history field was needed.",
+    "ordering_and_ownership": "All simultaneous entries collect post-event source views. A Silvan returned simultaneously with a land is now on battlefield and has no graveyard landfall ability; its ordinary ETB still draws/discards. Source departing during an ETB/Miracle pause does not cancel that captured ETB; its new graveyard incarnation may independently trigger from the recovered land."
+  },
+  "wire_coordination": {
+    "public_delta": "None. New instruction and private DiscardAfter variant add no public fields, actions, pending shapes or choice kinds. Existing discard, entry choice, Miracle and resolution mana views are reused unchanged. No central schema159 edit.",
+    "parent_confirmation": "Parent approved narrow existing landfall reuse and mandatory actual-graveyard follow-on; genuine wire additions would have required schema159 coordination, but none were needed."
+  },
+  "printed_assertion_map": {
+    "2GU3/2 Elf Citizen": "Both seats actual four-mana paid cast, zero remaining mana, exact body and subtypes.",
+    "ETB draw then mandatory private discard": "One actual draw before EffectDiscard, private drawn card absent from opponent objects, opponent selected-discard view empty, Pass rejected transactionally, actual Discard completes without optional SelectLand. Nonland discard preserves unrelated graveyard land and drawn hand card. Source gone still resolves captured ETB.",
+    "If actual discarded land, put it FROM YOUR GRAVEYARD tapped": "Actually drawn Forest goes Hand->GY->BF with generation+2, tapped/owner/controller correct; unrelated GY Forest unchanged. Rest in Peace replacement leaves it Exile at generation+1 and no choice. Secluded Courtyard actual discard enters choice-bearing batch while still GY, then enters tapped after owned raw/index/parentdrop/restore.",
+    "Exact frozen discard-result continuation": "Small private shared-contract proof freezes real Hand->GY attempted movement events, then tests normal/stale-new-incarnation/current-exile/replaced-exile worlds before applying follow-on. It isolates impossible-to-intervene continuation boundaries without fabricating a real player priority window. The card scenarios themselves use paid cast/Discard actions.",
+    "Miracle suspension": "Lorehold grants first drawn Shock Miracle. Private reveal pause retains owned ETB and exact one-draw count; source moved GY, decline resumes mandatory discard of the chosen existing land, automatic tapped entry independently triggers source graveyard landfall; actual1GU return succeeds. Parentdrop/restore repeats to identical final state.",
+    "Graveyard-only landfall/current controller": "Only GY Silvan triggers; simultaneous BF/Hand/Exile copies excluded. Source BF theft then death resets to owner, a land owned by source owner entering under opponent does not trigger, and opponent-owned land entering under source owner does trigger. Token Forest copies and multiple simultaneous lands yield distinct exact triggers.",
+    "Optional1GU actual payment and exact return": "Paid, declined and unpayable branches both seats; invalid zero payment rejected transactionally; mana remains on decline, actual cost spent on pay; tapped mana produced from entering Forest during payment funds actual return. Returned GY card publicly known in hand, distinct from private draw.",
+    "Source loss and entry ordering": "Old GY trigger may be paid after source exile or new GY incarnation but cannot move that new object. Multiple land triggers retain original ref after first return; later decline is independent. Source+land simultaneous return produces ETB but no graveyard landfall.",
+    "Owned/rollback": "Representative mandatory-discard/entry-choice/Miracle/payment roots use existing contracts, raw/index independent children, parent disposal and snapshots/restores. Illegal Pass/payment preserve complete snapshot/revision. No all-action simulation bot added."
+  },
+  "proof_tests": {
+    "silvan_paid_body_private_draw_mandatory_discard_exact_land_automatic_tapped": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_nonland_discard_does_not_recover_unrelated_land_and_source_can_leave": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_discard_replaced_by_exile_is_not_put_on_battlefield": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_discard_entry_choice_retains_exact_move_and_owned_private_branches": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_miracle_suspends_draw_before_discard_then_source_in_graveyard_observes_land": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_graveyard_landfall_paid_decline_unpayable_and_battlefield_exile_hand_excluded": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_graveyard_landfall_can_generate_mana_during_optional_payment": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_landfall_uses_controller_not_land_owner_and_source_graveyard_uses_owner": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_landfall_token_land_and_multiple_lands_make_distinct_exact_triggers": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_landfall_stale_graveyard_incarnation_can_pay_without_moving_reentry": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_simultaneous_return_with_land_uses_post_entry_zone_not_old_graveyard": "src/assurance/hob_silvan_reveler.rs",
+    "silvan_discard_followon_rejects_departed_new_incarnation_and_replacement_destination": "src/engine_silvan_discard_tests.rs"
+  },
+  "validation": {
+    "protocol": "Every Cargo command through resource_guard6GiB/jobs1/thread1; stable isolated target at ~/.cache/rustmage-authoring/hob-silvan-reveler/target and environment test opt0, no repository profile edits. Persistent driver-1.py and entire guard stdout/stderr redirected outer-1.log at launch, group results recorded after each group; eight-name strict named-fixture/paired-complete preflight before queue and repeated inside driver. Unknown/incomplete fixture names fail. Inputs fixed until actual process natural terminal; no cancellation, restart or consuming-input mutation.",
+    "runs": [
+      {
+        "run": 1,
+        "results": [
+          {
+            "filter": "silvan",
+            "exit": 0,
+            "seconds": 35.6566918049939,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-silvan-reveler/focused-1.log"
+          },
+          {
+            "filter": "sos_mind_roots",
+            "exit": 0,
+            "seconds": 0.18202648701844737,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-silvan-reveler/discarded-land-regression-1.log"
+          },
+          {
+            "filter": "hob_recruit::",
+            "exit": 0,
+            "seconds": 0.08410010900115594,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-silvan-reveler/recruit-regression-1.log"
+          },
+          {
+            "filter": "hob_balin",
+            "exit": 0,
+            "seconds": 0.10812056600116193,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-silvan-reveler/discard-followon-regression-1.log"
+          },
+          {
+            "filter": "gate_colossus",
+            "exit": 0,
+            "seconds": 0.05478088901145384,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-silvan-reveler/graveyard-entry-regression-1.log"
+          },
+          {
+            "filter": "flamewake",
+            "exit": 0,
+            "seconds": 0.042653566983062774,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-silvan-reveler/graveyard-payment-regression-1.log"
+          },
+          {
+            "filter": "clippy",
+            "exit": 0,
+            "seconds": 46.69867927697487,
+            "log": "/home/altf4/.cache/rustmage-authoring/hob-silvan-reveler/clippy-1.log"
+          }
+        ],
+        "guard_report": "/home/altf4/.cache/rustmage-build-reports/eca9c2bf7f694e7fb9b3625b6b352433.json",
+        "guard": {
+          "command": [
+            "python3",
+            "/home/altf4/.cache/rustmage-authoring/hob-silvan-reveler/driver-1.py"
+          ],
+          "terminal": true,
+          "exit_code": 0,
+          "seconds": 106.57574389199726,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 2598813696,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        }
+      }
+    ],
+    "empty_filters_not_counted": [
+      "gate_colossus",
+      "flamewake"
+    ],
+    "empty_filter_note": "Planned gate_colossus/flamewake filters matched no test names; zero matches are explicitly NOT rules passes. Their generic graveyard-entry/payment implementation was reused unchanged; Silvan directly proves this path, while MindRoots/recruit/Balin are the actual affected shared-discard regressions.",
+    "unique_native_tests": 34,
+    "group_native_counts": {
+      "silvan": 12,
+      "sos_mind_roots": 4,
+      "hob_recruit::": 4,
+      "hob_balin": 14,
+      "gate_colossus": 0,
+      "flamewake": 0
+    },
+    "group_native_wall_seconds": {
+      "silvan": [
+        "0.03"
+      ],
+      "sos_mind_roots": [
+        "0.02"
+      ],
+      "hob_recruit::": [
+        "0.02"
+      ],
+      "hob_balin": [
+        "0.06"
+      ],
+      "gate_colossus": [
+        "0.00"
+      ],
+      "flamewake": [
+        "0.00"
+      ]
+    },
+    "strict_clippy": "cargo clippy --all-targets -- -D warnings PASS, no exceptions.",
+    "additional_checks": "link_catalogue generated locally, check_sources full immutable Java pins PASS; owned rustfmt/check and git diff--check PASS. Central assurance/mod.rs registration and generated catalogue/coverage remain local-only/excluded from commit.",
+    "full_acceptance": "No leaf full validator or whole-set simulation. Root owns integrated final release acceptance, trace audit and full-set gameplay/performance."
+  },
+  "measured_scope": {
+    "author_start": "2026-10-26T23:21:59+00:00",
+    "author_end": "2026-10-26T23:35:42.320962+00:00",
+    "elapsed_seconds_including_source_reads_and_queue": 823.320962,
+    "complete_card_candidates": 1,
+    "candidate_cards_per_hour_including_queue": 4.372535336954047,
+    "guard_work_seconds": 82.82705269998405,
+    "guard_wait_and_overhead_seconds": 23.74869119201321,
+    "simulation_throughput": "Not measured; native bounded proof timing is not games/second."
+  },
+  "review_status": "Ready for two independent nonauthor reviews of exact committed candidate. No PR, push or merge; whole-set goal remains open."
+}

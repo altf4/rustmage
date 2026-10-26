@@ -16,6 +16,7 @@ pub(super) enum DiscardAfter {
     RememberActual,
     ConniveCounters(ObjectRef, u64, Player),
     ChooseLand { player: Player, tapped: bool },
+    ReturnLandFromGraveyard { player: Player, tapped: bool },
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct DiscardContext {
@@ -258,6 +259,31 @@ impl Game {
                     self.create_tokens(player, token, 1, false);
                 }
             }
+            Some(DiscardAfter::ReturnLandFromGraveyard { player, tapped }) => {
+                // The printed restriction is FROM YOUR GRAVEYARD, not merely
+                // a discarded card tracked into any public replacement zone.
+                let moves = events
+                    .iter()
+                    .filter(|event| {
+                        event.moved
+                            && event.before.owner == player
+                            && event.before.kinds & 2 != 0
+                            && event.destination == Zone::Graveyard
+                            && self.object_ref(event.after.card) == event.after
+                            && self.state.objects[event.after.card as usize].zone == Zone::Graveyard
+                            && !event.before.is_token()
+                    })
+                    .map(|event| {
+                        let mut movement =
+                            self.entry_move(event.after.card, Zone::Battlefield, tapped);
+                        movement.controller = player;
+                        movement
+                    })
+                    .collect::<Vec<_>>();
+                if !moves.is_empty() {
+                    self.stage_entries(moves, None);
+                }
+            }
             Some(DiscardAfter::ChooseLand { player, tapped }) => {
                 // CR400.7j: follow only this effect's first move to a public zone.
                 // Hidden replacement destinations cannot be recovered by identity.
@@ -427,3 +453,7 @@ mod balin_result_tests {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "engine_silvan_discard_tests.rs"]
+mod silvan_discard_tests;

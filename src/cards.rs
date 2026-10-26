@@ -1149,6 +1149,10 @@ pub(crate) enum Instruction {
     FightSource,
     DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
+    /// Mandatory one-card discard; only its actual land in your graveyard enters.
+    DiscardThenReturnLand {
+        tapped: bool,
+    },
     PutLandCards {
         maximum: AmountValue,
         tapped: bool,
