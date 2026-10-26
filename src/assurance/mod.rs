@@ -180,3 +180,5 @@ mod msh_b;
 mod msh_c;
 mod msh_contracts;
 mod msh_d;
+
+mod hob_equipment;
