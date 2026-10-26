@@ -94,8 +94,8 @@ fn key_funding_cannot_sacrifice_its_only_matching_legend_to_pay_the_mana_cost() 
         let mut g = scenario(p);
         let key = put(&mut g, p, "Key to the Side-Door", Zone::Battlefield);
         let company = put(&mut g, p, "Bolg's Company", Zone::Battlefield);
-        let legend = put(&mut g, p, "Óin the Brave", Zone::Battlefield);
-        let discard = put(&mut g, p, "Óin the Brave", Zone::Hand);
+        let legend = put(&mut g, p, "The Great Goblin", Zone::Battlefield);
+        let discard = put(&mut g, p, "The Great Goblin", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
         let announce = Action::AnnounceActivate {
             card: key,
