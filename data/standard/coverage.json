@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "90658f37df0c03ce4514f28c30cfdacc18a51e13d9f39ef0f0ffa0de9657ded8",
+  "catalogue_version": "a3c6a39217a4c562e372c08d16d3ffafb264c18979d2d05a374114780021320c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2663,
-  "implemented_total": 2669,
+  "implemented_standard_cards": 2665,
+  "implemented_total": 2671,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 149,
-      "gated": 39
+      "complete": 151,
+      "gated": 37
     },
     "hoc": {
       "total": 5,
@@ -8652,8 +8652,8 @@
     {
       "name": "Desolation of Smaug",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/desolation_of_smaug.rs",
       "set": "hob"
     },
@@ -28356,8 +28356,8 @@
     {
       "name": "Riddles in the Dark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/riddles_in_the_dark.rs",
       "set": "hob"
     },

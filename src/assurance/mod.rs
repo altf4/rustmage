@@ -253,3 +253,6 @@ mod hob_master;
 mod hob_roll;
 
 mod hob_azog_rampager;
+
+mod hob_desolation;
+mod hob_riddles;
