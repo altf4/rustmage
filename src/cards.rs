@@ -611,6 +611,8 @@ pub(crate) struct LibrarySelectionSpec {
 /// Explicit destinations for cards looked at without changing zones first.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryPickDestination {
+    /// A single forced candidate; evaluate the threshold before any entry choices.
+    BattlefieldIfManaValueAtMostElseHand(AmountValue),
     BattlefieldTapped,
     LandsTappedRestHand,
     Hideaway,

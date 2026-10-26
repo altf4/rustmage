@@ -144,6 +144,22 @@ impl Game {
                     })
             })
             .collect();
+        let destination = match effect.destination {
+            LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(value) => {
+                assert_eq!(spec.count, LibrarySelectionCount::Fixed(1));
+                assert!(!spec.optional && eligible.len() <= 1);
+                let maximum = self.item_amount(value, item);
+                if eligible.first().is_some_and(|r| {
+                    u128::from(self.state.objects[r.card as usize].card.fixed_mana_value())
+                        <= maximum
+                }) {
+                    LibraryPickDestination::Battlefield
+                } else {
+                    LibraryPickDestination::Hand
+                }
+            }
+            destination => destination,
+        };
         let grave = || {
             self.state
                 .objects
@@ -185,7 +201,7 @@ impl Game {
             may_transform,
             entered: None,
             transform_pending: false,
-            destination: effect.destination,
+            destination,
             public: effect.public,
             entering: false,
             remaining,
@@ -595,6 +611,9 @@ impl Game {
             reveal: f.spec.reveal,
             public: f.public,
             destination: match f.destination {
+                LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(_) => {
+                    unreachable!("normalized before frame creation")
+                }
                 LibraryPickDestination::LandsTappedRestHand => "lands_tapped_rest_hand",
                 LibraryPickDestination::Hand => "hand",
                 LibraryPickDestination::Battlefield => "battlefield",
