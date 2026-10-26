@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "66c3d50e76c5f656c41f34bd7b5550cc5feea47c287ebb958d865659ecfeebe3",
+  "catalogue_version": "47a7b7899aa72a601f8aa88cfb49c3d8ece744c9b9e1cbfcfd162f4c949ce402",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2625,
-  "implemented_total": 2631,
-  "token_definitions": 128,
+  "implemented_standard_cards": 2627,
+  "implemented_total": 2633,
+  "token_definitions": 129,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
   "omen_definitions": 13,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 77,
-      "complete": 111
+      "gated": 75,
+      "complete": 113
     },
     "hoc": {
       "total": 5,
@@ -3212,8 +3212,8 @@
     {
       "name": "Bejeweled Warg",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/bejeweled_warg.rs",
       "set": "hob"
     },
@@ -6084,8 +6084,8 @@
     {
       "name": "Chief Warg's Company",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/chief_warg_s_company.rs",
       "set": "hob"
     },

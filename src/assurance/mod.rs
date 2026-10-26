@@ -198,3 +198,4 @@ mod hob_storied;
 mod hob_existing_three;
 
 mod hob_warg_company;
+mod hob_bejeweled;

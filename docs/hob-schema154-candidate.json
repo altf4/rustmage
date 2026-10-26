@@ -85,7 +85,7 @@
       "release_build_seconds": 129.0061323150294,
       "files_verified": 11849,
       "library": {
-        "path": "/home/altf4/.cache/rustmage-validation-y3jor6s1/report/libraries/librustmage.so",
+        "path": "<cache>/rustmage-validation-y3jor6s1/report/libraries/librustmage.so",
         "sha256": "2690e37e6a0621aebf264ba78174b5d167d1eddd490cb0ddce9de5c1949e7f2c",
         "mode": "0555"
       },
@@ -98,6 +98,13 @@
         "seconds": 0.041154013,
         "decisions_per_second": 120061.19549021866,
         "games_per_second": 242.98966907552852
+      },
+      "independent_reviews": {
+        "reviewers": [
+          "hob_review_contracts",
+          "hob_review_rules"
+        ],
+        "result": "Both independent nonauthors physically verified exact immutable library/hash/mode, all9phase reports,672native and8Python counts, fixed inputs/noactive processes and guard limits. Approved exactfaca9756 checkpoint; laterleaf changes and full-set acceptance excluded."
       }
     }
   ]

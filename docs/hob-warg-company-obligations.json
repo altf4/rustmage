@@ -64,5 +64,13 @@
     "candidate_physical_cards_per_hour": 10.268106232006595,
     "simulation": "No simulation benchmark run"
   },
-  "acceptance": "Independent nonauthor reviews and final integrated release/set acceptance remain required. Root checkpoint on faca9756 predates this leaf and does not validate its executable inputs. No PR or merge was created."
+  "acceptance": "Independent nonauthor reviews and final integrated release/set acceptance remain required. Root checkpoint on faca9756 predates this leaf and does not validate its executable inputs. No PR or merge was created.",
+  "independent_reviews": {
+    "head": "5dca297508148553febbf36f078ada79378b9c2c",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both independent nonauthors verified full Oracle/Java/helper source, exact Wolf recipe, actual3focused+1token legality logs, and approved with no findings. Root integration requires current executable acceptance."
+  }
 }
