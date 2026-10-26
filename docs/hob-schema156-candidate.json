@@ -2,7 +2,7 @@
   "schema": 156,
   "previous_schema": 155,
   "source_head": "f5540151d1e3747b36dd3ceb07a3d3fa09318234",
-  "status": "Two independent nonauthor audits approved exact candidate bytes; baseline adopted; ordinary strict and full release pending",
+  "status": "Ordinary strict2651-row baseline and all9 release gates passed at6358f190; two independent adoption/source reviews complete, independent terminal receipt checks pending. Whole193 acceptance remains open.",
   "reason": "Optional SpellCostChoiceView.activation_route distinguishes Printed and FirstEquipZero only when K\u00edli offers a zero alternative; None omitted for unrelated choices",
   "projection": "Recording only, schema number adjusted; no schema156 fields removed. Existing enduring_story projection only below154. Ordinary strict validation never projects.",
   "comparison": {
@@ -230,7 +230,7 @@
     "cargo_jobs": 1,
     "test_threads": 1
   },
-  "required_full_release": "Pending after two independent audit reviews and adoption of exact candidate bytes",
+  "required_full_release": "Passed exact frozen source6358f190 with reusable target; no repeat required for this same executable input snapshot",
   "whole_set": "136/193 candidates,57gated; full193 acceptance open",
   "independent_adoption_reviews": [
     {
@@ -245,5 +245,131 @@
       "result": "Approved exact full-row and byte audit; all four inherited baselines preserved; no findings",
       "scope": "Adoption eligibility and integrated focused/source evidence only; full release and final published whole-set reviews pending"
     }
-  ]
+  ],
+  "full_release": {
+    "head": "6358f190cb0f1c0784d9a7587e17a28e90303d79",
+    "result": "<cache>/rustmage-validation-luin5lob/report/result.json",
+    "success": true,
+    "terminal": true,
+    "execution_seconds": 344.48562881402904,
+    "phase_results": [
+      {
+        "name": "source pins",
+        "exit": 0,
+        "seconds": 0.7670514769852161,
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "format",
+        "exit": 0,
+        "seconds": 1.7198022980010137,
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "card format",
+        "exit": 0,
+        "seconds": 1.119815535028465,
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "script contracts",
+        "exit": 0,
+        "seconds": 0.6179376830114052,
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "clippy",
+        "exit": 0,
+        "seconds": 41.93069521000143,
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "native assurance",
+        "exit": 0,
+        "seconds": 166.71667300199624,
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "release build",
+        "exit": 0,
+        "seconds": 131.0624377260101,
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "simulation sample",
+        "exit": 0,
+        "seconds": 0.11496307095512748,
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "Python assurance",
+        "exit": 0,
+        "seconds": 0.21593718801159412,
+        "timed_out": false,
+        "orphaned_processes": false
+      }
+    ],
+    "native_tests": 788,
+    "native_compile_seconds": 143.5785559359938,
+    "native_execution_seconds": 23.01768956601154,
+    "python_smoke_tests": 8,
+    "python_test_seconds": 0.016,
+    "files_verified": 11893,
+    "input_sha256": "d36f77661a547d7f2660ef448f56dd7a1bd270a7d89616ec95bc1f5a8badba61",
+    "changed": [],
+    "active_processes": [],
+    "guard": {
+      "command": [
+        "/usr/bin/python3",
+        "/home/altf4/.codex/worktrees/hob-complete-set/rustmage/scripts/validate.py",
+        "--release",
+        "--python",
+        "smoke",
+        "--target-dir",
+        "/home/altf4/.cache/rustmage-authoring/hob-complete-set/target"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 344.71263120300137,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 3142598656,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "resource_report": "<cache>/rustmage-build-reports/53d7214ae1734c40ad6c45c58d9afa70.json",
+    "immutable_libraries": {
+      "/home/altf4/.cache/rustmage-validation-luin5lob/report/libraries/librustmage.so": "057466e70191ba13c0847be5ba060359d1c47a3897a3cc66e5cf3baeacb28ca0"
+    },
+    "library_verification": "All required luin5lob,jzygc95p,xyv_qayq,y3jor6s1 libraries physically verified regular non-symlink0555 exact required SHA256. Preserve these paths/hashes."
+  },
+  "simulation": {
+    "clone_ns": 294.31206,
+    "decisions": 4941,
+    "decisions_per_second": 119296.72156142774,
+    "games": 10,
+    "games_per_second": 241.44246420042043,
+    "initial_state_bytes_excluding_capacity_and_allocator": 21752,
+    "max_decisions_per_game": 655,
+    "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+    "restore_ns": 165.42443,
+    "seconds": 0.041417735,
+    "workload": "Limited10-game Freeform smoke; NOT wholeHOB193 gameplay/performance; no speedup claim",
+    "comparison": "Prior measured initialstate21720B, now21752B (+32). Separate clone timing294.312ns has no benchmark stability/repetition guarantee."
+  },
+  "implementation_throughput": {
+    "new_candidates_vs_inherited69": 67,
+    "elapsed_goal_wall_seconds": 17517.316385507584,
+    "new_candidates_per_hour": 13.769232380797177,
+    "interval": "Goal creation1793029352 through release resultmtime1793046869.3163855",
+    "scope": "Includes shared mechanics, parallel source work, review, inherited proof authoring, guard queue/build/validation and PR522 undo; isolated unintegrated candidates excluded. Candidate throughput is not whole-set certification."
+  }
 }
