@@ -222,3 +222,5 @@ mod hob_inherited_adventures_two;
 mod hob_plate_company;
 
 mod hob_inherited_creatures;
+
+mod hob_crooked_galion;

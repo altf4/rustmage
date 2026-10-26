@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2975feb58bdb5002a4d7873c16cc14ccd441c47078590b64c59d09e544c3d427",
+  "catalogue_version": "4b9bd18d674e45ecf11149c536fe8e2f5480d2e2433c5aaa4ac33a65062598e6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2645,
-  "implemented_total": 2651,
+  "implemented_standard_cards": 2647,
+  "implemented_total": 2653,
   "token_definitions": 130,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 57,
-      "complete": 131
+      "complete": 133,
+      "gated": 55
     },
     "hoc": {
       "total": 5,
@@ -1300,8 +1300,8 @@
     {
       "name": "Along the Crooked Way",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/along_the_crooked_way.rs",
       "set": "hob"
     },
@@ -13524,8 +13524,8 @@
     {
       "name": "Galion, Elvenking's Butler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/galion_elvenking_s_butler.rs",
       "set": "hob"
     },

@@ -125,5 +125,20 @@
     "candidate_cards_per_hour": 2.161513059141399,
     "scope": "Isolated branch creation through final terminal source audit, including source reading, implementation, fixture correction, corner-case audit and shared-slot waits",
     "simulation": "No simulation benchmark run; not full-set acceptance."
-  }
+  },
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "7ee292a91edaa7beffeae8754107f6415059e001",
+      "result": "Full core, both cards, complete Oracle/Java/helper/absence provenance, official rulings and actual26checks approved; no findings",
+      "scope": "Source/focused only; integrated fullrelease and whole193/finalpublished reviews remain open"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "7ee292a91edaa7beffeae8754107f6415059e001",
+      "result": "Full core, both cards, complete Oracle/Java/helper/absence provenance, official rulings and actual26checks approved; no findings",
+      "scope": "Source/focused only; integrated fullrelease and whole193/finalpublished reviews remain open"
+    }
+  ],
+  "root_integration": "Registered main and owned rollback child assurance modules and regenerated catalogue on single local set branch. Next combined integrated focused check pending; last full-release checkpoint136at6358 remains exactscoped. No PR/push/merge."
 }

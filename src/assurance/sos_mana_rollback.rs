@@ -243,3 +243,6 @@ mod hob_extra_triggers;
 
 #[path = "hob_death_return_rollback.rs"]
 mod hob_death_return_rollback;
+
+#[path = "hob_crooked_rollback.rs"]
+mod hob_crooked_rollback;
