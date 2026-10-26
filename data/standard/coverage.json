@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2b62fb7d0d4f3f998eeb83a6774571a27b8044ff00235cc7f0e032599543b542",
+  "catalogue_version": "e1e7d31c4425fc75d0fd922bab18ff1e8fb8ae3ef100737d56e5d7af91952724",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2659,
-  "implemented_total": 2665,
+  "implemented_standard_cards": 2660,
+  "implemented_total": 2666,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 145,
-      "gated": 43
+      "complete": 146,
+      "gated": 42
     },
     "hoc": {
       "total": 5,
@@ -35980,8 +35980,8 @@
     {
       "name": "The Master of Lake-town",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_master_of_lake_town.rs",
       "set": "hob"
     },

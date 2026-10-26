@@ -247,3 +247,5 @@ mod hob_wandering;
 mod hob_beorn;
 
 mod hob_black_arrow;
+
+mod hob_master;
