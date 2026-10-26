@@ -1,0 +1,194 @@
+{
+  "scope": "The Master of Lake-town entire printed behavior; private reuse of life event plus bounded milling and resolution-time graveyard count. No public wire, IDs or State fields.",
+  "base_revision": "93969346",
+  "oracle_facts": {
+    "oracle_id": "89c3c81b-8960-4f79-b2ec-f13560058071",
+    "name": "The Master of Lake-town",
+    "layout": "normal",
+    "mana_cost": "{1}{B}{B}",
+    "cmc": 3.0,
+    "type_line": "Legendary Creature \u2014 Human Advisor",
+    "oracle_text": "Deathtouch\nWhenever a player loses life, that player mills that many cards. (Damage causes loss of life.)\nWhen The Master of Lake-town dies, draw a card for each graveyard with seven or more cards in it.",
+    "power": "3",
+    "toughness": "2",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Mill",
+      "Deathtouch"
+    ],
+    "reference_printing": {
+      "id": "3788ada6-34a9-41af-a31c-2d090550e503",
+      "set": "hob",
+      "collector_number": "77",
+      "released_at": "2026-08-14"
+    }
+  },
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/t/TheMasterOfLakeTown.java",
+      "sha256": "f36f8aaa41171a9a31a197ad99c6189f3b4077b7515eaf287a6d65d95f83b596"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LoseLifeTriggeredAbility.java",
+      "sha256": "6d6a10a3d81d3cc3949dd1f70d678487bf79f8ff7564b9c009eecb28f9577d62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedLifeLossValue.java",
+      "sha256": "7b2c3c39eb75e42146911828a50c2f468d1ea2ae7955fec68fe82e37f23a9bd0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ZoneChangeTriggeredAbility.java",
+      "sha256": "2387eb4e53ef69a480b3ad72111ccdd5f994528cb727378c65c941a46c44d7ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ],
+  "obligations": {
+    "body": "Paid1BB3/2 deathtouch, actual combat kills larger creature",
+    "life": "Any player, frozen actual positive life loss including payment and simultaneous damage; non-target event player mills exact amount bounded by available library, existing zone replacements; gain/prevented/zero loss excluded",
+    "death": "Resolution-time current count of graveyards with7+ cards, source death counts itself, zero/one/two and actual draw privacy; nondeath exile no trigger",
+    "owned": "Sourcegone queued event retained and raw/index/restore/independentchildren frozen player+amount; transactional rejected unaffordable activation"
+  },
+  "validation": {
+    "status": "Author focused pass; full independent reviews and integrated acceptance pending.",
+    "passed": 18,
+    "groups": {
+      "hob_master": 7,
+      "sos_milled_play": 4,
+      "sos_life_x": 5,
+      "deathtouch_kills_larger_blocker": 1,
+      "arena_upkeep_draw": 1
+    },
+    "results": {
+      "compile": {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--no-run",
+          "--message-format=json",
+          "--target-dir",
+          "<cache>/rustmage-authoring/hob-master/target"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 35.65675435698358,
+        "log": "<cache>/rustmage-authoring/hob-master/run-1/compile.jsonl"
+      },
+      "hob_master": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-master/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_master",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06638926698360592,
+        "log": "<cache>/rustmage-authoring/hob-master/run-1/0.log"
+      },
+      "sos_milled_play": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-master/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "sos_milled_play",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.0656099240295589,
+        "log": "<cache>/rustmage-authoring/hob-master/run-1/1.log"
+      },
+      "sos_life_x": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-master/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "sos_life_x",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.21522866596933454,
+        "log": "<cache>/rustmage-authoring/hob-master/run-1/2.log"
+      },
+      "deathtouch_kills_larger_blocker": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-master/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "deathtouch_kills_larger_blocker",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.008043351001106203,
+        "log": "<cache>/rustmage-authoring/hob-master/run-1/3.log"
+      },
+      "arena_upkeep_draw": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-master/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "arena_upkeep_draw",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.007846844964660704,
+        "log": "<cache>/rustmage-authoring/hob-master/run-1/4.log"
+      }
+    },
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-master/run-1/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 36.050590336031746,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2535743488,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "reports": "<cache>/rustmage-authoring/hob-master/run-1",
+    "proof_sha256": "8de6ae3f506db05126cfdd9356f352bcfed8e3d2d4621301c91d6a91c3e75193"
+  },
+  "fixtures": [
+    "The Master of Lake-town",
+    "Shock",
+    "Forest",
+    "Bear Cub",
+    "My Precious",
+    "Rest in Peace",
+    "Gigantic Big Bear"
+  ],
+  "preflight_note": "Adventure combined alias My Precious // Allure of Power resolves to complete physical My Precious definition; first preflight checked the alias as a provenance name and stopped before starting a job."
+}

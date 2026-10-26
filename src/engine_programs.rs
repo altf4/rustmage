@@ -3005,6 +3005,28 @@ impl Game {
                             self.hand_count(player);
                     }
                 }
+                Instruction::MillLifeEvent => {
+                    let player = item.life_event.expect("saved life event").player;
+                    self.mill_batch(&[player], MillAmount::LifeEvent, item.controller);
+                }
+                Instruction::DrawForGraveyardsAtLeast(minimum) => {
+                    let count = [Player::P0, Player::P1]
+                        .into_iter()
+                        .filter(|&player| {
+                            self.state
+                                .objects
+                                .iter()
+                                .filter(|object| {
+                                    object.owner == player
+                                        && object.zone == Zone::Graveyard
+                                        && !object.is_token()
+                                })
+                                .count()
+                                >= usize::from(minimum)
+                        })
+                        .count();
+                    self.draw_many(item.controller, count as u128);
+                }
                 Instruction::Mill(players, amount) => {
                     let players: Vec<_> = self.program_players(players, &item).collect();
                     self.mill_batch(&players, amount, item.controller);

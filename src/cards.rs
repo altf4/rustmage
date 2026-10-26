@@ -853,6 +853,7 @@ impl RecoveryFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum MillAmount {
+    LifeEvent,
     ChosenX,
     Fixed(u16),
     ControllerLife,
@@ -1454,6 +1455,8 @@ pub(crate) enum Instruction {
     DiscardHand(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
+    MillLifeEvent,
+    DrawForGraveyardsAtLeast(u16),
     MayMill(u16),
     RecoverMilled(RecoveryFilter),
     CollectGraveyard,
