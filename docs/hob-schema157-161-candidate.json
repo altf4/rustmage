@@ -214,6 +214,15 @@
       "restore_ns": 158.27947,
       "seconds": 0.040609183
     },
-    "terminal_independent_reviews": "Pending two independent receipt audits."
+    "terminal_independent_reviews": [
+      {
+        "reviewer": "hob_review_contracts",
+        "result": "Approved exact 6eaa07a9 nine-gate receipt and all eight immutable libraries."
+      },
+      {
+        "reviewer": "hob_review_rules",
+        "result": "Approved exact 6eaa07a9 nine-gate receipt and all eight immutable libraries."
+      }
+    ]
   }
 }
