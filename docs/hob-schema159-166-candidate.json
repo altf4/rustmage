@@ -40,7 +40,7 @@
       "limitation": "No admitted live selected-entry-prevention fixture; selected-card exclusion from remainder source-audited."
     }
   ],
-  "status": "166-card full release passed at exact 3fa4cf1a; independent terminal receipt audits and whole193/final published PR acceptance remain open.",
+  "status": "166-card full release and independent terminal receipt audits passed; whole193/final published PR acceptance remains open.",
   "integrated_recording": {
     "head": "8272485c19ee4e55372df45a36fd86dd6d75c1a0",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated166-1",
@@ -573,6 +573,9 @@
       "restore_ns": 218.50657,
       "seconds": 0.041857165
     },
-    "terminal_independent_reviews": "Pending two independent receipt audits."
+    "terminal_independent_reviews": [
+      "hob_review_rules: approved exact 3fa4cf1a and all ten immutable libraries",
+      "hob_review_contracts: approved exact 3fa4cf1a and all ten immutable libraries"
+    ]
   }
 }

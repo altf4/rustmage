@@ -16151,6 +16151,14 @@
     "journal": "b6cf3749b9ab6fcf",
     "observations": "134dd0a010460016"
   },
+  "Silvan Reveler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "1f864ea3843841c6",
+    "observations": "ea8a8d88ff8cc22e"
+  },
   "Silvergill Peddler": {
     "root": "main",
     "status": "completed",
@@ -18614,6 +18622,14 @@
     "zone": "Battlefield",
     "journal": "f54f78bce57ae0d9",
     "observations": "0027a66949cb7f45"
+  },
+  "The Notary Hobbits": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "3a899e2580c6c1c6",
+    "observations": "d02940dd996de77d"
   },
   "The Queen of Dale": {
     "root": "main",
