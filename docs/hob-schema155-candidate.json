@@ -1,6 +1,6 @@
 {
   "schema": 155,
-  "status": "Audited schema155 baseline adopted; ordinary strict regression and full release validation pending",
+  "status": "Audited schema155 baseline adopted; ordinary strict regression and all nine release gates passed at ed8b0176; whole-set acceptance remains open",
   "previous_schema": 154,
   "reason": "New public LibrarySelectionView destination battlefield_tapped and remainder shuffle values used by Through the Forest Gate",
   "source_review": "Both independent nonauthors approved four-effect source2b68a3f4 contingent on this schema integration and inherited trace audits",
@@ -88,7 +88,7 @@
       ],
       "result": "Both independent nonauthors recomputed every full inherited row, candidate bytes/hash, completed additions, actual126-case terminal evidence and integration preservation. Approved exactfd2c2b8a baseline adoption eligibility with no findings."
     },
-    "adoption": "Copied exact audited2641-row bytes after both approvals; ordinary strict full release pass still required."
+    "adoption": "Copied exact audited2641-row bytes after both approvals; subsequent ordinary strict full release passed at ed8b0176."
   },
   "acceptance_attempts": [
     {
@@ -98,6 +98,61 @@
       "seconds": 2.5180102009908296,
       "result": "Source pins passed; Cargo fmt found assurance module registrations out of alphabetical order after disjoint integration. Applied rustfmt to that module only; no rules or baseline behavior changed.",
       "resource_report": "<cache>/rustmage-build-reports/fcb1e3ca6f1e4e8da15252f528d9dc9f.json"
+    },
+    {
+      "head": "ed8b0176f606a3a1df4017f286b9740f2df8e2f4",
+      "report": "<cache>/rustmage-validation-jzygc95p/report/result.json",
+      "success": true,
+      "terminal": true,
+      "seconds": 330.09364579600515,
+      "gates_passed": 9,
+      "native_tests": 713,
+      "native_compile_seconds": 135.195188873,
+      "native_execution_seconds": 18.999640995,
+      "python_smoke_contracts": 8,
+      "python_execution_seconds": 0.027560096,
+      "files_verified": 11867,
+      "changed_inputs": [],
+      "active_processes": [],
+      "input_sha256": "fdda9f5e3ecc12b8fb607b65db6b9895e9b90ba222c0034ff2c10e242457adc1",
+      "resource_report": "<cache>/rustmage-build-reports/0d6c6469e5eb40d5beefd688bc7f9c14.json",
+      "guard_seconds_including_queue": 404.595849537,
+      "memory_peak_bytes": 3134021632,
+      "memory_limit_bytes": 6442450944,
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "oom_events": 0,
+      "library": {
+        "path": "<cache>/rustmage-validation-jzygc95p/report/libraries/librustmage.so",
+        "sha256": "b4786860513908fb08049f7f00c7576f1148fcec60e37b81b02ee7ecbc9ff8c0",
+        "mode": "0555",
+        "regular_nonsymlink": true,
+        "preserve_exact_path_and_hash": true
+      },
+      "independent_reviews": {
+        "reviewers": [
+          "hob_review_contracts",
+          "hob_review_rules"
+        ],
+        "result": "Both independent nonauthors approved exact clean ed8b0176 after actual terminal native/Python logs, strict2641-row regression, fixed-input/resource reports and physical immutable library checks; no findings. This accepts the local126/193 checkpoint only."
+      },
+      "implementation_throughput": {
+        "new_candidates_since_inherited69": 57,
+        "elapsed_seconds": 12240.70046854,
+        "candidates_per_hour": 16.76374653,
+        "scope": "Goal wall interval includes parallel authoring, shared mechanics, reviews, validation, queueing and PR522 undo; inherited69 not fully re-audited, pending cohorts excluded, full193 not certified."
+      },
+      "simulation": {
+        "workload": "Limited ten-game Freeform native smoke including policy/observation; not whole-set acceptance or performance",
+        "games": 10,
+        "decisions": 4941,
+        "seconds": 0.040845154,
+        "decisions_per_second": 120969.062817097,
+        "games_per_second": 244.827085240026,
+        "clone_ns": 176.57829,
+        "restore_ns": 163.32045,
+        "initial_state_bytes_excluding_capacity_and_allocator": 21720
+      }
     }
   ]
 }
