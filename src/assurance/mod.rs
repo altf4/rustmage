@@ -243,3 +243,5 @@ mod hob_lonely_misty;
 mod hob_inherited_remaining;
 
 mod hob_wandering;
+
+mod hob_beorn;

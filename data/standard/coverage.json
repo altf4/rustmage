@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "30d699264cbabbb3d8b47b3854dac08e7bc28bf910226dfa0cf5df625e94b27d",
+  "catalogue_version": "ac257cdfb06649671a25f65ecb630efe6a75a4aebfd481044c02864fdff51634",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2656,
-  "implemented_total": 2662,
+  "implemented_standard_cards": 2658,
+  "implemented_total": 2664,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 142,
-      "gated": 46
+      "complete": 144,
+      "gated": 44
     },
     "hoc": {
       "total": 5,
@@ -3300,16 +3300,16 @@
     {
       "name": "Beorn the Fierce",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/beorn_the_fierce.rs",
       "set": "hob"
     },
     {
       "name": "Beorn's Hospitality",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/beorn_s_hospitality.rs",
       "set": "hob"
     },
