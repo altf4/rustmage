@@ -89,5 +89,15 @@
       "result": "Both independent nonauthors recomputed every full inherited row, candidate bytes/hash, completed additions, actual126-case terminal evidence and integration preservation. Approved exactfd2c2b8a baseline adoption eligibility with no findings."
     },
     "adoption": "Copied exact audited2641-row bytes after both approvals; ordinary strict full release pass still required."
-  }
+  },
+  "acceptance_attempts": [
+    {
+      "head": "7615c572",
+      "report": "<cache>/rustmage-validation-9iu44iav/report/result.json",
+      "success": false,
+      "seconds": 2.5180102009908296,
+      "result": "Source pins passed; Cargo fmt found assurance module registrations out of alphabetical order after disjoint integration. Applied rustfmt to that module only; no rules or baseline behavior changed.",
+      "resource_report": "<cache>/rustmage-build-reports/fcb1e3ca6f1e4e8da15252f528d9dc9f.json"
+    }
+  ]
 }
