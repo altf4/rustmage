@@ -68,6 +68,12 @@
       "report": "~/.cache/rustmage-validation-uktzmpnn/report/result.json",
       "result": "Stopped at all-targets Clippy because standalone standard_exact_search example omitted new SearchFilter::Legendary arm. Explicit immutable-card predicate added; no library behavior or baseline change.",
       "seconds": 21.841798941022716
+    },
+    {
+      "head": "1df0ceab",
+      "report": "~/.cache/rustmage-validation-lojgf2_v/report/result.json",
+      "result": "All-targets Clippy found two redundant u32-to-u32 conversions in graveyard-origin test mana sums. Removed without changing test behavior or library code.",
+      "seconds": 27.089363443024922
     }
   ]
 }

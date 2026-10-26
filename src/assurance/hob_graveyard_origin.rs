@@ -39,12 +39,7 @@ fn hob_graveyard_origin_plunder_hand_flashback_regular_graveyard_and_exile() {
         ] {
             let mut g = scenario(p);
             let spell = put(&mut g, p, "Plunder the Trollshaws", zone);
-            let mana_before: u32 = g.state.players[p.index()]
-                .mana
-                .iter()
-                .copied()
-                .map(u32::from)
-                .sum();
+            let mana_before: u32 = g.state.players[p.index()].mana.iter().copied().sum();
             cast_origin(&mut g, p, spell, zone, flash, None);
             settle(&mut g);
             assert_eq!(
@@ -53,12 +48,7 @@ fn hob_graveyard_origin_plunder_hand_flashback_regular_graveyard_and_exile() {
                 "{zone:?} flash {flash}"
             );
             assert_eq!(g.state.objects[spell as usize].zone, destination);
-            let mana_after: u32 = g.state.players[p.index()]
-                .mana
-                .iter()
-                .copied()
-                .map(u32::from)
-                .sum();
+            let mana_after: u32 = g.state.players[p.index()].mana.iter().copied().sum();
             assert_eq!(mana_before - mana_after, if flash { 4 } else { 2 });
         }
     }
