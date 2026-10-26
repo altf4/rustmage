@@ -1,0 +1,228 @@
+{
+  "scope": "Lake-town Mariners // Gone Fishing whole physical identity plus directly authored nondeck Adventure alias5415; no engine/wire changes",
+  "base_revision": "64e94ba06386abb57ae2a9cba0c3c9f6fc901386",
+  "oracle_facts": {
+    "oracle_id": "dba1d231-6b03-44ad-ab8c-be0c8fe1b6db",
+    "name": "Lake-town Mariners // Gone Fishing",
+    "layout": "adventure",
+    "mana_cost": "{4}{U}{U} // {3}{U}",
+    "cmc": 6.0,
+    "type_line": "Creature \u2014 Human Citizen // Instant \u2014 Adventure",
+    "power": "6",
+    "toughness": "5",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Vigilance",
+      "Ward"
+    ],
+    "card_faces": [
+      {
+        "name": "Lake-town Mariners",
+        "mana_cost": "{4}{U}{U}",
+        "type_line": "Creature \u2014 Human Citizen",
+        "oracle_text": "Vigilance\nWard {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)",
+        "power": "6",
+        "toughness": "5"
+      },
+      {
+        "name": "Gone Fishing",
+        "mana_cost": "{3}{U}",
+        "type_line": "Instant \u2014 Adventure",
+        "oracle_text": "Exile two target creatures and/or lands you control, then return them to the battlefield under their owner's control."
+      }
+    ],
+    "reference_printing": {
+      "id": "4202a678-a5f4-47f9-9c18-e88ab9ad20a4",
+      "set": "hob",
+      "collector_number": "44",
+      "released_at": "2026-08-14"
+    }
+  },
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/l/LakeTownMariners.java",
+      "sha256": "723f54f6bc183981012a9c7edb652c0c968c0e45d03c9f0fdbdf461e05b63085"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
+      "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/AdventureSpellCard.java",
+      "sha256": "0267f0994ee62c311d6d160c9709f110715cd736f1528429cbb3de6fff03c592"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/CardWithSpellOption.java",
+      "sha256": "370a50d75c092a9cb5b0f3111af32fc2895479fb3f14f656267685bc9d09dea0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAdventureSpellEffect.java",
+      "sha256": "1179b3251b410c7eec5e191159cf7e870e28a4839a833cb30fc4d829985c33c3"
+    }
+  ],
+  "metadata": "Only2439frontface display/cost/type/components/color corrected from formerlyunsupported combinedOraclemetadata; oldwhole-namealiaspreserved+frontnormalaliasadded; one5415instantAdventurealiasappended. Allotherrows/colors/tokens/fields preserved. No generatededitscommitted.",
+  "obligations": {
+    "normal": "Paid4UU6/5HumanCitizen, vigilanceactualunblockedcombat6damageanduntapped; ward2actualopponenttargetpay/decline and exactunderpaymentreject; ownShockdoesnottriggerward",
+    "adventure": "Instantpaid3U, exactly2distinctowncreatureand/orlandtargets, all3kindcombinations, opponent/artifact/duplicate/minimumrejections; simultaneousbatch exile thenreturn underowners, resetcounters/tappedness/incarnation, tokenexilednotreturned",
+    "failures": "Partial/allstaletargets, actualNegatecounter; permissiononlysuccessfulresolution, samephysicalnormalcastfromExile, insetnotrecastable",
+    "ownership": "Representative newtwo-targetpending raw/index/restore plus valid/stale independentchildren afterparentdisposed, restoredsameoutcome"
+  },
+  "validation": "26focusedpasses5new+9inheritedAdventure+6Dancing+6castrollback; allcommands0/no timeout/orphan; naturalterminalguard0. Two independent nonauthor reviews pending; integrateddefault+finalrelease/whole193acceptanceopen.",
+  "fixtures": [
+    "@token/hob-bear",
+    "Bear Cub",
+    "Dancing from Dark to Dawn",
+    "Dori, Bearer of Friends",
+    "Forest",
+    "Goldvein Pick",
+    "Grizzly Bears",
+    "Lake-town Mariners",
+    "Negate",
+    "Shock",
+    "Swamp"
+  ],
+  "profile": "Consistent root opt-level0 authorloop after Dancing34.157s pilot; no repositoryprofile change; default integrated/finalrelease remainsunchanged",
+  "attempts": [
+    {
+      "run": "run-1",
+      "profile": "AUTHOR opt-level0 only; repositorydefaultprofilesunchanged",
+      "passed": 26,
+      "failed": 0,
+      "ignored": 0,
+      "compile_seconds": 33.894272373989224,
+      "commands": {
+        "compile": {
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "--no-run",
+            "--message-format=json",
+            "--target-dir",
+            "/home/altf4/.cache/rustmage-authoring/hob-mariners/target"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 33.894272373989224,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-mariners/run-1/compile.jsonl"
+        },
+        "hob_mariners": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-mariners/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "hob_mariners",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.032541655004024506,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-mariners/run-1/0.log"
+        },
+        "hob_inherited_adventures_two": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-mariners/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "hob_inherited_adventures_two",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.06479995796689764,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-mariners/run-1/1.log"
+        },
+        "hob_dancing": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-mariners/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "hob_dancing",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.06582456099567935,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-mariners/run-1/2.log"
+        },
+        "sos_cast_rollback": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-mariners/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "sos_cast_rollback",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.26518212497467175,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-mariners/run-1/3.log"
+        }
+      },
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-mariners/run-1/run.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 34.46237346000271,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2454073344,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "reports": "<cache>/rustmage-authoring/hob-mariners/run-1/{compile.jsonl,0..3.log,results.json,resource.json,outer.log}",
+      "source_fixed_until_terminal": true
+    }
+  ],
+  "proof_sha256": "1777e431c702f5e533ff1325aa68efb6e6f1ed0feba984fc2ba3a6cea30f54c0"
+}

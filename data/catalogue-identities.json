@@ -5420,7 +5420,8 @@
     1,
     16,
     0,
-    16
+    16,
+    2
   ],
   "aliases": [
     [
@@ -13936,6 +13937,10 @@
       1829
     ],
     [
+      "Gone Fishing",
+      5415
+    ],
+    [
       "Gongaga, Reactor Town",
       1830
     ],
@@ -16458,6 +16463,10 @@
     [
       "Lake-town Lookout",
       2438
+    ],
+    [
+      "Lake-town Mariners",
+      2439
     ],
     [
       "Lake-town Mariners // Gone Fishing",
@@ -98737,11 +98746,11 @@
       "path": "hob/lake_town_mariners_gone_fishing.rs",
       "set": "hob",
       "category": "physical",
-      "name": "Lake-town Mariners // Gone Fishing",
+      "name": "Lake-town Mariners",
       "oracle_id": "dba1d231-6b03-44ad-ab8c-be0c8fe1b6db",
       "facts_sha256": "037cff2f2ccc39d10c34374ed81c5d7f9c68c75467abd2f8f852433e3969f1bf",
-      "mana_cost": "{4}{U}{U} // {3}{U}",
-      "type_line": "Creature — Human Citizen // Instant — Adventure",
+      "mana_cost": "{4}{U}{U}",
+      "type_line": "Creature — Human Citizen",
       "oracle_keywords": [
         "Vigilance",
         "Ward"
@@ -98753,13 +98762,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        2,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 4
     },
     {
       "index": 2440,
@@ -183402,6 +183411,33 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5415,
+      "module": "card_5415",
+      "path": "synthetic/gone_fishing.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Gone Fishing",
+      "oracle_id": "dba1d231-6b03-44ad-ab8c-be0c8fe1b6db",
+      "facts_sha256": "037cff2f2ccc39d10c34374ed81c5d7f9c68c75467abd2f8f852433e3969f1bf",
+      "mana_cost": "{3}{U}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
     }
   ]
 }
