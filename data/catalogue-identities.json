@@ -5417,7 +5417,8 @@
     1,
     4,
     4,
-    1
+    1,
+    16
   ],
   "aliases": [
     [
@@ -6215,6 +6216,10 @@
     [
       "@token/hob-dwarf",
       5407
+    ],
+    [
+      "@token/hob-wolf",
+      5412
     ],
     [
       "@token/komas_coil",
@@ -28597,6 +28602,12 @@
       "name": "Dwarf Token",
       "subtypes": "Dwarf",
       "colors": 8
+    },
+    {
+      "factory_identity": "@token/hob-wolf",
+      "name": "Wolf Token",
+      "subtypes": "Wolf",
+      "colors": 16
     }
   ],
   "emblems": [
@@ -183286,6 +183297,33 @@
         0
       ],
       "generic": 2
+    },
+    {
+      "index": 5412,
+      "module": "card_5412",
+      "path": "synthetic/token_hob_wolf.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-wolf",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Wolf",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }
