@@ -224,5 +224,20 @@
       "source_fixed_until_terminal": true
     }
   ],
-  "proof_sha256": "1777e431c702f5e533ff1325aa68efb6e6f1ed0feba984fc2ba3a6cea30f54c0"
+  "proof_sha256": "1777e431c702f5e533ff1325aa68efb6e6f1ed0feba984fc2ba3a6cea30f54c0",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "30e4adb244287a0af6b4f23478e9b202fdb731e0",
+      "result": "Firm complete bothfaceOracle/Java/all12pins, preservedmetadata, typedblink/ward/Adventurewiring and26actualpasses approved; no actionable findings",
+      "proof_sha256": "1777e431c702f5e533ff1325aa68efb6e6f1ed0feba984fc2ba3a6cea30f54c0"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "30e4adb244287a0af6b4f23478e9b202fdb731e0",
+      "result": "Firm complete bothfaceOracle/Java/all12pins, preservedmetadata, typedblink/ward/Adventurewiring and26actualpasses approved; no actionable findings",
+      "proof_sha256": "1777e431c702f5e533ff1325aa68efb6e6f1ed0feba984fc2ba3a6cea30f54c0"
+    }
+  ],
+  "integration_status": "Two independent fullapprovals, rootregisteredassuranceandregeneratedlinks. 144localcandidates,49gated; inherited54of69mapped. Defaultintegrated/releaseandwhole193acceptanceopen."
 }

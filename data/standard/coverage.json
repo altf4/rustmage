@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "0cb3c01c57ca203aae503d06b21a50871f114cf06f5ea7a19e69e0c5df132ae7",
+  "catalogue_version": "b8328e63e321f4029b3b6899ce9546c835726a245623b6ac3de6f846a911cac2",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2652,
-  "implemented_total": 2658,
+  "implemented_standard_cards": 2653,
+  "implemented_total": 2659,
   "token_definitions": 131,
   "emblem_definitions": 3,
-  "adventure_definitions": 44,
+  "adventure_definitions": 45,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 138,
-      "gated": 50
+      "complete": 139,
+      "gated": 49
     },
     "hoc": {
       "total": 5,
@@ -19714,10 +19714,10 @@
       "set": "hob"
     },
     {
-      "name": "Lake-town Mariners // Gone Fishing",
+      "name": "Lake-town Mariners",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/lake_town_mariners_gone_fishing.rs",
       "set": "hob"
     },
