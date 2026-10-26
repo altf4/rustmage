@@ -47,7 +47,7 @@
       "limitation": "No admitted live sacrifice-prevention fixture; exact departure check source-audited, replacement-to-exile tested."
     }
   ],
-  "status": "164-card full release passed at exact 72214630; independent terminal receipt audits and whole193/final published PR acceptance remain open.",
+  "status": "164-card full release and independent terminal receipt audits passed; whole193/final published PR acceptance remains open.",
   "integrated_recording": {
     "head": "e5c23533c40fcef2a8bc974d43b9ded03ef03c8f",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated164-1",
@@ -228,6 +228,9 @@
       "restore_ns": 169.3057,
       "seconds": 0.041346674
     },
-    "terminal_independent_reviews": "Pending two independent receipt audits."
+    "terminal_independent_reviews": [
+      "hob_review_rules: approved exact 72214630 and all nine immutable libraries",
+      "hob_review_contracts: approved exact 72214630 and all nine immutable libraries"
+    ]
   }
 }
