@@ -4319,6 +4319,14 @@
     "journal": "a4c714aeb662e85f",
     "observations": "1e3730d3a6e15e77"
   },
+  "Desolation of Smaug": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "213f910a23b58f54",
+    "observations": "12f9dceae5bb8589"
+  },
   "Desperate Bloodseeker": {
     "root": "main",
     "status": "completed",
@@ -14615,6 +14623,14 @@
     "journal": "9d78478b460edd3d",
     "observations": "49b2de9591338ae6"
   },
+  "Riddles in the Dark": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 9,
+    "zone": "Graveyard",
+    "journal": "6dd3eed8dd4777a7",
+    "observations": "1dc97fd9f18eef92"
+  },
   "Ride's End": {
     "root": "main",
     "status": "completed",
@@ -18751,6 +18767,14 @@
     "journal": "39b46fbe7d2a3760",
     "observations": "ecbddbda16c0e92d"
   },
+  "Thorin Oakenshield": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "2ca588a594b1301f",
+    "observations": "c138e00f565903f2"
+  },
   "Thorin's Last Stand": {
     "root": "main",
     "status": "completed",
@@ -20406,6 +20430,14 @@
     "zone": "Graveyard",
     "journal": "89f55824ce2c1087",
     "observations": "145951b39abe6bad"
+  },
+  "Vow to Erebor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "fae424dc01ad1ac5",
+    "observations": "02fd7cb4397ecb93"
   },
   "Voyager Quickwelder": {
     "root": "main",

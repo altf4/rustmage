@@ -45,7 +45,70 @@
     "success": true,
     "native_passed": 938,
     "python_passed": 8,
-    "terminal_receipt_reviews": "pending two independent nonauthors"
+    "terminal_receipt_reviews": [
+      "hob_review_rules: approved exact 15701b47 and all six immutable libraries",
+      "hob_review_contracts: approved exact 15701b47 and all six immutable libraries"
+    ]
   },
-  "status": "Frozen integrated focus and full prior-row recording audit next; baseline adoption, integrated release and whole193 acceptance remain open."
+  "status": "Exact reviewed 2673-row baseline adopted; full 158 release and whole193/final published PR acceptance remain open.",
+  "integrated_recording": {
+    "head": "29f5ee09641f2bf54cef2c5a819ec2e3d784a943",
+    "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated158-1",
+    "focused_passed": 372,
+    "compile_seconds": 28.260140454978682,
+    "guard_seconds": 192.3883644110174,
+    "peak_bytes": 2471583744,
+    "oom_events": 0,
+    "candidate_sha256": "0dabbd62d49547c1db489254f4bbd8fe4987353e3411f7f44d6adc482d07f1d4",
+    "candidate_rows": 2673,
+    "previous_schema_audits": {
+      "157": {
+        "old": 2669,
+        "additions": 4,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "156": {
+        "old": 2662,
+        "additions": 11,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "155": {
+        "old": 2641,
+        "additions": 32,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "154": {
+        "old": 2631,
+        "additions": 42,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "153": {
+        "old": 2610,
+        "additions": 63,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "152": {
+        "old": 2584,
+        "additions": 89,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      }
+    },
+    "recording_exit_101": "Each recording reached expected strict cardinality check 2673 versus old 2669; no ordinary strict-pass claim.",
+    "independent_reviews": [
+      "hob_review_rules: approved merged source and exact candidate adoption",
+      "hob_review_contracts: approved merged source and exact candidate adoption"
+    ]
+  }
 }

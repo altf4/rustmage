@@ -567,7 +567,16 @@
         "cards_per_hour": 12.411685730182555,
         "scope": "69 inherited to154 local; includes all concurrent authors, shared mechanics, proofs, reviews, queueing, validation and PR522undo. Whole193/final published PR remain open."
       },
-      "terminal_independent_reviews": "Pending two separate nonauthor receipt audits; do not claim those yet."
+      "terminal_independent_reviews": [
+        {
+          "reviewer": "hob_review_rules",
+          "result": "Approved exact 15701b47 terminal receipt, all nine gates and all six exact libraries."
+        },
+        {
+          "reviewer": "hob_review_contracts",
+          "result": "Approved exact 15701b47 terminal receipt, all nine gates and all six exact libraries."
+        }
+      ]
     }
   ],
   "focused_const_repair": {
