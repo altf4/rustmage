@@ -1,0 +1,51 @@
+{
+  "scope": "158 local HOB candidates; 35 gated. Riddles, Desolation, Vow and Thorin integrated after154 release; full193 and final published PR remain open.",
+  "source_head_before_receipt": "e9b406ef",
+  "schema": 157,
+  "reviewed_cohorts": [
+    {
+      "leaf": "9c2a113be766d69dae3ce77dbfa9058bae458280",
+      "cards": [
+        "Riddles in the Dark"
+      ],
+      "tests_passed": 27,
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ]
+    },
+    {
+      "leaf": "5c97ed127ea172aa90c67b28f9f513f3738d111b",
+      "cards": [
+        "Desolation of Smaug"
+      ],
+      "tests_passed": 17,
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ]
+    },
+    {
+      "leaf": "f41748652a467013dfca3b6b5f287f06b48c434c",
+      "cards": [
+        "Vow to Erebor",
+        "Thorin Oakenshield"
+      ],
+      "tests_passed": 63,
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ]
+    }
+  ],
+  "previous_release": {
+    "head": "15701b47a2b530644f1d527c43bf1f69de6f0410",
+    "report": "<cache>/rustmage-validation-9z86ehkz/report/result.json",
+    "terminal": true,
+    "success": true,
+    "native_passed": 938,
+    "python_passed": 8,
+    "terminal_receipt_reviews": "pending two independent nonauthors"
+  },
+  "status": "Frozen integrated focus and full prior-row recording audit next; baseline adoption, integrated release and whole193 acceptance remain open."
+}
