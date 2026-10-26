@@ -111,7 +111,12 @@ impl FundingState<'_> {
             }
         }
     }
-    fn cost_object(&self, spec: AdditionalCost, r: ObjectRef, source: ObjectRef) -> bool {
+    pub(super) fn cost_object(
+        &self,
+        spec: AdditionalCost,
+        r: ObjectRef,
+        source: ObjectRef,
+    ) -> bool {
         let o = self.object(r.card);
         if spec.kind == EffectChoiceKind::SacrificeAttachedEquipment
             && o.attached_to != Some(source)

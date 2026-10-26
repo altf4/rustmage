@@ -186,6 +186,23 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     }
 }
 
+/// An exact, still-live permanent/card selected for a mana activation cost.
+#[derive(Clone, Copy)]
+struct ExternalManaCost {
+    resource: usize,
+    object: ObjectRef,
+    kind: EffectChoiceKind,
+}
+impl ExternalManaCost {
+    fn destination(self) -> Zone {
+        match self.kind {
+            EffectChoiceKind::Sacrifice => Zone::Graveyard,
+            EffectChoiceKind::ExileGraveyard => Zone::Exile,
+            _ => unreachable!("unsupported selected mana cost"),
+        }
+    }
+}
+
 #[derive(Clone)]
 struct FundingMove {
     resource: usize,
@@ -197,7 +214,7 @@ struct FundingMove {
     production: Mana,
     quality: Option<mana_lots::Quality>,
     allocation: Vec<[u64; 6]>,
-    external: Option<usize>,
+    external: Option<ExternalManaCost>,
     /// A previously announced activation keeps its immutable ability definition.
     frozen: Option<Box<(Card, Option<u64>)>>,
 }
@@ -534,6 +551,7 @@ impl<'g> FundingState<'g> {
         // mana sources, so virtual sacrifices invalidate later guarded moves.
         let mut subtypes = Vec::new();
         let mut graveyard_mana_cost = false;
+        let mut sacrifice_mana_cost = false;
         let mut power_sensitive = false;
         for (id, object) in game.state.objects.iter().enumerate() {
             if object.zone == Zone::Battlefield && object.controller == goal.actor {
@@ -550,6 +568,10 @@ impl<'g> FundingState<'g> {
                             ManaProduction::SourcePower { .. }
                                 | ManaProduction::TapSourcePowerChoice { .. }
                         );
+                        sacrifice_mana_cost |= ability
+                            .cost
+                            .additional
+                            .is_some_and(|cost| cost.kind == EffectChoiceKind::Sacrifice);
                         graveyard_mana_cost |= ability
                             .cost
                             .additional
@@ -581,7 +603,7 @@ impl<'g> FundingState<'g> {
                         .source.as_ref()
                         .is_some_and(|(source, _, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
-                        && (game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_exiled_activations()
+                        && (sacrifice_mana_cost || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_exiled_activations()
                             || object.card.attachment_bonus().is_some()
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
@@ -1140,27 +1162,24 @@ impl<'g> FundingState<'g> {
                     continue;
                 }
                 let external = if let Some(spec) = ability.cost.additional {
-                    // Other external mana costs are not implemented by this funding transition.
-                    if spec.kind != EffectChoiceKind::ExileGraveyard {
+                    if !matches!(
+                        spec.kind,
+                        EffectChoiceKind::ExileGraveyard | EffectChoiceKind::Sacrifice
+                    ) {
                         continue;
                     }
-                    let eligible: Vec<_> = self
-                        .resources
-                        .iter()
-                        .enumerate()
+                    let eligible: Vec<_> = self.resources.iter().enumerate()
                         .filter(|(_, r)| {
-                            Game::additional_object_matches(
-                                spec,
-                                goal.actor,
-                                &r.object,
-                                self.kinds(r),
-                                self.keywords(r),
-                                ability_world::CharacteristicWorld::subtypes(self, r.id),
-                                ability_world::CharacteristicWorld::name(self, r.id),
-                            ) && (!spec.filter.other || r.id != entry.id)
+                            let object = self.reference(r.id);
+                            self.cost_object(spec, object, self.reference(entry.id))
+                                // A permanent cannot pay two distinct departure costs.
+                                && (!(ability.cost.sacrifice || ability.cost.exile_self) || r.id != entry.id)
                         })
-                        .map(|(index, _)| index)
-                        .collect();
+                        .map(|(resource, r)| ExternalManaCost {
+                            resource,
+                            object: self.reference(r.id),
+                            kind: spec.kind,
+                        }).collect();
                     if eligible.is_empty() {
                         continue;
                     }
@@ -1419,12 +1438,8 @@ impl<'g> FundingState<'g> {
                 self.project_copy_departure(reference, reference);
             }
         }
-        if let Some(external) = step.external {
-            self.remember_payment_departure(self.resources[external].id);
-            let object = &mut self.resources[external].object;
-            assert_eq!(object.zone, Zone::Graveyard);
-            object.zone = Zone::Exile;
-        }
+        // Selected external departures are committed by visit_applied as a
+        // certified simultaneous cost group, with all replacement choices.
         self.refresh_control_projection();
         self.prune_source_linked_projection();
         if !preserve_departure_counters {
@@ -1499,7 +1514,8 @@ impl<'g> FundingState<'g> {
                             .resolved_ability_modifications
                             .iter()
                             .any(|row| row.recipient.card == r.id)
-                }) || self.power_sensitive
+                }) || self.continuation.as_ref().is_some_and(|c| c.selects(r.id))
+                    || self.power_sensitive
                     || self
                         .game
                         .temporary_copy_row(self.game.object_ref(r.id))
@@ -2738,12 +2754,9 @@ impl Game {
                 || Some(step.production) != child.production
                 || step.borrowed.map(|v| v.slot) != child.item.borrowed_slot
                 || payment.is_some_and(|p| concrete_payment(step.payment) != p)
-                || external.or(child.additional).is_some_and(|wanted| {
-                    step.external.is_none_or(|i| {
-                        let r = &state.resources[i];
-                        r.id != wanted.card || r.object.generation != wanted.generation
-                    })
-                })
+                || external
+                    .or(child.additional)
+                    .is_some_and(|wanted| step.external.is_none_or(|cost| cost.object != wanted))
             {
                 return false;
             }
@@ -3211,3 +3224,7 @@ mod hone_tests;
 #[cfg(test)]
 #[path = "engine_funding_storied_tests.rs"]
 mod storied_tests;
+
+#[cfg(test)]
+#[path = "engine_funding_sacrifice_tests.rs"]
+mod sacrifice_tests;
