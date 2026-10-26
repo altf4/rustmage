@@ -239,3 +239,5 @@ mod hob_mariners;
 mod hob_inherited_combat;
 
 mod hob_lonely_misty;
+
+mod hob_inherited_remaining;

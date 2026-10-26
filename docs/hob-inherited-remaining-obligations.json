@@ -436,5 +436,20 @@
     "scope": "Isolated clone creation through terminal evidence and proof receipt; assurance throughput, not new engine/card implementations",
     "simulation": "No simulation benchmark or full-set acceptance claimed."
   },
-  "integration": "Commit owns only src/assurance/hob_inherited_remaining.rs and this ledger. Local mod hob_inherited_remaining registration excluded; root registers it. No generated changes. Request two independent nonauthor reviews; source/focused author proof does not establish integrated release or whole-set acceptance. No PR/push/merge."
+  "integration": "Commit owns only src/assurance/hob_inherited_remaining.rs and this ledger. Local mod hob_inherited_remaining registration excluded; root registers it. No generated changes. Request two independent nonauthor reviews; source/focused author proof does not establish integrated release or whole-set acceptance. No PR/push/merge.",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "e13a4bb41e7fe941ee77a526d67edd927ab9fb11",
+      "result": "Firm all6Oracle/Java/currenttypeddefs,35pins,12unchangeddefinition/provenancefiles and17actualpassesapproved; no actionable findings",
+      "proof_sha256": "0d5ef8e495c6a53746c6dd660db6af7ab89957cdbffd8e8bb4d8addf889d803c"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "e13a4bb41e7fe941ee77a526d67edd927ab9fb11",
+      "result": "Firm all6Oracle/Java/currenttypeddefs,35pins,12unchangeddefinition/provenancefiles and17actualpassesapproved; no actionable findings",
+      "proof_sha256": "0d5ef8e495c6a53746c6dd660db6af7ab89957cdbffd8e8bb4d8addf889d803c"
+    }
+  ],
+  "integration_status": "Two independent fullsource/proofapprovals; rootregisteredmodule. All69inheritedidentitiesnowmapped toactualrulesproofs, no newgameplay/admissionflags. Integrateddefault/releaseandwhole193acceptanceopen."
 }
