@@ -79,5 +79,20 @@
     "elapsed_wall_seconds_including_source_reading_and_guard_waits": 1220,
     "observed_candidate_cards_per_wall_hour": 5.901639344262295,
     "simulation": "Focused10 new scenarios0.01s; total48 selected scenarios0.07s reported by native harness. No new complete-game simulation throughput claim; integrated release/performance remains root responsibility."
-  }
+  },
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "c3e95d6f8a4563b427189edef7719652e2dc1949",
+      "result": "Firm complete Oracle/Java/helpers, typed wiring, shared predicates and terminal48-scenario evidence approved; no actionable findings",
+      "proof_sha256": "9ef822133c04fa13f3db86397e3aae81f2142090bc1f4de71377c9a136fd819a"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "c3e95d6f8a4563b427189edef7719652e2dc1949",
+      "result": "Firm complete Oracle/Java/helpers, typed wiring, shared predicates and terminal48-scenario evidence approved; no actionable findings",
+      "proof_sha256": "9ef822133c04fa13f3db86397e3aae81f2142090bc1f4de71377c9a136fd819a"
+    }
+  ],
+  "integration_status": "Two independent approvals, root registered module and regenerated links. Whole-set/final release acceptance remain open."
 }

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "72a9e178e1bb0f021efae93537cce9004f05f6a34179ab52d6059b241dbf14ef",
+  "catalogue_version": "1f104dc048cd2e37af35ba2a83df1e8038e87ac8d7e3bcbaf3dc9ba20da4772e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2649,
-  "implemented_total": 2655,
+  "implemented_standard_cards": 2651,
+  "implemented_total": 2657,
   "token_definitions": 130,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 135,
-      "gated": 53
+      "complete": 137,
+      "gated": 51
     },
     "hoc": {
       "total": 5,
@@ -3220,8 +3220,8 @@
     {
       "name": "Belladonna Took",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/belladonna_took.rs",
       "set": "hob"
     },
@@ -36108,8 +36108,8 @@
     {
       "name": "The Queen of Dale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_queen_of_dale.rs",
       "set": "hob"
     },

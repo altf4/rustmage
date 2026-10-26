@@ -233,7 +233,7 @@
     "current_candidates_byte_identical": true,
     "candidate_sha256": "9c3f8f318e4a15a9e9834d63d9ab2fd1b6463d8205720aa8543c231e140b5ee8"
   },
-  "recording_semantics": "Each explicit recording naturallyexited101 at2655vs2651cardinality; recording didnotpass ordinarystrictbaseline. Allfivecandidatefilesbyteidentical and inherited fullrows unchanged; fouradditions completed. Candidatebytes retained in cache, NOTadopted. Committed2651-row baseline remains the last fullrelease136snapshot. Independent rowauditchecks pending; final/coherentacceptance will adopt exactauditedbytes then runrequiredfullrelease onfinalinputs.",
+  "recording_semantics": "Each explicit recording naturallyexited101 at2655vs2651cardinality; recording didnotpass ordinarystrictbaseline. Allfivecandidatefilesbyteidentical and inherited fullrows unchanged; fouradditions completed. Candidatebytes retained in cache, NOTadopted. Committed2651-row baseline remains the last fullrelease136snapshot. Two independent full-row/source audits approved exact a81 candidate; final/coherentacceptance will adopt exactauditedbytes then runrequiredfullrelease onfinalinputs.",
   "guard": {
     "command": [
       "python3",
@@ -251,5 +251,17 @@
   "resource_report": "<cache>/rustmage-build-reports/b29657d4c83847e28a6dec36287fee1c.json",
   "source_reviews": "Everyintegratedleaf/core hadtwoindependentnonauthorfullsource/focusedapprovals beforeintegration, recorded in pairedcohortledgers",
   "fixed_inputs": "Clean sourcehead a81bd052 unchanged throughoutsameguardjob; no runningprocess canceled or inputsmutated beforeterminal. Persistentouterlog retained.",
-  "delivery": "Singlelocalbranch; PR522undone; no newPR/push/merge. FinalonePRonlyafterwhole193complete."
+  "delivery": "Singlelocalbranch; PR522undone; no newPR/push/merge. FinalonePRonlyafterwhole193complete.",
+  "independent_recorded_audits": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "a81bd052797c43a82b21cda7b2c3cecefb6719ff",
+      "result": "Firm source integration and full-row audit approved; zero changed/missing inherited rows across all five baselines; candidate SHA9c3f8f318e4a15a9e9834d63d9ab2fd1b6463d8205720aa8543c231e140b5ee8; committed2651baseline unchanged; no adoption/full-release140 claim"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "a81bd052797c43a82b21cda7b2c3cecefb6719ff",
+      "result": "Firm source integration and full-row audit approved; zero changed/missing inherited rows across all five baselines; candidate SHA9c3f8f318e4a15a9e9834d63d9ab2fd1b6463d8205720aa8543c231e140b5ee8; committed2651baseline unchanged; no adoption/full-release140 claim"
+    }
+  ]
 }

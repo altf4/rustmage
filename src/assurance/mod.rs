@@ -227,3 +227,5 @@ mod hob_crooked_galion;
 
 mod hob_inherited_spells;
 mod hob_spark_letters;
+
+mod hob_belladonna_queen;
