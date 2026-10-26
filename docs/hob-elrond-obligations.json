@@ -68,14 +68,14 @@
             "filter": "elrond",
             "exit": 101,
             "seconds": 21.944316949986387,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-1.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-1.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/9dfde2ddf7cd453aa8d79b0086d3b2ae.json",
+        "guard_report": "<cache>/rustmage-build-reports/9dfde2ddf7cd453aa8d79b0086d3b2ae.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-1.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-1.py"
           ],
           "terminal": true,
           "exit_code": 101,
@@ -95,14 +95,14 @@
             "filter": "elrond",
             "exit": 101,
             "seconds": 15.397615116962697,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-2.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-2.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/2555346a8e2d488bb4322361002162a8.json",
+        "guard_report": "<cache>/rustmage-build-reports/2555346a8e2d488bb4322361002162a8.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-2.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-2.py"
           ],
           "terminal": true,
           "exit_code": 101,
@@ -122,14 +122,14 @@
             "filter": "elrond",
             "exit": 101,
             "seconds": 27.87200362700969,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-3.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-3.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/bbb6d5382a2e455ebc882a9fd879ea64.json",
+        "guard_report": "<cache>/rustmage-build-reports/bbb6d5382a2e455ebc882a9fd879ea64.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-3.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-3.py"
           ],
           "terminal": true,
           "exit_code": 101,
@@ -149,14 +149,14 @@
             "filter": "elrond",
             "exit": 101,
             "seconds": 28.614046053029597,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-4.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-4.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/551ee4967dc24a1188d354cc9d23b689.json",
+        "guard_report": "<cache>/rustmage-build-reports/551ee4967dc24a1188d354cc9d23b689.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-4.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-4.py"
           ],
           "terminal": true,
           "exit_code": 101,
@@ -176,14 +176,14 @@
             "filter": "elrond",
             "exit": 101,
             "seconds": 28.47922548803035,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-5.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-5.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/52b1bde74e5b4fe4a46c32715cade754.json",
+        "guard_report": "<cache>/rustmage-build-reports/52b1bde74e5b4fe4a46c32715cade754.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-5.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-5.py"
           ],
           "terminal": true,
           "exit_code": 101,
@@ -203,14 +203,14 @@
             "filter": "elrond",
             "exit": 101,
             "seconds": 29.046655818005092,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-6.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-6.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/6987fe24a101452e88c1351cf68d8588.json",
+        "guard_report": "<cache>/rustmage-build-reports/6987fe24a101452e88c1351cf68d8588.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-6.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-6.py"
           ],
           "terminal": true,
           "exit_code": 101,
@@ -230,38 +230,38 @@
             "filter": "elrond",
             "exit": 0,
             "seconds": 28.59399880300043,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-7.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-7.log"
           },
           {
             "filter": "hob_roll",
             "exit": 0,
             "seconds": 0.07932751998305321,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/roll-regression-7.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/roll-regression-7.log"
           },
           {
             "filter": "ennis",
             "exit": 0,
             "seconds": 0.06490236701210961,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/ennis-regression-7.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/ennis-regression-7.log"
           },
           {
             "filter": "sos_mana_rollback",
             "exit": 0,
             "seconds": 0.5128638950409368,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/mana-regression-7.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/mana-regression-7.log"
           },
           {
             "filter": "territory_forge",
             "exit": 0,
             "seconds": 0.18322533799801022,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/borrowed-regression-7.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/borrowed-regression-7.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/42e6e5edc88f4cf6b6b756ae5c8fb6e2.json",
+        "guard_report": "<cache>/rustmage-build-reports/42e6e5edc88f4cf6b6b756ae5c8fb6e2.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-7.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-7.py"
           ],
           "terminal": true,
           "exit_code": 0,
@@ -281,50 +281,50 @@
             "filter": "elrond",
             "exit": 0,
             "seconds": 29.895285159989726,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-8.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-8.log"
           },
           {
             "filter": "hob_roll",
             "exit": 0,
             "seconds": 0.07590513897594064,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/roll-regression-8.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/roll-regression-8.log"
           },
           {
             "filter": "ennis",
             "exit": 0,
             "seconds": 0.05931534699629992,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/ennis-regression-8.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/ennis-regression-8.log"
           },
           {
             "filter": "sos_mana_rollback",
             "exit": 0,
             "seconds": 0.5549932420253754,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/mana-regression-8.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/mana-regression-8.log"
           },
           {
             "filter": "territory_forge",
             "exit": 0,
             "seconds": 0.14480350801022723,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/borrowed-regression-8.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/borrowed-regression-8.log"
           },
           {
             "filter": "msh_c",
             "exit": 0,
             "seconds": 0.20582927198847756,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/return-regression-8.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/return-regression-8.log"
           },
           {
             "filter": "sos_next_duelist",
             "exit": 0,
             "seconds": 0.062248181959148496,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/duelist-regression-8.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/duelist-regression-8.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/1fa20d612e454ba486a735439a3076cd.json",
+        "guard_report": "<cache>/rustmage-build-reports/1fa20d612e454ba486a735439a3076cd.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-8.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-8.py"
           ],
           "terminal": true,
           "exit_code": 0,
@@ -344,56 +344,56 @@
             "filter": "elrond",
             "exit": 0,
             "seconds": 28.366240558039863,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-9.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-9.log"
           },
           {
             "filter": "hob_roll",
             "exit": 0,
             "seconds": 0.07285249198321253,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/roll-regression-9.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/roll-regression-9.log"
           },
           {
             "filter": "ennis",
             "exit": 0,
             "seconds": 0.06846186297480017,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/ennis-regression-9.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/ennis-regression-9.log"
           },
           {
             "filter": "sos_mana_rollback",
             "exit": 0,
             "seconds": 0.4901672339765355,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/mana-regression-9.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/mana-regression-9.log"
           },
           {
             "filter": "territory_forge",
             "exit": 0,
             "seconds": 0.1571552280220203,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/borrowed-regression-9.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/borrowed-regression-9.log"
           },
           {
             "filter": "msh_c",
             "exit": 0,
             "seconds": 0.20280362601624802,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/return-regression-9.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/return-regression-9.log"
           },
           {
             "filter": "sos_next_duelist",
             "exit": 0,
             "seconds": 0.0457740529673174,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/duelist-regression-9.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/duelist-regression-9.log"
           },
           {
             "filter": "clippy",
             "exit": 101,
             "seconds": 42.99894054501783,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/clippy-9.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/clippy-9.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/94fcd5efeaeb4d079879c5b76c9dca9a.json",
+        "guard_report": "<cache>/rustmage-build-reports/94fcd5efeaeb4d079879c5b76c9dca9a.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-9.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-9.py"
           ],
           "terminal": true,
           "exit_code": 101,
@@ -413,62 +413,62 @@
             "filter": "elrond",
             "exit": 0,
             "seconds": 29.0696798840072,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/focused-10.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/focused-10.log"
           },
           {
             "filter": "hob_roll",
             "exit": 0,
             "seconds": 0.053373472997918725,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/roll-regression-10.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/roll-regression-10.log"
           },
           {
             "filter": "ennis",
             "exit": 0,
             "seconds": 0.05072618997655809,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/ennis-regression-10.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/ennis-regression-10.log"
           },
           {
             "filter": "sos_mana_rollback",
             "exit": 0,
             "seconds": 0.5395001840079203,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/mana-regression-10.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/mana-regression-10.log"
           },
           {
             "filter": "territory_forge",
             "exit": 0,
             "seconds": 0.135556664026808,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/borrowed-regression-10.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/borrowed-regression-10.log"
           },
           {
             "filter": "msh_c",
             "exit": 0,
             "seconds": 0.31430758198257536,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/return-regression-10.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/return-regression-10.log"
           },
           {
             "filter": "sos_next_duelist",
             "exit": 0,
             "seconds": 0.04740356403635815,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/duelist-regression-10.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/duelist-regression-10.log"
           },
           {
             "filter": "clippy-lib",
             "exit": 0,
             "seconds": 0.2103077649953775,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/clippy-lib-10.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/clippy-lib-10.log"
           },
           {
             "filter": "clippy-all-targets-inherited-constant-lint-exception",
             "exit": 0,
             "seconds": 42.09057020902401,
-            "log": "/home/altf4/.cache/rustmage-authoring/hob-elrond/clippy-all-targets-inherited-constant-lint-exception-10.log"
+            "log": "<cache>/rustmage-authoring/hob-elrond/clippy-all-targets-inherited-constant-lint-exception-10.log"
           }
         ],
-        "guard_report": "/home/altf4/.cache/rustmage-build-reports/24ece8e1fa894e188d9cb713e66d9ced.json",
+        "guard_report": "<cache>/rustmage-build-reports/24ece8e1fa894e188d9cb713e66d9ced.json",
         "guard": {
           "command": [
             "python3",
-            "/home/altf4/.cache/rustmage-authoring/hob-elrond/driver-10.py"
+            "<cache>/rustmage-authoring/hob-elrond/driver-10.py"
           ],
           "terminal": true,
           "exit_code": 0,

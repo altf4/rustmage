@@ -1,0 +1,41 @@
+{
+  "scope": "166 local HOB candidates; 27 gated. Entire193 and final published PR remain open.",
+  "schema": 159,
+  "schema_changes": [
+    "Public optional ReturnLinkView.additional_returning with flat ReturnCardView for simultaneous Elrond return groups",
+    "Public LibrarySelectionView.random flag for Getaway Barrel; false omitted"
+  ],
+  "prior_release": {
+    "head": "72214630eec9e91e123f5f54e8b652bead100814",
+    "report": "<cache>/rustmage-validation-mykhxvzz/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1012,
+    "python_passed": 8,
+    "terminal_receipt_reviews": "pending two independent auditors"
+  },
+  "cohorts": [
+    {
+      "card": "Elrond, Moon-Reader",
+      "leaf": "f6ad87815153d9bd4907e899893d2d816b503e40",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_executions": 82,
+      "unique_tests": 81,
+      "review_finding": "Original f3661d7b created separate delayed triggers for simultaneous return; repaired in f6ad8781 and both reviewers reapproved.",
+      "limitation": "Leaf all-target Clippy allowed only inherited assertions_on_constants on its older base; root contains previously reviewed fix and must pass strict unmodified full release."
+    },
+    {
+      "card": "Getaway Barrel",
+      "leaf": "19005cb6159f6bca5e2a58928f9c0aa0d4d762c3",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_passed": 30,
+      "limitation": "No admitted live selected-entry-prevention fixture; selected-card exclusion from remainder source-audited."
+    }
+  ],
+  "status": "Leaf reviews approved; combined HOB focused checks, historical schema projection audit, candidate review, full release and whole-set acceptance remain open."
+}

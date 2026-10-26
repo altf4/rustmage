@@ -270,3 +270,7 @@ mod hob_elven_passage;
 mod hob_desert_worm;
 
 mod hob_bolg;
+
+mod hob_elrond;
+
+mod hob_getaway_barrel;

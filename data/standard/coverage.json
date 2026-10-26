@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9b6f60d650ce3e86ff436ae8576d1b4e82d96bd0abfdfb5b4d234b18d099f5f2",
+  "catalogue_version": "1be7c5bc1c31b7667c92f9bec4524cd5a97b58bd4c3f38d1bcc6420e14e806cc",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2673,
-  "implemented_total": 2679,
+  "implemented_standard_cards": 2675,
+  "implemented_total": 2681,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 159,
-      "gated": 29
+      "complete": 161,
+      "gated": 27
     },
     "hoc": {
       "total": 5,
@@ -10524,8 +10524,8 @@
     {
       "name": "Elrond, Moon-Reader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/elrond_moon_reader.rs",
       "set": "hob"
     },
@@ -13972,8 +13972,8 @@
     {
       "name": "Getaway Barrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/getaway_barrel.rs",
       "set": "hob"
     },
