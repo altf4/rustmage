@@ -168,55 +168,66 @@ fn treasures(g: &Game, p: Player) -> Vec<CardId> {
 fn hob_inherited_smaug_paid_hasty_attack_live_treasures_and_departed_source() {
     for p in [Player::P0, Player::P1] {
         for creature_target in [false, true] {
-            let mut g = scenario(p);
-            let source = smaug(&mut g, p);
-            let recipient = put(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
-            let spend = put(
-                &mut g,
-                p,
-                "@token/b60f6cd3b44b22bd289fe4e2",
-                Zone::Battlefield,
-            );
-            put(
-                &mut g,
-                p,
-                "@token/b60f6cd3b44b22bd289fe4e2",
-                Zone::Battlefield,
-            );
-            let stolen = put(
-                &mut g,
-                p.other(),
-                "@token/b60f6cd3b44b22bd289fe4e2",
-                Zone::Battlefield,
-            );
-            attack(&mut g, source);
-            target(
-                &mut g,
-                if creature_target {
-                    Target::Card(recipient)
+            for sacrifice_only in [false, true] {
+                let expected = if sacrifice_only { 1 } else { 3 };
+                let mut g = scenario(p);
+                let source = smaug(&mut g, p);
+                let recipient = put(&mut g, p.other(), "Gigantosaurus", Zone::Battlefield);
+                let spend = put(
+                    &mut g,
+                    p,
+                    "@token/b60f6cd3b44b22bd289fe4e2",
+                    Zone::Battlefield,
+                );
+                put(
+                    &mut g,
+                    p,
+                    "@token/b60f6cd3b44b22bd289fe4e2",
+                    Zone::Battlefield,
+                );
+                let stolen = put(
+                    &mut g,
+                    p.other(),
+                    "@token/b60f6cd3b44b22bd289fe4e2",
+                    Zone::Battlefield,
+                );
+                attack(&mut g, source);
+                target(
+                    &mut g,
+                    if creature_target {
+                        Target::Card(recipient)
+                    } else {
+                        Target::Player(p.other())
+                    },
+                );
+                // Each branch ends at a different count from the announcement's two.
+                // A frozen-at-trigger implementation fails both outcome assertions.
+                if sacrifice_only {
+                    g.state.priority = p;
+                    choose(
+                        &mut g,
+                        |a| matches!(a, Action::ActivateMana {card,production,..} if *card == spend && *production == [0,1,0,0,0,0]),
+                    );
+                    assert_ne!(g.object_view(spend).zone, Zone::Battlefield);
                 } else {
-                    Target::Player(p.other())
-                },
-            );
-            g.state.priority = p;
-            choose(
-                &mut g,
-                |a| matches!(a, Action::ActivateMana {card,production,..} if *card == spend && *production == [0,1,0,0,0,0]),
-            );
-            assert_ne!(g.object_view(spend).zone, Zone::Battlefield);
-            let stolen_ref = g.object_ref(stolen);
-            g.record_control(stolen_ref, p, None);
-            g.move_object(source, Zone::Graveyard);
-            g.give_priority();
-            settle(&mut g);
-            assert_eq!(treasures(&g, p).len(), 2);
-            assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 0, 0]);
-            if creature_target {
-                assert_eq!(g.object_view(recipient).damage, 2);
-                assert_eq!(g.state.players[p.other().index()].life, 20);
-            } else {
-                assert_eq!(g.state.players[p.other().index()].life, 18);
-                assert_eq!(g.object_view(recipient).damage, 0);
+                    let stolen_ref = g.object_ref(stolen);
+                    g.record_control(stolen_ref, p, None);
+                }
+                g.move_object(source, Zone::Graveyard);
+                g.give_priority();
+                settle(&mut g);
+                assert_eq!(treasures(&g, p).len(), expected as usize);
+                assert_eq!(
+                    g.state.players[p.index()].mana,
+                    [0, u32::from(sacrifice_only), 0, 0, 0, 0]
+                );
+                if creature_target {
+                    assert_eq!(g.object_view(recipient).damage, expected);
+                    assert_eq!(g.state.players[p.other().index()].life, 20);
+                } else {
+                    assert_eq!(g.state.players[p.other().index()].life, 20 - expected);
+                    assert_eq!(g.object_view(recipient).damage, 0);
+                }
             }
         }
         let mut g = scenario(p);

@@ -80,7 +80,7 @@
       ]
     }
   },
-  "status": "Four new inherited-card outcome scenarios passed on integrated e77c8695; independent review pending. Two inherited flags substantiated by current tests, no new candidate count. Entire193 remains open.",
+  "status": "Smaug live-count proof strengthened after independent review; rerun and two refreshed nonauthor approvals pending. No new candidates.",
   "attempts": [
     {
       "run": "inherited-initial-1",
@@ -127,6 +127,17 @@
       "memory_limit_bytes": 6442450944,
       "oom_events": 0,
       "log_directory": "<cache>/rustmage-authoring/hob-complete-set/inherited-initial-3"
+    }
+  ],
+  "review_findings": [
+    {
+      "reviewer": "hob_review_contracts",
+      "head": "fa532e662a07c6d0e9faf1d8facd5e761553f24d",
+      "severity": "P2 proof",
+      "finding": "Original Smaug test combined sacrifice-one plus transfer-one, leaving count2 and not distinguishing a frozen announcement count.",
+      "correction": "Split independent sacrifice-only expected1 and transfer-only expected3, each with creature/player targets and both seats. No gameplay implementation change.",
+      "status": "Corrected source; refreshed focused run and both reviews pending.",
+      "other_review": "Reviewer verified all13 pins, exact approved Bee/caster integration, meaningful other Bard/Smaug outcomes and actual terminal focused evidence. Integration approved except this proof defect."
     }
   ]
 }
