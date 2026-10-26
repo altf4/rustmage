@@ -28,6 +28,8 @@ const FIXTURES: &[&str] = &[
     "Troop of Ponies",
     "@token/hob-dwarf",
     "Lotus Ring",
+    "Fíli the Pathfinder",
+    "Axgard Cavalry",
 ];
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     assert!(FIXTURES.contains(&name), "unlisted {name}");
@@ -236,9 +238,9 @@ fn elrond_paid_blink_zero_one_two_and_source_departure_owner_return() {
             activate(&mut g, id, &ids[..n]);
             g.move_object(id, Zone::Graveyard);
             finish(&mut g);
-            for i in 0..2 {
+            for (i, &target) in ids.iter().enumerate() {
                 assert_eq!(
-                    g.object_view(ids[i]).zone,
+                    g.object_view(target).zone,
                     if i < n {
                         Zone::Exile
                     } else {
@@ -357,7 +359,17 @@ fn elrond_batched_exile_before_linked_entry_choice_and_owned_restore() {
         });
         assert_eq!(g.object_view(prison).zone, Zone::Exile);
         assert_eq!(g.object_view(second).zone, Zone::Exile);
-        assert_eq!(g.state.delayed_returns.as_ref().unwrap().len(), 2);
+        assert_eq!(g.state.delayed_returns.as_ref().unwrap().len(), 1);
+        assert_eq!(
+            g.state.delayed_returns.as_ref().unwrap()[0]
+                .view
+                .returning
+                .additional_returning
+                .as_ref()
+                .unwrap()
+                .len(),
+            1
+        );
         contracts::branch_contract(g.clone());
         let saved = g.snapshot();
         let mut raw = g.clone();
@@ -714,5 +726,198 @@ fn elrond_countered_draw_trigger_still_consumes_exact_once_limit() {
                 .count(),
             1
         );
+    }
+}
+#[test]
+fn elrond_one_delayed_trigger_counter_leaves_entire_group_exiled() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = elrond(&mut g, p);
+        let a = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let b = fixture(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        activate(&mut g, source, &[a, b]);
+        finish(&mut g);
+        g.move_object(source, Zone::Graveyard);
+        let rows = &g.observe(p).delayed_returns;
+        assert_eq!(rows.len(), 1);
+        assert_eq!(
+            g.observe(p).delayed_returns,
+            g.observe(p.other()).delayed_returns
+        );
+        let json = serde_json::to_value(&rows[0]).unwrap();
+        assert_eq!(json["returning"]["object"]["card"], a);
+        assert_eq!(
+            json["returning"]["additional_returning"][0]["object"]["card"],
+            b
+        );
+        assert!(
+            json["returning"]["additional_returning"][0]
+                .get("additional_returning")
+                .is_none()
+        );
+        end(&mut g);
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .filter(|s| s.kind == StackKind::DelayedReturn)
+                .count(),
+            1
+        );
+        let item = g.state.stack.last().unwrap();
+        assert_eq!(
+            item.return_link
+                .as_ref()
+                .unwrap()
+                .additional_returning
+                .as_ref()
+                .unwrap()
+                .len(),
+            1
+        );
+        contracts::branch_contract(g.clone());
+        let trigger = item.id;
+        assert!(g.counter_stack_item(trigger, false));
+        finish(&mut g);
+        for id in [a, b] {
+            assert_eq!(g.object_view(id).zone, Zone::Exile);
+        }
+        end(&mut g);
+        finish(&mut g);
+        for id in [a, b] {
+            assert_eq!(g.object_view(id).zone, Zone::Exile);
+        }
+    }
+}
+#[test]
+fn elrond_returned_observer_sees_other_simultaneous_returned_dwarf() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = elrond(&mut g, p);
+        // The other Dwarf is first: a serial return would enter it BEFORE Fíli
+        // exists, losing that trigger. One batch must collect both Fíli entry events.
+        let dwarf = fixture(&mut g, p, "Axgard Cavalry", Zone::Battlefield);
+        let fili = fixture(&mut g, p, "Fíli the Pathfinder", Zone::Battlefield);
+        activate(&mut g, source, &[dwarf, fili]);
+        finish(&mut g);
+        end(&mut g);
+        assert_eq!(g.state.stack.len(), 1);
+        assert_eq!(g.state.stack[0].kind, StackKind::DelayedReturn);
+        finish(&mut g);
+        let tokens = g
+            .state
+            .objects
+            .iter()
+            .filter(|o| {
+                o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && o.card == Card::from_name("@token/hob-dwarf").unwrap()
+            })
+            .count();
+        assert_eq!(
+            tokens, 2,
+            "Fíli sees itself AND the simultaneously returned other nontoken Dwarf"
+        );
+    }
+}
+#[test]
+fn elrond_independent_activations_keep_separate_delayed_groups() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = elrond(&mut g, p);
+        let a = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let b = fixture(&mut g, p, "Goldvein Pick", Zone::Battlefield);
+        let c = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+        activate(&mut g, source, &[a, b]);
+        finish(&mut g);
+        activate(&mut g, source, &[c]);
+        finish(&mut g);
+        let rows = &g.observe(p).delayed_returns;
+        assert_eq!(rows.len(), 2);
+        assert!(rows[1].returning.additional_returning.is_none());
+        assert!(
+            serde_json::to_value(&rows[1]).unwrap()["returning"]
+                .get("additional_returning")
+                .is_none(),
+            "legacy singleton shape"
+        );
+        end(&mut g);
+        until(&mut g, |g| g.state.stack.len() == 2);
+        assert!(
+            g.state
+                .stack
+                .iter()
+                .all(|s| s.kind == StackKind::DelayedReturn)
+        );
+        let first = g
+            .state
+            .stack
+            .iter()
+            .find(|s| {
+                s.return_link
+                    .as_ref()
+                    .unwrap()
+                    .additional_returning
+                    .is_some()
+            })
+            .unwrap()
+            .id;
+        assert!(g.counter_stack_item(first, false));
+        finish(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Exile);
+        assert_eq!(g.object_view(b).zone, Zone::Exile);
+        assert_eq!(g.object_view(c).zone, Zone::Battlefield);
+    }
+}
+#[test]
+fn elrond_grouped_return_entry_choice_owns_all_moves_until_batch_commit() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = elrond(&mut g, p);
+        let automaton = fixture(&mut g, p, "Adaptive Automaton", Zone::Battlefield);
+        let bear = fixture(&mut g, p, "Bear Cub", Zone::Battlefield);
+        activate(&mut g, source, &[automaton, bear]);
+        finish(&mut g);
+        end(&mut g);
+        until(&mut g, |g| {
+            g.actor()
+                .is_some_and(|p| g.observe(p).entry_value.is_some())
+        });
+        assert_eq!(g.object_view(automaton).zone, Zone::Exile);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+        contracts::branch_contract(g.clone());
+        let saved = g.snapshot();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        drop(g);
+        let action = raw
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::ChooseEntryValue { .. }))
+            .unwrap();
+        let actor = raw.actor().unwrap();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        act(&mut raw, action);
+        indexed
+            .apply_index(actor, indexed.revision(), index)
+            .unwrap();
+        finish(&mut raw);
+        finish(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        for id in [automaton, bear] {
+            assert_eq!(raw.object_view(id).zone, Zone::Battlefield);
+        }
+        raw.restore(&saved).unwrap();
+        assert_eq!(raw.object_view(bear).zone, Zone::Exile);
+        choose(&mut raw, |a| matches!(a, Action::ChooseEntryValue { .. }));
+        finish(&mut raw);
+        for id in [automaton, bear] {
+            assert_eq!(raw.object_view(id).zone, Zone::Battlefield);
+        }
     }
 }

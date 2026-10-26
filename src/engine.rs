@@ -158,7 +158,7 @@ mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
-pub use return_links::{DelayedReturnView, ReturnLinkView};
+pub use return_links::{DelayedReturnView, ReturnCardView, ReturnLinkView};
 pub use warp::{DelayedWarpExileView, WarpedCard};
 
 #[path = "engine_characteristic_layers.rs"]
@@ -1175,10 +1175,9 @@ impl SpellView {
                 .source_copy_recipe
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
-            + self
-                .return_link
-                .as_ref()
-                .map_or(0, |_| std::mem::size_of::<ReturnLinkView>())
+            + self.return_link.as_ref().map_or(0, |link| {
+                std::mem::size_of::<ReturnLinkView>() + link.companions_bytes()
+            })
             + self
                 .damage_received
                 .as_ref()

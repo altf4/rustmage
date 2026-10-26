@@ -646,6 +646,7 @@ impl Game {
                         {
                             self.state.pending_triggers.last_mut().unwrap().return_link =
                                 Some(Box::new(ReturnLinkView {
+                                    additional_returning: None,
                                     object: event.after,
                                     zone: Zone::Graveyard,
                                     controller: event.before.owner,
