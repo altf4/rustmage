@@ -95,7 +95,7 @@
       "format": "rustfmt edition2024 --check and git diff --check passed"
     }
   },
-  "integration": "Regenerate module/catalogue linkage and register assurance module at integration. Full release validation and two independent nonauthor reviews remain root obligations. No PR/push/merge performed.",
+  "integration": "Root registered assurance module and regenerated catalogue links after both nonauthor approvals. Integrated acceptance pending; no PR/push/merge, whole-set goal remains open.",
   "remaining_obligations": [],
   "throughput": {
     "scope": "Two authored cards plus shared timing and history support; includes source study, tests, two fixture repairs, guarded compilation and build-slot wait.",
@@ -104,5 +104,13 @@
     "elapsed_seconds": 1330,
     "cards": 2,
     "simulation": "32 bounded rules scenarios completed in a reported aggregate0.13 seconds. This is assurance execution, not a simulation throughput benchmark."
+  },
+  "independent_reviews": {
+    "source_commit": "443af970e57cf72584577bb46dbbbdf3e791ad1d",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both independent nonauthors approved complete pinned translations, conditional timing/locked payment, private historical selected-face cast state and actual8new+24regression terminal logs with guardbf7285c948f7409db5d74c7c4d19a89c. No findings."
   }
 }

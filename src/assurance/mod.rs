@@ -205,3 +205,7 @@ mod hob_warg_company;
 mod hob_weavemaster;
 
 mod hob_death_return;
+
+mod hob_inherited_initial;
+
+mod hob_cast_timing;

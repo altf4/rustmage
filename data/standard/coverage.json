@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ef31fe17717bfdde634033f2d810aed49036fd5beccb5066d4874d5d45f8c8fd",
+  "catalogue_version": "1620aada10d1f5f17d5f207aa75d65c5e2623875dd648a7991c8eb4cd338bf9f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2637,
-  "implemented_total": 2643,
+  "implemented_standard_cards": 2639,
+  "implemented_total": 2645,
   "token_definitions": 129,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 65,
-      "complete": 123
+      "gated": 63,
+      "complete": 125
     },
     "hoc": {
       "total": 5,
@@ -2820,8 +2820,8 @@
     {
       "name": "Bard's Company",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/bard_s_company.rs",
       "set": "hob"
     },
@@ -26860,8 +26860,8 @@
     {
       "name": "Radagast of Rhosgobel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/radagast_of_rhosgobel.rs",
       "set": "hob"
     },
