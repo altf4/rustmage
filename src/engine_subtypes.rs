@@ -56,9 +56,15 @@ const COPY_VILLAIN: u32 = COPY_HUMAN << 1;
 const COPY_MERCENARY: u32 = COPY_VILLAIN << 1;
 const ADDED_SOLDIER: u32 = COPY_MERCENARY << 1;
 const ADDED_GOBLIN: u32 = ADDED_SOLDIER << 1;
-const ADDED_MASK: u32 =
-    JOB_MASK | COPY_HUMAN | COPY_VILLAIN | COPY_MERCENARY | ADDED_SOLDIER | ADDED_GOBLIN;
-const _: () = assert!(JOB_TYPES.len() + 5 <= u32::BITS as usize);
+const ADDED_BEAR: u32 = ADDED_GOBLIN << 1;
+const ADDED_MASK: u32 = JOB_MASK
+    | COPY_HUMAN
+    | COPY_VILLAIN
+    | COPY_MERCENARY
+    | ADDED_SOLDIER
+    | ADDED_GOBLIN
+    | ADDED_BEAR;
+const _: () = assert!(JOB_TYPES.len() + 6 <= u32::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
     added: u32,
@@ -145,6 +151,7 @@ impl GrantedSubtypes {
             "Mercenary" => COPY_MERCENARY,
             "Soldier" => ADDED_SOLDIER,
             "Goblin" => ADDED_GOBLIN,
+            "Bear" => ADDED_BEAR,
             _ => 0,
         }
     }
@@ -178,6 +185,7 @@ impl Serialize for GrantedSubtypes {
                     (COPY_MERCENARY, "Mercenary"),
                     (ADDED_SOLDIER, "Soldier"),
                     (ADDED_GOBLIN, "Goblin"),
+                    (ADDED_BEAR, "Bear"),
                 ] {
                     if self.0 & bit != 0 {
                         out.serialize_element(subtype)?;
@@ -404,6 +412,37 @@ impl Game {
 }
 
 impl Game {
+    pub(super) fn add_creature_types(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        types: &'static [&'static str],
+    ) {
+        assert!(types.iter().all(|t| crate::cards::is_creature_type(t)));
+        let recipients: Vec<_> = self
+            .keyword_subjects(item, subject)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id) && self.is_creature(id))
+            .map(|id| self.object_ref(id))
+            .collect();
+        if recipients.is_empty() {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        for recipient in recipients {
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .creature_types
+                .push(CreatureTypesEffectView {
+                    recipient,
+                    source: item.object,
+                    types,
+                    additional: true,
+                    timestamp,
+                });
+        }
+    }
     pub(super) fn set_creature_types(
         &mut self,
         item: &SpellView,

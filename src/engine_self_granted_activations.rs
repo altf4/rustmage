@@ -25,10 +25,10 @@ impl Game {
             return false;
         }
         let query = self.characteristic_query();
-        for row in rows
-            .iter()
-            .filter(|row| row.recipient.card == card && row.expires_turn == self.state.turn)
-        {
+        for row in rows.iter().filter(|row| {
+            row.recipient.card == card
+                && row.expires_turn.is_none_or(|turn| turn == self.state.turn)
+        }) {
             let SelfGrantedAbilityKind::Activated { ability } = row.kind else {
                 continue;
             };

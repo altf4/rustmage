@@ -1632,6 +1632,11 @@ pub(crate) enum Instruction {
         keywords: Keywords,
         ability: Option<u16>,
     },
+    /// Permanent additive creature subtypes on the exact selected subjects.
+    AddCreatureTypes {
+        subject: Subject,
+        types: &'static [&'static str],
+    },
     SetCreatureTypes {
         subject: Subject,
         types: &'static [&'static str],
@@ -1653,6 +1658,7 @@ pub(crate) enum Instruction {
     GrantCastCreatureKeywords(Keywords),
     /// Bestow a real self-owned static ability, rather than a resolved stat modifier.
     GrantSelfAbility(crate::engine::SelfGrantedAbilityKind),
+    GrantPermanentSelfAbility(crate::engine::SelfGrantedAbilityKind),
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,

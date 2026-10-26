@@ -3247,3 +3247,7 @@ mod sacrifice_tests;
 #[cfg(test)]
 #[path = "assurance/hob_fili_funding.rs"]
 mod fili_tests;
+
+#[cfg(test)]
+#[path = "assurance/hob_beorn_funding.rs"]
+mod beorn_tests;

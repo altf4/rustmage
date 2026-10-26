@@ -497,7 +497,9 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         for grant in grants.iter() {
             if world.object(grant.recipient.card).zone == Zone::Battlefield
                 && world.reference(grant.recipient.card) == grant.recipient
-                && grant.expires_turn == game.state.turn
+                && grant
+                    .expires_turn
+                    .is_none_or(|turn| turn == game.state.turn)
             {
                 effects.push(LayerSixEffect {
                     provider: None,

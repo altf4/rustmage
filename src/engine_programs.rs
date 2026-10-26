@@ -4395,6 +4395,9 @@ impl Game {
                 } => {
                     self.evolve_source(&item, required, types, stats, keywords, ability);
                 }
+                Instruction::AddCreatureTypes { subject, types } => {
+                    self.add_creature_types(&item, subject, types)
+                }
                 Instruction::SetCreatureTypes { subject, types } => {
                     self.set_creature_types(&item, subject, types);
                 }
@@ -4435,6 +4438,9 @@ impl Game {
                     self.return_granted_source(&item, counter, role)
                 }
                 Instruction::GrantSelfAbility(kind) => self.grant_self_ability(&item, kind),
+                Instruction::GrantPermanentSelfAbility(kind) => {
+                    self.grant_permanent_self_ability(&item, kind)
+                }
                 Instruction::GrantCastCreatureKeywords(keywords) => {
                     self.grant_cast_creature_keywords(&item, keywords);
                 }

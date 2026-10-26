@@ -674,21 +674,44 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         if let Some(rows) = &self.state.self_granted_abilities {
             for row in rows.iter() {
-                if row.kind == SelfGrantedAbilityKind::ControllerHandPower
-                    && row.recipient == object
-                    && row.expires_turn == self.state.turn
-                    && row
-                        .effect_timestamp
-                        .is_some_and(|effect_time| power_time.is_none_or(|time| effect_time > time))
-                    && self.self_grant_available(row.recipient, row.timestamp)
+                if row.recipient != object
+                    || !row.expires_turn.is_none_or(|turn| turn == self.state.turn)
+                    || !self.self_grant_available(row.recipient, row.timestamp)
                 {
-                    stats.power = self.stat_value_without_hand(
-                        StatValue::ControllerHandSize,
-                        object,
-                        self.object(id).controller,
-                        departing,
-                    );
-                    power_time = row.effect_timestamp;
+                    continue;
+                }
+                let Some(time) = row.effect_timestamp else {
+                    continue;
+                };
+                let value = match row.kind {
+                    SelfGrantedAbilityKind::ControllerHandPower => StatValue::ControllerHandSize,
+                    SelfGrantedAbilityKind::ControllerLandStats => StatValue::Count(CountFilter {
+                        zone: CountZone::Battlefield,
+                        relation: 0,
+                        kind: 2,
+                        exclude: 0,
+                        subtype: None,
+                        basic: false,
+                        other: false,
+                        cards_only: false,
+                    }),
+                    _ => continue,
+                };
+                let amount = self.stat_value_without_hand(
+                    value,
+                    object,
+                    self.object(id).controller,
+                    departing,
+                );
+                if power_time.is_none_or(|old| time > old) {
+                    stats.power = amount;
+                    power_time = Some(time);
+                }
+                if row.kind == SelfGrantedAbilityKind::ControllerLandStats
+                    && toughness_time.is_none_or(|old| time > old)
+                {
+                    stats.toughness = amount;
+                    toughness_time = Some(time);
                 }
             }
         }
