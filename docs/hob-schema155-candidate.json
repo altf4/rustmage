@@ -1,6 +1,6 @@
 {
   "schema": 155,
-  "status": "All current shared cores integrated; final inherited audit and baseline adoption pending",
+  "status": "Audited schema155 baseline adopted; ordinary strict regression and full release validation pending",
   "previous_schema": 154,
   "reason": "New public LibrarySelectionView destination battlefield_tapped and remainder shuffle values used by Through the Forest Gate",
   "source_review": "Both independent nonauthors approved four-effect source2b68a3f4 contingent on this schema integration and inherited trace audits",
@@ -46,5 +46,48 @@
     ],
     "recording_note": "Explicit recording leaves committed baseline untouched and intentionally fails strict2639vs2631 cardinality; this is not ordinary strict acceptance. Final source cohort must be audited again after pending multiplicity integration.",
     "independent_reviews": "Both independent nonauthors approved exact0166ba72 after full row/hash and actual terminal evidence checks; multiplicity core excluded from that audit."
+  },
+  "final_audit": {
+    "source_head": "fd2c2b8a65b49d7fff7bcf63d5561319ddc90821",
+    "current_rows": 2641,
+    "inherited_baselines": {
+      "154": 2631,
+      "153": 2610,
+      "152": 2584
+    },
+    "changed_inherited_rows": 0,
+    "missing_inherited_rows": 0,
+    "completed_additions": {
+      "154": 10,
+      "153": 31,
+      "152": 57
+    },
+    "current_candidates_byte_identical": true,
+    "candidate_sha256": "22d55c09254f357edf0172347b28dc25ccf1e1a3783f70e82f64e6344f1f2a99",
+    "comparison": "<cache>/rustmage-authoring/hob-complete-set/schema155-fd2c2b8a-1/comparison.json",
+    "recording_log": "<cache>/rustmage-authoring/hob-complete-set/schema155-fd2c2b8a-1/guard.log",
+    "recording_exits": [
+      101,
+      101,
+      101
+    ],
+    "recording_note": "Expected strict2641vs2631cardinality failures during explicit recording; full projected row equality separately audited. Normal strict validation never projects.",
+    "rules_passed": 126,
+    "rules_failed": 0,
+    "rules_ignored": 0,
+    "rules_seconds": 0.19,
+    "compile_seconds": 135.31434579199413,
+    "guard_seconds": 141.44083698798204,
+    "memory_peak_bytes": 2556362752,
+    "oom_events": 0,
+    "resource_report": "<cache>/rustmage-build-reports/3ee5128a2c9e45b4952ecff430d474eb.json",
+    "independent_reviews": {
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ],
+      "result": "Both independent nonauthors recomputed every full inherited row, candidate bytes/hash, completed additions, actual126-case terminal evidence and integration preservation. Approved exactfd2c2b8a baseline adoption eligibility with no findings."
+    },
+    "adoption": "Copied exact audited2641-row bytes after both approvals; ordinary strict full release pass still required."
   }
 }
