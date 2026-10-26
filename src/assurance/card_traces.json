@@ -519,6 +519,14 @@
     "journal": "903e360914c6c94c",
     "observations": "3384f05730924949"
   },
+  "Along the Crooked Way": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 9,
+    "zone": "Battlefield",
+    "journal": "5e99e373fced4523",
+    "observations": "168ac74f4195e546"
+  },
   "Amazing Acrobatics": {
     "root": "main",
     "status": "completed",
@@ -1566,6 +1574,14 @@
     "zone": "Battlefield",
     "journal": "100cb581dd613f1f",
     "observations": "798cc3deb0136eb8"
+  },
+  "Belladonna Took": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "4b4a94bd9dcc1586"
   },
   "Belligerent Yearling": {
     "root": "main",
@@ -3902,6 +3918,14 @@
     "zone": "Battlefield",
     "journal": "3ad6d4893695dc9c",
     "observations": "982afda84a8c4e66"
+  },
+  "Dancing from Dark to Dawn": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "f833142f3ffafc96",
+    "observations": "c5d2b5aabc5dcf2b"
   },
   "Danitha, Spear of Agony": {
     "root": "main",
@@ -6879,6 +6903,14 @@
     "journal": "a0e420e69a0470d9",
     "observations": "da0263f671837bc2"
   },
+  "Galion, Elvenking's Butler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "dbb8ae3f9a5d3b87",
+    "observations": "35bd3b4d400e07b0"
+  },
   "Gallant Citizen": {
     "root": "main",
     "status": "completed",
@@ -6918,6 +6950,22 @@
     "zone": "Battlefield",
     "journal": "b3f39d5b44da38ed",
     "observations": "abc4e337d71381bc"
+  },
+  "Gandalf, Spark Starter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 9,
+    "zone": "Battlefield",
+    "journal": "40928bd3b4a2cc65",
+    "observations": "7c9100918671792e"
+  },
+  "Gandalf, Wandering Wizard": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "87c199e3b586e2a2",
+    "observations": "832c91e4c0d61ecd"
   },
   "Gangly Stompling": {
     "root": "main",
@@ -10030,6 +10078,14 @@
     "zone": "Battlefield",
     "journal": "97f197e40a843eee",
     "observations": "8645fc96ab2fd44e"
+  },
+  "Lake-town Mariners": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "78a585eeb3f83501",
+    "observations": "50d6e5f0e032eb16"
   },
   "Lake-town Toymaker": {
     "root": "main",
@@ -18367,6 +18423,14 @@
     "journal": "c7c7b613e024155e",
     "observations": "1caf301e5a666c36"
   },
+  "The Lonely Mountain": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "bc153a7b78af6be5"
+  },
   "The Lord of the Eagles": {
     "root": "main",
     "status": "completed",
@@ -18399,6 +18463,14 @@
     "journal": "ce93789b5fa64c9f",
     "observations": "4422a52df3252409"
   },
+  "The Misty Mountains Cold": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "996b3f354b3811ac",
+    "observations": "014d5ca40bf662ef"
+  },
   "The Mountain-king's Return": {
     "root": "main",
     "status": "completed",
@@ -18406,6 +18478,14 @@
     "zone": "Battlefield",
     "journal": "f54f78bce57ae0d9",
     "observations": "0cad86ebfbaad5f1"
+  },
+  "The Queen of Dale": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "83f4de09d4a56b8a"
   },
   "The Ruinous Wrecking Crew": {
     "root": "main",
@@ -19510,6 +19590,14 @@
     "zone": "Battlefield",
     "journal": "c8b93c56dc817f4b",
     "observations": "f3b5490de158f58a"
+  },
+  "Uncover the Moon-Letters": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b3f39d5b44da38ed",
+    "observations": "b7a2ccdaf72c23a1"
   },
   "Undercity Sewers": {
     "root": "main",
