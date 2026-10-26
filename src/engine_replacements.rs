@@ -166,6 +166,7 @@ enum Work {
     AmassSubtype {
         source: ObjectRef,
         recipient: ObjectRef,
+        attach: bool,
     },
     AnimateCreated {
         created: Vec<ObjectRef>,
@@ -1268,8 +1269,15 @@ impl Game {
                         }
                         continue;
                     }
-                    Some(Work::AmassSubtype { source, recipient }) => {
+                    Some(Work::AmassSubtype {
+                        source,
+                        recipient,
+                        attach,
+                    }) => {
                         self.grant_amass_goblin_type(source, recipient);
+                        if attach {
+                            self.attach_equipment(source, recipient);
+                        }
                         continue;
                     }
                     Some(Work::Damage(batch)) => state.active = Some(Event::Damage(batch)),
@@ -1920,6 +1928,17 @@ impl Game {
         recipient: ObjectRef,
         amount: u16,
     ) {
+        // The paused program owns this immutable continuation. Army selection
+        // reuses the ordinary public amass choice without a global last result.
+        let attach = self.state.resolving.as_ref().is_some_and(|resolution| {
+            matches!(
+                resolution
+                    .pc
+                    .checked_sub(1)
+                    .and_then(|pc| resolution.program.get(pc)),
+                Some(Instruction::AmassGoblinsThenAttach(_))
+            )
+        });
         self.effect_counters(
             vec![(
                 recipient,
@@ -1931,9 +1950,13 @@ impl Game {
             state.work.push_back(Work::AmassSubtype {
                 source: item.object,
                 recipient,
+                attach,
             });
         } else {
             self.grant_amass_goblin_type(item.object, recipient);
+            if attach {
+                self.attach_equipment(item.object, recipient);
+            }
         }
     }
 }

@@ -8054,6 +8054,20 @@ impl Game {
                         {
                             Some(u64::from(*n))
                         }
+                        crate::cards::StaticAbilityFragment::ConditionalAdditionalLandPlays {
+                            condition,
+                            amount,
+                        } if self.continuous_fragment_available(id, |candidate| {
+                            matches!(candidate,
+                                crate::cards::StaticAbilityFragment::ConditionalAdditionalLandPlays {
+                                    condition: candidate_condition,
+                                    amount: candidate_amount,
+                                } if candidate_condition == condition && candidate_amount == amount)
+                        })
+                            && self.stat_value(*condition, self.object_ref(id), player) != 0 =>
+                        {
+                            Some(u64::from(*amount))
+                        }
                         _ => None,
                     })
                     .sum::<u64>()

@@ -904,6 +904,8 @@ pub(crate) enum Instruction {
     EnsureGoblinArmy,
     /// Complete amass after token creation and its replacements.
     AmassGoblins(u16),
+    /// Complete amass, then attach the exact source Equipment to that Army.
+    AmassGoblinsThenAttach(u16),
     /// Real nonmana variable activation cost; amount is declared before payment.
     SourceCounterCost {
         kind: CounterKind,

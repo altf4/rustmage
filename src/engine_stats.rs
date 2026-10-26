@@ -210,6 +210,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                             | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
+                            | crate::cards::StaticAbilityFragment::ConditionalAdditionalLandPlays { .. }
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }

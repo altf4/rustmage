@@ -3178,7 +3178,7 @@ impl Game {
                         self.create_tokens(item.controller, Card::GoblinArmyToken, 1, false);
                     }
                 }
-                Instruction::AmassGoblins(amount) => {
+                Instruction::AmassGoblins(amount) | Instruction::AmassGoblinsThenAttach(amount) => {
                     let armies: Vec<_> = self
                         .state
                         .objects

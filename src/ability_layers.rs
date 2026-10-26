@@ -96,6 +96,11 @@ pub(crate) enum StaticAbilityFragment {
     NoMaximumHandSize,
     MaximumHandSize(u16),
     AdditionalLandPlays(u16),
+    /// A live earlier-layer condition; allowance consumption stays turn-wide.
+    ConditionalAdditionalLandPlays {
+        condition: StatValue,
+        amount: u16,
+    },
     IntrinsicKeywords(Keywords),
     Changeling,
     /// Predefined Cursed Role sets both axes in layer 7b.
