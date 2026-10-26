@@ -27,7 +27,7 @@
     "Existing generic modal/target/counter rules; no new engine state",
     "Chief Wolf permanent deck admission is unrelated; uses existing Treasure factory5302"
   ],
-  "remaining": "Independent leaf source/evidence reviews and integrated final executable acceptance",
+  "remaining": "Integrated final executable acceptance and full-set acceptance remain pending",
   "validation": {
     "first_run": {
       "filter": "engine::assurance::hob_",
@@ -53,7 +53,8 @@
     },
     "source_check": {
       "definitions": 5412,
-      "java_blobs": 1509
+      "java_blobs": 1509,
+      "scope": "Before Chief token integration; integrated source check verifies5413 definitions/1512 Java blobs."
     },
     "changes_since_first_run": "Test helper only: accept any legal mode, use exact minimum lethal trample allocation, and reject unavailable counter mode after source dies."
   },
@@ -61,5 +62,13 @@
     "src/card_definitions/hob/bejeweled_warg.rs": "aa31097021f8513ff3af6db1f5106828268ae4f48b2d7c3b3be3680a4b653332",
     "src/card_definitions/hob/bejeweled_warg.json": "4afa225fb5c217ae736b858fee487051b409fcb6815e29f7794722ce5d7631f2",
     "src/assurance/hob_bejeweled.rs": "c41763c3c40c99eddecb45cf0ef5162d545412bb444871af302d1a88505cc889"
+  },
+  "independent_reviews": {
+    "head": "59e431e9",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both independent nonauthors verified full printed behavior, pinned Java/helpers, exact source hashes and actual4/4 terminal scenario proof; approved with no findings after fixture repair."
   }
 }

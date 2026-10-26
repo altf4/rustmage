@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "47a7b7899aa72a601f8aa88cfb49c3d8ece744c9b9e1cbfcfd162f4c949ce402",
+  "catalogue_version": "9736485d12fab6a73a6dd3ad666c159a4db60cd7de8de7c66cc7cb74f40a0be6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2627,
-  "implemented_total": 2633,
+  "implemented_standard_cards": 2631,
+  "implemented_total": 2637,
   "token_definitions": 129,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 75,
-      "complete": 113
+      "gated": 71,
+      "complete": 117
     },
     "hoc": {
       "total": 5,
@@ -14572,8 +14572,8 @@
     {
       "name": "Gnashing of Teeth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/gnashing_of_teeth.rs",
       "set": "hob"
     },
@@ -32052,8 +32052,8 @@
     {
       "name": "Sound the Trumpets",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/sound_the_trumpets.rs",
       "set": "hob"
     },
@@ -33508,8 +33508,8 @@
     {
       "name": "Stone by Sunlight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/stone_by_sunlight.rs",
       "set": "hob"
     },
@@ -36796,8 +36796,8 @@
     {
       "name": "Through the Forest Gate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/through_the_forest_gate.rs",
       "set": "hob"
     },

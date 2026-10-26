@@ -65,7 +65,7 @@
   "shared_changes": {
     "Instruction": "IfTargetSpellManaValueAtMost; GrowPlayerCreatures; AddArtifactToTargets",
     "library": "BattlefieldTapped destination and Shuffle remainder",
-    "characteristics": "Existing artifact=true/preserve_card_types=true rows add artifact only; crew shortcut ignores artifact-only rows. No new owned State fields or wire shape."
+    "characteristics": "Existing artifact=true/preserve_card_types=true rows add artifact only; crew shortcut ignores artifact-only rows. No new owned State fields. Library selection exposes new destination/remainder values; schema155 integration and inherited trace audits are required."
   },
   "validation": {
     "focused_filter": "engine::assurance::hob_four_effects",
@@ -128,5 +128,21 @@
     "Regenerate catalogue/module-link artifacts with scripts/link_catalogue.py.",
     "Obtain two independent nonauthor reviews of the settled source and assembled final published candidate.",
     "Run required release acceptance on the assembled frozen checkpoint."
-  ]
+  ],
+  "wire_integration": {
+    "required_schema": 155,
+    "new_public_values": {
+      "LibrarySelectionView.destination": "battlefield_tapped",
+      "LibrarySelectionView.remainder": "shuffle"
+    },
+    "notes": "These extend observable wire vocabulary even though no new State fields or serialized field names are added. Root must audit every inherited schema154/153/152 trace before adopting schema155 baseline; normal strict validation must pass afterward."
+  },
+  "independent_reviews": {
+    "source_head": "2b68a3f479f5569a9d6efd6ab216df0cf5b4f282",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both independently approved full source/Oracle/Java and actual11new+56consumer pass evidence, conditional on recorded schema155 integration and inherited audits. No other source findings."
+  }
 }
