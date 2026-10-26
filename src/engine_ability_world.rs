@@ -11,6 +11,9 @@ pub(super) trait CharacteristicWorld {
             .power
     }
     fn game(&self) -> &Game;
+    fn has_enduring_story(&self, player: Player) -> bool {
+        self.game().state.players[player.index()].enduring_story
+    }
     fn static_sources(&self) -> &[CardId] {
         &self.game().state.static_sources
     }
@@ -451,6 +454,7 @@ pub(super) trait CharacteristicWorld {
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
+            self.has_enduring_story(controller),
         )
     }
     fn entered_this_turn(&self, source: ObjectRef) -> bool {
@@ -718,6 +722,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn life(&self, p: Player) -> i128 {
         self.parent.life(p)
+    }
+    fn has_enduring_story(&self, player: Player) -> bool {
+        self.parent.has_enduring_story(player)
     }
     fn gained_life(&self, p: Player) -> bool {
         self.parent.gained_life(p)

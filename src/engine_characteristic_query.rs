@@ -107,6 +107,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             &|id| self.counter_amounts(id).has_any(),
             self.life(owner),
             self.state.attack_declared && self.attacking(source.card),
+            self.has_enduring_story(owner),
         )
     }
     fn stat_expression_without_hand(
@@ -965,6 +966,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn controls(&self) -> Option<&continuous_control::ControlState> {
         self.world.controls()
+    }
+    fn has_enduring_story(&self, player: Player) -> bool {
+        self.world.has_enduring_story(player)
     }
     fn creatures_died(&self) -> u64 {
         self.world.creatures_died()

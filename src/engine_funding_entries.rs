@@ -1116,6 +1116,7 @@ impl FundingState<'_> {
         next.entry_projection.as_mut().unwrap().counter = None;
         next.refresh_control_projection();
         next.prune_source_linked_projection();
+        next.refresh_enduring_projection();
         for m in &moves {
             if m.skipped || m.destination != Zone::Battlefield {
                 continue;
@@ -1153,6 +1154,7 @@ impl FundingState<'_> {
             p.hand_size.assign(source);
         }
         next.refresh_control_projection();
+        next.refresh_enduring_projection();
         emit(&next)
     }
 }

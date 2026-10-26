@@ -31,6 +31,7 @@ pub(super) struct FundingState<'g> {
     game: &'g Game,
     actor: Player,
     life_gained: [bool; 2],
+    enduring_story: [bool; 2],
     active: Player,
     mana: [u128; 6],
     lots: Vec<mana_lots::Lot>,
@@ -56,6 +57,9 @@ pub(super) struct FundingState<'g> {
     borrowed_uses: Vec<(ObjectRef, u64)>,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn has_enduring_story(&self, player: Player) -> bool {
+        self.enduring_story[player.index()]
+    }
     fn ability_origin(&self, id: CardId) -> Option<u64> {
         if self.object(id).zone != Zone::Battlefield {
             return None;
@@ -227,6 +231,7 @@ struct EntryFundingKey {
 }
 #[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
+    enduring_story: [bool; 2],
     payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
     source_linked_effects: Vec<SourceLinkedEffectView>,
     resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
@@ -604,6 +609,7 @@ impl<'g> FundingState<'g> {
             })
             .collect();
         let mut result = Self {
+            enduring_story: game.state.players.each_ref().map(|p| p.enduring_story),
             copy_recipes: game.state.copy_recipes.clone(),
             cast_costs: None,
             entry_projection: None,
@@ -1242,6 +1248,12 @@ impl<'g> FundingState<'g> {
         });
         moves
     }
+    fn refresh_enduring_projection(&mut self) {
+        let acquired = storied::acquisitions(self);
+        for (current, acquired) in self.enduring_story.iter_mut().zip(acquired) {
+            *current |= acquired;
+        }
+    }
     fn refresh_control_projection(&mut self) {
         self.refresh_source_bound_copies();
         for row in continuous_control::controllers(self) {
@@ -1382,6 +1394,10 @@ impl<'g> FundingState<'g> {
                 departure = Some(Zone::Graveyard);
             }
         }
+        // Tap/counter costs are real prior states, even when the departure below
+        // still needs replacement planning. Do not award from a tentative raw
+        // destination in the preserve-departure path.
+        self.refresh_enduring_projection();
         if let Some(destination) = departure {
             // Counter and tap payments precede the actual move, as in the real
             // payment path. Capture characteristics before zone effects cease.
@@ -1411,6 +1427,9 @@ impl<'g> FundingState<'g> {
         }
         self.refresh_control_projection();
         self.prune_source_linked_projection();
+        if !preserve_departure_counters {
+            self.refresh_enduring_projection();
+        }
         for (pool, produced) in self.mana.iter_mut().zip(step.production) {
             *pool = pool
                 .checked_add(u128::from(produced))
@@ -1532,6 +1551,7 @@ impl<'g> FundingState<'g> {
             )
         });
         FundingKey {
+            enduring_story: self.enduring_story,
             payment_departures: self.payment_departures.clone(),
             resolved_ability_modifications: self
                 .roles()
@@ -3187,3 +3207,7 @@ impl Game {
 #[cfg(test)]
 #[path = "assurance/hob_hone_funding.rs"]
 mod hone_tests;
+
+#[cfg(test)]
+#[path = "engine_funding_storied_tests.rs"]
+mod storied_tests;

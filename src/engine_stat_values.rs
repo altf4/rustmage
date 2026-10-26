@@ -72,6 +72,7 @@ impl Game {
             self.state.players[owner.index()].life,
             self.state.attack_declared
                 && self.state.attackers.iter().any(|a| a.card == source.card),
+            self.state.players[owner.index()].enduring_story,
         )
     }
     /// The same earlier-layer evaluator serves concrete state and a borrowed
@@ -92,6 +93,7 @@ impl Game {
         has_counters: &impl Fn(CardId) -> bool,
         life: i128,
         attacking: bool,
+        enduring_story: bool,
     ) -> i128
     where
         F: Fn() -> I,
@@ -99,9 +101,7 @@ impl Game {
     {
         match value {
             StatValue::Fixed(n) => i128::from(n),
-            StatValue::HasEnduringStory => {
-                i128::from(self.state.players[owner.index()].enduring_story)
-            }
+            StatValue::HasEnduringStory => i128::from(enduring_story),
             StatValue::SourceCounters(kind) => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |_| i128::from(counter_count(source.card, kind))),
@@ -134,6 +134,7 @@ impl Game {
                     has_counters,
                     life,
                     attacking,
+                    enduring_story,
                 ) == 0,
             ),
             StatValue::SourceEquipmentCount => {
@@ -240,6 +241,7 @@ impl Game {
                     has_counters,
                     life,
                     attacking,
+                    enduring_story,
                 ) >= i128::from(minimum),
             ),
             StatValue::SpellsCastThisTurn => {
@@ -357,6 +359,7 @@ impl Game {
                         has_counters,
                         life,
                         attacking,
+                        enduring_story,
                     )
                 })
                 .try_fold(0i128, i128::checked_add)

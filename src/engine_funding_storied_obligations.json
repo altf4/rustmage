@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "base_revision": "43f8f7136e8c04cac2259389e870f4c704ea1c38",
+  "scope": "Shared storied funding projection repair; no new card admissions or wire changes.",
+  "status": "Candidate for independent local review; no PR or merge.",
+  "regression": {
+    "fixture": "A summoning-sick but effect-untapped Oin is suppressed by The Wondrous Wasp, with one Lotus Ring attached to each creature. With zero mana and no enduring story, sacrificing Wasp produces three mana and restores Oin at a three-permanent threshold; the acquired designation grants haste so sacrificing Oin produces three more.",
+    "before": "can_fund(6) incorrectly returned false because conditional characteristics read the real Game designation instead of projected history.",
+    "after": "Funding worlds persist their own designation, expose it through all borrowed characteristic wrappers and include it in their memo key, while leaving the real Game unchanged.",
+    "corrected_pre_fix_log": "<cache>/rustmage-authoring/hob-storied-funding/reproduce-untapped.log",
+    "corrected_pre_fix_command_seconds": 132.84067356295418,
+    "corrected_pre_fix_result": "1 expected failing regression assertion, 0 passed; fixture assertions prove Oin is untapped and summoning sick.",
+    "authoring_note": "The first reproduction and first repair run retained Wasp entry tapping Oin; their failures were fixture errors, not independent evidence for the designation defect. Corrected pre-fix and final logs supersede them."
+  },
+  "proofs": [
+    {
+      "obligation": "Realizable newly acquired designation enables a later sick mana source, for both seats, without mutating actual state.",
+      "test": "engine::funding::storied_tests::hob_storied_funding_new_designation_enables_second_sick_mana_source"
+    },
+    {
+      "obligation": "Designation persists after its source and threshold leave; otherwise identical memo worlds retain distinct histories; nested Sum/Not/AtLeast, CharacteristicQuery and SourceTappedWorld use projected facts.",
+      "test": "engine::funding::storied_tests::hob_storied_funding_projection_persists_and_keys_history_after_source_loss"
+    },
+    {
+      "obligation": "Two current qualifying permanents do not award a new designation; a previously earned real designation initializes the projected world and remains useful below threshold.",
+      "test": "engine::funding::storied_tests::hob_storied_funding_two_qualifiers_do_not_award_but_existing_designation_survives"
+    },
+    {
+      "obligation": "Actual six-mana sequence matches independent raw/index children, public observations and restored replay.",
+      "test": "engine::funding::storied_tests::hob_storied_funding_actual_six_mana_matches_raw_index_children_and_restore"
+    }
+  ],
+  "tested_input_sha256": {
+    "src/engine_ability_world.rs": "9a6b1d425eff68e770c8acfad400b6bf975c3744808d39ad04f87cd076c5b6e1",
+    "src/engine_cast_cost_planning.rs": "2293b494681cf738bfd07049f2dcb77a42e6f69411e0147e13fa07e3f127f375",
+    "src/engine_characteristic_query.rs": "6618abd979e768cd2fd16c67630cddfd3518c9086ad83bd20cc5cc37e20da23b",
+    "src/engine_funding.rs": "12e6847837983eefe8d26a7fb957c7ae13f5332669c650b7fe562075a1866025",
+    "src/engine_funding_entries.rs": "a1ec15befd90740461b4d3501e53228e77703ac65228ac90218c48d4cbe552f6",
+    "src/engine_stat_values.rs": "4137585be484a40557076b2af3ad1943f0aca3b68321cc4f9367b65cdf9f6ead",
+    "src/engine_storied.rs": "13d8581a26f42d1e1f3f7811fe3b9e13f72602d778f328974ae5f2d54d070357",
+    "src/engine_funding_storied_tests.rs": "f0eaae5a35aacb776ef23b304db9f8531c5e8be6ca46ec475f3f0d2bade3c3d2"
+  },
+  "evidence": {
+    "focused_filters": [
+      {
+        "filter": "hob_storied",
+        "passed": 14,
+        "failed": 0,
+        "ignored": 0,
+        "scenario_seconds": 0.07,
+        "log": "<cache>/rustmage-authoring/hob-storied-funding/fixed-0.log"
+      },
+      {
+        "filter": "funding",
+        "passed": 17,
+        "failed": 0,
+        "ignored": 0,
+        "scenario_seconds": 0.64,
+        "log": "<cache>/rustmage-authoring/hob-storied-funding/fixed-1.log"
+      },
+      {
+        "filter": "untap",
+        "passed": 11,
+        "failed": 0,
+        "ignored": 0,
+        "scenario_seconds": 0.01,
+        "log": "<cache>/rustmage-authoring/hob-storied-funding/fixed-2.log"
+      }
+    ],
+    "unique_passing_tests": 37,
+    "command_seconds": [
+      132.8416726180003,
+      0.716385017032735,
+      0.06513663800433278
+    ],
+    "guard_report": "<cache>/rustmage-build-reports/d1a353b6ab674b33ac6738d7d2433fd0.json",
+    "guard_elapsed_seconds": 400.82628621003823,
+    "approximate_build_slot_wait_seconds": 267.20309193700086,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2523770880,
+    "oom_kills": 0,
+    "full_validation_runs": 0,
+    "new_complete_cards": 0,
+    "simulation_benchmarks": []
+  },
+  "planning_boundaries": "Acquire after realizable tap/counter payments and final simultaneous cost departures/entries/control changes. Never award from tentative raw destinations subsequently restored for replacement planning. Child and continuation clones preserve the projected bits."
+}
