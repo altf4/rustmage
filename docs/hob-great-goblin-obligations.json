@@ -1,0 +1,42 @@
+{
+  "card": "The Great Goblin",
+  "base": "15701b47a2b530644f1d527c43bf1f69de6f0410",
+  "scope": "Whole printed card, typed Rust; candidate pending independent review and integrated acceptance",
+  "proof": {
+    "path": "src/assurance/hob_great_goblin.rs",
+    "sha256": "69dbf8a497bbe5013c5a6f6fc2c0e223bf10d8b5a76e394dd337f56c16a215be"
+  },
+  "obligations": {
+    "cost_and_body": "Paid BB, BR and RR hybrid alternatives; 3/2 and printed Goblin/Noble metadata.",
+    "counter_trigger": "One per positive placement per exact recipient and placing player, across mixed kinds and overlapping Goblin/Orc/Army; controller and placer both must match. Opponent target, actual damage, hexproof, source departure, Doc Samson replacement, Bifur additional triggers, both seats, opponent Azog amass and counter entry. Raw/index/restore and illegal target rollback.",
+    "death_trigger": "Another controlled Goblin/Orc/Army permanent dying uses pre-event characteristics, including noncreature Kindred, token and simultaneous source death. Paid Murder, graveyard replacement, public exile, exact-object permission, land limit and next-turn expiry.",
+    "zero_boundary": "A zero actual placement and an explicit zero post-replacement event produce no trigger. No admitted factor-zero counter replacement card was found; this is an observer-boundary proof, not a live prevention-card interaction."
+  },
+  "source_rules": {
+    "oracle": "data/standard/cards.json oracle_id 83dcfac0-6efd-4e37-9402-15f9889e84e1; complete body and physical facts pinned in paired record",
+    "xmage": "All paired Java paths and SHA-256 hashes were read in full and compared byte-for-byte to pinned git revision. Despite the helper class name, the supplied permanent filter and ZoneChangeEvent.isDiesEvent do not require a creature.",
+    "rules": "CR 700.4 defines dies as battlefield to graveyard; https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "rules_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
+  },
+  "tests": {
+    "run_5": "<cache>/rustmage-authoring/hob-great-goblin/run-5: 8 card, 13 multiplicity, 14 Azog/Rampager, 11 exile permission; 46 passed, zero failed or ignored.",
+    "run_6": "<cache>/rustmage-authoring/hob-great-goblin/run-6: 8 card passed after strengthening normal death to paid Murder; code unchanged from run 5.",
+    "run_6_report": "<cache>/rustmage-build-reports/f8ac7fbcfc1d4264b063e2d2c5062f7d.json",
+    "run_6_compile_and_test_seconds": 28.388823970977683,
+    "run_6_guard_elapsed_seconds": 91.15,
+    "run_5_report": "<cache>/rustmage-build-reports/3896f2fc1cb546f1a788c37e445c0461.json",
+    "run_5_guard_seconds": 28.753718799038325,
+    "run_5_peak_bytes": 2489126912,
+    "guard_memory_limit_bytes": 6442450944,
+    "guard_jobs": 1,
+    "guard_test_threads": 1,
+    "run_5_oom_events": 0
+  },
+  "history": [
+    "Run 1 naturally failed compilation from a missing test-only ResumeMode import; corrected after terminal exit.",
+    "Run 2 passed 4 tests; run 3 passed 44; run 4 passed 45; run 5 passed 46.",
+    "A stale-link preflight after adding a Java pin was corrected by regenerating catalogue before run 4.",
+    "Run 6 finished naturally with 8 passing tests after a test-only change; no run was cancelled."
+  ],
+  "integration": "The central assurance module registration and generated catalogue/coverage changes are deliberately excluded from this author commit; integrator must register the module and regenerate."
+}

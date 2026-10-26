@@ -3,10 +3,60 @@
   "catalogue_id": 4452,
   "oracle_id": "83dcfac0-6efd-4e37-9402-15f9889e84e1",
   "facts_sha256": "c5f4f62e011c8203ffc4fc6429e37ed12a6d21d24879832634c38a253a887b41",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e0f92d13ee16f05f3faabe2565f64e57456c93badcd597b028bd53f173de1de2"
   },
-  "physical_metadata_sha256": "7e4206e99a6cf1a483c37462a0e3d234abcbe0db3fb72b733e0154bb4a33a532"
+  "physical_metadata_sha256": "7e4206e99a6cf1a483c37462a0e3d234abcbe0db3fb72b733e0154bb4a33a532",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheGreatGoblin.java",
+  "java_sha256": "d533fd73e76ffed5f7a72154fcd96e7fc579dc731880f4517b7d8648ba2d7fc7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PutCounterOnPermanentTriggeredAbility.java",
+      "sha256": "f333016822bde02a6e1be7257787d3031615b525220bf0e7403a392289f4e5d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/ZoneChangeEvent.java",
+      "sha256": "eba0b01196de4b4ee1c99ca60b2734755800c5eedbc724f5573216d38b77df1e"
+    }
+  ]
 }

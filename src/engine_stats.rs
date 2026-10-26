@@ -51,6 +51,7 @@ impl Game {
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
+                    | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
@@ -142,6 +143,7 @@ impl Game {
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }

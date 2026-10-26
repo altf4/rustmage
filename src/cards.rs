@@ -3005,6 +3005,14 @@ pub(crate) enum TriggerCondition {
         kind: CounterKind,
         filter: CountFilter,
     },
+    /// One trigger per qualifying recipient in a placement event, irrespective of counter kinds.
+    CounterPlacedByYouOnControlledSubtypes {
+        subtypes: &'static [&'static str],
+    },
+    /// Look back at another controlled permanent's characteristics on death.
+    OtherControlledPermanentWithSubtypeDies {
+        subtypes: &'static [&'static str],
+    },
     OtherCreatureCountersAdded {
         kind: CounterKind,
         excluded_subtype: &'static str,

@@ -206,6 +206,7 @@ impl Game {
                     matches!(
                         a.condition.event(),
                         TriggerCondition::CounterBatchPlacedByYou { .. }
+                            | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                     )
                 })
         })
@@ -232,6 +233,7 @@ impl Game {
                         matches!(
                             a.condition.event(),
                             TriggerCondition::CounterBatchPlacedByYou { .. }
+                                | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                         )
                     })
             })
@@ -239,28 +241,50 @@ impl Game {
             .collect();
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                let TriggerCondition::CounterBatchPlacedByYou { kind, filter } =
-                    ability.condition.event()
-                else {
-                    continue;
-                };
-                let qualifies = placements.clone().any(|(object, amount, placed_by)| {
-                    amount.get(kind) > 0
-                        && placed_by == source.controller
-                        && self.on_battlefield(object.card)
-                        && self.object_ref(object.card) == object
-                        && Self::count_object_matches(
-                            filter,
-                            source.reference,
-                            source.controller,
-                            object.card,
-                            &self.state.objects[object.card as usize],
-                            &|id| self.granted_subtypes(id),
-                            &|id, o| self.object_kinds(id, o),
-                        )
-                });
-                if qualifies {
-                    self.queue_trigger(&source, index);
+                match ability.condition.event() {
+                    TriggerCondition::CounterPlacedByYouOnControlledSubtypes { subtypes } => {
+                        let positive = placements.clone().filter(|(_, amount, _)| amount.has_any());
+                        for (position, (object, _, placed_by)) in positive.clone().enumerate() {
+                            if !positive
+                                .clone()
+                                .take(position)
+                                .any(|(previous, _, player)| {
+                                    previous == object && player == placed_by
+                                })
+                                && placed_by == source.controller
+                                && self.on_battlefield(object.card)
+                                && self.object_ref(object.card) == object
+                                && self.state.objects[object.card as usize].controller
+                                    == source.controller
+                                && subtypes
+                                    .iter()
+                                    .any(|subtype| self.has_subtype(object.card, subtype))
+                            {
+                                self.queue_trigger(&source, index);
+                            }
+                        }
+                    }
+                    TriggerCondition::CounterBatchPlacedByYou { kind, filter } => {
+                        let qualifies = placements.clone().any(|(object, amount, placed_by)| {
+                            amount.get(kind) > 0
+                                && placed_by == source.controller
+                                && self.on_battlefield(object.card)
+                                && self.object_ref(object.card) == object
+                                && Self::count_object_matches(
+                                    filter,
+                                    source.reference,
+                                    source.controller,
+                                    object.card,
+                                    &self.state.objects[object.card as usize],
+                                    &|id| self.granted_subtypes(id),
+                                    &|id, o| self.object_kinds(id, o),
+                                )
+                        });
+                        if qualifies {
+                            self.queue_trigger(&source, index);
+                        }
+                    }
+                    _ => {}
                 }
             }
         }
@@ -534,6 +558,13 @@ impl Game {
                                 && (!nontoken || event.before.token.is_none())
                                 && subtype.is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
+                        TriggerCondition::OtherControlledPermanentWithSubtypeDies { subtypes } => {
+                            source.reference != event.before.reference
+                                && source.controller == event.before.controller
+                                && subtypes
+                                    .iter()
+                                    .any(|subtype| event.before.has_subtype(subtype))
+                        }
                         TriggerCondition::Sacrificed {
                             filter: f,
                             own_turn,
@@ -711,6 +742,7 @@ impl Game {
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
@@ -726,6 +758,7 @@ impl Game {
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
+                    | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::SelfAttacks
