@@ -37,6 +37,8 @@ pub(crate) struct StaticAbilityGroup {
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub(crate) enum StaticAbilityFragment {
+    /// Grants its controller the permanent enduring-story designation at threshold.
+    Storied,
     FreeHandCast,
     GrantInstantSorceryStorm {
         ability: u16,
@@ -184,6 +186,7 @@ pub(crate) enum StaticAbilityFragment {
 pub(crate) enum UntapRestriction {
     All,
     ControllerStep,
+    ControllerStepUnless(StatValue),
 }
 
 /// One printed Aura effect, shared across its earlier characteristic layers.

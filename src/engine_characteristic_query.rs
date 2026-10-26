@@ -267,6 +267,24 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         stats += self.chosen_bonus(id);
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
+        // CR122.1j: this is a counter effect, independent of layer-six abilities.
+        // A creature Equipment retains the bonus until the attachment SBA detaches it.
+        for row in self.named_counter_rows() {
+            let amount = row.count(CounterKind::Hone);
+            if amount == 0 {
+                continue;
+            }
+            let source = row.object();
+            if self.reference(source.card) == source
+                && self.is_equipment(source.card)
+                && self.attachment_link(source, self.reference(id))
+            {
+                stats.power = stats
+                    .power
+                    .checked_add(i128::from(amount))
+                    .capacity("hone power representation exhausted");
+            }
+        }
         // Only the small live-source index is traversed. Central zone transitions
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in self.static_sources() {
@@ -971,6 +989,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
         self.world.plus_one_placed_this_turn(object, player)
+    }
+    fn named_counter_rows(&self) -> &[live_counters::NamedCounterRow] {
+        self.world.named_counter_rows()
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         self.world.counter_amounts(id)

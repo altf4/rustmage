@@ -694,6 +694,8 @@ pub(crate) struct SearchSpec {
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    /// Non-targeted Army selection during amass.
+    AmassGoblins(u16),
     ExileGreatestManaValue,
     ExileGraveyard,
     SacrificeDifferentNames(u16),
@@ -893,6 +895,10 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// First half of amass: create an Army only if none is controlled.
+    EnsureGoblinArmy,
+    /// Complete amass after token creation and its replacements.
+    AmassGoblins(u16),
     /// Real nonmana variable activation cost; amount is declared before payment.
     SourceCounterCost {
         kind: CounterKind,
@@ -961,6 +967,10 @@ pub(crate) enum Instruction {
     BlinkImmediately {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
+    },
+    /// Exact historical cast origin; copied spells were not cast.
+    IfCastFromGraveyard {
+        skip: usize,
     },
     IfCastFromNonHand {
         skip: usize,
@@ -1554,6 +1564,11 @@ pub(crate) enum Instruction {
     TapSource,
     UntapCreatures(CreatureFilter),
     UntapPlayerCreatures(PlayerSet),
+    /// Controlled creatures other than exact objects in the selected target group.
+    PutOtherControlledCreatureCounters {
+        kind: CounterKind,
+        amount: u32,
+    },
     PutPlayerCreatureCounters {
         players: PlayerSet,
         kind: CounterKind,
@@ -1758,6 +1773,10 @@ pub(crate) enum Instruction {
         kind: CounterKind,
         amount: AmountValue,
     },
+    /// Draw, discard, and create a Human Soldier if a nonland was discarded.
+    Recruit {
+        token: Card,
+    },
     DrawThenDiscardIfDrew {
         amount: AmountValue,
         discard: u16,
@@ -1944,6 +1963,7 @@ pub(crate) enum StatValue {
     SourceModified,
     SourceEquipmentCount,
     LegendaryCreaturesYouControl,
+    HasEnduringStory,
     SourceCounters(CounterKind),
     Tokens(CountFilter),
     AtLeast {
@@ -2202,10 +2222,11 @@ pub enum CounterKind {
     Vigilance,
     Finality,
     Shield,
+    Hone,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 31] = [
+    pub const ALL: [Self; 32] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -2237,6 +2258,7 @@ impl CounterKind {
         Self::Vigilance,
         Self::Finality,
         Self::Shield,
+        Self::Hone,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -2267,6 +2289,7 @@ impl CounterKind {
                 | Self::Vigilance
                 | Self::Finality
                 | Self::Shield
+                | Self::Hone
         )
     }
 }

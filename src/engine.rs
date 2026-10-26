@@ -236,6 +236,8 @@ mod connive;
 mod convoke;
 #[path = "engine_improvise.rs"]
 mod improvise;
+#[path = "engine_storied.rs"]
+mod storied;
 pub use improvise::ImproviseChoiceView;
 #[path = "engine_damage_triggers.rs"]
 mod damage_triggers;
@@ -498,6 +500,7 @@ define_actions! {
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
     SelectLand { object: ObjectRef },
+    ChooseArmy { object: ObjectRef },
     FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
@@ -846,6 +849,8 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    /// Persistent public designation; never reset by turn or zone changes.
+    enduring_story: bool,
     turn_facts: TurnFactsView,
     hexproof_until_end_turn: bool,
     /// Presence of a lasting grant; its authoritative order is in HandSizeState.
@@ -2074,6 +2079,7 @@ pub struct ZoneChange {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
+    pub enduring_story: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_cast_grants: Option<PlayerCastGrantsView>,
     pub hexproof_until_end_turn: bool,
@@ -2514,6 +2520,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            enduring_story: false,
             turn_facts: TurnFactsView::default(),
             hexproof_until_end_turn: false,
             no_maximum_hand_size: false,
@@ -3365,6 +3372,7 @@ impl Game {
                     let object = self.object_ref(index as CardId);
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind {
+                            EffectChoiceKind::AmassGoblins(_) => Action::ChooseArmy { object },
                             EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
                                 Action::PutHandCreature { object }
                             }
@@ -5375,6 +5383,7 @@ impl Game {
             Action::PutHandCreature { object }
             | Action::PutHandPermanent { object }
             | Action::PutHandLand { object }
+            | Action::ChooseArmy { object }
             | Action::SelectLand { object } => self.choose_effect_object(actor, object),
             Action::FinishLandSelection => {
                 self.finish_land_selection();
@@ -5622,6 +5631,7 @@ impl Game {
     /// its top; effects that specify ordering reposition after the transition.
     /// The returned event is owned so later trigger processing can retain LKI.
     fn move_object(&mut self, id: CardId, destination: Zone) -> ZoneChange {
+        self.refresh_enduring_stories();
         let sources = if self.state.objects[id as usize].zone == Zone::Battlefield
             && destination == Zone::Graveyard
         {
@@ -5637,6 +5647,7 @@ impl Game {
     /// Sacrifices are an explicit action, including costs paid for mana abilities.
     /// Freeze every observer and departing object before the simultaneous batch.
     fn sacrifice_batch(&mut self, sacrifices: &[(Player, CardId)]) {
+        self.refresh_enduring_stories();
         for (index, &(actor, id)) in sacrifices.iter().enumerate() {
             let object = &self.state.objects[id as usize];
             assert_eq!(
@@ -5672,6 +5683,7 @@ impl Game {
 
     /// Capture every pre-event characteristic before any simultaneous departure.
     fn move_objects_raw(&mut self, ids: &[CardId], destination: Zone) -> Vec<ZoneChange> {
+        self.refresh_enduring_stories();
         let returned_hand_observers =
             if destination == Zone::Hand && ids.iter().any(|&id| self.on_battlefield(id)) {
                 self.freeze_returned_hand_observers()
@@ -5861,6 +5873,7 @@ impl Game {
         destination: Zone,
         tapped: bool,
     ) -> ZoneChange {
+        self.refresh_enduring_stories();
         assert!(
             destination != Zone::Battlefield
                 || !matches!(
@@ -7223,6 +7236,7 @@ impl Game {
                 Pending::Terminal => "terminal",
             },
             players: std::array::from_fn(|i| PlayerView {
+                enduring_story: s.players[i].enduring_story,
                 turn_cast_grants: self.player_cast_grants_view(i),
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,

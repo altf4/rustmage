@@ -673,6 +673,9 @@ impl Game {
             self.activation_cost_counters(item.object, kind, amount, item.controller);
         }
         self.refresh_local_source_counter_quantities(item);
+        // Costs and real mana activations may briefly reach the threshold before
+        // the same payment sacrifices its source. Speculative planning never does.
+        self.refresh_enduring_stories();
         if cost.exile_self || cost.discard || cost.sacrifice {
             // The local announcement is temporarily outside State while costs
             // commit. Freeze its post-payment source facts before departure too.

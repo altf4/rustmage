@@ -1,0 +1,11 @@
+{
+  "name": "@token/goblin_army",
+  "catalogue_id": 5405,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "5a0dbf08de08c4a7f9c93bdcc14a9241b08058994f962eca646f4542d5aadf89",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/GoblinArmyToken.java",
+  "java_sha256": "4bd14323bc7dcf3264d0c09021f8ab16f26f61c133a09f00952b1fbc4df08a35"
+}

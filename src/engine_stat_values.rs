@@ -99,6 +99,9 @@ impl Game {
     {
         match value {
             StatValue::Fixed(n) => i128::from(n),
+            StatValue::HasEnduringStory => {
+                i128::from(self.state.players[owner.index()].enduring_story)
+            }
             StatValue::SourceCounters(kind) => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |_| i128::from(counter_count(source.card, kind))),

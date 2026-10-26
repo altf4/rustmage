@@ -152,6 +152,11 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
         counter_placement_history::plus_one_placed(&self.counter_placement_history, object, player)
     }
+    fn named_counter_rows(&self) -> &[live_counters::NamedCounterRow] {
+        self.named_counters
+            .as_ref()
+            .map_or(&[], |rows| rows.as_slice())
+    }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
             &self.named_counters,
@@ -3178,3 +3183,7 @@ impl Game {
         world.fund_creature_counter_cost(&goal, amount, selected, &mut HashSet::new())
     }
 }
+
+#[cfg(test)]
+#[path = "assurance/hob_hone_funding.rs"]
+mod hone_tests;

@@ -186,6 +186,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::PutHandCreature { .. }
             | Action::PutHandPermanent { .. }
             | Action::PutHandLand { .. }
+            | Action::ChooseArmy { .. }
             | Action::SelectLand { .. } => 50,
             Action::FinishLandSelection => -1,
             Action::DeclineHandEntry => -1,

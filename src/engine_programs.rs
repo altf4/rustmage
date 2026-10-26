@@ -2026,6 +2026,9 @@ impl Game {
             return;
         }
         loop {
+            // A transient threshold between instructions grants the designation
+            // immediately, before a later instruction can remove a permanent.
+            self.refresh_enduring_stories();
             if self.miracle_choice_pending() {
                 return;
             }
@@ -2707,6 +2710,12 @@ impl Game {
                 Instruction::BlinkImmediately { counter, tapped } => {
                     self.blink_immediately(&item, counter, tapped)
                 }
+                Instruction::IfCastFromGraveyard { skip } => {
+                    if item.is_copy || !item.cast.is_some_and(|cast| cast.origin == Zone::Graveyard)
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfCastFromNonHand { skip } => {
                     if item.is_copy || !item.cast.is_some_and(|cast| cast.origin != Zone::Hand) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
@@ -3126,6 +3135,48 @@ impl Game {
                 Instruction::AttachSource => {
                     if let Some(target) = item.targets.iter().find_map(|bound| bound.object) {
                         self.attach_equipment(item.object, target);
+                    }
+                }
+                Instruction::EnsureGoblinArmy => {
+                    if !self.state.objects.iter().enumerate().any(|(id, o)| {
+                        o.zone == Zone::Battlefield
+                            && o.controller == item.controller
+                            && self.is_creature(id as CardId)
+                            && self.has_subtype(id as CardId, "Army")
+                    }) {
+                        self.create_tokens(item.controller, Card::GoblinArmyToken, 1, false);
+                    }
+                }
+                Instruction::AmassGoblins(amount) => {
+                    let armies: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, o)| {
+                            o.zone == Zone::Battlefield
+                                && o.controller == item.controller
+                                && self.is_creature(*id as CardId)
+                                && self.has_subtype(*id as CardId, "Army")
+                        })
+                        .map(|(id, _)| self.object_ref(id as CardId))
+                        .collect();
+                    if armies.len() == 1 {
+                        self.finish_amass_goblins(&item, armies[0], amount);
+                    } else if armies.len() > 1 {
+                        let mut filter = evidence::cost(0).filter;
+                        filter.subtype = Some("Army");
+                        filter.kinds = 1;
+                        if self.start_effect_choice(
+                            &item,
+                            EffectChoiceKind::AmassGoblins(amount),
+                            PlayerSet::Controller,
+                            filter,
+                            1,
+                            None,
+                        ) {
+                            return;
+                        }
                     }
                 }
                 Instruction::CreateTokenChoice(tokens) => {
@@ -3888,6 +3939,14 @@ impl Game {
                 Instruction::AddCastEntryCounters { kind, amount } => {
                     self.add_cast_entry_counters(&item, kind, amount)
                 }
+                Instruction::Recruit { token } => {
+                    let player = item.controller;
+                    self.draw_many(player, 1);
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    resolution.discards[player.index()] = 1;
+                    resolution.discard_after =
+                        Some(discard_events::DiscardAfter::Recruit(player, token));
+                }
                 Instruction::DrawThenDiscardIfDrew { amount, discard } => {
                     let player = item.controller;
                     let before = self.state.players[player.index()].cards_drawn_this_turn;
@@ -4073,6 +4132,20 @@ impl Game {
                 Instruction::UntapPlayerCreatures(players) => {
                     let recipients = self.player_creature_recipients(players, &item);
                     self.untap_objects(&recipients, untap_rules::UntapCause::Effect);
+                }
+                Instruction::PutOtherControlledCreatureCounters { kind, amount } => {
+                    let changes = self
+                        .player_creature_recipients(PlayerSet::Controller, &item)
+                        .into_iter()
+                        .filter(|&id| {
+                            !item
+                                .targets
+                                .iter()
+                                .any(|t| t.object == Some(self.object_ref(id)))
+                        })
+                        .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::PutPlayerCreatureCounters {
                     players,

@@ -236,6 +236,7 @@ impl Game {
         events: &[ZoneChange],
         death_sources: &[ObjectView],
     ) {
+        self.refresh_enduring_stories();
         if events
             .iter()
             .any(|event| event.moved && event.before.zone == Zone::Battlefield)

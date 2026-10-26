@@ -78,6 +78,14 @@ impl Game {
                 {
                     return false;
                 }
+                if let StaticAbilityFragment::SelfUntap(UntapRestriction::ControllerStepUnless(
+                    value,
+                )) = *fragment
+                    && matches!(cause, UntapCause::ControllerStep(player) if player == object.controller)
+                    && self.stat_value(value, recipient, object.controller) == 0
+                {
+                    return false;
+                }
             }
         }
         for &source in &self.state.attachment_sources {
@@ -99,6 +107,18 @@ impl Game {
                         StaticAbilityFragment::AttachedUntap(UntapRestriction::ControllerStep)
                             if matches!(cause, UntapCause::ControllerStep(player)
                                 if player == self.state.objects[id as usize].controller) =>
+                        {
+                            return false;
+                        }
+                        StaticAbilityFragment::AttachedUntap(
+                            UntapRestriction::ControllerStepUnless(value),
+                        ) if matches!(cause, UntapCause::ControllerStep(player)
+                                if player == self.state.objects[id as usize].controller)
+                            && self.stat_value(
+                                *value,
+                                self.object_ref(source),
+                                object.controller,
+                            ) == 0 =>
                         {
                             return false;
                         }

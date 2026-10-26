@@ -3,10 +3,36 @@
   "catalogue_id": 2799,
   "oracle_id": "c394b767-620c-4310-b78f-ece312259e46",
   "facts_sha256": "8660f886ccfd941a03842d739f809f2c27540f6a7a8af86fd1d6bf7db53a8ca5",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "efad7efe46f49695667b6b9a4569b5ad86197ff055ec6e1f64ad7cc7311471f9"
-  },
-  "physical_metadata_sha256": "7e20b57e459e0a8f23c9661c60393c8caf2f5dd17b69152aab60611b7dc49b71"
+  "complete": true,
+  "physical_metadata_sha256": "7e20b57e459e0a8f23c9661c60393c8caf2f5dd17b69152aab60611b7dc49b71",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MistyMountainsRaider.java",
+  "java_sha256": "528fed9a390ebb5039ababa25701ab731742e283c2809e02691276fb705034eb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AmassEffect.java",
+      "sha256": "a233d04025329bb65a90d9f729d776535b6ad4156f616f210e4a2545a37524ff"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeTargetEffect.java",
+      "sha256": "4a5b785143060689d498ae3f97610eac0103c628160a52505c1d6fcad298384f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/GoblinArmyToken.java",
+      "sha256": "4bd14323bc7dcf3264d0c09021f8ab16f26f61c133a09f00952b1fbc4df08a35"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "Returning Keyword Action: Amass",
+    "notes": "Choose an Army creature. Put counters on it before granting Goblin if it is not already a Goblin. XMage AmassEffect omits the creature filter and grants the type before counters; typed implementation follows the authoritative release notes."
+  }
 }

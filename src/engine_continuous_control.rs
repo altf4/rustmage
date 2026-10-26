@@ -225,6 +225,7 @@ impl Game {
         }
         if self.state.controls.is_none() {
             self.refresh_copy_grant_availability();
+            self.refresh_enduring_stories();
             return;
         }
         for row in controllers(self) {
@@ -270,6 +271,7 @@ impl Game {
             self.state.controls = None;
         }
         self.refresh_copy_grant_availability();
+        self.refresh_enduring_stories();
     }
     pub(super) fn control_bytes(&self) -> usize {
         self.state.controls.as_ref().map_or(0, |state| {

@@ -139,6 +139,14 @@ pub(super) trait CharacteristicWorld {
             Some(color)
         }
     }
+    /// Sparse rows belong to this world, including virtual counter payments.
+    fn named_counter_rows(&self) -> &[live_counters::NamedCounterRow] {
+        self.game()
+            .state
+            .named_counters
+            .as_ref()
+            .map_or(&[], |rows| rows.as_slice())
+    }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
             &self.game().state.named_counters,
@@ -737,6 +745,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn ability_origin(&self, id: CardId) -> Option<u64> {
         self.parent.ability_origin(id)
+    }
+    fn named_counter_rows(&self) -> &[live_counters::NamedCounterRow] {
+        self.parent.named_counter_rows()
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         self.parent.counter_amounts(id)
