@@ -772,6 +772,7 @@ impl Game {
                                     TriggerCondition::FilteredEntersYou(_)
                                 ))
                             && match predicate {
+                                EntryPredicate::Token => entered.is_token(),
                                 EntryPredicate::ArtifactManaValueAtLeast(minimum) => {
                                     entered.kinds & 16 != 0
                                         && entered.card.fixed_mana_value() >= u64::from(minimum)
@@ -1131,6 +1132,14 @@ impl Game {
             }
             CastFilter::SourceChosenColor => {
                 matches!(source.entry_choice, Some(EntryChoiceValue::Color(color)) if card.colors() & (1 << color.index()) != 0)
+            }
+            CastFilter::NonCreatureOrdinal(wanted) => {
+                let player = &self.state.players[caster.index()];
+                CastFilter::Noncreature.matches(card)
+                    && player
+                        .spells_cast_this_turn
+                        .checked_sub(player.creature_spells_cast_this_turn)
+                        .is_some_and(|count| count == wanted)
             }
             CastFilter::InstantSorceryOrdinal(wanted) => {
                 CastFilter::InstantSorcery.matches(card)

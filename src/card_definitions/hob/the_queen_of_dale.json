@@ -3,10 +3,30 @@
   "catalogue_id": 4488,
   "oracle_id": "a2ec1dd0-86c7-423d-b562-ed95b79bf8f7",
   "facts_sha256": "dc0f7e6414be804779eeb2144c9d951d7305fc43e685f2957cdd89a5b25e9291",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c35360051c85b7a5c71cb4b0861d6202162c4a144c61ab435c39c5a6c21cb5af"
   },
-  "physical_metadata_sha256": "22f4fc949f9f608d2c25914e6c9e01554b65718479bd922b5dc09cc477b0fff5"
+  "physical_metadata_sha256": "22f4fc949f9f608d2c25914e6c9e01554b65718479bd922b5dc09cc477b0fff5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheQueenOfDale.java",
+  "java_sha256": "41989413f8443d8832f5af718870dd62deab9dcbd61424bab7876dcf5f64006e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+      "sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    }
+  ]
 }

@@ -2602,6 +2602,8 @@ pub(crate) enum CastFilter {
     Noncreature,
     /// Historical qualifying cast ordinal, evaluated only with the actual caster.
     InstantSorceryOrdinal(u64),
+    /// Actual per-caster ordinal, including casts before the observer entered.
+    NonCreatureOrdinal(u64),
     InstantSorcery,
     Sorcery,
     Artifact,
@@ -2648,7 +2650,8 @@ impl CastFilter {
             Self::NotOwnedByYou
             | Self::SourceChosenColor
             | Self::Targeted { .. }
-            | Self::InstantSorceryOrdinal(_) => false,
+            | Self::InstantSorceryOrdinal(_)
+            | Self::NonCreatureOrdinal(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::Colors { filter, mask } => {
                 card.colors() & mask != 0 && filter.matches_mana_value(card, mana_value)
@@ -2819,12 +2822,17 @@ pub(crate) enum DamageSubject {
 /// Complete entry-time predicates over the post-event permanent.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryPredicate {
+    /// A predicate on each actual entrant, distinct from batch token-entry events.
+    Token,
     CreatureWithoutSubtype(&'static str),
     ArtifactManaValueAtLeast(u32),
     CreaturePowerAtMost(i32),
     CreaturePowerAtLeast(i32),
     SubtypeAny(&'static [&'static str]),
-    KindOrSubtype { kinds: u16, subtype: &'static str },
+    KindOrSubtype {
+        kinds: u16,
+        subtype: &'static str,
+    },
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
