@@ -55,8 +55,10 @@ const COPY_HUMAN: u32 = ALL_CREATURE_TYPES << 1;
 const COPY_VILLAIN: u32 = COPY_HUMAN << 1;
 const COPY_MERCENARY: u32 = COPY_VILLAIN << 1;
 const ADDED_SOLDIER: u32 = COPY_MERCENARY << 1;
-const ADDED_MASK: u32 = JOB_MASK | COPY_HUMAN | COPY_VILLAIN | COPY_MERCENARY | ADDED_SOLDIER;
-const _: () = assert!(JOB_TYPES.len() + 4 <= u32::BITS as usize);
+const ADDED_GOBLIN: u32 = ADDED_SOLDIER << 1;
+const ADDED_MASK: u32 =
+    JOB_MASK | COPY_HUMAN | COPY_VILLAIN | COPY_MERCENARY | ADDED_SOLDIER | ADDED_GOBLIN;
+const _: () = assert!(JOB_TYPES.len() + 5 <= u32::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
     added: u32,
@@ -142,6 +144,7 @@ impl GrantedSubtypes {
             "Villain" => COPY_VILLAIN,
             "Mercenary" => COPY_MERCENARY,
             "Soldier" => ADDED_SOLDIER,
+            "Goblin" => ADDED_GOBLIN,
             _ => 0,
         }
     }
@@ -174,6 +177,7 @@ impl Serialize for GrantedSubtypes {
                     (COPY_VILLAIN, "Villain"),
                     (COPY_MERCENARY, "Mercenary"),
                     (ADDED_SOLDIER, "Soldier"),
+                    (ADDED_GOBLIN, "Goblin"),
                 ] {
                     if self.0 & bit != 0 {
                         out.serialize_element(subtype)?;
@@ -467,5 +471,27 @@ impl Game {
             }
         }
         result
+    }
+}
+
+impl Game {
+    pub(super) fn grant_amass_goblin_type(&mut self, source: ObjectRef, recipient: ObjectRef) {
+        if self.object_ref(recipient.card) != recipient || !self.on_battlefield(recipient.card) {
+            return;
+        }
+        if !self.has_subtype(recipient.card, "Goblin") {
+            let timestamp = self.next_role_timestamp();
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .creature_types
+                .push(CreatureTypesEffectView {
+                    recipient,
+                    source,
+                    types: &["Goblin"],
+                    additional: true,
+                    timestamp,
+                });
+        }
     }
 }
