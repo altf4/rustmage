@@ -1,0 +1,186 @@
+{
+  "schema": 1,
+  "scope": "Current outcome evidence for three inherited HOB admissions; no new supported identity count and no rule changes.",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BilboBagginsBurglar.java",
+      "sha256": "040a0f1e43f32974be58a92f463cb7c8fb3af88df46c3c95e57d545b4cbce081"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SmaugTheGreatCalamity.java",
+      "sha256": "395723e1d4dd888b9f266c069ec1e2aaabd30439fd4377745005055b05dc74d8"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/ThranduilSindarinLiege.java",
+      "sha256": "d640618c431f3c7684a6f6ea5f4090772927e5b08ff3c0434f283315c4c4bc07"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/AdventureSpellCard.java",
+      "sha256": "0267f0994ee62c311d6d160c9709f110715cd736f1528429cbb3de6fff03c592"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAdventureSpellEffect.java",
+      "sha256": "1179b3251b410c7eec5e191159cf7e870e28a4839a833cb30fc4d829985c33c3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/GreenElfToken.java",
+      "sha256": "084a6c67e4cce26922237599a21d2b322417b4504df6293c335da4b3cbcaf6e8"
+    }
+  ],
+  "source_discrepancy": "Pinned ThranduilSindarinLiege.java implements only normal CardImpl with anthem/landfall. No Silvan Rally Java body exists in that class; inset obligations derive from complete frozen Oracle and existing exact mill-batch semantics.",
+  "inherited_source_manifest": "docs/adventure-admissions.json",
+  "historical_receipt_remediation": {
+    "example": "examples/standard_adventure_milled_selection.py",
+    "problem": "Imports removed python/test_adventure_milled_selection.py; historical docs refer to removed parser/native acceptance machinery.",
+    "suggestion": "After current full-set acceptance, archive/label historical receipts and replace obsolete example with a maintained public-interface scenario or point to current native proof suite. Do not treat old report counts as current validator evidence.",
+    "old_files_edited": false
+  },
+  "validation": {
+    "status": "author proofs passed; independent nonauthor review and integration acceptance pending",
+    "earlier_runs": [
+      {
+        "log": "~/.cache/rustmage-authoring/hob-inherited-adventures/focused-0.log",
+        "result": "7 passed, 3 failed in fixture setup (unknown 6/6 fixture and Target::Stack used instead of Target::Spell for a spell target). Existing inherited prefix tests also matched. No rule defect demonstrated; corrected fixture source.",
+        "command_filter": "hob_inherited_",
+        "tests_executed": 10,
+        "new_tests_executed": 6,
+        "existing_tests_executed": 4,
+        "passed": 7,
+        "failed": 3,
+        "seconds": 161.62964995199582,
+        "resource_report": "~/.cache/rustmage-build-reports/f4b5ecb280794631b136708df2421b1e.json",
+        "fixture_fixes": [
+          "Colossal Dreadmaw does not exist in frozen catalogue; both damage fixtures now use admitted6/6 Galewind Moose (ID1664).",
+          "Negate targets a spell with Target::Spell(physical Bilbo), not Target::Stack(stack ID), matching existing interactions.rs72."
+        ],
+        "final_fixture_audit": "All11 physical fixture names and2 spell-face expectation names verified against paired complete=true provenance; no missing or gated fixture remains."
+      }
+    ],
+    "proof_sha256": "b271ecce914734e8f15fba88de6105075a6b6823582c34899150e5a709a32bd6",
+    "terminal": true,
+    "new_tests_passed": 6,
+    "shared_tests_passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "focused_command": "CARGO_TARGET_DIR=~/.cache/rustmage-authoring/hob-inherited-adventures/target python3 scripts/resource_guard.py -- bounded run_command(cargo test --lib engine::assurance::hob_inherited_adventures:: -- --include-ignored --test-threads=1, timeout=390)",
+    "focused_log": "~/.cache/rustmage-authoring/hob-inherited-adventures/final-0.log",
+    "shared_log": "~/.cache/rustmage-authoring/hob-inherited-adventures/final-1.log",
+    "resource_report": "~/.cache/rustmage-build-reports/5985a5df587d4875b68318ce138b389e.json",
+    "compile_and_focused_seconds": 152.5619047479704,
+    "focused_execution_seconds": 0.01,
+    "shared_command_seconds": 0.21682043798500672,
+    "guard_seconds_including_shared_slot_wait": 364.96943896001903,
+    "memory_peak_bytes": 2571354112,
+    "memory_max_bytes": 6442450944,
+    "oom_kill": 0,
+    "orphaned_processes": false,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "source_check": {
+      "definitions": 5413,
+      "java_blobs_verified": 1532,
+      "catalogue_version": "1620aada10d1f5f17d5f207aa75d65c5e2623875dd648a7991c8eb4cd338bf9f"
+    },
+    "format_and_whitespace": "Owned proof rustfmt --edition2024 --check and git diff --check passed.",
+    "integration": "Local-only assurance/mod.rs registration excluded from this two-file commit; integrator registers module. No generated artifact or historical example/doc edits.",
+    "performance_scope": "Small bounded rules proofs only; no whole-pool simulation or implementation throughput claim."
+  },
+  "base_revision": "e77c86959f9c0d8898373281a54b931d63dafaca",
+  "oracle_source": "data/standard/cards.json",
+  "assurance_module": "src/assurance/hob_inherited_adventures.rs",
+  "engine_changes": false,
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "cards": [
+    {
+      "tests": [
+        "hob_inherited_bilbo_paid_scry_privacy_order_and_same_creature_etb_draw",
+        "hob_inherited_countered_take_a_glance_never_scries_or_grants_permission"
+      ],
+      "outcomes": [
+        "Paid U inset scries exactly two, privately, with top/bottom and reversed top order.",
+        "Successful inset alone creates exact physical-card permission for caster; inset cannot be recast from adventure exile.",
+        "Paid 2U normal from exile is 2/1 and draws exactly one known top card on entry.",
+        "Real paid Negate prevents scry/exile/permission; invalid exile attempt is transactional."
+      ],
+      "name": "Bilbo Baggins, Burglar // Take a Glance"
+    },
+    {
+      "tests": [
+        "hob_inherited_smaug_paid_creature_only_five_damage_then_flying_creature",
+        "hob_inherited_stale_spew_flame_fizzles_without_damage_or_adventure_right"
+      ],
+      "outcomes": [
+        "Paid 4R inset rejects player target transactionally and deals exactly five to creature.",
+        "Successful inset permits same physical creature paid 5RR as 5/5 flying; permission consumed.",
+        "Target leave-and-return incarnation invalidates whole spell, no damage and no adventure permission."
+      ],
+      "shared_proof": "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat",
+      "name": "Smaug, the Great Calamity // Spew Flame"
+    },
+    {
+      "tests": [
+        "hob_inherited_thranduil_each_hybrid_face_exact_mill_cardinality_and_owned_choice",
+        "hob_inherited_thranduil_other_own_elves_landfall_token_and_source_departure"
+      ],
+      "outcomes": [
+        "Both seats pay all GG/GU/UU options on each face, with generic1 inset/generic2 normal.",
+        "Mill exactly four; recover zero/one/two current land refs only from exact batch; reject old graveyard/nonland/duplicate choices.",
+        "Private selection visibility and representative owned raw/index/restore contract.",
+        "Normal2/3 excludes itself, opponent Elf and own non-Elf from anthem.",
+        "Own real land play creates green1/1 Elf token boosted2/2; opponent land creates none.",
+        "Real paid Unsummon removes anthem immediately from other own Elf and token."
+      ],
+      "name": "Thranduil, Sindarin Liege // Silvan Rally"
+    }
+  ],
+  "new_supported_identities": 0,
+  "inherited_identities_tested": 3
+}
