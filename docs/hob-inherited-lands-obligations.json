@@ -1,0 +1,82 @@
+{
+  "scope": "Five inherited HOB landfall/CDA cards, no new admitted identities or typed definition changes",
+  "base_revision": "64fa3fce",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/a/Attercop.java",
+      "sha256": "f27cccad74b0aed3e7ae469dced77de10065d5d74bed7ac4df712ee682dc5e21"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BoughsideWanderers.java",
+      "sha256": "18dfeb2ea7e94bc8f0b3266b53c31dff62d32963f645ded64ae1d5c370e9b20e"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/e/ElvenRaftSteerer.java",
+      "sha256": "8ad067265ab99a333efa1674a7ad68e76ed39310eca8120c3af941f198272568"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MirkwoodMeditator.java",
+      "sha256": "762c0639cc8bc31bdd5bf1471685762753ff177d610bff8e88e0695c66893c25"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MirkwoodPathmaker.java",
+      "sha256": "b817ce1416224179eb48f6b2523ae81ec552882c7bd4527d9bff8eb97c46a74d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+      "sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    }
+  ],
+  "preflight": "All12 physical fixture names exist and have complete paired provenance, including legacy Grizzly Bears outside the Standard facts/coverage subset. Costs and action shapes independently checked against fixed card metadata, Oracle and existing scenarios before guard queue.",
+  "obligations": {
+    "Attercop": "Paid1G2/1reach/deathtouch; actual own land play and second entry stack+1/+1 each, opponent excluded, EOT expires, exact source incarnation growth.",
+    "Boughside Wanderers": "Paid4GG4/4; private top4 optional0/1permanent (artifact/land/creature tested), rejects instant/belowtop4, chosen card revealed intohand, remainder random bottom with unaffected fifthcard and owned raw/index/restored RNG equality; each own land+2/+2 EOT, opponent excluded.",
+    "Mirkwood Meditator": "Paid2U2/4; own land optional decline/accept, repeated4/2 base setter not additive, counter and actualGiantGrowth layer above base, EOT expire whilecounter persists, opponent land excluded.",
+    "Elven Raft-Steerer": "Paid2U3/2; both actual landfall modes, own/opp target restrictions and transactional rejects, departedsource still resolves on legal recipient, stale incarnation never taps/untaps freshobject, opponentland excluded.",
+    "Mirkwood Pathmaker": "Paid2G; CDA own landcount in hand/stack/battlefield/graveyard, live gains/losses and currentcontroller including foreignownedcontrolled land, parent views unaffected by childcontrol; zero-land0/0 dies by ordinary SBA."
+  },
+  "attempts": [
+    {
+      "run": "inherited-lands-1",
+      "source_head": "64fa3fce",
+      "scope": "Integrated Stir/Stone and first3Adventure proof run ONLY. New untracked land proof file was not registered or compiled, so no land-proof pass claim.",
+      "preflight_failure": "Erroneously required every fixture to be in Standard Oracle/coverage. Grizzly Bears is a supported legacy fixture outside that subset. Shell command continued after Python assertion and started guard without registration; fixed by separate positive preflight and set-e in mutation step after natural terminal.",
+      "terminal": true,
+      "exit": 0,
+      "command_seconds": 152.6505972360028,
+      "log": "<cache>/rustmage-authoring/hob-complete-set/inherited-lands-1/focused.log",
+      "resource_report": "<cache>/rustmage-build-reports/41f8080f5bdd4aa78ff62961211a1dcb.json"
+    }
+  ],
+  "status": "Five coherent bounded land scenarios now registered; corrected focused run and two independent reviews pending. Whole193 acceptance open."
+}

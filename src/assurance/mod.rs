@@ -214,3 +214,5 @@ mod hob_inherited_draw;
 
 mod hob_inherited_adventures;
 mod hob_stir_stone;
+
+mod hob_inherited_lands;
