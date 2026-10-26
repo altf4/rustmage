@@ -1,0 +1,18 @@
+{
+  "schema": 154,
+  "status": "candidate; full integrated acceptance pending",
+  "main_after_522_revert_schema": 152,
+  "historical_local_baseline_schema": 153,
+  "changes": [
+    "PlayerView.enduring_story is always serialized, includingfalse, as the first player field",
+    "CounterKind::Hone appended; named counter rows remain sparse and validate uniqueness/positive amounts",
+    "SearchFilter::Legendary is a new public SearchChoiceView predicate variant, composed with Creature for Seek the Heart"
+  ],
+  "audit": [
+    "Recording-only previous-schema projection strips only the enduring_story field for versionsbelow154 and preserves all prior serialization order",
+    "Ordinary validation compares full current traces strictly and never strips fields",
+    "Must compare every inherited main152 trace and historical2610-card schema153 trace before accepting new154 baselines"
+  ],
+  "historical_acceptance": "Initial26-card schema153 checkpoint was validated at3aa780e4, then #522 was reverted onmain at92de5827. Its work and immutable library remain preserved in this candidate; that PR is not the final delivery.",
+  "final_delivery": "One brand-new PR after the entire193-identity set is complete; do not merge it."
+}

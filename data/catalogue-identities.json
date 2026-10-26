@@ -5416,7 +5416,8 @@
     8,
     1,
     4,
-    4
+    4,
+    1
   ],
   "aliases": [
     [
@@ -5582,6 +5583,10 @@
     [
       "@adventure/fef67393-9b7b-495d-8b03-865537386d42",
       5222
+    ],
+    [
+      "@adventure/seek-the-heart",
+      5411
     ],
     [
       "@emblem/775571b10b62868058a6d841",
@@ -21968,6 +21973,10 @@
       5184
     ],
     [
+      "Seek the Heart",
+      5411
+    ],
+    [
       "Seeker of Sunlight",
       3768
     ],
@@ -24682,6 +24691,10 @@
     [
       "The Apprentice's Folly",
       4419
+    ],
+    [
+      "The Arkenstone",
+      4420
     ],
     [
       "The Arkenstone // Seek the Heart",
@@ -155166,11 +155179,11 @@
       "path": "hob/the_arkenstone_seek_the_heart.rs",
       "set": "hob",
       "category": "physical",
-      "name": "The Arkenstone // Seek the Heart",
+      "name": "The Arkenstone",
       "oracle_id": "09f09d0a-6054-4545-b81e-0295773cc5f0",
       "facts_sha256": "bfc1a6651c2d46679b44ff92c69c371889074e45d22aba14f6ffc2833cfd1e69",
-      "mana_cost": "{5} // {2}{W}",
-      "type_line": "Legendary Artifact // Sorcery — Adventure",
+      "mana_cost": "{5}",
+      "type_line": "Legendary Artifact",
       "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
@@ -155185,7 +155198,7 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 5
     },
     {
       "index": 4421,
@@ -183246,6 +183259,33 @@
         0
       ],
       "generic": 1
+    },
+    {
+      "index": 5411,
+      "module": "card_5411",
+      "path": "synthetic/seek_the_heart.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Seek the Heart",
+      "oracle_id": "09f09d0a-6054-4545-b81e-0295773cc5f0",
+      "facts_sha256": "bfc1a6651c2d46679b44ff92c69c371889074e45d22aba14f6ffc2833cfd1e69",
+      "mana_cost": "{2}{W}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
     }
   ]
 }

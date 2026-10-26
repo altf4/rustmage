@@ -186,7 +186,11 @@ mod hob_equipment;
 mod hob_existing_mechanics;
 mod hob_recruit;
 
+mod hob_arkenstone;
+mod hob_existing_two;
+mod hob_gollum_abandoned;
 mod hob_graveyard_origin;
 mod hob_hone;
+mod hob_recruit_amass_sagas;
 mod hob_sting;
 mod hob_storied;

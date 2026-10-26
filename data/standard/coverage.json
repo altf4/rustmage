@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "d5e18aa63de30e70caf88052a2eaf1cfcaab4b667d0d8db51ec390c234d19f9c",
+  "catalogue_version": "ae291705671096fb5e8058bebf0331b89e2d5dc9ae32c7771327cde315579cd4",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2611,
-  "implemented_total": 2617,
+  "implemented_standard_cards": 2622,
+  "implemented_total": 2628,
   "token_definitions": 128,
   "emblem_definitions": 3,
-  "adventure_definitions": 42,
+  "adventure_definitions": 44,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "gated": 91,
-      "complete": 97
+      "gated": 80,
+      "complete": 108
     },
     "hoc": {
       "total": 5,
@@ -5284,8 +5284,8 @@
     {
       "name": "Cantankerous Keepers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/cantankerous_keepers.rs",
       "set": "hob"
     },
@@ -9348,8 +9348,8 @@
     {
       "name": "Down, Down to Goblin-town",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/down_down_to_goblin_town.rs",
       "set": "hob"
     },
@@ -9988,8 +9988,8 @@
     {
       "name": "Dáin's Company",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/dain_s_company.rs",
       "set": "hob"
     },
@@ -14820,8 +14820,8 @@
     {
       "name": "Gollum the Abandoned",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/gollum_the_abandoned.rs",
       "set": "hob"
     },
@@ -15138,10 +15138,10 @@
       "set": "otj"
     },
     {
-      "name": "Great Ugly-Looking Goblin // Clap! Snap!",
+      "name": "Great Ugly-Looking Goblin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/great_ugly_looking_goblin_clap_snap.rs",
       "set": "hob"
     },
@@ -19724,8 +19724,8 @@
     {
       "name": "Lake-town Toymaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/lake_town_toymaker.rs",
       "set": "hob"
     },
@@ -24260,8 +24260,8 @@
     {
       "name": "Old Thrush",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/old_thrush.rs",
       "set": "hob"
     },
@@ -31788,8 +31788,8 @@
     {
       "name": "Snowslope Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/snowslope_hunter.rs",
       "set": "hob"
     },
@@ -35562,10 +35562,10 @@
       "set": "woe"
     },
     {
-      "name": "The Arkenstone // Seek the Heart",
+      "name": "The Arkenstone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_arkenstone_seek_the_heart.rs",
       "set": "hob"
     },
@@ -36044,8 +36044,8 @@
     {
       "name": "The Mountain-king's Return",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_mountain_king_s_return.rs",
       "set": "hob"
     },
@@ -36956,8 +36956,8 @@
     {
       "name": "Tidings of War",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/tidings_of_war.rs",
       "set": "hob"
     },

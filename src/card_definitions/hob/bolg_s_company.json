@@ -3,7 +3,7 @@
   "catalogue_id": 487,
   "oracle_id": "fa602f8f-1d80-4f6d-8b8f-d1a1f36037bd",
   "facts_sha256": "251818d55217c6e9b29a208c24baa1d5b6d5df291aa819199a323592b0e3b764",
-  "complete": true,
+  "complete": false,
   "physical_metadata_sha256": "828e4ae163dfe925b9602e7a00769a07de07e2389adf9ba824788a1d8398f8db",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/b/BolgsCompany.java",
@@ -39,5 +39,6 @@
       "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
       "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
     }
-  ]
+  ],
+  "integration_blocker": "Independent review: generic funding planner must support selected Goblin sacrifice mana cost before complete admission."
 }
