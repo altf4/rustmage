@@ -121,6 +121,7 @@ fn hob_inherited_creatures_ordinary_paid_body_and_large_all_hybrids_haste_trampl
             let mut reach = scenario(p);
             let bear = paid(&mut reach, p, "Large Bear", mana);
             let flyer = put(&mut reach, p.other(), "Ravenhill Flock", Zone::Battlefield);
+            reach.state.active = p.other();
             assert!(reach.can_block_pair(bear, flyer));
             reach.state.objects[bear as usize].tapped = true;
             assert!(!reach.can_block_pair(bear, flyer));
@@ -168,8 +169,11 @@ fn hob_inherited_creatures_gigantic_counter_resistance_hexproof_and_hasty_damage
         assert_eq!(stats(&own, own_bear), (13, 10));
         own.finish_cleanup();
         assert_eq!(stats(&own, own_bear), (10, 7));
-        combat(&mut own, own_bear, None);
-        assert_eq!(own.state.players[p.other().index()].life, 10);
+        let mut hasty = scenario(p);
+        let attacker = paid(&mut hasty, p, "Gigantic Big Bear", [0, 0, 0, 0, 2, 5]);
+        assert!(hasty.object_view(attacker).summoning_sick);
+        combat(&mut hasty, attacker, None);
+        assert_eq!(hasty.state.players[p.other().index()].life, 10);
     }
 }
 #[test]
@@ -273,6 +277,10 @@ fn hob_inherited_creatures_provisioner_fixed_current_group_and_guardian_permanen
         }
         g.finish_cleanup();
         assert_eq!(stats(&g, guardian), (8, 8));
+        // Cleanup advanced to the opponent's upkeep. They pass priority before
+        // the Guardian's controller activates this instant-speed ability.
+        act(&mut g, Action::Pass);
+        assert_eq!(g.actor(), Some(p));
         g.state.players[p.index()].mana = [0, 0, 0, 0, 2, 5];
         activate(&mut g, guardian, None);
         g.move_object(guardian, Zone::Hand);
@@ -316,12 +324,15 @@ fn hob_inherited_creatures_harper_any_controller_legality_expiry_and_exact_recip
             stale.move_object(recipient, Zone::Battlefield);
             stale.give_priority();
             drive(&mut stale);
+            stale.state.active = owner;
             assert!(stale.can_block_pair(blocker, recipient));
             g.move_object(source, Zone::Graveyard);
             g.give_priority();
             drive(&mut g);
+            g.state.active = owner;
             assert!(!g.can_block_pair(blocker, recipient));
             g.finish_cleanup();
+            g.state.active = owner;
             assert!(g.can_block_pair(blocker, recipient));
         }
     }

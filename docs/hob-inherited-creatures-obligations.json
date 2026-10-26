@@ -418,5 +418,23 @@
     "Long-Bodied Grey Dog": "Actuallypaid3duringopponentendstep2/2flashreach; exactly1owntappedTreasure cannotactivateuntiluntapped; independent5colormana branches; reachblocks actualflyer"
   },
   "preflight": "All15 named physical fixtures complete, full Oracle and all9typedRust/Java classes read;32 sourcepins byte-match pinned revision; no invented token. Shared treasure factory created by actual sourceETB.",
-  "validation": "Pending coherent guarded focused run; two independent reviews pending; whole193 acceptance open"
+  "validation": "Corrected turn-aware fixtures frozen for second focused run; two independent reviews and whole193 acceptance remain pending",
+  "attempts": [
+    {
+      "run": "run-1",
+      "terminal": true,
+      "exit": 101,
+      "compile_seconds": 149.89538116002223,
+      "focused_seconds": 0.03328468697145581,
+      "passed": 2,
+      "failed": 4,
+      "scenario_seconds": 0.01,
+      "guard_seconds_including_queue": 394.03306116804015,
+      "peak_memory_bytes": 2652499968,
+      "oom_events": 0,
+      "resource_report": "<cache>/rustmage-build-reports/3098a19bdf764afab082adfdddf2e47e.json",
+      "log": "<cache>/rustmage-authoring/hob-inherited-creatures/run-1/focused.log",
+      "findings": "Fixture-only: can_block_pair requires attacker owner to be active; finish_cleanup actually advances active player and priority. Corrected turn setup and checked opponent pass; hasty Gigantic attack now uses a freshly paid separate game before any cleanup. No gameplay/source-definition changes."
+    }
+  ]
 }
