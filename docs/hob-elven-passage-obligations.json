@@ -1,0 +1,103 @@
+{
+  "scope": "Elven Passage search, optional behold, exact returned permanent; new observation choice kind and schema 158",
+  "base_revision": "29f5ee09641f2bf54cef2c5a819ec2e3d784a943",
+  "oracle_facts": {
+    "oracle_id": "97a2cd39-6b54-496b-b3ac-dab9dfed7edc",
+    "name": "Elven Passage",
+    "layout": "normal",
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Land",
+    "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle. You may behold an Elf. If you do, untap that land. (To behold an Elf, choose an Elf you control or reveal an Elf card from your hand.)",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Behold"
+    ],
+    "reference_printing": {
+      "id": "dd1fd2ab-2565-4798-a832-fc849df82f74",
+      "set": "hob",
+      "collector_number": "181",
+      "released_at": "2026-08-14"
+    }
+  },
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/e/ElvenPassage.java",
+      "sha256": "14d138ee64f30f4536fce1d3be785cad24f57b07839b9543c7c7c5fc22447637"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+      "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    }
+  ],
+  "obligations": {
+    "activation": "Tap, pay 1 life and sacrifice as an activated ability; transactionally reject unpayable or tapped source, source removed before resolution.",
+    "search": "Controller may find zero or one basic land in private library, puts found object onto battlefield tapped and shuffles even if none found.",
+    "behold": "Optionally choose a currently controlled Elf permanent or reveal an Elf card from own hand, with current battlefield subtype, public revealed card and no target; then untap the exact searched-for object if it actually entered. A no-find search does not prohibit the independent behold choice.",
+    "sequencing": "Land entry, its replacements and landfall event occur before behold; landfall trigger waits for current ability to finish.",
+    "contracts": "Legality and rejection, opponent hidden search and behold candidates, raw/index/restore while choosing, exact object incarnation, no extra information on decline."
+  },
+  "source_discrepancy": "XMage helper exits before the subsequent behold when search finds no card. Oracle gives an independent optional instruction after the search; a player can reveal an Elf even if no land was found.",
+  "validation": {
+    "final_run": "<cache>/rustmage-authoring/hob-elven-passage/run-7",
+    "tests": 51,
+    "groups": {
+      "hob_elven_passage": 7,
+      "hob_existing_mechanics": 5,
+      "hob_inherited_artifacts": 9,
+      "hob_vow_thorin": 15,
+      "hob_storied": 14,
+      "contracts::owned_raw_index": 1
+    },
+    "compile_seconds": 28.382515661010984,
+    "guard_seconds": 36.11836075800238,
+    "peak_bytes": 2477154304,
+    "memory_limit_bytes": 6442450944,
+    "oom_events": 0,
+    "history": [
+      "Run1 failed compilation because an existing direct Resolution fixture lacked the new field; fixed after terminal.",
+      "Run2 compiled; one test passed and two failed because the fixture did not commit activation costs; fixed after terminal.",
+      "Run3 passed 32 tests; run4 passed 48 with added actual landfall and existing ownership regressions.",
+      "Run5 failed compilation because a synthetic fixture omitted the SearchFilter namespace; fixed after terminal.",
+      "Run6 passed six of seven card tests; the synthetic subtype-addition fixture used an unsupported type bit and panicked. Replaced it after terminal with the existing supported type-replacement form."
+    ],
+    "scope": "The entry-choice test intentionally widens a single search filter to Any to exercise the shared search continuation with Secluded Courtyard; no eligible basic land offers that entry choice. The incarnation-change test injects a zone change while a choice is suspended as a defensive exact-reference contract; normal resolving actions do not grant priority. Current subtype replacement and control are also tested.",
+    "reviews": "Preliminary nonauthor source review found no confirmed defect, requested and now received the three boundary proofs; two final nonauthor reviews pending."
+  },
+  "compiled_inputs_sha256": {
+    "src/card_definitions/hob/elven_passage.rs": "8c49d01be206880e49f50050415c2deebb65d1ec6fb43941da7e418a12713afa",
+    "src/card_definitions/hob/elven_passage.json": "15666a6cfcc33d819871eecf5e7418d024472f54d197daa86066aa01c84c0478",
+    "src/cards.rs": "a67f47200f232e42d8397a7e2a13ba8b64b07e67f64b73a7afa61c0a47a9bb63",
+    "src/engine.rs": "be03a33347c96c4d39ba3c4e1c5084ecc552ec77cae6e4e4311d342b8303cb7d",
+    "src/engine_entries.rs": "8f10887cb23c63097b5a9ab30de6589e7ca33761de78d1f33d66a557463f4a29",
+    "src/engine_hand_choices.rs": "2257a3f3de04c0440dc9fa557cf62dce7547cd8ed22df5a9ec3e981ee401d0ad",
+    "src/engine_programs.rs": "b3008791639e435d73a3746d7c20e1bc9f8ccf3bfaf4b0fcd978ad6137b4cabd",
+    "src/engine_search.rs": "5e7fb74bf3a8cdaf3481de65d524827521f4ef398ce6dbf53ca1bb4635595f9a",
+    "src/assurance/hob_elven_passage.rs": "1046a196c4afb8ffa4813876d0174b578ea4f6ba59ff9dee973e59850757d604",
+    "src/assurance/hob_storied.rs": "f7a00e7bd2cedb83f5946fd3625e35e53969d915e2e7a83936bc2819acd4973f",
+    "data/observation-schema.txt": "d02a3f2daec501e6412cdc42d097fbc5872af291de64b22f59b9116abe7f5047"
+  }
+}

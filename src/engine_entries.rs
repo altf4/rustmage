@@ -744,6 +744,7 @@ impl Game {
             self.capture_return_attachment_entry(origin, &events);
         }
         self.capture_selected_library_entry(&events);
+        self.capture_search_result_entry(&events);
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);
         } else {

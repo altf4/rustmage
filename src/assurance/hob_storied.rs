@@ -378,6 +378,7 @@ fn hob_storied_transient_threshold_inside_one_typed_resolution() {
         selection: None,
         return_attachment: None,
         search: None,
+        search_result: None,
         optional_searches: None,
         choice: None,
     });

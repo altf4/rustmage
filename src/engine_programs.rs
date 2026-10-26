@@ -39,6 +39,7 @@ pub(super) struct Resolution {
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
     pub return_attachment: Option<Box<super::return_attachment::ReturnAttachment>>,
     pub search: Option<Box<super::search::SearchChoice>>,
+    pub search_result: Option<Box<super::search::SearchResult>>,
     pub optional_searches: Option<Box<super::search::OptionalSearchSequence>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
@@ -2027,6 +2028,7 @@ impl Game {
             return_attachment: None,
             target_library: None,
             search: None,
+            search_result: None,
             optional_searches: None,
             choice: None,
         });
@@ -3688,6 +3690,15 @@ impl Game {
                         }));
                     self.state.pending = Pending::EffectSearch { player };
                     return;
+                }
+                Instruction::CaptureSearchResult => {
+                    self.state.resolving.as_mut().unwrap().search_result =
+                        Some(Box::new(search::SearchResult::default()));
+                }
+                Instruction::BeholdToUntapSearchResult(subtype) => {
+                    if self.start_behold_search_result(&item, subtype) {
+                        return;
+                    }
                 }
                 Instruction::RevealTopDrawIfArtifact => self.reveal_top_draw_if_artifact(&item),
                 Instruction::ExileTopPlayBoostSourceIfSubtype {

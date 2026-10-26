@@ -1565,6 +1565,10 @@ pub(crate) enum Instruction {
         haste_at: Option<u32>,
     },
     Search(SearchSpec),
+    /// Remember the exact result of the immediately following library search.
+    CaptureSearchResult,
+    /// Optionally behold a subtype, then untap the searched-for permanent.
+    BeholdToUntapSearchResult(&'static str),
     SearchTargetController(SearchSpec),
     /// The legal player target in the currently selected target group searches.
     SearchTargetPlayer(SearchSpec),

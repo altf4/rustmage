@@ -3,10 +3,40 @@
   "catalogue_id": 1295,
   "oracle_id": "97a2cd39-6b54-496b-b3ac-dab9dfed7edc",
   "facts_sha256": "dbd74fd55c965d80905089acc2ad8b0aa4995a35405fe9d14e2262d270f31caa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "52bafa00826b1b81f77d0ceb72f1a17501cc7463a8517ce28f804feb93b25b0f"
   },
-  "physical_metadata_sha256": "43c8b4030fe9fdfb35be8427d522726c213001af2498b8a860163b14a9d2b9e1"
+  "physical_metadata_sha256": "43c8b4030fe9fdfb35be8427d522726c213001af2498b8a860163b14a9d2b9e1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ElvenPassage.java",
+  "java_sha256": "14d138ee64f30f4536fce1d3be785cad24f57b07839b9543c7c7c5fc22447637",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+      "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    }
+  ]
 }

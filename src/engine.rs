@@ -7940,6 +7940,10 @@ impl Game {
                             })
                             .unwrap_or(0)
                         + resolution
+                            .search_result
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<search::SearchResult>())
+                        + resolution
                             .library
                             .as_ref()
                             .map(|choice| {
