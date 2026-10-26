@@ -1,0 +1,87 @@
+{
+  "scope": "Getaway Barrel death trigger, public reveal and uniform random creature, random bottom remainder; schema158 public random-selection indication",
+  "base_revision": "cb731d6d3143bff0ec0623d4c38d38355eef16ef",
+  "oracle_facts": {
+    "oracle_id": "7ddbf891-7f80-44e9-b94c-70c1da0b91ed",
+    "name": "Getaway Barrel",
+    "layout": "normal",
+    "mana_cost": "{3}{R}",
+    "cmc": 4.0,
+    "type_line": "Artifact",
+    "oracle_text": "When this artifact is put into a graveyard from the battlefield, reveal the top thirteen cards of your library. Put a random creature card from among them onto the battlefield. Put the rest on the bottom of your library in a random order.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "reference_printing": {
+      "id": "e4819aa6-5d28-4a37-942d-89523e30c4e1",
+      "set": "hob",
+      "collector_number": "98",
+      "released_at": "2026-08-14"
+    }
+  },
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/g/GetawayBarrel.java",
+      "sha256": "de82efb67b0be67fb850c06f48286891d3456845701690fd21f0a140c3771ac4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldSourceTriggeredAbility.java",
+      "sha256": "d68a84aa9f0e48cb7d0847b1bcd5fe447d39b876eef5f1b972a2b448db04ce37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/CardsImpl.java",
+      "sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+      "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3"
+    }
+  ],
+  "obligations": {
+    "permanent": "Actual paid 3R artifact; trigger on actual battlefield-to-graveyard movement, using its last controller, including stolen source and graveyard replacement exclusion.",
+    "reveal": "Reveal up to top13 to both players, preserving private cards below; no lookup/choice leaks.",
+    "random": "Select one eligible creature uniformly using owned unbiased RNG, with no legal player-selected card, then put it onto battlefield. Empty/no-creature reveal puts none.",
+    "remainder": "After the entry and its replacement choices, randomize the other revealed exact cards onto the library bottom; retain cards not in top13 in order. Chosen card is excluded even if its attempted move is prevented.",
+    "contracts": "Deterministic RNG replay, exact references through entry suspension, hidden library boundary, wrong selection rejection and owned raw/index/restore including parent disposal."
+  },
+  "compiled_inputs_sha256": {
+    "src/card_definitions/hob/getaway_barrel.rs": "3b8a6f3a1aab5b5e2a9d6f05e9dc90e5e3f22fa84d08e47d67526b22f0380262",
+    "src/card_definitions/hob/getaway_barrel.json": "c38ee1350128545c20217aeafd7935dcd7213938ce1863b15ccf79c54f707fc5",
+    "src/cards.rs": "b2229a6a25b991b33567f10ee8dd98b9acd215720a34a4163ade6f4a28c82a27",
+    "src/engine.rs": "f7441f31dc3659f1ba8a7c5b258ee607d64f2cacbb5809bfe7506f43afafd170",
+    "src/engine_library_selection.rs": "be9751dd472dda33b115aae3c210917938a35f695a2bbd858da020ebe3cfe606",
+    "src/assurance/hob_getaway_barrel.rs": "ab78ddd2b6e78743b4a4a2dfeb5162d682554b0bdf23f699593045819a251b58",
+    "data/observation-schema.txt": "d02a3f2daec501e6412cdc42d097fbc5872af291de64b22f59b9116abe7f5047"
+  },
+  "validation": {
+    "final_run": "<cache>/rustmage-authoring/hob-getaway-barrel/run-4",
+    "tests": 30,
+    "groups": {
+      "hob_getaway_barrel": 4,
+      "hob_four_effects": 11,
+      "hob_riddles": 3,
+      "big_library": 11,
+      "contracts::owned_raw_index": 1
+    },
+    "compile_seconds": 29.64622606302146,
+    "guard_seconds": 44.711237411014736,
+    "peak_bytes": 2479325184,
+    "memory_limit_bytes": 6442450944,
+    "oom_events": 0,
+    "history": [
+      "Run1 naturally failed compilation on fixture comparisons between SharedVec and Vec and missing Snapshot borrow; fixed after termination.",
+      "Run2 compiled and two of three card tests passed; the remaining fixture wrongly excluded the globally legal Concede action. Corrected after termination.",
+      "Run3 passed all 29 tests; added an actual stolen-source last-controller library interaction, then run4 passed all 30."
+    ],
+    "limitations": "The prevented-selected-move rule is source-audited; no admitted live entry-prevention fixture exists in this focused suite.",
+    "review": "Preliminary independent source review found no gameplay defect; two final nonauthor reviews pending."
+  }
+}

@@ -592,6 +592,8 @@ pub(crate) enum LibrarySelectionFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibrarySelectionCount {
     Fixed(u16),
+    /// One uniformly random eligible card, without a player selection.
+    RandomOne,
     Lessons,
     InstantAndSorcery,
     GainedLife,

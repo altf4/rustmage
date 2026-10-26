@@ -4604,10 +4604,12 @@ impl Game {
                         }
                     }
                 } else {
-                    if f.selected.len() >= f.minimum && emit(Action::FinishLibrarySelection) {
+                    if (f.random || f.selected.len() >= f.minimum)
+                        && emit(Action::FinishLibrarySelection)
+                    {
                         return true;
                     }
-                    if f.selected.len() < f.maximum {
+                    if !f.random && f.selected.len() < f.maximum {
                         for r in &f.remaining {
                             if f.eligible.contains(r)
                                 && emit(Action::SelectLibrary { card: r.card })

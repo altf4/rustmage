@@ -3,10 +3,30 @@
   "catalogue_id": 1721,
   "oracle_id": "7ddbf891-7f80-44e9-b94c-70c1da0b91ed",
   "facts_sha256": "f0ec80f791217631680c62e4c5216ecef5342c76076c9fc9905e17ca46ab1e77",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "88fd6ac8e05c34bde39f28b7845b207314387a3812cea3b824c0e53e41132596"
   },
-  "physical_metadata_sha256": "12bf8168f2de07c83dd00d7268a63eeba82394b058c9a739eaf881bcf2462c0b"
+  "physical_metadata_sha256": "12bf8168f2de07c83dd00d7268a63eeba82394b058c9a739eaf881bcf2462c0b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GetawayBarrel.java",
+  "java_sha256": "de82efb67b0be67fb850c06f48286891d3456845701690fd21f0a140c3771ac4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldSourceTriggeredAbility.java",
+      "sha256": "d68a84aa9f0e48cb7d0847b1bcd5fe447d39b876eef5f1b972a2b448db04ce37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/CardsImpl.java",
+      "sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+      "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3"
+    }
+  ]
 }

@@ -21,6 +21,7 @@ pub(super) struct LibrarySelection {
     pub minimum: usize,
     pub maximum: usize,
     pub ordering: bool,
+    pub random: bool,
 }
 impl LibrarySelection {
     pub fn bytes(&self) -> usize {
@@ -38,10 +39,15 @@ pub struct LibrarySelectionView {
     pub minimum: usize,
     pub maximum: usize,
     pub ordering: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub random: bool,
     pub reveal: bool,
     pub public: bool,
     pub destination: &'static str,
     pub remainder: &'static str,
+}
+fn is_false(value: &bool) -> bool {
+    !value
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct EntryTransformChoiceView {
@@ -146,6 +152,7 @@ impl Game {
         };
         let requested = match spec.count {
             LibrarySelectionCount::Fixed(n) => usize::from(n),
+            LibrarySelectionCount::RandomOne => 1,
             LibrarySelectionCount::Lessons => {
                 if grave().filter(|o| o.card.has_subtype("Lesson")).count() >= 3 {
                     remaining.len()
@@ -188,6 +195,7 @@ impl Game {
             minimum,
             maximum,
             ordering: false,
+            random: spec.count == LibrarySelectionCount::RandomOne,
         }));
         // Even a forced random remainder must expose the looked information
         // before it disappears into the library (there may be no eligible pick).
@@ -243,6 +251,33 @@ impl Game {
         }
     }
     pub(super) fn finish_library_selection(&mut self, owner: Player) {
+        let count = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .selection
+            .as_ref()
+            .unwrap();
+        let count = if count.random {
+            count.eligible.len()
+        } else {
+            0
+        };
+        if count > 0 {
+            let index = self.state.rng.below(count as u64) as usize;
+            let card = self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .selection
+                .as_ref()
+                .unwrap()
+                .eligible[index]
+                .card;
+            self.choose_library_selection(card);
+        }
         if !self.finish_library_selection_internal(owner) {
             self.run_program();
         }
@@ -395,10 +430,12 @@ impl Game {
         };
         f.remaining.retain(remains);
         f.bottom.retain(remains);
-        if matches!(
-            f.destination,
-            LibraryPickDestination::Battlefield | LibraryPickDestination::BattlefieldTapped
-        ) {
+        if !f.random
+            && matches!(
+                f.destination,
+                LibraryPickDestination::Battlefield | LibraryPickDestination::BattlefieldTapped
+            )
+        {
             f.remaining.extend(f.selected.iter().copied().filter(|r| {
                 self.object_ref(r.card) == *r
                     && self.state.objects[r.card as usize].zone == Zone::Library
@@ -554,6 +591,7 @@ impl Game {
             minimum: f.minimum,
             maximum: f.maximum,
             ordering: f.ordering,
+            random: f.random,
             reveal: f.spec.reveal,
             public: f.public,
             destination: match f.destination {
