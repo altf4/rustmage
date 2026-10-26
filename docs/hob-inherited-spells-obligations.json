@@ -177,7 +177,7 @@
       "mana_cost": "{3}{R}",
       "type_line": "Enchantment \u2014 Saga",
       "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI \u2014 This Saga deals 6 damage to target creature an opponent controls.\nII \u2014 Destroy target artifact an opponent controls.\nIII, IV \u2014 Add {R}.",
-      "obligations": "Paid 2U in both modes; spell controller receives pay4 choice; exact payment preserves spell, decline counters, insufficient3 cannot pay; draw exactly2 before private discard1 with opponent secrecy and owned raw/index/restore contract.",
+      "obligations": "Paid 3R Saga; entry chapterI enemy-only creature6damage; chapterII enemy-only artifact destruction; III/IV exactlyR each; chapterIV source remains through trigger then sacrifices; actual lore increments, own targets rejected.",
       "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_burn_saga_paid_four_chapters_restrictions_mana_and_final_sacrifice"
     },
     {
@@ -185,7 +185,7 @@
       "mana_cost": "{2}{U}",
       "type_line": "Instant",
       "oracle_text": "Choose one \u2014\n\u2022 Counter target spell unless its controller pays {4}.\n\u2022 Draw two cards, then discard a card.",
-      "obligations": "Paid 3R Saga; entry chapterI enemy-only creature6damage; chapterII enemy-only artifact destruction; III/IV exactlyR each; chapterIV source remains through trigger then sacrifices; actual lore increments, own targets rejected.",
+      "obligations": "Paid 2U in both modes; spell controller receives pay4 choice; exact payment preserves spell, decline counters, insufficient3 cannot pay; draw exactly2 before private discard1 with opponent secrecy and owned raw/index/restore contract.",
       "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_confusticate_counter_payment_and_private_draw_then_discard"
     },
     {
@@ -409,5 +409,12 @@
   },
   "status": "13scenarios coveringall14inheritedidentities plus3sharedcombatregressions passed; two independent nonauthor reviews pending. No gameplay/definition changes or newcandidatecount.",
   "proof_sha256": "e8fe34e740c70f2442def08805449a8315591cc557d24fa639422540d635cf28",
-  "integration": "Root registers assurance hob_inherited_spells; local modregistration excluded. No PR/push/merge. Full193 goal open."
+  "integration": "Root registers assurance hob_inherited_spells; local modregistration excluded. No PR/push/merge. Full193 goal open.",
+  "review_corrections": [
+    {
+      "reviewer": "hob_review_rules",
+      "finding": "The two card obligations prose strings were swapped; Oracle facts and proof function links were correctly assigned.",
+      "resolution": "Swapped only obligations strings back to matching identities after all consuming jobs terminal; no Rust/test/definition changes or new pass claim."
+    }
+  ]
 }
