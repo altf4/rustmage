@@ -418,7 +418,7 @@
     "Long-Bodied Grey Dog": "Actuallypaid3duringopponentendstep2/2flashreach; exactly1owntappedTreasure cannotactivateuntiluntapped; independent5colormana branches; reachblocks actualflyer"
   },
   "preflight": "All15 named physical fixtures complete, full Oracle and all9typedRust/Java classes read;32 sourcepins byte-match pinned revision; no invented token. Shared treasure factory created by actual sourceETB.",
-  "validation": "Corrected turn-aware fixtures frozen for second focused run; two independent reviews and whole193 acceptance remain pending",
+  "validation": "All6 bounded scenarios pass covering9 inherited identities; no gameplay or definition changes. All32 Java/helper pins verified against pinned revision,15 namedfixtures complete, rustfmt/diffcheck passed. Two independent reviews pending; whole193 acceptance open.",
   "attempts": [
     {
       "run": "run-1",
@@ -435,6 +435,35 @@
       "resource_report": "<cache>/rustmage-build-reports/3098a19bdf764afab082adfdddf2e47e.json",
       "log": "<cache>/rustmage-authoring/hob-inherited-creatures/run-1/focused.log",
       "findings": "Fixture-only: can_block_pair requires attacker owner to be active; finish_cleanup actually advances active player and priority. Corrected turn setup and checked opponent pass; hasty Gigantic attack now uses a freshly paid separate game before any cleanup. No gameplay/source-definition changes."
+    },
+    {
+      "run": "run-2",
+      "terminal": true,
+      "exit": 0,
+      "passed": 6,
+      "failed": 0,
+      "ignored": 0,
+      "compile_seconds": 141.608301182976,
+      "focused_seconds": 0.016188798006623983,
+      "log": "<cache>/rustmage-authoring/hob-inherited-creatures/run-2/focused.log",
+      "resource_report": "<cache>/rustmage-build-reports/698aaca752d24e9a88e18459bb81972e.json",
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-inherited-creatures/run-2/run.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 508.34127595095197,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2619359232,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
     }
-  ]
+  ],
+  "integration": "Local mod hob_inherited_creatures registered only for author runs and excluded from source commit. Root registers after two approvals; no PR/push/merge.",
+  "proof_sha256": "e6b1964224b0eaeb1f20f31ce8314153e5deb3a2f180e99024e34c72041949cd",
+  "preflight_note": "Initial sourcecheck in a /tmp clone failed source-path autodiscovery (/tmp/mage absent); corrected with explicit RUSTMAGE_XMAGE_SOURCE before any guard launch. No test/compile job ran on that preflight failure."
 }
