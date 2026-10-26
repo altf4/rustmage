@@ -568,6 +568,8 @@ impl ManaProduction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryRemainder {
+    /// Shuffle the entire library after selected entries finish.
+    Shuffle,
     Graveyard,
     BottomAny,
     BottomRandom,
@@ -603,6 +605,7 @@ pub(crate) struct LibrarySelectionSpec {
 /// Explicit destinations for cards looked at without changing zones first.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum LibraryPickDestination {
+    BattlefieldTapped,
     LandsTappedRestHand,
     Hideaway,
     Hand,
@@ -1102,6 +1105,11 @@ pub(crate) enum Instruction {
         maximum: Option<u64>,
         skip: usize,
     },
+    /// Branch on the legal target spell before any counter attempt changes zones.
+    IfTargetSpellManaValueAtMost {
+        maximum: u64,
+        skip: usize,
+    },
     CounterThenDrawIfDiscounted,
     CounterAndDelayManaIfSubtype {
         subtype: &'static str,
@@ -1502,6 +1510,8 @@ pub(crate) enum Instruction {
         kind: crate::engine::SelfGrantedAbilityKind,
     },
     AnimateTargets(AnimationSpec),
+    /// Add artifact without also granting creature or changing other characteristics.
+    AddArtifactToTargets,
     /// Change creature subtypes, base stats and keywords without adding a card type.
     ChangeSourceCreatureForm(AnimationSpec),
     SetCreatureForm {
@@ -1638,6 +1648,12 @@ pub(crate) enum Instruction {
     GrantCreatures {
         filter: CreatureFilter,
         keywords: Keywords,
+    },
+    /// Freeze current creatures controlled by the selected players until cleanup.
+    GrowPlayerCreatures {
+        players: PlayerSet,
+        power: i32,
+        toughness: i32,
     },
     GrowCreatures {
         filter: CreatureFilter,

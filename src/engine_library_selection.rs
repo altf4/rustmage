@@ -191,7 +191,12 @@ impl Game {
         }));
         // Even a forced random remainder must expose the looked information
         // before it disappears into the library (there may be no eligible pick).
-        if maximum == 0 && spec.remainder != LibraryRemainder::BottomRandom {
+        if maximum == 0
+            && !matches!(
+                spec.remainder,
+                LibraryRemainder::BottomRandom | LibraryRemainder::Shuffle
+            )
+        {
             return self.finish_library_selection_internal(owner);
         }
         let frame = self
@@ -337,13 +342,18 @@ impl Game {
             library.retain(|id| !ids.contains(id));
             library.extend(ids.iter().rev());
         }
-        if f.destination == LibraryPickDestination::Battlefield && !ids.is_empty() {
+        if matches!(
+            f.destination,
+            LibraryPickDestination::Battlefield | LibraryPickDestination::BattlefieldTapped
+        ) && !ids.is_empty()
+        {
             f.entering = true;
+            let tapped = f.destination == LibraryPickDestination::BattlefieldTapped;
             self.state.resolving.as_mut().unwrap().selection = Some(f);
             let moves = ids
                 .into_iter()
                 .map(|id| {
-                    let mut movement = self.entry_move(id, Zone::Battlefield, false);
+                    let mut movement = self.entry_move(id, Zone::Battlefield, tapped);
                     movement.controller = owner;
                     movement
                 })
@@ -385,13 +395,24 @@ impl Game {
         };
         f.remaining.retain(remains);
         f.bottom.retain(remains);
-        if f.destination == LibraryPickDestination::Battlefield {
+        if matches!(
+            f.destination,
+            LibraryPickDestination::Battlefield | LibraryPickDestination::BattlefieldTapped
+        ) {
             f.remaining.extend(f.selected.iter().copied().filter(|r| {
                 self.object_ref(r.card) == *r
                     && self.state.objects[r.card as usize].zone == Zone::Library
             }));
         }
         match f.spec.remainder {
+            LibraryRemainder::Shuffle => {
+                if self.state.players[owner.index()].library.len() > 1 {
+                    self.forget_library_top(owner);
+                }
+                self.state
+                    .rng
+                    .shuffle(&mut self.state.players[owner.index()].library);
+            }
             LibraryRemainder::Graveyard => {
                 let ids: Vec<_> = f.remaining.iter().map(|r| r.card).collect();
                 let events = self.move_objects_raw(&ids, Zone::Graveyard);
@@ -539,11 +560,13 @@ impl Game {
                 LibraryPickDestination::LandsTappedRestHand => "lands_tapped_rest_hand",
                 LibraryPickDestination::Hand => "hand",
                 LibraryPickDestination::Battlefield => "battlefield",
+                LibraryPickDestination::BattlefieldTapped => "battlefield_tapped",
                 LibraryPickDestination::Top => "top",
                 LibraryPickDestination::Hideaway => "hideaway",
             },
             remainder: match f.spec.remainder {
                 LibraryRemainder::Graveyard => "graveyard",
+                LibraryRemainder::Shuffle => "shuffle",
                 LibraryRemainder::BottomAny => "bottom_any",
                 LibraryRemainder::BottomRandom => "bottom_random",
             },

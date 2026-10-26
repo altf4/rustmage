@@ -2386,6 +2386,16 @@ impl Game {
                         }
                     }
                 }
+                Instruction::IfTargetSpellManaValueAtMost { maximum, skip } => {
+                    let qualifies = item.targets.iter().any(|bound| {
+                        self.bound_stack_item(bound).is_some_and(|spell| {
+                            spell.kind == StackKind::Spell && spell.mana_value() <= maximum
+                        })
+                    });
+                    if !qualifies {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::CounterThenDrawIfDiscounted => {
                     for bound in &item.targets {
                         if let Some(victim) = self.bound_stack_item(bound) {
@@ -3444,6 +3454,7 @@ impl Game {
                     self.animate_source_with_ability_if_noncreature(&item, spec, kind)
                 }
                 Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),
+                Instruction::AddArtifactToTargets => self.add_artifact_to_targets(&item),
                 Instruction::ChangeSourceCreatureForm(spec) => self.change_source_form(
                     &item,
                     spec,
@@ -4437,6 +4448,19 @@ impl Game {
                         .collect();
                     for id in affected {
                         self.state.objects[id as usize].growth += delta;
+                    }
+                }
+                Instruction::GrowPlayerCreatures {
+                    players,
+                    power,
+                    toughness,
+                } => {
+                    let recipients = self.player_creature_recipients(players, &item);
+                    for id in recipients {
+                        self.state.objects[id as usize].growth += Stats {
+                            power: i128::from(power),
+                            toughness: i128::from(toughness),
+                        };
                     }
                 }
                 Instruction::GrowCreatures {

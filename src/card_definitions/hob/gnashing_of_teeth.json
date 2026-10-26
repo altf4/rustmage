@@ -3,10 +3,36 @@
   "catalogue_id": 1796,
   "oracle_id": "188a3f61-3f7c-450d-8ee7-e12ad13b86c6",
   "facts_sha256": "3b741f09985bb6e3afe9608fcac4f543a82cc610f57fccc4f32ef94deb85fad5",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "fce52579f8b30565ddc8117e6d426942fb7947312d3edb75aa7610b49d3b0b60"
-  },
-  "physical_metadata_sha256": "5490184e0cb9882e2f7c515129781418c494899951bac0d0e8c279e60a8b74a3"
+  "complete": true,
+  "physical_metadata_sha256": "5490184e0cb9882e2f7c515129781418c494899951bac0d0e8c279e60a8b74a3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GnashingOfTeeth.java",
+  "java_sha256": "fe2fb218d377812abffef7e34c8da42193c064cd1d7e679eb5efa45088dcff36",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetIfDiesEffect.java",
+      "sha256": "db2301f8fef9f5ce4777ebcc942f426194f6cd372156955efb846eeeed3b9c03"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/DiesReplacementEffect.java",
+      "sha256": "f71d5a645ee44f7ad736d7bcfd2e1ecde8b5a44924fedebefff2eadb0a176048"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/TargetController.java",
+      "sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6"
+    }
+  ]
 }

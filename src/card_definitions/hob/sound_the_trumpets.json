@@ -3,10 +3,21 @@
   "catalogue_id": 3981,
   "oracle_id": "dbcf2a79-b455-43ac-9cf0-9e63708800f4",
   "facts_sha256": "6eb97dedbcadaa244a32a8b38ddb7237d8f8d2179f1954a864224638e8b07506",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "25812cf0a659e7ba23038e0ea1400b7644d611cfad720f2a140985c303e8b3ec"
-  },
-  "physical_metadata_sha256": "25ea4291d2cf10910a2c40261509b8d8550a5ddaf9fc125174d6dacf167a5ba9"
+  "complete": true,
+  "physical_metadata_sha256": "25ea4291d2cf10910a2c40261509b8d8550a5ddaf9fc125174d6dacf167a5ba9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SoundTheTrumpets.java",
+  "java_sha256": "b76a201c314dd58eb8fbfbd866c2ffb0e5cf5c793c7c505b6a699b13b99e388e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    }
+  ]
 }

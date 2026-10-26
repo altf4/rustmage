@@ -12,6 +12,7 @@ pub struct AnimationView {
     pub timestamp: u64,
     pub artifact: bool,
     #[serde(skip_serializing_if = "is_false")]
+    /// Preserve existing card types; artifact may still be added independently.
     pub preserve_card_types: bool,
     pub colors: Option<u8>,
     pub creature_types: Option<&'static [&'static str]>,
@@ -125,8 +126,19 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
             )
         })
         .collect();
-    for row in animations(world, id).filter(|row| !row.preserve_card_types) {
-        changes.push((row.timestamp, if row.artifact { 17 } else { 1 }, true));
+    for row in animations(world, id) {
+        let added = if row.preserve_card_types {
+            if row.artifact {
+                16
+            } else {
+                continue;
+            }
+        } else if row.artifact {
+            17
+        } else {
+            1
+        };
+        changes.push((row.timestamp, added, true));
     }
     if world
         .game()
@@ -134,7 +146,7 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
         .crew
         .as_ref()
         .is_some_and(|c| c.animated.binary_search(&world.reference(id)).is_ok())
-        && !animations(world, id).any(|r| r.artifact)
+        && !animations(world, id).any(|r| r.artifact && !r.preserve_card_types)
     {
         result |= 17;
     }
@@ -340,6 +352,22 @@ impl Game {
         type_mode: AnimationTypeMode,
     ) {
         self.change_object_form(item.object, spec, type_mode);
+    }
+    pub(super) fn add_artifact_to_targets(&mut self, item: &SpellView) {
+        let spec = AnimationSpec {
+            artifact: true,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        };
+        for target in &item.targets {
+            if self.same_target_object(*target)
+                && let Some(object) = target.object
+            {
+                self.change_object_form(object, spec, AnimationTypeMode::PreserveCardTypes);
+            }
+        }
     }
     pub(super) fn animate_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
         for target in &item.targets {
