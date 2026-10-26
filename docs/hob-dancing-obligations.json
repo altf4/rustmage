@@ -196,5 +196,20 @@
     }
   ],
   "metadata_preservation": "All5414 existing card rows/colors,130tokenrecipes,alloldaliases and allothermetadatafields exactly preserved. One appended factory5414 @token/hob-bear, green2/2CreatureBear; deckexclusion actualgenericproof all3formats.",
-  "proof_sha256": "bd29a935c0da8e2eead26d463c22d97650523f368e6d4288bc6685005bee4139"
+  "proof_sha256": "bd29a935c0da8e2eead26d463c22d97650523f368e6d4288bc6685005bee4139",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "71e5f844b3d827441e6cc84b6776afaf8f73fb90",
+      "result": "Firm complete Oracle/Java/helpers, append-only metadata, typed frozen-event wiring and terminal22-scenario proof approved; no actionable findings",
+      "proof_sha256": "bd29a935c0da8e2eead26d463c22d97650523f368e6d4288bc6685005bee4139"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "71e5f844b3d827441e6cc84b6776afaf8f73fb90",
+      "result": "Firm complete Oracle/Java/helpers, append-only metadata, typed frozen-event wiring and terminal22-scenario proof approved; no actionable findings",
+      "proof_sha256": "bd29a935c0da8e2eead26d463c22d97650523f368e6d4288bc6685005bee4139"
+    }
+  ],
+  "integration_status": "Two independent full approvals; root registered assurance and regenerated catalogue links. Default integrated/finalrelease acceptance and whole193 acceptance open."
 }

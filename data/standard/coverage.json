@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "1f104dc048cd2e37af35ba2a83df1e8038e87ac8d7e3bcbaf3dc9ba20da4772e",
+  "catalogue_version": "0cb3c01c57ca203aae503d06b21a50871f114cf06f5ea7a19e69e0c5df132ae7",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2651,
-  "implemented_total": 2657,
-  "token_definitions": 130,
+  "implemented_standard_cards": 2652,
+  "implemented_total": 2658,
+  "token_definitions": 131,
   "emblem_definitions": 3,
   "adventure_definitions": 44,
   "omen_definitions": 13,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 137,
-      "gated": 51
+      "complete": 138,
+      "gated": 50
     },
     "hoc": {
       "total": 5,
@@ -7836,8 +7836,8 @@
     {
       "name": "Dancing from Dark to Dawn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/dancing_from_dark_to_dawn.rs",
       "set": "hob"
     },

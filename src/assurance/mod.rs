@@ -229,3 +229,5 @@ mod hob_inherited_spells;
 mod hob_spark_letters;
 
 mod hob_belladonna_queen;
+
+mod hob_dancing;
