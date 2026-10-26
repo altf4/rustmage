@@ -1117,6 +1117,7 @@ impl Game {
             source_quantity_lki: self
                 .source_quantity_facts(definition.triggers()[index].program, source),
             sacrificed_toughness: None,
+            sacrificed_power: None,
             source_attachment: source.attached_to,
             card: source.id,
             object: source.reference,
@@ -2696,6 +2697,11 @@ impl Game {
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive(&item, ability, None);
                 }
+                Instruction::ReflexiveSacrificedPower { ability } => {
+                    if item.sacrificed_power.is_some() {
+                        self.queue_reflexive(&item, ability, None);
+                    }
+                }
                 Instruction::Modal(_)
                 | Instruction::ModalOnce(_)
                 | Instruction::ModalOncePerTurn(_)
@@ -3470,6 +3476,18 @@ impl Game {
                     self.damage_by_group(&item, first, other)
                 }
                 Instruction::DamageForExcess(amount) => self.damage_for_excess(&item, amount),
+                Instruction::IfNoExcessDamage { skip } => {
+                    if self.tracked_excess_damage() == 0 {
+                        self.clear_tracked_excess_damage();
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::AmassExcessDamage => {
+                    let amount = self.take_tracked_excess_damage();
+                    if self.amass_goblins_for(&item, item.controller, amount) {
+                        return;
+                    }
+                }
                 Instruction::DamageForSubtypeDestruction { amount, subtype } => {
                     self.damage_for_subtype_destruction(&item, amount, subtype);
                 }

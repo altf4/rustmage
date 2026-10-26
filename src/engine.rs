@@ -1063,6 +1063,9 @@ pub struct SpellView {
     pub event_object: Option<Box<EventObjectView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_toughness: Option<Box<i128>>,
+    /// Last-known power of the successfully sacrificed permanent for a reflexive ability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sacrificed_power: Option<Box<i128>>,
     pub source_facts: DamageFacts,
     pub related_stack: Option<StackLink>,
     pub card: CardId,
@@ -1190,6 +1193,10 @@ impl SpellView {
                 .map_or(0, |_| std::mem::size_of::<DelayedWarpExileView>())
             + self
                 .sacrificed_toughness
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<i128>())
+            + self
+                .sacrificed_power
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<i128>())
             + self.target_allocations.as_ref().map_or(0, |rows| {

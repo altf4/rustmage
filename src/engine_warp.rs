@@ -132,6 +132,7 @@ impl Game {
                 source_quantity_lki: None,
                 event_object: None,
                 sacrificed_toughness: None,
+                sacrificed_power: None,
                 card: view.source.card,
                 object: view.source,
                 targets: Vec::new(),

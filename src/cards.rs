@@ -1230,6 +1230,12 @@ pub(crate) enum Instruction {
         other: i32,
     },
     DamageForExcess(AmountValue),
+    /// Skip the following instructions when no positive excess was dealt.
+    IfNoExcessDamage {
+        skip: usize,
+    },
+    /// Consume the tracked excess and amass it for the packet controller.
+    AmassExcessDamage,
     /// Track actual positive damage and the recipient's subtype at that event.
     DamageForSubtypeDestruction {
         amount: u16,
@@ -1312,6 +1318,10 @@ pub(crate) enum Instruction {
     },
     SacrificeGreatestPower,
     Reflexive {
+        ability: u16,
+    },
+    /// Queue only after a successful sacrifice, carrying its frozen power.
+    ReflexiveSacrificedPower {
         ability: u16,
     },
     /// Definition-only triggered header whose modes may each be chosen once per source incarnation.
@@ -1990,6 +2000,8 @@ pub(crate) enum AmountValue {
     PaidSourceCounterQuantity(CounterKind),
     /// Frozen before the selected sacrifice changes any battlefield object.
     SacrificedPower,
+    /// Power saved on a successful sacrifice's separate reflexive packet.
+    ReflexiveSacrificedPower,
     /// Frozen at the beginning of resolution, before target destruction.
     TargetCreaturePower,
     /// Exact pre-event source facts for a death trigger, never a new incarnation.

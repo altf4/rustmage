@@ -205,6 +205,27 @@ impl Game {
             }
         }
     }
+    pub(super) fn tracked_excess_damage(&self) -> u64 {
+        let amount = self
+            .state
+            .combat_rules
+            .as_ref()
+            .and_then(|r| r.excess.as_ref())
+            .map_or(0, |excess| {
+                excess.dealt.saturating_sub(excess.lethal).max(0)
+            });
+        u64::try_from(amount).capacity("excess amass counter amount exhausted")
+    }
+    pub(super) fn clear_tracked_excess_damage(&mut self) {
+        if let Some(state) = self.state.combat_rules.as_mut() {
+            state.excess = None;
+        }
+    }
+    pub(super) fn take_tracked_excess_damage(&mut self) -> u64 {
+        let amount = self.tracked_excess_damage();
+        self.clear_tracked_excess_damage();
+        amount
+    }
     pub(super) fn create_excess_tokens(&mut self, item: &SpellView, token: Card) {
         let excess = self
             .state

@@ -1105,7 +1105,26 @@ impl Game {
                         .item
                         .sacrificed_toughness = Some(Box::new(toughness));
                 }
+                let reflexive_power = self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .program
+                    .iter()
+                    .any(|i| matches!(i, Instruction::ReflexiveSacrificedPower { .. }))
+                    .then(|| {
+                        assert_eq!(sacrifices.len(), 1, "one sacrifice for reflexive power");
+                        let id = sacrifices[0].1;
+                        (self.object_ref(id), self.stats(id).power)
+                    });
                 self.sacrifice_batch(&sacrifices);
+                if let Some((object, power)) = reflexive_power
+                    && (!self.on_battlefield(object.card) || self.object_ref(object.card) != object)
+                {
+                    self.state.resolving.as_mut().unwrap().item.sacrificed_power =
+                        Some(Box::new(power));
+                }
             }
         }
         false

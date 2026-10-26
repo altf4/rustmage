@@ -400,6 +400,7 @@ impl Game {
             | AmountValue::SpellColors
             | AmountValue::ColorsSpent
             | AmountValue::SacrificedPower
+            | AmountValue::ReflexiveSacrificedPower
             | AmountValue::TargetCreaturePower
             | AmountValue::SourceLastKnownPower
             | AmountValue::SacrificedToughness
