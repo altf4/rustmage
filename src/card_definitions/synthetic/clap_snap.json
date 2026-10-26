@@ -1,0 +1,28 @@
+{
+  "name": "Clap! Snap!",
+  "catalogue_id": 5410,
+  "oracle_id": "27e17542-549b-4c05-8091-c10a245c916b",
+  "facts_sha256": "c3e58964dd5ab297162f1482f6040dc88be4d9fab9b60b58f6ffe0c14bf97d69",
+  "complete": true,
+  "physical_metadata_sha256": "9db006c5c553b14440bfa5be594da1f198032dd0b2dcdb76804adc634bb98ba3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreatUglyLookingGoblin.java",
+  "java_sha256": "e49845f38a94f4fe8da9cd8d3e969194435cfe58283fd1f0d9e17e995d4134a0",
+  "oracle_face": {
+    "oracle_id": "27e17542-549b-4c05-8091-c10a245c916b",
+    "index": 1,
+    "sha256": "6d3025b481e1fe177c514a302dcd7b895cb746ee6bd96dc251e1a18bc1ce782a"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AmassEffect.java",
+      "sha256": "a233d04025329bb65a90d9f729d776535b6ad4156f616f210e4a2545a37524ff"
+    }
+  ]
+}

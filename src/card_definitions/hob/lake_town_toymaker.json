@@ -3,10 +3,36 @@
   "catalogue_id": 2440,
   "oracle_id": "0f208cd3-7673-4380-9cb8-5b6f09966ebd",
   "facts_sha256": "62f9c192790ec4d26e33641b2c3eaf7dac5a15cf1a9d846d3629ccc6aaf4ac6c",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "9474ab358257337381b8bfa784c0922190e4e405d53115f5b37ed5f25af755e0"
-  },
-  "physical_metadata_sha256": "25cf18e7cd139eae796dc3735d87dd142d2c50959121ad09e315b2762bd825d6"
+  "complete": true,
+  "physical_metadata_sha256": "25cf18e7cd139eae796dc3735d87dd142d2c50959121ad09e315b2762bd825d6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LakeTownToymaker.java",
+  "java_sha256": "5a5ad97ab6f74f67eb8289d16b5ae050f9f59237950b57bcf08e448fb58a8cbc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DrewTwoOrMoreCardsCondition.java",
+      "sha256": "6978542fb6d2663651f0b5e66f3b3cad5c98b396f47c5b64ce345f3f651e9822"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    }
+  ]
 }

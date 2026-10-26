@@ -1,12 +1,33 @@
 {
-  "name": "Great Ugly-Looking Goblin // Clap! Snap!",
+  "name": "Great Ugly-Looking Goblin",
   "catalogue_id": 1867,
   "oracle_id": "27e17542-549b-4c05-8091-c10a245c916b",
   "facts_sha256": "c3e58964dd5ab297162f1482f6040dc88be4d9fab9b60b58f6ffe0c14bf97d69",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "47c45ab3dd70b56e45e4408efe35c8b4792375be1f28651ab076c01f667bdaaa"
-  },
-  "physical_metadata_sha256": "26452d17ab47dfd83756e0a1a24ffd1a9314025290461bc583f9d21914b6a3a7"
+  "complete": true,
+  "physical_metadata_sha256": "7aea887374deb1b6383a202b55308061b413f59b2d78ebbd170d51073d0d4485",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreatUglyLookingGoblin.java",
+  "java_sha256": "e49845f38a94f4fe8da9cd8d3e969194435cfe58283fd1f0d9e17e995d4134a0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AmassEffect.java",
+      "sha256": "a233d04025329bb65a90d9f729d776535b6ad4156f616f210e4a2545a37524ff"
+    }
+  ]
 }

@@ -5415,6 +5415,7 @@
     0,
     8,
     1,
+    4,
     4
   ],
   "aliases": [
@@ -5445,6 +5446,10 @@
     [
       "@adventure/22d82f4c-2896-477e-8d20-8fe43acd4ba2",
       5189
+    ],
+    [
+      "@adventure/27e17542-549b-4c05-8091-c10a245c916b",
+      5410
     ],
     [
       "@adventure/2802069f-201e-43a7-b5d3-43a95951a2ec",
@@ -9449,6 +9454,10 @@
     [
       "Clandestine Meddler",
       762
+    ],
+    [
+      "Clap! Snap!",
+      5410
     ],
     [
       "Clarion Conqueror",
@@ -14061,6 +14070,10 @@
     [
       "Great Train Heist",
       1866
+    ],
+    [
+      "Great Ugly-Looking Goblin",
+      1867
     ],
     [
       "Great Ugly-Looking Goblin // Clap! Snap!",
@@ -82312,11 +82325,11 @@
       "path": "hob/great_ugly_looking_goblin_clap_snap.rs",
       "set": "hob",
       "category": "physical",
-      "name": "Great Ugly-Looking Goblin // Clap! Snap!",
+      "name": "Great Ugly-Looking Goblin",
       "oracle_id": "27e17542-549b-4c05-8091-c10a245c916b",
       "facts_sha256": "c3e58964dd5ab297162f1482f6040dc88be4d9fab9b60b58f6ffe0c14bf97d69",
-      "mana_cost": "{5}{B} // {1}{B}",
-      "type_line": "Creature — Goblin Soldier // Sorcery — Adventure",
+      "mana_cost": "{5}{B}",
+      "type_line": "Creature — Goblin Soldier",
       "oracle_keywords": [
         "Amass"
       ],
@@ -82328,12 +82341,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 5
     },
     {
       "index": 1868,
@@ -183193,6 +183206,35 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5410,
+      "module": "card_5410",
+      "path": "synthetic/clap_snap.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Clap! Snap!",
+      "oracle_id": "27e17542-549b-4c05-8091-c10a245c916b",
+      "facts_sha256": "c3e58964dd5ab297162f1482f6040dc88be4d9fab9b60b58f6ffe0c14bf97d69",
+      "mana_cost": "{1}{B}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [
+        "Amass"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
       "basic": false,
       "mana_color": null,
       "colored": [

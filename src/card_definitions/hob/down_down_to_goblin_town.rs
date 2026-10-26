@@ -1,16 +1,39 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete printed obligations from pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 1 },
+            targets: one(TargetRule::Player {
+                opponent_only: true,
+            }),
+            program: &[Instruction::RevealHandDiscard { excluded_kinds: 2 }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 2 },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::EnsureGoblinArmy, Instruction::AmassGoblins(1)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 3 },
+            targets: one(TargetRule::Player {
+                opponent_only: true,
+            }),
+            program: &[
+                Instruction::LoseLife(PlayerSet::Targeted, 1),
+                Instruction::GainLife(PlayerSet::Controller, 1),
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 4 },
+            targets: one(TargetRule::Player {
+                opponent_only: true,
+            }),
+            program: &[
+                Instruction::LoseLife(PlayerSet::Targeted, 1),
+                Instruction::GainLife(PlayerSet::Controller, 1),
+            ],
+        },
+    ],
     ..CardRules::EMPTY
 };
