@@ -408,7 +408,7 @@
     "source_behavior": "No Rust source changed after successful13group in partial exit120 run; cached persistent rerun actually executed13new+3sharedcombatchecks. No fullrelease/whole193 acceptance claim."
   },
   "status": "13scenarios coveringall14inheritedidentities plus3sharedcombatregressions passed; two independent nonauthor reviews pending. No gameplay/definition changes or newcandidatecount.",
-  "proof_sha256": "e8fe34e740c70f2442def08805449a8315591cc557d24fa639422540d635cf28",
+  "proof_sha256": "ec0d92cefcf4dc21cd21812157d9be5bd4cda42da99b071af671ce5114415801",
   "integration": "Root registers assurance hob_inherited_spells; local modregistration excluded. No PR/push/merge. Full193 goal open.",
   "review_corrections": [
     {
@@ -431,5 +431,11 @@
       "scope": "Source/focused evidence; rootcombinedcheck and whole193/finalpublished acceptance remain pending"
     }
   ],
-  "root_integration": "Registered assurance module and regenerated links on singlelocalwhole-setbranch; nextcombinedfocusedcheckpassed237at a81bd052. Lastfullrelease136at6358 exactscoped; no PR/push/merge."
+  "root_integration": "Registered assurance module and regenerated links on singlelocalwhole-setbranch; nextcombinedfocusedcheckpassed237at a81bd052. Lastfullrelease136at6358 exactscoped; no PR/push/merge.",
+  "proof_hardening": {
+    "ledger": "docs/hob-inherited-proof-hardening.json",
+    "prior_proof_sha256": "e8fe34e740c70f2442def08805449a8315591cc557d24fa639422540d635cf28",
+    "change": "Exact six damage to surviving seven-toughness target",
+    "scope": "Proof only; definitions, provenance, admission flags and engine unchanged. Prior reviews/receipts retain their original revision scope."
+  }
 }

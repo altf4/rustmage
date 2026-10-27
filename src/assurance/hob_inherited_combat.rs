@@ -71,15 +71,16 @@ fn end_combat(g: &mut Game) {
 #[test]
 fn inherited_combat_bat_paid_morbid_any_controller_and_real_flying_deathtouch() {
     for p in [Player::P0, Player::P1] {
-        for died in [false, true] {
+        for died_controller in [None, Some(p), Some(p.other())] {
             let mut g = scenario(p);
-            if died {
-                let fodder = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            if let Some(controller) = died_controller {
+                let fodder = put(&mut g, controller, "Bear Cub", Zone::Battlefield);
                 let shock = put(&mut g, p, "Shock", Zone::Hand);
                 g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
                 cast(&mut g, shock, Some(Target::Card(fodder)));
                 drive(&mut g);
                 assert_eq!(g.object_view(fodder).zone, Zone::Graveyard);
+                assert_eq!(g.observe(p).creatures_died_this_turn, 1);
             } else {
                 let artifact = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
                 g.move_object(artifact, Zone::Graveyard);
@@ -92,7 +93,7 @@ fn inherited_combat_bat_paid_morbid_any_controller_and_real_flying_deathtouch() 
                 &mut g,
                 p,
                 "Dreaded Bat-Cloud",
-                [0, 0, 1, 0, 0, if died { 1 } else { 4 }],
+                [0, 0, 1, 0, 0, if died_controller.is_some() { 1 } else { 4 }],
             );
             drive(&mut g);
             assert_eq!(stats(&g, bat), (4, 2));

@@ -317,6 +317,10 @@ fn hob_inherited_spells_burn_saga_paid_four_chapters_restrictions_mana_and_final
         let mut g = scenario(p);
         let own = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
         let enemy = put(&mut g, p.other(), "Galewind Moose", Zone::Battlefield);
+        // A surviving seven-toughness target distinguishes exactly six damage
+        // from both insufficient and excessive damage.
+        g.add_counter(enemy, CounterKind::PlusOne, 1);
+        assert_eq!(stats(&g, enemy), (7, 7));
         let artifact = put(&mut g, p.other(), "Goldvein Pick", Zone::Battlefield);
         let own_art = put(&mut g, p, "Goldvein Pick", Zone::Battlefield);
         let saga = paid(
@@ -344,7 +348,8 @@ fn hob_inherited_spells_burn_saga_paid_four_chapters_restrictions_mana_and_final
             act(&mut g, Action::FinishTargets);
         }
         settle(&mut g);
-        assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(enemy).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(enemy).damage, 6);
         g.begin_step(Step::Main1);
         wait(&mut g, |g| {
             g.legal_actions().contains(&Action::ChooseTarget {

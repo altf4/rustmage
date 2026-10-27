@@ -78,10 +78,17 @@
   "source_discrepancy": "Pinned ThranduilSindarinLiege.java implements only normal CardImpl with anthem/landfall. No Silvan Rally Java body exists in that class; inset obligations derive from complete frozen Oracle and existing exact mill-batch semantics.",
   "inherited_source_manifest": "docs/adventure-admissions.json",
   "historical_receipt_remediation": {
-    "example": "examples/standard_adventure_milled_selection.py",
-    "problem": "Imports removed python/test_adventure_milled_selection.py; historical docs refer to removed parser/native acceptance machinery.",
-    "suggestion": "After current full-set acceptance, archive/label historical receipts and replace obsolete example with a maintained public-interface scenario or point to current native proof suite. Do not treat old report counts as current validator evidence.",
-    "old_files_edited": false
+    "historical_example": "examples/standard_adventure_milled_selection.py",
+    "historical_limitation": "This legacy example imports removed python/test_adventure_milled_selection.py and is not a runnable current acceptance command. Historical parser/native report counts are historical only.",
+    "current_evidence": [
+      "src/assurance/hob_inherited_adventures.rs::hob_inherited_thranduil_each_hybrid_face_exact_mill_cardinality_and_owned_choice",
+      "src/assurance/hob_inherited_adventures_two.rs::hob_inherited_two_glamdring_exact_six_all_recovery_uses_normal_outside_stack_types",
+      "src/assurance/hob_inherited_adventures_two.rs::hob_inherited_two_bird_exact_four_mandatory_one_private_choice_and_live_threshold"
+    ],
+    "current_commands": [
+      "python3 scripts/resource_guard.py -- cargo test --lib hob_inherited_adventures -- --include-ignored --test-threads=1"
+    ],
+    "status": "Current native tests supersede the obsolete example for exact mill-batch selection, privacy and owned branching evidence. The legacy example itself is preserved unchanged; it is not represented as fixed or freshly executed."
   },
   "validation": {
     "status": "Two independent source/focused-evidence approvals received; root registered module; integrated full release pending. No gameplay changes or newly supported identities.",

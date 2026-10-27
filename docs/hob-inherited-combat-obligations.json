@@ -651,7 +651,7 @@
     }
   ],
   "preflight_note": "First source/format preflight passed but fixture discovery incorrectly omitted absent Air Elemental. Natural terminal7pass1fixturefail; fixed fixture+strict explicitwhitelistafterterminal. All other actualoutcomesalready passed.",
-  "proof_sha256": "7c5b3cfe0221753b5dba41cf9a4cbf9cda116c69cbc3e40eaaf708bdfe9e51f2",
+  "proof_sha256": "3d358e823788adf040eca8fc444b6f78176996857933b65368241258a3cb32ea",
   "independent_reviews": [
     {
       "reviewer": "hob_review_contracts",
@@ -666,5 +666,11 @@
       "proof_sha256": "7c5b3cfe0221753b5dba41cf9a4cbf9cda116c69cbc3e40eaaf708bdfe9e51f2"
     }
   ],
-  "integration_status": "Two independent full source/proofapprovals; rootregisteredmodule. Inheritedproofmappingnow63of69; no newgameplay/admissionflags. Integrateddefault/releaseandwhole193acceptanceopen."
+  "integration_status": "Two independent full source/proofapprovals; rootregisteredmodule. Inheritedproofmappingnow63of69; no newgameplay/admissionflags. Integrateddefault/releaseandwhole193acceptanceopen.",
+  "proof_hardening": {
+    "ledger": "docs/hob-inherited-proof-hardening.json",
+    "prior_proof_sha256": "7c5b3cfe0221753b5dba41cf9a4cbf9cda116c69cbc3e40eaaf708bdfe9e51f2",
+    "change": "Actual own and opposing creature deaths independently qualify before paid 1B cast",
+    "scope": "Proof only; definitions, provenance, admission flags and engine unchanged. Prior reviews/receipts retain their original revision scope."
+  }
 }
