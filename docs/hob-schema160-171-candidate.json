@@ -568,5 +568,13 @@
       "hob_review_rules: approved merged source and exact candidate adoption",
       "hob_review_contracts: approved merged source and exact candidate adoption"
     ]
-  }
+  },
+  "release_attempts": [
+    {
+      "head": "4c778606",
+      "report": "<cache>/rustmage-validation-52j2_2rr/report/result.json",
+      "result": "natural exit 1 at format: central module declarations out of alphabetical order; no native or release phases executed",
+      "guard": "<cache>/rustmage-build-reports/b6a3f712c4d241cba53673616b206ec0.json"
+    }
+  ]
 }

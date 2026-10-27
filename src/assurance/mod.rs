@@ -275,6 +275,6 @@ mod hob_elrond;
 
 mod hob_getaway_barrel;
 mod hob_key_side_door;
-mod hob_part_friendship;
 mod hob_notary;
+mod hob_part_friendship;
 mod hob_silvan_reveler;
