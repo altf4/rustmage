@@ -386,7 +386,10 @@ mod ability_resolutions;
 mod big_core;
 #[path = "engine_borrowed_activations.rs"]
 mod borrowed_activations;
-pub use borrowed_activations::BorrowedAbilityView;
+use borrowed_activations::Descriptor as BorrowedDescriptor;
+pub use borrowed_activations::{BorrowedAbilityView, GraveyardBorrowedAbilityView};
+#[path = "engine_graveyard_borrowing.rs"]
+mod graveyard_borrowing;
 
 pub use ability_resolutions::AbilityResolutionView;
 #[path = "engine_programs.rs"]
@@ -631,6 +634,9 @@ define_actions! {
     AnnounceFlashback {
         card: CardId,
     },
+    AnnounceGraveyardBorrowedAbility { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters },
+    AnnounceGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
+    ActivateGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, payment: Mana, production: Mana },
     AnnounceBorrowedAbility { card: CardId, exiled: ObjectRef, ability: u16, counter_payment: Counters },
     AnnounceBorrowedMana { card: CardId, exiled: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
     ActivateBorrowedMana { card: CardId, exiled: ObjectRef, ability: u16, counter_payment: Counters, payment: Mana, production: Mana },
@@ -1928,6 +1934,7 @@ struct State {
         reason = "Cold rule state keeps one pointer in games without this mechanic"
     )]
     borrowed_links: Option<Box<Vec<borrowed_activations::Link>>>,
+    graveyard_borrowing: graveyard_borrowing::Rows,
     #[allow(
         clippy::box_collection,
         reason = "Cold rule state keeps one pointer in games without this mechanic"
@@ -2431,6 +2438,8 @@ pub struct Observation {
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
     pub borrowed_abilities: Vec<BorrowedAbilityView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub graveyard_borrowed_abilities: Option<Vec<GraveyardBorrowedAbilityView>>,
     pub graveyard_cast_permissions: Vec<GraveyardCastPermissionView>,
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
     pub resolution_free_casts: Option<ResolutionFreeCasts>,
@@ -2705,6 +2714,7 @@ impl Game {
                 exile_permissions: Vec::new(),
                 hand_play_bans: None,
                 borrowed_links: None,
+                graveyard_borrowing: None,
                 borrowed_uses: None,
                 used_free_hand_permissions: None,
                 graveyard_cast_permissions: None,
@@ -5117,6 +5127,12 @@ impl Game {
                 exiled,
                 ability,
                 counter_payment,
+            }
+            | Action::AnnounceGraveyardBorrowedAbility {
+                card,
+                graveyard: exiled,
+                ability,
+                counter_payment,
             } => {
                 let item = self.borrowed_activation_item(actor, card, exiled, ability);
                 self.open_payment_announcement(item, counter_payment, None);
@@ -5127,6 +5143,13 @@ impl Game {
                 ability,
                 counter_payment,
                 production,
+            }
+            | Action::AnnounceGraveyardBorrowedMana {
+                card,
+                graveyard: exiled,
+                ability,
+                counter_payment,
+                production,
             } => {
                 let item = self.borrowed_activation_item(actor, card, exiled, ability);
                 self.open_payment_announcement(item, counter_payment, Some(production));
@@ -5134,6 +5157,14 @@ impl Game {
             Action::ActivateBorrowedMana {
                 card,
                 exiled,
+                ability,
+                counter_payment,
+                payment,
+                production,
+            }
+            | Action::ActivateGraveyardBorrowedMana {
+                card,
+                graveyard: exiled,
                 ability,
                 counter_payment,
                 payment,
@@ -7571,6 +7602,7 @@ impl Game {
             spell_characteristics: self.spell_characteristics(),
             exile_permissions: s.exile_permissions.clone(),
             borrowed_abilities: self.borrowed_ability_views(),
+            graveyard_borrowed_abilities: self.graveyard_borrowed_ability_views(),
             cascade: s
                 .resolving
                 .as_ref()
@@ -8060,6 +8092,7 @@ impl Game {
                 std::mem::size_of::<Vec<borrowed_activations::Use>>()
                     + rows.len() * std::mem::size_of::<borrowed_activations::Use>()
             })
+            + graveyard_borrowing::owned_bytes(&s.graveyard_borrowing)
             + s.borrowed_links.as_ref().map_or(0, |links| {
                 std::mem::size_of::<Vec<borrowed_activations::Link>>()
                     + links.len() * std::mem::size_of::<borrowed_activations::Link>()

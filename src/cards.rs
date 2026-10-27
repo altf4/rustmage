@@ -2934,6 +2934,7 @@ pub(crate) enum DamageSubject {
 pub(crate) enum EntryPredicate {
     /// A predicate on each actual entrant, distinct from batch token-entry events.
     Token,
+    LegendarySubtype(&'static str),
     CreatureWithoutSubtype(&'static str),
     ArtifactManaValueAtLeast(u32),
     CreaturePowerAtMost(i32),
@@ -3974,6 +3975,21 @@ impl Card {
                 .iter()
                 .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation(i) if *i == index))
         })
+    }
+    pub(crate) fn graveyard_activation_subtype(self) -> Option<&'static str> {
+        self.static_ability_groups()
+            .iter()
+            .flat_map(|g| g.fragments)
+            .find_map(|f| {
+                if let StaticAbilityFragment::BorrowGraveyardActivations(subtype) = f {
+                    Some(*subtype)
+                } else {
+                    None
+                }
+            })
+    }
+    pub(crate) fn borrows_activations(self) -> bool {
+        self.borrows_exiled_activations() || self.graveyard_activation_subtype().is_some()
     }
     pub(crate) fn borrows_exiled_activations(self) -> bool {
         authored::RULES[self.index()]

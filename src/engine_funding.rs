@@ -55,8 +55,17 @@ pub(super) struct FundingState<'g> {
     entry_projection: Option<Box<EntryProjection>>,
     continuation: Option<Box<PaymentContinuation<'g>>>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
+    graveyard_borrowing: graveyard_borrowing::Rows,
 }
 impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
+        &self.graveyard_borrowing
+    }
+    fn graveyard_borrowing(&self) -> &[graveyard_borrowing::Row] {
+        self.graveyard_borrowing
+            .as_ref()
+            .map_or(&[], |rows| rows.as_slice())
+    }
     fn has_enduring_story(&self, player: Player) -> bool {
         self.enduring_story[player.index()]
     }
@@ -208,7 +217,7 @@ struct FundingMove {
     resource: usize,
     ability: Option<u16>,
     grantor: Option<ObjectRef>,
-    borrowed: Option<BorrowedAbilityView>,
+    borrowed: Option<BorrowedDescriptor>,
     payment: [u64; 6],
     counters: Counters,
     production: Mana,
@@ -255,6 +264,7 @@ struct FundingKey {
     entries: Option<EntryFundingKey>,
     histories: Option<(u64, [bool; 2], i128)>,
     borrowed_uses: Vec<(ObjectRef, u64)>,
+    graveyard_borrowing: Vec<graveyard_borrowing::Row>,
     mana: [u128; 6],
     lots: Vec<mana_lots::Lot>,
     life: i128,
@@ -603,7 +613,7 @@ impl<'g> FundingState<'g> {
                         .source.as_ref()
                         .is_some_and(|(source, _, _, _, _)| source.card == *id as CardId)
                     || object.zone == Zone::Battlefield
-                        && (sacrifice_mana_cost || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_exiled_activations()
+                        && (sacrifice_mana_cost || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
                             || object.card.attachment_bonus().is_some()
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
@@ -664,6 +674,7 @@ impl<'g> FundingState<'g> {
                 })
                 .and_then(|a| a.additional_group.as_ref())
                 .map_or_else(Vec::new, |g| g.to_vec()),
+            graveyard_borrowing: game.state.graveyard_borrowing.clone(),
             borrowed_uses: game
                 .state
                 .borrowed_uses
@@ -1031,7 +1042,7 @@ impl<'g> FundingState<'g> {
     fn mana_activations(
         &self,
         id: CardId,
-    ) -> impl Iterator<Item = (u16, &'static ActivatedAbility, Option<BorrowedAbilityView>)> {
+    ) -> impl Iterator<Item = (u16, &'static ActivatedAbility, Option<BorrowedDescriptor>)> {
         let object = ability_world::CharacteristicWorld::object(self, id);
         object
             .card
@@ -1291,6 +1302,7 @@ impl<'g> FundingState<'g> {
                 resource.attacking = false;
             }
         }
+        self.graveyard_borrowing = graveyard_borrowing::refreshed(self);
     }
     pub(super) fn prune_source_linked_projection(&mut self) {
         let retained: Vec<_> = self
@@ -1461,6 +1473,10 @@ impl<'g> FundingState<'g> {
             .roles()
             .is_some_and(|r| !r.source_linked_effects.is_empty())
             || self.game.state.borrowed_links.is_some()
+            || self
+                .resources
+                .iter()
+                .any(|r| r.object.card.graveyard_activation_subtype().is_some())
             || self.named_counters.is_some()
             || self.counter_placement_history.is_some()
             || self
@@ -1597,6 +1613,10 @@ impl<'g> FundingState<'g> {
                 uses.dedup();
                 uses
             },
+            graveyard_borrowing: self
+                .graveyard_borrowing
+                .as_ref()
+                .map_or_else(Vec::new, |rows| rows.to_vec()),
             mana: self.mana,
             lots: self.lots.clone(),
             life: self.life,
@@ -1827,6 +1847,16 @@ impl<'g> FundingState<'g> {
         }
         let required =
             u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
+        // A virtual sacrifice can supply a previously absent graveyard mana
+        // ability. The ordinary current-inventory upper bound is not conservative
+        // for this opt-in rule; exact owned reachability still decides legality.
+        if self
+            .resources
+            .iter()
+            .any(|r| r.object.card.graveyard_activation_subtype().is_some())
+        {
+            return true;
+        }
         if self.total_mana_upper() < required {
             return false;
         }
@@ -2097,12 +2127,22 @@ impl<'g> FundingState<'g> {
         }
         if step.external.is_some() {
             if let Some(borrowed) = step.borrowed {
-                return Action::AnnounceBorrowedMana {
-                    card,
-                    exiled: borrowed.exiled,
-                    ability: borrowed.ability,
-                    counter_payment: step.counters.clone(),
-                    production: step.production,
+                return if borrowed.zone == Zone::Graveyard {
+                    Action::AnnounceGraveyardBorrowedMana {
+                        card,
+                        graveyard: borrowed.donor,
+                        ability: borrowed.ability,
+                        counter_payment: step.counters.clone(),
+                        production: step.production,
+                    }
+                } else {
+                    Action::AnnounceBorrowedMana {
+                        card,
+                        exiled: borrowed.donor,
+                        ability: borrowed.ability,
+                        counter_payment: step.counters.clone(),
+                        production: step.production,
+                    }
                 };
             }
             return Action::AnnounceMana {
@@ -2113,13 +2153,24 @@ impl<'g> FundingState<'g> {
             };
         }
         if let Some(borrowed) = step.borrowed {
-            return Action::ActivateBorrowedMana {
-                card,
-                exiled: borrowed.exiled,
-                ability: borrowed.ability,
-                payment: concrete_payment(step.payment),
-                counter_payment: step.counters.clone(),
-                production: step.production,
+            return if borrowed.zone == Zone::Graveyard {
+                Action::ActivateGraveyardBorrowedMana {
+                    card,
+                    graveyard: borrowed.donor,
+                    ability: borrowed.ability,
+                    payment: concrete_payment(step.payment),
+                    counter_payment: step.counters.clone(),
+                    production: step.production,
+                }
+            } else {
+                Action::ActivateBorrowedMana {
+                    card,
+                    exiled: borrowed.donor,
+                    ability: borrowed.ability,
+                    payment: concrete_payment(step.payment),
+                    counter_payment: step.counters.clone(),
+                    production: step.production,
+                }
             };
         }
         match step.ability {

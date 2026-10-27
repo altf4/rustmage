@@ -30,7 +30,8 @@ impl Card {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        StaticAbilityFragment::RemoveAttachedAbilities
+                        StaticAbilityFragment::BorrowGraveyardActivations(..)
+                            | StaticAbilityFragment::RemoveAttachedAbilities
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }

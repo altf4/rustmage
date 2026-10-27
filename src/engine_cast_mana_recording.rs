@@ -112,6 +112,9 @@ impl Game {
             }
             | Action::ActivateBorrowedMana {
                 card, production, ..
+            }
+            | Action::ActivateGraveyardBorrowedMana {
+                card, production, ..
             } => {
                 // pay_activation_definition replaces this provisional kind with
                 // the exact ordinary/borrowed definition before its first cost.

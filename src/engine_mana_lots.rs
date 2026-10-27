@@ -836,7 +836,8 @@ impl Game {
                 )
             }
             Action::ActivateMana { card, payment, .. }
-            | Action::ActivateBorrowedMana { card, payment, .. } => {
+            | Action::ActivateBorrowedMana { card, payment, .. }
+            | Action::ActivateGraveyardBorrowedMana { card, payment, .. } => {
                 (*payment, Purpose::Activation(Source::in_world(self, *card)))
             }
             Action::PayCosts { payment } => {
@@ -1017,10 +1018,19 @@ impl Game {
                         | Action::ActivateBorrowedMana {
                             counter_payment, ..
                         }
+                        | Action::ActivateGraveyardBorrowedMana {
+                            counter_payment, ..
+                        }
                         | Action::AnnounceBorrowedMana {
                             counter_payment, ..
                         }
+                        | Action::AnnounceGraveyardBorrowedMana {
+                            counter_payment, ..
+                        }
                         | Action::AnnounceBorrowedAbility {
+                            counter_payment, ..
+                        }
+                        | Action::AnnounceGraveyardBorrowedAbility {
                             counter_payment, ..
                         }
                         | Action::BeginActivate {

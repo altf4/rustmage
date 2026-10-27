@@ -813,6 +813,9 @@ impl Game {
                                 ))
                             && match predicate {
                                 EntryPredicate::Token => entered.is_token(),
+                                EntryPredicate::LegendarySubtype(subtype) => {
+                                    entered.is_legendary() && entered.has_subtype(subtype)
+                                }
                                 EntryPredicate::ArtifactManaValueAtLeast(minimum) => {
                                     entered.kinds & 16 != 0
                                         && entered.card.fixed_mana_value() >= u64::from(minimum)
@@ -2171,6 +2174,7 @@ impl Game {
             // A transient threshold between instructions grants the designation
             // immediately, before a later instruction can remove a permanent.
             self.refresh_enduring_stories();
+            self.refresh_graveyard_borrowing();
             if self.miracle_choice_pending() {
                 return;
             }

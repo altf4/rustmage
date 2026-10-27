@@ -11,6 +11,16 @@ pub(super) trait CharacteristicWorld {
             .power
     }
     fn game(&self) -> &Game;
+    fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
+        &self.game().state.graveyard_borrowing
+    }
+    fn graveyard_borrowing(&self) -> &[graveyard_borrowing::Row] {
+        self.game()
+            .state
+            .graveyard_borrowing
+            .as_ref()
+            .map_or(&[], |rows| rows.as_slice())
+    }
     fn has_enduring_story(&self, player: Player) -> bool {
         self.game().state.players[player.index()].enduring_story
     }

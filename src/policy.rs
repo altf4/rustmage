@@ -308,8 +308,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
-            | Action::AnnounceBorrowedAbility { .. } => 34,
-            Action::AnnounceMana { .. } | Action::AnnounceBorrowedMana { .. } => -2,
+            | Action::AnnounceBorrowedAbility { .. }
+            | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
+            Action::AnnounceMana { .. }
+            | Action::AnnounceBorrowedMana { .. }
+            | Action::AnnounceGraveyardBorrowedMana { .. } => -2,
             Action::PayCosts { .. } | Action::PayPlot { .. } | Action::PayAttackCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
@@ -443,6 +446,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 ..
             }
             | Action::ActivateBorrowedMana {
+                production,
+                payment,
+                ..
+            }
+            | Action::ActivateGraveyardBorrowedMana {
                 production,
                 payment,
                 ..
