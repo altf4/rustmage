@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "9846de3b5ea8409e7fc57bc08f07331a3c9a317f55fd9ea29019f0e41aef2b7b",
+  "catalogue_version": "fc170b0b9b577b0f5156de38a65508f6b62ac76010c82d36dbe1eb3af904ddd6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2687,
-  "implemented_total": 2693,
+  "implemented_standard_cards": 2690,
+  "implemented_total": 2696,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 173,
-      "gated": 15
+      "complete": 176,
+      "gated": 12
     },
     "hoc": {
       "total": 5,
@@ -3492,8 +3492,8 @@
     {
       "name": "Bilbo, Thief in the Night",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/bilbo_thief_in_the_night.rs",
       "set": "hob"
     },
@@ -15996,8 +15996,8 @@
     {
       "name": "Head of the Hunt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/head_of_the_hunt.rs",
       "set": "hob"
     },
@@ -28660,8 +28660,8 @@
     {
       "name": "Roads Go Ever, Ever On",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/roads_go_ever_ever_on.rs",
       "set": "hob"
     },

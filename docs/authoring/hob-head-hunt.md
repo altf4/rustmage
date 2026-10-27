@@ -216,3 +216,6 @@ f8f5579986be986e9551838eb7a818214958f18d2cbc2ca1b28d7095577ee564  <cache>/rustma
 0720a7c75d414eb29343251c5871ad4150d8ea0fdf6b5d1d7df34451a8e06477  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/6-big_rest_in_peace.log
 fe8a865d34a5fc6cd4e664f314cb8c74c8770c900feab5b9addb15858fc61560  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/7-cast_rollback.log
 ```
+
+
+Integration coordination: schema163 was adopted after the leaf was authored; the Head public replacement choice is admitted under central schema164 in the 181-card cohort. Earlier prospective version notes above remain historical.

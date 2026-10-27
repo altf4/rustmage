@@ -1,0 +1,54 @@
+{
+  "scope": "181 local HOB candidates; 12 gated. Entire193 and final published PR remain open.",
+  "schema": 164,
+  "schema_changes": [
+    "Head public ExileReflexive replacement-choice vocabulary",
+    "Roads public linked-exile choice and delayed attack observation",
+    "Bilbo optional paid resolution-cast descriptor"
+  ],
+  "prior_release": {
+    "head": "243d8b943ac39b74b7fe9ec1c4aa62ea394b40e4",
+    "report": "<cache>/rustmage-validation-1w3tk3gd/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1160,
+    "python_passed": 8,
+    "terminal_receipt_reviews": [
+      "hob_review_rules: approved exact release and all fifteen immutable libraries",
+      "hob_review_contracts: approved exact release and all fifteen immutable libraries"
+    ]
+  },
+  "cohorts": [
+    {
+      "card": "Head of the Hunt",
+      "leaf": "0d0d8009be5e3b0dfe3f008c92ed9f7c01b0790d",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 70,
+      "finding": "Created reflexive no longer multiplied by ordinary trigger multipliers; ordinary prowess remains doubled."
+    },
+    {
+      "card": "Roads Go Ever, Ever On",
+      "leaf": "8aa2a39e7993a0c7a12b7cffd73079b750540087",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "focused_executions": 86,
+      "unique_tests": 72,
+      "finding": "Exact old links persist across source reentry and queued old chapter; controller and target changes tested."
+    },
+    {
+      "card": "Bilbo, Thief in the Night",
+      "leaf": "df1eb5a37ab40adeb8fe39bf8b4066e88fd69033",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 58,
+      "note": "Paid resolution casting and nonhand reduction use actual chosen face and origin."
+    }
+  ],
+  "status": "Leaf reviews passed; combined focused tests, historical traces, integrated reviews, full release and whole-set acceptance remain open."
+}

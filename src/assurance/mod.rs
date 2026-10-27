@@ -274,14 +274,17 @@ mod hob_bolg;
 mod hob_elrond;
 
 mod hob_bard;
+mod hob_bilbo;
 mod hob_eagles_rescue;
 mod hob_getaway_barrel;
 mod hob_gollum_riddle;
+mod hob_head_hunt;
 mod hob_inside_information;
 mod hob_key_side_door;
 mod hob_notary;
 mod hob_old_fat_spider;
 mod hob_part_friendship;
+mod hob_roads;
 mod hob_settle_wreckage;
 mod hob_silvan_reveler;
 mod hob_supper_spiders;
