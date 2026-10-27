@@ -22,6 +22,7 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         StackKind::CasualtyCopy
         | StackKind::CopyEndStepSacrifice
         | StackKind::DelayedReturn
+        | StackKind::DelayedTokenCreation { .. }
         | StackKind::DelayedSacrifice
         | StackKind::DelayedWarpExile => false,
         StackKind::Spell => matches!(

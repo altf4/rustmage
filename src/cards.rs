@@ -1830,6 +1830,11 @@ pub(crate) enum Instruction {
     },
     /// Move all legal target groups together, deduplicating exact incarnations.
     ReturnAllTargetsToHand,
+    /// Freeze successful returns, then one token-creation trigger next upkeep.
+    ReturnTargetsCreateNextUpkeep {
+        token: Card,
+    },
+    ResolveDelayedTokenCreation,
     /// Capture a legal graveyard target's subtype, return it, then draw for a match.
     ReturnToHandDrawForSubtype(&'static str),
     BottomLibrary,

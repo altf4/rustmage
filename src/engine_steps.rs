@@ -21,6 +21,11 @@ pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        if step == Step::Upkeep
+            && let Some(rows) = self.state.delayed_upkeep_tokens.take()
+        {
+            self.state.pending_triggers.extend(*rows);
+        }
         if step == Step::Draw {
             self.state.players[self.state.active.index()].drew_in_own_draw_step = false;
         }

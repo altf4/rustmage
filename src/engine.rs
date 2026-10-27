@@ -1,5 +1,7 @@
 #[path = "engine_creature_type_tokens.rs"]
 mod creature_type_tokens;
+#[path = "engine_upkeep_tokens.rs"]
+mod upkeep_tokens;
 pub use creature_type_tokens::CreatureTypeChoiceView;
 #[path = "engine_hand_library_search.rs"]
 mod hand_library_search;
@@ -1292,7 +1294,8 @@ impl SpellView {
             | StackKind::DelayedWarpExile
             | StackKind::CopyEndStepSacrifice
             | StackKind::CasualtyCopy
-            | StackKind::DelayedReturn => None,
+            | StackKind::DelayedReturn
+            | StackKind::DelayedTokenCreation { .. } => None,
         }
     }
     pub(crate) fn bounded_mode_count(&self, mode: usize) -> Option<u8> {
@@ -1423,6 +1426,10 @@ impl SpellView {
             StackKind::CopyEndStepSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeSource]))
             }
+            StackKind::DelayedTokenCreation { .. } => Some((
+                TargetPlan::NONE,
+                &[Instruction::ResolveDelayedTokenCreation],
+            )),
             StackKind::DelayedReturn => {
                 Some((TargetPlan::NONE, &[Instruction::ResolveDelayedReturn]))
             }
@@ -1476,6 +1483,7 @@ pub enum StackKind {
     CopyEndStepSacrifice,
     CasualtyCopy,
     DelayedReturn,
+    DelayedTokenCreation { token: Card, amount: u64 },
 }
 
 /// The object being attacked; this is not a spell/ability target.
@@ -1918,6 +1926,11 @@ struct State {
         reason = "Rare delayed main-phase packets use one pointer in ordinary states"
     )]
     delayed_main_mana: Option<Box<Vec<SpellView>>>,
+    #[allow(
+        clippy::box_collection,
+        reason = "Rare delayed upkeep packets use one pointer in ordinary states"
+    )]
+    delayed_upkeep_tokens: Option<Box<Vec<SpellView>>>,
     modal_history: modal_history::Rows,
     face_changes: faces::Rows,
     ability_resolutions: ability_resolutions::Rows,
@@ -2430,6 +2443,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub delayed_attack_this_turn: Vec<SpellView>,
     pub delayed_main_mana: Vec<SpellView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delayed_upkeep_tokens: Option<Vec<SpellView>>,
     pub delayed_returns: Vec<DelayedReturnView>,
     /// Exact public exile objects awaiting immediate return after departure events.
     pub immediate_blink_return: Option<Vec<ReturnLinkView>>,
@@ -2710,6 +2725,7 @@ impl Game {
                 delayed_artifact_copies: None,
                 delayed_attack_this_turn: None,
                 delayed_main_mana: None,
+                delayed_upkeep_tokens: None,
                 modal_history: None,
                 face_changes: None,
                 ability_resolutions: None,
@@ -7399,6 +7415,7 @@ impl Game {
                 .map_or_else(Vec::new, |rows| {
                     rows.iter().map(|r| r.view.clone()).collect()
                 }),
+            delayed_upkeep_tokens: self.state.delayed_upkeep_tokens.as_deref().cloned(),
             delayed_main_mana: self
                 .state
                 .delayed_main_mana
@@ -8133,6 +8150,13 @@ impl Game {
                         .sum::<usize>()
             })
             + s.delayed_main_mana.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<SpellView>>()
+                    + rows
+                        .iter()
+                        .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
+                        .sum::<usize>()
+            })
+            + s.delayed_upkeep_tokens.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<SpellView>>()
                     + rows
                         .iter()

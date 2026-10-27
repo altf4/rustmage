@@ -5423,7 +5423,8 @@
     16,
     2,
     8,
-    8
+    8,
+    1
   ],
   "aliases": [
     [
@@ -6221,6 +6222,10 @@
     [
       "@token/hob-bear",
       5414
+    ],
+    [
+      "@token/hob-bird-soldier",
+      5418
     ],
     [
       "@token/hob-dragon",
@@ -28659,6 +28664,12 @@
       "name": "Dragon Token",
       "subtypes": "Dragon",
       "colors": 8
+    },
+    {
+      "factory_identity": "@token/hob-bird-soldier",
+      "name": "Bird Soldier Token",
+      "subtypes": "Bird Soldier",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -183514,6 +183525,35 @@
         0
       ],
       "generic": 1
+    },
+    {
+      "index": 5418,
+      "module": "card_5418",
+      "path": "synthetic/token_hob_bird_soldier.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-bird-soldier",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Bird Soldier",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

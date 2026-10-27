@@ -1901,6 +1901,7 @@ impl Game {
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedWarpExile
             | StackKind::ActivatedAbility { .. } => {
                 item.program().expect("selected ability program").1
@@ -5354,6 +5355,14 @@ impl Game {
                 }
                 Instruction::ReturnToHandOrSkip { skip } => {
                     self.return_targets_to_hand_or_skip(&item, skip);
+                }
+                Instruction::ReturnTargetsCreateNextUpkeep { token } => {
+                    self.return_for_upkeep_tokens(&item, token)
+                }
+                Instruction::ResolveDelayedTokenCreation => {
+                    if let StackKind::DelayedTokenCreation { token, amount } = item.kind {
+                        self.create_tokens(item.controller, token, u128::from(amount), false);
+                    }
                 }
                 Instruction::ReturnAllTargetsToHand => {
                     // One printed movement shared by multiple targeting clauses.

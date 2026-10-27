@@ -127,6 +127,7 @@ impl Announcement {
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedWarpExile => None,
         }
     }
@@ -189,6 +190,7 @@ impl Announcement {
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedWarpExile => {
                 unreachable!("triggered ability has no activation cost")
             }
@@ -357,6 +359,7 @@ impl Announcement {
                 | StackKind::CasualtyCopy
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
+                | StackKind::DelayedTokenCreation { .. }
                 | StackKind::DelayedWarpExile => false,
             }
     }

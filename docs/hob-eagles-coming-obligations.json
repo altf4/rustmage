@@ -1,0 +1,220 @@
+{
+  "card": "The Eagles Are Coming!",
+  "status": "Complete author leaf; awaits two independent nonauthor reviews and integrated whole-set acceptance.",
+  "base": "8aabf8a5a9f9ed2cc224c667562b365716a772ad",
+  "sources": {
+    "oracle_id": "169a4a77-12ff-4997-9550-bdcd456aa2f7",
+    "mana_cost": "{1}{W}",
+    "oracle_body": "Kicker {2}{W}{W}\nChoose target creature you own. If this spell was kicked, instead choose any number of target creatures you own. Return each chosen creature to your hand. At the beginning of the next upkeep, create a 4/4 white Bird Soldier creature token with flying for each creature returned to your hand this way.",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "class": "Mage.Sets/src/mage/cards/t/TheEaglesAreComing.java",
+    "full_class_and_all_nine_pinned_helpers_read": true,
+    "rules": "Cached official Comprehensive Rules 2026-09-25: 111.8 token departure/cease timing; 400.7 exact new zone object; 603.7a/b/d creation, next event once, source and controller; 608.2b legality; 608.2h information sampling; kicker 702.33.",
+    "source_discrepancies": [
+      "Java schedules target-pointer list size; Oracle requires actual successful returns. Rust counts frozen actual moved-to-Hand events.",
+      "Pinned BirdSoldier44Token omits Soldier subtype; exact Oracle Bird Soldier recipe takes precedence."
+    ]
+  },
+  "shared_mechanics": [
+    "Private ReturnTargetsCreateNextUpkeep batches all surviving legal exact targets through move_objects_raw, freezes actual successful hand-return count, registers one owned delayed SpellView, then finishes zone events. Linked-return entry suspension cannot lose or replay the count.",
+    "Sparse optional delayed-upkeep registry participates in clone/snapshot/rollback and owned-byte accounting. It transfers once into normal pending triggers at the next actual upkeep of any player. Independent original spells retain separate rows.",
+    "Private ResolveDelayedTokenCreation passes the frozen amount and original resolving controller to existing replacement-aware create_tokens. Spell source departure and later returned-card changes do not affect the obligation.",
+    "Existing ownership predicate, kicker target adjustment, targeting legality, cost payment, generic countering, APNAP preparation, token SBA and replacement/entry continuations are reused. No activation-payment or mana-funding behavior changed; funding/targeting exhaustive StackKind classifications gain the new kind."
+  ],
+  "new_token": {
+    "catalogue_id": 5418,
+    "factory": "@token/hob-bird-soldier",
+    "recipe": "4/4 white Creature \u2014 Bird Soldier, flying, untapped, deck_limit None",
+    "metadata": "Minimal identity/color/alias/token recipe append; paired typed definition and complete pinned provenance. Contiguous after existing5417; Bilbo author may use this unchanged as excluded local dependency before root integration."
+  },
+  "public_wire": {
+    "requires_central_schema_at_least": 167,
+    "central_version_not_edited": true,
+    "delta": [
+      "Public StackKind::DelayedTokenCreation { token: Card, amount: u64 }. Downstream exhaustive Rust matches must classify this as a delayed ability; ten existing examples updated.",
+      "Observation.delayed_upkeep_tokens: Option<Vec<SpellView>>, omitted when None. Historical observations outside this mechanic retain omitted-field shape. Public amount/source/controller reveal only already-public return facts."
+    ],
+    "integration": "Parent reconciles schema against the currently adopted checkpoint; schema167 or later. No central generated artifact committed."
+  },
+  "assertion_map": [
+    {
+      "test": "engine::assurance::hob_eagles_coming::eagles_paid_instant_owns_not_controls_return_and_next_any_player_upkeep_exact_recipe",
+      "obligation": "Both seats pay printed 1W during opposing combat; owned foreign-controlled creature qualifies, controlled foreign-owned creature is rejected. Successful hand return schedules no immediate token; any-player next upkeep makes one untapped white 4/4 Bird Soldier with flying owned by resolving spell controller. Later upkeep does not repeat."
+    },
+    {
+      "test": "engine::assurance::hob_eagles_coming::eagles_kicked_zero_targets_still_registers_one_zero_amount_delayed_trigger",
+      "obligation": "Both seats actually pay printed cost plus 2WW kicker, choose zero targets, and resolve. One zero-amount delayed trigger still occurs next upkeep and creates no tokens."
+    },
+    {
+      "test": "engine::assurance::hob_eagles_coming::eagles_kicked_many_and_returned_token_count_is_frozen_before_cease_and_later_hand_changes",
+      "obligation": "Both seats pay kicker and select multiple owned creatures including an opposing-controlled creature and a token. All successful hand moves count before the token ceases to exist; later hand-to-graveyard/battlefield changes do not change the frozen count."
+    },
+    {
+      "test": "engine::assurance::hob_eagles_coming::eagles_partial_and_all_stale_or_noncreature_targets_only_count_actual_returns",
+      "obligation": "One stale exact incarnation is ignored while surviving legal targets return; all stale targets fizzle the spell without scheduling. A target that becomes noncreature before resolution is excluded."
+    },
+    {
+      "test": "engine::assurance::hob_eagles_coming::eagles_next_upkeep_is_after_current_upkeep_and_independent_spells_are_distinct_triggers",
+      "obligation": "Resolving during an already-begun upkeep waits for the following upkeep. Independent spells schedule distinct delayed triggers. Countering one trigger leaves the other intact and creates only its frozen token amount."
+    },
+    {
+      "test": "engine::assurance::hob_eagles_coming::eagles_delayed_token_replacements_are_sampled_at_upkeep_and_owned_resume_creates_once",
+      "obligation": "Creation replacements are sampled at actual delayed resolution. Two Doubling Seasons added after scheduling multiply one token to four. Suspended replacement choice supports owned raw/index branches, parent drop, snapshot restore and exactly-once continuation."
+    },
+    {
+      "test": "engine::assurance::hob_eagles_coming::eagles_return_batch_count_survives_linked_entry_choice_and_owned_parent_drop",
+      "obligation": "An actual Banishing Light exile is followed by typed creature animation and paid kicked return of it plus another creature. Both hand moves and frozen count commit before the linked Adaptive Automaton entry choice suspends. Owned raw/index, parent drop and restore resume once and preserve the two-token result."
+    },
+    {
+      "test": "engine::assurance::hob_eagles_coming::eagles_countered_spell_does_not_return_or_schedule_and_failed_kicker_payment_rolls_back",
+      "obligation": "An actual paid Negate counters the spell, leaving its target in play with no delayed row. Insufficient kicker payment is rejected transactionally without a hand move or delayed state."
+    },
+    {
+      "test": "engine::assurance::hob_eagles_coming::eagles_late_schedule_capacity_failure_rolls_back_return_zone_generation_and_views",
+      "obligation": "A late next-stack-id capacity failure after attempted movement rolls back the complete action: target zone/generation, snapshot, revision and both player observations remain unchanged, with no delayed row."
+    }
+  ],
+  "validation": {
+    "cache": "<cache> = author cache rustmage-authoring/hob-eagles-coming",
+    "driver": "Persistent driver-N.py and entire unique outer-N.log retained from launch; strict whitelist rejects unknown or incomplete fixture names, never silently skips. Nine fixture names are admitted before every consuming run.",
+    "environment": "Stable isolated target, CARGO_PROFILE_TEST_OPT_LEVEL=0 and CARGO_PROFILE_DEV_OPT_LEVEL=0; no repository profile edits. All Cargo through mandatory resource_guard,6GiB,one job/thread.",
+    "runs": [
+      {
+        "run": 1,
+        "receipt": "<build-reports>/7b1a838c9bda4ccd9adb62ceb1696c8f.json",
+        "outer": "<cache>/outer-1.log",
+        "inputs": "<cache>/inputs-1.json",
+        "results": "<cache>/results-1.json",
+        "outcome": "Natural terminal compile failure before any test ran: test-only Card tuple constructor privacy and Target::Spell CardId vs stack-id mismatch. Corrected fixtures only after terminal; production implementation unchanged.",
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 50.676858225953765,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2122174464,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "run": 2,
+        "receipt": "<build-reports>/653ae73c5fd94eada62951a3d703f99f.json",
+        "outer": "<cache>/outer-2.log",
+        "inputs": "<cache>/inputs-2.json",
+        "results": "<cache>/results-2.json",
+        "outcome": "All 54 native tests passed, then Clippy rejected the new sparse Box<Vec> field. Added a narrow reasoned allow matching adjacent cold delayed-state registries after terminal.",
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 52.24422865797533,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2705530880,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "run": 3,
+        "receipt": "<build-reports>/3f4197932ab740caa9c4fe6d2233b3d1.json",
+        "outer": "<cache>/outer-3.log",
+        "inputs": "<cache>/inputs-3.json",
+        "results": "<cache>/results-3.json",
+        "outcome": "All 54 native tests passed, then all-target Clippy exposed an exhaustive example StackKind match. Added the new delayed kind to the existing impossible-in-fixture delayed-kind groups in ten examples after terminal.",
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 52.919844308984466,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2706243584,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      {
+        "run": 4,
+        "receipt": "<build-reports>/1d26bec661b94ee9a45dc5bde77d11a1.json",
+        "outer": "<cache>/outer-4.log",
+        "inputs": "<cache>/inputs-4.json",
+        "results": "<cache>/results-4.json",
+        "outcome": "Natural terminal success: strict nine-fixture admission, all 54 focused/affected tests and all-target Clippy passed. No canceled or interrupted consuming jobs; every run used fixed inputs through natural termination.",
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 333.5302657110151,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2109853696,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    ],
+    "final_groups": [
+      {
+        "filter": "hob_eagles_coming",
+        "exit": 0,
+        "passed": 9,
+        "seconds": 0.23409876297228038,
+        "log": "<cache>/focused-4.log"
+      },
+      {
+        "filter": "hob_elrond",
+        "exit": 0,
+        "passed": 20,
+        "seconds": 0.3973034890368581,
+        "log": "<cache>/blink-4.log"
+      },
+      {
+        "filter": "hob_roll",
+        "exit": 0,
+        "passed": 4,
+        "seconds": 0.059456864022649825,
+        "log": "<cache>/delayed-return-4.log"
+      },
+      {
+        "filter": "hob_warg_company",
+        "exit": 0,
+        "passed": 3,
+        "seconds": 0.08003013499546796,
+        "log": "<cache>/upkeep-4.log"
+      },
+      {
+        "filter": "hob_storied",
+        "exit": 0,
+        "passed": 14,
+        "seconds": 0.781150507973507,
+        "log": "<cache>/storied-4.log"
+      },
+      {
+        "filter": "engine::assurance::contracts",
+        "exit": 0,
+        "passed": 4,
+        "seconds": 0.0937153099803254,
+        "log": "<cache>/owned-4.log"
+      },
+      {
+        "filter": "clippy",
+        "exit": 0,
+        "seconds": 33.241612904006615,
+        "log": "<cache>/clippy-4.log"
+      }
+    ],
+    "provenance_check": {
+      "definitions": 5419,
+      "source_blobs": 1627,
+      "java_verified": true,
+      "catalogue_version": "e6ead875a00db93ed1010115be22f486609a8b3292c433534a94ddb2bf7fe023"
+    },
+    "link_catalogue_and_diff_check": "passed after final terminal; generated outputs excluded from leaf commit"
+  },
+  "performance": {
+    "focused_cached_cargo_seconds": 0.23409876297228038,
+    "focused_test_harness_seconds": 0.03,
+    "focused_scenarios": 9,
+    "focused_scenarios_per_harness_second": 300,
+    "final_guard_elapsed_seconds_including_queue": 333.5302657110151,
+    "final_driver_group_seconds": 34.887367972987704,
+    "implementation_throughput": "One whole printed card plus one exact canonical token recipe in this leaf; author wall-clock rate not claimed.",
+    "simulation_limit": "Focused deterministic scenario throughput only; no whole-pool simulation throughput or release acceptance claimed."
+  },
+  "limits_and_integration": [
+    "No admitted battlefield-to-hand move-prevention replacement fixture exists in the current typed replacement engine. Actual destination/moved filtering is implemented; partial/all stale targets, token cease timing, linked-return entry suspension and delayed token replacements exercise affected real mechanics. No unrelated replacement mechanic was invented for a fixture.",
+    "Parent registers hob_eagles_coming in assurance/mod.rs and regenerates authored_cards/catalogue/coverage. Those local build artifacts are excluded from the commit.",
+    "Full release validator, complete-pool trace audit, two independent nonauthor reviews and final single unmerged whole-set PR remain parent-owned. No PR, push or merge performed."
+  ]
+}

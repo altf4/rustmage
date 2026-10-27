@@ -3,10 +3,61 @@
   "catalogue_id": 4436,
   "oracle_id": "169a4a77-12ff-4997-9550-bdcd456aa2f7",
   "facts_sha256": "7fcc644d426e77d596b673e28f3935bef41ba6ca119f554e40239b6665f52b2e",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "1c3f67aabf401e543b59d2a508968cae985356a61f0e77b5df1282f3469293d0"
-  },
-  "physical_metadata_sha256": "b524cb6dfefd33aaef5529f8fff21ac1c2368104aadf22e56eee434b11f85176"
+  "complete": true,
+  "physical_metadata_sha256": "b524cb6dfefd33aaef5529f8fff21ac1c2368104aadf22e56eee434b11f85176",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheEaglesAreComing.java",
+  "java_sha256": "789338f43139212c80071e94fd9da25421b2714f5aacb021befc8d963b1d7854",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextUpkeepDelayedTriggeredAbility.java",
+      "sha256": "d30177de7183176e8108b784f1f5f5f3df1fccb04b8c37d6da509688abbad92e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+      "sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/KickedCondition.java",
+      "sha256": "6c4e759d58e4d9a85bcf6d6262fcae06b43a04d08ffbf3c71d7d850dbfba5a04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/KickerAbility.java",
+      "sha256": "fa52c368056b1e9798f37a5af5bb70a0fe935aaf23a71dcf592a67eae3e13650"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OptionalAdditionalCostImpl.java",
+      "sha256": "bd50759d4d5da374410b6fffea8a63b239021fa382fb0e392e114e0a81c6a031"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/BirdSoldier44Token.java",
+      "sha256": "3fa08b16201765e0d73191737cab8de4076b17fcb4017ebe5d166e80b77b07c7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_notes": [
+    "Oracle counts actual successful returns to your hand, not Java target-pointer list size.",
+    "Oracle specifies Bird Soldier; pinned BirdSoldier44Token helper omits Soldier. New exact recipe5418 follows Oracle.",
+    "The next upkeep belongs to any player, and a successfully returned token counts before its later cease-to-exist SBA."
+  ]
 }
