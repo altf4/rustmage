@@ -1,3 +1,6 @@
+#[path = "engine_creature_type_tokens.rs"]
+mod creature_type_tokens;
+pub use creature_type_tokens::CreatureTypeChoiceView;
 #[path = "engine_hand_library_search.rs"]
 mod hand_library_search;
 pub use hand_library_search::HandLibrarySearchView;
@@ -583,6 +586,7 @@ define_actions! {
     ChooseEntryTimestamp { object: ObjectRef },
     ChooseEntryReplacement { source: ObjectRef, intrinsic: bool },
     ChooseEntryValue { value: EntryChoiceValue },
+    ChooseCreatureType { creature_type: crate::cards::CreatureType },
     ChooseEntryLife {
         pay: bool,
     },
@@ -1776,6 +1780,9 @@ enum Pending {
     EffectSearch {
         player: Player,
     },
+    CreatureTypeChoice {
+        player: Player,
+    },
     HandLibrarySearch {
         player: Player,
     },
@@ -2354,6 +2361,8 @@ pub struct LegalActionSpace {
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub creature_type_choice: Option<CreatureTypeChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub attack_payment: Option<AttackPaymentView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub player_control: Option<PlayerControlView>,
@@ -2872,6 +2881,7 @@ impl Game {
             | Pending::EntryTimestamp { player }
             | Pending::EntryReplacement { player }
             | Pending::LinkedChoice { player }
+            | Pending::CreatureTypeChoice { player }
             | Pending::EntryValue { player }
             | Pending::LandCardName { player }
             | Pending::EntryLife { player }
@@ -3245,6 +3255,9 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, Card, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::CreatureTypeChoice { .. } => {
+                return self.visit_creature_type_tokens(&mut emit);
+            }
             Pending::HandLibrarySearch { .. } => return self.visit_hand_library_search(&mut emit),
             Pending::LibraryGraveyardSearch { .. } => return self.visit_zone_search(&mut emit),
             Pending::ZoneReplacement { .. } => {
@@ -4843,6 +4856,9 @@ impl Game {
             Action::AssignLibraryPile { object, pile } => self.assign_library_pile(object, pile),
             Action::ChooseLibraryPile { pile } => self.choose_library_pile(pile),
             Action::KeepPermanentType { object } => self.choose_kept_type(object),
+            Action::ChooseCreatureType { creature_type } => {
+                self.choose_type_for_tokens(creature_type)
+            }
             Action::ChooseEntryValue { value } => self.choose_entry_value(value),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
@@ -7276,6 +7292,7 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            creature_type_choice: self.creature_type_tokens_view(),
             attack_payment: s.attack_payment.as_ref().map(|p| AttackPaymentView {
                 player: p.player,
                 generic: p.generic,
@@ -7537,6 +7554,7 @@ impl Game {
                 Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::MilledSelection { .. } => "milled_selection",
+                Pending::CreatureTypeChoice { .. } => "creature_type_choice",
                 Pending::HandLibrarySearch { .. } => "hand_library_search",
                 Pending::LibraryGraveyardSearch { .. } => "library_graveyard_search",
                 Pending::EffectSearch { .. } => {

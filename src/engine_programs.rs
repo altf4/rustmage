@@ -12,6 +12,7 @@ pub(super) struct TargetCardFacts {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    pub chosen_creature_type: Option<crate::cards::CreatureType>,
     pub linked_copy: Option<Box<linked_copies::LinkedCopyCapture>>,
     pub cascade: Option<Box<cascade::CascadeView>>,
     #[allow(clippy::box_collection)]
@@ -2039,6 +2040,7 @@ impl Game {
                 )
             });
         self.state.resolving = Some(Resolution {
+            chosen_creature_type: None,
             linked_copy: None,
             cascade: None,
             target_card_facts,
@@ -4147,6 +4149,12 @@ impl Game {
                     } else {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
+                }
+                Instruction::CreateTokensForChosenCreatureType { .. } => {
+                    self.state.pending = Pending::CreatureTypeChoice {
+                        player: item.controller,
+                    };
+                    return;
                 }
                 Instruction::CreateTokensScaled {
                     token,

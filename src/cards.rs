@@ -1899,6 +1899,10 @@ pub(crate) enum Instruction {
         amount: AmountValue,
         keywords: Keywords,
     },
+    /// Public resolution choice followed by one current controlled-type count.
+    CreateTokensForChosenCreatureType {
+        token: Card,
+    },
     CreateTokensScaled {
         token: Card,
         amount: AmountValue,

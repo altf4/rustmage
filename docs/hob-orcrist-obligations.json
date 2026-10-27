@@ -1,0 +1,180 @@
+{
+  "card": "Orcrist, Goblin-cleaver",
+  "status": "complete author leaf; awaiting two independent nonauthor reviews and integrated acceptance",
+  "base": "c6be758c5ead603e92c88dfbee2089299d0826e6",
+  "sources": {
+    "oracle_id": "cc65821a-1893-4087-b461-35cf9fd26c71",
+    "oracle_body": "Equipped creature gets +2/+2 and has trample. Whenever equipped creature deals combat damage to a player, choose a creature type. Create a Treasure token for each creature you control of that type. Equip {3}.",
+    "mana_cost": "{3}",
+    "type_line": "Legendary Artifact \u2014 Equipment",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "class": "Mage.Sets/src/mage/cards/o/OrcristGoblinCleaver.java",
+    "full_class_and_eleven_pinned_helpers_read": true,
+    "token": "Existing canonical factory5302, Artifact \u2014 Treasure, colorless, untapped, with tap/sacrifice mana of any color; no new ID. Full TreasureToken/TreasureAbility read and existing typed recipe verified."
+  },
+  "shared_mechanics": [
+    "Private CreateTokensForChosenCreatureType instruction advances pc before presenting the public mandatory type choice.",
+    "CreatureType is the existing validated pinned taxonomy index, serialized by name. Every valid type is offered, regardless of current creatures or hidden information.",
+    "Private Resolution.chosen_creature_type retains the public choice through replacement/entry suspension; no separate State allocation or mutable card definition. One existing synthetic Resolution initializer gains None.",
+    "Choosing a type samples current controlled battlefield creature kinds/subtypes, including tokens, Changeling and type/control changes. The amount is passed once to existing create_tokens and replacement-aware token batching. Resume continues after the choice instruction.",
+    "Existing attached-combat-player-damage trigger, Equipment stats/keyword layer fragments and ordinary sorcery-speed equip are composed unchanged. Policy ranks the type choice from only the acting player public battlefield observation."
+  ],
+  "public_wire": {
+    "requires_central_schema_at_least": 167,
+    "leaf_schema_unchanged": 165,
+    "delta": [
+      "Action::ChooseCreatureType { creature_type }",
+      "Internal Pending::CreatureTypeChoice with public phase creature_type_choice",
+      "Optional omitted-when-empty Observation.creature_type_choice { player, selected: Option<CreatureType> }; selected public to both seats during suspension"
+    ],
+    "compatibility": "Existing entry creature-type choices unchanged. New optional observation omitted outside this continuation; no historical row changes intended. Parent coordinates actual central schema at integration."
+  },
+  "assertion_map": [
+    {
+      "test": "engine::assurance::hob_orcrist::orcrist_paid_equip_legality_boost_trample_actual_combat_treasure_recipe_and_mana",
+      "obligation": "Pay printed generic three to cast and three to equip. Reject insufficient mana, opposing-turn equip and opposing creature target. Equipped Bear becomes 4/4 with trample and deals two overflow damage through a Bear blocker. One Treasure is an untapped colorless noncreature artifact with the actual tap/sacrifice-for-white-mana activation."
+    },
+    {
+      "test": "engine::assurance::hob_orcrist::orcrist_every_valid_type_absent_choice_changeling_tokens_and_noncreature_exclusion",
+      "obligation": "Offered type actions exactly equal the complete pinned taxonomy. One bounded single-choice branch for every valid type proves current Changeling contributes to each, Bear/Wolf creatures contribute to their types, creature tokens count, and opposing/graveyard/noncreature Kindred cards do not count. An absent type creates zero tokens. Invalid/noncreature-type names fail validation/deserialization."
+    },
+    {
+      "test": "engine::assurance::hob_orcrist::orcrist_count_is_current_controller_and_current_type_and_trigger_survives_source_departure",
+      "obligation": "Count is sampled at resolution choice, after control changes and an actual subtype-layer override. Controlled foreign-owned Bear counts, former controlled Bear does not, creature now Elf does not count as Bear. Orcrist can leave after triggering without preventing its ability."
+    },
+    {
+      "test": "engine::assurance::hob_orcrist::orcrist_equipment_controller_gets_choice_and_count_even_on_enemy_creature",
+      "obligation": "Equipment control changes while it remains attached to the opposing controlled creature. Equipment controller chooses publicly and counts its own creatures, receiving its own Treasures independently of the creature controller."
+    },
+    {
+      "test": "engine::assurance::hob_orcrist::orcrist_layer_suppression_restores_stats_keywords_and_equipment_trigger",
+      "obligation": "Resolved layer-six ability removal suppresses Equipment bonuses and its combat trigger. Its historical source leaving does not end that source-independent effect. A new Orcrist incarnation plus paid re-equip restores printed stats, trample and combat trigger."
+    },
+    {
+      "test": "engine::assurance::hob_orcrist::orcrist_noncombat_player_damage_and_combat_creature_only_do_not_trigger",
+      "obligation": "Actual core damage batches distinguish noncombat player damage and combat creature-only damage from the positive real combat/player event."
+    },
+    {
+      "test": "engine::assurance::hob_orcrist::orcrist_double_strike_has_independent_combat_damage_triggers",
+      "obligation": "Real double-strike combat gives two independently resolving type choices. Dwarf creates one Treasure from the first event; absent Aetherborn creates zero from the second. Player takes three damage in each step."
+    },
+    {
+      "test": "engine::assurance::hob_orcrist::orcrist_replacement_suspension_public_choice_and_owned_restore_does_not_recreate_tokens",
+      "obligation": "Two Doubling Seasons suspend token replacement ordering and yield exactly four Treasures. Chosen Bear type stays public to both seats. Raw/index equivalence, parent disposal, independent children and snapshot restore at type choice and replacement choice preserve the once-created batch."
+    },
+    {
+      "test": "engine::assurance::hob_orcrist::orcrist_choice_late_token_generation_failure_rolls_back_selection_and_private_views",
+      "obligation": "One bounded reused token slot at maximum generation fails during actual ChooseCreatureType execution, after recording the selected type. Capacity error restores snapshot, revision, both observations and unselected public view; no allocation/OOM probe."
+    }
+  ],
+  "preflight": {
+    "strict_fixture_count": 10,
+    "unknown_or_incomplete_errors": true,
+    "source_pins": {
+      "definitions": 5417,
+      "source_blobs": 1619,
+      "java_verified": true
+    },
+    "linker": "passed; generated outputs local only",
+    "format_and_diff": "passed standalone rustfmt and git diff --check"
+  },
+  "runs": [
+    {
+      "run": 1,
+      "terminal": true,
+      "exit": 101,
+      "seconds_including_queue": 293.94758015696425,
+      "memory_peak_bytes": 2104467456,
+      "memory_max_bytes": 6442450944,
+      "oom_events": 0,
+      "report": "<build-reports>/8d7d0d2455434d05a796059145be73fe.json",
+      "driver": "<cache>/rustmage-authoring/hob-orcrist/driver-1.py",
+      "outer": "<cache>/rustmage-authoring/hob-orcrist/outer-1.log",
+      "results": "<cache>/rustmage-authoring/hob-orcrist/results-1.json",
+      "outcome": "Compile-only E0063: existing hob_storied synthetic Resolution fixture needed chosen_creature_type: None. No scenarios executed. Added this explicit default only after natural terminal."
+    },
+    {
+      "run": 2,
+      "terminal": true,
+      "exit": 101,
+      "seconds_including_queue": 31.158671980025247,
+      "memory_peak_bytes": 2671484928,
+      "memory_max_bytes": 6442450944,
+      "oom_events": 0,
+      "report": "<build-reports>/170b238aa246467e8748d265a7645675.json",
+      "driver": "<cache>/rustmage-authoring/hob-orcrist/driver-2.py",
+      "outer": "<cache>/rustmage-authoring/hob-orcrist/outer-2.log",
+      "results": "<cache>/rustmage-authoring/hob-orcrist/results-2.json",
+      "outcome": "Eight focused scenarios passed; one fixture incorrectly expected a resolved source-independent, no-duration ability-removal effect to end when its historical source left. After natural terminal, corrected the proof to assert persistence, then a fresh Equipment incarnation and actual paid re-equip restore printed behavior. No production engine changes."
+    },
+    {
+      "run": 3,
+      "terminal": true,
+      "exit": 0,
+      "seconds_including_queue": 282.17594936001115,
+      "memory_peak_bytes": 2687135744,
+      "memory_max_bytes": 6442450944,
+      "oom_events": 0,
+      "report": "<build-reports>/c235904920634bc2a2524c7b52f753e9.json",
+      "driver": "<cache>/rustmage-authoring/hob-orcrist/driver-3.py",
+      "outer": "<cache>/rustmage-authoring/hob-orcrist/outer-3.log",
+      "results": "<cache>/rustmage-authoring/hob-orcrist/results-3.json",
+      "outcome": "Nine focused and sixty-three affected scenarios passed, no failed or ignored intended cases. Strict all-target Clippy passed.",
+      "groups": [
+        {
+          "filter": "hob_orcrist",
+          "exit": 0,
+          "passed": 9,
+          "seconds": 30.487658320984337
+        },
+        {
+          "filter": "hob_equipment",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.06336778501281515
+        },
+        {
+          "filter": "hob_vow_thorin",
+          "exit": 0,
+          "passed": 15,
+          "seconds": 0.1742828879505396
+        },
+        {
+          "filter": "hob_trigger_multiplicity",
+          "exit": 0,
+          "passed": 13,
+          "seconds": 0.10036217502783984
+        },
+        {
+          "filter": "engine::assurance::interactions",
+          "exit": 0,
+          "passed": 25,
+          "seconds": 0.08671880804467946
+        },
+        {
+          "filter": "engine::assurance::contracts",
+          "exit": 0,
+          "passed": 4,
+          "seconds": 0.07325078395660967
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 45.482767176989
+        }
+      ]
+    }
+  ],
+  "execution": "All Cargo used required resource_guard,6GiB and one job/thread. Stable external author target, opt-level0 environment only, unchanged repository profiles. Persistent drivers and complete outer stdout/stderr redirect from launch, input hashes and per-group results. All inputs fixed until each job naturally terminated; parent monitored first queued job while author slot was released for audit. No cancellation, active output deletion, unmanaged build, PR, push or merge.",
+  "performance": {
+    "complete_cards": 1,
+    "wall_seconds_from_clone_to_final_receipt_including_parent_audit_pause_and_queue": 1281.684,
+    "guarded_runs": 3,
+    "final_group_seconds_excluding_queue": 76.46840793796582,
+    "focused_scenario_seconds": 0.06,
+    "final_native_count": 72,
+    "final_native_scenario_seconds_sum": 0.27999999999999997,
+    "full_set_simulation": "not measured by leaf; parent acceptance owns this workload"
+  },
+  "integration": "No central schema edit or generated artifacts committed. Parent regenerates catalogue and registers mod hob_orcrist. Shared hunks coordinated with Smaug and Troll/Gandalf owners; no funding/mana provenance, source return or artifact-form overlap. Only existing hob_storied fixture default accompanies the new Resolution field. Full release acceptance and two independent reviews remain parent owned."
+}

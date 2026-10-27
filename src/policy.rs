@@ -326,6 +326,16 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::FinishSearch => 0,
+            Action::ChooseCreatureType { creature_type } => observation
+                .objects
+                .iter()
+                .filter(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == actor
+                        && object.is_creature()
+                        && object.has_subtype(creature_type.name())
+                })
+                .count() as i128,
             Action::ChooseEntryValue {
                 value: crate::EntryChoiceValue::CreatureType(typ),
             } => observation

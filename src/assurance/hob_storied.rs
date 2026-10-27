@@ -346,6 +346,7 @@ fn hob_storied_transient_threshold_inside_one_typed_resolution() {
     // without priority or an SBA checkpoint between these instructions.
     let item = g.activation_item(p, source, 0);
     g.state.resolving = Some(Resolution {
+        chosen_creature_type: None,
         linked_copy: None,
         cascade: None,
         target_card_facts: None,
