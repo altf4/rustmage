@@ -612,6 +612,7 @@ define_actions! {
     AnnounceFree { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeCounterGraveyard { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeGraveyardPermanent { card: CardId, face: CastFace, flash_surcharge: bool, permission: ObjectRef, permanent_type: PermanentType },
+    AnnounceExileFree { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeFromPermission { card: CardId, face: CastFace, flash_surcharge: bool, permission: ObjectRef },
     AnnounceGrantedFlashback { card: CardId, flash_surcharge: bool },
     PayResolutionLife,
@@ -3683,6 +3684,7 @@ impl Game {
                         Zone::Exile => {
                             self.can_play_exiled(actor, card)
                                 || self.has_exile_life_permission(actor, card)
+                                || self.has_exile_free_permission(actor, card)
                                 || self.plotted_cast_available(actor, card)
                         }
                         _ => false,
@@ -3783,6 +3785,11 @@ impl Game {
                             .warp_cost()
                             .is_some_and(|cost| self.warp_cast_fundable(actor, card, cost))
                         && emit(Action::AnnounceWarp { card })
+                    {
+                        return true;
+                    }
+                    if !casting_prohibited
+                        && self.visit_exile_free_casts(actor, card, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -5002,6 +5009,16 @@ impl Game {
                     None,
                     origin_counter_cost,
                 );
+            }
+            Action::AnnounceExileFree {
+                card,
+                face,
+                flash_surcharge,
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                Self::configure_exile_free_cast(&mut item, flash_surcharge);
+                self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceFreeFromPermission {
                 card,

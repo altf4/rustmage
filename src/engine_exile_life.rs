@@ -94,6 +94,7 @@ impl Game {
                         cast_only: false,
                         exile_on_graveyard: false,
                         life_instead_of_mana: true,
+                        without_paying_mana_cost: false,
                     },
                 );
             }

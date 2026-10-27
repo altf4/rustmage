@@ -43,6 +43,25 @@ impl Game {
         true
     }
 
+    pub(super) fn counter_permanent_exile_cast(&mut self, item: &SpellView) {
+        for bound in &item.targets {
+            let Some(victim) = self.bound_stack_item(bound).cloned() else {
+                continue;
+            };
+            let permanent = PermanentType::ALL
+                .into_iter()
+                .any(|kind| victim.source_card.kind_mask() & kind.mask() != 0);
+            if self.counter_stack_item(victim.id, permanent) && permanent && !victim.is_copy {
+                let after = self.object_ref(victim.card);
+                if after != victim.object
+                    && self.state.objects[victim.card as usize].zone == Zone::Exile
+                {
+                    self.grant_exile_free_permission(item.controller, after);
+                }
+            }
+        }
+    }
+
     pub(super) fn target_becomes_bound(&mut self, item: &SpellView, bound: BoundTarget) {
         self.controlled_ability_target_acquired(item, bound);
         let Target::Card(id) = bound.target else {

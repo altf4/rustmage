@@ -5154,6 +5154,7 @@ impl Game {
                         self.tap_objects(&ids);
                     }
                 }
+                Instruction::CounterPermanentExileCast => self.counter_permanent_exile_cast(&item),
                 Instruction::Counter => {
                     for bound in &item.targets {
                         if let Some(id) = self.bound_stack_item(bound).map(|s| s.id) {

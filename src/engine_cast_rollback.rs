@@ -74,6 +74,7 @@ impl Game {
             Action::AnnounceCast { card }
             | Action::AnnounceExile { card }
             | Action::AnnounceExileLife { card, .. }
+            | Action::AnnounceExileFree { card, .. }
             | Action::AnnounceFlashSurcharge { card }
             | Action::AnnounceWarp { card }
             | Action::AnnounceSneak { card, .. }

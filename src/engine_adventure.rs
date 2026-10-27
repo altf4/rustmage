@@ -159,6 +159,7 @@ impl Game {
                 || self.can_play_foreign_stash(actor, id)
                 || self.state.exile_permissions.iter().any(|r| {
                     !r.life_instead_of_mana
+                        && !r.without_paying_mana_cost
                         && r.player == actor
                         && r.object == self.object_ref(id)
                         && r.expiry.active(self.state.turn)

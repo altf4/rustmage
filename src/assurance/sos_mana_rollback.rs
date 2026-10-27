@@ -258,3 +258,6 @@ mod head_hunt_tests;
 
 #[path = "hob_bilbo_rollback.rs"]
 mod bilbo_tests;
+
+#[path = "hob_thranduil_decree_rollback.rs"]
+mod decree_tests;

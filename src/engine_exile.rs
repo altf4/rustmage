@@ -16,10 +16,14 @@ pub struct ExilePlayPermission {
     /// This permission requires life instead of the chosen spell face's mana cost.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub life_instead_of_mana: bool,
+    /// This origin permission requires the free alternative, not a paid cast.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub without_paying_mana_cost: bool,
 }
 /// Deadline boundaries refer to actual turns, never to skipped turn candidates.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum ExilePlayExpiry {
+    WhileExiled,
     Turn(u32),
     EndOfNextTurn,
     StartOfNextTurn(Player),
@@ -49,6 +53,7 @@ impl Game {
         }
         self.state.exile_permissions.iter().any(|p| {
             !p.life_instead_of_mana
+                && !p.without_paying_mana_cost
                 && p.player == player
                 && p.object == self.object_ref(card)
                 && p.expiry.active(self.state.turn)
@@ -58,7 +63,8 @@ impl Game {
         self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
             || self.state.exile_permissions.iter().any(|p| {
-                p.player == player
+                !p.without_paying_mana_cost
+                    && p.player == player
                     && p.object == self.object_ref(card)
                     && p.expiry.active(self.state.turn)
                     && !p.cast_only
@@ -164,6 +170,7 @@ impl Game {
                 cast_only: false,
                 exile_on_graveyard: false,
                 life_instead_of_mana: false,
+                without_paying_mana_cost: false,
             },
         );
     }
@@ -409,5 +416,107 @@ impl Game {
             .map(|(id, destination)| self.entry_move(id, destination, false))
             .collect();
         self.stage_entries(moves, None);
+    }
+}
+
+impl Game {
+    pub(super) fn configure_exile_free_cast(item: &mut SpellView, flash_surcharge: bool) {
+        let cast = item.cast.as_mut().unwrap();
+        cast.method = CastMethod::Free;
+        cast.flash_surcharge = flash_surcharge;
+        cast.spend_any_mana = false;
+        cast.exile_on_graveyard = false;
+        cast.stash_origin = false;
+        if item.source_card.x_symbols() > 0 {
+            item.x = Some(0);
+        }
+    }
+    pub(super) fn has_exile_free_permission(&self, player: Player, card: CardId) -> bool {
+        self.state.objects[card as usize].zone == Zone::Exile
+            && self.state.exile_permissions.iter().any(|p| {
+                p.without_paying_mana_cost
+                    && p.player == player
+                    && p.object == self.object_ref(card)
+                    && p.expiry.active(self.state.turn)
+            })
+    }
+    pub(super) fn grant_exile_free_permission(&mut self, player: Player, object: ObjectRef) {
+        if self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+            || self.state.objects[object.card as usize].is_token()
+        {
+            return;
+        }
+        if self
+            .state
+            .exile_permissions
+            .iter()
+            .any(|p| p.object == object && p.player == player && p.without_paying_mana_cost)
+        {
+            return;
+        }
+        let at = self
+            .state
+            .exile_permissions
+            .partition_point(|p| p.object.card < object.card);
+        self.state.exile_permissions.insert(
+            at,
+            ExilePlayPermission {
+                object,
+                player,
+                expiry: ExilePlayExpiry::WhileExiled,
+                spend_any_mana: false,
+                cast_only: true,
+                exile_on_graveyard: false,
+                life_instead_of_mana: false,
+                without_paying_mana_cost: true,
+            },
+        );
+    }
+    pub(super) fn visit_exile_free_casts(
+        &self,
+        player: Player,
+        card: CardId,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        if !self.has_exile_free_permission(player, card)
+            || self.state.objects[card as usize].is_token()
+        {
+            return false;
+        }
+        for face in [
+            CastFace::Normal,
+            CastFace::Adventure,
+            CastFace::Omen,
+            CastFace::Back,
+        ] {
+            let physical = self.state.objects[card as usize].card;
+            let definition = match face {
+                CastFace::Normal => Some(physical),
+                CastFace::Adventure => physical.adventure_spell(),
+                CastFace::Omen => physical.omen_spell(),
+                CastFace::Back => physical.back_face(),
+            };
+            if !definition.is_some_and(|d| !d.is_land()) {
+                continue;
+            }
+            for flash_surcharge in [false, true] {
+                if self.permitted_exile_free_cast_available(
+                    player,
+                    card,
+                    face,
+                    sorcery,
+                    flash_surcharge,
+                ) && emit(Action::AnnounceExileFree {
+                    card,
+                    face,
+                    flash_surcharge,
+                }) {
+                    return true;
+                }
+            }
+        }
+        false
     }
 }

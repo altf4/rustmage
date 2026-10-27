@@ -1777,6 +1777,8 @@ pub(crate) enum Instruction {
         toughness: i32,
     },
     Counter,
+    /// Counter; a successfully exiled permanent card gains a lasting free cast.
+    CounterPermanentExileCast,
     Exile,
     ExileTargetsForModifiedCast,
     ExileTargetsPlay {
