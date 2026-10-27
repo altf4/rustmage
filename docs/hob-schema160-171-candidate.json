@@ -1,0 +1,54 @@
+{
+  "scope": "171 local HOB candidates; 22 gated. Entire193 and final published PR remain open.",
+  "schema": 160,
+  "schema_changes": [
+    "New DiscardMatchingLegendary public additional-cost choice",
+    "Public optional attack-payment window and attack-payment actions"
+  ],
+  "prior_release": {
+    "head": "aaf694ccc6cf68b83652a930b4f993a58439373b",
+    "report": "<cache>/rustmage-validation-di2y4ek5/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1061,
+    "python_passed": 8,
+    "terminal_receipt_reviews": [
+      "hob_review_rules: approved exact release and all eleven immutable libraries",
+      "hob_review_contracts: approved exact release and all eleven immutable libraries"
+    ]
+  },
+  "cohorts": [
+    {
+      "card": "Key to the Side-Door",
+      "leaf": "7ea4249949b8ba6574ef09ac3e978e5c7df884e7",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 31,
+      "finding": "The original sole-witness funding fixture was not a Goblin; corrected to The Great Goblin and re-reviewed."
+    },
+    {
+      "card": "Part in Friendship",
+      "leaf": "7fdfd0aeed546a6c5685136a5ccca5128e320596",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 52,
+      "finding": "Selected card excluded from remainder after synthetically prevented entry; legacy behavior preserved."
+    },
+    {
+      "card": "D\u00e1in, Lord of the Iron Hills",
+      "leaf": "566eeae90880f9c0fa083eb234b42a5be9786a5c",
+      "integrated_leaf": "dcd24fda20c4a1aebbf507a21cbe90cad45d5307",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "combined_executions": 82,
+      "combined_unique": 80,
+      "finding": "Restricted-lot payment bug fixed and prior failing reproduction retained; tested integration with Were-Worm attack history."
+    }
+  ],
+  "status": "Leaf and D\u00e1in integration reviews passed; combined focused tests, historical traces, integrated reviews, full release and whole-set acceptance remain open."
+}

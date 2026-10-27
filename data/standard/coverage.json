@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a173bbf9369b3168b7105e7ca60d5ff89e5beb317a52424544e119a914b7354b",
+  "catalogue_version": "00af2b00c0b66ba7d9c5512c3508d6cc1c6766845f20025e6ad501e4065f20b4",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2677,
-  "implemented_total": 2683,
+  "implemented_standard_cards": 2680,
+  "implemented_total": 2686,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 163,
-      "gated": 25
+      "complete": 166,
+      "gated": 22
     },
     "hoc": {
       "total": 5,
@@ -9996,8 +9996,8 @@
     {
       "name": "Dáin, Lord of the Iron Hills",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/dain_lord_of_the_iron_hills.rs",
       "set": "hob"
     },
@@ -18964,8 +18964,8 @@
     {
       "name": "Key to the Side-Door",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/key_to_the_side_door.rs",
       "set": "hob"
     },
@@ -25028,8 +25028,8 @@
     {
       "name": "Part in Friendship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/part_in_friendship.rs",
       "set": "hob"
     },
