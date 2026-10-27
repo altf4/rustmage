@@ -49,7 +49,7 @@
     }
   ],
   "integration_note": "Treasure provenance can add observable mana lots in existing gameplay; audit full historical facts explicitly without stripping nonempty observations.",
-  "status": "191-card release passed; independent terminal receipt audits, whole193 and final published PR remain open.",
+  "status": "191-card release passed and two independent terminal receipt audits approved; whole193 and final published PR remain open.",
   "integrated_recording": {
     "head": "a434fa10cd93e590797f10d812a810dad005df10",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated191-1",
@@ -988,6 +988,9 @@
       "games_per_second": 204.30345617296558,
       "scope": "Limited Freeform smoke, not HOB set-only throughput."
     },
-    "independent_receipt_audits": "pending"
+    "independent_receipt_audits": [
+      "hob_review_rules: approved exact terminal receipt and all nineteen immutable libraries",
+      "hob_review_contracts: approved exact terminal receipt and all nineteen immutable libraries"
+    ]
   }
 }
