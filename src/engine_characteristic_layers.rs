@@ -14,6 +14,9 @@ pub struct AnimationView {
     #[serde(skip_serializing_if = "is_false")]
     /// Preserve existing card types; artifact may still be added independently.
     pub preserve_card_types: bool,
+    /// Replace all card types/subtypes with Artifact — Food, without removing abilities.
+    #[serde(skip_serializing_if = "is_false")]
+    pub food_only: bool,
     pub colors: Option<u8>,
     pub creature_types: Option<&'static [&'static str]>,
     pub all_creature_types: bool,
@@ -127,6 +130,10 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
         })
         .collect();
     for row in animations(world, id) {
+        if row.food_only {
+            changes.push((row.timestamp, 16, false));
+            continue;
+        }
         let added = if row.preserve_card_types {
             if row.artifact {
                 16
@@ -248,6 +255,7 @@ pub(super) enum SubtypeChange {
     Add(&'static [&'static str]),
     All,
     LandOnly,
+    FoodOnly,
 }
 #[inline]
 pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
@@ -280,6 +288,9 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         })
         .collect();
     changes.extend(animations(world, id).filter_map(|row| {
+        if row.food_only {
+            return Some((row.timestamp, SubtypeChange::FoodOnly));
+        }
         // A subtype-only form cannot give creature types to a noncreature/nonkindred.
         if row.preserve_card_types && world.kinds(id) & (1 | 128) == 0 {
             return None;
@@ -393,6 +404,7 @@ impl Game {
             timestamp,
             artifact: spec.artifact,
             preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),
+            food_only: false,
             colors: None,
             creature_types: match spec.creature_types {
                 AnimationCreatureTypes::Named(t) => Some(t),
@@ -427,6 +439,7 @@ impl Game {
                 timestamp: self.next_role_timestamp(),
                 artifact: false,
                 preserve_card_types: false,
+                food_only: false,
                 colors: Some(colors),
                 creature_types: Some(types),
                 all_creature_types: false,
@@ -453,5 +466,64 @@ impl Game {
         let before = state.animations.len();
         state.animations.retain(|r| r.expires_turn.is_none());
         state.animations.len() != before
+    }
+}
+
+/// Same immutable form record for actual and speculative entry worlds.
+pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
+    AnimationView {
+        object,
+        timestamp,
+        artifact: true,
+        preserve_card_types: false,
+        food_only: true,
+        colors: None,
+        creature_types: None,
+        all_creature_types: false,
+        base: None,
+        keywords: Keywords::NONE,
+        expires_turn: None,
+    }
+}
+impl Game {
+    pub(super) fn apply_food_return(&mut self, recipient: ObjectRef, definition: Card) {
+        let timestamp = self.next_role_timestamp();
+        self.state
+            .roles
+            .get_or_insert_default()
+            .animations
+            .push(food_form(recipient, timestamp));
+        self.grant_recipient_ability(
+            recipient,
+            definition,
+            SelfGrantedAbilityKind::Activated { ability: 0 },
+            timestamp,
+            None,
+        );
+    }
+    pub(super) fn return_opponents_battlefield_graveyard_as_food(&mut self, item: &SpellView) {
+        let moves = self
+            .state
+            .battlefield_graveyard_entries
+            .as_ref()
+            .into_iter()
+            .flat_map(|rows| rows.iter())
+            .filter_map(|&r| {
+                let o = self.object_view(r.card);
+                if o.reference != r
+                    || o.zone != Zone::Graveyard
+                    || o.owner == item.controller
+                    || o.is_token()
+                    || o.kinds & 1 == 0
+                {
+                    return None;
+                }
+                let mut movement = self.entry_move(r.card, Zone::Battlefield, false);
+                movement.controller = item.controller;
+                movement.food_return = Some(item.trigger_definition());
+                Some(movement)
+            })
+            .collect();
+        self.stage_entries(moves, None);
     }
 }

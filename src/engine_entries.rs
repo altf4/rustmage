@@ -27,6 +27,8 @@ pub(super) struct EntryMove {
     /// After this successful entry event, attach this Equipment to an exact recipient.
     pub attach_equipment_to: Option<ObjectRef>,
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
+    /// Source-independent type replacement and Food activation as this card enters.
+    pub food_return: Option<Card>,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -68,6 +70,13 @@ pub(super) struct EntryBatch {
     pub tap_next: usize,
 }
 impl EntryMove {
+    pub(super) fn entry_kinds(&self) -> u16 {
+        if self.food_return.is_some() {
+            16
+        } else {
+            self.before.kinds
+        }
+    }
     pub(super) fn from_view(before: ObjectView, destination: Zone, tapped: bool) -> Self {
         EntryMove {
             choice: None,
@@ -86,6 +95,7 @@ impl EntryMove {
             blank_with_haste_after: None,
             attach_equipment_to: None,
             return_modification: None,
+            food_return: None,
             attacking: None,
             skipped: false,
             reveal_hand: false,
@@ -282,7 +292,7 @@ impl Game {
             if effects.is_empty() {
                 movement.tapped |= intrinsic_tapped
                     || self.opponent_entry_kinds_require_tapped(
-                        movement.before.kinds,
+                        movement.entry_kinds(),
                         movement.controller,
                     );
             } else {
@@ -592,6 +602,7 @@ impl Game {
         let mut equipment_results = Vec::new();
         let mut keyword_results = Vec::new();
         let mut ability_results = Vec::new();
+        let mut food_results = Vec::new();
         for (movement, counters) in moves {
             let rules = self.freeze_zone_rules(&movement.before, movement.destination, None);
             let plan = self.plan_zone_move(&movement.before, movement.destination, rules);
@@ -617,6 +628,12 @@ impl Game {
                 && let Some((kind, source)) = movement.return_modification
             {
                 self.apply_return_modification(event.after, kind, source);
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some(definition) = movement.food_return
+            {
+                food_results.push((event.after, definition));
             }
             event.cast_event = movement.cast_event;
             event.was_cast = movement.cast_origin.is_some();
@@ -728,6 +745,12 @@ impl Game {
                     self.retimestamp_hand_size_source(event.after);
                 }
             }
+        }
+        // CR613.7n: entrant own statics receive earlier relative timestamps
+        // than the surrounding as-entry continuous effect. All forms exist
+        // before the one simultaneous event batch freezes entry observers.
+        for (recipient, definition) in food_results {
+            self.apply_food_return(recipient, definition);
         }
         self.refresh_controllers();
         if let Some(item) = &batch.temporary_copy {
@@ -883,7 +906,7 @@ impl Game {
                     owner: m.before.owner,
                     controller: m.controller,
                     subtypes: Self::entry_choice_subtypes(m),
-                    kind: m.before.kinds,
+                    kind: m.entry_kinds(),
                     amount: m.counters.clone(),
                     effect: true,
                     entry_index: Some(index),
@@ -1052,7 +1075,8 @@ impl Game {
                     .any(|n| *n > 0))
             && !m.before.card.is_emblem()
             && !m.skipped
-            && (m.return_modification.is_some()
+            && (m.food_return.is_some()
+                || m.return_modification.is_some()
                 || m.before.card.base_stat_setter().is_some()
                 || !m.before.card.live_static_effects().is_empty()
                 || m.before.card.role().is_some()

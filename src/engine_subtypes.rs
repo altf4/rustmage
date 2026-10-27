@@ -57,14 +57,16 @@ const COPY_MERCENARY: u32 = COPY_VILLAIN << 1;
 const ADDED_SOLDIER: u32 = COPY_MERCENARY << 1;
 const ADDED_GOBLIN: u32 = ADDED_SOLDIER << 1;
 const ADDED_BEAR: u32 = ADDED_GOBLIN << 1;
+const ADDED_FOOD: u32 = ADDED_BEAR << 1;
 const ADDED_MASK: u32 = JOB_MASK
     | COPY_HUMAN
     | COPY_VILLAIN
     | COPY_MERCENARY
     | ADDED_SOLDIER
     | ADDED_GOBLIN
-    | ADDED_BEAR;
-const _: () = assert!(JOB_TYPES.len() + 6 <= u32::BITS as usize);
+    | ADDED_BEAR
+    | ADDED_FOOD;
+const _: () = assert!(JOB_TYPES.len() + 10 <= u32::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
     added: u32,
@@ -74,6 +76,13 @@ pub struct GrantedSubtypes {
     creature_types: Option<&'static [&'static str]>,
 }
 impl GrantedSubtypes {
+    pub(super) fn food_only() -> Self {
+        Self {
+            added: SUPPRESS_PRINTED | ADDED_FOOD,
+            chosen: None,
+            creature_types: Some(&[]),
+        }
+    }
     fn flag(self, bit: u32) -> bool {
         self.added & bit != 0
     }
@@ -116,7 +125,7 @@ impl GrantedSubtypes {
         }
     }
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
-        self.added &= FLAGS_MASK;
+        self.added &= FLAGS_MASK | ADDED_FOOD;
         self.chosen = None;
         self.creature_types = Some(types);
     }
@@ -152,6 +161,7 @@ impl GrantedSubtypes {
             "Soldier" => ADDED_SOLDIER,
             "Goblin" => ADDED_GOBLIN,
             "Bear" => ADDED_BEAR,
+            "Food" => ADDED_FOOD,
             _ => 0,
         }
     }
@@ -186,6 +196,7 @@ impl Serialize for GrantedSubtypes {
                     (ADDED_SOLDIER, "Soldier"),
                     (ADDED_GOBLIN, "Goblin"),
                     (ADDED_BEAR, "Bear"),
+                    (ADDED_FOOD, "Food"),
                 ] {
                     if self.0 & bit != 0 {
                         out.serialize_element(subtype)?;
@@ -310,7 +321,11 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                     }
                 }
             }
+            characteristic_layers::SubtypeChange::FoodOnly => {
+                mask = GrantedSubtypes::food_only();
+            }
             characteristic_layers::SubtypeChange::LandOnly => {
+                mask.set_flag(ADDED_FOOD, false);
                 mask.replace_creature_types(&[]);
                 mask.set_flag(ALL_CREATURE_TYPES, false);
                 mask.set_flag(LAND_ONLY, true);
@@ -323,11 +338,15 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                 mask.replace_creature_types(types);
                 mask.set_flag(ALL_CREATURE_TYPES, false);
                 if all {
+                    mask.set_flag(ADDED_FOOD, false);
                     mask.set_flag(SUPPRESS_PRINTED, true);
                     mask.set_flag(LAND_ONLY, false);
                 }
             }
         }
+    }
+    if kinds(id, target) & 16 == 0 {
+        mask.set_flag(ADDED_FOOD, false);
     }
     if kinds(id, target) & 1 == 0 {
         return mask;
@@ -491,6 +510,9 @@ impl Game {
 
 impl Game {
     pub(super) fn entry_choice_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
+        if m.food_return.is_some() {
+            return GrantedSubtypes::food_only();
+        }
         let mut result = GrantedSubtypes::default();
         result.apply_copy_types(m.before.copy_recipe.map(CopyRecipe::copy_types));
         if m.before.card.static_ability_groups().iter().any(|g| {

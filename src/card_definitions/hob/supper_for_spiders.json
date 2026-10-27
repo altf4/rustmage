@@ -3,10 +3,64 @@
   "catalogue_id": 4264,
   "oracle_id": "4d891515-39da-492e-ac19-1aa524245449",
   "facts_sha256": "02bf741638b560a31bfaa5399773f696f4aa612f3760bd61690e40cb1e890cbd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "34012c6cf7cbe92a355d86157e2b248b547e4ccde5c1c3675cf77e630bf2af98"
   },
-  "physical_metadata_sha256": "ebd61419b605a16470144fcd5a3844a94e2e06b179bb713a70f810b450123dde"
+  "physical_metadata_sha256": "ebd61419b605a16470144fcd5a3844a94e2e06b179bb713a70f810b450123dde",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "4d891515-39da-492e-ac19-1aa524245449",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory: xmage_name null, implementations/printings empty. Full pinned tree contains no Supper class (case-insensitive path and complete card-class name inventory); no fictitious identity source pin. Full analogous reanimation/history/Food bodies were read independently."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/r/RiseOfTheDarkRealms.java",
+      "sha256": "fef633f605a45e4595153ea883e5a01b9d19145794a22db7e24d81085a1c7a87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/n/NecromanticSelection.java",
+      "sha256": "41c2b43746f35682c41de103f366945ed7dedef9e6824ebf9ce4abbf17edfcbb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/b/BrenardGingerSculptor.java",
+      "sha256": "b36e383db3d6f74b39d5344da684e8319342b72f4a07cd8a5b7b0dc8e6b1df49"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CardsPutIntoGraveyardWatcher.java",
+      "sha256": "7adcba89bfd94638c279998a6175725be871324c3f70b3f05ab0b540f107b2a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+      "sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "Supper for Spiders",
+    "notes": "Official text and rulings: permanent Food artifact-only form, no cleanup expiry. CR205.1a/b,603.6b,611.2e,613.1d/613.7n,707.2: as-entering characteristics, own statics earlier timestamp, retained abilities/colors/supertypes, noncopiable resolution-created form/grant."
+  }
 }

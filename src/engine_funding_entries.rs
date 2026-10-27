@@ -491,7 +491,7 @@ impl FundingState<'_> {
             let o = self.object(id);
             if o.zone == Zone::Battlefield
                 && o.controller == m.controller
-                && o.card.controlled_entry_untapped() & m.before.kinds != 0
+                && o.card.controlled_entry_untapped() & m.entry_kinds() != 0
                 && self.fragment_available(id, |f| {
                     matches!(
                         f,
@@ -514,7 +514,7 @@ impl FundingState<'_> {
                 let o = self.object(id);
                 o.zone == Zone::Battlefield
                     && o.controller != m.controller
-                    && o.card.opponent_entry_tapped() & m.before.kinds != 0
+                    && o.card.opponent_entry_tapped() & m.entry_kinds() != 0
                     && self.printed_abilities_available(id)
             })
             .collect::<Vec<_>>();
@@ -855,7 +855,7 @@ impl FundingState<'_> {
                         owner: m.before.owner,
                         controller: m.controller,
                         subtypes: Game::entry_choice_subtypes(m),
-                        kind: m.before.kinds,
+                        kind: m.entry_kinds(),
                         amount: m.counters.clone(),
                         effect: true,
                         entry_index: Some(index),
@@ -912,7 +912,8 @@ impl FundingState<'_> {
     }
     fn entry_has_timestamp(m: &entries::EntryMove) -> bool {
         let card = m.before.card;
-        m.return_modification.is_some()
+        m.food_return.is_some()
+            || m.return_modification.is_some()
             || CounterAmounts::from(&m.counters)
                 .keyword_amounts()
                 .iter()
@@ -1025,6 +1026,12 @@ impl FundingState<'_> {
                 CounterAmounts::from(&m.counters).keyword_amounts(),
                 Some(timestamp),
             );
+            if m.food_return.is_some() {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .animations
+                    .push(characteristic_layers::food_form(source, timestamp));
+            }
             if let Some((kind, origin)) = m.return_modification
                 && let Some((types, keywords)) = return_links::modification(kind)
             {

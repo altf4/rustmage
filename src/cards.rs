@@ -1468,6 +1468,7 @@ pub(crate) enum Instruction {
     ReturnSourceBlankWithHaste,
     /// Return this exact Aura from your graveyard already attached to its target.
     ReturnSourceAuraAttached,
+    ReturnOpponentsBattlefieldGraveyardCardsAsFood,
     ReturnSourceToBattlefield {
         tapped: bool,
     },

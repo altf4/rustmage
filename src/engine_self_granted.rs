@@ -83,13 +83,26 @@ impl Game {
         timestamp: u64,
         expires_turn: Option<u32>,
     ) {
-        if !self.on_battlefield(item.object.card)
-            || self.object_ref(item.object.card) != item.object
-        {
+        self.grant_recipient_ability(
+            item.object,
+            item.trigger_definition(),
+            kind,
+            timestamp,
+            expires_turn,
+        );
+    }
+    pub(super) fn grant_recipient_ability(
+        &mut self,
+        recipient: ObjectRef,
+        definition: Card,
+        kind: SelfGrantedAbilityKind,
+        timestamp: u64,
+        expires_turn: Option<u32>,
+    ) {
+        if !self.on_battlefield(recipient.card) || self.object_ref(recipient.card) != recipient {
             return;
         }
         if let SelfGrantedAbilityKind::Activated { ability } = kind {
-            let definition = item.trigger_definition();
             assert!(definition.self_granted_activation_template(ability));
             let rules = definition.activation(ability);
             assert!(
@@ -105,8 +118,8 @@ impl Game {
             .self_granted_abilities
             .get_or_insert_default()
             .push(Row {
-                recipient: item.object,
-                granting_card: item.trigger_definition(),
+                recipient,
+                granting_card: definition,
                 kind,
                 timestamp,
                 effect_timestamp: if matches!(kind, SelfGrantedAbilityKind::Activated { .. }) {

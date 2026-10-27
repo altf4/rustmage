@@ -2935,6 +2935,9 @@ impl Game {
                         self.stage_entries(vec![movement], None);
                     }
                 }
+                Instruction::ReturnOpponentsBattlefieldGraveyardCardsAsFood => {
+                    self.return_opponents_battlefield_graveyard_as_food(&item);
+                }
                 Instruction::ReturnSourceToBattlefield { tapped } => {
                     if self.object_ref(item.card) == item.object
                         && self.state.objects[item.card as usize].zone == Zone::Graveyard

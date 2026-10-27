@@ -1877,6 +1877,7 @@ struct State {
     temporary_copies: temporary_copy::Rows,
     copy_grant_origins: copy_grant_origins::Rows,
     graveyard_entries: Option<SharedVec<ObjectRef>>,
+    battlefield_graveyard_entries: Option<SharedVec<ObjectRef>>,
     nightmare_cull: Option<Box<copy_characteristics::NightmareCull>>,
     stack_copy_data: Option<Box<stack_copies::CopyState>>,
     #[allow(clippy::box_collection)]
@@ -2663,6 +2664,7 @@ impl Game {
                 temporary_copies: None,
                 copy_grant_origins: None,
                 graveyard_entries: None,
+                battlefield_graveyard_entries: None,
                 nightmare_cull: None,
                 stack_copy_data: None,
                 delayed_artifact_copies: None,
@@ -6651,6 +6653,7 @@ impl Game {
         self.state.cards_exiled_this_turn = false;
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
+        self.state.battlefield_graveyard_entries = None;
         for player in &mut self.state.players {
             player.turn_facts = TurnFactsView::default();
             player.nonland_permanents_entered_this_turn = 0;
@@ -7962,6 +7965,9 @@ impl Game {
             + temporary_copy::owned_bytes(&s.temporary_copies)
             + copy_grant_origins::owned_bytes(&s.copy_grant_origins)
             + s.graveyard_entries.as_ref().map_or(0, |r| {
+                std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+            })
+            + s.battlefield_graveyard_entries.as_ref().map_or(0, |r| {
                 std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
             })
             + copy_characteristics::cull_bytes(&s.nightmare_cull)
