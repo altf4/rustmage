@@ -49,7 +49,7 @@
     }
   ],
   "integration_note": "Treasure provenance can add observable mana lots in existing gameplay; audit full historical facts explicitly without stripping nonempty observations.",
-  "status": "Exact independently reviewed 2706-row candidate adopted; ordinary strict and full 191-card release, whole193 and final published PR remain open.",
+  "status": "191-card release passed; independent terminal receipt audits, whole193 and final published PR remain open.",
   "integrated_recording": {
     "head": "a434fa10cd93e590797f10d812a810dad005df10",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated191-1",
@@ -962,5 +962,32 @@
       "hob_review_rules: approved exact source and full-row comparison",
       "hob_review_contracts: approved exact source and full-row comparison"
     ]
+  },
+  "release": {
+    "head": "1debb218f1eee74dd0e9108882a9629c9bbc20d7",
+    "report": "<cache>/rustmage-validation-4ows6qi2/report/result.json",
+    "guard": "<cache>/rustmage-build-reports/040d2307289443deb6a4f8a34593cea6.json",
+    "all_nine_pass": true,
+    "native_passed": 1296,
+    "python_passed": 8,
+    "input_files": 12046,
+    "input_sha256": "476a61578552217dc51f59d89e765eae1e1dcd671eb581f62fff36501f847e92",
+    "changed": [],
+    "active_processes": [],
+    "release_seconds": 430.319998361,
+    "guard_seconds_including_queue": 430.621987073,
+    "peak_bytes": 3255291904,
+    "oom_events": 0,
+    "immutable_library": "<cache>/rustmage-validation-4ows6qi2/report/libraries/librustmage.so",
+    "library_sha256": "450b62fd924a39ff387b651a8692d8e6d9c578498d0643b5cf0469219eda841d",
+    "library_mode": "0555",
+    "limited_freeform_smoke": {
+      "games": 10,
+      "decisions": 4941,
+      "decisions_per_second": 100946.3376950623,
+      "games_per_second": 204.30345617296558,
+      "scope": "Limited Freeform smoke, not HOB set-only throughput."
+    },
+    "independent_receipt_audits": "pending"
   }
 }
