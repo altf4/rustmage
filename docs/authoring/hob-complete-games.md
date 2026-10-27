@@ -18,8 +18,11 @@ generic cancellation memory and completed all 24 games and replay checks, but
 failed its hone witness requirement. Run 5 revised the fixed Dwarf deck mix and
 passed 24 games, 14839 replayed decisions, 717 sampled owned branches, five spell
 colors, and all five tracked mechanic categories (3 enduring-story players, 5
-hone-bearing objects, 40 Goblin Army tokens, 36 Human Soldier tokens and 112
-landfall trigger packets). Its verification rate is not a simulation benchmark.
+hone-bearing objects, 40 Goblin Army tokens, and 36 Human Soldier tokens).
+The original count of 112 landfall packets was overstated: an independent review
+found it included Silvan Reveler's unrelated enter trigger. The witness was
+corrected to require the printed ability index and origin; its corrected count
+requires a fresh run. Its verification rate is not a simulation benchmark.
 Logs and resource receipts are retained in `<cache>/rustmage-authoring/hob-games/`.
 
 This is prototype evidence only: the full-pool admission check was disabled in
