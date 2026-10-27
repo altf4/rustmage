@@ -234,6 +234,7 @@ impl Game {
                     zone_replacements::Plan {
                         destination: Zone::Library,
                         shuffle: false,
+                        reflexive: None,
                     },
                     false,
                     Counters::default(),

@@ -6516,6 +6516,10 @@ impl Game {
             self.reveal_and_shuffle_zone_card(&before);
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
+        if let Some((ability, source)) = plan.reflexive {
+            debug_assert_eq!(destination, Zone::Exile);
+            self.queue_trigger(&source, usize::from(ability));
+        }
         ZoneChange {
             cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),

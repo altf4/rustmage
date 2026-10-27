@@ -591,3 +591,6 @@ fn hob_sacrifice_funding_ordered_source_departure_matches_native_cost_executor()
         }
     }
 }
+
+#[path = "assurance/hob_head_hunt_funding.rs"]
+mod head_hunt_tests;

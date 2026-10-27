@@ -252,3 +252,6 @@ mod hob_elrond_rollback;
 
 #[path = "hob_notary_rollback.rs"]
 mod notary_tests;
+
+#[path = "hob_head_hunt_rollback.rs"]
+mod head_hunt_tests;

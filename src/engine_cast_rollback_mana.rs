@@ -493,6 +493,9 @@ impl Game {
         Some(zone_replacements::Plan {
             destination,
             shuffle,
+            // Exact actual reflexive packets are restored from ManaEvent.triggers;
+            // replay must not recompute their old replacement-source witnesses.
+            reflexive: None,
         })
     }
     pub(super) fn replay_frozen_mana_copy_slot(&mut self) -> Option<(CardId, u64)> {

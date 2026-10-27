@@ -243,7 +243,7 @@ impl Game {
     pub(super) fn record_cast_mana_zone_plan(
         &mut self,
         before: &ObjectView,
-        plan: zone_replacements::Plan,
+        plan: &zone_replacements::Plan,
     ) {
         if let Some(capture) = self
             .state

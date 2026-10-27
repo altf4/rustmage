@@ -6,6 +6,11 @@ use crate::cards::ZoneReplacementRule;
 pub enum ZoneReplacementKind {
     RevealShuffle,
     Exile,
+    /// Distinct replacement identity; only the selected source creates a reflexive packet.
+    ExileReflexive {
+        source: ObjectRef,
+        ability: u16,
+    },
     Battlefield,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -59,16 +64,18 @@ pub(super) struct ZoneState {
     reveals: SharedVec<ZoneRevealView>,
     graveyard_exile_spells: SharedVec<ObjectRef>,
 }
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub(super) struct FrozenRules {
     pub shuffle_self: bool,
     pub exile_spell: bool,
     pub discard_to_battlefield: bool,
+    pub reflexive_exiles: Vec<(u16, ObjectView)>,
 }
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub(super) struct Plan {
     pub destination: Zone,
     pub shuffle: bool,
+    pub reflexive: Option<(u16, Box<ObjectView>)>,
 }
 impl ZoneState {
     pub fn bytes(&self) -> usize {
@@ -209,7 +216,28 @@ impl Game {
         let own_available =
             before.zone != Zone::Battlefield || self.printed_abilities_available(before.id);
         let spell = before.kinds & 12 != 0 && !before.is_token();
+        let reflexive_exiles = if before.zone == Zone::Battlefield && before.is_creature() {
+            self.state
+                .static_sources
+                .iter()
+                .filter_map(|&id| {
+                    let source = &self.state.objects[id as usize];
+                    let Some(ZoneReplacementRule::ExileOpposingCreatureDeath { ability }) =
+                        source.card.zone_replacement()
+                    else {
+                        return None;
+                    };
+                    (self.on_battlefield(id)
+                        && source.controller != before.controller
+                        && self.printed_abilities_available(id))
+                    .then(|| (ability, self.object_view(id)))
+                })
+                .collect()
+        } else {
+            Vec::new()
+        };
         FrozenRules {
+            reflexive_exiles,
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
             exile_spell: (before.zone == Zone::Stack
                 && self.stack_graveyard_exile(before.reference))
@@ -237,7 +265,7 @@ impl Game {
             return plan;
         }
         let plan = self.plan_zone_move_unrecorded(before, requested, rules);
-        self.record_cast_mana_zone_plan(before, plan);
+        self.record_cast_mana_zone_plan(before, &plan);
         plan
     }
     fn plan_zone_move_unrecorded(
@@ -254,6 +282,7 @@ impl Game {
             return Plan {
                 destination: Zone::Outside,
                 shuffle: false,
+                reflexive: None,
             };
         }
         if requested != Zone::Graveyard
@@ -262,6 +291,7 @@ impl Game {
             return Plan {
                 destination: requested,
                 shuffle: false,
+                reflexive: None,
             };
         }
         let mut choices = Vec::new();
@@ -270,6 +300,12 @@ impl Game {
             || self.death_exile_destination(before, requested) != requested
         {
             choices.push(ZoneReplacementKind::Exile);
+        }
+        for (ability, source) in &rules.reflexive_exiles {
+            choices.push(ZoneReplacementKind::ExileReflexive {
+                source: source.reference,
+                ability: *ability,
+            });
         }
         if requested == Zone::Graveyard && rules.shuffle_self {
             choices.push(ZoneReplacementKind::RevealShuffle);
@@ -282,6 +318,7 @@ impl Game {
                 return Plan {
                     destination: requested,
                     shuffle: false,
+                    reflexive: None,
                 };
             }
             [effect] => *effect,
@@ -303,7 +340,7 @@ impl Game {
                         "live zone replacement choice"
                     );
                     replay.next += 1;
-                    return Self::zone_plan(pick.effect);
+                    return Self::zone_plan(pick.effect, &rules);
                 }
                 let request = Request {
                     object: before.reference,
@@ -324,16 +361,34 @@ impl Game {
                 std::panic::resume_unwind(Box::new(request));
             }
         };
-        Self::zone_plan(effect)
+        Self::zone_plan(effect, &rules)
     }
-    fn zone_plan(effect: ZoneReplacementKind) -> Plan {
+    fn zone_plan(effect: ZoneReplacementKind, rules: &FrozenRules) -> Plan {
         Plan {
             destination: match effect {
                 ZoneReplacementKind::RevealShuffle => Zone::Library,
-                ZoneReplacementKind::Exile => Zone::Exile,
+                ZoneReplacementKind::Exile | ZoneReplacementKind::ExileReflexive { .. } => {
+                    Zone::Exile
+                }
                 ZoneReplacementKind::Battlefield => Zone::Battlefield,
             },
             shuffle: effect == ZoneReplacementKind::RevealShuffle,
+            reflexive: if let ZoneReplacementKind::ExileReflexive { source, ability } = effect {
+                Some((
+                    ability,
+                    Box::new(
+                        rules
+                            .reflexive_exiles
+                            .iter()
+                            .find(|(index, view)| *index == ability && view.reference == source)
+                            .expect("frozen selected replacement source")
+                            .1
+                            .clone(),
+                    ),
+                ))
+            } else {
+                None
+            },
         }
     }
     pub(super) fn reveal_and_shuffle_zone_card(&mut self, before: &ObjectView) {
