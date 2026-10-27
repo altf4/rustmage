@@ -2145,7 +2145,7 @@ impl<'g> FundingState<'g> {
         if !self.obligations(goal) {
             return false;
         }
-        if self.discard_or_life_deficit() {
+        if self.additional_cost_deficit() {
             return false;
         }
         if self.pure_tap_teamwork_deficit(goal) {
