@@ -1,0 +1,53 @@
+{
+  "scope": "191 local HOB candidates; 2 gated. Entire 193-card set and final published PR remain open.",
+  "schema": 167,
+  "schema_changes": [
+    "Orcrist creature-type choice action, pending and observation",
+    "Tom artifact-only animation and type-correlated subtype observation",
+    "Smaug Treasure-mana provenance in mana lots, cast data and events"
+  ],
+  "prior_release": {
+    "head": "b70c94e8c8ced3b1401c17562a7afd1bbfe7a3df",
+    "report": "<cache>/rustmage-validation-ub4q33w0/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1261,
+    "python_passed": 8,
+    "receipt_reviews": [
+      "hob_review_rules: approved release and all eighteen immutable libraries",
+      "hob_review_contracts: approved release and all eighteen immutable libraries"
+    ]
+  },
+  "cohorts": [
+    {
+      "card": "Orcrist, Goblin-cleaver",
+      "leaf": "13765eba24ee13bf3084b4cfa71b2852e0bd1807",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 72
+    },
+    {
+      "card": "Tom, Bert, and William",
+      "leaf": "bfc247ecba5561667b55325f7b463712ea703fc6",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 105,
+      "executions": 123
+    },
+    {
+      "card": "Smaug, Wicked Worm",
+      "leaf": "ed1ed8510267e4dad1ed2bbba443d025d0e1b466",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 32,
+      "limitation": "No full printed delayed-Treasure production fixture; synthetic departed-source facts and existing scaled/delayed consumers are tested."
+    }
+  ],
+  "integration_note": "Treasure provenance can add observable mana lots in existing gameplay; audit full historical facts explicitly without stripping nonempty observations.",
+  "status": "Integrated recording, independent combined review, full release, whole-set games and final published PR remain open."
+}

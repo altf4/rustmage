@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "4f9c9d55e2035814ea048865ca84edfcbc7d2f7545c26fc36c7181ddf4bc76f8",
+  "catalogue_version": "daa82b8909a9011f8646523ae5aa94a8a6d15016eda97934497856a17bb06e64",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2697,
-  "implemented_total": 2703,
+  "implemented_standard_cards": 2700,
+  "implemented_total": 2706,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 46,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 183,
-      "gated": 5
+      "complete": 186,
+      "gated": 2
     },
     "hoc": {
       "total": 5,
@@ -24468,8 +24468,8 @@
     {
       "name": "Orcrist, Goblin-cleaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/orcrist_goblin_cleaver.rs",
       "set": "hob"
     },
@@ -31684,8 +31684,8 @@
     {
       "name": "Smaug, Wicked Worm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/smaug_wicked_worm.rs",
       "set": "hob"
     },
@@ -37188,8 +37188,8 @@
     {
       "name": "Tom, Bert, and William",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/tom_bert_and_william.rs",
       "set": "hob"
     },
