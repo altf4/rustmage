@@ -274,6 +274,8 @@ pub use combat_restrictions::AttackPaymentView;
 mod effect_choices;
 #[path = "engine_exile.rs"]
 mod exile;
+#[path = "engine_exile_life.rs"]
+mod exile_life;
 #[path = "engine_target_exile_play.rs"]
 mod target_exile_play;
 pub use exile::{ExilePlayExpiry, ExilePlayPermission};
@@ -613,6 +615,7 @@ define_actions! {
     AnnounceExile {
         card: CardId,
     },
+    AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceSneak { card: CardId,
@@ -899,6 +902,7 @@ pub enum CastMethod {
     Normal,
     GraveyardCounterCost,
     Free,
+    ExileLife,
     GrantedFlashback,
     Flashback,
     Miracle,
@@ -3646,6 +3650,7 @@ impl Game {
                         }
                         Zone::Exile => {
                             self.can_play_exiled(actor, card)
+                                || self.has_exile_life_permission(actor, card)
                                 || self.plotted_cast_available(actor, card)
                         }
                         _ => false,
@@ -3747,6 +3752,9 @@ impl Game {
                             .is_some_and(|cost| self.warp_cast_fundable(actor, card, cost))
                         && emit(Action::AnnounceWarp { card })
                     {
+                        return true;
+                    }
+                    if self.visit_exile_life_casts(actor, card, sorcery, &mut emit) {
                         return true;
                     }
                     if self.sneak_cast_available(actor, card)
@@ -3914,7 +3922,9 @@ impl Game {
                         }
                         continue;
                     }
-                    let exile = obj.zone == Zone::Exile && self.can_play_exiled(actor, card);
+                    let exile = obj.zone == Zone::Exile
+                        && (self.can_play_exiled(actor, card)
+                            || (obj.card.is_land() && self.can_play_exiled_land(actor, card)));
                     let library = self.can_cast_library_top(actor, card)
                         || (obj.zone == Zone::Library && self.can_play_static_land(actor, card));
                     let graveyard_land = obj.card.is_land()
@@ -4985,6 +4995,16 @@ impl Game {
                 item.cast.as_mut().unwrap().method = CastMethod::GrantedFlashback;
                 item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
                 self.state.objects[card as usize].flashback = true;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceExileLife {
+                card,
+                face,
+                flash_surcharge,
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                Self::configure_exile_life_cast(&mut item, flash_surcharge);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceCast { card }

@@ -3773,6 +3773,12 @@ impl Game {
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, u128::from(amount), next_turn);
                 }
+                Instruction::ExileTargetLibraryPlayLife { amount } => {
+                    let count = self.item_amount(amount, &item);
+                    for player in self.program_players(PlayerSet::Targeted, &item) {
+                        self.exile_top_play_life(player, item.controller, count);
+                    }
+                }
                 Instruction::ExileTargetLibraryPlay { amount } => {
                     for player in self.program_players(PlayerSet::Targeted, &item) {
                         self.exile_top_play_from(

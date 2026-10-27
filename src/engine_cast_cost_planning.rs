@@ -342,7 +342,7 @@ impl FundingState<'_> {
                         return true;
                     }
                 }
-                CastCostClause::Life(amount) => {
+                CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
                     if amount == 0 || self.life >= i128::from(amount) {
                         let mut next = self.clone();
                         next.life -= i128::from(amount);

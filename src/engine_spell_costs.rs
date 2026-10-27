@@ -39,10 +39,12 @@ impl Game {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.item.source_card.warp_cost().expect("fixed Warp cost");
             }
-            if a.item
-                .cast
-                .is_some_and(|c| matches!(c.method, CastMethod::Plot | CastMethod::Free))
-            {
+            if a.item.cast.is_some_and(|c| {
+                matches!(
+                    c.method,
+                    CastMethod::ExileLife | CastMethod::Plot | CastMethod::Free
+                )
+            }) {
                 return ManaCost {
                     colored: [0; 6],
                     generic: 0,

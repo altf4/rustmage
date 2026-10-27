@@ -253,9 +253,12 @@ impl Game {
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = method;
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+        if method == CastMethod::ExileLife {
+            Self::configure_exile_life_cast(&mut item, flash_surcharge);
+        }
         if matches!(
             method,
-            CastMethod::Free | CastMethod::Flashback | CastMethod::Miracle
+            CastMethod::ExileLife | CastMethod::Free | CastMethod::Flashback | CastMethod::Miracle
         ) && definition.x_symbols() > 0
         {
             item.x = Some(0);
@@ -278,7 +281,10 @@ impl Game {
         if definition.x_symbols() > 0
             && !matches!(
                 method,
-                CastMethod::Free | CastMethod::Flashback | CastMethod::Miracle
+                CastMethod::ExileLife
+                    | CastMethod::Free
+                    | CastMethod::Flashback
+                    | CastMethod::Miracle
             )
         {
             return !self.scalar_x_intervals(actor, card).is_empty();

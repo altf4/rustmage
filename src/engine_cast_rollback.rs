@@ -73,6 +73,7 @@ impl Game {
         let card = match *action {
             Action::AnnounceCast { card }
             | Action::AnnounceExile { card }
+            | Action::AnnounceExileLife { card, .. }
             | Action::AnnounceFlashSurcharge { card }
             | Action::AnnounceWarp { card }
             | Action::AnnounceSneak { card, .. }

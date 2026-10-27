@@ -2492,7 +2492,10 @@ impl Game {
                 definition,
             );
         }
-        if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
+        if a.item
+            .cast
+            .is_some_and(|c| matches!(c.method, CastMethod::Sneak | CastMethod::ExileLife))
+        {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
             proposal.cast_costs = Some(Box::default());

@@ -13,6 +13,9 @@ pub struct ExilePlayPermission {
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub cast_only: bool,
     pub exile_on_graveyard: bool,
+    /// This permission requires life instead of the chosen spell face's mana cost.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub life_instead_of_mana: bool,
 }
 /// Deadline boundaries refer to actual turns, never to skipped turn candidates.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -45,7 +48,8 @@ impl Game {
             return true;
         }
         self.state.exile_permissions.iter().any(|p| {
-            p.player == player
+            !p.life_instead_of_mana
+                && p.player == player
                 && p.object == self.object_ref(card)
                 && p.expiry.active(self.state.turn)
         })
@@ -159,6 +163,7 @@ impl Game {
                 spend_any_mana: false,
                 cast_only: false,
                 exile_on_graveyard: false,
+                life_instead_of_mana: false,
             },
         );
     }

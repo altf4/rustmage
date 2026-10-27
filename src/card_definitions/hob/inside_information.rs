@@ -1,16 +1,19 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec {
+            rule: TargetRule::Player {
+                opponent_only: true,
+            },
+            min: 1,
+            max: 1,
+        }),
+        &[Instruction::ExileTargetLibraryPlayLife {
+            amount: AmountValue::ChosenX,
+        }],
+    ),
+    extras: &CardExtras {
+        x_symbols: 1,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

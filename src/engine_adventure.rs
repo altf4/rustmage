@@ -158,7 +158,8 @@ impl Game {
             && (self.can_cast_warped(actor, id)
                 || self.can_play_foreign_stash(actor, id)
                 || self.state.exile_permissions.iter().any(|r| {
-                    r.player == actor
+                    !r.life_instead_of_mana
+                        && r.player == actor
                         && r.object == self.object_ref(id)
                         && r.expiry.active(self.state.turn)
                 }));

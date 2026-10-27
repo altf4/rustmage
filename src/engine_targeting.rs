@@ -58,7 +58,7 @@ impl Announcement {
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Miracle => self.miracle_cost,
-            CastMethod::Free | CastMethod::Plot => Some(ManaCost {
+            CastMethod::ExileLife | CastMethod::Free | CastMethod::Plot => Some(ManaCost {
                 colored: [0; 6],
                 generic: 0,
             }),
@@ -101,7 +101,10 @@ impl Announcement {
                             .source_card
                             .mana_alternative_replaces_additional(cost)
                     }),
-                    CastMethod::Free | CastMethod::Plot | CastMethod::Miracle => {
+                    CastMethod::ExileLife
+                    | CastMethod::Free
+                    | CastMethod::Plot
+                    | CastMethod::Miracle => {
                         self.fixed_alternative_cost()
                             .is_some_and(|base| self.cost.is_some_and(|cost| cost != base))
                             && self
@@ -161,10 +164,12 @@ impl Announcement {
                     .chain([].iter().copied())
             }
             StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| matches!(c.method, CastMethod::Plot | CastMethod::Free)) =>
+                if self.item.cast.is_some_and(|c| {
+                    matches!(
+                        c.method,
+                        CastMethod::ExileLife | CastMethod::Plot | CastMethod::Free
+                    )
+                }) =>
             {
                 std::iter::once(ManaCost {
                     colored: [0; 6],
@@ -1701,6 +1706,11 @@ impl Game {
             pay_window: true,
             production,
         });
+        self.state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .initialize_alternative_life();
         self.continue_announcement_choices(needs_mode);
     }
 

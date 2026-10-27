@@ -1317,6 +1317,9 @@ pub(crate) enum Instruction {
         amount: u16,
         next_turn: bool,
     },
+    ExileTargetLibraryPlayLife {
+        amount: AmountValue,
+    },
     ExileTargetLibraryPlay {
         amount: u16,
     },
