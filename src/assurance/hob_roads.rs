@@ -323,3 +323,64 @@ fn hob_roads_delayed_controller_and_invalidated_targets_both_seats() {
         assert_eq!(stats(&g, good_target), (3, 3));
     }
 }
+
+#[test]
+fn hob_roads_old_incarnation_link_survives_reentry_and_queued_chapter() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let old_card = put(&mut g, p, "Plains", Zone::Library);
+        let new_card = put(&mut g, p, "Plains", Zone::Library);
+        let saga = cast_saga(&mut g, p);
+        search(&mut g);
+        act(&mut g, Action::ChooseSearch { card: old_card });
+        act(&mut g, Action::FinishSearch);
+        finish(&mut g);
+        let old_source = g.object_ref(saga);
+        let old_link = g.object_ref(old_card);
+        lore(&mut g, saga);
+        until(&mut g, |g| {
+            g.state.pending == Pending::Priority
+                && g.state.stack.iter().any(|item| {
+                    item.object == old_source
+                        && matches!(item.kind, StackKind::TriggeredAbility { ability: 1 })
+                })
+        });
+        g.move_object(saga, Zone::Exile);
+        let movement = g.entry_move(saga, Zone::Battlefield, false);
+        g.stage_entries(vec![movement], None);
+        g.prepare_triggers();
+        search(&mut g);
+        act(&mut g, Action::ChooseSearch { card: new_card });
+        act(&mut g, Action::FinishSearch);
+        until(&mut g, |g| {
+            g.state.pending == Pending::Priority
+                && g.state.resolving.is_none()
+                && g.state.pending_triggers.is_empty()
+                && g.state.stack.len() == 1
+                && g.state.stack[0].object == old_source
+        });
+        assert_ne!(old_source, g.object_ref(saga));
+        assert_eq!(g.object_view(old_card).zone, Zone::Exile);
+        assert_eq!(g.object_ref(old_card), old_link);
+        let new_link = g.object_ref(new_card);
+        lore(&mut g, saga);
+        linked(&mut g);
+        assert_eq!(g.actor(), Some(p));
+        reject(&mut g, Action::ChooseLinkedExile { object: old_link });
+        contracts::branch_contract(g.clone());
+        act(&mut g, Action::ChooseLinkedExile { object: new_link });
+        until(&mut g, |g| {
+            matches!(g.state.pending, Pending::LinkedExile { .. })
+        });
+        assert_eq!(g.actor(), Some(p));
+        assert_eq!(g.state.resolving.as_ref().unwrap().item.object, old_source);
+        reject(&mut g, Action::ChooseLinkedExile { object: new_link });
+        contracts::branch_contract(g.clone());
+        act(&mut g, Action::ChooseLinkedExile { object: old_link });
+        finish(&mut g);
+        assert_eq!(g.object_view(old_card).zone, Zone::Hand);
+        assert_eq!(g.object_view(new_card).zone, Zone::Hand);
+        assert_eq!(g.object_view(old_card).owner, p);
+        assert_eq!(g.object_view(new_card).owner, p);
+    }
+}

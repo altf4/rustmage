@@ -16,7 +16,8 @@
     "Actual paid cast, 0/1/2 basic Plains choices, Forest rejection, private search and publicly visible exile, individually selected return, both seats and owned branch/restore.",
     "Chapter IV before and after Saga departure, two attacks, opponent and player target rejection, current Plains count including nonbasic Hallowed Fountain, Plains departure before resolution, cleanup expiry and owned branch/restore.",
     "Search, attack declaration and trigger multiplicity regressions.",
-    "Both seats: actual two Saga links and Saga reentry; reject cross-source and stale exiled incarnations transactionally and return each valid linked card to its owner. Transfer Saga control before IV resolves; only frozen trigger controller attacks create a trigger, actor is checked, changed-control and blinked targets fail, and a separate legal target grows."
+    "Both seats: actual two Saga links and Saga reentry; reject cross-source and stale exiled incarnations transactionally and return each valid linked card to its owner. Transfer Saga control before IV resolves; only frozen trigger controller attacks create a trigger, actor is checked, changed-control and blinked targets fail, and a separate legal target grows.",
+    "Both seats: a valid old-source linked card stays continuously exiled while the Saga leaves and reenters; its new chapter rejects that exact old link and returns a distinct new link, then the queued old chapter returns the original link after source departure. Both choice points exercise transactional rejection and owned branch/restore."
   ],
   "limitations": [
     "No specific actual replacement interaction is proven by these tests; independent review should examine this path.",
@@ -62,6 +63,11 @@
         "/home/altf4/.cache/rustmage-build-reports/32e80b6865cc482da6ab77f5b5febd70.json",
         "/home/altf4/.cache/rustmage-build-reports/8f6e4e110a6f4a2a9dfa5ffe5f32c716.json"
       ]
+    },
+    {
+      "run": 7,
+      "result": "5 card tests passed including retained old-incarnation link and queued old chapter, both seats",
+      "report": "/home/altf4/.cache/rustmage-build-reports/9f56ef57b0ed43f295601bdfabfcf61f.json"
     }
   ],
   "receipts": "/home/altf4/.cache/rustmage-authoring/hob-roads",
@@ -74,6 +80,6 @@
     "src/policy.rs": "19819e1abb70b4e18c844dbb984ffa15cc1ff2321b6310f361ed8f633d13fe72",
     "src/card_definitions/hob/roads_go_ever_ever_on.rs": "e78c2b89aa55325a5b9e25b2cebcbf5e4ca404c8e260f6cb9f859d27d4437ee5",
     "src/card_definitions/hob/roads_go_ever_ever_on.json": "2f6778e0c502b6771516982156cb57196fa5f6d96680e299177a7e288c84d471",
-    "src/assurance/hob_roads.rs": "5af10c5416a724002bfd9695a0d6c8a75fb5991ffbf0edcb3bbb346592d23273"
+    "src/assurance/hob_roads.rs": "fd0348ef8fdcce15869567564b46340b131658a177d43b04053ab03c4dbaac4b"
   }
 }
