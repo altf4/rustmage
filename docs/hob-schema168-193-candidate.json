@@ -53,7 +53,7 @@
     ],
     "status": "Provisional 24-game prototype passed with the full-pool gate temporarily disabled; final gated verification and separately measured benchmark remain required."
   },
-  "status": "Exact independently reviewed 2708-row candidate adopted; full release, separate benchmark and final published PR reviews remain open.",
+  "status": "All 193 candidates linked, full release, gated game verification and named benchmark passed with independent local audits; single new PR and two independent nonauthor published-head reviews remain open.",
   "preliminary_clippy": {
     "head": "18be28ac0586027c962f364228c2b9449888c738",
     "report": "<cache>/rustmage-authoring/hob-complete-set/final-clippy/first.log",
@@ -1043,5 +1043,55 @@
       "hob_review_rules: approved exact source and full-row/game evidence",
       "hob_review_contracts: approved exact source and full-row/game evidence"
     ]
+  },
+  "release": {
+    "head": "91f55d596b414dcf224ee10f5a1307afeb0f19b0",
+    "report": "<cache>/rustmage-validation-hs8jchb0/report/result.json",
+    "guard": "<cache>/rustmage-build-reports/44c63923ea874034b0872c21cf71a6a7.json",
+    "all_nine_pass": true,
+    "native_passed": 1326,
+    "python_passed": 8,
+    "input_files": 12062,
+    "input_sha256": "0c8431fa676ce7bdb96c0d7567577090b3002311ebc505fb80d5f87d6aed771f",
+    "changed": [],
+    "active_processes": [],
+    "release_seconds": 367.848865541,
+    "guard_seconds": 368.064635376,
+    "peak_bytes": 3181215744,
+    "oom_events": 0,
+    "immutable_library": "<cache>/rustmage-validation-hs8jchb0/report/libraries/librustmage.so",
+    "library_sha256": "373da753b72c1ef9a1e1fa170abb6d3edf11647887eef1ce4d01b88083a4eacd",
+    "library_mode": "0555",
+    "independent_receipt_audits": [
+      "hob_review_rules: approved exact terminal release and all twenty immutable libraries",
+      "hob_review_contracts: approved exact terminal release and all twenty immutable libraries"
+    ]
+  },
+  "benchmark": {
+    "head": "91f55d596b414dcf224ee10f5a1307afeb0f19b0",
+    "report": "<cache>/rustmage-authoring/hob-complete-set/final-benchmark/result.json",
+    "log": "<cache>/rustmage-authoring/hob-complete-set/final-benchmark/benchmark.log",
+    "guard": "<cache>/rustmage-build-reports/e8e4f05b69524070a2db97bacf84ef7d.json",
+    "games": 240,
+    "unique_cases": 24,
+    "repetitions": 10,
+    "decisions": 148390,
+    "seconds": 13.303359781,
+    "games_per_second": 18.040555465,
+    "decisions_per_second": 11154.325106048,
+    "peak_bytes": 871264256,
+    "oom_events": 0,
+    "scope": "Six legal HOB-only Standard decks; includes rules, action emission, smoke policy, observation telemetry and game construction; excludes replay/owned checks, model, tensors and network. Named corpus, not all-pool or XMage parity throughput.",
+    "reviewers": [
+      "hob_review_rules",
+      "hob_review_contracts"
+    ]
+  },
+  "implementation_throughput": {
+    "new_candidates_since_inherited_baseline": 124,
+    "inherited_admissions": 69,
+    "elapsed_wall_seconds_approx": 42701,
+    "new_candidates_per_hour_approx": 10.45,
+    "scope": "Whole-goal elapsed wall time including parallel authoring, shared mechanics, reviews, waits, integration and validation; approximate rate for this task only."
   }
 }

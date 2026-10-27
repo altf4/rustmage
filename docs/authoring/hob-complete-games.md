@@ -37,3 +37,21 @@ spell colors and 92 printed landfall packets. The guarded run terminated with
 exit 0; receipt `<cache>/rustmage-build-reports/943460d630c745fda939efe834eded27.json`.
 The full-pool gate was restored after termination. This remains provisional until
 rerun on the final 193-card head with the gate enabled and independent review.
+
+Final local gated verification at `18be28ac` and release `91f55d59` checked all
+193 pool members, then completed 24 legal games with 14,839 replayed decisions,
+717 sampled owned branches, seven rejected partial declarations, all five colors
+and the corrected witness counts. Two independent nonauthor reviewers audited
+the results. The 25.48-second verification duration includes full replay and
+owned checks and is not a simulation benchmark.
+
+The separately guarded optimized benchmark on `91f55d59` repeated those 24
+cases ten times: 240 games and 148,390 decisions in 13.30336 seconds, or 18.04
+games/s and 11,154.33 decisions/s. It includes game construction, rules, legal
+actions, the shared policy and observation telemetry, and excludes replay,
+owned checks, model inference, tensors and network. It is a six-deck corpus, not
+a claim about all possible HOB games or XMage parity. Both independent reviewers
+audited its log, arithmetic and guard receipt. Reports remain under
+`<cache>/rustmage-authoring/hob-complete-set/final-benchmark/`.
+
+The final published PR head still requires two independent nonauthor reviews.
