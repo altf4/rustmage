@@ -1,0 +1,57 @@
+{
+  "scope": "193 local HOB candidates, zero gated; full-set behavior, integrated rules, games, performance and final published PR reviews remain open.",
+  "schema": 168,
+  "schema_changes": [
+    "Eagles public delayed-upkeep token packet and optional observation"
+  ],
+  "prior_release": {
+    "head": "1debb218f1eee74dd0e9108882a9629c9bbc20d7",
+    "report": "<cache>/rustmage-validation-4ows6qi2/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1296,
+    "python_passed": 8,
+    "receipt_reviews": [
+      "hob_review_rules: approved release and all nineteen immutable libraries",
+      "hob_review_contracts: approved release and all nineteen immutable libraries"
+    ]
+  },
+  "cohorts": [
+    {
+      "card": "The Eagles Are Coming!",
+      "leaf": "cb660b00eb11d13fd8358006e4be91832da43337",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 54,
+      "token": "5418: 4/4 white Bird Soldier with flying"
+    },
+    {
+      "card": "Bilbo, Luckwearer // Burglar's Plot",
+      "leaf": "85dcb418f8de0d88951e1ab9914ffd9baaab2af6",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 89,
+      "note": "Relational target LKI for shared card type is explicitly documented as an inference from official analogous ruling."
+    }
+  ],
+  "inherited_proof_hardening": {
+    "leaf": "43e145289c09d2c5e7dcef0cabe7e9171fa53fd2",
+    "reviewers": [
+      "hob_review_rules",
+      "hob_review_contracts"
+    ],
+    "unique_tests": 40
+  },
+  "game_workload": {
+    "leaf": "094f49f411388685cb8a534620bdda579350d119",
+    "reviewers": [
+      "hob_review_rules",
+      "hob_review_contracts"
+    ],
+    "status": "Provisional 24-game prototype passed with the full-pool gate temporarily disabled; final gated verification and separately measured benchmark remain required."
+  },
+  "status": "Integrated recording, independent combined review, full release, full-pool gameplay, benchmark and final published PR reviews remain open."
+}

@@ -5424,7 +5424,8 @@
     2,
     8,
     8,
-    1
+    1,
+    2
   ],
   "aliases": [
     [
@@ -8008,6 +8009,10 @@
       409
     ],
     [
+      "Bilbo, Luckwearer",
+      410
+    ],
+    [
       "Bilbo, Luckwearer // Burglar's Plot",
       410
     ],
@@ -8762,6 +8767,10 @@
     [
       "Burglar Rat",
       587
+    ],
+    [
+      "Burglar's Plot",
+      5419
     ],
     [
       "Buried Treasure",
@@ -40944,11 +40953,11 @@
       "path": "hob/bilbo_luckwearer_burglar_s_plot.rs",
       "set": "hob",
       "category": "physical",
-      "name": "Bilbo, Luckwearer // Burglar's Plot",
+      "name": "Bilbo, Luckwearer",
       "oracle_id": "a73d9109-36e0-40ea-ab06-5c5f7eb4ac54",
       "facts_sha256": "d7f24505a450843519b0cde64b46b97b3bce323a9759d997bd64912f984f8a6f",
-      "mana_cost": "{1}{U} // {4}{U}",
-      "type_line": "Legendary Creature — Halfling Rogue // Sorcery — Adventure",
+      "mana_cost": "{1}{U}",
+      "type_line": "Legendary Creature — Halfling Rogue",
       "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
@@ -40957,13 +40966,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 411,
@@ -183554,6 +183563,33 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5419,
+      "module": "card_5419",
+      "path": "synthetic/burglar_s_plot.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Burglar's Plot",
+      "oracle_id": "a73d9109-36e0-40ea-ab06-5c5f7eb4ac54",
+      "facts_sha256": "d7f24505a450843519b0cde64b46b97b3bce323a9759d997bd64912f984f8a6f",
+      "mana_cost": "{4}{U}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4
     }
   ]
 }

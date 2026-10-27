@@ -275,8 +275,11 @@ mod hob_elrond;
 
 mod hob_bard;
 mod hob_bilbo;
+mod hob_bilbo_luckwearer;
+mod hob_complete_games;
 mod hob_dain_ironfoot;
 mod hob_down_valley;
+mod hob_eagles_coming;
 mod hob_eagles_rescue;
 mod hob_gandalf_flameshape;
 mod hob_getaway_barrel;

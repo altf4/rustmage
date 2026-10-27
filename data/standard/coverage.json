@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "daa82b8909a9011f8646523ae5aa94a8a6d15016eda97934497856a17bb06e64",
+  "catalogue_version": "de680999f610b6273b2d9e70dc942296cda7c31f7d27eb552e3e5f7b6955ba33",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2700,
-  "implemented_total": 2706,
-  "token_definitions": 132,
+  "implemented_standard_cards": 2702,
+  "implemented_total": 2708,
+  "token_definitions": 133,
   "emblem_definitions": 3,
-  "adventure_definitions": 46,
+  "adventure_definitions": 47,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -81,8 +81,7 @@
     },
     "hob": {
       "total": 188,
-      "complete": 186,
-      "gated": 2
+      "complete": 188
     },
     "hoc": {
       "total": 5,
@@ -3482,10 +3481,10 @@
       "set": "hob"
     },
     {
-      "name": "Bilbo, Luckwearer // Burglar's Plot",
+      "name": "Bilbo, Luckwearer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/bilbo_luckwearer_burglar_s_plot.rs",
       "set": "hob"
     },
@@ -35692,8 +35691,8 @@
     {
       "name": "The Eagles Are Coming!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/the_eagles_are_coming.rs",
       "set": "hob"
     },
