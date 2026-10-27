@@ -265,15 +265,27 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
+        let mut intervals = if a.item.kind == StackKind::Spell && a.item.source_card.life_x_cost() {
+            self.life_x_intervals(a)
+        } else if a.item.kind == StackKind::Spell {
+            self.scalar_x_intervals(a.item.controller, a.item.card)
+        } else {
+            self.activation_x_intervals(a)
+        };
+        if let Some((TargetPlan::Single(spec), program)) = a.item.program()
+            && program
+                .iter()
+                .any(|i| matches!(i, Instruction::DistributeCountersX { .. }))
+            && !self.visit_item_targets(&a.item, spec.rule, |_| true)
+        {
+            intervals.retain(|range| range.minimum == 0);
+            for range in &mut intervals {
+                range.maximum = 0;
+            }
+        }
         Some(XChoiceView {
             card: a.item.object,
-            intervals: if a.item.kind == StackKind::Spell && a.item.source_card.life_x_cost() {
-                self.life_x_intervals(a)
-            } else if a.item.kind == StackKind::Spell {
-                self.scalar_x_intervals(a.item.controller, a.item.card)
-            } else {
-                self.activation_x_intervals(a)
-            },
+            intervals,
         })
     }
     pub(super) fn item_amount(&self, value: AmountValue, item: &SpellView) -> u128 {

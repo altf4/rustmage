@@ -446,7 +446,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     | StackKind::DelayedReturn
                     | StackKind::DelayedTokenCreation { .. }
                     | StackKind::DelayedSacrifice
-                    | StackKind::DelayedWarpExile => {
+                    | StackKind::DelayedWarpExile
+                    | StackKind::DelayedManifestDread
+                    | StackKind::SiegeDefeat => {
                         panic!("no delayed producer in this fixture")
                     }
                     StackKind::TriggeredAbility { ability } => {

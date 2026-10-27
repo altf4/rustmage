@@ -88,9 +88,7 @@ impl Game {
     }
     fn reveal_hand_refs(&mut self, objects: &[ObjectRef]) {
         for &reference in objects {
-            if !self.state.known_hand.contains(&reference) {
-                self.state.known_hand.push(reference);
-            }
+            self.remember_public_hand(reference);
         }
     }
     fn set_hand_interaction(&mut self, interaction: HandInteraction) {

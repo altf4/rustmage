@@ -26,6 +26,7 @@ impl Game {
             b.zone == Zone::Battlefield
                 && b.controller == self.state.active.other()
                 && self.is_creature(id)
+                && self.current_kinds(id) & crate::cards::BATTLE_KIND == 0
                 && !b.tapped
                 && !self.keywords(id).contains(Keywords::CANT_BLOCK)
                 && !self.combat_restricted(id, false)
@@ -47,6 +48,23 @@ impl Game {
             return false;
         }
         let keywords = self.keywords(attacker);
+        if self.state.objects[attacker as usize]
+            .card
+            .static_ability_groups()
+            .iter()
+            .flat_map(|group| group.fragments)
+            .any(|fragment| {
+                matches!(
+                    fragment,
+                    crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
+                ) && self.continuous_fragment_available(attacker, |candidate| {
+                    std::ptr::eq(candidate, fragment)
+                })
+            })
+            && self.stats(blocker).power < self.stats(attacker).power
+        {
+            return false;
+        }
         if self.flying_block_forbidden(blocker, attacker)
             || self.source_power_forbids_block(attacker)
             || self.blocker_subtype_excluded(attacker, blocker)

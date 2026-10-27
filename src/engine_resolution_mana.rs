@@ -64,6 +64,7 @@ impl Game {
 
     pub(super) fn target_becomes_bound(&mut self, item: &SpellView, bound: BoundTarget) {
         self.controlled_ability_target_acquired(item, bound);
+        self.opponent_targets_controlled_creature(item, bound);
         let Target::Card(id) = bound.target else {
             return;
         };

@@ -3,10 +3,51 @@
   "catalogue_id": 1176,
   "oracle_id": "781d6981-d389-4677-9eaf-9c46c9192ed6",
   "facts_sha256": "cd088c0e72bb7f5313055f73e21ea5c554264af2f64f6aa77323a4e9884810ad",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "a05f2b49cf9aa611199e110ce1f1e956c8ef6462ddabfcbdae09b3673f120828"
+    "definition_sha256": "f9ea0422e9a8dc2e74c4681accc79dcdeec8bb2e2668623231be8849017ea84e"
   },
-  "physical_metadata_sha256": "7af642def5bdeb5e002067f75a4d146bb155f39e4eb7372b465bb9839d7379ff"
+  "physical_metadata_sha256": "7af642def5bdeb5e002067f75a4d146bb155f39e4eb7372b465bb9839d7379ff",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DreadmawsIre.java",
+  "java_sha256": "fafdef4bcdb61e379469b4fc9560c4cf30f9d2301aa9b8c07c63b69661e1526a",
+  "rules_tests": "src/assurance/requested_dreadmaw.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+      "sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ThatPlayerControlsTargetAdjuster.java",
+      "sha256": "d04b005aee7176ae56ce53f839e2610cb8fc6050f9a223c20a7805e579eb6621"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }

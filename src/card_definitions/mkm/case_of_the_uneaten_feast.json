@@ -3,10 +3,41 @@
   "catalogue_id": 672,
   "oracle_id": "0d8730b5-f7ba-48b0-928d-d8b7685347d3",
   "facts_sha256": "6f36312d8fbcd589c40b4cc94fb1b1ceec3f111fc96bae81309cd39398a012a8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4937286936d0fd56fd33f313e9ca080b1342e0f8dc8dd37d903767a5ec8d8db8"
   },
-  "physical_metadata_sha256": "87cf6669e842ceea1228f4b2e12b93927ac41df37dfebe818c047e7f50b22c93"
+  "physical_metadata_sha256": "87cf6669e842ceea1228f4b2e12b93927ac41df37dfebe818c047e7f50b22c93",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaseOfTheUneatenFeast.java",
+  "java_sha256": "92cc58e683638854b3a97c884e71d8872d1c593a3547fcbdcd93174880a323a8",
+  "rules_tests": "src/assurance/requested_case.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CaseAbility.java",
+      "sha256": "1dee85ba94e14af7d4fb257620ca65e6810e1c3ff259c4711401e1d9dd266dcd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MayCastFromGraveyardSourceAbility.java",
+      "sha256": "5fabb3b07028c6709d74af5be237564ca277070effac3353b6bb847a12a76962"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+      "sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SolvedSourceCondition.java",
+      "sha256": "f1b1db3ea216b2935bdd4f5af87c9ba222257458eb2f5e4ca1d105a4e80251d1"
+    }
+  ]
 }

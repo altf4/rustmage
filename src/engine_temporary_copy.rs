@@ -205,6 +205,9 @@ impl Game {
             .find(|row| row.object == object)
     }
     pub(super) fn copy_ability_origin(&self, object: ObjectRef) -> Option<u64> {
+        if self.is_face_down(object) {
+            return None;
+        }
         self.temporary_copy_row(object)?
             .layers
             .last()
@@ -304,6 +307,10 @@ impl Game {
         }
     }
     fn materialize_copy_row(&mut self, row: &Row, refresh: bool) {
+        // Layer 1b masks all copy effects while the permanent remains face down.
+        if self.is_face_down(row.object) {
+            return;
+        }
         let active = row.layers.last();
         let recipe = active
             .map(|layer| {
@@ -410,8 +417,26 @@ impl Game {
             .unwrap()
             .value
             .hand_timestamp = hand_time;
-        self.renew_copy_grant_origin(object, true);
+        if !self.is_face_down(object) {
+            self.renew_copy_grant_origin(object, true);
+        }
         self.refresh_controllers();
+        self.refresh_combat_battle_types();
+    }
+    pub(super) fn reveal_temporary_copy(&mut self, object: ObjectRef, physical: Card) -> bool {
+        let Some(row) = self
+            .state
+            .temporary_copies
+            .as_mut()
+            .and_then(|rows| rows.iter_mut().find(|row| row.object == object))
+        else {
+            return false;
+        };
+        row.physical_card = physical;
+        let row = row.clone();
+        self.materialize_copy_row(&row, true);
+        self.renew_copy_grant_origin(object, true);
+        true
     }
     /// CR613.7a/e/g: a real new object timestamp updates its static effects in
     /// their prior relative order, without replacing any ability instance.
@@ -518,7 +543,9 @@ impl Game {
         }
         for row in &changes {
             self.materialize_copy_row(row, true);
-            self.renew_copy_grant_origin(row.object, false);
+            if !self.is_face_down(row.object) {
+                self.renew_copy_grant_origin(row.object, false);
+            }
         }
         if !changes.is_empty() {
             self.refresh_controllers();
@@ -542,7 +569,9 @@ impl Game {
         }
         for row in &changes {
             self.materialize_copy_row(row, true);
-            self.renew_copy_grant_origin(row.object, false);
+            if !self.is_face_down(row.object) {
+                self.renew_copy_grant_origin(row.object, false);
+            }
         }
         if let Some(rows) = &mut self.state.temporary_copies {
             rows.retain(|row| !row.layers.is_empty());

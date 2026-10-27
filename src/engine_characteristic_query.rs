@@ -103,11 +103,13 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             &|id| self.name(id),
             &|id| self.colors(id),
             &|id| self.legendary(id),
+            &|id| self.mana_value(id),
             &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.life(owner),
             self.state.attack_declared && self.attacking(source.card),
             self.has_enduring_story(owner),
+            self.lost_life(owner),
         )
     }
     fn stat_expression_without_hand(
@@ -990,14 +992,19 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             name: CharacteristicWorld::name(self, id),
             owner: obj.owner,
             controller: obj.controller,
+            battle_protector: self.world.battle_protector(self.object_ref(id)),
             zone: obj.zone,
             tapped: obj.tapped,
             summoning_sick: obj.summoning_sick,
+            cast_for_warp: obj.cast_for_warp,
             damage: obj.damage,
             damaged_this_turn: obj.damaged_this_turn,
             dealt_damage_this_turn: obj.dealt_damage_this_turn,
             counters: self.counter_amounts(id).to_owned(),
             used_abilities: obj.used_abilities,
+            class_level: (obj.zone == Zone::Battlefield
+                && (obj.class_level > 1 || self.granted_subtypes(id).has(definition, "Class")))
+            .then_some(obj.class_level),
             exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
             entered_this_turn: CharacteristicWorld::entered_this_turn(self, self.object_ref(id)),
             power_up_uses: self.power_up_use_views(self.object_ref(id)),
@@ -1062,6 +1069,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn stored_recipe(&self, id: CardId) -> Option<CopyRecipe> {
         self.world.stored_recipe(id)
     }
+    fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
+        self.world.temporary_copy_view(object)
+    }
     fn controls(&self) -> Option<&continuous_control::ControlState> {
         self.world.controls()
     }
@@ -1103,6 +1113,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn gained_life(&self, player: Player) -> bool {
         self.world.gained_life(player)
+    }
+    fn lost_life(&self, player: Player) -> bool {
+        self.world.lost_life(player)
     }
     fn attacking(&self, id: CardId) -> bool {
         self.world.attacking(id)

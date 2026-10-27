@@ -35,6 +35,11 @@ impl FaceView {
     }
 }
 impl Game {
+    /// A natural transformed back uses its front's mana cost; copying that
+    /// back face instead yields zero, even on another double-faced permanent.
+    pub(super) fn object_mana_value(&self, id: CardId) -> u64 {
+        ability_world::CharacteristicWorld::mana_value(self, id)
+    }
     pub(super) fn physical_copy_faces(&self, object: ObjectRef) -> CopyFaces {
         let recipe = if let Some(row) = self.temporary_copy_row(object) {
             row.original_recipe
@@ -87,6 +92,44 @@ impl Game {
                 sorcery,
                 false,
             )
+    }
+    /// Exile the resolving physical card, then return its exact new incarnation
+    /// with its back face projected throughout entry replacement processing.
+    pub(super) fn exile_source_return_transformed(
+        &mut self,
+        item: &SpellView,
+        counter: CounterKind,
+    ) {
+        if item.is_copy
+            || self.object_ref(item.card) != item.object
+            || self.state.objects[item.card as usize].zone != Zone::Stack
+        {
+            return;
+        }
+        let Some(back) = item.source_card.back_face() else {
+            return;
+        };
+        let event = self.move_object(item.card, Zone::Exile);
+        if !event.moved
+            || event.destination != Zone::Exile
+            || self.object_ref(item.card) != event.after
+        {
+            return;
+        }
+        let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
+        movement.controller = self.state.objects[item.card as usize].owner;
+        movement.source_before = Some(Box::new(movement.before.clone()));
+        movement.before.card = back;
+        movement.before.kinds = back.kind_mask();
+        movement.before.colors = back.colors();
+        movement.before.name = back.name();
+        movement.before.keywords = back.keywords();
+        if let Effect::Creature(power, toughness) = back.effect() {
+            movement.before.power = i128::from(power);
+            movement.before.toughness = i128::from(toughness);
+        }
+        movement.effect_counter = Some((counter, 1));
+        self.stage_entries(vec![movement], None);
     }
     pub(super) fn transform_source(&mut self, item: &SpellView) {
         if !self.on_battlefield(item.card)

@@ -1,0 +1,12 @@
+{
+  "name": "",
+  "catalogue_id": 5429,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "16cc3f9dc6ccdd66687a1f14847ddc9f809570d67f0616eb4b95dc15aba339fe",
+  "notes": "CR 708.2a, 702.168: face-down disguise characteristics include ward {2}; this internal definition is not a token.",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+  "java_sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+}

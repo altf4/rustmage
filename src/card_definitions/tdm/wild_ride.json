@@ -3,10 +3,41 @@
   "catalogue_id": 5059,
   "oracle_id": "61978202-538b-4f92-acfc-e95f4a6ce466",
   "facts_sha256": "f9c99b0b7d1c6a111988ac1a01ddd66b0ee49a508e7c019e816e4272bf453e00",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "31c801d46b815b2efe35e8d7f0ac3a7ec252d2734d45a44bf6ed316932237b6e"
   },
-  "physical_metadata_sha256": "1db5e4693e88cfed64b9b3e6fc6fc62bcdc902a7ad6352cd126818bd10fd0275"
+  "physical_metadata_sha256": "1db5e4693e88cfed64b9b3e6fc6fc62bcdc902a7ad6352cd126818bd10fd0275",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WildRide.java",
+  "java_sha256": "d458b101a0c63fb9cd605af13a5babbee23bf0ee29d4657ebaf5be5e13fd9eaa",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+      "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CastFromGraveyardAbility.java",
+      "sha256": "d960ebf54f87db2baf2a23785c181bdfea863a60d493eb66707ba64becc77be9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ],
+  "rules_tests": "src/assurance/requested_wild_ride.rs"
 }

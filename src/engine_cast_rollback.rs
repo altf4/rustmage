@@ -14,6 +14,10 @@ pub(super) struct CastRollback {
     pub(super) events: Vec<cast_rollback_mana::ManaEvent>,
     pub(super) replay: Option<Box<cast_rollback_mana::ManaReplay>>,
     pub(super) capture: Option<Box<cast_mana_recording::ManaCapture>>,
+    pub(super) public_hand_cards: Vec<CardId>,
+    pub(super) obscured_hand_cards: Vec<CardId>,
+    pub(super) public_face_down: Vec<ObjectRef>,
+    pub(super) obscured_face_down: Vec<ObjectRef>,
 }
 impl CastRollback {
     fn new(before: State, player: Player, spell: CardId) -> Self {
@@ -34,16 +38,144 @@ impl CastRollback {
             events: Vec::new(),
             replay: None,
             capture: None,
+            public_hand_cards: Vec::new(),
+            obscured_hand_cards: Vec::new(),
+            public_face_down: Vec::new(),
+            obscured_face_down: Vec::new(),
         }
     }
     pub(super) fn bytes(&self) -> usize {
         self.bytes
+            + (self.public_hand_cards.len() + self.obscured_hand_cards.len())
+                * std::mem::size_of::<CardId>()
+            + (self.public_face_down.len() + self.obscured_face_down.len())
+                * std::mem::size_of::<ObjectRef>()
             + self.events.iter().map(|e| e.bytes()).sum::<usize>()
             + self.replay.as_ref().map_or(0, |r| r.bytes())
             + self.capture.as_ref().map_or(0, |r| r.bytes())
     }
 }
 impl Game {
+    // Record public knowledge while the checkpoint incarnation is still in hand.
+    pub(super) fn remember_public_hand(&mut self, reference: ObjectRef) {
+        if let Some(rollback) = &mut self.state.cast_rollback
+            && rollback
+                .before
+                .objects
+                .get(reference.card as usize)
+                .is_some_and(|o| o.zone == Zone::Hand && o.generation == reference.generation)
+            && !rollback.obscured_hand_cards.contains(&reference.card)
+            && !rollback.public_hand_cards.contains(&reference.card)
+        {
+            rollback.public_hand_cards.push(reference.card);
+        }
+        if !self.state.known_hand.contains(&reference) {
+            self.state.known_hand.push(reference);
+        }
+    }
+    pub(super) fn remember_revealed_disguise(&mut self, id: CardId) {
+        if let Some(rollback) = &mut self.state.cast_rollback
+            && rollback
+                .before
+                .objects
+                .get(id as usize)
+                .is_some_and(|o| matches!(o.zone, Zone::Hand | Zone::Library))
+            && !rollback.obscured_hand_cards.contains(&id)
+            && !rollback.public_hand_cards.contains(&id)
+        {
+            rollback.public_hand_cards.push(id);
+        }
+    }
+    pub(super) fn restore_public_hand_knowledge(
+        &mut self,
+        current: &State,
+        cards: &[CardId],
+        obscured: &[CardId],
+    ) {
+        self.state
+            .known_hand
+            .retain(|reference| !obscured.contains(&reference.card));
+        let mut public = cards.to_vec();
+        for reference in &current.known_hand {
+            if !obscured.contains(&reference.card)
+                && self
+                    .state
+                    .objects
+                    .get(reference.card as usize)
+                    .is_some_and(|o| o.zone == Zone::Hand && o.generation == reference.generation)
+                && !public.contains(&reference.card)
+            {
+                public.push(reference.card);
+            }
+        }
+        for id in public {
+            if obscured.contains(&id) {
+                continue;
+            }
+            let Some(object) = self.state.objects.get(id as usize) else {
+                continue;
+            };
+            let owner = object.owner;
+            if object.zone == Zone::Hand {
+                let reference = self.object_ref(id);
+                if !self.state.known_hand.contains(&reference) {
+                    self.state.known_hand.push(reference);
+                }
+            } else if object.zone == Zone::Library
+                && self.state.players[owner.index()].library.last() == Some(&id)
+                // A hidden library movement could have obscured the exact card.
+                && current.objects.get(id as usize).is_some_and(|object| object.zone != Zone::Library)
+            {
+                self.remember_library_top(owner, self.object_ref(id));
+            }
+        }
+    }
+    // Face-down exile is marked after the zone move, so sample completed
+    // actions rather than assuming an exile destination is public at commit.
+    pub(super) fn capture_public_hand_exiles(&mut self) {
+        let Some(rollback) = self.state.cast_rollback.as_ref() else {
+            return;
+        };
+        let public = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let original = rollback.before.objects.get(id)?;
+                (original.zone == Zone::Hand
+                    && !rollback.obscured_hand_cards.contains(&(id as CardId))
+                    && object.zone == Zone::Exile
+                    && self
+                        .can_view_hideaway(original.owner.other(), self.object_ref(id as CardId)))
+                .then_some(id as CardId)
+            })
+            .collect::<Vec<_>>();
+        let rollback = self.state.cast_rollback.as_mut().unwrap();
+        for id in public {
+            if !rollback.public_hand_cards.contains(&id) {
+                rollback.public_hand_cards.push(id);
+            }
+        }
+    }
+    // Once an original hand card enters a hidden library, its physical ID is
+    // no longer public evidence that later objects are the same card.
+    pub(super) fn obscure_rollback_hand_card(&mut self, id: CardId) {
+        let Some(rollback) = self.state.cast_rollback.as_mut() else {
+            return;
+        };
+        if rollback
+            .before
+            .objects
+            .get(id as usize)
+            .is_some_and(|o| matches!(o.zone, Zone::Hand | Zone::Library))
+        {
+            rollback.public_hand_cards.retain(|&known| known != id);
+            if !rollback.obscured_hand_cards.contains(&id) {
+                rollback.obscured_hand_cards.push(id);
+            }
+        }
+    }
     pub(super) fn begin_attack_rollback(&mut self, actor: Player) {
         assert!(self.state.cast_rollback.is_none());
         self.state.cast_rollback = Some(Box::new(CastRollback::new(
@@ -53,6 +185,7 @@ impl Game {
         )));
     }
     pub(super) fn prepare_cast_rollback(&mut self, actor: Player, action: &Action) {
+        self.capture_public_hand_exiles();
         if let Some(rollback) = &mut self.state.cast_rollback {
             if actor != rollback.player
                 && matches!(
@@ -70,6 +203,12 @@ impl Game {
             }
             return;
         }
+        if let Action::BeginFaceUp { object, .. } = *action {
+            let mut rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
+            rollback.public_face_down.push(object);
+            self.state.cast_rollback = Some(Box::new(rollback));
+            return;
+        }
         let card = match *action {
             Action::AnnounceCast { card }
             | Action::AnnounceExile { card }
@@ -77,11 +216,14 @@ impl Game {
             | Action::AnnounceExileFree { card, .. }
             | Action::AnnounceFlashSurcharge { card }
             | Action::AnnounceWarp { card }
+            | Action::AnnounceDisguise { card }
+            | Action::AnnounceDisguiseGraveyard { card, .. }
             | Action::AnnounceSneak { card, .. }
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
             | Action::AnnounceBack { card }
             | Action::AnnouncePlotted { card }
+            | Action::AnnounceHarmonize { card }
             | Action::AnnounceFlashback { card }
             | Action::AnnounceGrantedFlashback { card, .. }
             | Action::AnnounceFree { card, .. }
@@ -122,6 +264,7 @@ impl Game {
             .is_some_and(|r| r.foreign_choice)
     }
     pub(super) fn finish_cast_rollback(&mut self, fundable: bool) {
+        self.capture_public_hand_exiles();
         if !fundable {
             let Some(rollback) = self.state.cast_rollback.take() else {
                 return;
@@ -132,15 +275,32 @@ impl Game {
                 return;
             }
             let current = std::mem::replace(&mut self.state, rollback.before);
-            self.complete_cast_rollback_restore(&current, rollback.spell);
+            self.complete_cast_rollback_restore(
+                &current,
+                rollback.spell,
+                &rollback.public_hand_cards,
+                &rollback.obscured_hand_cards,
+                &rollback.public_face_down,
+                &rollback.obscured_face_down,
+            );
             return;
         }
         if let Some(r) = &mut self.state.cast_rollback {
             r.foreign_choice = false;
         }
     }
-    pub(super) fn complete_cast_rollback_restore(&mut self, current: &State, spell: CardId) {
+    pub(super) fn complete_cast_rollback_restore(
+        &mut self,
+        current: &State,
+        spell: CardId,
+        public_hand_cards: &[CardId],
+        obscured_hand_cards: &[CardId],
+        public_face_down: &[ObjectRef],
+        obscured_face_down: &[ObjectRef],
+    ) {
         self.preserve_irreversible_cast_library_changes(current, spell);
+        self.restore_public_hand_knowledge(current, public_hand_cards, obscured_hand_cards);
+        self.restore_public_face_down(current, public_face_down, obscured_face_down);
         // Undone proposal triggers disappear; retain the original priority holder.
         if self.state.resolving.is_none() && self.state.pending == Pending::Priority {
             self.state_based_actions();
@@ -167,7 +327,9 @@ impl Game {
                         .iter()
                         .any(|f| f.announcement.item.kind == StackKind::Spell)
                 });
-        if (!casting && self.state.attack_payment.is_none()) || self.outcome().is_some() {
+        if (!casting && self.state.attack_payment.is_none() && self.face_up_payment().is_none())
+            || self.outcome().is_some()
+        {
             self.state.cast_rollback = None;
         }
     }
@@ -239,7 +401,7 @@ impl Game {
                     },
                     false,
                     Counters::default(),
-                    None,
+                    EntryIdentity::default(),
                     ZoneObservers::default(),
                 );
             }

@@ -469,6 +469,30 @@ impl Game {
         goal.reserve = Some((object, spec));
         self.can_fund(goal)
     }
+    pub(super) fn additional_life_available(&self) -> bool {
+        let Some(a) = self.state.announcing.as_ref() else {
+            return false;
+        };
+        let Some(AdditionalCost {
+            kind: EffectChoiceKind::DiscardOrLife(amount),
+            ..
+        }) = a.additional_cost()
+        else {
+            return false;
+        };
+        if self.state.players[a.item.controller.index()].life < i128::from(amount) {
+            return false;
+        }
+        self.discard_or_life_route_fundable(a)
+    }
+    pub(super) fn choose_additional_life(&mut self) {
+        let a = self.state.announcing.as_mut().unwrap();
+        a.additional_life = true;
+        self.state.pending = Pending::PayCosts {
+            player: a.item.controller,
+        };
+        self.resume_cast_cost_selection();
+    }
     pub(super) fn choose_additional_cost(&mut self, object: ObjectRef) {
         let a = self.state.announcing.as_mut().unwrap();
         if matches!(
@@ -611,6 +635,13 @@ impl Game {
             a.additional_paid = true;
             return;
         }
+        if let EffectChoiceKind::DiscardOrLife(amount) = spec.kind
+            && a.additional_life
+        {
+            self.lose_life(a.item.controller, i128::from(amount));
+            a.additional_paid = true;
+            return;
+        }
         let object = a.additional.expect("additional cost selected");
         assert!(
             self.additional_candidate(spec, a.item.controller, a.item.object, object),
@@ -642,6 +673,7 @@ impl Game {
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack
             | EffectChoiceKind::SacrificeOrDiscard { .. }
+            | EffectChoiceKind::DiscardOrLife(_)
             | EffectChoiceKind::SacrificeAttachedEquipment => unreachable!(),
             EffectChoiceKind::ExileGraveyard => {
                 self.move_object(object.card, Zone::Exile);

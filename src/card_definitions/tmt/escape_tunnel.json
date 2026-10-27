@@ -3,10 +3,36 @@
   "catalogue_id": 1365,
   "oracle_id": "0056fc91-4398-471c-b561-7ff99750ac8a",
   "facts_sha256": "7c58321ca3af0f74073d92b0e1a537b6141e894e6f7269b34ba2c189dee80fcf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "01bd505067b9d0657cf016c1ffc4a046f2811d076044c51686b758ebdc211c59"
   },
-  "physical_metadata_sha256": "05281d05937e6aea7aef66566ad973e8d993112648246caef4e477ebe2fac06c"
+  "physical_metadata_sha256": "05281d05937e6aea7aef66566ad973e8d993112648246caef4e477ebe2fac06c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EscapeTunnel.java",
+  "java_sha256": "8e78d5bb362239edf1e3f2557d767e749033a5bd87c348e6225102b9ebbd55e7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+      "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
+    }
+  ],
+  "remaining_obligations": []
 }

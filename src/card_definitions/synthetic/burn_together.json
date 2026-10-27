@@ -1,0 +1,54 @@
+{
+  "name": "Burn Together",
+  "catalogue_id": 5430,
+  "oracle_id": "0e7405e3-e9e6-4213-a73f-e0c01a7d6721",
+  "facts_sha256": "37a0cee9f396a904a0e9a90309751f48c91ca0d261ff07613aeb09445ba4413a",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "0e7405e3-e9e6-4213-a73f-e0c01a7d6721",
+    "index": 1,
+    "sha256": "e4c6c3d65bd1d0dff0eec4965cea0b675aaf9d49d1f25f5ef54e1a6ac44528cb"
+  },
+  "physical_metadata_sha256": "50d23e3e8d3a03b7b6a91831072e6640994d5219a4b2c2cb6df26a75868eeb3c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CallousSellSword.java",
+  "java_sha256": "3154fb9546fc851459bd0e694c3386ac9102ad89b055e2cbb6da999e751174c8",
+  "rules_tests": "src/assurance/requested_callous.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlDiedCount.java",
+      "sha256": "c77d6fb8f0cc949f86c6583cf907eb34d7158564e55a9e0c9712f40f3ef950b0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayer.java",
+      "sha256": "f43a3bbef4f7d2f923cddf063aa48211aad59848ccefcdace9b08a40b5cd67ab"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    }
+  ]
+}

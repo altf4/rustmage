@@ -270,6 +270,20 @@ impl Game {
         independent_free: bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
+        if face == CastFace::Back
+            && object.card.transforming_double_face()
+            && !self
+                .state
+                .resolution_free_casts
+                .as_ref()
+                .is_some_and(|casts| {
+                    casts.siege_transformed
+                        && casts.player == actor
+                        && casts.remaining.contains(&self.object_ref(card))
+                })
+        {
+            return false;
+        }
         if object.zone == Zone::Hand && self.hand_play_prohibited() {
             return false;
         }
@@ -306,7 +320,11 @@ impl Game {
         }
         if matches!(
             method,
-            CastMethod::ExileLife | CastMethod::Free | CastMethod::Flashback | CastMethod::Miracle
+            CastMethod::ExileLife
+                | CastMethod::Free
+                | CastMethod::Flashback
+                | CastMethod::Harmonize
+                | CastMethod::Miracle
         ) && definition.x_symbols() > 0
         {
             item.x = Some(0);
@@ -332,6 +350,7 @@ impl Game {
                 CastMethod::ExileLife
                     | CastMethod::Free
                     | CastMethod::Flashback
+                    | CastMethod::Harmonize
                     | CastMethod::Miracle
             )
         {
@@ -359,6 +378,7 @@ impl Game {
             pay_window: true,
             production: None,
             additional: None,
+            additional_life: false,
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
@@ -366,6 +386,8 @@ impl Game {
             cast_costs: None,
             evidence: None,
             convoke: None,
+            harmonizer: None,
+            harmonize_discount: 0,
             additional_paid: false,
         };
         if let Some(modes) = a.item.modes() {

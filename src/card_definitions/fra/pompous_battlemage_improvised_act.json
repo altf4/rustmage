@@ -3,10 +3,51 @@
   "catalogue_id": 3201,
   "oracle_id": "33e3793c-098f-4897-88f3-9f9ce9081e0f",
   "facts_sha256": "5bba04b9b754ade0b0e8dd93ddafc186ecee2f856c256c39f1ceb563e24eec16",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9fa3295093a509d37680ceaeece31d960ed13fb969c2c4d870cd61c3163d4fa0"
   },
-  "physical_metadata_sha256": "8a2fef454a9c1b0c938377f62e6c7ea077766698539ce73fc6a478398bc9a812"
+  "physical_metadata_sha256": "2ded610fe957fa243ca74ee5bd0cbdf4017d61c4d0e439a670416f8b61dc2149",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PompousBattlemage.java",
+  "java_sha256": "cf02c4b67ad0226c548bbdeef3b78594ecde2b2b35aaf6d60c7fb7d7d31fb5f5",
+  "rules_tests": "src/assurance/requested_fra_prepare.rs",
+  "oracle_face": {
+    "oracle_id": "33e3793c-098f-4897-88f3-9f9ce9081e0f",
+    "index": 0,
+    "sha256": "a9affafec2c002387070404af2a63548d8add02e8d2c762bf9719102a1e077d1"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

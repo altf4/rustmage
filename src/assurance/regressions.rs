@@ -60,6 +60,36 @@ fn fixture() -> Game {
     }
     g
 }
+fn project_battle_protectors(view: &mut Observation) {
+    for object in &mut view.objects {
+        object.battle_protector = None;
+    }
+}
+
+#[test]
+fn previous_schema_projection_removes_battle_protector() {
+    let mut game = scenario(Player::P0);
+    let id = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
+    game.set_battle_protector(game.object_ref(id), Player::P1);
+    let mut view = game.observe(Player::P0);
+    let object = view.objects.iter().find(|object| object.id == id).unwrap();
+    assert_eq!(object.battle_protector, Some(Player::P1));
+    assert!(
+        serde_json::to_value(object)
+            .unwrap()
+            .get("battle_protector")
+            .is_some()
+    );
+    project_battle_protectors(&mut view);
+    let object = view.objects.iter().find(|object| object.id == id).unwrap();
+    assert!(
+        serde_json::to_value(object)
+            .unwrap()
+            .get("battle_protector")
+            .is_none()
+    );
+}
+
 fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
     let mut g = fixture();
     let id = put(&mut g, Player::P0, card.identity(), Zone::Hand);
@@ -79,7 +109,8 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
                 let instant = put(&mut g, Player::P0, "Shock", Zone::Hand);
                 cast(&mut g, instant, Some(Target::Player(Player::P1)));
             }
-            "Cosmium Blast"
+            "Dreadmaw's Ire"
+            | "Cosmium Blast"
             | "Helicarrier Strike"
             | "Elspeth's Smite"
             | "Joust Through"
@@ -196,6 +227,10 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
         view.catalogue = "";
         if let Some(schema) = schema_projection {
             view.schema = schema;
+            if schema < 169 {
+                view.solved_cases.clear();
+                project_battle_protectors(view);
+            }
             if schema < 139 {
                 for row in &mut view.counter_placement_history {
                     row.plus_one = false;
@@ -222,6 +257,17 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
         // removes the public enduring-story designation.
         for field in ["\"enduring_story\":true,", "\"enduring_story\":false,"] {
             observation_bytes = observation_bytes.replace(field, "");
+        }
+    }
+    if schema_projection.is_some_and(|schema| schema < 169) {
+        observation_bytes = observation_bytes.replace("\"earthbend_returns\":[],", "");
+        for value in ["true", "false"] {
+            observation_bytes =
+                observation_bytes.replace(&format!("\"cast_for_warp\":{value},"), "");
+        }
+        for count in 0..=4 {
+            observation_bytes =
+                observation_bytes.replace(&format!("\"turns_started\":{count},"), "");
         }
     }
     Trace {

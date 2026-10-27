@@ -67,12 +67,14 @@ impl Game {
             &|id| self.object_name(id),
             &|id| ability_world::CharacteristicWorld::colors(self, id),
             &|id| ability_world::CharacteristicWorld::legendary(self, id),
+            &|id| ability_world::CharacteristicWorld::mana_value(self, id),
             &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.state.players[owner.index()].life,
             self.state.attack_declared
                 && self.state.attackers.iter().any(|a| a.card == source.card),
             self.state.players[owner.index()].enduring_story,
+            self.state.players[owner.index()].life_lost_this_turn > 0,
         )
     }
     /// The same earlier-layer evaluator serves concrete state and a borrowed
@@ -89,11 +91,13 @@ impl Game {
         names: &impl Fn(CardId) -> &'static str,
         colors: &impl Fn(CardId) -> u8,
         legendary: &impl Fn(CardId) -> bool,
+        mana_value: &impl Fn(CardId) -> u64,
         counter_count: &impl Fn(CardId, CounterKind) -> u64,
         has_counters: &impl Fn(CardId) -> bool,
         life: i128,
         attacking: bool,
         enduring_story: bool,
+        life_lost: bool,
     ) -> i128
     where
         F: Fn() -> I,
@@ -130,11 +134,13 @@ impl Game {
                     names,
                     colors,
                     legendary,
+                    mana_value,
                     counter_count,
                     has_counters,
                     life,
                     attacking,
                     enduring_story,
+                    life_lost,
                 ) == 0,
             ),
             StatValue::SourceEquipmentCount => {
@@ -237,11 +243,13 @@ impl Game {
                     names,
                     colors,
                     legendary,
+                    mana_value,
                     counter_count,
                     has_counters,
                     life,
                     attacking,
                     enduring_story,
+                    life_lost,
                 ) >= i128::from(minimum),
             ),
             StatValue::SpellsCastThisTurn => {
@@ -254,6 +262,22 @@ impl Game {
             StatValue::LifeGainOccurredThisTurn => {
                 i128::from(self.state.players[owner.index()].life_gained_this_turn > 0)
             }
+            StatValue::LinkedExileCardTypes => {
+                let mut mask = 0u16;
+                if let Some(links) = &self.state.linked_choices {
+                    for link in links.links.iter().filter(|link| link.source == source) {
+                        if let Some((id, object)) = objects().find(|(id, object)| {
+                            *id == link.exiled.card
+                                && object.generation == link.exiled.generation
+                                && object.zone == Zone::Exile
+                        }) {
+                            mask |= kinds(id, object);
+                        }
+                    }
+                }
+                i128::from(mask.count_ones())
+            }
+            StatValue::LifeLostThisTurn => i128::from(life_lost),
             StatValue::LifeGainedThisTurn => {
                 i128::try_from(self.state.players[owner.index()].life_gained_this_turn)
                     .capacity("life gain count representation exhausted")
@@ -307,7 +331,7 @@ impl Game {
                     .filter(|&(id, o)| {
                         Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     })
-                    .map(|(_, o)| o.card.fixed_mana_value())
+                    .map(|(id, _)| mana_value(id))
                     .collect();
                 values.sort_unstable();
                 values.dedup();
@@ -337,7 +361,7 @@ impl Game {
                     .filter(|&(id, o)| {
                         Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     })
-                    .map(|(_, o)| o.card.fixed_mana_value())
+                    .map(|(id, _)| mana_value(id))
                     .max()
                     .unwrap_or(0),
             ),
@@ -358,11 +382,13 @@ impl Game {
                         names,
                         colors,
                         legendary,
+                        mana_value,
                         counter_count,
                         has_counters,
                         life,
                         attacking,
                         enduring_story,
+                        life_lost,
                     )
                 })
                 .try_fold(0i128, i128::checked_add)

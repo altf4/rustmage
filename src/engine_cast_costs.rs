@@ -3,8 +3,13 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CastCostClause {
     Teamwork(u16),
+    Blight {
+        amount: u16,
+        selected: Option<ObjectRef>,
+    },
     Casualty(u16),
     Additional,
+    Harmonize(ObjectRef),
     Mana,
     Life(u32),
     AlternativeLife(u32),
@@ -55,10 +60,19 @@ impl Announcement {
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
         self.initialize_alternative_life();
         if self.item.kind == StackKind::Spell
-            && (self.item.source_card.has_convoke() || improvise)
-            && self.additional_cost().is_some()
+            && ((self.item.source_card.has_convoke() || improvise)
+                && self.additional_cost().is_some()
+                || self
+                    .additional_cost()
+                    .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_))))
         {
             self.cast_costs.get_or_insert_with(Default::default);
+        }
+        if self.item.cast.is_some_and(|c| c.blight == Some(true)) {
+            self.add_cast_cost_clause(CastCostClause::Blight {
+                amount: self.item.source_card.blight().unwrap().amount,
+                selected: None,
+            });
         }
         if self.item.cast.is_some_and(|c| c.teamwork == Some(true)) {
             self.add_cast_cost_clause(CastCostClause::Teamwork(
@@ -79,7 +93,15 @@ impl Announcement {
         }
         if self.cast_costs.is_some()
             && self.item.kind == StackKind::Spell
-            && (self.item.source_card.has_convoke() || improvise)
+            && (self.item.source_card.has_convoke()
+                || improvise
+                || self
+                    .additional_cost()
+                    .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_)))
+                || self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Harmonize || c.blight == Some(true)))
         {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
@@ -144,11 +166,24 @@ impl Game {
         }
         false
     }
+    pub(super) fn begin_ordered_costs(&mut self) {
+        let a = self.state.announcing.as_mut().unwrap();
+        a.cast_costs.as_mut().unwrap().mana_closed = true;
+        self.state.pending = Pending::CastCosts {
+            player: a.item.controller,
+        };
+    }
     pub(super) fn choose_cast_cost(&mut self, index: u16) {
         let mut a = self.state.announcing.take().unwrap();
         let kind = a.cast_costs.as_ref().unwrap().clauses[usize::from(index)].clause;
         a.cast_costs.as_mut().unwrap().active = Some(index);
         match kind {
+            CastCostClause::Blight { .. } => {
+                self.state.pending = Pending::BlightPayment {
+                    player: a.item.controller,
+                };
+                self.state.announcing = Some(a);
+            }
             CastCostClause::Teamwork(_) => {
                 self.state.pending = Pending::TeamworkPayment {
                     player: a.item.controller,
@@ -160,12 +195,24 @@ impl Game {
                     Pending::Convoke {
                         player: a.item.controller,
                     }
-                } else {
+                } else if improvise::potential(self, a.item.source_card) {
                     Pending::Improvise {
+                        player: a.item.controller,
+                    }
+                } else {
+                    Pending::PayCosts {
                         player: a.item.controller,
                     }
                 };
                 self.state.announcing = Some(a);
+            }
+            CastCostClause::Harmonize(object) => {
+                let c = a.cast_costs.as_mut().unwrap();
+                c.clauses[usize::from(index)].paid = true;
+                c.active = None;
+                self.state.announcing = Some(a);
+                self.tap_objects(&[object.card]);
+                self.finish_announcement();
             }
             CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
                 self.lose_life(a.item.controller, i128::from(amount));
@@ -185,7 +232,7 @@ impl Game {
             CastCostClause::Additional => {
                 let spec = a.additional_cost().unwrap();
                 let p = a.item.controller;
-                let selected = a.additional.is_some();
+                let selected = a.additional.is_some() || a.additional_life;
                 self.state.announcing = Some(a);
                 if selected {
                     self.state.pending = Pending::PayCosts { player: p };

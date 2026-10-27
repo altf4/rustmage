@@ -32,8 +32,12 @@ impl Game {
                 player: self.state.active,
                 controller,
             });
+        let current = state.current;
         if state.current.is_none() && state.pending.iter().all(Option::is_none) {
             self.state.player_control = None;
+        }
+        if let Some(control) = current {
+            self.remember_controlled_player_faces(control.player, control.controller);
         }
     }
     pub(super) fn decision_controller(&self, player: Player) -> Player {

@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "de680999f610b6273b2d9e70dc942296cda7c31f7d27eb552e3e5f7b6955ba33",
+  "catalogue_version": "2ddd9b2c30cdcaf1c5e39322b743ab405d3f8e9534ecf66b110abf8d5a61566c",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2702,
-  "implemented_total": 2708,
-  "token_definitions": 133,
+  "implemented_standard_cards": 2740,
+  "implemented_total": 2746,
+  "token_definitions": 136,
   "emblem_definitions": 3,
-  "adventure_definitions": 47,
+  "adventure_definitions": 49,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -19,8 +19,8 @@
     },
     "blb": {
       "total": 261,
-      "complete": 113,
-      "gated": 148
+      "complete": 117,
+      "gated": 144
     },
     "cmm": {
       "total": 1,
@@ -32,13 +32,13 @@
     },
     "dft": {
       "total": 259,
-      "complete": 94,
-      "gated": 165
+      "complete": 95,
+      "gated": 164
     },
     "dsk": {
       "total": 264,
-      "complete": 76,
-      "gated": 188
+      "complete": 78,
+      "gated": 186
     },
     "ecc": {
       "total": 7,
@@ -47,8 +47,8 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 166,
-      "complete": 101
+      "gated": 164,
+      "complete": 103
     },
     "eoc": {
       "total": 8,
@@ -57,8 +57,8 @@
     },
     "eoe": {
       "total": 259,
-      "gated": 156,
-      "complete": 103
+      "gated": 151,
+      "complete": 108
     },
     "fdn": {
       "total": 427,
@@ -66,18 +66,18 @@
     },
     "fin": {
       "total": 305,
-      "gated": 178,
-      "complete": 127
+      "gated": 176,
+      "complete": 129
     },
     "fra": {
       "total": 285,
-      "complete": 89,
-      "gated": 196
+      "complete": 93,
+      "gated": 192
     },
     "frc": {
       "total": 6,
-      "gated": 5,
-      "complete": 1
+      "complete": 2,
+      "gated": 4
     },
     "hob": {
       "total": 188,
@@ -101,8 +101,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 181,
-      "complete": 92
+      "gated": 179,
+      "complete": 94
     },
     "m19": {
       "total": 2,
@@ -110,8 +110,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 193,
-      "complete": 71
+      "gated": 192,
+      "complete": 72
     },
     "mom": {
       "total": 1,
@@ -145,8 +145,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 12,
-      "gated": 12
+      "complete": 13,
+      "gated": 11
     },
     "sos": {
       "total": 264,
@@ -154,23 +154,23 @@
     },
     "spm": {
       "total": 134,
-      "complete": 40,
-      "gated": 94
+      "complete": 43,
+      "gated": 91
     },
     "tdc": {
       "total": 15,
-      "gated": 2,
-      "complete": 13
+      "complete": 14,
+      "gated": 1
     },
     "tdm": {
       "total": 264,
-      "complete": 117,
-      "gated": 147
+      "complete": 120,
+      "gated": 144
     },
     "tla": {
       "total": 278,
-      "gated": 187,
-      "complete": 91
+      "gated": 184,
+      "complete": 94
     },
     "tle": {
       "total": 5,
@@ -182,8 +182,8 @@
     },
     "tmt": {
       "total": 189,
-      "gated": 124,
-      "complete": 65
+      "gated": 123,
+      "complete": 66
     },
     "w17": {
       "total": 1,
@@ -191,8 +191,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 138,
-      "gated": 120
+      "complete": 140,
+      "gated": 118
     },
     "znr": {
       "total": 1,
@@ -1339,8 +1339,8 @@
     {
       "name": "Amalia Benavides Aguirre",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/amalia_benavides_aguirre.rs",
       "set": "lci"
     },
@@ -2603,8 +2603,8 @@
     {
       "name": "Ba Sing Se",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/ba_sing_se.rs",
       "set": "tla"
     },
@@ -3611,8 +3611,8 @@
     {
       "name": "Bitter Triumph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdc/bitter_triumph.rs",
       "set": "tdc"
     },
@@ -5195,8 +5195,8 @@
     {
       "name": "Callous Sell-Sword // Burn Together",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/callous_sell_sword_burn_together.rs",
       "set": "woe"
     },
@@ -5451,8 +5451,8 @@
     {
       "name": "Carnivorous Cultivator // Enroot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/carnivorous_cultivator_enroot.rs",
       "set": "fra"
     },
@@ -5579,8 +5579,8 @@
     {
       "name": "Case of the Uneaten Feast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/case_of_the_uneaten_feast.rs",
       "set": "mkm"
     },
@@ -8411,8 +8411,8 @@
     {
       "name": "Defend the Rider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/defend_the_rider.rs",
       "set": "dft"
     },
@@ -9611,8 +9611,8 @@
     {
       "name": "Dreadmaw's Ire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/dreadmaw_s_ire.rs",
       "set": "lci"
     },
@@ -10131,8 +10131,8 @@
     {
       "name": "Earthbender Ascension",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earthbender_ascension.rs",
       "set": "tla"
     },
@@ -10555,8 +10555,8 @@
     {
       "name": "Elusive Otter // Grove's Bounty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/elusive_otter_grove_s_bounty.rs",
       "set": "soc"
     },
@@ -10931,8 +10931,8 @@
     {
       "name": "Enlightened Confidant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/enlightened_confidant.rs",
       "set": "fra"
     },
@@ -11123,8 +11123,8 @@
     {
       "name": "Escape Tunnel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/escape_tunnel.rs",
       "set": "tmt"
     },
@@ -11155,8 +11155,8 @@
     {
       "name": "Esper Origins // Summon: Esper Maduin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/esper_origins_summon_esper_maduin.rs",
       "set": "fin"
     },
@@ -11179,8 +11179,8 @@
     {
       "name": "Essence Channeler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/essence_channeler.rs",
       "set": "blb"
     },
@@ -11571,8 +11571,8 @@
     {
       "name": "Fabled Passage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/frc/fabled_passage.rs",
       "set": "frc"
     },
@@ -13355,8 +13355,8 @@
     {
       "name": "Full Bore",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/full_bore.rs",
       "set": "eoe"
     },
@@ -14059,8 +14059,8 @@
     {
       "name": "Ghost Vacuum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/ghost_vacuum.rs",
       "set": "dsk"
     },
@@ -15083,8 +15083,8 @@
     {
       "name": "Great Arashin City",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/great_arashin_city.rs",
       "set": "tdm"
     },
@@ -15635,8 +15635,8 @@
     {
       "name": "Haliya, Guided by Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/haliya_guided_by_light.rs",
       "set": "eoe"
     },
@@ -17051,8 +17051,8 @@
     {
       "name": "Hunter's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/hunter_s_talent.rs",
       "set": "blb"
     },
@@ -17203,8 +17203,8 @@
     {
       "name": "Icetill Explorer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/icetill_explorer.rs",
       "set": "eoe"
     },
@@ -18867,8 +18867,8 @@
     {
       "name": "Keen-Eyed Curator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/keen_eyed_curator.rs",
       "set": "blb"
     },
@@ -20251,8 +20251,8 @@
     {
       "name": "Liliana the Faultless",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/liliana_the_faultless.rs",
       "set": "fra"
     },
@@ -20859,8 +20859,8 @@
     {
       "name": "Lunar Convocation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/lunar_convocation.rs",
       "set": "blb"
     },
@@ -21891,8 +21891,8 @@
     {
       "name": "Meltstrider's Resolve",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/meltstrider_s_resolve.rs",
       "set": "eoe"
     },
@@ -22219,8 +22219,8 @@
     {
       "name": "Mightform Harmonizer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/mightform_harmonizer.rs",
       "set": "eoe"
     },
@@ -23219,8 +23219,8 @@
     {
       "name": "Multiversal Passage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/multiversal_passage.rs",
       "set": "spm"
     },
@@ -24507,8 +24507,8 @@
     {
       "name": "Origin of Metalbending",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/origin_of_metalbending.rs",
       "set": "tla"
     },
@@ -25811,8 +25811,8 @@
     {
       "name": "Pompous Battlemage // Improvised Act",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fra/pompous_battlemage_improvised_act.rs",
       "set": "fra"
     },
@@ -26579,8 +26579,8 @@
     {
       "name": "Pyrrhic Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/pyrrhic_strike.rs",
       "set": "ecl"
     },
@@ -29619,8 +29619,8 @@
     {
       "name": "Sandman, Shifting Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/sandman_shifting_scoundrel.rs",
       "set": "spm"
     },
@@ -29707,8 +29707,8 @@
     {
       "name": "Sapling Nursery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sapling_nursery.rs",
       "set": "ecl"
     },
@@ -30275,8 +30275,8 @@
     {
       "name": "Secret Identity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/secret_identity.rs",
       "set": "spm"
     },
@@ -31555,8 +31555,8 @@
     {
       "name": "Sleight of Hand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/sleight_of_hand.rs",
       "set": "woe"
     },
@@ -33107,8 +33107,8 @@
     {
       "name": "Starting Town",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/starting_town.rs",
       "set": "fin"
     },
@@ -34371,8 +34371,8 @@
     {
       "name": "Surrak, Elusive Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/surrak_elusive_hunter.rs",
       "set": "tdm"
     },
@@ -37843,8 +37843,8 @@
     {
       "name": "Turn Inside Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/turn_inside_out.rs",
       "set": "dsk"
     },
@@ -40675,8 +40675,8 @@
     {
       "name": "Wild Ride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/wild_ride.rs",
       "set": "tdm"
     },

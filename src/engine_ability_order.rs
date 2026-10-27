@@ -20,6 +20,8 @@ pub(super) struct GrantedManaAbility {
 pub(super) struct LayerSixObject {
     pub printed: bool,
     pub keywords: Keywords,
+    /// Acquired keywords retained when a type effect removes rules-text abilities.
+    pub granted_keywords: Keywords,
     pub grants: Vec<GrantedAbilityKey>,
     /// Independently acquired self-owned static/activated ability instances.
     pub self_grants: Vec<u64>,
@@ -37,6 +39,8 @@ pub(super) enum LayerSixAction {
     Remove,
     GrantSelf(u64),
     RemoveAndGrant(Vec<LayerSixGrant>),
+    /// CR305.7 removes rules-text/copiable abilities, but not grants from other effects.
+    RemovePrintedAndGrant(Vec<LayerSixGrant>),
     GrantEach(Vec<LayerSixGrant>),
     Grant {
         keywords: Keywords,
@@ -160,7 +164,9 @@ pub(super) fn apply_layer_six(
                     && pending[j]
                     && matches!(
                         other.action,
-                        LayerSixAction::Remove | LayerSixAction::RemoveAndGrant(_)
+                        LayerSixAction::Remove
+                            | LayerSixAction::RemoveAndGrant(_)
+                            | LayerSixAction::RemovePrintedAndGrant(_)
                     )
                     && other.recipients.contains(&source)
                 {
@@ -172,22 +178,32 @@ pub(super) fn apply_layer_six(
         let effect = &effects[next];
         pending[next] = false;
         started[next] = true;
+        if let LayerSixAction::RemovePrintedAndGrant(_) = &effect.action {
+            for &recipient in &effect.recipients {
+                let object = &mut objects[recipient as usize];
+                object.printed = false;
+                object.keywords = object.granted_keywords;
+            }
+        }
         if let LayerSixAction::RemoveAndGrant(_) = &effect.action {
             for &recipient in &effect.recipients {
                 let object = &mut objects[recipient as usize];
                 object.printed = false;
                 object.keywords = Keywords::NONE;
+                object.granted_keywords = Keywords::NONE;
                 object.grants.clear();
                 object.self_grants.clear();
                 object.mana.clear();
             }
         }
-        if let LayerSixAction::GrantEach(rows) | LayerSixAction::RemoveAndGrant(rows) =
-            &effect.action
+        if let LayerSixAction::GrantEach(rows)
+        | LayerSixAction::RemoveAndGrant(rows)
+        | LayerSixAction::RemovePrintedAndGrant(rows) = &effect.action
         {
             for row in rows {
                 let object = &mut objects[row.recipient as usize];
                 object.keywords = object.keywords.union(row.keywords);
+                object.granted_keywords = object.granted_keywords.union(row.keywords);
                 object.grants.extend_from_slice(&row.abilities);
                 object.mana.extend_from_slice(&row.mana);
             }
@@ -196,10 +212,13 @@ pub(super) fn apply_layer_six(
         for &recipient in &effect.recipients {
             let object = &mut objects[recipient as usize];
             match &effect.action {
-                LayerSixAction::GrantEach(_) | LayerSixAction::RemoveAndGrant(_) => unreachable!(),
+                LayerSixAction::GrantEach(_)
+                | LayerSixAction::RemoveAndGrant(_)
+                | LayerSixAction::RemovePrintedAndGrant(_) => unreachable!(),
                 LayerSixAction::Remove => {
                     object.printed = false;
                     object.keywords = Keywords::NONE;
+                    object.granted_keywords = Keywords::NONE;
                     object.grants.clear();
                     object.self_grants.clear();
                     object.mana.clear();
@@ -210,10 +229,76 @@ pub(super) fn apply_layer_six(
                     abilities,
                 } => {
                     object.keywords = object.keywords.union(*keywords);
+                    object.granted_keywords = object.granted_keywords.union(*keywords);
                     object.grants.extend_from_slice(abilities);
                 }
             }
         }
     }
     LayerSixResult { objects, started }
+}
+
+#[cfg(test)]
+mod basic_land_type_tests {
+    use super::*;
+
+    #[test]
+    fn basic_type_removes_printed_abilities_but_retains_external_grants() {
+        let source = ObjectRef {
+            card: 0,
+            generation: 1,
+        };
+        let initial = LayerSixObject {
+            printed: true,
+            keywords: Keywords::FLYING,
+            granted_keywords: Keywords::NONE,
+            grants: Vec::new(),
+            self_grants: Vec::new(),
+            mana: Vec::new(),
+        };
+        let external = LayerSixEffect {
+            provider: None,
+            started_earlier: false,
+            timestamp: 1,
+            recipients: vec![0],
+            action: LayerSixAction::Grant {
+                keywords: Keywords::FLYING.union(Keywords::HEXPROOF),
+                abilities: Vec::new(),
+            },
+        };
+        let replacement = LayerSixEffect {
+            provider: Some(0),
+            started_earlier: true,
+            timestamp: 2,
+            recipients: vec![0],
+            action: LayerSixAction::RemovePrintedAndGrant(vec![LayerSixGrant {
+                recipient: 0,
+                keywords: Keywords::NONE,
+                abilities: Vec::new(),
+                mana: vec![GrantedManaAbility {
+                    source,
+                    production: ManaProduction::Fixed([0, 0, 0, 0, 1, 0]),
+                    sacrifice: false,
+                }],
+            }]),
+        };
+        let result = apply_layer_six(vec![initial.clone()], &[external, replacement.clone()]);
+        assert!(!result.objects[0].printed);
+        assert!(
+            result.objects[0]
+                .keywords
+                .contains(Keywords::FLYING.union(Keywords::HEXPROOF))
+        );
+        assert_eq!(result.objects[0].mana.len(), 1);
+        let remove = LayerSixEffect {
+            provider: None,
+            started_earlier: false,
+            timestamp: 3,
+            recipients: vec![0],
+            action: LayerSixAction::Remove,
+        };
+        let result = apply_layer_six(vec![initial], &[replacement, remove]);
+        assert_eq!(result.objects[0].keywords, Keywords::NONE);
+        assert!(result.objects[0].mana.is_empty());
+    }
 }

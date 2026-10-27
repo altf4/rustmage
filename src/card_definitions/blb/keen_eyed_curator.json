@@ -3,10 +3,36 @@
   "catalogue_id": 2333,
   "oracle_id": "46ce3698-e4e6-44e9-8b99-2b12a703e91e",
   "facts_sha256": "faeed34c2ba52c60be09271a10612a5d83b23b8c2ad7dd6d46a4dffa3f5f6899",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9802848728c205e9ae39af9967c813d181b4d147436b03e3133912f9c599a67f"
   },
-  "physical_metadata_sha256": "ba342c7608b72b523783fe147f54cea38fa00ffc0869bc0ba2ffdc0177fddf51"
+  "physical_metadata_sha256": "ba342c7608b72b523783fe147f54cea38fa00ffc0869bc0ba2ffdc0177fddf51",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KeenEyedCurator.java",
+  "java_sha256": "ba4cee64f9190efefabed2a70decf7f3c2c6010f4d2ff88d5b6e37579dd5b0fe",
+  "rules_tests": "src/assurance/requested_curator.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetForSourceEffect.java",
+      "sha256": "74386ca760e2041bc0045bb0c007d29f306832b7933b2ee191aaaa43d2fa2690"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+      "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+    }
+  ]
 }

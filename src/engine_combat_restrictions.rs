@@ -98,6 +98,7 @@ impl Game {
         if object.controller != actor
             || object.zone != Zone::Battlefield
             || !self.is_creature(id)
+            || self.current_kinds(id) & crate::cards::BATTLE_KIND != 0
             || object.tapped
         {
             return false;
@@ -154,6 +155,9 @@ impl Game {
                                 && object.controller == actor.other()
                                 && self.current_kinds(reference.card) & 64 != 0
                         }),
+                    Some(CombatDefender::Battle(reference)) => {
+                        self.battle_can_be_attacked_by(reference, actor)
+                    }
                     None => false,
                 }
             {
@@ -167,13 +171,14 @@ impl Game {
                     self.can_attack_any_defender(actor, id)
                 } else {
                     self.state.objects.iter().enumerate().any(|(n, o)| {
-                        o.zone == Zone::Battlefield
+                        let reference = self.object_ref(n as CardId);
+                        (o.zone == Zone::Battlefield
                             && o.controller == actor.other()
                             && self.current_kinds(n as CardId) & 64 != 0
-                            && self.can_attack_defender(
-                                id,
-                                CombatDefender::Planeswalker(self.object_ref(n as CardId)),
-                            )
+                            && self
+                                .can_attack_defender(id, CombatDefender::Planeswalker(reference)))
+                            || (self.battle_can_be_attacked_by(reference, actor)
+                                && self.can_attack_defender(id, CombatDefender::Battle(reference)))
                     })
                 })
                 || chosen.iter().any(|attacker| attacker.card == id)

@@ -1,16 +1,34 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct whole-card behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
+            base: &TargetRule::Creature,
+            predicate: &TargetPredicate::Attacking,
+        })),
+        &[
+            Instruction::Grow {
+                subject: Subject::Targets,
+                power: 2,
+                toughness: 2,
+            },
+            Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::TRAMPLE,
+            },
+            Instruction::GrantUntilEndTurn { ability: 0 },
+        ],
+    ),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::Granted(&TriggerCondition::PlayerDamaged {
+            subject: DamageSubject::Source,
+            combat_only: true,
+            opponent_only: false,
+            one_or_more: false,
+        }),
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::DamagedPlayerPermanent {
+            kinds: 16,
+        })),
+        program: &[Instruction::Destroy],
+    }],
     ..CardRules::EMPTY
 };

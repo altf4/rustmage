@@ -517,3 +517,39 @@ fn artifact_only_row_does_not_suppress_an_independent_crew_animation() {
     assert!(!g.is_creature(vehicle));
     assert_eq!(g.object_view(vehicle).kinds, 16);
 }
+
+#[test]
+fn origin_of_metalbending_modes_and_target_restrictions() {
+    for p in [Player::P0, Player::P1] {
+        for (name, mode) in [
+            ("Murmuring Volume", 0),
+            ("Phyrexian Arena", 0),
+            ("Grizzly Bears", 1),
+        ] {
+            let mut g = scenario(p);
+            let victim = put(&mut g, p, name, Zone::Battlefield);
+            let opposing = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            let spell = put(&mut g, p, "Origin of Metalbending", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(&mut g, Action::ChooseMode { mode });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(opposing),
+                },
+            );
+            bind(&mut g, Target::Card(victim));
+            settle(&mut g);
+            if mode == 0 {
+                assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
+            } else {
+                assert_eq!(stats(&g, victim), (3, 3));
+                assert!(g.keywords(victim).contains(Keywords::INDESTRUCTIBLE));
+                g.finish_cleanup();
+                assert!(!g.keywords(victim).contains(Keywords::INDESTRUCTIBLE));
+                assert_eq!(stats(&g, victim), (3, 3));
+            }
+        }
+    }
+}

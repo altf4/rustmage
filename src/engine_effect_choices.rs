@@ -5,6 +5,7 @@ pub(super) struct DiscardDrawChoice {
     players: [bool; 2],
     finished: [bool; 2],
     bonus: u16,
+    limit: Option<usize>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EffectChoice {
@@ -203,7 +204,7 @@ impl Game {
         }
         if choice.greatest_value[player.index()].is_some_and(|max| {
             let value = if choice.kind == EffectChoiceKind::ExileGreatestManaValue {
-                i128::from(self.copiable_recipe(object).definition.fixed_mana_value())
+                i128::from(self.object_mana_value(object.card))
             } else {
                 self.object_view(object.card).power
             };
@@ -304,6 +305,7 @@ impl Game {
                 players: participants,
                 finished: [false; 2],
                 bonus,
+                limit: None,
             }),
             kind: EffectChoiceKind::Discard,
             filter: evidence::cost(0).filter,
@@ -320,6 +322,19 @@ impl Game {
             equipment_recipient: None,
         }));
         self.advance_effect_choice()
+    }
+    pub(super) fn start_discard_up_to_one_draw(&mut self, item: &SpellView) -> bool {
+        let pending = self.start_discard_any_draw(item, PlayerSet::Controller, 0, false);
+        if let Some(choice) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|r| r.choice.as_mut())
+            && let Some(draw) = &mut choice.discard_draw
+        {
+            draw.limit = Some(1);
+        }
+        pending
     }
     pub(super) fn start_greatest_power_choice(&mut self, item: &SpellView) -> bool {
         let mut filter = evidence::cost(0).filter;
@@ -664,6 +679,14 @@ impl Game {
             return true;
         }
         for (id, o) in self.state.objects.iter().enumerate() {
+            let battle = self.object_ref(id as CardId);
+            if self.battle_can_be_attacked_by(battle, player)
+                && emit(Action::ChooseHandDefender {
+                    defender: CombatDefender::Battle(battle),
+                })
+            {
+                return true;
+            }
             if o.zone == Zone::Battlefield
                 && o.controller == player.other()
                 && self.current_kinds(id as CardId) & 64 != 0
@@ -748,11 +771,7 @@ impl Game {
                     })
                     .map(|(id, _)| {
                         if kind == EffectChoiceKind::ExileGreatestManaValue {
-                            i128::from(
-                                self.copiable_recipe(self.object_ref(id as CardId))
-                                    .definition
-                                    .fixed_mana_value(),
-                            )
+                            i128::from(self.object_mana_value(id as CardId))
                         } else {
                             self.object_view(id as CardId).power
                         }
@@ -827,7 +846,12 @@ impl Game {
             .unwrap();
         if let Some(draw) = &choice.discard_draw {
             for player in [self.state.active, self.state.active.other()] {
-                if draw.players[player.index()] && !draw.finished[player.index()] {
+                if draw.players[player.index()]
+                    && !draw.finished[player.index()]
+                    && draw
+                        .limit
+                        .is_none_or(|limit| choice.selected[player.index()].len() < limit)
+                {
                     self.state.pending = Pending::EffectChoice { player };
                     return true;
                 }
@@ -1020,7 +1044,7 @@ impl Game {
                 .collect();
             let mana_value: i128 = ids
                 .iter()
-                .map(|&id| i128::from(self.state.objects[id as usize].card.fixed_mana_value()))
+                .map(|&id| i128::from(self.object_mana_value(id)))
                 .sum();
             let cause = self.state.resolving.as_ref().unwrap().item.controller;
             let after = choice

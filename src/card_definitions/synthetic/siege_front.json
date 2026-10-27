@@ -1,0 +1,12 @@
+{
+  "name": "@fixture/siege-front",
+  "catalogue_id": 5431,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "469dc753bde73b3a0c8fc1df5afcdb7d04bf0272dcbd817aaf1c91fd34354928",
+  "notes": "Synthetic test-only fixture exercising generic Battle rules; not an actual XMage card.",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/abilities/common/SiegeAbility.java",
+  "java_sha256": "334075669549d60d0cc7d53d2c731f1b784129ec3abad6a4c620010d309ce4cd"
+}

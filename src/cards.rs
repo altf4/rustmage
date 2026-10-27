@@ -397,10 +397,41 @@ impl<'de> Deserialize<'de> for CreatureType {
         Self::from_name(&name).ok_or_else(|| serde::de::Error::custom("not a legal creature type"))
     }
 }
+/// A basic land type chosen as an object enters, in WUBRG order.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+pub enum BasicLandType {
+    Plains,
+    Island,
+    Swamp,
+    Mountain,
+    Forest,
+}
+impl BasicLandType {
+    pub const ALL: [Self; 5] = [
+        Self::Plains,
+        Self::Island,
+        Self::Swamp,
+        Self::Mountain,
+        Self::Forest,
+    ];
+    pub(crate) const fn name(self) -> &'static str {
+        match self {
+            Self::Plains => "Plains",
+            Self::Island => "Island",
+            Self::Swamp => "Swamp",
+            Self::Mountain => "Mountain",
+            Self::Forest => "Forest",
+        }
+    }
+    pub(crate) const fn index(self) -> usize {
+        self as usize
+    }
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum EntryChoiceValue {
     CardName(crate::CardName),
     Color(ChoiceColor),
+    BasicLandType(BasicLandType),
     CreatureType(CreatureType),
     ManaValueParity(crate::engine::ManaValueParity),
 }
@@ -410,6 +441,7 @@ pub enum EntryChoiceKind {
     ManaValueParity,
     LandCardName,
     Color,
+    BasicLandType,
     CreatureType,
 }
 impl EntryChoiceKind {
@@ -424,6 +456,7 @@ impl EntryChoiceKind {
                 EntryChoiceValue::CardName(_)
             ) | (Self::ManaValueParity, EntryChoiceValue::ManaValueParity(_))
                 | (Self::Color, EntryChoiceValue::Color(_))
+                | (Self::BasicLandType, EntryChoiceValue::BasicLandType(_))
                 | (Self::CreatureType, EntryChoiceValue::CreatureType(_))
         )
     }
@@ -761,6 +794,8 @@ pub enum EffectChoiceKind {
     ReturnUnblockedAttacker,
     ReturnToHand,
     Discard,
+    /// Choose one card to discard or pay the specified life.
+    DiscardOrLife(u32),
     DiscardNamed(&'static str),
     /// Discard a legendary card sharing a name with a controlled legendary permanent.
     DiscardMatchingLegendary,
@@ -797,6 +832,9 @@ impl AdditionalCost {
     pub(crate) fn in_zone(mut self, zone: Zone) -> Self {
         if self.kind == EffectChoiceKind::SacrificeAttachedEquipment && zone == Zone::Battlefield {
             self.kind = EffectChoiceKind::Sacrifice;
+        }
+        if matches!(self.kind, EffectChoiceKind::DiscardOrLife(_)) && zone == Zone::Hand {
+            self.kind = EffectChoiceKind::Discard;
         }
         if let EffectChoiceKind::SacrificeOrDiscard { nonland } = self.kind {
             match zone {
@@ -873,7 +911,7 @@ pub(crate) enum MillAmount {
 }
 
 /// A fixed mana payment, independent of casting or activation costs.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ManaCost {
     pub colored: Mana,
     pub generic: u32,
@@ -916,6 +954,8 @@ pub(crate) struct BattlefieldFilter {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Instruction {
+    /// Increase the exact source permanent to this Class level.
+    GainClassLevel(u8),
     /// First half of amass: create an Army only if none is controlled.
     EnsureGoblinArmy,
     /// Complete amass after token creation and its replacements.
@@ -942,6 +982,10 @@ pub(crate) enum Instruction {
         amount: u16,
     },
     RevealTopDrawIfArtifact,
+    RevealTopMoveIfPermanent,
+    ExileSourceReturnTransformed {
+        counter: CounterKind,
+    },
     /// Privately exile top cards; paid play remains conditional on a current subtype.
     ExileTopFaceDownPlay {
         amount: u16,
@@ -1045,6 +1089,8 @@ pub(crate) enum Instruction {
     /// Optionally choose new targets for the exact spell captured by this cast trigger.
     ChangeCastSpellTargets,
     GrantGraveyardCast(GraveyardCastKind),
+    GrantCreatureGraveyardCast,
+    SolveSource,
     ReduceArtifactSpellCostsThisTurn(u32),
     NextRedOrGreenCreatureFreeThisTurn,
     /// Permission for the exact public card(s) just milled by this resolution.
@@ -1180,6 +1226,8 @@ pub(crate) enum Instruction {
     },
     /// The exact source permanent fights its targeted creature without targeting itself.
     FightSource,
+    /// The currently enchanted creature fights the targeted creature.
+    FightAttached,
     DiscardScaled(PlayerSet, AmountValue),
     DiscardManaValueLifeLoss,
     /// Mandatory one-card discard; only its actual land in your graveyard enters.
@@ -1269,6 +1317,9 @@ pub(crate) enum Instruction {
         total: u16,
         kind: CounterKind,
     },
+    DistributeCountersX {
+        kind: CounterKind,
+    },
     DamageByGroup {
         first: i32,
         other: i32,
@@ -1311,6 +1362,8 @@ pub(crate) enum Instruction {
         bonus: u16,
         required_all: bool,
     },
+    DiscardUpToOneDraw,
+
     AdditionalCombat,
     ExtraTurn {
         power_up_prohibited: bool,
@@ -1332,6 +1385,7 @@ pub(crate) enum Instruction {
         amount: u64,
     },
     ExileWarpedPermanent,
+    ResolveSiegeDefeat,
     Crew {
         minimum: u16,
     },
@@ -1396,6 +1450,12 @@ pub(crate) enum Instruction {
     },
     /// Historical paid qualification of the exact cast.
     Explore(Subject),
+    /// Destroy all other creatures if the exact source's current or last power equals 20.
+    DestroyOthersIfSourcePowerTwenty,
+    /// Look at the top two cards, manifest one and put the rest into the graveyard.
+    ManifestDread,
+    /// When this exact target dies this turn, its controller's spell manifests dread.
+    ManifestDreadWhenTargetDies,
     DestroyAndCreateForController {
         token: Card,
         amount: u16,
@@ -1499,6 +1559,8 @@ pub(crate) enum Instruction {
     ReturnOpponentsBattlefieldGraveyardCardsAsFood,
     /// Return the exact death incarnation with its noncreature artifact form as it enters.
     ReturnSourceAsArtifact,
+    /// Return the exact graveyard source and legal targets together, tapped.
+    ReturnSourceAndTargetsTapped,
     ReturnSourceToBattlefield {
         tapped: bool,
     },
@@ -1587,6 +1649,13 @@ pub(crate) enum Instruction {
         source: u16,
         recipient: u16,
     },
+    CreaturePowerDamageAny {
+        source: u16,
+        recipient: u16,
+    },
+    SacrificeTarget {
+        group: u16,
+    },
     PowerDamage {
         source: u16,
         recipient: u16,
@@ -1606,6 +1675,8 @@ pub(crate) enum Instruction {
     AddCombatRedScaled(AmountValue),
     Scry(u16),
     Surveil(u16),
+    /// Return a surveilled card that meets the life gained threshold after movement.
+    SurveilOneReturnByLifeGained,
     AnimateSource(AnimationSpec),
     AnimateSourceWithAbilityIfNoncreature {
         spec: AnimationSpec,
@@ -1641,6 +1712,8 @@ pub(crate) enum Instruction {
     CaptureSearchResult,
     /// Optionally behold a subtype, then untap the searched-for permanent.
     BeholdToUntapSearchResult(&'static str),
+    /// Untap the searched permanent if its controller controls enough lands.
+    UntapSearchResultIfLandsAtLeast(u32),
     SearchTargetController(SearchSpec),
     /// The legal player target in the currently selected target group searches.
     SearchTargetPlayer(SearchSpec),
@@ -1770,6 +1843,11 @@ pub(crate) enum Instruction {
     GrantPermanentSelfAbility(crate::engine::SelfGrantedAbilityKind),
     /// Grant the exact source a triggered template until it changes zones.
     GrantSourcePermanentTrigger(u16),
+    /// Grant keywords only to targets cast for their warp cost.
+    GrantWarpedTargetsKeywords(Keywords),
+    /// Register the exact targets for earthbend's delayed return.
+    RegisterEarthbendReturn,
+    AnimateEarthbendTargets,
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,
@@ -1889,6 +1967,8 @@ pub(crate) enum Instruction {
         kind: CounterKind,
     },
     ExileGraveTargets,
+    ExileGraveTargetsLinked,
+    ReturnLinkedGhosts,
     IfExiledCreature {
         skip: usize,
     },
@@ -2163,6 +2243,8 @@ pub(crate) enum StatValue {
     SpellsCastThisTurn,
     CreatureSpellsCastThisTurn,
     LifeGainOccurredThisTurn,
+    LifeLostThisTurn,
+    LinkedExileCardTypes,
     CreaturesDiedThisTurn,
     LifeGainedThisTurn,
     ControllerLife,
@@ -2331,6 +2413,7 @@ pub(crate) enum Subject {
 /// Immutable +1/+1 counter replacements evaluated against the pre-entry world.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryCounterAmount {
+    ControlledCreatureDeaths,
     GreatestOtherCreaturePower,
     ColorsSpent,
     IfNotCastOrZero(u16),
@@ -2346,10 +2429,14 @@ pub(crate) struct EntryCounterRule {
 /// Immutable replacement programs; active games retain only exact event/source identities.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReplacementFilter {
+    /// A creature whose current power is at most this signed threshold.
+    #[cfg_attr(not(test), allow(dead_code))]
+    CreaturePowerAtMost(i128),
     Permanent,
     Creature,
     CreatureOrVehicle,
     CreatureSpacecraftPlanet,
+    BattleProtectedByOpponent,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ReplacementSpec {
@@ -2379,6 +2466,9 @@ pub(crate) enum ReplacementSpec {
     ReplaceArtifactTokens(Card),
     AddArtifactToken(Card),
 }
+
+/// Card-type bit reserved for battles.
+pub(crate) const BATTLE_KIND: u16 = 256;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum CounterKind {
@@ -2415,10 +2505,11 @@ pub enum CounterKind {
     Shield,
     Hone,
     Quest,
+    Defense,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 33] = [
+    pub const ALL: [Self; 34] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -2452,6 +2543,7 @@ impl CounterKind {
         Self::Shield,
         Self::Hone,
         Self::Quest,
+        Self::Defense,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -2484,6 +2576,7 @@ impl CounterKind {
                 | Self::Shield
                 | Self::Hone
                 | Self::Quest
+                | Self::Defense
         )
     }
 }
@@ -2919,6 +3012,8 @@ pub(crate) struct CombatRestriction {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum StepGuard {
+    ClassLevelAtLeast(u8),
+    UnsolvedLifeGainedAtLeast(u128),
     /// Trigger-time attachment relation; wrap the step event in When.
     AttachedControllerTurn,
     ArtifactEnteredThisTurn,
@@ -2936,6 +3031,7 @@ pub(crate) enum StepGuard {
     CreatureDied,
     OpponentLostLife,
     GainedLife,
+    GainedAndLostLife,
     SourceTapped,
     Expression {
         value: StatValue,
@@ -3021,6 +3117,7 @@ pub(crate) enum TriggerCondition {
     OtherControlledNonlandReturnedToOwnersHand,
     /// Global target acquisition, not a cast-completion or self-target event.
     ControlledAbilityTargetsPlayerOrPermanent,
+    OpponentTargetsControlledCreatureOrSpell,
     /// The physical source spell itself was cast; stack copies never dispatch it.
     SelfCast,
     /// The controller actually activates an ability of a creature permanent.
@@ -3199,6 +3296,12 @@ pub(crate) enum TriggerCondition {
     SelfOffspring,
     SelfKicked,
     CreatureExploresYou,
+    // Only the gated observer fixture currently constructs these triggers.
+    #[cfg_attr(not(test), allow(dead_code))]
+    SelfTurnedFaceUp,
+    #[cfg_attr(not(test), allow(dead_code))]
+    PermanentYouControlTurnedFaceUp,
+    YouManifestDread,
     CreatureExploresCardYou {
         land: bool,
     },
@@ -3446,6 +3549,8 @@ pub(crate) enum ActivationOrigin {
 /// Starting restrictions, not costs that must still hold during payment.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum ActivationGuard {
+    ClassLevelExactly(u8),
+    SourceSolved,
     CastInstantSorceryThisTurn,
     SourceAttackedThisTurn,
     Always,
@@ -3461,7 +3566,9 @@ pub(crate) enum ActivationGuard {
 impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
-            Self::Always
+            Self::ClassLevelExactly(_)
+            | Self::Always
+            | Self::SourceSolved
             | Self::SourceAttackedThisTurn
             | Self::CastInstantSorceryThisTurn
             | Self::OwnTurn
@@ -3476,6 +3583,13 @@ impl ActivationGuard {
     }
 }
 /// Optional creature-tap cost and immutable choices unlocked by paying it.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct BlightSpec {
+    pub amount: u16,
+    pub normal_modes: u64,
+    pub paid_modes: u64,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct TeamworkSpec {
     pub minimum: u16,
@@ -3584,6 +3698,8 @@ impl Keywords {
     pub const PROTECTION_INSTANT_SORCERY: Self = Self(268435456);
     /// A resolved blocking rule, not an ability granted to its recipient.
     pub const ONLY_HASTE_BLOCKERS: Self = Self(536870912);
+    /// Contribution bonus while paying crew or saddle costs.
+    pub const CREW_SADDLE_PLUS_TWO: Self = Self(1073741824);
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }
@@ -3650,9 +3766,11 @@ pub struct EmblemInfo {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum EntryTapped {
     UnlessPlainsOrIsland,
+    UnlessControlsEitherSubtype(&'static str, &'static str),
     Never,
     Always,
     OpponentsTurn,
+    DuringFirstThreeTurns,
     UnlessBasic,
     UnlessAtMostTwo,
     UnlessAtLeastTwo,
@@ -3832,6 +3950,11 @@ impl Card {
         generated::vehicle_stats(self).map(|s| (s.power, s.toughness))
     }
     /// Immutable inset spell definition; never a second physical deck card.
+    pub(crate) fn transforming_double_face(self) -> bool {
+        authored::RULES[self.index()]
+            .extras
+            .transforming_double_face
+    }
     pub fn back_face(self) -> Option<Card> {
         generated::back_face(self)
     }
@@ -3879,8 +4002,14 @@ impl Card {
     pub fn inset_parent(self) -> Option<Card> {
         self.adventure_parent().or_else(|| self.omen_parent())
     }
+    pub(crate) fn harmonize_cost(self) -> Option<ManaCost> {
+        authored::rules(self).and_then(|r| r.extras.harmonize_cost)
+    }
     pub(crate) fn sneak_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|r| r.extras.sneak_cost)
+    }
+    pub(crate) fn disguise_cost(self) -> Option<ManaCost> {
+        authored::rules(self).and_then(|r| r.extras.disguise_cost)
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
         generated::warp_cost(self)
@@ -4258,10 +4387,19 @@ impl Card {
         let mut counters: Counters = generated::DEFINITIONS[self.0 as usize].enters.into();
         counters.loyalty = self.starting_loyalty();
         counters.lore = u64::from(self.saga_final_chapter().is_some());
+        counters.add(CounterKind::Defense, self.printed_defense());
         for &(kind, amount) in authored::RULES[self.index()].extras.fixed_entry_counters {
             counters.add(kind, amount);
         }
         counters
+    }
+    pub(crate) fn printed_defense(self) -> u64 {
+        authored::RULES[self.index()].extras.battle_defense
+    }
+    pub(crate) fn as_turned_face_up_counters(self) -> &'static [(CounterKind, u64)] {
+        authored::RULES[self.index()]
+            .extras
+            .as_turned_face_up_counters
     }
     pub(crate) fn opening_hand_battlefield(self) -> bool {
         authored::RULES[self.index()]
@@ -4423,6 +4561,9 @@ impl Card {
         generated::bargain_reduction(self).unwrap_or(0)
     }
     /// Fixed optional kicker surcharge for this immutable whole-card definition.
+    pub(crate) fn blight(self) -> Option<BlightSpec> {
+        authored::rules(self).and_then(|r| r.extras.blight)
+    }
     pub(crate) fn teamwork(self) -> Option<TeamworkSpec> {
         authored::rules(self).and_then(|r| r.extras.teamwork)
     }

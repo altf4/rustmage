@@ -3,10 +3,41 @@
   "catalogue_id": 3297,
   "oracle_id": "5ea1d89c-8650-4373-9835-e369587020ef",
   "facts_sha256": "4d4bcba511f3a2c404431fb2e6148c05490542141b0b7271934cf72e3a4137f6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5fc69d781369df0bbe8d61d830c140ba85b11eb24713e06ff0a6924cafd3f5e1"
   },
-  "physical_metadata_sha256": "2c960ae202ed9e804895746d9cea90dd62fa415bd675ff7baea7bb703867f82b"
+  "physical_metadata_sha256": "2c960ae202ed9e804895746d9cea90dd62fa415bd675ff7baea7bb703867f82b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PyrrhicStrike.java",
+  "java_sha256": "7562da8fc89a43b4f8044f900a2c06ba2c43682a1f72d293490f5871a8886a3e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BlightAbility.java",
+      "sha256": "d56c030631442af00c041543d6fe7f208750754687e138de138d3b7a7ebb43cf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BlightedCondition.java",
+      "sha256": "5bfe16a60690c22b487860af768a52598152836957b9990daa8255692447cd39"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CanHaveCounterAddedPredicate.java",
+      "sha256": "f5639c2dd9f1db080bcbece4a33a6decc88d7db4cb79676facb2b95e9e660839"
+    }
+  ],
+  "rules_tests": "src/assurance/requested_pyrrhic_strike.rs"
 }

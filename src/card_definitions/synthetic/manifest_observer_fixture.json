@@ -1,0 +1,12 @@
+{
+  "name": "@test/manifest-observer",
+  "catalogue_id": 5428,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "88d96e593b74e896e12a7cf112d9f2f4b68f99703ce6c936741bc86ed2400ed7",
+  "notes": "Test-only observer used to exercise manifest event dispatch; unsupported during gameplay.",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+  "java_sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+}

@@ -24,7 +24,9 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         | StackKind::DelayedReturn
         | StackKind::DelayedTokenCreation { .. }
         | StackKind::DelayedSacrifice
-        | StackKind::DelayedWarpExile => false,
+        | StackKind::DelayedWarpExile
+        | StackKind::DelayedManifestDread
+        | StackKind::SiegeDefeat => false,
         StackKind::Spell => matches!(
             name,
             "Darkness Descends" | "The Crystal's Chosen" | "Duty Beyond Death"

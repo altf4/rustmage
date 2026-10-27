@@ -58,11 +58,12 @@ def load(root=ROOT):
     for card in metadata['cards']:
         if 'front_face' in card:
             oracle = facts[card['oracle_id']]
-            if oracle['layout'] != 'modal_dfc': raise ValueError('face metadata requires modal DFC')
+            if oracle['layout'] not in ('modal_dfc', 'transform', 'adventure', 'prepare'): raise ValueError('face metadata requires modal DFC, adventure or prepare')
             face = oracle['card_faces'][0]
             if any(card['front_face'][key] != face[key] for key in ['name','mana_cost','type_line']): raise ValueError('front face facts changed')
-            back = by_id[card['back_face']]
-            if back['face_parent'] != card['index'] or any(back[key] != oracle['card_faces'][1][key] for key in ['name','mana_cost','type_line']): raise ValueError('back face facts changed')
+            if oracle['layout'] in ('modal_dfc', 'transform'):
+                back = by_id[card['back_face']]
+                if back['face_parent'] != card['index'] or any(back[key] != oracle['card_faces'][1][key] for key in ['name','mana_cost','type_line']): raise ValueError('back face facts changed')
         face_pin = records[card['index']].get('oracle_face')
         if face_pin:
             face = facts[face_pin['oracle_id']]['card_faces'][face_pin['index']]

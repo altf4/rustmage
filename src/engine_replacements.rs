@@ -7,6 +7,7 @@ use std::collections::VecDeque;
 pub(super) enum ResumeMode {
     Program,
     Pending,
+    CastCosts,
     Entry,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -66,8 +67,10 @@ pub(super) struct CounterPlacement {
     pub card: Card,
     pub owner: Player,
     pub controller: Player,
+    pub protector: Option<Player>,
     pub subtypes: GrantedSubtypes,
     pub kind: u16,
+    pub power: i128,
     pub amount: Counters,
     pub effect: bool,
     pub entry_index: Option<usize>,
@@ -289,10 +292,87 @@ impl ReplacementState {
                 .map_or(0, |(_, r)| r.len() * std::mem::size_of::<ObjectRef>())
     }
 }
+/// Fast-path guard: project an entrant only when a power-sensitive counter
+/// replacement could apply, including its own as-entry replacement.
+pub(super) fn entry_power_sensitive<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    controller: Player,
+    incoming: Card,
+) -> bool {
+    let has_filter = |spec: &ReplacementSpec| {
+        matches!(
+            spec,
+            ReplacementSpec::Counters {
+                filter: ReplacementFilter::CreaturePowerAtMost(_),
+                ..
+            }
+        )
+    };
+    incoming.replacement_effects().iter().any(has_filter)
+        || world.static_sources().iter().any(|&id| {
+            let object = world.object(id);
+            object.zone == Zone::Battlefield && object.controller == controller
+                && object.card.replacement_effects().iter().enumerate().any(|(index, spec)| {
+                    has_filter(spec) && world.fragment_available(id, |fragment| matches!(fragment,
+                        crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index))
+                })
+        })
+}
+fn global_counters_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    kinds: u16,
+) -> bool {
+    use crate::cards::StaticAbilityFragment;
+    world.static_sources().iter().any(|&id| {
+        let source = world.object(id);
+        source.zone == Zone::Battlefield
+            && source.card.static_ability_groups().iter().any(|g| g.fragments.iter().any(|f| matches!(f, StaticAbilityFragment::CounterProhibition(mask) if *mask & kinds != 0)))
+            && world.fragment_available(id, |f| matches!(f, StaticAbilityFragment::CounterProhibition(mask) if *mask & kinds != 0))
+    })
+}
+pub(super) fn counters_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    object: ObjectRef,
+) -> bool {
+    use crate::cards::StaticAbilityFragment;
+    let target = world.object(object.card);
+    if target.zone != Zone::Battlefield || world.reference(object.card) != object {
+        return false;
+    }
+    let attached = world.attachment_sources().iter().any(|&id| {
+        let source = world.object(id);
+        source.zone == Zone::Battlefield
+            && source.attached_to == Some(object)
+            && source.card.static_ability_groups().iter().any(|g| {
+                g.fragments
+                    .iter()
+                    .any(|f| matches!(f, StaticAbilityFragment::AttachedCounterProhibition))
+            })
+            && world.fragment_available(id, |f| {
+                matches!(f, StaticAbilityFragment::AttachedCounterProhibition)
+            })
+    });
+    attached || global_counters_prohibited(world, world.kinds(object.card))
+}
+fn placement_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    p: &CounterPlacement,
+) -> bool {
+    if p.entry_index.is_some() {
+        global_counters_prohibited(world, p.kind)
+    } else {
+        counters_prohibited(world, p.object)
+    }
+}
+
 fn matches_filter(filter: ReplacementFilter, p: &CounterPlacement) -> bool {
     let subtype = |s| p.subtypes.has(p.card, s);
     match filter {
+        ReplacementFilter::CreaturePowerAtMost(maximum) => p.kind & 1 != 0 && p.power <= maximum,
         ReplacementFilter::Permanent => true,
+        ReplacementFilter::BattleProtectedByOpponent => {
+            p.kind & crate::cards::BATTLE_KIND != 0 && p.protector == Some(p.controller.other())
+        }
         ReplacementFilter::Creature => p.kind & 1 != 0,
         ReplacementFilter::CreatureOrVehicle => p.kind & 1 != 0 || subtype("Vehicle"),
         ReplacementFilter::CreatureSpacecraftPlanet => {
@@ -385,9 +465,14 @@ pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?S
     world: &W,
     placement: &CounterPlacement,
     used: &mut Vec<(ObjectRef, u16)>,
+    refresh: &dyn Fn(&CounterPlacement) -> CounterPlacement,
     emit: &mut dyn FnMut(&Counters) -> bool,
 ) -> bool {
-    let choices = counter_replacements(world, placement, used);
+    let placement = refresh(placement);
+    if placement_prohibited(world, &placement) {
+        return emit(&Counters::default());
+    }
+    let choices = counter_replacements(world, &placement, used);
     if choices.is_empty() {
         return emit(&placement.amount);
     }
@@ -398,7 +483,7 @@ pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?S
             &mut next,
         );
         used.push((choice.source, choice.ability));
-        if counter_outcomes(world, &next, used, emit) {
+        if counter_outcomes(world, &next, used, refresh, emit) {
             return true;
         }
         used.pop();
@@ -687,13 +772,33 @@ impl Game {
         p: &CounterPlacement,
         used: &[(ObjectRef, u16)],
     ) -> Vec<ReplacementEffectView> {
+        // Counter replacements for a face-up event see the prospective face,
+        // including its copy and continuous effects, while the real object
+        // remains face down until the event is ready to commit.
+        if self
+            .state
+            .manifest
+            .as_ref()
+            .and_then(|state| state.face_up_completion)
+            == Some(p.object)
+            && self.is_face_down(p.object)
+        {
+            let mut prospective = self.clone();
+            prospective.materialize_face_up(p.object);
+            return counter_replacements(&prospective, p, used);
+        }
         counter_replacements(self, p, used)
     }
     fn commit_counter_placements(
         &mut self,
-        placements: Vec<CounterPlacement>,
+        mut placements: Vec<CounterPlacement>,
         completion: Option<Box<CounterReflexiveCompletion>>,
     ) {
+        for placement in &mut placements {
+            if placement_prohibited(self, placement) {
+                placement.amount = Counters::default();
+            }
+        }
         let completed = completion.as_ref().is_some_and(|c| {
             placements.iter().any(|p| {
                 p.entry_index.is_none()
@@ -704,6 +809,21 @@ impl Game {
             })
         });
         let mut lore = Vec::new();
+        // As-turned-face-up counters and the status change are one event.
+        // Keep the object face down throughout replacement choices, then expose
+        // the face immediately before the final counters are committed.
+        if let Some(object) = self
+            .state
+            .manifest
+            .as_ref()
+            .and_then(|state| state.face_up_completion)
+            && placements
+                .iter()
+                .any(|placement| placement.object == object && placement.entry_index.is_none())
+            && self.is_face_down(object)
+        {
+            self.materialize_face_up(object);
+        }
         // Commit the complete world before any placement observer sees it.
         for p in &placements {
             if let Some(index) = p.entry_index {
@@ -759,6 +879,11 @@ impl Game {
         mode: ResumeMode,
         completion: Option<Box<CounterReflexiveCompletion>>,
     ) {
+        for placement in &mut placements {
+            if placement_prohibited(self, placement) {
+                placement.amount = Counters::default();
+            }
+        }
         placements.retain(|p| p.amount.has_any());
         if placements.is_empty() {
             return;
@@ -770,6 +895,7 @@ impl Game {
                 .all(|p| self.counter_replacements(p, &[]).is_empty())
         {
             self.commit_counter_placements(placements, completion);
+            self.finish_face_up_counter_replacement();
             return;
         }
         let state = self.state.replacements.get_or_insert_with(|| {
@@ -812,8 +938,10 @@ impl Game {
             card: o.card,
             owner: o.owner,
             controller: o.controller,
+            protector: self.battle_protector(item.object),
             subtypes: self.granted_subtypes(item.card),
             kind: self.current_kinds(item.card),
+            power: self.stats(item.card).power,
             amount: Counters::of(kind, amount),
             effect: true,
             entry_index: None,
@@ -843,14 +971,38 @@ impl Game {
             card: o.card,
             owner: o.owner,
             controller: o.controller,
+            protector: self.battle_protector(object),
             subtypes: self.granted_subtypes(object.card),
             kind: self.current_kinds(object.card),
+            power: self.stats(object.card).power,
             amount: Counters::of(kind, amount),
             effect: false,
             entry_index: None,
             private: false,
         };
         self.stage_counter_placements(vec![placement], ResumeMode::Pending);
+    }
+    pub(super) fn blight_cost_counters(&mut self, object: ObjectRef, amount: u16, player: Player) {
+        let o = &self.state.objects[object.card as usize];
+        let placement = CounterPlacement {
+            placed_by: player,
+            object,
+            card: o.card,
+            owner: o.owner,
+            controller: o.controller,
+            protector: self.battle_protector(object),
+            subtypes: self.granted_subtypes(object.card),
+            kind: self.current_kinds(object.card),
+            power: self.stats(object.card).power,
+            amount: Counters::of(CounterKind::MinusOne, u64::from(amount)),
+            effect: false,
+            entry_index: None,
+            private: false,
+        };
+        self.stage_counter_placements(vec![placement], ResumeMode::CastCosts);
+        if self.state.replacements.is_none() {
+            self.finish_announcement();
+        }
     }
     pub(super) fn effect_counters(
         &mut self,
@@ -883,8 +1035,10 @@ impl Game {
                     card: o.card,
                     owner: o.owner,
                     controller: o.controller,
+                    protector: self.battle_protector(object),
                     subtypes: self.granted_subtypes(object.card),
                     kind: self.current_kinds(object.card),
+                    power: self.stats(object.card).power,
                     amount,
                     effect: true,
                     entry_index: None,
@@ -901,7 +1055,7 @@ impl Game {
         amount: u64,
         mode: ResumeMode,
     ) {
-        if amount == 0 {
+        if amount == 0 || counters_prohibited(self, self.object_ref(id)) {
             return;
         }
         let placed_by = self
@@ -1359,6 +1513,10 @@ impl Game {
             }
             let Some(active) = state.active.as_mut() else {
                 self.state.pending = state.resume.take().unwrap();
+                self.finish_face_up_counter_replacement();
+                if state.mode == ResumeMode::CastCosts && self.state.announcing.is_some() {
+                    self.finish_announcement();
+                }
                 if resume_program
                     && state.mode == ResumeMode::Program
                     && self.state.resolving.is_some()
@@ -1434,7 +1592,28 @@ impl Game {
                         self.commit_counter_placements(batch.placements, batch.completion);
                         continue;
                     }
-                    let p = &batch.placements[batch.next];
+                    let p = &mut batch.placements[batch.next];
+                    if let Some(index) = p.entry_index
+                        && let Some(mut movement) = self
+                            .state
+                            .entry_batch
+                            .as_ref()
+                            .and_then(|b| b.moves.get(index))
+                            .cloned()
+                        && (movement.ghost_vacuum_after.is_some()
+                            || entry_power_sensitive(
+                                self,
+                                movement.controller,
+                                movement.before.card,
+                            ))
+                    {
+                        movement.counters = p.amount.clone();
+                        if let Some(view) = self.ghost_entry_preview(&movement) {
+                            p.subtypes = view.granted_subtypes;
+                            p.kind = view.kinds;
+                            p.power = view.power;
+                        }
+                    }
                     let choices = self.counter_replacements(p, &batch.used);
                     match choices.as_slice() {
                         [] => {
@@ -2043,6 +2222,179 @@ impl Game {
             if attach {
                 self.attach_equipment(item.object, recipient);
             }
+        }
+    }
+}
+
+#[cfg(test)]
+mod entering_power_filter_tests {
+    use super::*;
+    use crate::engine::assurance::big_helpers::{named, setup};
+
+    #[test]
+    fn ordinary_entry_power_preview_fast_path() {
+        let mut game = setup(Player::P0);
+        let creature = named(&mut game, Player::P0, "Bear Cub", Zone::Hand);
+        named(&mut game, Player::P0, "Doubling Season", Zone::Battlefield);
+        let card = game.state.objects[creature as usize].card;
+        let start = std::time::Instant::now();
+        for _ in 0..10_000 {
+            assert!(!std::hint::black_box(entry_power_sensitive(
+                &game,
+                Player::P0,
+                card
+            )));
+        }
+        eprintln!(
+            "ordinary entry power-filter checks: 10000 in {:?}",
+            start.elapsed()
+        );
+    }
+
+    #[test]
+    fn incoming_power_predicate_rechecks_after_counter_replacement() {
+        for player in [Player::P0, Player::P1] {
+            let mut game = setup(player);
+            let vacuum = named(&mut game, player, "Ghost Vacuum", Zone::Graveyard);
+            let card = named(&mut game, player, "Hill Giant", Zone::Exile);
+            let mut movement =
+                entries::EntryMove::from_view(game.object_view(card), Zone::Battlefield, false);
+            movement.controller = player;
+            movement.ghost_vacuum_after = Some(game.object_ref(vacuum));
+            movement.counters.add(CounterKind::PlusOne, 1);
+            let mut placement = CounterPlacement {
+                object: movement.before.reference,
+                placed_by: player,
+                card: movement.before.card,
+                owner: movement.before.owner,
+                controller: player,
+                protector: movement.battle_protector,
+                subtypes: Game::entry_choice_subtypes(&movement),
+                kind: movement.entry_kinds(),
+                power: game.ghost_entry_preview(&movement).unwrap().power,
+                amount: movement.counters.clone(),
+                effect: true,
+                entry_index: Some(0),
+                private: false,
+            };
+            let limited = ReplacementSpec::Counters {
+                filter: ReplacementFilter::CreaturePowerAtMost(2),
+                kind: Some(CounterKind::PlusOne),
+                factor: 1,
+                add: 1,
+                effects_only: false,
+            };
+            assert_eq!(placement.power, 2);
+            assert!(counter_applies(limited, &placement));
+            modify_counter(limited, &mut placement);
+            movement.counters = placement.amount.clone();
+            let changed = game.ghost_entry_preview(&movement).unwrap();
+            placement.power = changed.power;
+            placement.kind = changed.kinds;
+            placement.subtypes = changed.granted_subtypes;
+            assert_eq!(placement.power, 3);
+            assert!(!counter_applies(limited, &placement));
+        }
+    }
+}
+
+#[cfg(test)]
+mod blight_cost_zero_replacement_tests {
+    use super::*;
+    use crate::engine::assurance::big_helpers::{checked, named, settle, setup};
+
+    #[test]
+    fn replacement_to_zero_still_pays_declared_blight_cost() {
+        for player in [Player::P0, Player::P1] {
+            let mut g = setup(player);
+            let spell = named(&mut g, player, "Pyrrhic Strike", Zone::Hand);
+            let artifact = named(&mut g, player.other(), "Short Bow", Zone::Battlefield);
+            let victim = named(&mut g, player.other(), "Hill Giant", Zone::Battlefield);
+            let cost_creature = named(&mut g, player, "Bear Cub", Zone::Battlefield);
+            named(
+                &mut g,
+                player,
+                "Doc Samson, Super Psychiatrist",
+                Zone::Battlefield,
+            );
+            checked(&mut g, Action::AnnounceCast { card: spell });
+            checked(&mut g, Action::ChooseBlight { pay: true });
+            checked(&mut g, Action::ChooseMode { mode: 2 });
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(artifact),
+                },
+            );
+            if !g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(victim),
+            }) {
+                checked(&mut g, Action::FinishTargets);
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(victim),
+                },
+            );
+            checked(&mut g, Action::BeginOrderedCosts);
+            let blight = g
+                .state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .cast_costs
+                .as_ref()
+                .unwrap()
+                .clauses
+                .iter()
+                .position(|r| matches!(r.clause, CastCostClause::Blight { .. }))
+                .unwrap() as u16;
+            checked(&mut g, Action::ChooseCastCost { clause: blight });
+            let subject = g.object_ref(cost_creature);
+            // Enter the real cost continuation and model a replacement that turns
+            // the proposed placement into zero, a legal modified payment (CR118.11).
+            g.pay_blight(subject);
+            let state = g.state.replacements.as_mut().unwrap();
+            let Some(Work::Counters(batch)) = state.work.front_mut() else {
+                panic!("counter payment staged")
+            };
+            batch.placements[0].amount = Counters::default();
+            assert!(!g.advance_replacements(true));
+            assert_eq!(g.counter_count(cost_creature, CounterKind::MinusOne), 0);
+            let mana = g
+                .state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .cast_costs
+                .as_ref()
+                .unwrap()
+                .clauses
+                .iter()
+                .position(|r| r.clause == CastCostClause::Mana)
+                .unwrap() as u16;
+            assert!(
+                g.state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .cast_costs
+                    .as_ref()
+                    .unwrap()
+                    .clauses[usize::from(blight)]
+                .paid
+            );
+            checked(&mut g, Action::ChooseCastCost { clause: mana });
+            let payment = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, payment);
+            settle(&mut g);
+            assert_eq!(g.object_view(artifact).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(victim).zone, Zone::Graveyard);
         }
     }
 }

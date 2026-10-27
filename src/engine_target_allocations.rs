@@ -4,23 +4,24 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TargetAllocation {
     pub target: BoundTarget,
-    pub amount: u16,
+    pub amount: u32,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct TargetAmountChoiceView {
     pub target: BoundTarget,
-    pub remaining: u16,
-    pub minimum: u16,
-    pub maximum: u16,
+    pub remaining: u32,
+    pub minimum: u32,
+    pub maximum: u32,
 }
 impl SpellView {
-    fn division_total(&self) -> Option<u16> {
+    pub(super) fn division_total(&self) -> Option<u32> {
         self.program()?
             .1
             .iter()
             .find_map(|instruction| match instruction {
                 Instruction::DamageDivided { total }
-                | Instruction::DistributeCounters { total, .. } => Some(*total),
+                | Instruction::DistributeCounters { total, .. } => Some(u32::from(*total)),
+                Instruction::DistributeCountersX { .. } => self.x,
                 _ => None,
             })
     }
@@ -51,10 +52,10 @@ impl Game {
             .target_allocations
             .as_deref()
             .map_or(&[][..], |v| v.as_slice());
-        let used: u16 = selected.iter().map(|row| row.amount).sum();
+        let used: u32 = selected.iter().map(|row| row.amount).sum();
         let target = *item.targets.get(selected.len())?;
         let others =
-            u16::try_from(item.targets.len() - selected.len() - 1).expect("bounded targets");
+            u32::try_from(item.targets.len() - selected.len() - 1).expect("bounded targets");
         let remaining = total.checked_sub(used).expect("bounded allocation");
         Some(TargetAmountChoiceView {
             target,
@@ -76,7 +77,7 @@ impl Game {
             false
         }
     }
-    pub(super) fn choose_target_amount(&mut self, amount: u16) {
+    pub(super) fn choose_target_amount(&mut self, amount: u32) {
         let choice = self.target_amount_choice().expect("announced division");
         let a = self.state.announcing.as_mut().unwrap();
         a.item

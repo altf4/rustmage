@@ -283,6 +283,7 @@ impl Game {
                     tapped: false,
                     summoning_sick: false,
                     flashback: false,
+                    cast_for_warp: false,
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
@@ -291,6 +292,7 @@ impl Game {
                     gained_keywords: Keywords::NONE,
                     counters: InitialCounters::default(),
                     used_abilities: 0,
+                    class_level: 1,
                     attached_to: None,
                 };
                 if id as usize == self.state.objects.len() {

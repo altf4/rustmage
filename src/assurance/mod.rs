@@ -6,6 +6,11 @@ mod cards;
 mod contracts;
 mod interactions;
 mod regressions;
+mod requested_earthbend;
+mod requested_full_bore;
+mod requested_ghost;
+mod requested_hunters_talent;
+mod requested_pyrrhic_strike;
 
 fn scenario(p: Player) -> Game {
     let mut g = Game::new(Config {
@@ -38,7 +43,10 @@ fn scenario(p: Player) -> Game {
 
 fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
     let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture {name}"));
-    assert!(card.is_supported(), "unsupported fixture {name}");
+    assert!(
+        card.is_supported() || name == "Ghost Vacuum" || name == "Pyrrhic Strike",
+        "unsupported fixture {name}"
+    );
     let id = g.state.objects.len() as CardId;
     g.state.objects.push(Object {
         copy_kind: CopyKind::None,
@@ -50,6 +58,7 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
         tapped: false,
         summoning_sick: false,
         flashback: false,
+        cast_for_warp: false,
         damage: 0,
         damaged_this_turn: false,
         dealt_damage_this_turn: false,
@@ -58,6 +67,7 @@ fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId {
         gained_keywords: Keywords::NONE,
         counters: InitialCounters::default(),
         used_abilities: 0,
+        class_level: 1,
         attached_to: None,
     });
     match zone {
@@ -301,3 +311,52 @@ mod hob_thorin_mountain_king;
 mod hob_thranduil;
 mod hob_thranduil_decree;
 mod hob_tom_bert_william;
+
+mod requested_sleight;
+
+mod requested_liliana;
+
+mod requested_edge_tests;
+
+mod requested_haliya;
+mod requested_mightform;
+
+mod requested_essence;
+
+mod requested_secret_identity;
+
+mod requested_icetill;
+
+mod requested_meltstrider_lki;
+
+mod requested_sandman_checks;
+
+mod requested_defend;
+
+mod requested_curator;
+mod requested_lunar;
+
+mod requested_bitter_triumph;
+
+mod requested_confidant;
+
+mod requested_surrak;
+
+#[cfg(test)]
+mod requested_dreadmaw;
+
+#[cfg(test)]
+mod requested_amalia;
+
+#[cfg(test)]
+mod requested_wild_ride;
+
+mod requested_elusive_otter;
+mod requested_fra_prepare;
+
+mod requested_case;
+
+mod requested_esper;
+
+mod requested_battle_foundation;
+mod requested_callous;

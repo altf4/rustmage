@@ -70,6 +70,25 @@ impl Game {
             self.creatures_deal_power_damage(item.card, target, true, 1);
         }
     }
+    pub(super) fn attached_fight(&mut self, item: &SpellView) {
+        let Some(source) = self.attached_subject(item) else {
+            return;
+        };
+        let target = item.targets.iter().find_map(|bound| {
+            if self.same_target_object(*bound)
+                && let Target::Card(id) = bound.target
+                && self.on_battlefield(id)
+                && self.is_creature(id)
+            {
+                Some(id)
+            } else {
+                None
+            }
+        });
+        if let Some(target) = target {
+            self.creatures_deal_power_damage(source, target, true, 1);
+        }
+    }
     fn creatures_deal_power_damage(
         &mut self,
         source: CardId,

@@ -78,9 +78,20 @@ fn sos_cast_rollback_foreign_aura_can_strand_costs_and_returns_entire_proposal()
         for harmful in [false, true] {
             let (mut g, silver, enemy, aura, prison) = setup(p, true);
             let spell = put(&mut g, p, "Candy Grapple", Zone::Hand);
-            let before = g.snapshot();
-            let own_view = observation(&g, p);
-            let other_view = observation(&g, p.other());
+            let secret = put(&mut g, p, "Island", Zone::Hand);
+            assert!(
+                !g.observe(p.other())
+                    .objects
+                    .iter()
+                    .any(|o| o.id == spell || o.id == secret)
+            );
+            // CR 733 reverses the cast, but the opponent has seen the spell on
+            // the stack and retains that information about its return to hand.
+            let mut expected = g.clone();
+            expected.state.known_hand.push(g.object_ref(spell));
+            let before = expected.snapshot();
+            let own_view = observation(&expected, p);
+            let other_view = observation(&expected, p.other());
             propose(&mut g, p, spell, prison, enemy);
             pay(&mut g);
             clause(&mut g, CastCostClause::Additional);
@@ -96,6 +107,13 @@ fn sos_cast_rollback_foreign_aura_can_strand_costs_and_returns_entire_proposal()
                 assert_eq!(g.actor(), Some(p));
                 assert_eq!(observation(&g, p), own_view);
                 assert_eq!(observation(&g, p.other()), other_view);
+                assert!(
+                    g.observe(p.other())
+                        .objects
+                        .iter()
+                        .any(|o| o.id == spell && o.zone == Zone::Hand)
+                );
+                assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == secret));
                 assert!(g.state.cast_rollback.is_none());
             } else {
                 clause(&mut g, CastCostClause::Casualty(0));

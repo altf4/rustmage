@@ -142,6 +142,7 @@ const fn object(kinds: u8) -> TargetRule {
     }
 }
 pub(super) struct CardExtras {
+    pub transforming_double_face: bool,
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
@@ -168,6 +169,8 @@ pub(super) struct CardExtras {
     pub activation_subtype_discounts: &'static [(u16, &'static str)],
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
+    pub battle_defense: u64,
+    pub as_turned_face_up_counters: &'static [(CounterKind, u64)],
     pub entry_choice: Option<EntryChoiceKind>,
     pub chosen_entry_counters: Option<CounterKind>,
     pub static_modifiers: &'static [StaticModifier],
@@ -186,7 +189,10 @@ pub(super) struct CardExtras {
     pub omen_spell: Option<Card>,
     pub omen_parent: Option<Card>,
     pub warp_cost: Option<ManaCost>,
+    pub disguise_cost: Option<ManaCost>,
     pub sneak_cost: Option<ManaCost>,
+    /// Graveyard alternative with an optional power-based creature tap.
+    pub harmonize_cost: Option<ManaCost>,
     pub vehicle_stats: Option<Stats>,
     pub replacement_effects: &'static [ReplacementSpec],
     pub attached_subtype: Option<&'static str>,
@@ -205,6 +211,7 @@ pub(super) struct CardExtras {
     pub x_entry_counters: bool,
     pub x_complement_entry_counters: Option<(CounterKind, u32)>,
     pub teamwork: Option<TeamworkSpec>,
+    pub blight: Option<BlightSpec>,
     pub kicker_cost: Option<ManaCost>,
     pub gift: Option<GiftSpec>,
     pub kicked_entry_counters: u16,
@@ -239,6 +246,7 @@ pub(super) struct CardExtras {
 }
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        transforming_double_face: false,
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,
@@ -258,6 +266,8 @@ impl CardExtras {
         activation_subtype_discounts: &[],
         activation_put_counters: &[],
         fixed_entry_counters: &[],
+        battle_defense: 0,
+        as_turned_face_up_counters: &[],
         cast_entry_counters: &[],
         hand_cast_entry_counters: &[],
         named_activation_lock: false,
@@ -279,7 +289,9 @@ impl CardExtras {
         omen_spell: None,
         omen_parent: None,
         warp_cost: None,
+        disguise_cost: None,
         sneak_cost: None,
+        harmonize_cost: None,
         vehicle_stats: None,
         replacement_effects: &[],
         attached_subtype: None,
@@ -298,6 +310,7 @@ impl CardExtras {
         x_entry_counters: false,
         x_complement_entry_counters: None,
         teamwork: None,
+        blight: None,
         kicker_cost: None,
         gift: None,
         kicked_entry_counters: 0,

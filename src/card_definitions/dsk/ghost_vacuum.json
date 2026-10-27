@@ -3,10 +3,41 @@
   "catalogue_id": 1732,
   "oracle_id": "4ef583ab-e0a0-4e4b-bd65-af766038b1fd",
   "facts_sha256": "c455f42b4dee45ec9bf34014c95d21afe3f463956e24f2c64f3c2429712a41cc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1ec2eaa1af5c800a480fa51afd751b9910206275286a3edb2d8637cf6842d79c"
   },
-  "physical_metadata_sha256": "16f76a43aab35d87699e7f3b06e314b6202c934b45afb1bd04305c788f38f808"
+  "physical_metadata_sha256": "16f76a43aab35d87699e7f3b06e314b6202c934b45afb1bd04305c788f38f808",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GhostVacuum.java",
+  "java_sha256": "3c41b70bbbfba7119483dc75ea820a1d213babb810cb44e3ed8ec6972335ba35",
+  "rules_tests": "src/assurance/requested_ghost.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCreatureTypeAdditionEffect.java",
+      "sha256": "66afd65cad220a0de4957fa5d62c2ffb41c30025bc776ebdf0f1246435bfc209"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+      "sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    }
+  ]
 }

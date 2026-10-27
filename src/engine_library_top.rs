@@ -101,6 +101,41 @@ impl Game {
                             .map(|&id| self.object_ref(id))
             })
     }
+    pub(super) fn reveal_top_move_if_permanent(&mut self, item: &SpellView) {
+        let player = item.controller;
+        let Some(&id) = self.state.players[player.index()].library.last() else {
+            return;
+        };
+        let revealed = RevealedLibraryCard {
+            object: self.object_ref(id),
+            card: self.state.objects[id as usize].card,
+        };
+        self.remember_library_top(player, revealed.object);
+        let sequence = self
+            .state
+            .library_top
+            .as_ref()
+            .and_then(|s| s.reveal.as_ref())
+            .map_or(0, |e| e.sequence)
+            .checked_add(1)
+            .capacity("library reveal sequence exhausted");
+        self.state.library_top.get_or_insert_default().reveal = Some(LibraryRevealEvent {
+            sequence,
+            source: item.object,
+            player,
+            revealed,
+            drawn: None,
+        });
+        if revealed.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 128 | 256) != 0 {
+            let event = self.move_object(id, Zone::Hand);
+            if event.moved
+                && event.destination == Zone::Hand
+                && !self.state.known_hand.contains(&event.after)
+            {
+                self.state.known_hand.push(event.after);
+            }
+        }
+    }
     pub(super) fn reveal_top_draw_if_artifact(&mut self, item: &SpellView) {
         let player = item.controller;
         let Some(&id) = self.state.players[player.index()].library.last() else {

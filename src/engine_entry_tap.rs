@@ -33,7 +33,12 @@ pub struct EntryTapView {
 }
 impl Game {
     pub(super) fn entry_tap_effects(&self, movement: &entries::EntryMove) -> Vec<EntryTapEffect> {
-        let kinds = movement.entry_kinds();
+        let kinds = if movement.ghost_vacuum_after.is_some() {
+            self.ghost_entry_preview(movement)
+                .map_or_else(|| movement.entry_kinds(), |view| view.kinds)
+        } else {
+            movement.entry_kinds()
+        };
         let mut effects = Vec::new();
         for &id in &self.state.static_sources {
             let source = &self.state.objects[id as usize];
@@ -85,6 +90,17 @@ impl Game {
             let Some(event) = batch.tap_events.get(batch.tap_next) else {
                 return false;
             };
+            // Recheck for every event: advancing the previous event can expose
+            // another land that must choose its type before its tap replacements.
+            if batch.moves[event.index].choice.is_none()
+                && batch.moves[event.index].before.card.entry_choice()
+                    == Some(EntryChoiceKind::BasicLandType)
+            {
+                self.state.pending = Pending::EntryValue {
+                    player: batch.moves[event.index].controller,
+                };
+                return true;
+            }
             let player = batch.moves[event.index].controller;
             if event.payment.is_some() {
                 if self.can_pay_entry_life() {

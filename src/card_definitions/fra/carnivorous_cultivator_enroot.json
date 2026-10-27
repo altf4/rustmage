@@ -3,10 +3,51 @@
   "catalogue_id": 656,
   "oracle_id": "db655c5a-06f6-42bc-8180-d9ca1c1d939a",
   "facts_sha256": "0f8e8600ec70f8a1e83f75f92b6bb8b31d68f227946d52386a7c73edee864e3f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9eabd418ceff28a88aba9e0926b22314bc27ccc2cac97e4a927602a135831db9"
   },
-  "physical_metadata_sha256": "9f268607c8513fbfd12d886ba16a34c1767e85b86f6a32616cb754602d64aa96"
+  "physical_metadata_sha256": "62feb151c4cad43db3f0b11b7f724887864c32e2add076581ebd1315d081be0b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CarnivorousCultivator.java",
+  "java_sha256": "4670555ec1b66e05b7dbf1f29eb086446dd90e74ef6993454325b3045bf75080",
+  "rules_tests": "src/assurance/requested_fra_prepare.rs",
+  "oracle_face": {
+    "oracle_id": "db655c5a-06f6-42bc-8180-d9ca1c1d939a",
+    "index": 0,
+    "sha256": "f8732d183361ba6abf3220fe076f24d1258e5d55cc5d65443a6906e6bdfacade"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersPreparedAbility.java",
+      "sha256": "da13969b5c661a12851d98b1c5a99a29673fd5bf1aa711a758f966c637097fed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/PrepareCard.java",
+      "sha256": "4253f1faea1e81d465ae3a68f0645c1f62e3d5e636727d40c0ba83fff5abd030"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ]
 }

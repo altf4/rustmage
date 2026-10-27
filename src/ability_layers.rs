@@ -83,6 +83,8 @@ pub(crate) enum StaticAbilityFragment {
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
     ChosenCreatureType,
+    /// This land is the chosen basic land type (CR305.7).
+    ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
     ChosenModifier(ChosenModifier),
     PlayerHexproof,
@@ -116,6 +118,10 @@ pub(crate) enum StaticAbilityFragment {
     PredefinedRoleBase,
     RemoveAttachedAbilities,
     AttachedUntap(UntapRestriction),
+    /// Prevent counters on the enchanted/equipped permanent.
+    AttachedCounterProhibition,
+    /// Prevent counters on all permanents matching these card-type bits.
+    CounterProhibition(u16),
     SelfUntap(UntapRestriction),
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),
@@ -219,6 +225,7 @@ pub(crate) enum StaticAbilityFragment {
     CannotBeBlockedBySubtype(&'static str),
     /// Rules restriction evaluated after all derived power modifications.
     CannotBeBlockedIfSourcePowerAtMost(i128),
+    CannotBeBlockedByCreaturesWithLessPower,
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,

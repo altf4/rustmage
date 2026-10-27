@@ -144,9 +144,13 @@ impl Game {
         actor: Player,
     ) -> bool {
         match guard {
+            ActivationGuard::ClassLevelExactly(level) => {
+                self.state.objects[source as usize].class_level == level
+            }
             ActivationGuard::CastInstantSorceryThisTurn => {
                 self.state.players[actor.index()].instant_sorcery_cast_this_turn > 0
             }
+            ActivationGuard::SourceSolved => self.case_solved(self.object_ref(source)),
             ActivationGuard::Always => true,
             ActivationGuard::SourceAttackedThisTurn => self
                 .state
@@ -609,6 +613,7 @@ impl Game {
                 }),
             source_quantity_lki: None,
             event_object: None,
+            manifest_event: None,
             sacrificed_toughness: None,
             sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,

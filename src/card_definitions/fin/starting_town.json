@@ -3,10 +3,36 @@
   "catalogue_id": 4113,
   "oracle_id": "d04e0975-f401-41b8-a9db-9bcf9cbbce66",
   "facts_sha256": "f5dbf8c3658b9755a2be9b17d76f6e5f6d15ae3d0bb57094c26250e480403691",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "235fc40213887835136ca9f2f95c83d1823ff9e9b97ea4ce4982299b15976663"
   },
-  "physical_metadata_sha256": "6fcca7955922f4e3be6f356b6bfcb3f8a0fc94be296161124a24a36803ce48bd"
+  "physical_metadata_sha256": "6fcca7955922f4e3be6f356b6bfcb3f8a0fc94be296161124a24a36803ce48bd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StartingTown.java",
+  "java_sha256": "47fc2d58e5fa07eb9f1a81e15384b1a4ebe6458cf058f51acbc01a4f76c54f6d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    }
+  ],
+  "remaining_obligations": []
 }

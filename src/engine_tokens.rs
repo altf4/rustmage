@@ -177,6 +177,7 @@ impl Game {
                     tapped: false,
                     summoning_sick: false,
                     flashback: false,
+                    cast_for_warp: false,
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
@@ -185,6 +186,7 @@ impl Game {
                     gained_keywords: Keywords::NONE,
                     counters: InitialCounters::default(),
                     used_abilities: 0,
+                    class_level: 1,
                     attached_to: None,
                 };
                 if id as usize == self.state.objects.len() {
@@ -200,7 +202,9 @@ impl Game {
                     .capacity("object generation exhausted");
                 object.tapped = tapped;
                 object.summoning_sick = true;
-                if let Some(d) = defenders {
+                if let Some(d) = defenders
+                    && self.current_kinds(id) & crate::cards::BATTLE_KIND == 0
+                {
                     self.state.attackers.push(Attacker {
                         card: id,
                         defender: Some(d[index]),
@@ -276,6 +280,7 @@ impl Game {
         object.gained_keywords = Keywords::NONE;
         object.counters = InitialCounters::default();
         object.used_abilities = 0;
+        object.class_level = 1;
         object.attached_to = None;
         // No zone-change event: this game object ceases to exist (CR111.7).
         self.set_counters(id, Counters::default());

@@ -3,10 +3,30 @@
   "catalogue_id": 2506,
   "oracle_id": "22c2e66d-a2a1-46db-a70a-dff5ad5d6c14",
   "facts_sha256": "b0a6a4afdd047acd30f207f09024c0b38500df35163ca3e9a4739a8177893112",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d214f3c67d281d6be08d1226cc1224f499bc3073711d826fe257bcc112b3f6a2"
   },
-  "physical_metadata_sha256": "18ac3e653220f767c45260ef26e39bc1a93132247871bbb26cc38c645075685a"
+  "physical_metadata_sha256": "18ac3e653220f767c45260ef26e39bc1a93132247871bbb26cc38c645075685a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LilianaTheFaultless.java",
+  "java_sha256": "ddf4e9d5232e88b75c9163509880a2a3945b5c13242f93ee15822fc6f76cdfdc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

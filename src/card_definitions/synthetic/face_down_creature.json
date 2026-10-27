@@ -1,0 +1,12 @@
+{
+  "name": "",
+  "catalogue_id": 5427,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "8facba2679d06f4d58a539d8901f4a43ef3e2afeb57781286f5513d90acd3feb",
+  "notes": "CR 708.2a face-down copiable characteristics: colorless 2/2 creature with no name, mana cost, subtypes, or abilities; this definition is not a token.",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestEffect.java",
+  "java_sha256": "3e10e9e875387a4e22f4a16410900548e2925071fb537a86a83ec8aef6a5b80e"
+}

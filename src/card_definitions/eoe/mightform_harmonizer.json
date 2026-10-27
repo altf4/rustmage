@@ -3,10 +3,25 @@
   "catalogue_id": 2752,
   "oracle_id": "8e025cda-71c5-4d06-8436-decd408667af",
   "facts_sha256": "0812cc2542cadd1af7496668e743b45acad58de3905462a145d23572a8bcc1b5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4aa15741d746a5d5f46a18e926e53198bae6d87e3275629c612f5751593f199f"
   },
-  "physical_metadata_sha256": "27492419b854efee1273b9bef7812c1b263053e15e553d910f18d895a0238a7e"
+  "physical_metadata_sha256": "27492419b854efee1273b9bef7812c1b263053e15e553d910f18d895a0238a7e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MightformHarmonizer.java",
+  "java_sha256": "7a7cfcba6968922a633035065295f2945da6fa0232186b589fefdb5763ea04b9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    }
+  ]
 }

@@ -58,6 +58,7 @@ const ADDED_SOLDIER: u32 = COPY_MERCENARY << 1;
 const ADDED_GOBLIN: u32 = ADDED_SOLDIER << 1;
 const ADDED_BEAR: u32 = ADDED_GOBLIN << 1;
 const ADDED_FOOD: u32 = ADDED_BEAR << 1;
+const ADDED_SPIRIT: u32 = ADDED_FOOD << 1;
 const ADDED_MASK: u32 = JOB_MASK
     | COPY_HUMAN
     | COPY_VILLAIN
@@ -65,12 +66,15 @@ const ADDED_MASK: u32 = JOB_MASK
     | ADDED_SOLDIER
     | ADDED_GOBLIN
     | ADDED_BEAR
-    | ADDED_FOOD;
-const _: () = assert!(JOB_TYPES.len() + 10 <= u32::BITS as usize);
+    | ADDED_FOOD
+    | ADDED_SPIRIT;
+const _: () = assert!(JOB_TYPES.len() + 11 <= u32::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
     added: u32,
     chosen: Option<crate::cards::CreatureType>,
+    /// A layer-four effect replaces all previously held land subtypes.
+    basic_land: Option<crate::cards::BasicLandType>,
     /// None retains printed types (including changeling); Some replaces only
     /// creature types, preserving e.g. Equipment, Aura, Forest and Lesson.
     creature_types: Option<&'static [&'static str]>,
@@ -82,6 +86,7 @@ impl GrantedSubtypes {
         Self {
             added: SUPPRESS_PRINTED | ADDED_FOOD,
             chosen: None,
+            basic_land: None,
             creature_types: Some(&[]),
             card_types: None,
         }
@@ -105,7 +110,8 @@ impl GrantedSubtypes {
         {
             return false;
         }
-        (self.added & Self::copy_type_bit(subtype) != 0)
+        self.basic_land.is_some_and(|kind| kind.name() == subtype)
+            || (self.added & Self::copy_type_bit(subtype) != 0)
             || (self.flag(ALL_CREATURE_TYPES) && crate::cards::is_creature_type(subtype))
             || self.chosen.is_some_and(|t| t.name() == subtype)
             || self
@@ -122,6 +128,11 @@ impl GrantedSubtypes {
             .is_some_and(|kinds| kinds & subtype_card_types(subtype) == 0)
         {
             return false;
+        }
+        if LAND_TYPES.contains(&subtype)
+            && let Some(basic) = self.basic_land
+        {
+            return basic.name() == subtype;
         }
         // Preserve the ordinary-card hot path: no taxonomy lookup, and printed
         // membership short-circuits the additional-type mask as before.
@@ -177,6 +188,7 @@ impl GrantedSubtypes {
             "Goblin" => ADDED_GOBLIN,
             "Bear" => ADDED_BEAR,
             "Food" => ADDED_FOOD,
+            "Spirit" => ADDED_SPIRIT,
             _ => 0,
         }
     }
@@ -212,6 +224,7 @@ impl Serialize for GrantedSubtypes {
                     (ADDED_GOBLIN, "Goblin"),
                     (ADDED_BEAR, "Bear"),
                     (ADDED_FOOD, "Food"),
+                    (ADDED_SPIRIT, "Spirit"),
                 ] {
                     if self.0 & bit != 0 {
                         out.serialize_element(subtype)?;
@@ -222,7 +235,7 @@ impl Serialize for GrantedSubtypes {
         }
         let mut out = serializer.serialize_struct(
             "GrantedSubtypes",
-            6 + usize::from(self.card_types.is_some()),
+            6 + usize::from(self.card_types.is_some()) + usize::from(self.basic_land.is_some()),
         )?;
         out.serialize_field("suppress_printed", &self.flag(SUPPRESS_PRINTED))?;
         out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
@@ -230,6 +243,9 @@ impl Serialize for GrantedSubtypes {
         out.serialize_field("chosen", &self.chosen)?;
         out.serialize_field("added", &Added(self.added & ADDED_MASK))?;
         out.serialize_field("creature_types", &self.creature_types)?;
+        if let Some(kind) = self.basic_land {
+            out.serialize_field("basic_land", &kind)?;
+        }
         if let Some(kinds) = self.card_types {
             out.serialize_field("card_types", &kinds)?;
         }
@@ -393,11 +409,44 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             }
         }
     }
+    // The chosen type starts in layer four and retains the source's timestamp.
+    if kinds(id, target) & 2 != 0
+        && target.card.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(
+                    fragment,
+                    crate::cards::StaticAbilityFragment::ChosenBasicLandType
+                )
+            })
+        })
+        && let Some(EntryChoiceValue::BasicLandType(kind)) = world.entry_value(reference)
+    {
+        let timestamp = world
+            .roles()
+            .and_then(|roles| {
+                roles
+                    .ability_timestamps
+                    .iter()
+                    .find(|row| row.source == reference)
+            })
+            .expect("registered type source timestamp")
+            .timestamp;
+        changes.push((
+            timestamp,
+            characteristic_layers::SubtypeChange::BasicLand(kind),
+        ));
+    }
     changes.sort_by_key(|row| row.0);
     let replacement_time = changes
         .iter()
         .rev()
-        .find(|(_, change)| !matches!(change, characteristic_layers::SubtypeChange::Add(_)))
+        .find(|(_, change)| {
+            !matches!(
+                change,
+                characteristic_layers::SubtypeChange::Add(_)
+                    | characteristic_layers::SubtypeChange::BasicLand(_)
+            )
+        })
         .map(|row| row.0);
     for (_, change) in changes {
         match change {
@@ -407,6 +456,9 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                         mask.insert(typ);
                     }
                 }
+            }
+            characteristic_layers::SubtypeChange::BasicLand(kind) => {
+                mask.basic_land = Some(kind);
             }
             characteristic_layers::SubtypeChange::FoodOnly => {
                 mask = GrantedSubtypes::food_only();
@@ -610,6 +662,18 @@ impl Game {
         }
         let mut result = GrantedSubtypes::default();
         result.apply_copy_types(m.before.copy_recipe.map(CopyRecipe::copy_types));
+        if m.before.card.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(
+                    fragment,
+                    crate::cards::StaticAbilityFragment::ChosenBasicLandType
+                )
+            })
+        }) && let Some(EntryChoiceValue::BasicLandType(kind)) = m.choice
+            && m.entry_kinds() & 2 != 0
+        {
+            result.basic_land = Some(kind);
+        }
         if m.before.card.static_ability_groups().iter().any(|g| {
             g.fragments
                 .iter()
@@ -617,6 +681,9 @@ impl Game {
         }) && let Some(EntryChoiceValue::CreatureType(typ)) = m.choice
         {
             result.chosen = Some(typ);
+        }
+        if m.ghost_vacuum_after.is_some() && m.before.kinds & CREATURE_OR_KINDRED != 0 {
+            result.insert("Spirit");
         }
         if m.before.kinds & CREATURE_OR_KINDRED != 0 {
             match m.return_modification.map(|(kind, _)| kind) {

@@ -66,7 +66,9 @@ fn granting(s: &SpellView) -> Option<usize> {
         | StackKind::DelayedReturn
         | StackKind::DelayedTokenCreation { .. }
         | StackKind::DelayedSacrifice
-        | StackKind::DelayedWarpExile => {
+        | StackKind::DelayedWarpExile
+        | StackKind::DelayedManifestDread
+        | StackKind::SiegeDefeat => {
             panic!("no delayed producer in this fixture")
         }
         StackKind::Spell => matches!(i, 1 | 11) || i == 12 && s.mode == Some(0),
