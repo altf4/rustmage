@@ -273,17 +273,16 @@ impl Tracker {
                 self.colors |= s.source_card.colors();
                 self.hit("actual_cast", s.id.to_string());
             }
-            let printed_landfall = match (s.source_card.name(), s.kind) {
+            let printed_landfall = matches!(
+                (s.source_card.name(), s.kind),
                 (
                     "Attercop"
-                    | "Beorn's Hospitality"
-                    | "Elven Raft-Steerer"
-                    | "Mirkwood Meditator",
+                        | "Beorn's Hospitality"
+                        | "Elven Raft-Steerer"
+                        | "Mirkwood Meditator",
                     StackKind::TriggeredAbility { ability: 0 },
-                ) => true,
-                ("Silvan Reveler", StackKind::TriggeredAbility { ability: 1 }) => true,
-                _ => false,
-            };
+                ) | ("Silvan Reveler", StackKind::TriggeredAbility { ability: 1 })
+            );
             if printed_landfall
                 && s.source_ability_origin.is_none()
                 && s.attachment_trigger.is_none()
