@@ -465,3 +465,11 @@ fn hob_gandalf_trigger_is_damage_with_source_lifelink_after_departure() {
         assert_eq!(g.state.players[p.other().index()].life, 19);
     }
 }
+
+#[test]
+fn gandalf_front_and_combined_names_resolve_to_same_physical_card() {
+    let front = Card::from_name("Gandalf, Goblins' Bane").unwrap();
+    let combined = Card::from_name("Gandalf, Goblins' Bane // Flameshape").unwrap();
+    assert_eq!(front, combined);
+    assert_eq!(front.name(), "Gandalf, Goblins' Bane");
+}
