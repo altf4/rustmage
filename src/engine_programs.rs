@@ -3090,6 +3090,13 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CastGraveyard {
+                    kinds,
+                    exile_instants_sorceries,
+                } => {
+                    self.offer_paid_graveyard_cast(&item, kinds, exile_instants_sorceries);
+                    return;
+                }
                 Instruction::CastTargetedGraveyardFree => {
                     if self.offer_targeted_graveyard_free_cast(&item) {
                         return;

@@ -154,9 +154,28 @@ impl Game {
     }
 
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
-        let definition = self.effective_spell_card(card);
+        self.spell_can_fund_for_definition(actor, card, cost, self.effective_spell_card(card))
+    }
+    pub(super) fn spell_can_fund_for_definition(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+        definition: Card,
+    ) -> bool {
         let skips_additional = definition.mana_alternative_replaces_additional(cost);
-        let cost = self.reduced_spell_cost(actor, card, cost);
+        let cost = ManaCost {
+            generic: cost.generic.saturating_sub(
+                u32::try_from(self.spell_reduction_for_definition(
+                    actor,
+                    card,
+                    definition.fixed_mana_value(),
+                    definition,
+                ))
+                .unwrap_or(u32::MAX),
+            ),
+            ..cost
+        };
         if skips_additional {
             return self.can_fund_for(
                 FundingGoal {
@@ -169,7 +188,7 @@ impl Game {
                 self.spell_mana_purpose_for_card(actor, card, definition),
             );
         }
-        self.spell_can_fund_total(actor, card, cost, None)
+        self.spell_can_fund_total_for_definition(actor, card, cost, None, definition)
     }
     pub(super) fn spell_can_fund_total(
         &self,

@@ -116,7 +116,7 @@ mod adventure;
 #[path = "engine_cast_origins.rs"]
 mod cast_origins;
 use crate::PermanentType;
-pub use cast_origins::{GraveyardTypeUse, ResolutionFreeCasts};
+pub use cast_origins::{GraveyardTypeUse, ResolutionFreeCasts, ResolutionPaidCast};
 #[path = "engine_cast_permissions.rs"]
 mod cast_permissions;
 #[path = "engine_turn_cast_grants.rs"]

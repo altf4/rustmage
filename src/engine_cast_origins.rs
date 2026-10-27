@@ -313,8 +313,16 @@ impl Game {
     }
 }
 
+/// Printed-cost casting permission; kinds are checked against the chosen spell face.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ResolutionPaidCast {
+    pub kinds: u8,
+    pub exile_instants_sorceries: bool,
+}
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid: Option<ResolutionPaidCast>,
     /// Successful spells still permitted by this immediate casting instruction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub casts_remaining: Option<u16>,
@@ -330,6 +338,43 @@ pub struct ResolutionFreeCasts {
     pub remaining: Vec<ObjectRef>,
 }
 impl Game {
+    pub(super) fn offer_paid_graveyard_cast(
+        &mut self,
+        item: &SpellView,
+        kinds: u8,
+        exile_instants_sorceries: bool,
+    ) {
+        // Keep all exact cards: legality depends on the chosen face, not the
+        // physical front. Ineligible cards produce no legal cast action.
+        let remaining = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| {
+                o.owner == item.controller && o.zone == Zone::Graveyard && !o.is_token()
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect();
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            paid: Some(ResolutionPaidCast {
+                kinds,
+                exile_instants_sorceries,
+            }),
+            casts_remaining: Some(1),
+            pending_cast: None,
+            alternative_cost: None,
+            maximum_mana_value: None,
+            origin: Zone::Graveyard,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player: item.controller,
+            remaining,
+        }));
+        self.state.pending = Pending::ResolutionCasts {
+            player: item.controller,
+        };
+    }
     pub(super) fn offer_targeted_graveyard_free_cast(&mut self, item: &SpellView) -> bool {
         let remaining: Vec<_> = item
             .targets
@@ -345,6 +390,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            paid: None,
             casts_remaining: None,
             pending_cast: None,
             alternative_cost: None,
@@ -373,6 +419,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            paid: None,
             casts_remaining: None,
             pending_cast: None,
             alternative_cost: None,
@@ -440,12 +487,17 @@ impl Game {
                 if definition.is_some_and(|card| {
                     !card.is_land()
                         && free
+                            .paid
+                            .is_none_or(|paid| card.kind_mask() & u16::from(paid.kinds) != 0)
+                        && free
                             .maximum_mana_value
                             .is_none_or(|maximum| card.fixed_mana_value() < maximum)
                 }) && self.permitted_cast_available(
                     player,
                     object.card,
-                    if free.alternative_cost.is_some() {
+                    if free.paid.is_some() {
+                        CastMethod::Normal
+                    } else if free.alternative_cost.is_some() {
                         CastMethod::Miracle
                     } else {
                         CastMethod::Free
@@ -467,6 +519,7 @@ impl Game {
         object: ObjectRef,
         face: CastFace,
     ) {
+        let paid = self.state.resolution_free_casts.as_ref().unwrap().paid;
         let alternative_cost = self
             .state
             .resolution_free_casts
@@ -493,13 +546,18 @@ impl Game {
             free.pending_cast = Some(item.id);
         }
         self.set_cast_face(&mut item, face);
-        item.cast.as_mut().unwrap().method = if alternative_cost.is_some() {
+        item.cast.as_mut().unwrap().method = if paid.is_some() {
+            CastMethod::Normal
+        } else if alternative_cost.is_some() {
             CastMethod::Miracle
         } else {
             CastMethod::Free
         };
-        item.cast.as_mut().unwrap().exile_on_graveyard = exile_on_graveyard;
-        if item.source_card.x_symbols() > 0 {
+        item.cast.as_mut().unwrap().exile_on_graveyard = exile_on_graveyard
+            || paid.is_some_and(|p| {
+                p.exile_instants_sorceries && item.source_card.kind_mask() & (4 | 8) != 0
+            });
+        if paid.is_none() && item.source_card.x_symbols() > 0 {
             item.x = Some(0);
         }
         self.open_payment_announcement(item, Counters::default(), None);
@@ -574,6 +632,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            paid: None,
             casts_remaining: Some(maximum_casts),
             pending_cast: None,
             alternative_cost: None,

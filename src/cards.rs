@@ -1053,6 +1053,11 @@ pub(crate) enum Instruction {
         maximum_casts: u16,
     },
     CastTargetedGraveyardFree,
+    /// Optional paid cast from the controller’s graveyard, during resolution.
+    CastGraveyard {
+        kinds: u8,
+        exile_instants_sorceries: bool,
+    },
     CounterRelatedUnlessPayLife(u32),
     /// One captured ward payer may discard a card or pay this mana cost.
     CounterRelatedUnlessDiscardOrPay(ManaCost),
@@ -2784,6 +2789,8 @@ impl CastFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum CostTurn {
     Any,
+    /// Historical origin is not this caster’s hand (independent of payment).
+    NonHand,
     // Parsed vocabulary; all complete own-turn bodies still have other dependencies.
     #[allow(dead_code)]
     Own,

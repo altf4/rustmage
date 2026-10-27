@@ -287,7 +287,9 @@ impl Game {
                     | CastMethod::Miracle
             )
         {
-            return !self.scalar_x_intervals(actor, card).is_empty();
+            return !self
+                .scalar_x_intervals_for_definition(actor, card, definition)
+                .is_empty();
         }
         let a = Announcement {
             equip_zero_available: false,

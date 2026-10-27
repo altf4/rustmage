@@ -3,10 +3,60 @@
   "catalogue_id": 411,
   "oracle_id": "72a9a85d-7cfc-4b3c-82db-9d35be6c0982",
   "facts_sha256": "c3c2ce92aa1fba4d372efc92d63d04c64f4b32297cf33359c4c5420e1d194a09",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eed2de35c5f0597721f6d6f775793c6083f55771b18e3c4bd6dc85c3435d089e"
   },
-  "physical_metadata_sha256": "8f53511010fe3d9240742a8e717c616824689733627c71e35ede0ffdc31f5091"
+  "physical_metadata_sha256": "8f53511010fe3d9240742a8e717c616824689733627c71e35ede0ffdc31f5091",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BilboThiefInTheNight.java",
+  "java_sha256": "dcc8b6180af2345c678089e887ffc543e5fb91f92304f3014ecab9dfce9dc88d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+      "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/ThatSpellGraveyardExileReplacementEffect.java",
+      "sha256": "8160766e556475aa93967edc5c2ea2ab5ca0dfcb7d170c5f75ff4647b95f93b0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/other/SpellCastFromAnywhereOtherThanHand.java",
+      "sha256": "43f7873e189741bfb793a6fa3841549dc19fe2d79eb0d6b962f5f95695fcb57a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ]
 }

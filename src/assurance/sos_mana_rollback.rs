@@ -255,3 +255,6 @@ mod notary_tests;
 
 #[path = "hob_head_hunt_rollback.rs"]
 mod head_hunt_tests;
+
+#[path = "hob_bilbo_rollback.rs"]
+mod bilbo_tests;

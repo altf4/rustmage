@@ -70,6 +70,7 @@ impl Game {
             .map(|card| self.allocate_card_copy(card, item.controller))
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            paid: None,
             casts_remaining: Some(maximum_casts),
             pending_cast: None,
             alternative_cost: None,

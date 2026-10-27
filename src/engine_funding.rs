@@ -2535,7 +2535,7 @@ impl Game {
             return self.bargain_cost_fundable(a.item.controller, a.item.card, cost, a.additional);
         }
         match a.item.kind {
-            StackKind::Spell => self.spell_can_fund(
+            StackKind::Spell => self.spell_can_fund_for_definition(
                 a.item.controller,
                 a.item.card,
                 Self::with_kicker_cost(
@@ -2547,6 +2547,7 @@ impl Game {
                     a.item.source_card,
                     a.item.cast.is_some_and(|c| c.kicker == Some(true)),
                 ),
+                a.item.source_card,
             ),
             StackKind::ActivatedAbility { ability } => self.activation_can_fund(
                 FundingGoal {
