@@ -1,16 +1,29 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete pinned Oracle and XMage modal obligations.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Modal(&[
+        SpellMode {
+            text: "Target creature gets -5/-5 until end of turn. If that creature would die this turn, exile it instead.",
+            targets: one(TargetRule::Creature),
+            program: &[
+                Instruction::Grow {
+                    subject: Subject::Targets,
+                    power: -5,
+                    toughness: -5,
+                },
+                Instruction::ExileIfDiesThisTurn,
+            ],
+        },
+        SpellMode {
+            text: "Creatures target player controls get -1/-1 until end of turn.",
+            targets: one(TargetRule::Player {
+                opponent_only: false,
+            }),
+            program: &[Instruction::GrowPlayerCreatures {
+                players: PlayerSet::Targeted,
+                power: -1,
+                toughness: -1,
+            }],
+        },
+    ]),
     ..CardRules::EMPTY
 };

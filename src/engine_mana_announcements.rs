@@ -60,6 +60,7 @@ impl Game {
         true
     }
     pub(super) fn committed_mana_reflexive(&mut self, item: &SpellView) {
+        self.committed_activation_observers(item);
         if let Some((_, [Instruction::AddMana(_), Instruction::Reflexive { ability }])) =
             item.program()
         {

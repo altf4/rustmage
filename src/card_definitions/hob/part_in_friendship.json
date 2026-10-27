@@ -3,10 +3,35 @@
   "catalogue_id": 3103,
   "oracle_id": "e1a9c467-2d64-4e11-adf3-7333c923b187",
   "facts_sha256": "394e27cf9147759997a4da4795fbf771ee4c323bf6a48e7f59ed73882849bcf3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bf3e776971494c665823248039ff83fcaafc94b40bbe3113d86cd2b2dad698ec"
   },
-  "physical_metadata_sha256": "7b058df4ee225eae837eaaf729309cdd34abbf861373f88ec82696f3386136cc"
+  "physical_metadata_sha256": "7b058df4ee225eae837eaaf729309cdd34abbf861373f88ec82696f3386136cc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PartInFriendship.java",
+  "java_sha256": "9406ec64bf60fcc7e72efe813839dd08aefc00d0e88cfeee2b960cd2be15518d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+      "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    }
+  ]
 }

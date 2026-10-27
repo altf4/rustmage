@@ -43,6 +43,25 @@ impl Game {
         true
     }
 
+    pub(super) fn counter_permanent_exile_cast(&mut self, item: &SpellView) {
+        for bound in &item.targets {
+            let Some(victim) = self.bound_stack_item(bound).cloned() else {
+                continue;
+            };
+            let permanent = PermanentType::ALL
+                .into_iter()
+                .any(|kind| victim.source_card.kind_mask() & kind.mask() != 0);
+            if self.counter_stack_item(victim.id, permanent) && permanent && !victim.is_copy {
+                let after = self.object_ref(victim.card);
+                if after != victim.object
+                    && self.state.objects[victim.card as usize].zone == Zone::Exile
+                {
+                    self.grant_exile_free_permission(item.controller, after);
+                }
+            }
+        }
+    }
+
     pub(super) fn target_becomes_bound(&mut self, item: &SpellView, bound: BoundTarget) {
         self.controlled_ability_target_acquired(item, bound);
         let Target::Card(id) = bound.target else {
@@ -85,6 +104,49 @@ impl Game {
             }
         }
         if source.controller != item.controller {
+            // The active layer-one definition is materialized for copied providers.
+            // Keep blank providers in this conservative gate: restored abilities
+            // must work without reacquiring or rebuilding a derived ward cache.
+            let has_conditional = self.state.static_sources.iter().any(|&provider| {
+                self.on_battlefield(provider)
+                    && self.state.objects[provider as usize]
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                                )
+                            })
+                        })
+            });
+            let conditional = if has_conditional {
+                self.characteristic_query().conditional_ward_grants(id)
+            } else {
+                Vec::new()
+            };
+            for grant in conditional {
+                let event = Box::new(AttachmentTriggerView {
+                    grantor: grant.grantor,
+                    granting_card: grant.granting_card,
+                    recipient: reference,
+                    defender: None,
+                    granted: true,
+                    origin: self.copy_ability_origin(grant.grantor),
+                });
+                if self.queue_trigger_from(&source, usize::from(grant.ability), Some(event)) {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .related_stack = Some(StackLink {
+                        id: item.id,
+                        controller: item.controller,
+                    });
+                }
+            }
             let grants: Vec<_> = self
                 .state
                 .attachment_sources

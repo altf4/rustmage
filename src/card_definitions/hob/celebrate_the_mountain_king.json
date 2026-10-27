@@ -3,10 +3,50 @@
   "catalogue_id": 694,
   "oracle_id": "d51136fa-3c13-48a5-83fd-51fe00010a4b",
   "facts_sha256": "36fb51173c0adb3455236360b371ab46fcd8ee02915ef1e531e5261e2510b056",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "87d38b67193fbdc34bf03bd8e555ce9358bf25a78f0eeb496cb86c3a87aa586d"
   },
-  "physical_metadata_sha256": "098f6bf39dc227327f3ad2ee9141e3129cffd74d173d527b18b9b94038f221b2"
+  "physical_metadata_sha256": "098f6bf39dc227327f3ad2ee9141e3129cffd74d173d527b18b9b94038f221b2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CelebrateTheMountainKing.java",
+  "java_sha256": "b1bc6936d018825c9926d85577c55afb7cc2358f0c9f66da4380eace439a401b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+      "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/OnLeaveReturnExiledAbility.java",
+      "sha256": "5b62cf341bee369a87d667c2431aa2bdf252f167e84793aca73e04a2ceee1822"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ForEachPlayerTargetsAdjuster.java",
+      "sha256": "0983e17113baf50a95495f9aac7c2218adf8b0c7350303f390e2ecdfd2576971"
+    }
+  ]
 }

@@ -1,0 +1,76 @@
+{
+  "scope": "Chief Warg's Company complete candidate, with reserved synthetic Wolf token5412; no engine changes",
+  "base_revision": "faca9756",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "assurance_module": "src/assurance/hob_warg_company.rs",
+  "cards": [
+    {
+      "name": "Chief Warg's Company",
+      "obligations": [
+        "Costs 1BG and is a 5/3 Wolf with trample",
+        "Cannot attack without two other controlled Wolf permanents; source/opposing Wolves and non-Wolves do not qualify",
+        "Other Wolves need not attack; restriction applies to attacks, not blocks",
+        "Final declaration reevaluates restriction transactionally",
+        "Only own beginning-of-upkeep creates exactly one untapped 2/2 green Wolf token"
+      ],
+      "implementation": "Existing CombatRestriction Source attack=true block=false, unless Expression Count Battlefield relation0 kind0 subtypeWolf other=true minimum2; ordinary controller Upkeep trigger and CreateTokens5412",
+      "tests": [
+        "hob_warg_company_paid_body_trample_and_controller_only_upkeep_wolf_recipe",
+        "hob_warg_company_attack_requires_two_other_controlled_wolves_not_two_attackers",
+        "hob_warg_company_final_declaration_rechecks_transactionally_and_owned_restore"
+      ],
+      "shared_proof": [
+        "interactions::trample_with_deathtouch_assigns_one_lethal_and_the_rest_to_defender",
+        "contracts::branch_contract at selected-attack declaration proves raw/index parity, ancestor disposal, rollback and restore"
+      ]
+    }
+  ],
+  "synthetic": {
+    "name": "@token/hob-wolf",
+    "catalogue_id": 5412,
+    "recipe": "2/2 green Creature \u2014 Wolf; no keywords; deck_limit None",
+    "source": "Mage/src/main/java/mage/game/permanent/token/WolfToken.java",
+    "test": "cards::token_factories_reject_deck_submission_in_every_format",
+    "metadata_scope": "Append one card, one intrinsic color, one token recipe and its sorted factory alias; no existing IDs changed"
+  },
+  "author_validation": {
+    "source_definitions": 5413,
+    "verified_java_blobs": 1511,
+    "focused_runs": 1,
+    "focused_passed": 3,
+    "regression_passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "both_seats": true,
+    "rustfmt_check": true,
+    "diff_check": true,
+    "focused_compile_and_run_seconds": 145.10362712299684,
+    "cached_token_regression_seconds": 0.16688062297180295,
+    "queue_and_guard_overhead_seconds": 39.653035556024406,
+    "scenario_execution_seconds": "<0.01 per family (Cargo reports 0.00s)",
+    "memory_peak_bytes": 2658095104,
+    "memory_max_bytes": 6442450944,
+    "oom_events": 0,
+    "logs": [
+      "<cache>/rustmage-authoring/hob-warg-company/focused-1.log",
+      "<cache>/rustmage-authoring/hob-warg-company/token-metadata-1.log"
+    ],
+    "resource_report": "<cache>/rustmage-build-reports/d9c79d9917c349ee92e051b0072977d7.json"
+  },
+  "throughput": {
+    "scope": "One candidate physical card plus its token; isolated branch creation to final focused/regression terminal report, including authoring and shared build-slot wait",
+    "elapsed_seconds": 350.60019040107727,
+    "candidate_physical_cards_per_hour": 10.268106232006595,
+    "simulation": "No simulation benchmark run"
+  },
+  "acceptance": "Independent nonauthor reviews and final integrated release/set acceptance remain required. Root checkpoint on faca9756 predates this leaf and does not validate its executable inputs. No PR or merge was created.",
+  "independent_reviews": {
+    "head": "5dca297508148553febbf36f078ada79378b9c2c",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both independent nonauthors verified full Oracle/Java/helper source, exact Wolf recipe, actual3focused+1token legality logs, and approved with no findings. Root integration requires current executable acceptance."
+  }
+}

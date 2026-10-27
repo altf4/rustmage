@@ -44,6 +44,14 @@ impl CastRollback {
     }
 }
 impl Game {
+    pub(super) fn begin_attack_rollback(&mut self, actor: Player) {
+        assert!(self.state.cast_rollback.is_none());
+        self.state.cast_rollback = Some(Box::new(CastRollback::new(
+            self.state.clone(),
+            actor,
+            CardId::MAX,
+        )));
+    }
     pub(super) fn prepare_cast_rollback(&mut self, actor: Player, action: &Action) {
         if let Some(rollback) = &mut self.state.cast_rollback {
             if actor != rollback.player
@@ -65,6 +73,8 @@ impl Game {
         let card = match *action {
             Action::AnnounceCast { card }
             | Action::AnnounceExile { card }
+            | Action::AnnounceExileLife { card, .. }
+            | Action::AnnounceExileFree { card, .. }
             | Action::AnnounceFlashSurcharge { card }
             | Action::AnnounceWarp { card }
             | Action::AnnounceSneak { card, .. }
@@ -157,7 +167,7 @@ impl Game {
                         .iter()
                         .any(|f| f.announcement.item.kind == StackKind::Spell)
                 });
-        if !casting || self.outcome().is_some() {
+        if (!casting && self.state.attack_payment.is_none()) || self.outcome().is_some() {
             self.state.cast_rollback = None;
         }
     }
@@ -225,6 +235,7 @@ impl Game {
                     zone_replacements::Plan {
                         destination: Zone::Library,
                         shuffle: false,
+                        reflexive: None,
                     },
                     false,
                     Counters::default(),

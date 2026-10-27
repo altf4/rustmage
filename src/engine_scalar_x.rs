@@ -278,12 +278,42 @@ impl Game {
     }
     pub(super) fn item_amount(&self, value: AmountValue, item: &SpellView) -> u128 {
         match value {
+            AmountValue::MovedCount => u128::from(
+                self.state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .moved_count
+                    .expect("quantity requires remembered move result"),
+            ),
             AmountValue::TargetPlayerHandSize => item
                 .targets
                 .iter()
                 .find_map(|bound| {
                     if let Target::Player(player) = bound.target {
                         Some(self.hand_count(player) as u128)
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or(0),
+            AmountValue::TargetPlayerCreatureCount => item
+                .targets
+                .iter()
+                .find_map(|bound| {
+                    if let Target::Player(player) = bound.target {
+                        Some(
+                            self.state
+                                .objects
+                                .iter()
+                                .enumerate()
+                                .filter(|(id, object)| {
+                                    object.zone == Zone::Battlefield
+                                        && object.controller == player
+                                        && self.is_creature(*id as CardId)
+                                })
+                                .count() as u128,
+                        )
                     } else {
                         None
                     }
@@ -311,6 +341,37 @@ impl Game {
             AmountValue::ColorsSpent => (0..5)
                 .filter(|&i| self.item_cast_payment(item)[i] > 0)
                 .count() as u128,
+            AmountValue::SacrificedPower => self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .sacrificed_power
+                .as_deref()
+                .copied()
+                .unwrap_or(0)
+                .max(0) as u128,
+            AmountValue::ReflexiveSacrificedPower | AmountValue::SacrificeCostPower => {
+                item.sacrificed_power
+                    .as_deref()
+                    .copied()
+                    .unwrap_or(0)
+                    .max(0) as u128
+            }
+            AmountValue::TargetCreaturePower => {
+                let r = self.state.resolving.as_ref().unwrap();
+                r.target_card_facts
+                    .as_ref()
+                    .and_then(|facts| facts.iter().find(|f| f.group == r.target_group))
+                    .map_or(0, |f| f.power.max(0) as u128)
+            }
+            AmountValue::SourceLastKnownPower => {
+                if item.source_facts.is_creature() {
+                    item.source_facts.power.max(0) as u128
+                } else {
+                    0
+                }
+            }
             AmountValue::SacrificedToughness => item
                 .sacrificed_toughness
                 .as_deref()

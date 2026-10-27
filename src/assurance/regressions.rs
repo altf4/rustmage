@@ -216,6 +216,14 @@ fn trace(card: Card, schema_projection: Option<u32>) -> Trace {
             observation_bytes = observation_bytes.replace(field, "");
         }
     }
+    if schema_projection.is_some_and(|schema| schema < 154) {
+        // Recording-only projection of the new first PlayerView field. Keep
+        // inherited byte order and every existing fact; normal validation never
+        // removes the public enduring-story designation.
+        for field in ["\"enduring_story\":true,", "\"enduring_story\":false,"] {
+            observation_bytes = observation_bytes.replace(field, "");
+        }
+    }
     Trace {
         root: root.into(),
         status: status.into(),

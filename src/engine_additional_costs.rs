@@ -1,6 +1,23 @@
 //! Owned mandatory spell and activation costs, chosen after targets and paid before cast completion.
 use super::*;
 
+/// Evaluate the complete cost in the actual or projected characteristic world.
+pub(super) fn legendary_name_match<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    card: CardId,
+) -> bool {
+    world.legendary(card)
+        && (0..world.game().state.objects.len()).any(|i| {
+            let id = i as CardId;
+            let o = world.object(id);
+            o.zone == Zone::Battlefield
+                && o.controller == actor
+                && world.legendary(id)
+                && crate::card_names::same_name(world.name(card), world.name(id))
+        })
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct AdditionalCostView {
     pub kind: EffectChoiceKind,
@@ -30,6 +47,7 @@ impl Game {
         let controls_cost_object = match spec.kind {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => o.owner == actor,
@@ -45,9 +63,16 @@ impl Game {
             || object == source
                 && (matches!(
                     spec.kind,
-                    EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_)
+                    EffectChoiceKind::Discard
+                        | EffectChoiceKind::DiscardNamed(_)
+                        | EffectChoiceKind::DiscardMatchingLegendary
                 ) || spec.filter.other)
             || spec.filter.source_only && object != source
+        {
+            return false;
+        }
+        if spec.kind == EffectChoiceKind::DiscardMatchingLegendary
+            && !legendary_name_match(self, actor, object.card)
         {
             return false;
         }
@@ -80,7 +105,9 @@ impl Game {
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => Zone::Graveyard,
-            EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_) => Zone::Hand,
+            EffectChoiceKind::Discard
+            | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary => Zone::Hand,
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
@@ -127,9 +154,28 @@ impl Game {
     }
 
     pub(super) fn spell_can_fund(&self, actor: Player, card: CardId, cost: ManaCost) -> bool {
-        let definition = self.effective_spell_card(card);
+        self.spell_can_fund_for_definition(actor, card, cost, self.effective_spell_card(card))
+    }
+    pub(super) fn spell_can_fund_for_definition(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+        definition: Card,
+    ) -> bool {
         let skips_additional = definition.mana_alternative_replaces_additional(cost);
-        let cost = self.reduced_spell_cost(actor, card, cost);
+        let cost = ManaCost {
+            generic: cost.generic.saturating_sub(
+                u32::try_from(self.spell_reduction_for_definition(
+                    actor,
+                    card,
+                    definition.fixed_mana_value(),
+                    definition,
+                ))
+                .unwrap_or(u32::MAX),
+            ),
+            ..cost
+        };
         if skips_additional {
             return self.can_fund_for(
                 FundingGoal {
@@ -142,7 +188,7 @@ impl Game {
                 self.spell_mana_purpose_for_card(actor, card, definition),
             );
         }
-        self.spell_can_fund_total(actor, card, cost, None)
+        self.spell_can_fund_total_for_definition(actor, card, cost, None, definition)
     }
     pub(super) fn spell_can_fund_total(
         &self,
@@ -458,6 +504,14 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return;
         };
+        // The local announcement is outside State while an external cost commits.
+        // Preserve its actual pre-departure source, not a borrowed definition.
+        if matches!(a.item.kind, StackKind::ActivatedAbility { .. })
+            && self.on_battlefield(a.item.object.card)
+            && self.object_ref(a.item.object.card) == a.item.object
+        {
+            a.item.source_facts = DamageFacts::from_view(&self.object_view(a.item.object.card));
+        }
         if let EffectChoiceKind::ExileGraveyardSymbols { color, minimum } = spec.kind {
             let group = a.additional_group.as_deref().unwrap();
             assert!(self.graveyard_symbol_total(group, color) >= u128::from(minimum));
@@ -569,6 +623,7 @@ impl Game {
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind {
             EffectChoiceKind::TargetAttackingReturn { .. }
+            | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::HandToTop
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardSymbols { .. }
@@ -591,7 +646,9 @@ impl Game {
             EffectChoiceKind::ExileGraveyard => {
                 self.move_object(object.card, Zone::Exile);
             }
-            EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_) => {
+            EffectChoiceKind::Discard
+            | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary => {
                 self.discard_batch(&[object.card], None)
             }
             EffectChoiceKind::ReturnUnblockedAttacker => {
@@ -616,6 +673,16 @@ impl Game {
                     })
                 }) {
                     a.item.sacrificed_toughness = Some(Box::new(self.stats(object.card).toughness));
+                }
+                if a.item.program().is_some_and(|(_, program)| {
+                    program.iter().any(|i| {
+                        matches!(
+                            i,
+                            Instruction::DrawScaled(_, AmountValue::SacrificeCostPower)
+                        )
+                    })
+                }) {
+                    a.item.sacrificed_power = Some(Box::new(self.stats(object.card).power));
                 }
                 self.sacrifice_batch(&[(a.item.controller, object.card)]);
             }

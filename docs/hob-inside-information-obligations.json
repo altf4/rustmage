@@ -1,0 +1,396 @@
+{
+  "scope": "Inside Information whole-card author candidate and narrow explicit exile-life alternative casting; isolated base 3fa4cf1a. No PR, push, or merge.",
+  "sources": {
+    "oracle": "66961bcb-f588-47a7-b3f3-12f4ac674477, catalogue2180; complete pinned data/standard/cards.json body read",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_class": "Mage.Sets/src/mage/cards/i/InsideInformation.java",
+    "full_helpers_read": [
+      "PayLifeCost.java",
+      "TargetOpponent.java",
+      "CostsImpl.java",
+      "Costs.java",
+      "AsThoughEffect.java",
+      "AsThoughEffectImpl.java"
+    ],
+    "authority": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes (complete Inside Information section); current pinned CR118.4,601.2,202.3,400.7,514.2",
+    "verification": {
+      "definitions": 5417,
+      "source_blobs": 1586,
+      "java_verified": true
+    },
+    "metadata_correction": "Inherited metadata had zero fixed colored mana despite {X}{B}{B}; corrected ONLY row2180 colored black component to2, refreshed paired physical hash. Direct typed definition explicitly declares x_symbols=1."
+  },
+  "shared_mechanics": {
+    "permission": "Exact face-up exile ObjectRef plus actor and inclusive current-turn expiry. New life-only rows grant ordinary land plays but do not enable ordinary paid spell casting; independent other permissions remain usable. Successful actual Exile arrivals only. Finite top-library bound retains full X scalar until bounded by library length.",
+    "alternative": "Explicit cast method/face with zero base mana cost, X in mana cost fixed to0, life equal to chosen stack face mana value. Life is mandatory, not an optional alternate route; mandatory and optional additional costs and normal timing remain. Existing borrowed funding/ordered cost context checks all costs including exact-equality life payments. New AlternativeLife clause keeps replacement mana-cost life independent of identical-valued additional-X Life clauses. Zero life cost performs actual cost declaration/payment without losing life.",
+    "route_isolation": "One helper configures BOTH borrowed cast preview and actual announcement: resets permission-specific spend-any-mana, exile-on-graveyard and foreign-stash flags inherited by the ordinary cast constructor. Other ordinary permission routes retain those effects and remain usable.",
+    "ownership": "Existing owned permission vector, cast transaction and rollback checkpoint retain new state with existing size-based accounting. New announcement action included in rollback capture; actual foreign entry failure restores paid life, exact exile generation/permission and selectively retained/reversed mana event. No new private continuation or shared mutable rules state."
+  },
+  "wire": {
+    "schema": 160,
+    "approved_by_parent": true,
+    "changes": [
+      "ExilePlayPermission.life_instead_of_mana bool; omitted from legacy permission serialization when false",
+      "Action::AnnounceExileLife {card,face,flash_surcharge}",
+      "CastMethod::ExileLife",
+      "CastCostClause::AlternativeLife(u32)"
+    ],
+    "compatibility": "Legacy ordinary singleton permission JSON omits the new false field and retains previous values. New variants are genuine wire additions, coordinated with root; root reconciles integration schema timing."
+  },
+  "printed_assertion_map": {
+    "{X}{B}{B}, Sorcery": "Actual paid X+BB both seats, chosen X frozen on stack; wrong own-player target illegal, zero X and library shorter than X supported.",
+    "Exile the top X cards of target opponent library": "Actual exact top two of larger library leave while bottom stays hidden and is still top of remaining library. Own library unchanged. Public exiled cards/permissions visible to both viewers; opponent hand/unselected library remain private.",
+    "You may play those cards this turn": "Actual land owner/controller, main-phase timing, ordinary land allowance, expiry at cleanup, source already gone to graveyard. Actual creature/spell cast by caster, original owner excluded, new exile incarnation cannot reuse old permission; independent normal/Adventure permissions remain available.",
+    "If you cast this way, pay life equal to mana value rather than mana cost": "Actual lost life and LifeLost observer milling; insufficient/equal/zero CR118.4 boundaries; Adventure chosen face value3 vs physical2, foreign mana-X forced0, additional-X life remains separate. Casting countered spells does not refund life.",
+    "Normal timing and additional costs": "Actual Stir Up Trouble sacrifice OR additional4mana, Harbinger extra flash mana, optional kicker with live Radagast cost reduction affects mana only, original mana value life unchanged. Independent permissions have isolated conditional modifiers.",
+    "Legality/privacy/transaction/owned roots": "Illegal proposals and targets preserve snapshots/revisions; both player observations protect hidden cards. Representative raw/index/restore and parent-drop children at life cost choice; actual foreign aura entry strands casualty and rolls back paid life with green mana selectively retained/reversed."
+  },
+  "tests": [
+    "inside_paid_xbb_exiles_only_opponent_top_x_publicly_and_life_casts_both_seats",
+    "inside_zero_x_short_library_and_opponent_target_restriction",
+    "inside_land_uses_normal_allowance_control_and_timing_and_expires_this_turn",
+    "inside_life_payment_insufficient_exact_equal_and_zero_cost_cr118_4",
+    "inside_adventure_chosen_face_value_and_normal_permission_are_independent",
+    "inside_extra_normal_permission_and_exact_incarnation_do_not_inherit_life_route",
+    "inside_life_loss_is_a_cost_and_queues_actual_life_lost_observer",
+    "inside_mandatory_additional_sacrifice_and_four_mana_alternative_survive",
+    "inside_additional_x_life_and_alternative_life_remain_distinct_even_equal",
+    "inside_flash_surcharge_is_additional_mana_and_timing_stays_normal",
+    "inside_owned_life_payment_roots_raw_index_restore_and_wrong_actor_rollback",
+    "inside_actual_counterspell_does_not_refund_life_or_permission",
+    "inside_failed_foreign_entry_rolls_back_paid_life_and_exact_exile_permission_with_retained_mana",
+    "inside_only_top_x_leave_larger_library_and_owner_gets_no_play_permission",
+    "inside_optional_kicker_and_live_cost_reduction_modify_mana_only_not_life_value",
+    "inside_chosen_life_permission_does_not_inherit_other_routes_modifiers"
+  ],
+  "fixture_policy": "Explicit19-name whitelist; every name paired and admitted before queue, unknown/incomplete names fail assertions. Exploratory preflight failed for unavailable proposed names rather than silently skipping them; only verified final fixtures enter tests.",
+  "limitations": [
+    "No admitted global static spell-tax fixture or typed spell-cost-increase descriptor exists in this base; parent explicitly approved recording this rather than inventing unrelated mechanics. Actual supported surcharge, mandatory additional mana, nonmana additional costs, optional kicker and live reduction are proved.",
+    "Focused author proof is not full release or full HOB set acceptance. Parent owns regenerated artifacts, final integrated release and two independent nonauthor reviews. No simulation throughput extrapolation."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "outer_log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/outer-1.log",
+      "persistent_driver": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-1.py",
+      "driver_sha256": "2a9208990058e48c6b909c4ea6f21fefb80c164209390d3b4a54cb6471c45143",
+      "resource_report": "/home/altf4/.cache/rustmage-build-reports/aeb8f540aad649edb5edda8aced7b298.json",
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-1.py"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 49.142253586964216,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2020438016,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "groups": [
+        {
+          "filter": "hob_inside_information",
+          "exit": 101,
+          "passed": 0,
+          "seconds": 23.118163395032752,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/focused-1.log"
+        }
+      ],
+      "measured_group_seconds": 23.118163395032752,
+      "queue_and_guard_overhead_seconds": 26.024090191931464,
+      "note": "Compile-only failure: new action omitted from exhaustive smoke policy. No scenarios ran; added ordinary casting score arm after terminal.",
+      "input_policy": "Fixed from launch until actual naturally terminal process, no cancellation or mutation."
+    },
+    {
+      "run": 2,
+      "outer_log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/outer-2.log",
+      "persistent_driver": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-2.py",
+      "driver_sha256": "4636349a36db7ff8ca59337a92c1e197b90d14168ef28ed894d71f65c61ef711",
+      "resource_report": "/home/altf4/.cache/rustmage-build-reports/9f36df183e56461ea0ea912457113c71.json",
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-2.py"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 29.486083555035293,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2607570944,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "groups": [
+        {
+          "filter": "hob_inside_information",
+          "exit": 101,
+          "passed": 0,
+          "seconds": 29.00149166904157,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/focused-2.log"
+        }
+      ],
+      "measured_group_seconds": 29.00149166904157,
+      "queue_and_guard_overhead_seconds": 0.4845918859937228,
+      "note": "Actual typed card wiring failure: omitted x_symbols=1, all13 focused tests stopped at ChooseX. Added explicit header after natural terminal.",
+      "input_policy": "Fixed from launch until actual naturally terminal process, no cancellation or mutation."
+    },
+    {
+      "run": 3,
+      "outer_log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/outer-3.log",
+      "persistent_driver": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-3.py",
+      "driver_sha256": "3f8d8d5555bcd6d8eba3b8b3ece6f10f687c1f18aee5b24159294c5cb64fd7cf",
+      "resource_report": "/home/altf4/.cache/rustmage-build-reports/8d16f145cee6406ab0d19a62e7affe3f.json",
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-3.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 402.8981580500258,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2608234496,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "groups": [
+        {
+          "filter": "hob_inside_information",
+          "exit": 0,
+          "passed": 13,
+          "seconds": 29.80280835798476,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/focused-3.log"
+        },
+        {
+          "filter": "sos_cast_rollback",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.29615192697383463,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/rollback-3.log"
+        },
+        {
+          "filter": "sos_mana_rollback",
+          "exit": 0,
+          "passed": 7,
+          "seconds": 0.5790016290266067,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/mana-rollback-3.log"
+        },
+        {
+          "filter": "hob_stir_stone",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.12177827401319519,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/additional-cost-3.log"
+        },
+        {
+          "filter": "hob_inherited_adventures",
+          "exit": 0,
+          "passed": 15,
+          "seconds": 0.07874281902331859,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/adventure-3.log"
+        },
+        {
+          "filter": "sos_exile_search",
+          "exit": 0,
+          "passed": 3,
+          "seconds": 0.07751415797974914,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/exile-3.log"
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 45.03406294801971,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/clippy-3.log"
+        }
+      ],
+      "measured_group_seconds": 75.99006011302117,
+      "queue_and_guard_overhead_seconds": 326.90809793700464,
+      "note": "50 native passed plus strict all-target Clippy. Read-only coverage pass identified need for larger-library exact-top-X and kicker/reduction assertions.",
+      "input_policy": "Fixed from launch until actual naturally terminal process, no cancellation or mutation."
+    },
+    {
+      "run": 4,
+      "outer_log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/outer-4.log",
+      "persistent_driver": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-4.py",
+      "driver_sha256": "14c1c37a84e1460aad8cb716d6008a1179a81181403cbcf630649aa77c620bc0",
+      "resource_report": "/home/altf4/.cache/rustmage-build-reports/73a3a54d6ee544f7ad9ccd05aacb4726.json",
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-4.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 69.70571145403665,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2566381568,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "groups": [
+        {
+          "filter": "hob_inside_information",
+          "exit": 0,
+          "passed": 15,
+          "seconds": 30.220811780018266,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/focused-4.log"
+        },
+        {
+          "filter": "sos_cast_rollback",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.3145719920285046,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/rollback-4.log"
+        },
+        {
+          "filter": "sos_mana_rollback",
+          "exit": 0,
+          "passed": 7,
+          "seconds": 0.581655622983817,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/mana-rollback-4.log"
+        },
+        {
+          "filter": "hob_stir_stone",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.11937543394742534,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/additional-cost-4.log"
+        },
+        {
+          "filter": "hob_inherited_adventures",
+          "exit": 0,
+          "passed": 15,
+          "seconds": 0.0960379610187374,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/adventure-4.log"
+        },
+        {
+          "filter": "sos_exile_search",
+          "exit": 0,
+          "passed": 3,
+          "seconds": 0.0717947719967924,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/exile-4.log"
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 18.66283972200472,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/clippy-4.log"
+        }
+      ],
+      "measured_group_seconds": 50.06708728399826,
+      "queue_and_guard_overhead_seconds": 19.638624170038383,
+      "note": "52 native passed plus strict all-target Clippy. Read-only core review identified chosen-route modifier contamination in ordinary constructor; parent authorized one shared preview/actual configuration helper and independent route proof.",
+      "input_policy": "Fixed from launch until actual naturally terminal process, no cancellation or mutation."
+    },
+    {
+      "run": 5,
+      "outer_log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/outer-5.log",
+      "persistent_driver": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-5.py",
+      "driver_sha256": "771f4088e1825d7b72d952743d1668841eb80397912bb003259c78f50cbaec25",
+      "resource_report": "/home/altf4/.cache/rustmage-build-reports/645a2cf64a334f2888699345c392f6a8.json",
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-inside-information/driver-5.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 76.02096125204116,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2571264000,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "groups": [
+        {
+          "filter": "hob_inside_information",
+          "exit": 0,
+          "passed": 16,
+          "seconds": 30.289757897960953,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/focused-5.log"
+        },
+        {
+          "filter": "sos_cast_rollback",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.3201274339808151,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/rollback-5.log"
+        },
+        {
+          "filter": "sos_mana_rollback",
+          "exit": 0,
+          "passed": 7,
+          "seconds": 0.5339013760094531,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/mana-rollback-5.log"
+        },
+        {
+          "filter": "hob_stir_stone",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.1246772519662045,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/additional-cost-5.log"
+        },
+        {
+          "filter": "hob_inherited_adventures",
+          "exit": 0,
+          "passed": 15,
+          "seconds": 0.10812292800983414,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/adventure-5.log"
+        },
+        {
+          "filter": "sos_exile_search",
+          "exit": 0,
+          "passed": 3,
+          "seconds": 0.07956489897333086,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/exile-5.log"
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 44.06287585699465,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/clippy-5.log"
+        }
+      ],
+      "measured_group_seconds": 75.51902764389524,
+      "queue_and_guard_overhead_seconds": 0.5019336081459187,
+      "note": "Final exact executable inputs:53 unique native (16 changed/37 affected), strict all-target Clippy; no suppressed lints or zero-test groups.",
+      "input_policy": "Fixed from launch until actual naturally terminal process, no cancellation or mutation."
+    }
+  ],
+  "final_evidence": {
+    "catalogue_version": "1632db99b68640d5434095ef5478f835da6ab9c17a125e5fcb52ee51638484cd",
+    "input_hash_manifest": "/home/altf4/.cache/rustmage-authoring/hob-inside-information/inputs-5.json",
+    "matching_frozen_files": 22,
+    "native_unique": 53,
+    "focused": 16,
+    "affected_regressions": 37,
+    "all_targets_clippy": "PASS -D warnings, no exceptions",
+    "source_check": "5417 definitions /1586 Java blobs, java_verified true",
+    "focused_native_execution_seconds": 0.1,
+    "report": "/home/altf4/.cache/rustmage-build-reports/645a2cf64a334f2888699345c392f6a8.json",
+    "remaining_review_requirement": "Two independent nonauthor reviews of committed leaf. Full integrated release/root trace acceptance remain parent-owned."
+  },
+  "integration": {
+    "exclude_from_commit": [
+      "src/assurance/mod.rs local test registration",
+      "data/standard/coverage.json generated",
+      "src/generated/catalogue.rs generated"
+    ],
+    "root_action": "Register mod hob_inside_information; regenerate catalogue/module links; reconcile schema160; two independent nonauthor reviews before integration. Shared overlaps are narrow hunks in engine.rs, cards.rs, engine_targeting.rs, engine_funding.rs, engine_programs.rs and cast modules; no activation-payment changes."
+  },
+  "implementation_measurement": {
+    "interval": "Isolated clone creation to review-ready source receipt, including build-slot waits; earlier general set work excluded.",
+    "start_utc": "2026-10-26T23:37:26.249945+00:00",
+    "end_utc": "2026-10-27T00:05:12.832736+00:00",
+    "seconds": 1666.582791,
+    "whole_cards": 1,
+    "cards_per_hour": 2.1601087083347905,
+    "simulation_throughput": "Not benchmarked; bounded native rules proofs only."
+  }
+}

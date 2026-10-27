@@ -19,6 +19,33 @@ pub struct ResolvedStatSubjectView {
     pub departure_power: Option<i128>,
 }
 impl Game {
+    pub(super) fn set_base_stats_from_source(&mut self, item: &SpellView, subject: Subject) {
+        let stats = if self.on_battlefield(item.object.card)
+            && self.object_ref(item.object.card) == item.object
+        {
+            if self.is_creature(item.object.card) {
+                self.stats(item.object.card)
+            } else {
+                Stats::default()
+            }
+        } else {
+            Stats {
+                power: if item.source_facts.is_creature() {
+                    item.source_facts.power
+                } else {
+                    0
+                },
+                toughness: item
+                    .source_quantity_lki
+                    .as_ref()
+                    .and_then(|facts| facts.toughness)
+                    .expect("source base-setting program opts into toughness LKI"),
+            }
+        };
+        // Both signed axes are sampled before creating the fixed layer-7b effect.
+        // Ordinary amount helpers clamp negatives, which would be wrong here.
+        self.set_base_stats(item, subject, Some(stats.power), Some(stats.toughness));
+    }
     pub(super) fn bind_stat_subject(&mut self, object: ObjectRef, program: &[Instruction]) {
         let reads_power = program.iter().any(|instruction| {
             matches!(

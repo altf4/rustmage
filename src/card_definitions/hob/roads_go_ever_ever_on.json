@@ -3,10 +3,39 @@
   "catalogue_id": 3557,
   "oracle_id": "3cd3cdc9-2ed2-4cdf-b58a-12c3a2ef218b",
   "facts_sha256": "d92e24e805f1d22a40ccf70d956b43595bc1d1e52845195bc01888fb14632977",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0b7bd68a142512d9d04b1cbc18559f2014cd21d7952c84414b18eb8c4f16ffb0"
   },
-  "physical_metadata_sha256": "f0f27d0278d520a27115b7addd072493fbc304e133ef57f4d4ea1b37f2fe87e1"
+  "physical_metadata_sha256": "f0f27d0278d520a27115b7addd072493fbc304e133ef57f4d4ea1b37f2fe87e1",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "3cd3cdc9-2ed2-4cdf-b58a-12c3a2ef218b",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory has xmage_name:null and implementations:[]; full pinned Mage.Sets and Mage source trees contain no Roads Go Ever, Ever On class. Historical typed_lift is not executable evidence."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/WhenYouAttackDelayedTriggeredAbility.java",
+      "sha256": "1825df564f9aebab7dbb53894496a30e1e0d50b32fbbc125a10a064db7282ca1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryAndExileTargetEffect.java",
+      "sha256": "7b8a99d5750eb51a9675ad28a3801f4c4de926d9c24a14cee96e808e061c5434"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf",
+    "section": "CR 400.7, 603.7, 608, 609, 701.19, 701.20, 714",
+    "notes": "Oracle facts pin complete body. Search links actual exiled incarnations; chapter II/III choose a linked card; the delayed player-controlled attack trigger survives Saga departure and counts current Plains when it resolves. Pinned XMage helpers are analogues, not a card class."
+  }
 }

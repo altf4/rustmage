@@ -3,10 +3,45 @@
   "catalogue_id": 328,
   "oracle_id": "d05db2c1-a19a-4803-8e8a-fa2f9b798181",
   "facts_sha256": "1e8081bec8f41115e0fa69ce5ebf27bfa850fb9c09d6cc014bdc257795b45c71",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b9c1cbb40fd50a17c0b68fdeea4e35b61b886aca82fa7a44f3b4be5510487ffa"
   },
-  "physical_metadata_sha256": "a8088b4643429484d1d76cc1b364ae9b6faa90d33754026a630e0ef36c338cfb"
+  "physical_metadata_sha256": "a8088b4643429484d1d76cc1b364ae9b6faa90d33754026a630e0ef36c338cfb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BardKingOfDale.java",
+  "java_sha256": "7b535ab4dd7b853a109eeb5743c36a8e3861e4e5b0abac95c3ab71399f6decf8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/DrawExceptFirstDrawTwoReplacementEffect.java",
+      "sha256": "0be111da9f39048557d51ac5cfb023b0f6aa7e8b9d15a4a4dacc4a4f058f3d9e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/CreateTwiceThatManyTokensEffect.java",
+      "sha256": "69a7a85dbf7e5537041f4d1b6b633f76dfb0f73b429ef33dac9bcc648ec419c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CardsDrawnDuringDrawStepWatcher.java",
+      "sha256": "76313c1b0920d5b327d3e39600a9d94848fee1896522c452712e2d773701bd2d"
+    }
+  ]
 }

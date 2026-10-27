@@ -3,10 +3,31 @@
   "catalogue_id": 4163,
   "oracle_id": "7907bbf0-f6d9-4e5b-b5de-73cd94979f98",
   "facts_sha256": "506eeb04239a13354a9212df9e5fd1a04810670c34c01710838a9e139bba97fc",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "a8321c675a51bf3675cd92eb75d14dcc9dbb000672bc5672be7945b177ae7f86"
-  },
-  "physical_metadata_sha256": "bf694a9f3f52a9fd4219fa1b3d902fa521cf38b4496c936027fa0bb1e54591d8"
+  "complete": true,
+  "physical_metadata_sha256": "bf694a9f3f52a9fd4219fa1b3d902fa521cf38b4496c936027fa0bb1e54591d8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StoneBySunlight.java",
+  "java_sha256": "5f933a37fd430ab5adfccd2f26962de7941b713a8942a870c85fa46ae2a8d721",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeTargetEffect.java",
+      "sha256": "95ebcf49ca842a8831f4925cfff4199bdd0740c37f0dbe77a7c542a73272cc67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    }
+  ]
 }

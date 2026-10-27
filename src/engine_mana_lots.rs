@@ -1,6 +1,9 @@
 //! Cold, owned mana provenance. Ordinary games retain their six-counter fast path.
 //! A lot records rules, never a producer pointer: source departure cannot change
 //! its restriction, and equivalent production merges instead of growing history.
+fn is_false(value: &bool) -> bool {
+    !*value
+}
 use super::*;
 const CREATURE_KIND: u16 = 1;
 use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, ManaSpellBonus};
@@ -73,6 +76,7 @@ impl ManaCopySource {
 }
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct SpendOutcome {
+    pub treasure_spent: bool,
     pub haste: bool,
     #[allow(clippy::box_collection)]
     pub copies: Option<Box<Vec<(ManaCopySource, u64)>>>,
@@ -83,6 +87,24 @@ pub(super) struct Quality {
     pub spell_bonus: ManaSpellBonusView,
     pub retention: ManaRetention,
     pub copy_source: Option<ManaCopySource>,
+    pub treasure_source: bool,
+}
+pub(super) fn quality_from_world<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    production: ManaProduction,
+    source: CardId,
+) -> Option<Quality> {
+    let treasure = world
+        .subtypes(source)
+        .has(world.object(source).card, "Treasure");
+    match production {
+        ManaProduction::Tagged { quality, .. } => Some(Quality::capture(world, source, *quality)),
+        _ if treasure => Some(Quality {
+            treasure_source: true,
+            ..Quality::ORDINARY
+        }),
+        _ => None,
+    }
 }
 impl Quality {
     const ORDINARY: Self = Self {
@@ -90,6 +112,7 @@ impl Quality {
         spell_bonus: ManaSpellBonusView::None,
         retention: ManaRetention::Step,
         copy_source: None,
+        treasure_source: false,
     };
     pub(super) fn capture<W: ability_world::CharacteristicWorld + ?Sized>(
         world: &W,
@@ -129,6 +152,9 @@ impl Quality {
                 ManaSpellBonus::CopyRedInstantSorcery => ManaSpellBonusView::CopyRedInstantSorcery,
             },
             retention: quality.retention,
+            treasure_source: world
+                .subtypes(source)
+                .has(world.object(source).card, "Treasure"),
             copy_source: (quality.spell_bonus == ManaSpellBonus::CopyRedInstantSorcery)
                 .then(|| ManaCopySource::capture(world, source)),
         }
@@ -146,6 +172,7 @@ impl Quality {
         self.restriction == other.restriction
             && self.spell_bonus == other.spell_bonus
             && self.retention == other.retention
+            && self.treasure_source == other.treasure_source
             && identity(self.copy_source) == identity(other.copy_source)
     }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
@@ -262,6 +289,8 @@ pub struct ManaLotView {
     pub spell_bonus: ManaSpellBonusView,
     pub retention: ManaRetention,
     pub copy_source: Option<ManaCopySource>,
+    #[serde(skip_serializing_if = "is_false")]
+    pub treasure_source: bool,
     pub amounts: Mana,
 }
 /// One scalar allocation domain; large pools never enumerate a Cartesian product.
@@ -458,12 +487,25 @@ impl Game {
         production: ManaProduction,
         source: CardId,
     ) -> Option<Quality> {
-        match production {
-            ManaProduction::Tagged { quality, .. } => {
-                Some(Quality::capture(self, source, *quality))
-            }
-            _ => None,
+        quality_from_world(self, production, source)
+    }
+    /// Mana from a departed source uses that exact object's last-known type,
+    /// never an unrelated new incarnation occupying the same card slot.
+    pub(super) fn item_mana_quality(
+        &self,
+        item: &SpellView,
+        production: ManaProduction,
+    ) -> Option<Quality> {
+        let mut quality = self
+            .mana_quality(production, item.card)
+            .unwrap_or(Quality::ORDINARY);
+        if self.object_ref(item.card) != item.object {
+            quality.treasure_source = item
+                .source_facts
+                .granted_subtypes
+                .has(item.source_facts.card, "Treasure");
         }
+        (quality != Quality::ORDINARY).then_some(quality)
     }
     // Capture before announcement costs can remove the producer or its choice.
     // The exact source reference identifies this announcement, not a live lookup.
@@ -580,6 +622,7 @@ impl Game {
                         spell_bonus: lot.quality.spell_bonus,
                         retention: lot.quality.retention,
                         copy_source: lot.quality.copy_source,
+                        treasure_source: lot.quality.treasure_source,
                         amounts: lot
                             .amounts
                             .map(|n| u32::try_from(n).expect("concrete lot bound")),
@@ -773,6 +816,9 @@ impl Game {
             .zip(&lots)
             .zip(selected)
         {
+            if allocation != [0; 6] && original.quality.treasure_source {
+                outcome.treasure_spent = true;
+            }
             if allocation != [0; 6] && original.quality.grants_haste(purpose) {
                 outcome.haste = true
             }
@@ -836,7 +882,8 @@ impl Game {
                 )
             }
             Action::ActivateMana { card, payment, .. }
-            | Action::ActivateBorrowedMana { card, payment, .. } => {
+            | Action::ActivateBorrowedMana { card, payment, .. }
+            | Action::ActivateGraveyardBorrowedMana { card, payment, .. } => {
                 (*payment, Purpose::Activation(Source::in_world(self, *card)))
             }
             Action::PayCosts { payment } => {
@@ -845,9 +892,9 @@ impl Game {
                 };
                 (*payment, self.purpose_for_item(&a.item))
             }
-            Action::PayPlot { payment } | Action::PayResolutionMana { payment } => {
-                (*payment, Purpose::Other)
-            }
+            Action::PayPlot { payment }
+            | Action::PayResolutionMana { payment }
+            | Action::PayAttackCost { payment } => (*payment, Purpose::Other),
             _ => return true,
         };
         let pool = self.available_mana(actor, purpose);
@@ -1017,10 +1064,19 @@ impl Game {
                         | Action::ActivateBorrowedMana {
                             counter_payment, ..
                         }
+                        | Action::ActivateGraveyardBorrowedMana {
+                            counter_payment, ..
+                        }
                         | Action::AnnounceBorrowedMana {
                             counter_payment, ..
                         }
+                        | Action::AnnounceGraveyardBorrowedMana {
+                            counter_payment, ..
+                        }
                         | Action::AnnounceBorrowedAbility {
+                            counter_payment, ..
+                        }
+                        | Action::AnnounceGraveyardBorrowedAbility {
                             counter_payment, ..
                         }
                         | Action::BeginActivate {

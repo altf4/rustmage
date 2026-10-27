@@ -72,6 +72,7 @@ impl Game {
         }
     }
     pub(super) fn refresh_copy_grant_availability(&mut self) {
+        self.refresh_graveyard_borrowing();
         let Some(rows) = &self.state.copy_grant_origins else {
             return;
         };

@@ -3,10 +3,51 @@
   "catalogue_id": 954,
   "oracle_id": "5ba482e9-fbb0-4d9f-a3a9-414892bcdfed",
   "facts_sha256": "7b6c5ac56fbdb0a978eb5d18cf545fa5dddcf25153c74ddc2d0336cde2ac6196",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d60dfd3c6bf660fc5966182df7fc82d16598ea8056302b37734f9b7d0dfa5836"
   },
-  "physical_metadata_sha256": "fd20d94a4374f47fd4d9314a6ecf2b95e9aea2d8bf0271d1bc45ee59b50faf97"
+  "physical_metadata_sha256": "fd20d94a4374f47fd4d9314a6ecf2b95e9aea2d8bf0271d1bc45ee59b50faf97",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DancingFromDarkToDawn.java",
+  "java_sha256": "9da851a7001f4a176a7ea59a0ef4aca9e12b4bd15129f4482ffb792a34a4d5a0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/BearToken.java",
+      "sha256": "dd660225201bbc2557f9418dedebfab53f0837a73409cc6aef78da563f3bdf24"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    }
+  ],
+  "implementation": "Direct typed complete creature-cast mana-value counters and landfall Bear token. Existing frozen cast event captured for scaled-counter consumer; no new parser/state/wire fields. Six bounded actual-action scenarios plus16 affected regressions pass; see docs/hob-dancing-obligations.json. Independent source reviews required before root integration."
 }

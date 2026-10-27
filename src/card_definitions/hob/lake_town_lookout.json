@@ -3,10 +3,31 @@
   "catalogue_id": 2438,
   "oracle_id": "cf765efe-884c-48e2-9edb-9d45cf2756dd",
   "facts_sha256": "844d5521132a2a293f403dd29fcfcf37c7d4af39aea49be17df80a5eea810ce5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b065cbc1d2c0217a90f249c8d1db2adc76ecdb41436b25f4ab086b10ef34acaa"
   },
-  "physical_metadata_sha256": "20dcbb3f3f617c7ca1f9b0be339505108f363f7c3e42aabf1c23f6cdaef45ca2"
+  "physical_metadata_sha256": "20dcbb3f3f617c7ca1f9b0be339505108f363f7c3e42aabf1c23f6cdaef45ca2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LakeTownLookout.java",
+  "java_sha256": "fb0d22efb2b9d0b1b0d85a70dd7d43f39942c47f08704a593bf079b9e9265653",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    }
+  ],
+  "remaining_obligations": []
 }

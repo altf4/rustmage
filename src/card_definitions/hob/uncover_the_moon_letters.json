@@ -3,10 +3,54 @@
   "catalogue_id": 4759,
   "oracle_id": "4c67359d-5590-4eb0-827e-b411967ee238",
   "facts_sha256": "8fc519f511a73c49c53fcd6e66e73f42bd9656e97222a979783cb3eb5933224f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ac4d72e3f258c5d24dda0bdd68fc48195b9e7ac7523fa51160f18da5e21d5c0a"
   },
-  "physical_metadata_sha256": "87b6e82c4cbf0e91ac851a868bcb7aafed8c84281dace18dedcb58fc27611e0b"
+  "physical_metadata_sha256": "87b6e82c4cbf0e91ac851a868bcb7aafed8c84281dace18dedcb58fc27611e0b",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "4c67359d-5590-4eb0-827e-b411967ee238",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory has xmage_name:null and implementations:[]; pinned class tree has no UncoverTheMoonLetters.java. Historical typed lift retained as provenance only; behavior authored from full pinned Oracle."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/s/SpectacularSkywhale.java",
+      "sha256": "7f889e032e41656a04d939db0e28dd97d90c8f1a33bcffb50f1b5a8f1be82360"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/OpusAbility.java",
+      "sha256": "2fdef128f01b7c2f3ad1ffc3f9817cf19d505266fe4ee3006ccf7138ceb2a1c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ManaSpentToCastCount.java",
+      "sha256": "f0918f87126c78976ddda63fc581a2da3cbfc4fc011c671474ff946243b5cdea"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/rules",
+    "section": "Pinned full Oracle; CR603.2 and608.2c",
+    "notes": "Own noncreature cast captures actual mana payment independent of printed mana value. Optional block contains both draw and subsequent two-card discard, including accepted zero-card draws; declining skips both. Reusable XMage helpers are evidence of mechanisms, not an implementation of this absent identity."
+  }
 }

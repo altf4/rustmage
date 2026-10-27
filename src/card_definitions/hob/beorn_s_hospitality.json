@@ -3,10 +3,55 @@
   "catalogue_id": 388,
   "oracle_id": "d9ed7252-11d1-432b-9101-ac08cd28826d",
   "facts_sha256": "d4023762910cf70f4bed2df240c7b183b0890dcd226bc2a6a1b7f104db7360c2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1ce3aec0f285336797686eabf5a61c9b13d85ca043240a9721bb1182e9822858"
   },
-  "physical_metadata_sha256": "9a282eae51272499f3c19aa2257344ad5e1b57f44dea821cad2673a05165425c"
+  "physical_metadata_sha256": "9a282eae51272499f3c19aa2257344ad5e1b57f44dea821cad2673a05165425c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BeornsHospitality.java",
+  "java_sha256": "bfbb9bf3783aa362e8387dc381cab8d6803ff9e44fea2e339e46709d89baeb5d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureSourceEffect.java",
+      "sha256": "e4f35026b08e3f86b0822d43ed5b03cf2458e1b2ed5829627dd5c617cd5d597a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+      "sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    }
+  ]
 }

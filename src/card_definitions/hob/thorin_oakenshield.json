@@ -3,10 +3,45 @@
   "catalogue_id": 4539,
   "oracle_id": "bdd41af0-bbd1-4ecd-a699-99f006f5e5ce",
   "facts_sha256": "24a2721ddce4b4f26b16be0e858857ff1c1918974d9b886d93dcc5838c1ee8de",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c53bb14190a62312334154e059a1252c090f8e648906b0f99ce82b9d3e25238f"
   },
-  "physical_metadata_sha256": "be6f4d9dd00858531be615afa706de7469fe469596008224c65a5d9dbacda056"
+  "physical_metadata_sha256": "be6f4d9dd00858531be615afa706de7469fe469596008224c65a5d9dbacda056",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThorinOakenshield.java",
+  "java_sha256": "25ece7b423ecdb939142cb4e32c424193cc8bb29585c73ab8b97f396359f41ef",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StoriedAbility.java",
+      "sha256": "53a70872b58dc914e94e9795f666e20bc6a2fe7a2db4f555a69def1499a8fbd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/EnduringStoryCondition.java",
+      "sha256": "65a28722b436134cc93b4e712ffb1654e9fed33f6cca4eb29db2ca2facb375de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ]
 }

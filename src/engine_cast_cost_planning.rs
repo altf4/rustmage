@@ -111,7 +111,12 @@ impl FundingState<'_> {
             }
         }
     }
-    fn cost_object(&self, spec: AdditionalCost, r: ObjectRef, source: ObjectRef) -> bool {
+    pub(super) fn cost_object(
+        &self,
+        spec: AdditionalCost,
+        r: ObjectRef,
+        source: ObjectRef,
+    ) -> bool {
         let o = self.object(r.card);
         if spec.kind == EffectChoiceKind::SacrificeAttachedEquipment
             && o.attached_to != Some(source)
@@ -125,9 +130,13 @@ impl FundingState<'_> {
             && (r != source
                 || !matches!(
                     spec.kind,
-                    EffectChoiceKind::Discard | EffectChoiceKind::DiscardNamed(_)
+                    EffectChoiceKind::Discard
+                        | EffectChoiceKind::DiscardNamed(_)
+                        | EffectChoiceKind::DiscardMatchingLegendary
                 ) && !spec.filter.other)
             && (!spec.filter.source_only || r == source)
+            && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
+                || additional_costs::legendary_name_match(self, self.actor, r.card))
             && Game::additional_object_matches(
                 spec,
                 self.actor,
@@ -166,6 +175,15 @@ impl FundingState<'_> {
                         && self.printed_abilities_available(id)
                         && match p.card.zone_replacement() {
                             Some(crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens) => true,
+                            Some(
+                                crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath {
+                                    ..
+                                },
+                            ) => {
+                                o.zone == Zone::Battlefield
+                                    && CharacteristicWorld::kinds(self, r.card) & 1 != 0
+                                    && p.controller != o.controller
+                            }
                             Some(crate::cards::ZoneReplacementRule::ExileInstantSorceryCards) => {
                                 CharacteristicWorld::kinds(self, r.card) & 12 != 0 && !o.is_token()
                             }
@@ -260,6 +278,7 @@ impl FundingState<'_> {
             // two once afterward, before linked returns or the next cost can use
             // a creature whose former control effect has just left.
             world.refresh_control_projection();
+            world.refresh_enduring_projection();
             world.visit_linked_returns(emit)
         })
     }
@@ -332,7 +351,7 @@ impl FundingState<'_> {
                         return true;
                     }
                 }
-                CastCostClause::Life(amount) => {
+                CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
                     if amount == 0 || self.life >= i128::from(amount) {
                         let mut next = self.clone();
                         next.life -= i128::from(amount);
@@ -794,7 +813,8 @@ impl FundingState<'_> {
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
-            | EffectChoiceKind::DiscardNamed(_) => {}
+            | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary => {}
             _ => return false,
         }
         if let Some(n) = counters {

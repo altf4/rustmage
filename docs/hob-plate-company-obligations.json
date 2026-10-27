@@ -1,0 +1,131 @@
+{
+  "scope": "Goblin Plate Mail and Thranduil's Company complete candidates with narrow amass attachment continuation and live conditional additional-land-play support",
+  "base_revision": "c678c2e6",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "source_read": "Complete Oracle bodies, full pinned card Java and full paired reusable amass/token/ETB/equip/attachment/menace/static-boost/conditional-effect/landfall/counter/vigilance/target helpers read during the prior read-only plan. Current Rust definitions/APIs rechecked against this settled base before authoring.",
+  "cards": {
+    "Goblin Plate Mail": {
+      "obligations": [
+        "Paid1R and1B hybrid routes each create0/0black Goblin Army when needed, put1counter on selected Army and attach exact source Equipment to that amassed Army",
+        "Existing single Army is used; multiple Armies select exactly one controlled creature Army without targeting; opposing Army excluded",
+        "Equipped creature gets+1/+0 and menace; actual equip4 changes bearer, restores old bearer characteristics and rejects opposing creature target",
+        "Affordable equip attempt in combat rejects; actual menace one-blocker final declaration rejects and two-blocker declaration succeeds",
+        "Token replacement can create multiple Armies; only selected recipient receives counters/attachment and zero-toughness unchosen token dies",
+        "Counter replacements suspend before attachment; exact source/recipient completion survives owned branching and restore",
+        "Departed Equipment still amasses; old source incarnation never attaches returned Equipment; copied trigger selects its own Army then original can select another"
+      ],
+      "implementation": "SelfEnters [EnsureGoblinArmy, AmassGoblinsThenAttach1]; existing equipment+1/+0 MENACE and sorcery equip4 activation;1B alternative to printed1R.",
+      "proofs": [
+        "hob_plate_company_plate_hybrid_amass_recipe_paid_equip_and_menace",
+        "hob_plate_company_plate_exact_nontarget_army_choice_and_owned_independence",
+        "hob_plate_company_plate_counter_replacement_commits_attachment_after_owned_work",
+        "hob_plate_company_plate_token_replacements_and_departed_source_still_amass",
+        "hob_plate_company_plate_old_source_incarnation_does_not_attach_returned_equipment",
+        "hob_plate_company_plate_copied_trigger_chooses_its_own_army_then_original_rechooses"
+      ]
+    },
+    "Thranduil's Company": {
+      "obligations": [
+        "Paid2GU gives3/4 Elf Soldier",
+        "Another controlled Elf permits one additional land play; source alone and opposing Elf do not; token Elf and noncreature Elf permanent qualify",
+        "Condition responds live to qualifier type changes, source ability suppression/restoration and control changes; two sources add allowances",
+        "Turn-wide used count remains unchanged when qualifier/source leaves, returns, changes controller or is reacquired; only a new turn resets usage",
+        "Each controlled land entry, from actual play or other entry, triggers target own creature:2+1/+1 counters then vigilance until end of turn; opposing land entry does not trigger",
+        "Target land/opposing creature rejects; departed/reentered or now opposing target gets neither counters nor vigilance",
+        "Captured trigger survives source departure, normal counter replacement doubles counters, cleanup removes vigilance while counters persist",
+        "Owned raw/index/restore at second-land decision agrees and survives ancestor disposal"
+      ],
+      "implementation": "ConditionalAdditionalLandPlays{condition:Count Battlefield relation0 kind0 subtypeElf othertrue cards_onlyfalse,amount1}; LandEntersYou -> PutCounters Targets PlusOne2, GrantKeywords Targets VIGILANCE.",
+      "proofs": [
+        "hob_plate_company_company_live_qualifier_suppression_control_and_used_count",
+        "hob_plate_company_company_token_noncreature_elf_and_owned_land_allowance",
+        "hob_plate_company_company_landfall_targets_replacements_source_loss_and_cleanup",
+        "hob_plate_company_company_land_allowance_resets_only_on_new_own_turn"
+      ]
+    }
+  },
+  "shared_mechanics": {
+    "amass_attachment": "New private immutable instruction reuses existing public AmassGoblins Army choice. finish_amass_goblins derives attachment continuation from Resolution.program[pc-1] before counter handling. Exact source and selected Army references plus attach flag stay in owned private replacement Work. Ordinary and copied packets/branches have independent programs/work; no global last-amassed result, no new observation or wire field. Existing amass subtype/counter ordering preserved.",
+    "conditional_land_plays": "Immutable fragment is registered in static source index and evaluated in existing continuous_land_plays against current characteristic/count and exact fragment availability APIs. Evaluates current control, live subtype/kinds and suppression. Existing global continuous_land_plays_used accounting/reset is unchanged; no new mutable state.",
+    "coordination": "Kili equip/history owner confirmed disjoint cards/ability_layers/engine.rs regions. No activation-payment edits, no new schema or public choice variant, no IDs.",
+    "owned_roots": "Army selection, paused counter replacement and second-land eligibility use contracts::branch_contract plus explicit independent raw/index siblings, discarded ancestor and restore/replay outcomes."
+  },
+  "author_validation": {
+    "source_definitions": 5413,
+    "verified_java_blobs": 1534,
+    "fixture_admission": "All named fixtures verified present and complete before first queue; typed action/subject APIs checked. Later copy fixture repaired after discovering its narrower source-kind restriction at runtime.",
+    "format": "rustfmt --edition2024 --check (engine.rs skip_children) and git diff --check passed",
+    "new_passed": 10,
+    "existing_amass_passed": 8,
+    "existing_land_allowance_passed": 1,
+    "existing_menace_passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "both_seats": true,
+    "focused_compile_run_seconds": 137.65722135198303,
+    "cached_regression_seconds": [
+      0.11591637000674382,
+      0.06514720700215548,
+      0.06497870397288352
+    ],
+    "scenario_seconds": 0.02,
+    "final_guard": {
+      "command": [
+        "python3",
+        "-"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 246.9460383069818,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2566688768,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "resource_report": "<cache>/rustmage-build-reports/d130d0ced167453ea4e5b4c2ff6991d3.json",
+    "logs": [
+      "<cache>/rustmage-authoring/hob-plate-company/focused-1.log",
+      "<cache>/rustmage-authoring/hob-plate-company/focused-2.log",
+      "<cache>/rustmage-authoring/hob-plate-company/focused-3.log",
+      "<cache>/rustmage-authoring/hob-plate-company/amass-regression-3.log",
+      "<cache>/rustmage-authoring/hob-plate-company/land-regression-3.log",
+      "<cache>/rustmage-authoring/hob-plate-company/menace-regression-3.log"
+    ],
+    "earlier_runs": [
+      {
+        "result": "Natural terminal101, compile-only26.033724084030837s; StaticAbilityFragment lacksPartialEq. Replaced whole-fragment comparison with exact conditional condition/amount matching; no broad derive. Strengthened affordable combat equip timing negative.",
+        "resource_report": "<cache>/rustmage-build-reports/6616736a09484bad99acb9fca9c5fd5d.json"
+      },
+      {
+        "result": "Natural terminal101,151.39933521300554scompile/run;9newtests passed/1failed because Echo copies creature-source abilities while Plate is artifact. Fixture replaced by admitted Scientist Supreme of A.I.M., full Java checked, exact2life payment asserted. No implementation change.",
+        "resource_report": "<cache>/rustmage-build-reports/b1aa157a2ece467486a2af7bae2a7411.json"
+      }
+    ],
+    "fixed_inputs": "Each consuming job polled to natural terminal before edits. No queued/running jobs canceled."
+  },
+  "integration": "Local-only mod hob_plate_company registration excluded from commit as instructed. Integrator must register assurance module and regenerate catalogue/coverage. No PR, push, merge or author full validator.",
+  "throughput": {
+    "elapsed_seconds": 1726.7816636562347,
+    "candidate_physical_cards_per_hour": 4.169606471703516,
+    "scope": "Isolated branch creation through final terminal report; includes source/API checks, authoring, shared-slot waits, compile comparison fix and copier fixture correction",
+    "simulation": "No simulation benchmark run"
+  },
+  "acceptance": "Two independent nonauthor reviews and frozen integrated release acceptance remain required. Whole-set goal remains open.",
+  "independent_integration_receipts": [
+    {
+      "reviewer": "hob_review_contracts",
+      "reviewed_revision": "43025cafb1d7b694406ce495d562cb1c0b088a32",
+      "result": "Approved full cohort, source pins and terminal focused evidence; no remaining actionable findings",
+      "scope": "Local source/focused evidence; integrated traces, full release and final published whole-set reviews remain pending"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "reviewed_revision": "43025cafb1d7b694406ce495d562cb1c0b088a32",
+      "result": "Approved full cohort, source pins and terminal focused evidence; no remaining actionable findings",
+      "scope": "Local source/focused evidence; integrated traces, full release and final published whole-set reviews remain pending"
+    }
+  ],
+  "root_integration": "Registered assurance module and regenerated catalogue on single local whole-set branch. No PR opened, push or merge."
+}

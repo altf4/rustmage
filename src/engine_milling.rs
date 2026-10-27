@@ -11,6 +11,18 @@ impl Game {
         // Freeze all players' top cards before moving anything. Mandatory milling
         // does as much as possible and never attempts a draw from an empty library.
         let maximum = match amount {
+            MillAmount::LifeEvent => usize::try_from(
+                self.state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .life_event
+                    .expect("saved life event")
+                    .amount
+                    .max(0),
+            )
+            .unwrap_or(usize::MAX),
             MillAmount::Fixed(n) => usize::from(n),
             MillAmount::ChosenX => {
                 usize::try_from(self.state.resolving.as_ref().unwrap().item.x.unwrap_or(0))

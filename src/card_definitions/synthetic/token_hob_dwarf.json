@@ -1,0 +1,12 @@
+{
+  "name": "@token/hob-dwarf",
+  "catalogue_id": 5407,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "980fbf35031f5076d6a290b22d89a5c9027b66f824cf8b85a80b46ed2b94944f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Dwarf22Token.java",
+  "java_sha256": "7e502cfbdf122cf73266739bb9b2c322a05b5ebd7270ef9a92e3e9aa25d9064c",
+  "xmage_dependencies": []
+}

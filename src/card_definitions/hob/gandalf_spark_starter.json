@@ -3,10 +3,45 @@
   "catalogue_id": 1677,
   "oracle_id": "cd1a9d87-4c91-4456-8d88-19e0d6e0b200",
   "facts_sha256": "eeb59dc874ef78975caafdcb1c1ccb2a380fddceac8d82b148459ce7ca107d80",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7c2320d60903b90bf810fb6b876393b507bf1ef03e451d7eee8ef739ce861624"
   },
-  "physical_metadata_sha256": "0014c38a43643d234d04cc9bfe5e338499de259c7505eba137ddd53ed5815445"
+  "physical_metadata_sha256": "0014c38a43643d234d04cc9bfe5e338499de259c7505eba137ddd53ed5815445",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GandalfSparkStarter.java",
+  "java_sha256": "b0f5c572a55c8b5a92912da4223e26347682b751f266ef72e993a650be91ae97",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageMultiEffect.java",
+      "sha256": "8abe9d89813203699d21532058cc5a3ffb2fc4cd247dc3cd960a076863a96818"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAnyTargetAmount.java",
+      "sha256": "94951c7cb0e4950835abd2ac318730a5a91117712814c670fce37ab9d6e9302f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayerAmount.java",
+      "sha256": "5492628c0ec51873378c284b4408e59ecf0a6b0c0310275e250828142e08fb70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "Gandalf, Spark Starter",
+    "notes": "Official rulings require positive shares declared with targets and preserve shares when targets become illegal; no redistribution."
+  }
 }

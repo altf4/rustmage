@@ -86,10 +86,12 @@ impl Game {
             let view = d.view;
             let id = self.next_stack_id();
             self.state.pending_triggers.push(SpellView {
+                additional_triggers: 0,
                 source_move: None,
                 borrowed_slot: None,
                 self_granted_activation: None,
                 target_controller_lki: None,
+                target_kinds_lki: None,
                 gift: None,
                 reflexive_subject: None,
                 delayed_warp_exile: Some(Box::new(view)),
@@ -131,6 +133,7 @@ impl Game {
                 source_quantity_lki: None,
                 event_object: None,
                 sacrificed_toughness: None,
+                sacrificed_power: None,
                 card: view.source.card,
                 object: view.source,
                 targets: Vec::new(),

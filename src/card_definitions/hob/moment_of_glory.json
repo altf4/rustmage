@@ -3,10 +3,46 @@
   "catalogue_id": 2821,
   "oracle_id": "3d39db09-67b7-4a4e-9667-4e1b806f51a5",
   "facts_sha256": "802bede2194e57beaaaed3586a34db640da8c916b5467eab01e13122ee8abb82",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "48e3ff423bcd490d7d8150e3bf3c4e7d1442cc83c4789eba16a84760aeb3c6a3"
-  },
-  "physical_metadata_sha256": "668c51c624857b502346b00149735a14a11a882f5ed729fc3bc617cdf51b7740"
+  "complete": true,
+  "physical_metadata_sha256": "668c51c624857b502346b00149735a14a11a882f5ed729fc3bc617cdf51b7740",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MomentOfGlory.java",
+  "java_sha256": "47c5e490cfbf203fc496e694803e9440968ad086d6416fbe7d23736e918cb71a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromGraveyardSourceCondition.java",
+      "sha256": "7eed055c9671f6cc59ee3c85360ac3ceb7e5c25682b32e66a548dfe6ec801878"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CastFromGraveyardAbility.java",
+      "sha256": "d960ebf54f87db2baf2a23785c181bdfea863a60d493eb66707ba64becc77be9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ]
 }

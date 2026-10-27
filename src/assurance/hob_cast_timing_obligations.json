@@ -1,0 +1,116 @@
+{
+  "cohort": "HOB conditional casting: Bard’s Company and Radagast of Rhosgobel",
+  "base_revision": "fd2c2b8a65b49d7fff7bcf63d5561319ddc90821",
+  "rules_authority": {
+    "source": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf",
+    "rules": [
+      "601.2e",
+      "601.2f",
+      "601.2g",
+      "601.2h",
+      "601.2i",
+      "601.6a"
+    ],
+    "resolution": "Check conditional as-though permission before mana/payment; lock total cost before mana abilities. Later sacrifice of the last Human or provider does not undo that approved announcement."
+  },
+  "source_resolution": "Bard XMage CAST_SPELL_LATE condition logic is not copied after costs; CR601.6a controls last-Human sacrifice. All source paths, revisions and SHA256 pins are in paired provenance.",
+  "shared_support": [
+    "SelfCastTiming::ControlSubtype checks current derived subtype and controller on Battlefield for the chosen immutable spell definition; no Flash keyword is granted.",
+    "Global cast timing grants accept an existing StepGuard; Radagast shares its zero historical creature count guard with its generic-only reduction.",
+    "Private PlayerState creature_spells_cast_this_turn increments at actual committed casts, always recording history even without a provider; resets for both players each turn.",
+    "record_cast centralizes chosen stack-face classification for every caller, including direct-payment insertion.",
+    "Existing announcement total-cost locking and approved legality survive mana-source sacrifices; no extra pending witness required."
+  ],
+  "owned_and_wire": "One private u64 per PlayerState; State clone/snapshot/restore and size_of::<State>() accounting include it automatically. No public field, wire vocabulary, identity, action variant or schema change.",
+  "tests": {
+    "Bard controlled Human/current derived types/own subtype excluded/no Flash": "bard_timing_requires_current_controlled_battlefield_human_without_flash_keyword",
+    "Bard paid entry/attack recruit, privacy, land/nonland discard and dynamic other-creature anthem": "bard_paid_entry_attack_recruit_and_dynamic_other_creature_bonus",
+    "Bard last Human sacrificed for actual mana, failed-payment transaction, owned announcement and payment roots": "bard_approved_permission_survives_last_human_mana_sacrifice",
+    "Radagast first timing and generic-only cost, later main-phase full cost, per-player scope": "radagast_first_generic_discount_timing_and_per_player_history",
+    "Radagast prior countered creature before provider, turn reset and provider own cast consumes history": "radagast_prior_countered_cast_and_own_cast_consume_history_before_provider",
+    "Radagast provider sacrificed for actual mana after cost/permission approval, owned payment root": "radagast_locked_cost_and_permission_survive_provider_sacrifice_for_mana",
+    "Radagast actual Adventure face, Adventure exile creature, graveyard casting and copied-card real cast, owned post-cast history": "radagast_adventure_face_nonhand_creature_and_copied_card_cast",
+    "Radagast noncast copy from paid Choreographed Sparks is excluded": "radagast_noncast_copy_does_not_increment_creature_history"
+  },
+  "shared_proofs": [
+    "assurance::contracts::branch_contract covers raw/index equality, stale revisions, both observations, parent disposal, owned children and snapshot/restore.",
+    "Accepted Recruit shared suite covers empty hand/library, replaced discards, token recipe and source departure; this cohort exercises both Bard trigger bindings."
+  ],
+  "validation": {
+    "status": "passed focused and affected regressions; all consuming jobs terminal",
+    "initial_focused": {
+      "passed": 7,
+      "failed": 1,
+      "seconds": 143.59944335900946,
+      "scenarios_seconds": 0.01,
+      "failure": "Adventure creature fixture incorrectly funded BB instead of printed 5B less two. Fixture corrected to 3B after terminal completion; no rules fix.",
+      "log": "<cache>/rustmage-authoring/hob-cast-cohort/run-2bab948346b141b683dc81cb8445a661/focused.log",
+      "resource_report": "<cache>/rustmage-build-reports/22105b819b444e07892ab15d0ae7bd80.json",
+      "peak_memory": "2.4 GiB"
+    },
+    "sourcecheck": {
+      "definitions": 5413,
+      "java_blobs": 1529,
+      "verified": true
+    },
+    "second_focused": {
+      "passed": 7,
+      "failed": 1,
+      "seconds": 151.74794212699635,
+      "scenarios_seconds": 0.01,
+      "service_seconds": 504.507,
+      "failure": "Generic test cast helper falls back to AnnounceCast for copied card in Exile; fixed to explicit AnnounceExile after terminal completion. No rules fix.",
+      "log": "<cache>/rustmage-authoring/hob-cast-cohort/run-21a1ed01a56348a383f44c29ac76153f/0-hob_cast_timing.log",
+      "resource_report": "<cache>/rustmage-build-reports/47e4338d2c064860ad6594396228b2ed.json",
+      "peak_memory": "2.3 GiB"
+    },
+    "approval_review": {
+      "action": "Stop still-queued guarded test unit after read-only discovery of the Exile fixture helper issue.",
+      "result": "Rejected: cancellation interpreted as conflicting with the explicit fixed-input and same-process-until-terminal requirement.",
+      "safe_completion": "No workaround or repeat stop attempted. Kept every execution input fixed, polled the same job through terminal exit101, then corrected the fixture and queued a coherent rerun."
+    },
+    "final": {
+      "passed": 32,
+      "failed": 0,
+      "ignored": 0,
+      "new_scenarios": 8,
+      "regressions": {
+        "hob_recruit": 8,
+        "sos_storm": 5,
+        "sos_cast_rollback": 6,
+        "sos_mana_rollback": 4,
+        "msh_colleen_targeted_spell_scries_and_mar_vell_opponent_spell_opens_flash_window": 1
+      },
+      "focused_compile_and_execution_seconds": 150.65850295702694,
+      "remaining_regression_commands_seconds": 0.73055513901636,
+      "scenario_execution_seconds": 0.13,
+      "guard_seconds_excluding_queue": 151.42254019301618,
+      "service_seconds": 151.527,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2570149888,
+      "oom_events": 0,
+      "log_directory": "<cache>/rustmage-authoring/hob-cast-cohort/run-0a09cc19c7634846b96f612e13cc4d6f",
+      "resource_report": "<cache>/rustmage-build-reports/bf7285c948f7409db5d74c7c4d19a89c.json",
+      "sourcecheck": "5413 definitions / 1529 Java source blobs verified after final run",
+      "format": "rustfmt edition2024 --check and git diff --check passed"
+    }
+  },
+  "integration": "Root registered assurance module and regenerated catalogue links after both nonauthor approvals. Integrated acceptance pending; no PR/push/merge, whole-set goal remains open.",
+  "remaining_obligations": [],
+  "throughput": {
+    "scope": "Two authored cards plus shared timing and history support; includes source study, tests, two fixture repairs, guarded compilation and build-slot wait.",
+    "interval_start_utc": "2026-10-26T18:53:48Z",
+    "interval_end_utc": "2026-10-26T19:15:58Z",
+    "elapsed_seconds": 1330,
+    "cards": 2,
+    "simulation": "32 bounded rules scenarios completed in a reported aggregate0.13 seconds. This is assurance execution, not a simulation throughput benchmark."
+  },
+  "independent_reviews": {
+    "source_commit": "443af970e57cf72584577bb46dbbbdf3e791ad1d",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both independent nonauthors approved complete pinned translations, conditional timing/locked payment, private historical selected-face cast state and actual8new+24regression terminal logs with guardbf7285c948f7409db5d74c7c4d19a89c. No findings."
+  }
+}

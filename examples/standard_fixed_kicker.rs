@@ -288,6 +288,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         StackKind::CasualtyCopy
                         | StackKind::CopyEndStepSacrifice
                         | StackKind::DelayedReturn
+                        | StackKind::DelayedTokenCreation { .. }
                         | StackKind::DelayedSacrifice
                         | StackKind::DelayedWarpExile => {
                             panic!("no delayed producer in this fixture")

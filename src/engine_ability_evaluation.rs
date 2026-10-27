@@ -117,6 +117,21 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
+        StaticAbilityFragment::ConditionalWard {
+            condition,
+            filter,
+            ability,
+        } => {
+            if !world.conditional_ward_applies(source, condition, filter, id) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::HarnessedTrigger(ability) => {
             if id != source.card || !world.harnessed(source.card) {
                 return None;
@@ -240,6 +255,18 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
+        // External attachment rules must participate even without ability removal.
+        // They are deliberately absent from EquipmentSpec's granted abilities.
+        || world.attachment_sources().iter().any(|&id| {
+            let source = world.object(id);
+            source.zone == Zone::Battlefield
+                && source.attached_to.is_some()
+                && source.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment, StaticAbilityFragment::AttachmentRule(_))
+                    })
+                })
+        })
         || world.roles().is_some_and(|r| {
             r.harnessed.iter().any(|reference| {
                 world.reference(reference.card) == *reference
@@ -254,6 +281,8 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                                 matches!(fragment, StaticAbilityFragment::HarnessedTrigger(_))
                             })
                         })
+            }) || r.source_linked_effects.iter().any(|row| {
+                row.kind == SourceLinkedEffectKind::GrantHexproof && source_linked_effects::active(world, row)
             }) || r.keyword_effects.iter().any(|row| {
                 (matches!(
                     world.object(row.recipient.card).zone,
@@ -321,6 +350,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::HarnessedTrigger(..)
+                        | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation(..)
                         | StaticAbilityFragment::AttachmentMana(..)
@@ -403,17 +433,24 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             }
         }
         for row in &state.source_linked_effects {
-            if row.kind == SourceLinkedEffectKind::RemoveAbilities
-                && source_linked_effects::active(world, row)
-            {
-                effects.push(LayerSixEffect {
-                    provider: None,
-                    started_earlier: false,
-                    timestamp: row.timestamp,
-                    recipients: vec![row.recipient.card],
-                    action: LayerSixAction::Remove,
-                });
+            if !source_linked_effects::active(world, row) {
+                continue;
             }
+            let action = match row.kind {
+                SourceLinkedEffectKind::RemoveAbilities => LayerSixAction::Remove,
+                SourceLinkedEffectKind::GrantHexproof => LayerSixAction::Grant {
+                    keywords: Keywords::HEXPROOF,
+                    abilities: Vec::new(),
+                },
+                _ => continue,
+            };
+            effects.push(LayerSixEffect {
+                provider: None,
+                started_earlier: false,
+                timestamp: row.timestamp,
+                recipients: vec![row.recipient.card],
+                action,
+            });
         }
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
@@ -485,7 +522,9 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         for grant in grants.iter() {
             if world.object(grant.recipient.card).zone == Zone::Battlefield
                 && world.reference(grant.recipient.card) == grant.recipient
-                && grant.expires_turn == game.state.turn
+                && grant
+                    .expires_turn
+                    .is_none_or(|turn| turn == game.state.turn)
             {
                 effects.push(LayerSixEffect {
                     provider: None,

@@ -1,16 +1,17 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete pinned Oracle and XMage obligations; branch before the counter attempt.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        one(TargetRule::Spell),
+        &[
+            Instruction::IfTargetSpellManaValueAtMost {
+                maximum: 2,
+                skip: 3,
+            },
+            Instruction::Counter,
+            Instruction::Recruit { token: Card(5241) },
+            Instruction::Skip(1),
+            Instruction::Counter,
+        ],
+    ),
     ..CardRules::EMPTY
 };

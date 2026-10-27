@@ -1,0 +1,71 @@
+{
+  "scope": "Two HOB complete candidate definitions and exact graveyard cast-origin branching",
+  "base_revision": "3aa780e4",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "assurance_module": "src/assurance/hob_graveyard_origin.rs",
+  "cards": [
+    {
+      "name": "Plunder the Trollshaws",
+      "obligations": [
+        "Draw exactly one from hand or exile",
+        "Draw exactly two from any graveyard casting permission",
+        "Flashback costs 3U and exiles after resolution",
+        "A copied spell was not cast and draws only one"
+      ],
+      "tests": [
+        "hob_graveyard_origin_plunder_hand_flashback_regular_graveyard_and_exile",
+        "hob_graveyard_origin_uncast_copy_ignores_inherited_origin"
+      ]
+    },
+    {
+      "name": "Moment of Glory",
+      "obligations": [
+        "Only a controlled creature is a legal target",
+        "Target receives exactly one +1/+1 counter",
+        "If cast from a graveyard every other controlled creature receives one counter",
+        "Hand/exile casts and uncast copies omit the other-creature bonus",
+        "Flashback costs 4W and exiles on resolution or all-targets-illegal fizzle",
+        "Returned same-slot target is a new incarnation and causes fizzle"
+      ],
+      "tests": [
+        "hob_graveyard_origin_moment_paid_modes_and_controlled_only",
+        "hob_graveyard_origin_moment_illegal_target_and_reincarnation_fizzle",
+        "hob_graveyard_origin_uncast_copy_ignores_inherited_origin"
+      ]
+    }
+  ],
+  "shared_mechanics": [
+    "Instruction::IfCastFromGraveyard tests the captured cast origin and rejects uncast copies",
+    "Instruction::PutOtherControlledCreatureCounters excludes exact selected target references and uses existing counter replacement processing"
+  ],
+  "shared_contracts": {
+    "owned_state": "No new owned state; existing cast and target references, copy retarget state, counter replacements, and snapshots remain authoritative. contracts::owned_raw_index_and_restore_at_distinct_decision_roots covers unchanged ownership machinery.",
+    "regression": "sos_review_mica_copy_of_flashed_back_antiquities_has_no_cast_origin_bonus"
+  },
+  "author_validation": {
+    "source_check": {
+      "definitions": 5410,
+      "source_blobs": 1474,
+      "java_verified": true
+    },
+    "focused_tests": 4,
+    "regression_tests": 1,
+    "failures": 0,
+    "ignored": 0,
+    "focused_compile_and_run_seconds": 132.35447599401232,
+    "cached_regression_seconds": 0.06552018999354914,
+    "scenario_execution_seconds": "<0.01 each reported family",
+    "memory_peak_bytes": 2515738624,
+    "memory_max_bytes": 6442450944,
+    "oom_events": 0,
+    "logs": [
+      "<cache>/rustmage-authoring/hob-graveyard-origin/focused-2.log",
+      "<cache>/rustmage-authoring/hob-graveyard-origin/origin-regression-2.log"
+    ],
+    "resource_report": "<cache>/rustmage-build-reports/64df3be800b24d14a98bd065027230d1.json",
+    "format": "rustfmt --check passes for owned Rust files"
+  },
+  "review_status": "Local author checks only; independent reviews and frozen integrated release validation remain for the final whole-set PR. No PR or merge was created for this cohort.",
+  "throughput": "Two candidate complete cards in this recovered cohort. Recovery reused earlier author work, so no clean implementation interval is claimed. No simulation benchmark was run."
+}

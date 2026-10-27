@@ -1,0 +1,105 @@
+{
+  "scope": "Shared Hone counter mechanic and minimal complete Dwalin consumer; initial cohort remains a separate frozen integration",
+  "base_revision": "c667cefbc36f93c8cb5c6e3a257c1aba7cf77174",
+  "rules_authority": {
+    "release_notes": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "comprehensive_rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "rules": [
+      "122.1j",
+      "122.2",
+      "301.5c",
+      "704.5n",
+      "704.5p"
+    ],
+    "resolution": "Hone is independent of Equipment abilities. The source need only be Equipment attached to a creature; becoming a creature does not itself stop the bonus before attachment SBA detaches it."
+  },
+  "obligations": [
+    {
+      "rule": "Dwalin: both hybrid costs, 2/1 first strike, entry and attack put one Hone on each own Equipment including unattached Equipment",
+      "test": "hob_hone::dwalin_paid_hybrid_entry_and_attack_hone_each_own_equipment_including_unattached"
+    },
+    {
+      "rule": "Counter boost survives removal of abilities from both Equipment and recipient; the Equipment's printed bonus disappears independently",
+      "test": "hob_hone::hone_is_counter_effect_even_when_equipment_and_recipient_lose_abilities"
+    },
+    {
+      "rule": "Reattach across controllers, remove counters, unattached, stale recipient, source departure/reentry, non-Equipment, creature Equipment before/after SBA",
+      "test": "hob_hone::hone_tracks_attachment_exact_incarnations_removal_and_creature_equipment_until_sba"
+    },
+    {
+      "rule": "Counter placement replacements double Hone; named wire canonicality, public observations, sparse owned child writes and restored behavior",
+      "test": "hob_hone::hone_uses_counter_replacements_and_owned_sparse_public_snapshots",
+      "shared_proof": "contracts::branch_contract at the paid Dwalin stack root executes raw/index actions, parent disposal and restore"
+    },
+    {
+      "rule": "Actual power mana actions and speculative feasibility include Hone identically, remain read-only",
+      "test": "funding::hone_tests::hob_hone_real_source_power_mana_and_funding_agree_with_counter_bonus"
+    },
+    {
+      "rule": "Virtual counter payment changes funding-owned sparse rows, SourceTappedWorld production and funding key independently; virtual departure stops boost despite stale rows",
+      "test": "funding::hone_tests::hob_hone_funding_virtual_counter_payments_and_departures_do_not_read_real_rows"
+    }
+  ],
+  "gated": [
+    {
+      "name": "Sting, Bilbo's Sword",
+      "blocker": "No exact legal-target-player creature-count scalar; opponent-global counts mishandle partial target invalidation. No changes to this definition."
+    }
+  ],
+  "acceptance": "Parked local shared-core candidate only. Root owns schema154, local independent core reviews, integrated release acceptance and two independent nonauthor reviews of the single final whole-set PR. No intermediate PRs or merges. No full-set acceptance or simulation benchmark claim.",
+  "focused_evidence": {
+    "passed": 37,
+    "failed": 0,
+    "ignored": 0,
+    "runs": [
+      {
+        "filter": "hob_hone",
+        "passed": 6,
+        "seconds": 131.25785708904732,
+        "log": "<cache>/rustmage-authoring/hob-hone/hob_hone-20261026-092806.log"
+      },
+      {
+        "filter": "engine::assurance::interactions",
+        "passed": 25,
+        "seconds": 0.0656340749701485,
+        "log": "<cache>/rustmage-authoring/hob-hone/engine__assurance__interactions-20261026-093017.log"
+      },
+      {
+        "filter": "engine::assurance::contracts",
+        "passed": 4,
+        "seconds": 0.0644976960029453,
+        "log": "<cache>/rustmage-authoring/hob-hone/engine__assurance__contracts-20261026-093017.log"
+      },
+      {
+        "filter": "sos_borrowed_power_ignores_departed_provider_indexes_and_reads_virtual_counters_life",
+        "passed": 1,
+        "seconds": 0.06515022600069642,
+        "log": "<cache>/rustmage-authoring/hob-hone/sos_borrowed_power_ignores_departed_provider_indexes_and_reads_virtual_counters_life-20261026-093017.log"
+      },
+      {
+        "filter": "msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history",
+        "passed": 1,
+        "seconds": 0.06490529602160677,
+        "log": "<cache>/rustmage-authoring/hob-hone/msh_doc_samson_counter_replacement_power_mana_and_beast_permanent_history-20261026-093017.log"
+      }
+    ],
+    "guard_report": "<cache>/rustmage-build-reports/5dfc6f0894c9483c8e8ea10da62acc92.json",
+    "guard_seconds": 240.9851357510197,
+    "queue_seconds_approximate": 109.47,
+    "memory_peak_bytes": 2511765504,
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "oom_kills": 0,
+    "prior_diagnostic_run": {
+      "seconds": 22.873940324003343,
+      "outcome": "Missing test-only animation imports; corrected before final passing run",
+      "log": "<cache>/rustmage-authoring/hob-hone/hob_hone-20261026-092524.log"
+    },
+    "other_checks": [
+      "rustfmt --edition 2024 --check on every owned Rust file",
+      "git diff --check",
+      "scripts/check_sources.py: 5410 definitions and 1473 Java blobs verified"
+    ]
+  }
+}

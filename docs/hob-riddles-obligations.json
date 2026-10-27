@@ -1,0 +1,171 @@
+{
+  "scope": "Riddles in the Dark complete instant using existing private library pile choice; no new state/wire/IDs",
+  "base_revision": "c4d4f0e4",
+  "oracle_facts": {
+    "oracle_id": "78bed291-0ec7-466f-bc7a-9dae7d0b56ae",
+    "name": "Riddles in the Dark",
+    "layout": "normal",
+    "mana_cost": "{2}{U}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Look at the top four cards of your library and separate them into a face-down pile and a face-up pile. An opponent chooses one of the piles. Put that pile into your hand and the other into your graveyard.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [],
+    "reference_printing": {
+      "id": "a6129286-7437-4ba4-be55-586a22cd67ca",
+      "set": "hob",
+      "collector_number": "53",
+      "released_at": "2026-08-14"
+    }
+  },
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/r/RiddlesInTheDark.java",
+      "sha256": "42831fe020f6598066f9715336bdeea713180f38eb9e98a4feaa262e3ba3eabf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/c/CuratorOfDestinies.java",
+      "sha256": "8c87d4d1add405c61b4703ee83bb0da0d7c3aa1dccb3bdcc1c462b92e6dfde2f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+      "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+    }
+  ],
+  "obligations": {
+    "spell": "Actually paid2U at instant speed on opponent turn, no target; spell counters correctly",
+    "choice": "Look up to4 top, arbitrary 0\u20134 private assignment including empty piles; opponent sees face-up cards and facedown count, selects either pile; chooser/controller correct for both seats",
+    "zones": "Chosen pile to caster hand, other to owner graveyard with replacements and proper visibility; fewer than4/empty library, public face-up cards reveal, hidden selected pile private",
+    "owned": "Illegal wrong-actor/nonmember/duplicate selection rollback, snapshot/raw/index/parent-disposed branches while assigning and while opponent chooses"
+  },
+  "validation": {
+    "status": "Author focused pass; full independent reviews and integrated acceptance pending.",
+    "passed": 27,
+    "groups": {
+      "hob_riddles": 3,
+      "hob_inherited_spells": 13,
+      "sos_milled_play": 4,
+      "hob_wandering": 6,
+      "contracts::owned_raw_index": 1
+    },
+    "results": {
+      "compile": {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--no-run",
+          "--message-format=json",
+          "--target-dir",
+          "<cache>/rustmage-authoring/hob-riddles/target"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 34.60568921198137,
+        "log": "<cache>/rustmage-authoring/hob-riddles/run-1/compile.jsonl"
+      },
+      "hob_riddles": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-riddles/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_riddles",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06568183697527274,
+        "log": "<cache>/rustmage-authoring/hob-riddles/run-1/0.log"
+      },
+      "hob_inherited_spells": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-riddles/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_inherited_spells",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.11602844501612708,
+        "log": "<cache>/rustmage-authoring/hob-riddles/run-1/1.log"
+      },
+      "sos_milled_play": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-riddles/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "sos_milled_play",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.0662632110179402,
+        "log": "<cache>/rustmage-authoring/hob-riddles/run-1/2.log"
+      },
+      "hob_wandering": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-riddles/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_wandering",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.0655666189850308,
+        "log": "<cache>/rustmage-authoring/hob-riddles/run-1/3.log"
+      },
+      "contracts::owned_raw_index": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-riddles/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "contracts::owned_raw_index",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.0334192980080843,
+        "log": "<cache>/rustmage-authoring/hob-riddles/run-1/4.log"
+      }
+    },
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-riddles/run-1/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 45.6043316659634,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2530123776,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "reports": "<cache>/rustmage-authoring/hob-riddles/run-1",
+    "proof_sha256": "8802c6bb2a5fdabef7e5ff5921e037fc5d2f30ae6db9618f0d2657fca5427d9b"
+  },
+  "fixtures": [
+    "Riddles in the Dark",
+    "Forest",
+    "Negate",
+    "Rest in Peace",
+    "Curator of Destinies"
+  ]
+}

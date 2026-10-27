@@ -3,10 +3,56 @@
   "catalogue_id": 3037,
   "oracle_id": "69cc089a-abd3-4edb-bc79-f02daac70837",
   "facts_sha256": "5360e43dc67f0a5dee44b9c73d258fabbabad0f399b4bdd563186051724c2115",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "60eed63970af33a0689197abc1bb5fa000ce8ea19dacc66b8d2ef8592e8a5f54"
   },
-  "physical_metadata_sha256": "6905e0702fcb52360a05b768abf041cf482716705eadd752462f221094972ca0"
+  "physical_metadata_sha256": "6905e0702fcb52360a05b768abf041cf482716705eadd752462f221094972ca0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OriKeeperOfSongs.java",
+  "java_sha256": "5067276f5f0fc651620a25d93f42710bc3e9fae7fce67a63b4d0a03a2ce950d7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StoriedAbility.java",
+      "sha256": "53a70872b58dc914e94e9795f666e20bc6a2fe7a2db4f555a69def1499a8fbd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/EnduringStoryCondition.java",
+      "sha256": "65a28722b436134cc93b4e712ffb1654e9fed33f6cca4eb29db2ca2facb375de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/common/EnduringStoryHint.java",
+      "sha256": "ce139f9f47a1fbdba250418d1ce78771022609750b0788cf041dfac895530cbe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/designations/EnduringStory.java",
+      "sha256": "08c109de01da1c13a45baf20f627c09d9e356a01541ee85ab7faf4c83b13ff8b"
+    }
+  ],
+  "remaining_obligations": []
 }

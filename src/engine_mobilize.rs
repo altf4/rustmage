@@ -221,10 +221,12 @@ impl Game {
             let card = b.view.source_card;
             let controller = b.view.controller;
             self.state.pending_triggers.push(SpellView {
+                additional_triggers: 0,
                 source_move: None,
                 borrowed_slot: None,
                 self_granted_activation: None,
                 target_controller_lki: None,
+                target_kinds_lki: None,
                 gift: None,
                 reflexive_subject: None,
                 crew: None,
@@ -266,6 +268,7 @@ impl Game {
                 source_quantity_lki: None,
                 event_object: None,
                 sacrificed_toughness: None,
+                sacrificed_power: None,
                 card: source.card,
                 object: source,
                 targets: Vec::new(),

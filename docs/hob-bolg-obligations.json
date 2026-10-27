@@ -1,0 +1,37 @@
+{
+  "card": "Bolg of the North",
+  "base": "cc636931691a217f9486334aa68672ca71942fe8",
+  "scope": "Complete typed printed card candidate; two independent reviews and integrated acceptance required",
+  "proof": {
+    "path": "src/assurance/hob_bolg.rs",
+    "sha256": "07548e865967a1c360ed9e8425a786cb35e1d8d76e449b019a439fe6ac912e56"
+  },
+  "source": "Full Oracle body in data/standard/cards.json and full pinned Java implementation plus referenced helper paths/hashes in paired provenance; all files physically matched pinned revision.",
+  "obligations": {
+    "printed_body": "Paid 3BR, legendary Goblin Soldier 5/5, ETB optional sacrifice of another controlled creature, distinct reflexive targeted ability after actual sacrifice.",
+    "sacrifice": "Both seats, decline, no eligible object, source restriction, replaced destination to exile, pre-departure signed power snapshot, source departure, target invalidation and rollback; no admitted prevention-of-sacrifice effect was found for a live prevention-card proof.",
+    "damage": "Actual damage tracked after prevention/replacement, including shield, doubled damage, prior marked damage, deathtouch lethal threshold, exact lethal and zero/negative power.",
+    "amass": "Only positive excess amasses that many Goblins: new token, existing two Armies with opponent excluded, non-targeted chooser raw/index/restore, token and counter doubling replacement; zero excess creates none."
+  },
+  "implementation": {
+    "wire": "Optional SpellView.sacrificed_power holds signed LKI for the distinct reflexive packet and is omitted when absent; schema 158, shared with concurrently planned Elven Passage integration.",
+    "capture": "Power is computed before sacrifice but inserted only after the exact selected permanent actually departs; zone replacement to exile still succeeds.",
+    "damage": "Existing cold actual-damage tracker is consumed after the positive-excess conditional; Army creation and choice use existing amass continuation.",
+    "generated": "Assurance module registration and catalogue/coverage outputs deliberately excluded from author commit; integrator must regenerate and reconcile schema 158."
+  },
+  "validation": {
+    "run_1": "<cache>/rustmage-authoring/hob-bolg/run-1: 3 card + 22 regression passing; first run natural success.",
+    "run_2": "<cache>/rustmage-authoring/hob-bolg/run-2: 6 card + 22 regression passing.",
+    "run_3": "<cache>/rustmage-authoring/hob-bolg/run-3: 7 card + 14 Azog/Rampager + 7 Black Arrow + 1 existing reflexive-sacrifice regression = 29 passing, zero failed or ignored.",
+    "run_3_resource": "<cache>/rustmage-build-reports/46ef92cf297e42a38208043372c5aaf5.json",
+    "run_3_compile_and_focused_seconds": 28.38826964603504,
+    "run_3_guard_seconds": 39.407080047007184,
+    "run_3_peak_bytes": 2496073728,
+    "memory_limit_bytes": 6442450944,
+    "jobs": 1,
+    "test_threads": 1,
+    "oom_events": 0,
+    "all_runs": "All runs terminated naturally with immutable inputs and persistent logs."
+  },
+  "remaining": "Two independent nonauthor reviews and root schema-158 old-row audit/full release acceptance; no live prevention-of-sacrifice card was identified."
+}

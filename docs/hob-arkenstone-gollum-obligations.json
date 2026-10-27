@@ -1,0 +1,63 @@
+{
+  "scope": [
+    "The Arkenstone // Seek the Heart",
+    "Gollum the Abandoned"
+  ],
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "complete_obligations": {
+    "The Arkenstone": [
+      "Pay5forartifact; live+1/+1 to all controlled creatures including later entrants",
+      "Draw at own end step; frozen triggered controller draws after source departure",
+      "Seek costs2W, searches for both legendary and creature, hides library choices, reveals chosen hand card and shuffles",
+      "Qualified fail-to-find allowed; Adventure exiles physical card and permits later paidartifact cast",
+      "Synthetic face has exact physical parent4420 and is rejected as a standalone Freeform deck card"
+    ],
+    "Gollum the Abandoned": [
+      "Pay1B for2/2 with suppressible cannot-block ability",
+      "Optional opponent graveyard card exile followed by2life loss; choosing none still loseslife",
+      "Only selected target becoming illegal causes entire ability to fizzle",
+      "Graveyard return pays2 and a controlled artifact or creature sacrifice, only at sorcery timing",
+      "Wrong-controller/wrong-kind costs rejected transactionally; owned raw/index/restore contract at additional-cost choice"
+    ]
+  },
+  "independent_reviews": [
+    "hob_review_rules: full Oracle/Java source review; accidental CastFilter arm and missing inset parent found and repaired; no other findings",
+    "hob_review_contracts: independent full Oracle/Java/pin audit; no remaining source findings; terminal receipt pending"
+  ],
+  "integrated_tests": {
+    "passed": 70,
+    "failed": 0,
+    "ignored": 0,
+    "explicitly_excluded": "companies_conditional_keywords_and_bolg_paid_mana: Bolg is gated pending selected-sacrifice mana funding repair",
+    "scenario_seconds": 0.12,
+    "guard_seconds_including_queue": 261.7840833340306,
+    "memory_peak_bytes": 3870658560,
+    "memory_max_bytes": 6442450944,
+    "oom_events": 0,
+    "log": "~/.cache/rustmage-authoring/hob-complete-set/integrated-hob-2.log",
+    "report": "~/.cache/rustmage-build-reports/0ce3c269c1384e4eb06ba76c4137d362.json"
+  },
+  "prior_failures": [
+    {
+      "log": "~/.cache/rustmage-authoring/hob-complete-set/artifacts-gollum-1.log",
+      "reason": "Accidental Legendary arm in unrelated CastFilter did not compile; removed. No tests executed."
+    },
+    {
+      "log": "~/.cache/rustmage-authoring/hob-complete-set/integrated-hob-1.log",
+      "passed": 69,
+      "failed": 1,
+      "reason": "Manually advanced Arkenstone end-step fixture had not published its queued trigger; now explicitly prepares trigger and asserts stack presence before source departure."
+    }
+  ],
+  "tested_source_sha256": {
+    "src/cards.rs": "778ce6033e00171bbfb0899c84e4240b8cf9f901071b4595cf93018ef800bf42",
+    "src/card_definitions/hob/the_arkenstone_seek_the_heart.rs": "f57979f62cef553d03c09e335fad99af3199807e3deb42c4776751e22e21e388",
+    "src/card_definitions/hob/gollum_the_abandoned.rs": "7191ff9254f7eabe7ec2eeda529a9b400cd47d6763bd5d1f9438a9f7bb6e4e4a",
+    "src/card_definitions/synthetic/seek_the_heart.rs": "dda283c4c038871e98ced76d05adf17cc06be2aeaba36e3ac0c22a0db70cd9b7",
+    "src/assurance/hob_arkenstone.rs": "eddc4bae325f3422ff64c987bb62348da6b3355be84389cb026959e97c0001f2",
+    "src/assurance/hob_gollum_abandoned.rs": "64a31e054a2c9c753b0d6a0e23dbc47bdfde69355c58f1935814954bdd02c020"
+  },
+  "acceptance": "Local passing candidate only. Full release validation, inherited trace migration, whole-set rules/performance acceptance and two independent reviews of the final published PR remain required. No PR or merge created.",
+  "throughput": "Two new candidate complete cards, with integrated build/test timings above. No simulation benchmark in this cohort."
+}

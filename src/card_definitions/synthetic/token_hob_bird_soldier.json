@@ -1,0 +1,14 @@
+{
+  "name": "@token/hob-bird-soldier",
+  "catalogue_id": 5418,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "ceb1be86baa707db6c7a1043fe6b30783f0eaf1eafd827142cb78b4c465e557f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/BirdSoldier44Token.java",
+  "java_sha256": "3fa08b16201765e0d73191737cab8de4076b17fcb4017ebe5d166e80b77b07c7",
+  "rules_notes": [
+    "Oracle for The Eagles Are Coming! explicitly specifies Bird Soldier; pinned BirdSoldier44Token helper omits Soldier, so exact Oracle subtype recipe takes precedence."
+  ]
+}

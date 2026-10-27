@@ -225,6 +225,7 @@ impl Game {
         }
         if self.state.controls.is_none() {
             self.refresh_copy_grant_availability();
+            self.refresh_enduring_stories();
             return;
         }
         for row in controllers(self) {
@@ -270,6 +271,7 @@ impl Game {
             self.state.controls = None;
         }
         self.refresh_copy_grant_availability();
+        self.refresh_enduring_stories();
     }
     pub(super) fn control_bytes(&self) -> usize {
         self.state.controls.as_ref().map_or(0, |state| {
@@ -277,5 +279,36 @@ impl Game {
                 + state.bases.len() * std::mem::size_of::<ControlBase>()
                 + state.effects.len() * std::mem::size_of::<ControlEffect>()
         })
+    }
+}
+
+impl Game {
+    pub(super) fn record_control_exchange(&mut self, first: ObjectRef, second: ObjectRef) {
+        let controllers = [
+            self.state.objects[first.card as usize].controller,
+            self.state.objects[second.card as usize].controller,
+        ];
+        if controllers[0] == controllers[1] {
+            return;
+        }
+        self.ensure_control_base(first);
+        self.ensure_control_base(second);
+        let timestamp = self.next_role_timestamp();
+        for (object, controller) in [(first, controllers[1]), (second, controllers[0])] {
+            self.forget_temporary_control(object);
+            let state = self.state.controls.as_mut().unwrap();
+            state.effects.retain(|row| {
+                row.object != object
+                    || (row.expires_turn.is_none() && row.expires_after_next_turn.is_none())
+            });
+            state.effects.push(ControlEffect {
+                object,
+                controller,
+                timestamp,
+                expires_turn: None,
+                expires_after_next_turn: None,
+            });
+        }
+        self.refresh_controllers();
     }
 }

@@ -2,10 +2,16 @@
 use super::*;
 use crate::SearchDestination;
 
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(super) struct SearchResult {
+    pub origin: Option<ObjectRef>,
+    pub entered: Option<ObjectRef>,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct SearchChoice {
     pub spec: SearchSpec,
-    pub minimum: u16,
+    pub minimum: u64,
     pub different_names: bool,
     pub selected: Vec<CardId>,
     pub battlefield: Option<Vec<CardId>>,
@@ -117,6 +123,17 @@ impl Game {
             .search
             .take()
             .unwrap();
+        let origin = choice.selected.first().map(|&id| self.object_ref(id));
+        if let Some(frame) = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .search_result
+            .as_mut()
+        {
+            frame.origin = origin;
+        }
         if choice.spec.destination == SearchDestination::Top {
             // Searching does not change the found card's zone or incarnation.
             // Reveal and shuffle are one committed action; only the final known
@@ -188,6 +205,24 @@ impl Game {
             self.remember_linked_exile(&choice.selected);
         }
         self.run_program();
+    }
+
+    pub(super) fn capture_search_result_entry(&mut self, events: &[ZoneChange]) {
+        let Some(frame) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|r| r.search_result.as_mut())
+        else {
+            return;
+        };
+        if let Some(event) = events.iter().find(|event| {
+            Some(event.before.reference) == frame.origin
+                && event.moved
+                && event.destination == Zone::Battlefield
+        }) {
+            frame.entered = Some(event.after);
+        }
     }
 }
 

@@ -3,10 +3,30 @@
   "catalogue_id": 3519,
   "oracle_id": "78bed291-0ec7-466f-bc7a-9dae7d0b56ae",
   "facts_sha256": "d2d7dd0d859d1690deb04d025bc5e2214d9a7ed98f2a4473d7c6a48eef95bfb8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "54ac0527121c69c23c6a11b7917b2cd111420647c652e669ca72b73a254a96ff"
   },
-  "physical_metadata_sha256": "86d809f587ea9bc7a74aea28b7da2e2855148c89c91abed5c447031b27ac9bf2"
+  "physical_metadata_sha256": "86d809f587ea9bc7a74aea28b7da2e2855148c89c91abed5c447031b27ac9bf2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RiddlesInTheDark.java",
+  "java_sha256": "42831fe020f6598066f9715336bdeea713180f38eb9e98a4feaa262e3ba3eabf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/c/CuratorOfDestinies.java",
+      "sha256": "8c87d4d1add405c61b4703ee83bb0da0d7c3aa1dccb3bdcc1c462b92e6dfde2f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+      "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+    }
+  ]
 }

@@ -1,3 +1,5 @@
+> Historical schema83 receipt. The English compiler and the Python test module imported by the historical example below have since been removed. Its counts and reproduction commands describe the recorded historical revisions, not current acceptance. Current directly authored HOB Adventure outcomes are checked in [the native inherited-Adventure proof](../src/assurance/hob_inherited_adventures.rs), with source pins and actual execution evidence in [its obligation ledger](hob-inherited-adventures-obligations.json). Whole-set acceptance remains separate.
+
 # Exact mill-batch choices and six complete Adventure pairs
 
 Issue [283](https://github.com/altf4/rustmage/issues/283) implements the complete printed normal and Adventure faces of Bramble Familiar, Most Decrepit Old Bird, Picklock Prankster, Thranduil Sindarin Liege, Beluna Grandsquall and Glamdring Foe-hammer. Whole-body parsing, including strict residual and reminder rejection, gates both faces without identity whitelists.

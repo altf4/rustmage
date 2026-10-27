@@ -8,6 +8,19 @@ pub(super) struct PaymentContinuation<'g> {
     outer: &'g [mana_announcements::ManaAnnouncement],
     quality: Option<&'g mana_lots::Quality>,
 }
+impl PaymentContinuation<'_> {
+    pub(super) fn selects(&self, id: CardId) -> bool {
+        self.head
+            .additional
+            .is_some_and(|selected| selected.card == id)
+            || self.outer.iter().any(|frame| {
+                frame
+                    .announcement
+                    .additional
+                    .is_some_and(|selected| selected.card == id)
+            })
+    }
+}
 #[derive(Clone)]
 pub(super) struct EntryProjection {
     /// Opt-in restoration origins; these are copy changes, never entry history.
@@ -454,6 +467,11 @@ impl FundingState<'_> {
                     && r.object.card.is_basic_land()
                     && CharacteristicWorld::kinds(self, r.id) & 2 != 0
             }),
+            EntryTapped::UnlessControlsSubtype(subtype) => !self.resources.iter().any(|r| {
+                r.object.zone == Zone::Battlefield
+                    && r.object.controller == owner
+                    && self.subtypes(r.id).has(r.object.card, subtype)
+            }),
             EntryTapped::UnlessPlaneswalker => !self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
                     && r.object.controller == owner
@@ -473,7 +491,7 @@ impl FundingState<'_> {
             let o = self.object(id);
             if o.zone == Zone::Battlefield
                 && o.controller == m.controller
-                && o.card.controlled_entry_untapped() & m.before.kinds != 0
+                && o.card.controlled_entry_untapped() & m.entry_kinds() != 0
                 && self.fragment_available(id, |f| {
                     matches!(
                         f,
@@ -496,7 +514,7 @@ impl FundingState<'_> {
                 let o = self.object(id);
                 o.zone == Zone::Battlefield
                     && o.controller != m.controller
-                    && o.card.opponent_entry_tapped() & m.before.kinds != 0
+                    && o.card.opponent_entry_tapped() & m.entry_kinds() != 0
                     && self.printed_abilities_available(id)
             })
             .collect::<Vec<_>>();
@@ -648,6 +666,11 @@ impl FundingState<'_> {
         {
             let mut choices = Vec::new();
             match kind {
+                crate::cards::EntryChoiceKind::ManaValueParity => choices.extend(
+                    [ManaValueParity::Odd, ManaValueParity::Even]
+                        .into_iter()
+                        .map(EntryChoiceValue::ManaValueParity),
+                ),
                 crate::cards::EntryChoiceKind::Color => choices.extend(
                     crate::cards::ChoiceColor::ALL
                         .into_iter()
@@ -720,7 +743,7 @@ impl FundingState<'_> {
             }
             return false;
         }
-        if m.before.card.aura().is_some() && m.attachment.is_none() {
+        if !m.artifact_return && m.before.card.aura().is_some() && m.attachment.is_none() {
             let mut any = false;
             for r in &self.resources {
                 let target = self.reference(r.id);
@@ -832,7 +855,7 @@ impl FundingState<'_> {
                         owner: m.before.owner,
                         controller: m.controller,
                         subtypes: Game::entry_choice_subtypes(m),
-                        kind: m.before.kinds,
+                        kind: m.entry_kinds(),
                         amount: m.counters.clone(),
                         effect: true,
                         entry_index: Some(index),
@@ -889,7 +912,9 @@ impl FundingState<'_> {
     }
     fn entry_has_timestamp(m: &entries::EntryMove) -> bool {
         let card = m.before.card;
-        m.return_modification.is_some()
+        m.artifact_return
+            || m.food_return.is_some()
+            || m.return_modification.is_some()
             || CounterAmounts::from(&m.counters)
                 .keyword_amounts()
                 .iter()
@@ -1002,6 +1027,20 @@ impl FundingState<'_> {
                 CounterAmounts::from(&m.counters).keyword_amounts(),
                 Some(timestamp),
             );
+            if m.artifact_return {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .animations
+                    .push(characteristic_layers::artifact_noncreature_form(
+                        source, timestamp,
+                    ));
+            }
+            if m.food_return.is_some() {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .animations
+                    .push(characteristic_layers::food_form(source, timestamp));
+            }
             if let Some((kind, origin)) = m.return_modification
                 && let Some((types, keywords)) = return_links::modification(kind)
             {
@@ -1116,6 +1155,7 @@ impl FundingState<'_> {
         next.entry_projection.as_mut().unwrap().counter = None;
         next.refresh_control_projection();
         next.prune_source_linked_projection();
+        next.refresh_enduring_projection();
         for m in &moves {
             if m.skipped || m.destination != Zone::Battlefield {
                 continue;
@@ -1153,6 +1193,7 @@ impl FundingState<'_> {
             p.hand_size.assign(source);
         }
         next.refresh_control_projection();
+        next.refresh_enduring_projection();
         emit(&next)
     }
 }
@@ -1367,7 +1408,8 @@ impl<'g> FundingState<'g> {
         step: &FundingMove,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
-        if self.cast_costs.is_none()
+        if step.external.is_none()
+            && self.cast_costs.is_none()
             && self.continuation.is_none()
             && self.entry_projection.is_none()
             && self.game.state.exile_links.is_empty()
@@ -1379,6 +1421,24 @@ impl<'g> FundingState<'g> {
             next.apply(step, false);
             return emit(&next);
         }
+        let external = if let Some(external) = step.external {
+            let source = &self.resources[step.resource];
+            let card = step.frozen.as_ref().map_or(source.object.card, |f| f.0);
+            let ability = step
+                .borrowed
+                .map_or_else(|| card.activation(step.ability.unwrap()), |b| b.rules());
+            let Some(spec) = ability.cost.additional else {
+                return false;
+            };
+            if external.kind != spec.kind
+                || !self.cost_object(spec, external.object, self.reference(source.id))
+            {
+                return false;
+            }
+            Some((external, spec))
+        } else {
+            None
+        };
         let source = &self.resources[step.resource];
         let reference = self.reference(source.id);
         let mut next = self.clone();
@@ -1392,23 +1452,45 @@ impl<'g> FundingState<'g> {
         if departed {
             next.resources[step.resource].object.zone = Zone::Battlefield;
         }
-        if let Some(index) = step.external {
-            next.resources[index].object.zone = Zone::Graveyard;
+        if let Some((external, _)) = external {
+            // Selection belongs to this incarnation. Never silently substitute a
+            // returned card or allow an object already spent by another cost.
+            if next.reference(external.object.card) != external.object
+                || next.resources[external.resource].object.zone
+                    != self.resources[external.resource].object.zone
+                || departed && external.object == reference
+            {
+                return false;
+            }
         }
-        let mut after_source = |w: &Self| {
-            if let Some(index) = step.external {
-                let external = w.reference(w.resources[index].id);
-                w.cost_departures(&[external], Zone::Exile, emit)
+        next.visit_mana_cost_departures(reference, departed.then_some(destination), external, emit)
+    }
+    pub(super) fn visit_mana_cost_departures(
+        &self,
+        source: ObjectRef,
+        source_departure: Option<Zone>,
+        external: Option<(ExternalManaCost, AdditionalCost)>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        // Match pay_activation followed by pay_additional_cost. These are
+        // ordered cost components; a source's departure can remove a replacement
+        // or change control before the selected permanent's departure.
+        let mut after_source = |world: &Self| {
+            if let Some((selected, spec)) = external {
+                if !world.cost_object(spec, selected.object, source) {
+                    return false;
+                }
+                world.cost_departures(&[selected.object], selected.destination(), emit)
             } else {
-                emit(w)
+                emit(world)
             }
         };
-        if departed {
-            next.cost_departures(&[reference], destination, &mut after_source)
-        } else if step.external.is_some() {
-            after_source(&next)
+        if let Some(destination) = source_departure {
+            self.cost_departures(&[source], destination, &mut after_source)
+        } else if external.is_some() {
+            after_source(self)
         } else {
-            next.visit_linked_returns(&mut after_source)
+            self.visit_linked_returns(&mut after_source)
         }
     }
     pub(super) fn set_funding_continuation(
@@ -1459,9 +1541,16 @@ impl<'g> FundingState<'g> {
                     return;
                 }
                 let external = a.additional.and_then(|object| {
-                    self.resources.iter().position(|r| {
-                        r.id == object.card && r.object.generation == object.generation
-                    })
+                    self.resources
+                        .iter()
+                        .position(|r| {
+                            r.id == object.card && r.object.generation == object.generation
+                        })
+                        .map(|resource| ExternalManaCost {
+                            resource,
+                            object,
+                            kind: a.additional_cost().expect("selected mana cost").kind,
+                        })
                 });
                 if a.additional.is_some() && external.is_none() {
                     return;
@@ -1501,3 +1590,7 @@ impl<'g> FundingState<'g> {
         found
     }
 }
+
+#[cfg(test)]
+#[path = "assurance/hob_lonely_funding.rs"]
+mod hob_lonely_funding;

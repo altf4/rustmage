@@ -18,6 +18,7 @@ struct RevealChoice {
 struct DrawRequest {
     player: Player,
     amount: u128,
+    replaced: bool,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct Protection {
@@ -125,6 +126,9 @@ impl Game {
         }
     }
     pub(super) fn draw_many_interruptible(&mut self, player: Player, amount: u128) {
+        self.draw_requests(player, amount, false);
+    }
+    fn draw_requests(&mut self, player: Player, amount: u128, replaced: bool) {
         let attempts = amount.min(self.state.players[player.index()].library.len() as u128 + 1);
         if self.miracle_choice_pending() {
             self.state
@@ -135,25 +139,48 @@ impl Game {
                 .push_back(DrawRequest {
                     player,
                     amount: attempts,
+                    replaced,
                 });
             return;
         }
         for index in 0..attempts {
-            self.draw(player);
-            if self.miracle_choice_pending() {
-                let remaining = attempts - index - 1;
-                if remaining > 0 {
-                    self.state
-                        .miracle
-                        .as_mut()
-                        .unwrap()
-                        .draws
-                        .push_front(DrawRequest {
-                            player,
-                            amount: remaining,
-                        });
+            let count = if replaced {
+                1
+            } else {
+                self.replaced_draw_count(player)
+            };
+            let count = count.min(self.state.players[player.index()].library.len() as u128 + 1);
+            for child in 0..count {
+                self.draw_one_unreplaced(player);
+                if self.miracle_choice_pending() {
+                    let remaining = attempts - index - 1;
+                    if remaining > 0 {
+                        self.state
+                            .miracle
+                            .as_mut()
+                            .unwrap()
+                            .draws
+                            .push_front(DrawRequest {
+                                player,
+                                amount: remaining,
+                                replaced,
+                            });
+                    }
+                    let children = count - child - 1;
+                    if children > 0 {
+                        self.state
+                            .miracle
+                            .as_mut()
+                            .unwrap()
+                            .draws
+                            .push_front(DrawRequest {
+                                player,
+                                amount: children,
+                                replaced: true,
+                            });
+                    }
+                    return;
                 }
-                return;
             }
         }
     }
@@ -196,7 +223,7 @@ impl Game {
             let Some(next) = next else {
                 break;
             };
-            self.draw_many_interruptible(next.player, next.amount);
+            self.draw_requests(next.player, next.amount, next.replaced);
             if self.miracle_choice_pending() {
                 return;
             }
@@ -218,6 +245,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            paid: None,
             casts_remaining: None,
             pending_cast: None,
             alternative_cost: Some(cost),

@@ -55,8 +55,18 @@ const COPY_HUMAN: u32 = ALL_CREATURE_TYPES << 1;
 const COPY_VILLAIN: u32 = COPY_HUMAN << 1;
 const COPY_MERCENARY: u32 = COPY_VILLAIN << 1;
 const ADDED_SOLDIER: u32 = COPY_MERCENARY << 1;
-const ADDED_MASK: u32 = JOB_MASK | COPY_HUMAN | COPY_VILLAIN | COPY_MERCENARY | ADDED_SOLDIER;
-const _: () = assert!(JOB_TYPES.len() + 4 <= u32::BITS as usize);
+const ADDED_GOBLIN: u32 = ADDED_SOLDIER << 1;
+const ADDED_BEAR: u32 = ADDED_GOBLIN << 1;
+const ADDED_FOOD: u32 = ADDED_BEAR << 1;
+const ADDED_MASK: u32 = JOB_MASK
+    | COPY_HUMAN
+    | COPY_VILLAIN
+    | COPY_MERCENARY
+    | ADDED_SOLDIER
+    | ADDED_GOBLIN
+    | ADDED_BEAR
+    | ADDED_FOOD;
+const _: () = assert!(JOB_TYPES.len() + 10 <= u32::BITS as usize);
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GrantedSubtypes {
     added: u32,
@@ -64,8 +74,18 @@ pub struct GrantedSubtypes {
     /// None retains printed types (including changeling); Some replaces only
     /// creature types, preserving e.g. Equipment, Aura, Forest and Lesson.
     creature_types: Option<&'static [&'static str]>,
+    /// Opt-in correlation after a card-type-setting effect; final layer-four types.
+    card_types: Option<u16>,
 }
 impl GrantedSubtypes {
+    pub(super) fn food_only() -> Self {
+        Self {
+            added: SUPPRESS_PRINTED | ADDED_FOOD,
+            chosen: None,
+            creature_types: Some(&[]),
+            card_types: None,
+        }
+    }
     fn flag(self, bit: u32) -> bool {
         self.added & bit != 0
     }
@@ -79,6 +99,12 @@ impl GrantedSubtypes {
     /// Membership supplied by this overlay, excluding retained printed types.
     /// Use ObjectView::has_subtype for the full effective characteristic.
     pub fn contains(self, subtype: &str) -> bool {
+        if self
+            .card_types
+            .is_some_and(|kinds| kinds & subtype_card_types(subtype) == 0)
+        {
+            return false;
+        }
         (self.added & Self::copy_type_bit(subtype) != 0)
             || (self.flag(ALL_CREATURE_TYPES) && crate::cards::is_creature_type(subtype))
             || self.chosen.is_some_and(|t| t.name() == subtype)
@@ -91,6 +117,12 @@ impl GrantedSubtypes {
                 .is_some_and(|i| self.added & (1 << i) != 0)
     }
     pub(crate) fn has(self, card: Card, subtype: &str) -> bool {
+        if self
+            .card_types
+            .is_some_and(|kinds| kinds & subtype_card_types(subtype) == 0)
+        {
+            return false;
+        }
         // Preserve the ordinary-card hot path: no taxonomy lookup, and printed
         // membership short-circuits the additional-type mask as before.
         if self.flag(LAND_ONLY) {
@@ -108,7 +140,7 @@ impl GrantedSubtypes {
         }
     }
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
-        self.added &= FLAGS_MASK;
+        self.added &= FLAGS_MASK | ADDED_FOOD;
         self.chosen = None;
         self.creature_types = Some(types);
     }
@@ -142,6 +174,9 @@ impl GrantedSubtypes {
             "Villain" => COPY_VILLAIN,
             "Mercenary" => COPY_MERCENARY,
             "Soldier" => ADDED_SOLDIER,
+            "Goblin" => ADDED_GOBLIN,
+            "Bear" => ADDED_BEAR,
+            "Food" => ADDED_FOOD,
             _ => 0,
         }
     }
@@ -174,6 +209,9 @@ impl Serialize for GrantedSubtypes {
                     (COPY_VILLAIN, "Villain"),
                     (COPY_MERCENARY, "Mercenary"),
                     (ADDED_SOLDIER, "Soldier"),
+                    (ADDED_GOBLIN, "Goblin"),
+                    (ADDED_BEAR, "Bear"),
+                    (ADDED_FOOD, "Food"),
                 ] {
                     if self.0 & bit != 0 {
                         out.serialize_element(subtype)?;
@@ -182,15 +220,87 @@ impl Serialize for GrantedSubtypes {
                 out.end()
             }
         }
-        let mut out = serializer.serialize_struct("GrantedSubtypes", 6)?;
+        let mut out = serializer.serialize_struct(
+            "GrantedSubtypes",
+            6 + usize::from(self.card_types.is_some()),
+        )?;
         out.serialize_field("suppress_printed", &self.flag(SUPPRESS_PRINTED))?;
         out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
         out.serialize_field("all_creature_types", &self.flag(ALL_CREATURE_TYPES))?;
         out.serialize_field("chosen", &self.chosen)?;
         out.serialize_field("added", &Added(self.added & ADDED_MASK))?;
         out.serialize_field("creature_types", &self.creature_types)?;
+        if let Some(kinds) = self.card_types {
+            out.serialize_field("card_types", &kinds)?;
+        }
         out.end()
     }
+}
+
+// CR205.3g-k,m,q. Creature names come from the pinned complete type inventory.
+// Any remaining printed subtype in this permanent pool is a planeswalker type.
+fn subtype_card_types(subtype: &str) -> u16 {
+    if crate::cards::is_creature_type(subtype) {
+        return 1 | 128;
+    }
+    if LAND_TYPES.contains(&subtype) {
+        return 2;
+    }
+    if [
+        "Attraction",
+        "Blood",
+        "Bobblehead",
+        "Book",
+        "Clue",
+        "Contraption",
+        "Equipment",
+        "Food",
+        "Fortification",
+        "Gold",
+        "Heartwood",
+        "Incubator",
+        "Infinity",
+        "Junk",
+        "Lander",
+        "Map",
+        "Mutagen",
+        "Powerstone",
+        "Spacecraft",
+        "Stone",
+        "Treasure",
+        "Vehicle",
+        "Vibranium",
+    ]
+    .contains(&subtype)
+    {
+        return 16;
+    }
+    if [
+        "Aura",
+        "Background",
+        "Cartouche",
+        "Case",
+        "Class",
+        "Curse",
+        "Plan",
+        "Role",
+        "Room",
+        "Rune",
+        "Saga",
+        "Shard",
+        "Shrine",
+    ]
+    .contains(&subtype)
+    {
+        return 32;
+    }
+    if ["Adventure", "Arcane", "Lesson", "Omen", "Trap"].contains(&subtype) {
+        return 4 | 8;
+    }
+    if subtype == "Siege" {
+        return 256;
+    }
+    64
 }
 
 /// A resolution-created replacement, lasting for this exact incarnation only.
@@ -298,7 +408,11 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                     }
                 }
             }
+            characteristic_layers::SubtypeChange::FoodOnly => {
+                mask = GrantedSubtypes::food_only();
+            }
             characteristic_layers::SubtypeChange::LandOnly => {
+                mask.set_flag(ADDED_FOOD, false);
                 mask.replace_creature_types(&[]);
                 mask.set_flag(ALL_CREATURE_TYPES, false);
                 mask.set_flag(LAND_ONLY, true);
@@ -311,11 +425,23 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                 mask.replace_creature_types(types);
                 mask.set_flag(ALL_CREATURE_TYPES, false);
                 if all {
+                    mask.set_flag(ADDED_FOOD, false);
                     mask.set_flag(SUPPRESS_PRINTED, true);
                     mask.set_flag(LAND_ONLY, false);
                 }
             }
         }
+    }
+    if world.roles().is_some_and(|roles| {
+        roles
+            .animations
+            .iter()
+            .any(|row| row.object == reference && row.artifact_noncreature)
+    }) {
+        mask.card_types = Some(kinds(id, target));
+    }
+    if kinds(id, target) & 16 == 0 {
+        mask.set_flag(ADDED_FOOD, false);
     }
     if kinds(id, target) & 1 == 0 {
         return mask;
@@ -400,6 +526,37 @@ impl Game {
 }
 
 impl Game {
+    pub(super) fn add_creature_types(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        types: &'static [&'static str],
+    ) {
+        assert!(types.iter().all(|t| crate::cards::is_creature_type(t)));
+        let recipients: Vec<_> = self
+            .keyword_subjects(item, subject)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id) && self.is_creature(id))
+            .map(|id| self.object_ref(id))
+            .collect();
+        if recipients.is_empty() {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        for recipient in recipients {
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .creature_types
+                .push(CreatureTypesEffectView {
+                    recipient,
+                    source: item.object,
+                    types,
+                    additional: true,
+                    timestamp,
+                });
+        }
+    }
     pub(super) fn set_creature_types(
         &mut self,
         item: &SpellView,
@@ -448,6 +605,9 @@ impl Game {
 
 impl Game {
     pub(super) fn entry_choice_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
+        if m.food_return.is_some() {
+            return GrantedSubtypes::food_only();
+        }
         let mut result = GrantedSubtypes::default();
         result.apply_copy_types(m.before.copy_recipe.map(CopyRecipe::copy_types));
         if m.before.card.static_ability_groups().iter().any(|g| {
@@ -466,6 +626,31 @@ impl Game {
                 _ => {}
             }
         }
+        if m.artifact_return {
+            result.card_types = Some(m.entry_kinds());
+        }
         result
+    }
+}
+
+impl Game {
+    pub(super) fn grant_amass_goblin_type(&mut self, source: ObjectRef, recipient: ObjectRef) {
+        if self.object_ref(recipient.card) != recipient || !self.on_battlefield(recipient.card) {
+            return;
+        }
+        if !self.has_subtype(recipient.card, "Goblin") {
+            let timestamp = self.next_role_timestamp();
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .creature_types
+                .push(CreatureTypesEffectView {
+                    recipient,
+                    source,
+                    types: &["Goblin"],
+                    additional: true,
+                    timestamp,
+                });
+        }
     }
 }

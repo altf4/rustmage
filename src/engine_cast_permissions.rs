@@ -224,6 +224,51 @@ impl Game {
         flash_surcharge: bool,
         origin_counter_cost: Option<u16>,
     ) -> bool {
+        self.permitted_cast_with_origin_rules(
+            actor,
+            card,
+            method,
+            face,
+            sorcery,
+            flash_surcharge,
+            origin_counter_cost,
+            false,
+        )
+    }
+    pub(super) fn permitted_exile_free_cast_available(
+        &self,
+        actor: Player,
+        card: CardId,
+        face: CastFace,
+        sorcery: bool,
+        flash_surcharge: bool,
+    ) -> bool {
+        self.permitted_cast_with_origin_rules(
+            actor,
+            card,
+            CastMethod::Free,
+            face,
+            sorcery,
+            flash_surcharge,
+            None,
+            true,
+        )
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Independent origin permission selects its own cost modifiers"
+    )]
+    fn permitted_cast_with_origin_rules(
+        &self,
+        actor: Player,
+        card: CardId,
+        method: CastMethod,
+        face: CastFace,
+        sorcery: bool,
+        flash_surcharge: bool,
+        origin_counter_cost: Option<u16>,
+        independent_free: bool,
+    ) -> bool {
         let object = &self.state.objects[card as usize];
         if object.zone == Zone::Hand && self.hand_play_prohibited() {
             return false;
@@ -253,9 +298,15 @@ impl Game {
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = method;
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+        if independent_free {
+            Self::configure_exile_free_cast(&mut item, flash_surcharge);
+        }
+        if method == CastMethod::ExileLife {
+            Self::configure_exile_life_cast(&mut item, flash_surcharge);
+        }
         if matches!(
             method,
-            CastMethod::Free | CastMethod::Flashback | CastMethod::Miracle
+            CastMethod::ExileLife | CastMethod::Free | CastMethod::Flashback | CastMethod::Miracle
         ) && definition.x_symbols() > 0
         {
             item.x = Some(0);
@@ -278,12 +329,19 @@ impl Game {
         if definition.x_symbols() > 0
             && !matches!(
                 method,
-                CastMethod::Free | CastMethod::Flashback | CastMethod::Miracle
+                CastMethod::ExileLife
+                    | CastMethod::Free
+                    | CastMethod::Flashback
+                    | CastMethod::Miracle
             )
         {
-            return !self.scalar_x_intervals(actor, card).is_empty();
+            return !self
+                .scalar_x_intervals_for_definition(actor, card, definition)
+                .is_empty();
         }
         let a = Announcement {
+            equip_zero_available: false,
+            activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: 0,
             power_up_costs: None,
             free_hand_permission: None,

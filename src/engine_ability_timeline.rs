@@ -30,7 +30,8 @@ impl Card {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        StaticAbilityFragment::RemoveAttachedAbilities
+                        StaticAbilityFragment::BorrowGraveyardActivations(..)
+                            | StaticAbilityFragment::RemoveAttachedAbilities
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
@@ -46,6 +47,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::HarnessedTrigger(..)
+                            | StaticAbilityFragment::ConditionalWard { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentActivation(..)
                             | StaticAbilityFragment::AttachmentMana(..)

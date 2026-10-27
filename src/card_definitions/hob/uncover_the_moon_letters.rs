@@ -1,16 +1,22 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete pinned Oracle; no XMage identity exists in the pinned inventory.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ManaSpent {
+            minimum: 0,
+            increment: false,
+            event: &TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: CastFilter::Noncreature,
+                ordinal: None,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::May { skip: 2 },
+            Instruction::DrawScaled(PlayerSet::Controller, AmountValue::ManaSpent),
+            Instruction::Discard(PlayerSet::Controller, 2),
+        ],
+    }],
     ..CardRules::EMPTY
 };

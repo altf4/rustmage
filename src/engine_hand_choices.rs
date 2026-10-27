@@ -6,6 +6,8 @@ pub enum HandChoiceKind {
     RevealSubset,
     DiscardRevealed,
     ExileRevealedOrCreature,
+    /// Choose a controlled permanent of the requested subtype or reveal a hand card.
+    Behold,
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct HandChoiceView {
@@ -35,6 +37,46 @@ impl HandInteraction {
     }
 }
 impl Game {
+    pub(super) fn start_behold_search_result(
+        &mut self,
+        item: &SpellView,
+        subtype: &'static str,
+    ) -> bool {
+        let candidates = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                let id = id as CardId;
+                let matches = match o.zone {
+                    Zone::Battlefield => {
+                        o.controller == item.controller && self.has_subtype(id, subtype)
+                    }
+                    Zone::Hand => {
+                        o.owner == item.controller && !o.is_token() && o.card.has_subtype(subtype)
+                    }
+                    _ => false,
+                };
+                matches.then(|| self.object_ref(id))
+            })
+            .collect::<Vec<_>>();
+        if candidates.is_empty() {
+            self.state.resolving.as_mut().unwrap().search_result = None;
+            return false;
+        }
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::Behold,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(item.controller),
+            source: item.object,
+            required: 0,
+            selected: Vec::new(),
+            candidates,
+        });
+        true
+    }
     fn exact_hand(&self, victim: Player) -> Vec<ObjectRef> {
         self.state
             .objects
@@ -159,6 +201,10 @@ impl Game {
                             && Some(o.owner) == interaction.victim
                             && !o.card.is_land()))
             }
+            HandChoiceKind::Behold => {
+                (o.zone == Zone::Battlefield && o.controller == interaction.controller)
+                    || (o.zone == Zone::Hand && o.owner == interaction.controller && !o.is_token())
+            }
         }
     }
     pub(super) fn visit_hand_card_choices(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
@@ -173,8 +219,10 @@ impl Game {
             .hand
             .as_ref()
             .unwrap();
-        if interaction.kind == HandChoiceKind::ExileRevealedOrCreature
-            && emit(Action::ChooseHandCard { object: None })
+        if matches!(
+            interaction.kind,
+            HandChoiceKind::ExileRevealedOrCreature | HandChoiceKind::Behold
+        ) && emit(Action::ChooseHandCard { object: None })
         {
             return true;
         }
@@ -222,8 +270,29 @@ impl Game {
                 HandChoiceKind::ExileRevealedOrCreature => {
                     self.exile_objects_until_source_leaves(interaction.source, &[object])
                 }
+                HandChoiceKind::Behold => {
+                    if self.state.objects[object.card as usize].zone == Zone::Hand {
+                        self.reveal_hand_refs(&[object]);
+                    }
+                    if let Some(land) = self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .search_result
+                        .as_ref()
+                        .and_then(|r| r.entered)
+                        && self.object_ref(land.card) == land
+                        && self.on_battlefield(land.card)
+                    {
+                        self.untap_objects(&[land.card], untap_rules::UntapCause::Effect);
+                    }
+                }
                 HandChoiceKind::RevealSubset | HandChoiceKind::DeployCreatures => unreachable!(),
             }
+        }
+        if interaction.kind == HandChoiceKind::Behold {
+            self.state.resolving.as_mut().unwrap().search_result = None;
         }
         self.run_program();
     }
@@ -248,7 +317,10 @@ impl Game {
                 .copied()
                 .filter(|&r| self.hand_choice_candidate(interaction, r))
                 .collect(),
-            optional: interaction.kind == HandChoiceKind::ExileRevealedOrCreature,
+            optional: matches!(
+                interaction.kind,
+                HandChoiceKind::ExileRevealedOrCreature | HandChoiceKind::Behold
+            ),
         })
     }
 }

@@ -64,6 +64,7 @@ impl Game {
                 card: item.source_card,
                 controller: item.controller,
                 payment: cast.payment,
+                treasure_mana_spent: cast.treasure_mana_spent,
             })
         });
         for grant in rows {
@@ -172,6 +173,58 @@ impl Game {
                 .temporary_abilities
                 .get_or_insert_with(|| Box::new(Vec::new()))
                 .push(grant);
+        }
+    }
+    pub(super) fn temporary_land_entry_triggers(
+        &mut self,
+        event: &ZoneChange,
+        entered: &ObjectView,
+    ) {
+        if entered.kinds & 2 == 0 {
+            return;
+        }
+        let grants: Vec<_> = self
+            .state
+            .temporary_abilities
+            .as_deref()
+            .into_iter()
+            .flatten()
+            .copied()
+            .filter(|grant| {
+                (grant.permanent || grant.expires_turn == self.state.turn)
+                    && self.on_battlefield(grant.recipient.card)
+                    && self.object_ref(grant.recipient.card) == grant.recipient
+                    && self.state.objects[grant.recipient.card as usize].controller
+                        == entered.controller
+                    && grant.granting_card.triggers()[usize::from(grant.ability)]
+                        .condition
+                        .event()
+                        == TriggerCondition::LandEntersYou
+            })
+            .collect();
+        for grant in grants {
+            let source = self.object_view(grant.recipient.card);
+            if !source.grant_available(
+                grant.grantor,
+                grant.granting_card,
+                grant.ability,
+                Some(grant.timestamp),
+            ) {
+                continue;
+            }
+            self.queue_zone_trigger_from(
+                &source,
+                usize::from(grant.ability),
+                event,
+                Some(Box::new(AttachmentTriggerView {
+                    grantor: grant.grantor,
+                    granting_card: grant.granting_card,
+                    recipient: grant.recipient,
+                    defender: None,
+                    granted: true,
+                    origin: grant.origin,
+                })),
+            );
         }
     }
     pub(super) fn temporary_attack_triggers(&mut self, actor: Player) {

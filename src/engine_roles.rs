@@ -90,8 +90,23 @@ impl Game {
         {
             reflexive.source_counter_lki = Some(facts);
         }
-        reflexive.reflexive_subject =
-            subject.map(|object| Box::new(ReflexiveSubjectView { object }));
+        reflexive.reflexive_subject = subject.map(|object| {
+            Box::new(ReflexiveSubjectView {
+                object,
+                additional_objects: Vec::new(),
+            })
+        });
+        if reflexive
+            .program()
+            .is_some_and(|(_, program)| program.contains(&Instruction::EventObjectPowerDamage))
+            && let Some(object) = subject
+        {
+            reflexive.event_object = Some(Box::new(EventObjectView {
+                object,
+                facts: EventObjectFacts::DamageActor(self.damage_source(object.card)),
+                conniver_creature: None,
+            }));
+        }
         self.state.pending_triggers.push(reflexive);
     }
     pub(super) fn exact_source_can_tap(&self, item: &SpellView) -> bool {

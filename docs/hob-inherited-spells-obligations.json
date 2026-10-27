@@ -1,0 +1,441 @@
+{
+  "schema": 1,
+  "base_revision": "f5540151d1e3747b36dd3ceb07a3d3fa09318234",
+  "scope": "Current native rules proofs for fourteen inherited HOB spell admissions; no gameplay changes and zero newly supported identities.",
+  "new_supported_identities": 0,
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BilbosDeadlySlice.java",
+      "sha256": "c96e05c6381b8c931127ac8cc7af65211eab44eb27e31d5e2ad904c16b7f3cda"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BilbosGambit.java",
+      "sha256": "4dfbc18a56d083e62611404527cf58d7c7480a4031f98c8389285e318a24a291"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BurnBurnTreeAndFern.java",
+      "sha256": "cc3e2fbc77382e7dc9585388b64457baf76dde020ce260d8554ffe0bcdc3fece"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/c/ConfusticateAndBebother.java",
+      "sha256": "ce852ac05a61e685833b8b31ea9f0d50f3ff2d5cfdee2925c32b77cb737eaf27"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/e/EnchantedRiversGrasp.java",
+      "sha256": "4a24857b5f390110fa9e97a4714d8ffd1059b50f05845ad8c18e9ed2d87963be"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MagnificentEnd.java",
+      "sha256": "739018198086499e5b0e3b2f2cc003682128f2bb6e593a004bf8a155d781d41c"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/p/PineconeStrike.java",
+      "sha256": "7a34d54a1900fad2c407ca569d41be54f488b250d3c09283840ac9089b6efb18"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/q/Quarrel.java",
+      "sha256": "b2d2e31b89361fbe78c4456ce8f731e35e5dc893ddd04fbb609a1d399987727e"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/r/ReverentHowl.java",
+      "sha256": "a29dbe6e3da5e7fe4b3094f0d73f1a8587f7a9af8a372effb7e9de485eaa47b5"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SmaugsFury.java",
+      "sha256": "50484ccc491f586910c7e013cadc155e3e64c4f877daaa4513402d0f046c0efd"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/ThorinsLastStand.java",
+      "sha256": "6a3a3dd95ff01e7416b7094156f483e8cca319ed514118111d269b9797afa3dc"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TrollNegotiations.java",
+      "sha256": "3981cf219ef925e8996376851609555d7c4605cdd940f9cc8445e1a0c573d3ab"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UneasyPartings.java",
+      "sha256": "2b730ba43dae830262d0a3099409be4b2282d529807097f7cdb53df7775fd5c9"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WargTactics.java",
+      "sha256": "929917bcf06b4d3bb8a03b8db6fdcaf88cb41c15b2f0aa4f41797c8b7d812867"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetIfDiesEffect.java",
+      "sha256": "db2301f8fef9f5ce4777ebcc942f426194f6cd372156955efb846eeeed3b9c03"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightTargetsEffect.java",
+      "sha256": "e562370eb9b15a7fc0db16f44b32e8dce627719fc405b2bc09eb8dad21f8edc2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+      "sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+      "sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+      "sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+      "sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+      "sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+      "sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
+      "sha256": "e9588b28dba4b7d15dd3a9119f75b3b6b3837213fc8004750b4d6d5bca294852"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "cards": [
+    {
+      "name": "Bilbo's Deadly Slice",
+      "mana_cost": "{1}{B}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Destroy target creature.",
+      "obligations": "Paid 1BB; any creature including own creature; reject artifact/player; destruction defeated by indestructible and actual Rest in Peace exile replacement.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_deadly_slice_paid_any_creature_indestructible_and_actual_exile_replacement"
+    },
+    {
+      "name": "Bilbo's Gambit",
+      "mana_cost": "{1}{W}",
+      "type_line": "Instant",
+      "oracle_text": "Gift a Treasure (You may promise an opponent a gift as you cast this spell. If you do, they create a Treasure token before its other effects. It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nReturn target spell to its owner's hand. If the gift was promised, players can't cast spells this turn.",
+      "obligations": "Paid 1W; gift decline/promise with opponent-only beneficiary, actual Treasure creation and sacrifice for mana; return uncounterable spell to OWNER hand without ETB; promised successful resolution prevents BOTH players casting until cleanup but permits land play and mana abilities; all-target-stale fizzle gives no gift/restriction.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_gambit_gift_owner_routing_uncounterable_no_cast_and_fizzle"
+    },
+    {
+      "name": "Burn, Burn, Tree and Fern",
+      "mana_cost": "{3}{R}",
+      "type_line": "Enchantment \u2014 Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI \u2014 This Saga deals 6 damage to target creature an opponent controls.\nII \u2014 Destroy target artifact an opponent controls.\nIII, IV \u2014 Add {R}.",
+      "obligations": "Paid 3R Saga; entry chapterI enemy-only creature6damage; chapterII enemy-only artifact destruction; III/IV exactlyR each; chapterIV source remains through trigger then sacrifices; actual lore increments, own targets rejected.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_burn_saga_paid_four_chapters_restrictions_mana_and_final_sacrifice"
+    },
+    {
+      "name": "Confusticate and Bebother",
+      "mana_cost": "{2}{U}",
+      "type_line": "Instant",
+      "oracle_text": "Choose one \u2014\n\u2022 Counter target spell unless its controller pays {4}.\n\u2022 Draw two cards, then discard a card.",
+      "obligations": "Paid 2U in both modes; spell controller receives pay4 choice; exact payment preserves spell, decline counters, insufficient3 cannot pay; draw exactly2 before private discard1 with opponent secrecy and owned raw/index/restore contract.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_confusticate_counter_payment_and_private_draw_then_discard"
+    },
+    {
+      "name": "Enchanted River's Grasp",
+      "mana_cost": "{2}{U}",
+      "type_line": "Enchantment \u2014 Aura",
+      "oracle_text": "Enchant creature\nWhen this Aura enters, tap enchanted creature and remove all counters from it.\nEnchanted creature loses all abilities and doesn't untap during its controller's untap step.",
+      "obligations": "Paid 2U; only creature enchantment target; ETB taps and removes ALL counter kinds; printed and counter-granted abilities removed; controller untap blocked without blocking other permanents or effect untap; later granted abilities survive; removing Aura restores printed mana ability.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_river_aura_all_counters_ability_layers_and_controller_untap_only"
+    },
+    {
+      "name": "Magnificent End",
+      "mana_cost": "{4}{W}",
+      "type_line": "Instant",
+      "oracle_text": "This spell costs {3} less to cast if it targets a tapped creature.\nMagnificent End deals 5 damage to target creature.",
+      "obligations": "Paid 4W or1W only with tapped target; unaffordable untapped alternate target rejected; target-tapped discount locks at cast even if tap state changes; exactly5 damage.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_magnificent_end_discount_is_targeted_tapped_and_locked"
+    },
+    {
+      "name": "Pinecone Strike",
+      "mana_cost": "{1}{R}",
+      "type_line": "Instant",
+      "oracle_text": "Choose one or both \u2014\n\u2022 Pinecone Strike deals 3 damage to target creature. If that creature would die this turn, exile it instead.\n\u2022 Destroy target artifact token.",
+      "obligations": "Paid 1R; each of three choose-one/both modes with distinct target groups; creature3 damage and this-turn exile-on-death marker; artifact TOKEN destruction, reject ordinary artifact/creature; either target can become stale independently; exact incarnation marker and cleanup expiry.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_pinecone_every_mode_partial_stale_and_exact_death_replacement_lifetime"
+    },
+    {
+      "name": "Quarrel",
+      "mana_cost": "{1}{G}",
+      "type_line": "Instant",
+      "oracle_text": "Target creature you control deals damage equal to its power to target creature an opponent controls.",
+      "obligations": "Paid 1G; first own creature then enemy creature, reject reversed sides; live source power at resolution after Giant Growth; one-way damage without retaliation; either stale target prevents pair damage.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_quarrel_and_troll_sides_live_power_and_each_partial_stale"
+    },
+    {
+      "name": "Reverent Howl",
+      "mana_cost": "{2}{B}",
+      "type_line": "Instant",
+      "oracle_text": "Choose one \u2014\n\u2022 Target player draws two cards and loses 2 life.\n\u2022 Target creature gets +2/+2 and gains lifelink until end of turn.",
+      "obligations": "Paid 2B both modes; either player draws2 loses2; any creature receives+2/+2 and lifelink, actual damage lifegain to that creature controller, all modifiers expire cleanup.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_reverent_howl_both_modes_any_player_or_creature_and_lifelink_expiry"
+    },
+    {
+      "name": "Smaug's Fury",
+      "mana_cost": "{1}{R}",
+      "type_line": "Instant",
+      "oracle_text": "Target creature gets +3/+0 and gains reach and first strike until end of turn.",
+      "obligations": "Paid 1R; creature gets+3/+0 reach and first strike; actual flying attack cannot be blocked by untreated ground creature but can by recipient; first-strike kill prevents retaliation; all temporary effects expire cleanup.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_smaug_fury_reach_blocks_flyer_first_strike_prevents_retaliation_then_expires"
+    },
+    {
+      "name": "Thorin's Last Stand",
+      "mana_cost": "{2}{W}{W}",
+      "type_line": "Instant",
+      "oracle_text": "Choose one \u2014\n\u2022 Creatures you control get +2/+1 until end of turn.\n\u2022 Destroy target artifact or enchantment. You gain 2 life.",
+      "obligations": "Paid 2WW both modes; existing own creatures only receive+2/+1, opponent and later entrant excluded, expires cleanup; artifact/enchantment target destroyed and caster gains2, creature rejected, indestructible still grants life, stale target fizzles and grants no life.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_thorin_modes_snapshot_pump_destroy_restrictions_life_and_fizzle"
+    },
+    {
+      "name": "Troll Negotiations",
+      "mana_cost": "{2}{G}{G}",
+      "type_line": "Sorcery",
+      "oracle_text": "Put two +1/+1 counters on target creature you control. Then it fights target creature an opponent controls. (Each deals damage equal to its power to the other.)",
+      "obligations": "Paid 2GG; own creature then enemy creature; add2 permanent +1/+1 counters BEFORE fight; bidirectional damage and actual lifelink; enemy stale still permits counters, own stale prevents both counter and fight effects.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_quarrel_and_troll_sides_live_power_and_each_partial_stale"
+    },
+    {
+      "name": "Uneasy Partings",
+      "mana_cost": "{3}{U}",
+      "type_line": "Instant",
+      "oracle_text": "This spell costs {1} less to cast if it targets an attacking nontoken creature.\nTarget creature's owner puts it on their choice of the top or bottom of their library.",
+      "obligations": "Paid 3U normally,2U only for attacking NONTOKEN creature via actual attack; token/nonattacking no discount; owner different from controller chooses library top/bottom, actual owner routing; owner-private pending branch/raw/index/restore; tokens cease instead of entering library.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_uneasy_partings_attacking_nontoken_discount_owner_choice_and_token_exclusion"
+    },
+    {
+      "name": "Warg Tactics",
+      "mana_cost": "{1}{G}",
+      "type_line": "Instant",
+      "oracle_text": "Choose one \u2014\n\u2022 Destroy target creature with flying.\n\u2022 Put a +1/+1 counter on target creature you control. It gains trample and hexproof until end of turn. (It can't be the target of spells or abilities your opponents control.)",
+      "obligations": "Paid 1G both modes; destroy any flying creature, reject nonflying; own creature only counter mode, enemy rejected; permanent +1 counter and temporary trample/hexproof; opponent targeted damage rejected, alternate player remains legal; cleanup retains counter and removes keywords.",
+      "proof": "engine::assurance::hob_inherited_spells::hob_inherited_spells_warg_tactics_flying_restriction_own_counter_hexproof_and_eot_keywords"
+    }
+  ],
+  "proof_module": "src/assurance/hob_inherited_spells.rs",
+  "shared_contracts": [
+    "Existing scenario helpers and transactional reject at target restrictions/payment boundaries.",
+    "Representative private draw/discard and owner-library pending roots use owned raw/index/restore branch_contract; no per-card exhaustive replay."
+  ],
+  "fixture_preflight": "All 32 literal card/token identities verified present/admitted; actual source definitions and full pinned Oracle/Java/helper bodies reviewed rather than treating admission flags as rules evidence.",
+  "validation": {
+    "status": "pending coherent guarded focused execution",
+    "fixed_inputs": true,
+    "initial_run": {
+      "groups_passed": 11,
+      "groups_failed": 2,
+      "log": "~/.cache/rustmage-authoring/hob-inherited-spells/focused-0-0.log",
+      "resource_report": "~/.cache/rustmage-build-reports/1817cea518eb4e33b927c5f4933bb822.json",
+      "compile_and_execution_seconds": 150.90693308395566,
+      "guard_total_seconds": 511.96826226299163,
+      "peak_memory_bytes": 2646441984,
+      "oom_kills": 0,
+      "fixture_correction": "Two assertions expected departed Treasure tokens to remain Graveyard; corrected to Outside because tokens cease after leaving battlefield. No gameplay changes. Fixed only after job naturally terminal."
+    }
+  },
+  "root_handoff_attempt": {
+    "terminal": true,
+    "exit": 120,
+    "passed": 13,
+    "failed": 0,
+    "ignored": 0,
+    "scenario_seconds": 0.02,
+    "scope": "New13scenario group only; three shared combat regressions not executed before outputchannel loss. Not a coherentfamily validation pass.",
+    "guard_seconds_including_queue": 403.1423061929527,
+    "peak_memory_bytes": 2613248000,
+    "oom_events": 0,
+    "resource_report": "<cache>/rustmage-build-reports/938b786c340940ce8f482bf93d6b684a.json",
+    "log": "<cache>/rustmage-authoring/hob-inherited-spells/focused-1-0.log",
+    "finding": "Agent-turn handoff lost stdout; naturalexit120 after first passinggroup is consistentwithPythonprintflushfailure. No cancellation or sourcefailure. New persistent-outputdriver and outer guardfile redirection retain evidence."
+  },
+  "final_persistent_run": {
+    "results": [
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--no-run",
+          "--message-format=json",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/target"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06534387299325317,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/root-persistent-1/compile.log",
+        "name": "compile"
+      },
+      {
+        "command": [
+          "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/target/debug/deps/rustmage-b764cd26223fba2c",
+          "engine::assurance::hob_inherited_spells::",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.03319431998534128,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/root-persistent-1/0.log",
+        "name": "0",
+        "passed": 13
+      },
+      {
+        "command": [
+          "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/target/debug/deps/rustmage-b764cd26223fba2c",
+          "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat",
+          "--nocapture",
+          "--test-threads=1",
+          "--exact"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.008043311012443155,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/root-persistent-1/1.log",
+        "name": "1",
+        "passed": 1
+      },
+      {
+        "command": [
+          "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/target/debug/deps/rustmage-b764cd26223fba2c",
+          "engine::assurance::interactions::first_strike_removes_blocker_before_it_deals_damage",
+          "--nocapture",
+          "--test-threads=1",
+          "--exact"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.016253599023912102,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/root-persistent-1/2.log",
+        "name": "2",
+        "passed": 1
+      },
+      {
+        "command": [
+          "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/target/debug/deps/rustmage-b764cd26223fba2c",
+          "engine::assurance::interactions::trample_with_deathtouch_assigns_one_lethal_and_the_rest_to_defender",
+          "--nocapture",
+          "--test-threads=1",
+          "--exact"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.017067831999156624,
+        "log": "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/root-persistent-1/3.log",
+        "name": "3",
+        "passed": 1
+      }
+    ],
+    "resource_report": "<cache>/rustmage-build-reports/378fc2463d344a709352a314cb0f150e.json",
+    "guard": {
+      "command": [
+        "python3",
+        "/home/altf4/.cache/rustmage-authoring/hob-inherited-spells/root-persistent-1/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 9.000818633998279,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 25391104,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "persistent_results": "<cache>/rustmage-authoring/hob-inherited-spells/root-persistent-1/results.json",
+    "outer_log": "<cache>/rustmage-authoring/hob-inherited-spells/root-persistent-1/outer.log",
+    "source_behavior": "No Rust source changed after successful13group in partial exit120 run; cached persistent rerun actually executed13new+3sharedcombatchecks. No fullrelease/whole193 acceptance claim."
+  },
+  "status": "13scenarios coveringall14inheritedidentities plus3sharedcombatregressions passed; two independent nonauthor reviews pending. No gameplay/definition changes or newcandidatecount.",
+  "proof_sha256": "ec0d92cefcf4dc21cd21812157d9be5bd4cda42da99b071af671ce5114415801",
+  "integration": "Root registers assurance hob_inherited_spells; local modregistration excluded. No PR/push/merge. Full193 goal open.",
+  "review_corrections": [
+    {
+      "reviewer": "hob_review_rules",
+      "finding": "The two card obligations prose strings were swapped; Oracle facts and proof function links were correctly assigned.",
+      "resolution": "Swapped only obligations strings back to matching identities after all consuming jobs terminal; no Rust/test/definition changes or new pass claim."
+    }
+  ],
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "c3d461da3d314dc4738f8c615bcca2d93029320f",
+      "result": "Full source/Oracle/Java/helper or explicitabsence and actualcoherentfocused evidence approved; no remaining actionable findings",
+      "scope": "Source/focused evidence; rootcombinedcheck and whole193/finalpublished acceptance remain pending"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "c3d461da3d314dc4738f8c615bcca2d93029320f",
+      "result": "Full source/Oracle/Java/helper or explicitabsence and actualcoherentfocused evidence approved; no remaining actionable findings",
+      "scope": "Source/focused evidence; rootcombinedcheck and whole193/finalpublished acceptance remain pending"
+    }
+  ],
+  "root_integration": "Registered assurance module and regenerated links on singlelocalwhole-setbranch; nextcombinedfocusedcheckpassed237at a81bd052. Lastfullrelease136at6358 exactscoped; no PR/push/merge.",
+  "proof_hardening": {
+    "ledger": "docs/hob-inherited-proof-hardening.json",
+    "prior_proof_sha256": "e8fe34e740c70f2442def08805449a8315591cc557d24fa639422540d635cf28",
+    "change": "Exact six damage to surviving seven-toughness target",
+    "scope": "Proof only; definitions, provenance, admission flags and engine unchanged. Prior reviews/receipts retain their original revision scope."
+  }
+}

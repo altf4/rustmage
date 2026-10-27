@@ -6,6 +6,8 @@ use super::*;
 pub enum SelfGrantedAbilityKind {
     /// A self-granted base-power setter is layer7b, not a CDA (CR604.3a).
     ControllerHandPower,
+    /// Self-granted layer7b setter for both axes, using current controlled lands.
+    ControllerLandStats,
     /// Source-owned layer7c bonus, counting current controlled artifacts.
     ControllerArtifactBonus,
     /// A real immutable activated template, independently acquired per grant.
@@ -19,7 +21,7 @@ pub(super) struct Row {
     pub timestamp: u64,
     /// Generated static-effect chronology, independent of ability acquisition.
     pub effect_timestamp: Option<u64>,
-    pub expires_turn: u32,
+    pub expires_turn: Option<u32>,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct SelfGrantedAbilityView {
@@ -30,7 +32,8 @@ pub struct SelfGrantedAbilityView {
     /// Generated static-effect chronology, independent of ability acquisition.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub effect_timestamp: Option<u64>,
-    pub expires_turn: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_turn: Option<u32>,
     pub available: bool,
 }
 // Preserve the optional cold-state allocation used by State.
@@ -50,6 +53,19 @@ impl Game {
         let timestamp = self.next_role_timestamp();
         self.grant_self_ability_at(item, kind, timestamp);
     }
+    pub(super) fn grant_permanent_self_ability(
+        &mut self,
+        item: &SpellView,
+        kind: SelfGrantedAbilityKind,
+    ) {
+        if !self.on_battlefield(item.object.card)
+            || self.object_ref(item.object.card) != item.object
+        {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        self.grant_self_ability_with_expiry(item, kind, timestamp, None);
+    }
     /// One resolving continuous effect may bestow animation and an ability at
     /// the same timestamp; callers supply that effect's already allocated time.
     pub(super) fn grant_self_ability_at(
@@ -58,13 +74,35 @@ impl Game {
         kind: SelfGrantedAbilityKind,
         timestamp: u64,
     ) {
-        if !self.on_battlefield(item.object.card)
-            || self.object_ref(item.object.card) != item.object
-        {
+        self.grant_self_ability_with_expiry(item, kind, timestamp, Some(self.state.turn));
+    }
+    fn grant_self_ability_with_expiry(
+        &mut self,
+        item: &SpellView,
+        kind: SelfGrantedAbilityKind,
+        timestamp: u64,
+        expires_turn: Option<u32>,
+    ) {
+        self.grant_recipient_ability(
+            item.object,
+            item.trigger_definition(),
+            kind,
+            timestamp,
+            expires_turn,
+        );
+    }
+    pub(super) fn grant_recipient_ability(
+        &mut self,
+        recipient: ObjectRef,
+        definition: Card,
+        kind: SelfGrantedAbilityKind,
+        timestamp: u64,
+        expires_turn: Option<u32>,
+    ) {
+        if !self.on_battlefield(recipient.card) || self.object_ref(recipient.card) != recipient {
             return;
         }
         if let SelfGrantedAbilityKind::Activated { ability } = kind {
-            let definition = item.trigger_definition();
             assert!(definition.self_granted_activation_template(ability));
             let rules = definition.activation(ability);
             assert!(
@@ -80,8 +118,8 @@ impl Game {
             .self_granted_abilities
             .get_or_insert_default()
             .push(Row {
-                recipient: item.object,
-                granting_card: item.trigger_definition(),
+                recipient,
+                granting_card: definition,
                 kind,
                 timestamp,
                 effect_timestamp: if matches!(kind, SelfGrantedAbilityKind::Activated { .. }) {
@@ -89,7 +127,7 @@ impl Game {
                 } else {
                     Some(timestamp)
                 },
-                expires_turn: self.state.turn,
+                expires_turn,
             });
     }
     pub(super) fn retimestamp_self_granted_statics(&mut self, source: ObjectRef) {
@@ -133,7 +171,7 @@ impl Game {
                     timestamp: row.timestamp,
                     effect_timestamp: row.effect_timestamp,
                     expires_turn: row.expires_turn,
-                    available: row.expires_turn == self.state.turn
+                    available: row.expires_turn.is_none_or(|turn| turn == self.state.turn)
                         && query.self_grant_available(row.recipient, row.timestamp),
                 })
                 .collect(),
@@ -151,7 +189,9 @@ impl<W: CharacteristicWorld + ?Sized> characteristic_query::CharacteristicQuery<
             .filter(|row| {
                 row.recipient == recipient
                     && row.kind == SelfGrantedAbilityKind::ControllerArtifactBonus
-                    && row.expires_turn == self.game().state.turn
+                    && row
+                        .expires_turn
+                        .is_none_or(|turn| turn == self.game().state.turn)
                     && self.self_grant_available(recipient, row.timestamp)
             })
             .count();

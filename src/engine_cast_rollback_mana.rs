@@ -418,6 +418,9 @@ impl Game {
             );
         }
         for trigger in &event.triggers {
+            // Retained mana carries its actual observer packet and consumed limit;
+            // an undone event carries neither. Do not recompute its past witnesses.
+            self.restore_activation_observer_use(trigger);
             self.state.next_stack_id = self.state.next_stack_id.max(
                 trigger
                     .id
@@ -490,6 +493,9 @@ impl Game {
         Some(zone_replacements::Plan {
             destination,
             shuffle,
+            // Exact actual reflexive packets are restored from ManaEvent.triggers;
+            // replay must not recompute their old replacement-source witnesses.
+            reflexive: None,
         })
     }
     pub(super) fn replay_frozen_mana_copy_slot(&mut self) -> Option<(CardId, u64)> {

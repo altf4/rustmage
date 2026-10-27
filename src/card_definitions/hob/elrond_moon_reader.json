@@ -3,10 +3,49 @@
   "catalogue_id": 1290,
   "oracle_id": "3f4d6f91-95ad-4687-8899-5a21a0abb49e",
   "facts_sha256": "d849d1d849c5971d1c441f8346fcd5a848760a7ade0868a2e70152812862ebc8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cb73a53956200015dd991238fe35fb25c84d6376fa04d00574e84ad4d8cede3a"
   },
-  "physical_metadata_sha256": "40c391547e03ebd28626690bd3b8c6ad3fdd5e297e8459942d3adfab86eb643d"
+  "physical_metadata_sha256": "40c391547e03ebd28626690bd3b8c6ad3fdd5e297e8459942d3adfab86eb643d",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "3f4d6f91-95ad-4687-8899-5a21a0abb49e",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory xmage_name:null and implementations:[]; full pinned card tree has no corresponding Moon-Reader class. Historical typed_lift retained as provenance, not executable evidence."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/r/RingsOfBrighthearth.java",
+      "sha256": "d914bea59d55d9b273e60655be71a86c7fb9acd999ca23168a4fa798ff3a1ef8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAbilityTriggeredAbility.java",
+      "sha256": "ac026c9e891ddf1ca80ef4b2847e5f12587bd504bbd2f213346d129ea2ae961c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileReturnBattlefieldNextEndStepTargetEffect.java",
+      "sha256": "e99352ec388fe5d84b253f86650b40687823087cf045653115c708eed09ef786"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+      "sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "Elrond, Moon-Reader",
+    "notes": "Full official Oracle and release notes explicitly include activated mana abilities, tokens ceasing to exist and returned new objects. CR602.2/603.2/603.10/605.3/733.1 define committed activation, per-object limits and retained mana replay. Java classes are analogous helper evidence, not an invented identity class."
+  }
 }

@@ -12,7 +12,14 @@ pub struct AnimationView {
     pub timestamp: u64,
     pub artifact: bool,
     #[serde(skip_serializing_if = "is_false")]
+    /// Preserve existing card types; artifact may still be added independently.
     pub preserve_card_types: bool,
+    /// Replace all card types/subtypes with Artifact — Food, without removing abilities.
+    #[serde(skip_serializing_if = "is_false")]
+    pub food_only: bool,
+    /// Set artifact card type, retaining instant/sorcery types per CR205.1a.
+    #[serde(skip_serializing_if = "is_false")]
+    pub artifact_noncreature: bool,
     pub colors: Option<u8>,
     pub creature_types: Option<&'static [&'static str]>,
     pub all_creature_types: bool,
@@ -125,8 +132,27 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
             )
         })
         .collect();
-    for row in animations(world, id).filter(|row| !row.preserve_card_types) {
-        changes.push((row.timestamp, if row.artifact { 17 } else { 1 }, true));
+    for row in animations(world, id) {
+        if row.food_only {
+            changes.push((row.timestamp, 16, false));
+            continue;
+        }
+        if row.artifact_noncreature {
+            changes.push((row.timestamp, 16 | (result & (4 | 8)), false));
+            continue;
+        }
+        let added = if row.preserve_card_types {
+            if row.artifact {
+                16
+            } else {
+                continue;
+            }
+        } else if row.artifact {
+            17
+        } else {
+            1
+        };
+        changes.push((row.timestamp, added, true));
     }
     if world
         .game()
@@ -134,7 +160,7 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
         .crew
         .as_ref()
         .is_some_and(|c| c.animated.binary_search(&world.reference(id)).is_ok())
-        && !animations(world, id).any(|r| r.artifact)
+        && !animations(world, id).any(|r| r.artifact && !r.preserve_card_types)
     {
         result |= 17;
     }
@@ -236,6 +262,7 @@ pub(super) enum SubtypeChange {
     Add(&'static [&'static str]),
     All,
     LandOnly,
+    FoodOnly,
 }
 #[inline]
 pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
@@ -268,6 +295,14 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         })
         .collect();
     changes.extend(animations(world, id).filter_map(|row| {
+        if row.food_only {
+            return Some((row.timestamp, SubtypeChange::FoodOnly));
+        }
+        // Artifact-only form filters correlated subtypes against final layer-four
+        // card types in the shared subtype projection; later animation may restore them.
+        if row.artifact_noncreature {
+            return None;
+        }
         // A subtype-only form cannot give creature types to a noncreature/nonkindred.
         if row.preserve_card_types && world.kinds(id) & (1 | 128) == 0 {
             return None;
@@ -341,6 +376,22 @@ impl Game {
     ) {
         self.change_object_form(item.object, spec, type_mode);
     }
+    pub(super) fn add_artifact_to_targets(&mut self, item: &SpellView) {
+        let spec = AnimationSpec {
+            artifact: true,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        };
+        for target in &item.targets {
+            if self.same_target_object(*target)
+                && let Some(object) = target.object
+            {
+                self.change_object_form(object, spec, AnimationTypeMode::PreserveCardTypes);
+            }
+        }
+    }
     pub(super) fn animate_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
         for target in &item.targets {
             if self.same_target_object(*target)
@@ -365,6 +416,8 @@ impl Game {
             timestamp,
             artifact: spec.artifact,
             preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),
+            food_only: false,
+            artifact_noncreature: false,
             colors: None,
             creature_types: match spec.creature_types {
                 AnimationCreatureTypes::Named(t) => Some(t),
@@ -399,6 +452,8 @@ impl Game {
                 timestamp: self.next_role_timestamp(),
                 artifact: false,
                 preserve_card_types: false,
+                food_only: false,
+                artifact_noncreature: false,
                 colors: Some(colors),
                 creature_types: Some(types),
                 all_creature_types: false,
@@ -425,5 +480,75 @@ impl Game {
         let before = state.animations.len();
         state.animations.retain(|r| r.expires_turn.is_none());
         state.animations.len() != before
+    }
+}
+
+/// Same immutable form record for actual and speculative entry worlds.
+pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
+    AnimationView {
+        object,
+        timestamp,
+        artifact: true,
+        preserve_card_types: false,
+        food_only: true,
+        artifact_noncreature: false,
+        colors: None,
+        creature_types: None,
+        all_creature_types: false,
+        base: None,
+        keywords: Keywords::NONE,
+        expires_turn: None,
+    }
+}
+impl Game {
+    pub(super) fn apply_food_return(&mut self, recipient: ObjectRef, definition: Card) {
+        let timestamp = self.next_role_timestamp();
+        self.state
+            .roles
+            .get_or_insert_default()
+            .animations
+            .push(food_form(recipient, timestamp));
+        self.grant_recipient_ability(
+            recipient,
+            definition,
+            SelfGrantedAbilityKind::Activated { ability: 0 },
+            timestamp,
+            None,
+        );
+    }
+    pub(super) fn return_opponents_battlefield_graveyard_as_food(&mut self, item: &SpellView) {
+        let moves = self
+            .state
+            .battlefield_graveyard_entries
+            .as_ref()
+            .into_iter()
+            .flat_map(|rows| rows.iter())
+            .filter_map(|&r| {
+                let o = self.object_view(r.card);
+                if o.reference != r
+                    || o.zone != Zone::Graveyard
+                    || o.owner == item.controller
+                    || o.is_token()
+                    || o.kinds & 1 == 0
+                {
+                    return None;
+                }
+                let mut movement = self.entry_move(r.card, Zone::Battlefield, false);
+                movement.controller = item.controller;
+                movement.food_return = Some(item.trigger_definition());
+                Some(movement)
+            })
+            .collect();
+        self.stage_entries(moves, None);
+    }
+}
+
+/// CR611.2e form, shared by actual entry and speculative funding.
+pub(super) fn artifact_noncreature_form(object: ObjectRef, timestamp: u64) -> AnimationView {
+    AnimationView {
+        food_only: false,
+        artifact_noncreature: true,
+        preserve_card_types: false,
+        ..food_form(object, timestamp)
     }
 }

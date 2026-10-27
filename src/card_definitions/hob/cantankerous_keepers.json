@@ -3,10 +3,26 @@
   "catalogue_id": 635,
   "oracle_id": "77c97dad-17cc-4a28-a48b-907c044d9034",
   "facts_sha256": "0ed5475c2c8be634ce36017a10c4a0218ba8c27e9fca26f3251b75e8cb5b9a88",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "5d36fe62a2be968b6b93572411ebdaaf0c41118259ebcc064c48fb5a4139f570"
-  },
-  "physical_metadata_sha256": "011308ca052ebe70d07a5e549d354941d4b3e48c51ca8614d8b9a523b9c25e23"
+  "complete": true,
+  "physical_metadata_sha256": "011308ca052ebe70d07a5e549d354941d4b3e48c51ca8614d8b9a523b9c25e23",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CantankerousKeepers.java",
+  "java_sha256": "bfce6189e4ec237801c6db385a1aed5cdf989d736df1948f9350adf2446efe89",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/AffinityType.java",
+      "sha256": "eca2c84794fab5e694c45df079ecf553e13433f38dbf122d75579c3a591c215d"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "section": "701.17c",
+    "notes": "Milled cards remain findable in any public replacement destination. XMage retains only graveyard cards; the typed continuation follows Oracle and the Comprehensive Rules, including face-up exile."
+  }
 }

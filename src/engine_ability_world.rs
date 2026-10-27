@@ -11,6 +11,19 @@ pub(super) trait CharacteristicWorld {
             .power
     }
     fn game(&self) -> &Game;
+    fn graveyard_borrowing_state(&self) -> &graveyard_borrowing::Rows {
+        &self.game().state.graveyard_borrowing
+    }
+    fn graveyard_borrowing(&self) -> &[graveyard_borrowing::Row] {
+        self.game()
+            .state
+            .graveyard_borrowing
+            .as_ref()
+            .map_or(&[], |rows| rows.as_slice())
+    }
+    fn has_enduring_story(&self, player: Player) -> bool {
+        self.game().state.players[player.index()].enduring_story
+    }
     fn static_sources(&self) -> &[CardId] {
         &self.game().state.static_sources
     }
@@ -138,6 +151,14 @@ pub(super) trait CharacteristicWorld {
         } else {
             Some(color)
         }
+    }
+    /// Sparse rows belong to this world, including virtual counter payments.
+    fn named_counter_rows(&self) -> &[live_counters::NamedCounterRow] {
+        self.game()
+            .state
+            .named_counters
+            .as_ref()
+            .map_or(&[], |rows| rows.as_slice())
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         live_counters::amounts(
@@ -443,6 +464,7 @@ pub(super) trait CharacteristicWorld {
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
+            self.has_enduring_story(controller),
         )
     }
     fn entered_this_turn(&self, source: ObjectRef) -> bool {
@@ -458,6 +480,26 @@ pub(super) trait CharacteristicWorld {
                 && object.card.is_basic_land()
                 && self.kinds(id as CardId) & 2 != 0
         })
+    }
+    fn conditional_ward_applies(
+        &self,
+        source: ObjectRef,
+        condition: StatValue,
+        filter: CountFilter,
+        id: CardId,
+    ) -> bool {
+        self.object(source.card).zone == Zone::Battlefield
+            && self.reference(source.card) == source
+            && self.value(condition, source.card) != 0
+            && Game::count_object_matches(
+                filter,
+                source,
+                self.object(source.card).controller,
+                id,
+                self.object(id),
+                &|id| self.subtypes(id),
+                &|id, _| self.kinds(id),
+            )
     }
     fn land_mana_applies(
         &self,
@@ -711,6 +753,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     fn life(&self, p: Player) -> i128 {
         self.parent.life(p)
     }
+    fn has_enduring_story(&self, player: Player) -> bool {
+        self.parent.has_enduring_story(player)
+    }
     fn gained_life(&self, p: Player) -> bool {
         self.parent.gained_life(p)
     }
@@ -737,6 +782,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn ability_origin(&self, id: CardId) -> Option<u64> {
         self.parent.ability_origin(id)
+    }
+    fn named_counter_rows(&self) -> &[live_counters::NamedCounterRow] {
+        self.parent.named_counter_rows()
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         self.parent.counter_amounts(id)

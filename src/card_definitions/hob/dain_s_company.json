@@ -3,10 +3,41 @@
   "catalogue_id": 1223,
   "oracle_id": "ae03782f-8f05-4ce2-a049-005b1b688faf",
   "facts_sha256": "5d9c7a1789c87f63d84894121dc73cefe77f2353c6e1fa7d3548a4769db5d85b",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "555b650d4db6089a010af58d4c248924a4e01a3dc4517ec1b767ac6de268ce11"
-  },
-  "physical_metadata_sha256": "60a198d27ec6fc822a659777f86b9e77c92c0f57e59f0372aebdf7dd194e692d"
+  "complete": true,
+  "physical_metadata_sha256": "60a198d27ec6fc822a659777f86b9e77c92c0f57e59f0372aebdf7dd194e692d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DainsCompany.java",
+  "java_sha256": "7e716637c9351baa6f47e0681cb3f9f7bbb2128f5768210c8eabf6ce6e9ac5da",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+    }
+  ]
 }

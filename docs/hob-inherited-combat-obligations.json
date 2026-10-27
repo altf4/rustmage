@@ -1,0 +1,676 @@
+{
+  "scope": "Nine inherited HOB complete creature identities, printed outcome proof mapping only; no new gameplay/admission flags",
+  "base_revision": "4590252f240b7dc124012e5e5863f6cd285e4ace",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "source_pins": [
+    {
+      "path": "Mage.Sets/src/mage/cards/d/DreadedBatCloud.java",
+      "sha256": "f52b7a41843ae5aa51fb19f4e34ea9bd65e3ebc7e4283ea81f8258dbe3aed728"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/d/DuskwatchHunter.java",
+      "sha256": "71b727631a133a452b23ef7b2dddaab0be7e5c2d3d77fbac9752ff4f4fdb78ce"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/f/FrontPorchSentries.java",
+      "sha256": "a804073ddcbe82993462bf5e5cafe8743876e2b0e1d1b6d3232a23024962e4f4"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/l/LittleBear.java",
+      "sha256": "8fecb5f46471959f1cea74ed4d1ed988e597d4439b910937532b3cdde1412088"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/n/NastyLittleRabbit.java",
+      "sha256": "cea58518c3995da858da12a9f75464f082af31adb1c9332d2fbd5a1e199292b7"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/n/NoriTellerOfTales.java",
+      "sha256": "35a87891a7400f355624ad70637db90b2a73c43c4189b301f9772b5dc1bf5ac7"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/o/OldFatSpider.java",
+      "sha256": "3474e4426786d18849e757f76e637ae520790c7caa861f0cc824fcb13ff6fda1"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TheChiefWarg.java",
+      "sha256": "b2ca78314fcd757cb743e324133ea08c5b1f4af3e7eb26850649dc85ca7b27ee"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TheLordOfTheEagles.java",
+      "sha256": "e2fe1780855596ced9320898bf94a4adb17d7c66b33444ded2c6829f868eebe1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleEvasionAbility.java",
+      "sha256": "5aaef4e966ea819bfaf53e40490349a2fc58cb94378c34fefc316404db189c9b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MorbidCondition.java",
+      "sha256": "21adfb30d2aa5202e5d00f11e73480be8f0af2557cd5e03e05864b15a8485126"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+      "sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TargetHasSubtypeCondition.java",
+      "sha256": "8f2b5c35b36e949dde467dd40cc88ac8858056cc3df5bb1e8ade08e0ef0d0d25"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DauntAbility.java",
+      "sha256": "c993aad0af01a2479b23a8752136b1fda361fc28da3e1b921be9d6d945906a02"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+      "sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+      "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+      "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+      "sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/CreaturesDiedWatcher.java",
+      "sha256": "c54597f69b5487c4714868ce642f8fc78464db0bb508ed154206096a74ae1ab1"
+    }
+  ],
+  "oracle_facts": [
+    {
+      "oracle_id": "3cc64ce6-45e2-4dc3-9b28-d7206a131873",
+      "name": "Dreaded Bat-Cloud",
+      "layout": "normal",
+      "mana_cost": "{4}{B}",
+      "cmc": 5.0,
+      "type_line": "Creature \u2014 Bat",
+      "oracle_text": "This spell costs {3} less to cast if a creature died this turn.\nFlying, deathtouch",
+      "power": "4",
+      "toughness": "2",
+      "colors": [
+        "B"
+      ],
+      "color_identity": [
+        "B"
+      ],
+      "keywords": [
+        "Deathtouch",
+        "Flying"
+      ],
+      "reference_printing": {
+        "id": "67d52db5-597e-46d5-af39-c3a2de107d30",
+        "set": "hob",
+        "collector_number": "66",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "6283e5ca-9924-478b-89a5-36924accb9aa",
+      "name": "Duskwatch Hunter",
+      "layout": "normal",
+      "mana_cost": "{2}{B/G}",
+      "cmc": 3.0,
+      "type_line": "Creature \u2014 Wolf",
+      "oracle_text": "This creature can't be blocked by tokens.\nWhen this creature enters, put a +1/+1 counter on target creature.",
+      "power": "3",
+      "toughness": "1",
+      "colors": [
+        "B",
+        "G"
+      ],
+      "color_identity": [
+        "B",
+        "G"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "3685c783-d837-4466-a960-ab3098db64c3",
+        "set": "hob",
+        "collector_number": "153",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "b39f03cf-3d1a-42ad-903f-e3b3542878b0",
+      "name": "Front Porch Sentries",
+      "layout": "normal",
+      "mana_cost": "{1}{B}",
+      "cmc": 2.0,
+      "type_line": "Creature \u2014 Goblin Soldier",
+      "oracle_text": "When this creature dies, target creature an opponent controls gets -1/-1 until end of turn.",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "B"
+      ],
+      "color_identity": [
+        "B"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "07bfc803-e11b-47ab-9f25-0ace7e174200",
+        "set": "hob",
+        "collector_number": "67",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "53c6c6bf-0256-424d-b937-1cc7d9e2d574",
+      "name": "Little Bear",
+      "layout": "normal",
+      "mana_cost": "{2}{G}",
+      "cmc": 3.0,
+      "type_line": "Creature \u2014 Bear",
+      "oracle_text": "Flash\nWhen this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.",
+      "power": "3",
+      "toughness": "2",
+      "colors": [
+        "G"
+      ],
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [
+        "Flash"
+      ],
+      "reference_printing": {
+        "id": "8a50858a-33b5-4c45-9c31-5956ae5a33a6",
+        "set": "hob",
+        "collector_number": "128",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "ee86cce6-c7c1-40a6-896b-cde9b86bb532",
+      "name": "Nasty Little Rabbit",
+      "layout": "normal",
+      "mana_cost": "{G}",
+      "cmc": 1.0,
+      "type_line": "Creature \u2014 Rabbit",
+      "oracle_text": "Ferocious \u2014 At the beginning of combat on your turn, if you control a creature with power 4 or greater, put a +1/+1 counter on this creature.",
+      "power": "1",
+      "toughness": "2",
+      "colors": [
+        "G"
+      ],
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [
+        "Ferocious"
+      ],
+      "reference_printing": {
+        "id": "96bc7d25-2828-478a-8fe5-a1f4ede8c9c0",
+        "set": "hob",
+        "collector_number": "130",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "03253076-9add-4efb-9227-b0a062c86534",
+      "name": "Nori, Teller of Tales",
+      "layout": "normal",
+      "mana_cost": "{1}{R/W}",
+      "cmc": 2.0,
+      "type_line": "Legendary Creature \u2014 Dwarf Bard",
+      "oracle_text": "Whenever Nori attacks, target attacking creature gains first strike until end of turn.",
+      "power": "2",
+      "toughness": "2",
+      "colors": [
+        "R",
+        "W"
+      ],
+      "color_identity": [
+        "R",
+        "W"
+      ],
+      "keywords": [],
+      "reference_printing": {
+        "id": "b05adb48-980c-49a0-9ce6-7c7f3f20715d",
+        "set": "hob",
+        "collector_number": "161",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "8790f842-e842-4bed-adf4-5b3cc5fd68a9",
+      "name": "Old Fat Spider",
+      "layout": "normal",
+      "mana_cost": "{4}{G}{G}",
+      "cmc": 6.0,
+      "type_line": "Creature \u2014 Spider",
+      "oracle_text": "Reach\nThis creature can't be blocked by creatures with power 2 or less.\nWhenever this creature becomes the target of a spell or ability an opponent controls, draw a card.",
+      "power": "6",
+      "toughness": "7",
+      "colors": [
+        "G"
+      ],
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [
+        "Reach"
+      ],
+      "reference_printing": {
+        "id": "e0c0f842-40fe-4776-a988-a35216bcfd47",
+        "set": "hob",
+        "collector_number": "132",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "5ebe8de1-aa3d-410d-b43d-1685259c7a97",
+      "name": "The Chief Warg",
+      "layout": "normal",
+      "mana_cost": "{2}{B}{G}",
+      "cmc": 4.0,
+      "type_line": "Legendary Creature \u2014 Wolf",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nFerocious \u2014 Whenever you attack while you control a creature with power 4 or greater, you draw a card and lose 1 life.",
+      "power": "3",
+      "toughness": "3",
+      "colors": [
+        "B",
+        "G"
+      ],
+      "color_identity": [
+        "B",
+        "G"
+      ],
+      "keywords": [
+        "Ferocious",
+        "Menace"
+      ],
+      "reference_printing": {
+        "id": "c397a298-bf7f-49d7-a26a-206ccf9e8120",
+        "set": "hob",
+        "collector_number": "150",
+        "released_at": "2026-08-14"
+      }
+    },
+    {
+      "oracle_id": "3b38f314-d997-4c2a-b4c9-40dbe780993d",
+      "name": "The Lord of the Eagles",
+      "layout": "normal",
+      "mana_cost": "{7}{U}{U}",
+      "cmc": 9.0,
+      "type_line": "Legendary Creature \u2014 Bird Noble",
+      "oracle_text": "Flash\nThis spell costs {X} less to cast, where X is the total power of creatures you control with flying.\nFlying",
+      "power": "8",
+      "toughness": "8",
+      "colors": [
+        "U"
+      ],
+      "color_identity": [
+        "U"
+      ],
+      "keywords": [
+        "Flying",
+        "Flash"
+      ],
+      "reference_printing": {
+        "id": "fa0554fc-9448-4ae2-8712-4f4f7af3c7b4",
+        "set": "hob",
+        "collector_number": "46",
+        "released_at": "2026-08-14"
+      }
+    }
+  ],
+  "unchanged_definition_and_provenance_sha256": {
+    "src/card_definitions/hob/dreaded_bat_cloud.rs": "68ec19e78810803e2e16cf53b4c28fa95b9fa88b4522a53a7711363020e0a097",
+    "src/card_definitions/hob/dreaded_bat_cloud.json": "a8b33325a0712c55ca49cd9b63b58b0f02b1cb8f57ce717a6600aa95e7232acd",
+    "src/card_definitions/hob/duskwatch_hunter.rs": "8855b2e0742f2261a8373dd6158674b01980c33ca75dfa5af9a951810b7d3c72",
+    "src/card_definitions/hob/duskwatch_hunter.json": "e83eb906b26b3dcad804c6de9f61ad879c678dd41fe3b77934de00434c356e9a",
+    "src/card_definitions/hob/front_porch_sentries.rs": "63d3e874ef9999243a71c0dbcc8630a3f8003012c197825015398b6d4be4de33",
+    "src/card_definitions/hob/front_porch_sentries.json": "90b2278df2db188cb599ec715154ba4ecb94230d93c2d1fa6ef11fbda41b332a",
+    "src/card_definitions/hob/little_bear.rs": "8683689db7bab4594164ac943abaffae1944e355d31892562a34eca60ac22a4b",
+    "src/card_definitions/hob/little_bear.json": "e2dd26dc3917ffdd3f2c478993823e02d3b7da80c4c13a76c36ef91399f158db",
+    "src/card_definitions/hob/nasty_little_rabbit.rs": "71c1bee7de66d2344a884c5570bd72a0bd88c61b2ffa6a329064537b3590f508",
+    "src/card_definitions/hob/nasty_little_rabbit.json": "1fcb9cbb198304ba33ce81b5ea967ab7b86937308c88355032ef73ab70c2fb5b",
+    "src/card_definitions/hob/nori_teller_of_tales.rs": "72cdaf47cb16fb6bffabfbc0f1aa831ed138926c5be3ab8366cead25106b3784",
+    "src/card_definitions/hob/nori_teller_of_tales.json": "7a417e4599fa8ae53551f252fd9ef597a5f6f6d6fd2dd17e146ceff889cfb307",
+    "src/card_definitions/hob/old_fat_spider.rs": "46622b8d40d61cc3b3a46df248513404ee01640a831c74598f7df925b7d1d24c",
+    "src/card_definitions/hob/old_fat_spider.json": "bfc056c40772636d483b49bc21953c04384c1b1dfdf486ca4cbeccf357541bd4",
+    "src/card_definitions/hob/the_chief_warg.rs": "2a0630e97e08a8f785f0f430bc8cdf6e71fbe4d6d34974aa19b3e67d5561dbe7",
+    "src/card_definitions/hob/the_chief_warg.json": "b614b941fdd1c8f8660e1f2d9edc6951939fe9127c01e3279e805a32a3dfa1a4",
+    "src/card_definitions/hob/the_lord_of_the_eagles.rs": "444608c8ed01fef7458725fcca32bc6d999cdbb2773d449365e91b82d12c6dd9",
+    "src/card_definitions/hob/the_lord_of_the_eagles.json": "b7e5ecdc41fdc6785abb04be8704cca613486cbc1c2c82582b3d8e9c09c33af6"
+  },
+  "fixtures": [
+    {
+      "name": "@token/hob-bear",
+      "mana_cost": "",
+      "path": "synthetic/token_hob_bear.rs"
+    },
+    {
+      "name": "Bear Cub",
+      "mana_cost": "{1}{G}",
+      "path": "fdn/bear_cub.rs"
+    },
+    {
+      "name": "Dreaded Bat-Cloud",
+      "mana_cost": "{4}{B}",
+      "path": "hob/dreaded_bat_cloud.rs"
+    },
+    {
+      "name": "Duskwatch Hunter",
+      "mana_cost": "{2}{B/G}",
+      "path": "hob/duskwatch_hunter.rs"
+    },
+    {
+      "name": "Elvenking's Harper",
+      "mana_cost": "{1}{U}",
+      "path": "hob/elvenking_s_harper.rs"
+    },
+    {
+      "name": "Forest",
+      "mana_cost": "",
+      "path": "fra/forest.rs"
+    },
+    {
+      "name": "Front Porch Sentries",
+      "mana_cost": "{1}{B}",
+      "path": "hob/front_porch_sentries.rs"
+    },
+    {
+      "name": "Goldvein Pick",
+      "mana_cost": "{2}",
+      "path": "fdn/goldvein_pick.rs"
+    },
+    {
+      "name": "Hill Giant",
+      "mana_cost": "{3}{R}",
+      "path": "legacy/hill_giant.rs"
+    },
+    {
+      "name": "Large Bear",
+      "mana_cost": "{3}{B/G}{B/G}",
+      "path": "hob/large_bear.rs"
+    },
+    {
+      "name": "Little Bear",
+      "mana_cost": "{2}{G}",
+      "path": "hob/little_bear.rs"
+    },
+    {
+      "name": "Nasty Little Rabbit",
+      "mana_cost": "{G}",
+      "path": "hob/nasty_little_rabbit.rs"
+    },
+    {
+      "name": "Nori, Teller of Tales",
+      "mana_cost": "{1}{R/W}",
+      "path": "hob/nori_teller_of_tales.rs"
+    },
+    {
+      "name": "Old Fat Spider",
+      "mana_cost": "{4}{G}{G}",
+      "path": "hob/old_fat_spider.rs"
+    },
+    {
+      "name": "Ravenhill Flock",
+      "mana_cost": "{3}{U}",
+      "path": "hob/ravenhill_flock.rs"
+    },
+    {
+      "name": "Shock",
+      "mana_cost": "{R}",
+      "path": "msc/shock.rs"
+    },
+    {
+      "name": "The Chief Warg",
+      "mana_cost": "{2}{B}{G}",
+      "path": "hob/the_chief_warg.rs"
+    },
+    {
+      "name": "The Lord of the Eagles",
+      "mana_cost": "{7}{U}{U}",
+      "path": "hob/the_lord_of_the_eagles.rs"
+    }
+  ],
+  "obligations": {
+    "Dreaded Bat-Cloud": "Actualpaid4B4/2flyingdeathtouch vs1BafteractualenemycreatureShockdeath; artifactdeparturedoesnotdiscount; groundblockrejectandrealreach6/7blocker killedby4deathtouchdamage",
+    "Duskwatch Hunter": "Both2G/2Bhybridpayments; anyownselforopponentETB+1counter, landillegal; actualtokenblockreject vsnontokenlegal",
+    "Front Porch Sentries": "Paid1B2/2, actualpaidShockdeath, mandatoryopponentcreature target/ownreject; -1/-1untilcleanup; stalegenerationexcluded",
+    "Little Bear": "Actuallypaid2Gduringopponentendstep3/2flash; mandatoryanotherowncreature, ownsource/opponentillegal; Bearuntap+counter vsnonBearuntaponly; queuedsourcegoneworks, staleownrecipientuntouched; representativeownedraw/index/parentdrop/restore",
+    "Nasty Little Rabbit": "PaidG1/2, ownBeginCombatonly/threshold4not3/notopponentpower; interveningconditionrecheckedafterqualifierdeparture",
+    "The Chief Warg": "Paid2BG3/3menace; nonattackingchiefobservesown2attackersonce, requires4powerattriggertimebutstilldraw1lose1afterqualifierleaves; nopayoffat3; actualoneblockerfinishreject,twoaccepted",
+    "Nori, Teller of Tales": "Both1R/1Whybridpaid2/2; selfattacksmandatoryattackingtargetselforother, idlerejected; real2/2firststrikeblockedcombatsurviveswith0damage, keywordexpirescleanup",
+    "Old Fat Spider": "Paid4GG6/7reach; actualblockingpowerboundary2reject3accept, reachblocksactualflyer; ownShocknodraw, opponentShockdraw1, opponentHarperabilitydraw1evenSpiderdeparts; recipientprivatehandexistinggenericdrawcontracts",
+    "The Lord of the Eagles": "Actuallypaidopponentendstep8/8flashflying; generic7discounttotalowncurrentflyingpower0/2/7/10inclnegativecontribution; excludesenemyflyer/ownnonflyer, preservesUUcoloredfloor"
+  },
+  "test_plan": "Eight bounded outcome families for9identities; changedproofs plus existinghybrid/keyword/costtimingregressions in oneguardedfocusedrun. Requiredfinaldefault/releaseandwhole193acceptanceopen.",
+  "profile": "Consistentrootauthoropt0 aftermeasuredDancingandMarinerspilot; no repositoryprofilechange; defaultintegration/releaserequiredunchanged",
+  "validation": "Final22focusedpasses8new+6inheritedcreatures+8casttiming, allcommands0/no timeout/orphan, naturalguardterminal0. No gameplayoradmissionchanges. Two independent fullsource/proofreviews pending; whole193acceptanceopen.",
+  "attempts": [
+    {
+      "run": "run-1",
+      "terminal": true,
+      "exit": 101,
+      "compile_seconds": 34.10115991201019,
+      "passed": 7,
+      "failed": 1,
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/run-1/run.py"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 34.210104912985116,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2466615296,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "finding": "Fixture-only nonexistent Air Elemental was not caught because discovery skipped names absent from alias table. Corrected to existing supported Ravenhill Flock enemy flyer; actual discount exclusion still distinguished by exactpayment. Replaced discovery with explicit completefixture whitelist before rerun. No gameplay/definition changes; no queued/running input mutation/cancellation."
+    },
+    {
+      "run": "run-2",
+      "terminal": true,
+      "exit": 0,
+      "passed": 22,
+      "failed": 0,
+      "ignored": 0,
+      "new_scenarios": 8,
+      "new_scenario_seconds": 0.03,
+      "compile_seconds": 27.54019953799434,
+      "commands": {
+        "compile": {
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "--no-run",
+            "--message-format=json",
+            "--target-dir",
+            "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/target"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 27.54019953799434,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/run-2/compile.jsonl"
+        },
+        "hob_inherited_combat": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "hob_inherited_combat",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.06451618199935183,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/run-2/0.log"
+        },
+        "hob_inherited_creatures": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "hob_inherited_creatures",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.03236441599437967,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/run-2/1.log"
+        },
+        "hob_cast_timing": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "hob_cast_timing",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.06454540800768882,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/run-2/2.log"
+        }
+      },
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-inherited-combat/run-2/run.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 27.762580103997607,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2434650112,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "reports": "<cache>/rustmage-authoring/hob-inherited-combat/run-2/{compile.jsonl,0..2.log,results.json,resource.json,outer.log}",
+      "source_fixed_until_terminal": true
+    }
+  ],
+  "preflight_note": "First source/format preflight passed but fixture discovery incorrectly omitted absent Air Elemental. Natural terminal7pass1fixturefail; fixed fixture+strict explicitwhitelistafterterminal. All other actualoutcomesalready passed.",
+  "proof_sha256": "3d358e823788adf040eca8fc444b6f78176996857933b65368241258a3cb32ea",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "b8cb726c0998f183b32438de1e9ca4fb68a45efc",
+      "result": "Firm full9Oracle/Java/currenttypeddefs,43pins,18unchangeddefinition/provenancefiles and22actualpasses approved; no actionable findings",
+      "proof_sha256": "7c5b3cfe0221753b5dba41cf9a4cbf9cda116c69cbc3e40eaaf708bdfe9e51f2"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "b8cb726c0998f183b32438de1e9ca4fb68a45efc",
+      "result": "Firm full9Oracle/Java/currenttypeddefs,43pins,18unchangeddefinition/provenancefiles and22actualpasses approved; no actionable findings",
+      "proof_sha256": "7c5b3cfe0221753b5dba41cf9a4cbf9cda116c69cbc3e40eaaf708bdfe9e51f2"
+    }
+  ],
+  "integration_status": "Two independent full source/proofapprovals; rootregisteredmodule. Inheritedproofmappingnow63of69; no newgameplay/admissionflags. Integrateddefault/releaseandwhole193acceptanceopen.",
+  "proof_hardening": {
+    "ledger": "docs/hob-inherited-proof-hardening.json",
+    "prior_proof_sha256": "7c5b3cfe0221753b5dba41cf9a4cbf9cda116c69cbc3e40eaaf708bdfe9e51f2",
+    "change": "Actual own and opposing creature deaths independently qualify before paid 1B cast",
+    "scope": "Proof only; definitions, provenance, admission flags and engine unchanged. Prior reviews/receipts retain their original revision scope."
+  }
+}

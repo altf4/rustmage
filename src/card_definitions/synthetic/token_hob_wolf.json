@@ -1,0 +1,11 @@
+{
+  "name": "@token/hob-wolf",
+  "catalogue_id": 5412,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "b5685252d5afbe36af34c474008fa449041aa15dffa25920c0edd16bdf11e489",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/WolfToken.java",
+  "java_sha256": "727ed5c2489fcc65ad9cbd39410559d7480ebf646dc5942ccea6469c9c98bbb4"
+}

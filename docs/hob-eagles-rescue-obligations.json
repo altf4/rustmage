@@ -1,0 +1,198 @@
+{
+  "scope": "Eagle's Rescue complete whole-card author candidate plus narrow atomic exact-source Aura return. Base 4c778606539675f6733de63778b95365349430db; isolated codex/hob-eagles-rescue. No PR, push or merge.",
+  "sources": {
+    "oracle_id": "95e1c368-b58a-4e69-9583-587560ad558d",
+    "catalogue_id": 1229,
+    "full_oracle_read": "{2}{W/U}{W/U}, Enchantment \u2014 Aura; enchant creature; +2/+2 and flying; {2}{W/U}{W/U} graveyard return attached to target creature you control with power1 or less, activate only as a sorcery.",
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "full_class": "Mage.Sets/src/mage/cards/e/EaglesRescue.java (including full nested EaglesRescueEffect)",
+    "full_dependencies": "All15 paired helper bodies read, including activated sorcery timing, Aura attachment, enchanted stat/keyword effects, target/controller/power comparison, ManaCostsImpl and HybridManaCost. Exact paths and SHA256 pins in paired card JSON.",
+    "authority": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes; complete Eagle's Rescue section confirms illegal target means ability does not resolve. Current CR303.4,602.2,608.2b,400.7,702.5 and hybrid costs apply.",
+    "verification": {
+      "definitions": 5417,
+      "source_blobs": 1592,
+      "java_verified": true,
+      "catalogue_version": "c1798f3e5f309bea3b14e54b2f0ec18675b67186ffde44979664f14f752b1167"
+    }
+  },
+  "shared_mechanic": {
+    "instruction": "ReturnSourceAuraAttached, private immutable typed instruction; no new public wire or state fields.",
+    "guards": "Exact source ObjectRef must still be in ability controller own graveyard. Its already bound target survives ordinary resolution legality including current power/controller/protection and exact incarnation. aura_can_enchant checks live enchant restriction; power1 is an activation target restriction, not a continuing Aura attachment restriction.",
+    "atomic_entry": "Uses existing EntryMove with explicit ability controller and predetermined exact attachment, then stage_entries. Attachment is installed before entry observers freeze characteristics and before SBA; there is no fresh untargeted Aura attachment choice. Existing owned entry/replacement mechanisms and byte accounting reused, no new continuation.",
+    "scope": "Only2 enum lines and13 program dispatch lines, adjacent existing ReturnSourceToBattlefield; other return and activation-payment routes unchanged. Settle and Spider authors confirmed disjoint regions."
+  },
+  "printed_assertion_map": {
+    "Enchant creature": "Actual paid casts on opposing power2 creature, noncreature rejection. Initial Aura cast has neither own-control nor power1 restriction; attachment remains after control transfer.",
+    "Enchanted creature gets +2/+2 and has flying": "Actual4/4 Bear Cub and3/3 Llanowar Elves, flying recipients but not Aura; removal clears bonuses. Shared actual flying/reach combat regression passed. Enchanted Archivist entry observer freezes power2 from the preinstalled Aura bonus.",
+    "Hybrid spell and activation cost": "Both seats, all3 UU/WU/WW equivalents with2generic; exact pool exhaustion. Insufficient colored and total payment rejected, owned hybrid selection permits independent mixed/white branches.",
+    "From YOUR graveyard": "Own graveyard source activated, hand/battlefield/opponent graveyard sources rejected. Exact source exiled or removed-and-returned graveyard incarnation cannot be rebound by old packet.",
+    "Target creature YOU CONTROL with power1 or less": "Current signed powers -2/0/1 accepted,2 excluded; opponent creature/land/graveyard creature excluded; own hexproof and actual1/1 token allowed. Power growth, control transfer, protection and departure/reentry in response make the original target illegal; source stays exact graveyard card, mana stays spent.",
+    "Return attached": "Actual entry remains attached even when its bonus makes power3. Actual one-per-turn enchantment-entry draw observer captures source power2 and draws one, with no additional Aura-entry decision. Aura recipient bounce causes actual Aura SBA and, with active Rest in Peace, actual exile replacement; otherwise card is activated from resulting graveyard and returns attached.",
+    "Activate only as a sorcery": "Combat, occupied stack and another player active turn rejected; main-phase own priority succeeds.",
+    "Privacy / transaction / owned roots": "Illegal action snapshots/revisions remain equal. Opponent hand fixture remains private while graveyard source public to both. Representative raw/index/restore root during hybrid activation selection, parent drop, independently resolved children, mixed-vs-white remaining mana outcomes."
+  },
+  "focused_tests": [
+    "eagles_rescue_cast_all_hybrids_enchants_any_creature_with_live_two_two_flying",
+    "eagles_rescue_graveyard_all_hybrids_return_attached_and_power_can_then_exceed_one",
+    "eagles_rescue_activation_only_own_graveyard_sorcery_and_affordable_colored_cost",
+    "eagles_rescue_power_boundary_negative_zero_one_two_and_token_recipient",
+    "eagles_rescue_return_targets_owned_current_small_creature_not_other_types_or_opponents",
+    "eagles_rescue_resolution_rechecks_power_controller_protection_and_exact_target",
+    "eagles_rescue_source_exiled_or_new_graveyard_incarnation_cannot_be_returned_by_old_packet",
+    "eagles_rescue_actual_aura_sba_graveyard_replacement_and_repeatable_return",
+    "eagles_rescue_attachment_exists_before_actual_enchantment_entry_observer_freezes_source_power",
+    "eagles_rescue_owned_hybrid_payment_raw_index_restore_parent_drop_and_public_graveyard"
+  ],
+  "shared_suspension_contract": "No admitted Aura has an entry-choice/pay-life entry replacement; current tapped/untapped entry providers cover lands or creature/artifacts. Eagle returns one predetermined Aura and therefore offers no natural pre-entry choice today. Tests do not invent one. Existing Elrond grouped entry-value suspension/owned batch, Ennis exact delayed return, Roll returns and6 actual foreign Aura-entry rollback regressions passed on changed inputs.",
+  "wire": "No change. Instruction is immutable internal card behavior; existing public snapshots/actions/observations/entry structures reused.",
+  "fixtures": "Explicit10-name whitelist; strict unknown/incomplete errors before queue. Every fixture paired and complete; actual token factory used for token recipient.",
+  "runs": [
+    {
+      "run": 1,
+      "resource_report": "<cache>/rustmage-build-reports/bf3da27dad434073b94cd9101fcc4439.json",
+      "guard": {
+        "command": [
+          "python3",
+          "<cache>/rustmage-authoring/hob-eagles-rescue/driver-1.py"
+        ],
+        "terminal": true,
+        "exit_code": 101,
+        "seconds": 158.34631618199637,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2634440704,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "groups": [
+        {
+          "filter": "hob_eagles_rescue",
+          "exit": 101,
+          "passed": 9,
+          "seconds": 41.553905998007394,
+          "log": "<cache>/rustmage-authoring/hob-eagles-rescue/focused-1.log"
+        }
+      ],
+      "outer_log": "<cache>/rustmage-authoring/hob-eagles-rescue/outer-1.log",
+      "driver": "<cache>/rustmage-authoring/hob-eagles-rescue/driver-1.py",
+      "driver_sha256": "be71ce8b2ba0d8dcab7ac1365bb4765921862cbc6b61aa088d6d04f7f1fdfa58",
+      "input_manifest": "<cache>/rustmage-authoring/hob-eagles-rescue/inputs-1.json",
+      "group_seconds": 41.553905998007394,
+      "queue_and_guard_overhead_seconds": 116.79241018398898,
+      "termination": "Natural terminal, inputs fixed from launch through process exit; no cancellation or mutation.",
+      "result": "9 passed/1 fixture-only failure: test wrongly requested PutTrigger for an already auto-stacked single trigger. Removed unnecessary fixture choice, retaining actual captured-power assertion; no engine change."
+    },
+    {
+      "run": 2,
+      "resource_report": "<cache>/rustmage-build-reports/6780ec79b7a544dc9c04534a65435776.json",
+      "guard": {
+        "command": [
+          "python3",
+          "<cache>/rustmage-authoring/hob-eagles-rescue/driver-2.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 78.32718246098375,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2579460096,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "groups": [
+        {
+          "filter": "hob_eagles_rescue",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 30.441570035007317,
+          "log": "<cache>/rustmage-authoring/hob-eagles-rescue/focused-2.log"
+        },
+        {
+          "filter": "elrond_grouped_return_entry_choice_owns_all_moves_until_batch_commit",
+          "exit": 0,
+          "passed": 1,
+          "seconds": 0.10133125900756568,
+          "log": "<cache>/rustmage-authoring/hob-eagles-rescue/suspended-entry-2.log"
+        },
+        {
+          "filter": "sos_ennis_delayed_blink",
+          "exit": 0,
+          "passed": 1,
+          "seconds": 0.06327407498611137,
+          "log": "<cache>/rustmage-authoring/hob-eagles-rescue/ennis-2.log"
+        },
+        {
+          "filter": "hob_roll",
+          "exit": 0,
+          "passed": 4,
+          "seconds": 0.0934325530542992,
+          "log": "<cache>/rustmage-authoring/hob-eagles-rescue/roll-2.log"
+        },
+        {
+          "filter": "sos_cast_rollback",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.3487595539772883,
+          "log": "<cache>/rustmage-authoring/hob-eagles-rescue/rollback-2.log"
+        },
+        {
+          "filter": "vigilance_flying_and_reach_change_legal_combat",
+          "exit": 0,
+          "passed": 1,
+          "seconds": 0.05495176196563989,
+          "log": "<cache>/rustmage-authoring/hob-eagles-rescue/flying-2.log"
+        },
+        {
+          "filter": "hob_inherited_spells_river_aura",
+          "exit": 0,
+          "passed": 1,
+          "seconds": 0.12081415503052995,
+          "log": "<cache>/rustmage-authoring/hob-eagles-rescue/aura-2.log"
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 46.623383957950864,
+          "log": "<cache>/rustmage-authoring/hob-eagles-rescue/clippy-2.log"
+        }
+      ],
+      "outer_log": "<cache>/rustmage-authoring/hob-eagles-rescue/outer-2.log",
+      "driver": "<cache>/rustmage-authoring/hob-eagles-rescue/driver-2.py",
+      "driver_sha256": "7724ac1108b6979749f6ec4585d5ef9676a3eff84059a1cd219d1e534e99ac36",
+      "input_manifest": "<cache>/rustmage-authoring/hob-eagles-rescue/inputs-2.json",
+      "group_seconds": 77.84751735097962,
+      "queue_and_guard_overhead_seconds": 0.4796651100041345,
+      "termination": "Natural terminal, inputs fixed from launch through process exit; no cancellation or mutation.",
+      "result": "24 unique native passed (10 focused+14 affected), strict all-target Clippy -D warnings passed, no exceptions/zero-match groups."
+    }
+  ],
+  "integration": {
+    "local_uncommitted_only": [
+      "src/assurance/mod.rs module registration",
+      "data/standard/coverage.json generated",
+      "src/generated/catalogue.rs generated"
+    ],
+    "root_actions": "Register mod hob_eagles_rescue; regenerate catalogue/module links; obtain two independent nonauthor reviews; full integrated release acceptance remains parent-owned. No engine.rs/public schema or ID changes."
+  },
+  "limits": "One complete author candidate, not final set acceptance. No whole-set performance or simulation-throughput extrapolation from bounded rules tests.",
+  "measurement": {
+    "start_utc": "2026-10-27T00:13:38.260826+00:00",
+    "end_utc": "2026-10-27T00:30:10.680212+00:00",
+    "seconds": 992.419386,
+    "whole_cards": 1,
+    "cards_per_hour": 3.627498667181417,
+    "scope": "Isolated checkout creation through review-ready evidence, including shared guard waits.",
+    "focused_native_execution_seconds": 0.05,
+    "simulation_benchmark": "None; bounded scenario proofs only."
+  },
+  "final_evidence": {
+    "native_unique": 24,
+    "focused": 10,
+    "regressions": 14,
+    "clippy": "PASS all-targets -D warnings",
+    "frozen_files_reverified": 8,
+    "source_check": "5417 definitions,1592 full pinned Java blobs verified",
+    "format_and_diff_check": "PASS",
+    "review": "Pending two independent nonauthor reviews; no consuming jobs active."
+  }
+}

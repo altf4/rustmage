@@ -3,10 +3,36 @@
   "catalogue_id": 1143,
   "oracle_id": "e01860cd-0aa1-435a-9ef9-ee412bc458cd",
   "facts_sha256": "491abcdddec03bdb63015ea2db9d0d894aa7ff85daa12c0e8e8034138d9aa263",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "d36bdcd13d663c8af64ab71d8759baf788569921cce3cf70028aac95db46149e"
-  },
-  "physical_metadata_sha256": "ea0e4cf2d80b4724e6ba2bf459f7b3a753a6a77b9d066eb8dc67033e542bc38e"
+  "complete": true,
+  "physical_metadata_sha256": "ea0e4cf2d80b4724e6ba2bf459f7b3a753a6a77b9d066eb8dc67033e542bc38e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DownDownToGoblinTown.java",
+  "java_sha256": "69c30cccc0f62f4bc48ad18bac5a5cc42fc23fd6961414824b1be7eb84371d38",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+      "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AmassEffect.java",
+      "sha256": "a233d04025329bb65a90d9f729d776535b6ad4156f616f210e4a2545a37524ff"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    }
+  ]
 }

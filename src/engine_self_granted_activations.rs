@@ -25,14 +25,15 @@ impl Game {
             return false;
         }
         let query = self.characteristic_query();
-        for row in rows
-            .iter()
-            .filter(|row| row.recipient.card == card && row.expires_turn == self.state.turn)
-        {
+        for row in rows.iter().filter(|row| {
+            row.recipient.card == card
+                && row.expires_turn.is_none_or(|turn| turn == self.state.turn)
+        }) {
             let SelfGrantedAbilityKind::Activated { ability } = row.kind else {
                 continue;
             };
             let rules = row.granting_card.activation(ability);
+            let readiness = self.activation_readiness(actor, rules);
             if !query.self_grant_available(row.recipient, row.timestamp)
                 || !self.activation_guard_available(rules.guard, card, actor)
                 || !Self::object_activation_available_with_kinds(
@@ -41,7 +42,7 @@ impl Game {
                     self.current_kinds(card),
                     || CharacteristicWorld::activation_keywords(self, card),
                     self.state.players[actor.index()].life,
-                    rules,
+                    &readiness,
                     usize::from(ability),
                     actor,
                     sorcery,

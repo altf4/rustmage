@@ -3,10 +3,79 @@
   "catalogue_id": 5110,
   "oracle_id": "28ffddca-a3c4-467d-a2dc-2c5e62393e11",
   "facts_sha256": "4977283ae543887249ec936b85bfd797447b06f4cb5fed6c4343ba1c4170d186",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9ea41bc8a435e4fe0c06040689f1f280080b2f659a1bf8b06060a4fee484dfce"
   },
-  "physical_metadata_sha256": "b12b76222cd03a9fdf1a9c13698f8e5f54fc531ea23e4809a52738d471c9c116"
+  "physical_metadata_sha256": "b12b76222cd03a9fdf1a9c13698f8e5f54fc531ea23e4809a52738d471c9c116",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "28ffddca-a3c4-467d-a2dc-2c5e62393e11",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory has xmage_name:null and implementations:[]; pinned class tree has no WoodlandWeavemaster.java. Historical typed_lift retained as provenance, not executable evidence."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/d/DocSamsonSuperPsychiatrist.java",
+      "sha256": "d4a56da881cd4dab11fcf32028e1e16c06bdcb5b547c96bc6e0c7ad961d66673"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/a/AvengersTower.java",
+      "sha256": "8b2589f50dd8214ff29332c1cb79006ded5b562018ed8e25cffbde21302d4def"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/m/MarwynTheNurturer.java",
+      "sha256": "fe9f7151df2dc88ccf583e1aa8b2a0f220e72624166f7fd14b9dd98aef752b2b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/DynamicManaAbility.java",
+      "sha256": "b3d0b50f07f8a0d751bf30a6ecaca74c91fd98a7dd4e3228f71b7543a2d108da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/DynamicManaEffect.java",
+      "sha256": "e2767b7e03907de0266b757f49728816804d3a1376c423024119380c5797ce27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "Woodland Weavemaster",
+    "notes": "Official full printed text matches pinned Oracle; explicit ruling confirms the last ability is a mana ability using no stack. Source-power one-color and subtype spell/activation restriction reuse audited typed mechanics; analogous Java classes are identified separately from the absent identity."
+  }
 }

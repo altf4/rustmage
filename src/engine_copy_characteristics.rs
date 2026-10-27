@@ -112,6 +112,34 @@ impl Game {
         after: ObjectRef,
         destination: Zone,
     ) {
+        // Only the resulting exact graveyard incarnation qualifies. A previous
+        // Food may have been a noncreature on the battlefield, so record cards,
+        // not just creature deaths; resolution checks current graveyard types.
+        if let Some(rows) = &mut self.state.battlefield_graveyard_entries
+            && let Ok(at) = rows.binary_search_by_key(&before.id, |r| r.card)
+        {
+            rows.remove(at);
+        }
+        if destination == Zone::Graveyard
+            && before.zone == Zone::Battlefield
+            && !before.is_token()
+            && !before.card.is_emblem()
+        {
+            let rows = self
+                .state
+                .battlefield_graveyard_entries
+                .get_or_insert_default();
+            let at = rows.partition_point(|r| r.card < after.card);
+            rows.insert(at, after);
+        }
+        if self
+            .state
+            .battlefield_graveyard_entries
+            .as_ref()
+            .is_some_and(|r| r.is_empty())
+        {
+            self.state.battlefield_graveyard_entries = None;
+        }
         if let Some(rows) = &mut self.state.graveyard_entries
             && let Ok(at) = rows.binary_search_by_key(&before.id, |r| r.card)
         {

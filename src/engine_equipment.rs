@@ -53,6 +53,27 @@ impl Game {
         self.state.objects[source.card as usize].attached_to = Some(target);
         true
     }
+    pub(super) fn attach_reflexive_subjects(&mut self, item: &SpellView) -> bool {
+        let Some(recipient) = item
+            .targets
+            .iter()
+            .find(|b| b.group == 0 && self.same_target_object(**b))
+            .and_then(|b| b.object)
+        else {
+            return false;
+        };
+        let Some(subject) = item.reflexive_subject.as_ref() else {
+            return false;
+        };
+        let equipment: Vec<_> = std::iter::once(subject.object)
+            .chain(subject.additional_objects.iter().copied())
+            .filter(|&source| {
+                self.equipment_can_attach(source, recipient)
+                    && self.state.objects[source.card as usize].attached_to != Some(recipient)
+            })
+            .collect();
+        self.order_equipment_attachments(item, recipient, equipment)
+    }
     pub(super) fn attach_selected_equipment_to_attached(
         &mut self,
         item: &SpellView,
@@ -73,7 +94,36 @@ impl Game {
             .collect();
         self.order_equipment_attachments(item, recipient, equipment)
     }
-    pub(super) fn attach_equipment_batch(&mut self, equipment: &[ObjectRef], recipient: ObjectRef) {
+    pub(super) fn attach_groups_reflexive(
+        &mut self,
+        item: &SpellView,
+        equipment: u16,
+        recipient: u16,
+        ability: u16,
+    ) -> bool {
+        let Some(recipient) = item
+            .targets
+            .iter()
+            .find(|b| b.group == recipient && self.same_target_object(**b))
+            .and_then(|b| b.object)
+        else {
+            return false;
+        };
+        let equipment = item
+            .targets
+            .iter()
+            .filter(|b| b.group == equipment && self.same_target_object(**b))
+            .filter_map(|b| b.object)
+            .filter(|&r| self.equipment_can_attach(r, recipient))
+            .filter(|r| self.state.objects[r.card as usize].attached_to != Some(recipient))
+            .collect();
+        self.order_equipment_attachments_reflexive(item, recipient, equipment, Some(ability))
+    }
+    pub(super) fn attach_equipment_batch(
+        &mut self,
+        equipment: &[ObjectRef],
+        recipient: ObjectRef,
+    ) -> usize {
         // Recheck the complete final set before any attachment changes. No
         // partial batch is exposed while choosing relative timestamps.
         let equipment: Vec<_> = equipment
@@ -87,11 +137,13 @@ impl Game {
         for &source in &equipment {
             self.state.objects[source.card as usize].attached_to = Some(recipient);
         }
+        let attached = equipment.len();
         for source in equipment {
             self.retimestamp_live_static_source(source);
             self.retimestamp_hand_size_source(source);
             self.renew_copy_grant_origin(source, false);
         }
+        attached
     }
 }
 

@@ -3,10 +3,45 @@
   "catalogue_id": 3800,
   "oracle_id": "2a2ea189-b663-4f4a-bb23-ff7a4af25f71",
   "facts_sha256": "f622c654553f4e85163160481b8378c3e807ceb8a9fcbc4f7a358168d8b6cd1b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aed98bbb3aed1e8c9d61c237bec2f7c3fa6dc5b372f6bf7c2574c8cc310f2944"
   },
-  "physical_metadata_sha256": "c833d5f08d1f92808d5e6fac632efedd441a3f9c0122b346d9d529ae3ad05075"
+  "physical_metadata_sha256": "c833d5f08d1f92808d5e6fac632efedd441a3f9c0122b346d9d529ae3ad05075",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SettleTheWreckage.java",
+  "java_sha256": "d0c670f60217dea63029a89e947b6eea1a8642d96273aaa6eb11e14bcb040553",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterAttackingCreature.java",
+      "sha256": "e42cf80f6c0414aa1547a092102896d5149783e7179f782d77f2e1e0263ad191"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java",
+      "sha256": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+      "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3"
+    }
+  ]
 }

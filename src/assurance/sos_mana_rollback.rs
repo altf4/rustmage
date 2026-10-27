@@ -237,3 +237,30 @@ fn sos_mana_rollback_irreversible_colossus_sacrifice_keeps_the_entire_mana_event
         assert!(g.state.cast_rollback.is_none());
     }
 }
+
+#[path = "hob_trigger_rollback.rs"]
+mod hob_extra_triggers;
+
+#[path = "hob_death_return_rollback.rs"]
+mod hob_death_return_rollback;
+
+#[path = "hob_crooked_rollback.rs"]
+mod hob_crooked_rollback;
+
+#[path = "hob_elrond_rollback.rs"]
+mod hob_elrond_rollback;
+
+#[path = "hob_notary_rollback.rs"]
+mod notary_tests;
+
+#[path = "hob_head_hunt_rollback.rs"]
+mod head_hunt_tests;
+
+#[path = "hob_bilbo_rollback.rs"]
+mod bilbo_tests;
+
+#[path = "hob_thranduil_decree_rollback.rs"]
+mod decree_tests;
+
+#[path = "hob_gandalf_flameshape_rollback.rs"]
+mod gandalf_flameshape_tests;

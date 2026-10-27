@@ -5410,7 +5410,22 @@
     16,
     16,
     10,
-    24
+    24,
+    4,
+    0,
+    8,
+    1,
+    4,
+    4,
+    1,
+    16,
+    0,
+    16,
+    2,
+    8,
+    8,
+    1,
+    2
   ],
   "aliases": [
     [
@@ -5440,6 +5455,10 @@
     [
       "@adventure/22d82f4c-2896-477e-8d20-8fe43acd4ba2",
       5189
+    ],
+    [
+      "@adventure/27e17542-549b-4c05-8091-c10a245c916b",
+      5410
     ],
     [
       "@adventure/2802069f-201e-43a7-b5d3-43a95951a2ec",
@@ -5572,6 +5591,10 @@
     [
       "@adventure/fef67393-9b7b-495d-8b03-865537386d42",
       5222
+    ],
+    [
+      "@adventure/seek-the-heart",
+      5411
     ],
     [
       "@emblem/775571b10b62868058a6d841",
@@ -6190,6 +6213,38 @@
       5332
     ],
     [
+      "@token/goblin_army",
+      5405
+    ],
+    [
+      "@token/hob-axe",
+      5406
+    ],
+    [
+      "@token/hob-bear",
+      5414
+    ],
+    [
+      "@token/hob-bird-soldier",
+      5418
+    ],
+    [
+      "@token/hob-dragon",
+      5416
+    ],
+    [
+      "@token/hob-dwarf",
+      5407
+    ],
+    [
+      "@token/hob-stone-boulder",
+      5413
+    ],
+    [
+      "@token/hob-wolf",
+      5412
+    ],
+    [
       "@token/komas_coil",
       5335
     ],
@@ -6786,6 +6841,10 @@
       135
     ],
     [
+      "Allure of Power",
+      5409
+    ],
+    [
       "Aloe Alchemist",
       136
     ],
@@ -6844,6 +6903,10 @@
     [
       "An Offer You Can't Refuse",
       150
+    ],
+    [
+      "An Unexpected Party",
+      151
     ],
     [
       "An Unexpected Party // At the Door",
@@ -7264,6 +7327,10 @@
     [
       "At Knifepoint",
       252
+    ],
+    [
+      "At the Door",
+      5408
     ],
     [
       "Atlantean Cavalry",
@@ -7940,6 +8007,10 @@
     [
       "Bilbo's Gambit",
       409
+    ],
+    [
+      "Bilbo, Luckwearer",
+      410
     ],
     [
       "Bilbo, Luckwearer // Burglar's Plot",
@@ -8698,6 +8769,10 @@
       587
     ],
     [
+      "Burglar's Plot",
+      5419
+    ],
+    [
       "Buried Treasure",
       588
     ],
@@ -9420,6 +9495,10 @@
     [
       "Clandestine Meddler",
       762
+    ],
+    [
+      "Clap! Snap!",
+      5410
     ],
     [
       "Clarion Conqueror",
@@ -12678,6 +12757,10 @@
       1545
     ],
     [
+      "Flameshape",
+      5417
+    ],
+    [
       "Flamewake Phoenix",
       1546
     ],
@@ -13220,6 +13303,10 @@
     [
       "Galvanizing Sawship",
       1675
+    ],
+    [
+      "Gandalf, Goblins' Bane",
+      1676
     ],
     [
       "Gandalf, Goblins' Bane // Flameshape",
@@ -13878,6 +13965,10 @@
       1829
     ],
     [
+      "Gone Fishing",
+      5415
+    ],
+    [
       "Gongaga, Reactor Town",
       1830
     ],
@@ -14032,6 +14123,10 @@
     [
       "Great Train Heist",
       1866
+    ],
+    [
+      "Great Ugly-Looking Goblin",
+      1867
     ],
     [
       "Great Ugly-Looking Goblin // Clap! Snap!",
@@ -16398,6 +16493,10 @@
       2438
     ],
     [
+      "Lake-town Mariners",
+      2439
+    ],
+    [
       "Lake-town Mariners // Gone Fishing",
       2439
     ],
@@ -18268,6 +18367,10 @@
     [
       "Mutinous Massacre",
       2892
+    ],
+    [
+      "My Precious",
+      2893
     ],
     [
       "My Precious // Allure of Power",
@@ -21922,6 +22025,10 @@
       5184
     ],
     [
+      "Seek the Heart",
+      5411
+    ],
+    [
       "Seeker of Sunlight",
       3768
     ],
@@ -24636,6 +24743,10 @@
     [
       "The Apprentice's Folly",
       4419
+    ],
+    [
+      "The Arkenstone",
+      4420
     ],
     [
       "The Arkenstone // Seek the Heart",
@@ -28520,6 +28631,54 @@
       "name": "Moloid",
       "subtypes": "Minion",
       "colors": 16
+    },
+    {
+      "factory_identity": "@token/goblin_army",
+      "name": "Goblin Army Token",
+      "subtypes": "Goblin Army",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/hob-axe",
+      "name": "Axe",
+      "subtypes": "Equipment",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/hob-dwarf",
+      "name": "Dwarf Token",
+      "subtypes": "Dwarf",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/hob-wolf",
+      "name": "Wolf Token",
+      "subtypes": "Wolf",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/hob-stone-boulder",
+      "name": "Stone Boulder",
+      "subtypes": "Wall",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/hob-bear",
+      "name": "Bear Token",
+      "subtypes": "Bear",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/hob-dragon",
+      "name": "Dragon Token",
+      "subtypes": "Dragon",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/hob-bird-soldier",
+      "name": "Bird Soldier Token",
+      "subtypes": "Bird Soldier",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -28890,7 +29049,8 @@
     "MshDoombotToken": 5397,
     "MshBlueMerfolkToken": 5398,
     "MshGalactusToken": 5399,
-    "MshSturdyShieldToken": 5400
+    "MshSturdyShieldToken": 5400,
+    "GoblinArmyToken": 5405
   },
   "helper_interface": [
     [
@@ -33404,26 +33564,26 @@
       "path": "hob/an_unexpected_party_at_the_door.rs",
       "set": "hob",
       "category": "physical",
-      "name": "An Unexpected Party // At the Door",
+      "name": "An Unexpected Party",
       "oracle_id": "38503d34-f4f9-4eeb-9b1e-4fec1df921b3",
       "facts_sha256": "6ed037183aeb92f7e276247981bbb3c15fff814104c00bc03db1a2b9e07b222f",
-      "mana_cost": "{2}{W}{W} // {X}{2}{W}",
-      "type_line": "Enchantment // Sorcery — Adventure",
+      "mana_cost": "{2}{W}{W}",
+      "type_line": "Enchantment",
       "oracle_keywords": [],
       "standard_legal": true,
       "legendary": false,
-      "kind": 36,
+      "kind": 32,
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        2,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 152,
@@ -40793,11 +40953,11 @@
       "path": "hob/bilbo_luckwearer_burglar_s_plot.rs",
       "set": "hob",
       "category": "physical",
-      "name": "Bilbo, Luckwearer // Burglar's Plot",
+      "name": "Bilbo, Luckwearer",
       "oracle_id": "a73d9109-36e0-40ea-ab06-5c5f7eb4ac54",
       "facts_sha256": "d7f24505a450843519b0cde64b46b97b3bce323a9759d997bd64912f984f8a6f",
-      "mana_cost": "{1}{U} // {4}{U}",
-      "type_line": "Legendary Creature — Halfling Rogue // Sorcery — Adventure",
+      "mana_cost": "{1}{U}",
+      "type_line": "Legendary Creature — Halfling Rogue",
       "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
@@ -40806,13 +40966,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 411,
@@ -76816,11 +76976,11 @@
       "path": "hob/gandalf_goblins_bane_flameshape.rs",
       "set": "hob",
       "category": "physical",
-      "name": "Gandalf, Goblins' Bane // Flameshape",
+      "name": "Gandalf, Goblins' Bane",
       "oracle_id": "f48f2a9b-4ba5-4984-8180-3950889bba65",
       "facts_sha256": "93c5f9e8d6590b9f9ceb15e61b17de7a1825ddfd20923f7546d881756d8ab160",
-      "mana_cost": "{2}{R} // {1}{R}",
-      "type_line": "Legendary Creature — Avatar Wizard // Sorcery — Adventure",
+      "mana_cost": "{2}{R}",
+      "type_line": "Legendary Creature — Avatar Wizard",
       "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
@@ -76831,11 +76991,11 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 1677,
@@ -82260,11 +82420,11 @@
       "path": "hob/great_ugly_looking_goblin_clap_snap.rs",
       "set": "hob",
       "category": "physical",
-      "name": "Great Ugly-Looking Goblin // Clap! Snap!",
+      "name": "Great Ugly-Looking Goblin",
       "oracle_id": "27e17542-549b-4c05-8091-c10a245c916b",
       "facts_sha256": "c3e58964dd5ab297162f1482f6040dc88be4d9fab9b60b58f6ffe0c14bf97d69",
-      "mana_cost": "{5}{B} // {1}{B}",
-      "type_line": "Creature — Goblin Soldier // Sorcery — Adventure",
+      "mana_cost": "{5}{B}",
+      "type_line": "Creature — Goblin Soldier",
       "oracle_keywords": [
         "Amass"
       ],
@@ -82276,12 +82436,12 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 5
     },
     {
       "index": 1868,
@@ -91193,7 +91353,7 @@
       "colored": [
         0,
         0,
-        0,
+        2,
         0,
         0,
         0
@@ -98626,11 +98786,11 @@
       "path": "hob/lake_town_mariners_gone_fishing.rs",
       "set": "hob",
       "category": "physical",
-      "name": "Lake-town Mariners // Gone Fishing",
+      "name": "Lake-town Mariners",
       "oracle_id": "dba1d231-6b03-44ad-ab8c-be0c8fe1b6db",
       "facts_sha256": "037cff2f2ccc39d10c34374ed81c5d7f9c68c75467abd2f8f852433e3969f1bf",
-      "mana_cost": "{4}{U}{U} // {3}{U}",
-      "type_line": "Creature — Human Citizen // Instant — Adventure",
+      "mana_cost": "{4}{U}{U}",
+      "type_line": "Creature — Human Citizen",
       "oracle_keywords": [
         "Vigilance",
         "Ward"
@@ -98642,13 +98802,13 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        2,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 4
     },
     {
       "index": 2440,
@@ -111566,11 +111726,11 @@
       "path": "hob/my_precious_allure_of_power.rs",
       "set": "hob",
       "category": "physical",
-      "name": "My Precious // Allure of Power",
+      "name": "My Precious",
       "oracle_id": "2e728381-6db0-4c66-883d-82d718fef833",
       "facts_sha256": "d2f08e85f47b8e68d0314b5796c44606a36ea20396e88d260ad5db153c0f9175",
-      "mana_cost": "{3} // {1}{B}",
-      "type_line": "Legendary Artifact — Equipment // Instant — Adventure",
+      "mana_cost": "{3}",
+      "type_line": "Legendary Artifact — Equipment",
       "oracle_keywords": [
         "Equip"
       ],
@@ -111587,7 +111747,7 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 2894,
@@ -155101,11 +155261,11 @@
       "path": "hob/the_arkenstone_seek_the_heart.rs",
       "set": "hob",
       "category": "physical",
-      "name": "The Arkenstone // Seek the Heart",
+      "name": "The Arkenstone",
       "oracle_id": "09f09d0a-6054-4545-b81e-0295773cc5f0",
       "facts_sha256": "bfc1a6651c2d46679b44ff92c69c371889074e45d22aba14f6ffc2833cfd1e69",
-      "mana_cost": "{5} // {2}{W}",
-      "type_line": "Legendary Artifact // Sorcery — Adventure",
+      "mana_cost": "{5}",
+      "type_line": "Legendary Artifact",
       "oracle_keywords": [],
       "standard_legal": true,
       "legendary": true,
@@ -155120,7 +155280,7 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 5
     },
     {
       "index": 4421,
@@ -156492,7 +156652,7 @@
       "legendary": false,
       "kind": 2,
       "basic": false,
-      "mana_color": null,
+      "mana_color": 3,
       "colored": [
         0,
         0,
@@ -183017,6 +183177,419 @@
       ],
       "generic": 2,
       "face_parent": 571
+    },
+    {
+      "index": 5405,
+      "module": "card_5405",
+      "path": "synthetic/token_goblin_army.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/goblin_army",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Goblin Army",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5406,
+      "module": "card_5406",
+      "path": "synthetic/token_hob_axe.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-axe",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact — Equipment",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5407,
+      "module": "card_5407",
+      "path": "synthetic/token_hob_dwarf.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-dwarf",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Dwarf",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5408,
+      "module": "card_5408",
+      "path": "synthetic/at_the_door.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "At the Door",
+      "oracle_id": "38503d34-f4f9-4eeb-9b1e-4fec1df921b3",
+      "facts_sha256": "6ed037183aeb92f7e276247981bbb3c15fff814104c00bc03db1a2b9e07b222f",
+      "mana_cost": "{X}{2}{W}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5409,
+      "module": "card_5409",
+      "path": "synthetic/allure_of_power.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Allure of Power",
+      "oracle_id": "2e728381-6db0-4c66-883d-82d718fef833",
+      "facts_sha256": "d2f08e85f47b8e68d0314b5796c44606a36ea20396e88d260ad5db153c0f9175",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5410,
+      "module": "card_5410",
+      "path": "synthetic/clap_snap.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Clap! Snap!",
+      "oracle_id": "27e17542-549b-4c05-8091-c10a245c916b",
+      "facts_sha256": "c3e58964dd5ab297162f1482f6040dc88be4d9fab9b60b58f6ffe0c14bf97d69",
+      "mana_cost": "{1}{B}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [
+        "Amass"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5411,
+      "module": "card_5411",
+      "path": "synthetic/seek_the_heart.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Seek the Heart",
+      "oracle_id": "09f09d0a-6054-4545-b81e-0295773cc5f0",
+      "facts_sha256": "bfc1a6651c2d46679b44ff92c69c371889074e45d22aba14f6ffc2833cfd1e69",
+      "mana_cost": "{2}{W}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5412,
+      "module": "card_5412",
+      "path": "synthetic/token_hob_wolf.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-wolf",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Wolf",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5413,
+      "module": "card_5413",
+      "path": "synthetic/token_hob_stone_boulder.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-stone-boulder",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Wall",
+      "oracle_keywords": [
+        "Defender"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5414,
+      "module": "card_5414",
+      "path": "synthetic/token_hob_bear.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-bear",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Bear",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5415,
+      "module": "card_5415",
+      "path": "synthetic/gone_fishing.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Gone Fishing",
+      "oracle_id": "dba1d231-6b03-44ad-ab8c-be0c8fe1b6db",
+      "facts_sha256": "037cff2f2ccc39d10c34374ed81c5d7f9c68c75467abd2f8f852433e3969f1bf",
+      "mana_cost": "{3}{U}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5416,
+      "module": "card_5416",
+      "path": "synthetic/token_hob_dragon.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-dragon",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Dragon",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5417,
+      "module": "card_5417",
+      "path": "synthetic/flameshape.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Flameshape",
+      "oracle_id": "f48f2a9b-4ba5-4984-8180-3950889bba65",
+      "facts_sha256": "93c5f9e8d6590b9f9ceb15e61b17de7a1825ddfd20923f7546d881756d8ab160",
+      "mana_cost": "{1}{R}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5418,
+      "module": "card_5418",
+      "path": "synthetic/token_hob_bird_soldier.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/hob-bird-soldier",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Bird Soldier",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5419,
+      "module": "card_5419",
+      "path": "synthetic/burglar_s_plot.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Burglar's Plot",
+      "oracle_id": "a73d9109-36e0-40ea-ab06-5c5f7eb4ac54",
+      "facts_sha256": "d7f24505a450843519b0cde64b46b97b3bce323a9759d997bd64912f984f8a6f",
+      "mana_cost": "{4}{U}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4
     }
   ]
 }

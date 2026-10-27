@@ -1,0 +1,174 @@
+{
+  "card": "Thorin, Mountain-king",
+  "status": "complete author leaf; awaiting two independent nonauthor reviews and integrated acceptance",
+  "base": "7019c21650178d3490c9e1e5c46d6f34ff4e105d",
+  "sources": {
+    "oracle_id": "94917b80-ac32-45ab-b4ee-157ade024bcd",
+    "oracle_body": "Trample. When Thorin enters, attach any number of target Equipment you control to target creature you control. When one or more Equipment become attached to that creature this way, that creature deals damage equal to its power to up to one target creature.",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "class": "Mage.Sets/src/mage/cards/t/ThorinMountainKing.java",
+    "full_class_and_nine_pinned_target_filter_keyword_trigger_helpers_read": true,
+    "additional_source_review": "Complete CardImpl.addAttachment method and controlled-Equipment StaticFilters initializer inspected in the same pinned tree. Pinned full reusable helper classes are recorded in paired provenance.",
+    "rules": "Cached MagicCompRules-20260925: CR608.2h (current information and last-known damage actor), CR701.3b/c (actual attachment and timestamps), CR208.3 (no power for noncreature permanent), CR603 reflexive triggers.",
+    "oracle_java_difference": "Java damage helper returns false when the equipped creature has left. CR608.2h requires that object as it most recently existed to act, with its latest battlefield information. Rust uses the already supported exact event-object DamageActor current/LKI path; actual paid departure response proves the distinction."
+  },
+  "mechanics": [
+    "Private AttachEquipmentGroupsReflexive instruction preserves both target groups and uses existing current target legality and exact attachment checks.",
+    "Existing simultaneous Equipment timestamp ordering gets one private optional reflexive ability index. Actual new attachment count, excluding already attached objects and failed attachments, controls one reflexive trigger after the full batch. Existing callers use None.",
+    "Existing queue_reflexive opt-in binds the exact recipient to existing EventObjectView::DamageActor for programs containing EventObjectPowerDamage. No new public representation, State field or departure hook. Existing frozen pre-event capture refreshes all pending/stack/announcing/resolving event packets.",
+    "EventObjectPowerDamage uses the exact object current controller/keywords/power or its frozen departure facts; negative or noncreature power yields zero. Ordinary preventable noncombat damage replacement and lifelink/deathtouch machinery is reused."
+  ],
+  "public_wire": {
+    "new_fields_or_variants": false,
+    "leaf_schema_unchanged": 164,
+    "compatibility": "Existing optional event_object payload and DamageActor variant are reused; absent historical observations stay unchanged. Only private instructions/continuation state are new. No central schema or generated artifact edits committed."
+  },
+  "assertion_map": [
+    {
+      "test": "engine::assurance::hob_thorin_mountain_king::thorin_paid_etb_any_number_owned_equipment_one_damage_trigger_and_actual_trample",
+      "obligation": "Paid {3}{R}, legendary Dwarf Noble 3/4 and trample with actual blocked combat overflow. Multiple controlled Equipment targets, mandatory own creature, rejected opposing Equipment/non-Equipment/recipient. Simultaneous attachments wait for timestamp ordering and create exactly one separate damage trigger; no equip activation/payment. Damage equals the equipped creature power with no return damage."
+    },
+    {
+      "test": "engine::assurance::hob_thorin_mountain_king::thorin_zero_equipment_already_attached_and_unattachable_creature_equipment_do_not_trigger",
+      "obligation": "Zero selected Equipment, Equipment already attached to that recipient, and illegal animated creature Equipment produce no reflexive ability. CR701.3b distinguishes attempted attachment from becoming attached."
+    },
+    {
+      "test": "engine::assurance::hob_thorin_mountain_king::thorin_attachment_success_can_choose_zero_damage_or_own_creature",
+      "obligation": "The reflexive ability permits zero or one creature target, including a controlled creature. Declining damage retains successful attachments; own target takes expected power damage."
+    },
+    {
+      "test": "engine::assurance::hob_thorin_mountain_king::thorin_partial_equipment_stale_or_control_changed_and_recipient_illegal",
+      "obligation": "A stale Equipment incarnation or opposing controlled Equipment is excluded while the remaining legal target attaches. Stale or opposing controlled recipient prevents all attachments and the payoff."
+    },
+    {
+      "test": "engine::assurance::hob_thorin_mountain_king::thorin_damage_reads_current_power_and_recipient_is_damage_source",
+      "obligation": "Real paid Giant Growth response changes damage from two to five. Basilisk Collar on the equipped creature supplies actual lifelink and deathtouch. Indestructible target survives with five marked damage, five life is gained, and no fight damage returns."
+    },
+    {
+      "test": "engine::assurance::hob_thorin_mountain_king::thorin_departed_actor_uses_latest_battlefield_lki_even_after_reentry_source_gone_and_equipment_loss",
+      "obligation": "Actual paid Giant Growth and Unsummon resolve before the reflexive trigger. Latest pre-departure power five, lifelink and deathtouch survive attachment loss, Thorin departure and optional actor reentry as a new incarnation. Mammoth dies and original controller gains five life; the returned object remains a fresh 2/2."
+    },
+    {
+      "test": "engine::assurance::hob_thorin_mountain_king::thorin_source_departed_before_attachment_does_not_prevent_reflexive_and_damage_target_stale_is_illegal",
+      "obligation": "Thorin can depart before the ETB resolves without preventing attachment/reflexive payoff. A chosen damage target leaving and returning invalidates the old target and takes no damage."
+    },
+    {
+      "test": "engine::assurance::hob_thorin_mountain_king::thorin_reflexive_reads_current_controller_negative_power_and_noncreature_actor",
+      "obligation": "The damage actor current controller receives lifelink, independent of the trigger controller. Negative power clamps to zero. Established Food type-layer form on the same exact actor removes creature power rather than using old/printed power (CR208.3)."
+    },
+    {
+      "test": "engine::assurance::hob_thorin_mountain_king::thorin_owned_ordering_reflexive_targets_parent_drop_and_late_capacity_rollback",
+      "obligation": "Raw/index/restore and both observations at pending timestamp order and reflexive target selection, independent child after parent drop. A real ordering action attaches Equipment then fails allocating the reflexive stack identity; full snapshot/revision and attachments roll back. Restore resumes to the expected damage outcome."
+    }
+  ],
+  "preflight": {
+    "strict_named_fixture_count": 12,
+    "unknown_or_incomplete_is_error": true,
+    "source_pins": {
+      "definitions": 5417,
+      "source_blobs": 1614,
+      "java_verified": true
+    },
+    "linker": "passed; generated artifacts local only",
+    "format_and_diff": "passed standalone rustfmt and git diff --check"
+  },
+  "runs": [
+    {
+      "run": 1,
+      "terminal": true,
+      "exit": 101,
+      "seconds_including_shared_slot_wait": 46.020453309989534,
+      "memory_peak_bytes": 2074734592,
+      "memory_max_bytes": 6442450944,
+      "oom_events": 0,
+      "report": "<build-reports>/613f6fcbe40d431eb3959bad66dbd037.json",
+      "driver": "<cache>/rustmage-authoring/hob-thorin-mountain-king/driver-1.py",
+      "outer": "<cache>/rustmage-authoring/hob-thorin-mountain-king/outer-1.log",
+      "results": "<cache>/rustmage-authoring/hob-thorin-mountain-king/results-1.json",
+      "outcome": "Compile-only E0502 in author fixture: immutable g.object_ref(b) inside act(&mut g,...). No scenarios executed. After natural terminal, repaired with a local ObjectRef; engine unchanged."
+    },
+    {
+      "run": 2,
+      "terminal": true,
+      "exit": 101,
+      "seconds_including_shared_slot_wait": 70.47537202201784,
+      "memory_peak_bytes": 2637975552,
+      "memory_max_bytes": 6442450944,
+      "oom_events": 0,
+      "report": "<build-reports>/43f9b6444f254af993b83994f68e72de.json",
+      "driver": "<cache>/rustmage-authoring/hob-thorin-mountain-king/driver-2.py",
+      "outer": "<cache>/rustmage-authoring/hob-thorin-mountain-king/outer-2.log",
+      "results": "<cache>/rustmage-authoring/hob-thorin-mountain-king/results-2.json",
+      "outcome": "Eight focused scenarios passed; departure LKI assertion incorrectly expected five marked damage on a Mammoth killed by the departed Basilisk Collar actor deathtouch. Target graveyard movement resets damage. After natural terminal, asserted actual graveyard outcome plus five life gain; engine unchanged."
+    },
+    {
+      "run": 3,
+      "terminal": true,
+      "exit": 0,
+      "seconds_including_shared_slot_wait": 425.3344777589664,
+      "memory_peak_bytes": 2644426752,
+      "memory_max_bytes": 6442450944,
+      "oom_events": 0,
+      "report": "<build-reports>/6d3fcc14a2324ef8a44c5b5e53c32a00.json",
+      "driver": "<cache>/rustmage-authoring/hob-thorin-mountain-king/driver-3.py",
+      "outer": "<cache>/rustmage-authoring/hob-thorin-mountain-king/outer-3.log",
+      "results": "<cache>/rustmage-authoring/hob-thorin-mountain-king/results-3.json",
+      "outcome": "Nine focused and sixty affected scenarios passed, no failed or ignored intended cases; strict all-target Clippy passed. This confirms the corrected deathtouch/LKI expectation.",
+      "groups": [
+        {
+          "filter": "hob_thorin_mountain_king",
+          "exit": 0,
+          "passed": 9,
+          "seconds": 29.79678596800659
+        },
+        {
+          "filter": "hob_equipment",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.07444040395785123
+        },
+        {
+          "filter": "hob_vow_thorin",
+          "exit": 0,
+          "passed": 15,
+          "seconds": 0.14250081696081907
+        },
+        {
+          "filter": "hob_plate_company",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.13119135901797563
+        },
+        {
+          "filter": "engine::assurance::interactions",
+          "exit": 0,
+          "passed": 25,
+          "seconds": 0.07474829099373892
+        },
+        {
+          "filter": "engine::assurance::contracts",
+          "exit": 0,
+          "passed": 4,
+          "seconds": 0.06721923197619617
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 45.1468269060133
+        }
+      ]
+    }
+  ],
+  "resource_and_freeze_contract": "Every Cargo command used resource_guard with one job/thread and shared 6 GiB. Stable isolated external target, test/dev opt-level0 environment only; no profile changes. Persistent complete guard stdout/stderr redirects from launch. No input changes until each job naturally terminated; no cancellation. Parent polled first job to terminal while author slot was released for audit. All three receipts and old evidence preserved.",
+  "performance": {
+    "complete_cards": 1,
+    "wall_seconds_from_clone_to_final_receipt_including_parent_review_pause_and_build_slot_wait": 2455.721,
+    "guarded_run_count": 3,
+    "final_group_seconds_excluding_shared_slot_wait": 75.43371297692647,
+    "final_native_scenario_seconds_sum": 0.24000000000000002,
+    "focused_scenario_seconds": 0.05,
+    "final_native_count": 69,
+    "full_set_simulation_throughput": "not measured by leaf; integration acceptance owns full-set workloads"
+  },
+  "integration": "No PR, push or merge. Parent regenerates central catalogue and adds local assurance mod hob_thorin_mountain_king; both are excluded from commit. Shared hunks coordinated with Down/Dain and Gandalf owners: no engine.rs/ReflexiveSubjectView/exile overlap. No new IDs. All acceptance and independent reviews remain parent owned."
+}

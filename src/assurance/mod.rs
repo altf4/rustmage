@@ -180,3 +180,124 @@ mod msh_b;
 mod msh_c;
 mod msh_contracts;
 mod msh_d;
+
+mod hob_amass;
+mod hob_equipment;
+mod hob_existing_mechanics;
+mod hob_recruit;
+
+mod hob_arkenstone;
+mod hob_existing_two;
+mod hob_gollum_abandoned;
+mod hob_graveyard_origin;
+mod hob_hone;
+mod hob_recruit_amass_sagas;
+mod hob_sting;
+mod hob_storied;
+
+mod hob_existing_three;
+
+mod hob_bejeweled;
+mod hob_fili;
+mod hob_four_effects;
+mod hob_trigger_multiplicity;
+mod hob_warg_company;
+mod hob_weavemaster;
+
+mod hob_death_return;
+
+mod hob_inherited_initial;
+
+mod hob_cast_timing;
+
+mod hob_inherited_draw;
+
+mod hob_inherited_adventures;
+mod hob_stir_stone;
+
+mod hob_inherited_lands;
+
+mod hob_equip_cost_history;
+mod hob_inherited_adventures_two;
+mod hob_plate_company;
+
+mod hob_inherited_creatures;
+
+mod hob_crooked_galion;
+
+mod hob_inherited_spells;
+mod hob_spark_letters;
+
+mod hob_belladonna_queen;
+
+mod hob_dancing;
+
+mod hob_inherited_artifacts;
+
+mod hob_mariners;
+
+mod hob_inherited_combat;
+
+mod hob_lonely_misty;
+
+mod hob_inherited_remaining;
+
+mod hob_wandering;
+
+mod hob_beorn;
+
+mod hob_black_arrow;
+
+mod hob_master;
+
+mod hob_roll;
+
+mod hob_azog_rampager;
+
+mod hob_desolation;
+mod hob_riddles;
+
+mod hob_vow_thorin;
+
+mod hob_great_goblin;
+
+mod hob_balin;
+
+mod hob_celebrate;
+
+mod hob_elven_passage;
+
+mod hob_desert_worm;
+
+mod hob_bolg;
+
+mod hob_elrond;
+
+mod hob_bard;
+mod hob_bilbo;
+mod hob_bilbo_luckwearer;
+mod hob_complete_games;
+mod hob_dain_ironfoot;
+mod hob_down_valley;
+mod hob_eagles_coming;
+mod hob_eagles_rescue;
+mod hob_gandalf_flameshape;
+mod hob_getaway_barrel;
+mod hob_gollum_riddle;
+mod hob_head_hunt;
+mod hob_inside_information;
+mod hob_key_side_door;
+mod hob_last_light;
+mod hob_notary;
+mod hob_old_fat_spider;
+mod hob_orcrist;
+mod hob_part_friendship;
+mod hob_roads;
+mod hob_settle_wreckage;
+mod hob_silvan_reveler;
+mod hob_smaug_wicked;
+mod hob_supper_spiders;
+mod hob_thorin_mountain_king;
+mod hob_thranduil;
+mod hob_thranduil_decree;
+mod hob_tom_bert_william;

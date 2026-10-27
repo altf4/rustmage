@@ -3,10 +3,60 @@
   "catalogue_id": 1827,
   "oracle_id": "8d88facd-cf7e-498e-ab6b-6bd021316162",
   "facts_sha256": "a2001b92bf547e75e525f88523b49e56852b1545b83cdcfde82c50b03f0591b7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c7ea5c97fdc902c33b3c64d3414cb380a998204f93882551e8a65b1ffbb3e50c"
   },
-  "physical_metadata_sha256": "8ce11cd67822c1f011cb5f45aa800196e0fb942a6fcf6d2ed48c19103f023fbc"
+  "physical_metadata_sha256": "8ce11cd67822c1f011cb5f45aa800196e0fb942a6fcf6d2ed48c19103f023fbc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GollumTheAbandoned.java",
+  "java_sha256": "e955c1d88c9bb330b1efcc28f7dc4d01da55ac50a464930511799726028cd93c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBlockAbility.java",
+      "sha256": "e78337c6f4e0c6d913ed6085d1a91b4663b27f6985deb409d78303a0f565dda1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockSourceEffect.java",
+      "sha256": "8e20a86a1c2b5442b9281b9eb4910a3f341c30e5007204a29f1a68be3bdced20"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInOpponentsGraveyard.java",
+      "sha256": "130879427031c491824341bd85b54a7a35980a79058fb7cc6e3910be640ab724"
+    }
+  ]
 }

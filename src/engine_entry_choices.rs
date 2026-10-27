@@ -66,6 +66,9 @@ impl Game {
             EntryChoiceKind::CardNameAfterOpponentHand => {
                 crate::CardName::all().any(|name| emit(EntryChoiceValue::CardName(name)))
             }
+            EntryChoiceKind::ManaValueParity => [ManaValueParity::Odd, ManaValueParity::Even]
+                .into_iter()
+                .any(|parity| emit(EntryChoiceValue::ManaValueParity(parity))),
             EntryChoiceKind::Color => ChoiceColor::ALL
                 .into_iter()
                 .any(|c| emit(EntryChoiceValue::Color(c))),

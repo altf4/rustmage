@@ -267,3 +267,25 @@ impl Game {
         self.finish_zone_events(&events, &sources);
     }
 }
+
+impl Game {
+    pub(super) fn exchange_control_targets(&mut self, item: &SpellView) {
+        let targets: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let Target::Card(id) = bound.target else {
+                    return None;
+                };
+                if self.same_target_object(*bound) && self.on_battlefield(id) {
+                    Some(self.object_ref(id))
+                } else {
+                    None
+                }
+            })
+            .collect();
+        if let [first, second] = targets.as_slice() {
+            self.record_control_exchange(*first, *second);
+        }
+    }
+}

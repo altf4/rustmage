@@ -1,6 +1,6 @@
 //! Immutable characteristic evaluation scoped to one borrowed game world.
 //! None records a computed no-removal result. The borrow prevents mutation until
-//! every dependent view has finished; no derived data enters snapshots or branches.
+//! every dependent view has finished; views may retain explicit event witnesses.
 use super::ability_evaluation::AbilityEvaluation;
 use super::ability_world::CharacteristicWorld;
 use super::*;
@@ -107,6 +107,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             &|id| self.counter_amounts(id).has_any(),
             self.life(owner),
             self.state.attack_declared && self.attacking(source.card),
+            self.has_enduring_story(owner),
         )
     }
     fn stat_expression_without_hand(
@@ -267,6 +268,24 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         stats += self.chosen_bonus(id);
         stats += self.live_static_bonus(id);
         stats += self.attachment_bonus(id).0;
+        // CR122.1j: this is a counter effect, independent of layer-six abilities.
+        // A creature Equipment retains the bonus until the attachment SBA detaches it.
+        for row in self.named_counter_rows() {
+            let amount = row.count(CounterKind::Hone);
+            if amount == 0 {
+                continue;
+            }
+            let source = row.object();
+            if self.reference(source.card) == source
+                && self.is_equipment(source.card)
+                && self.attachment_link(source, self.reference(id))
+            {
+                stats.power = stats
+                    .power
+                    .checked_add(i128::from(amount))
+                    .capacity("hone power representation exhausted");
+            }
+        }
         // Only the small live-source index is traversed. Central zone transitions
         // maintain it, and snapshots own it; no derived stat cache needs invalidation.
         for &source in self.static_sources() {
@@ -293,6 +312,30 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             }
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
+                    if let StaticAbilityFragment::ConditionalCreatureModifier {
+                        condition,
+                        modifier,
+                    } = *fragment
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                        && (!modifier.own_turn || self.state.active == object.controller)
+                        && (!modifier.requires_life_gain || self.gained_life(object.controller))
+                        && self.stat_value_without_hand(
+                            condition,
+                            self.object_ref(source),
+                            object.controller,
+                            departing,
+                        ) != 0
+                        && self.creature_matches(
+                            modifier.filter,
+                            object.controller,
+                            self.object_ref(source),
+                            id,
+                        )
+                    {
+                        stats += modifier.stats;
+                    }
                     if let StaticAbilityFragment::SourceGraveyardBonus {
                         kind,
                         minimum,
@@ -631,21 +674,44 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         if let Some(rows) = &self.state.self_granted_abilities {
             for row in rows.iter() {
-                if row.kind == SelfGrantedAbilityKind::ControllerHandPower
-                    && row.recipient == object
-                    && row.expires_turn == self.state.turn
-                    && row
-                        .effect_timestamp
-                        .is_some_and(|effect_time| power_time.is_none_or(|time| effect_time > time))
-                    && self.self_grant_available(row.recipient, row.timestamp)
+                if row.recipient != object
+                    || !row.expires_turn.is_none_or(|turn| turn == self.state.turn)
+                    || !self.self_grant_available(row.recipient, row.timestamp)
                 {
-                    stats.power = self.stat_value_without_hand(
-                        StatValue::ControllerHandSize,
-                        object,
-                        self.object(id).controller,
-                        departing,
-                    );
-                    power_time = row.effect_timestamp;
+                    continue;
+                }
+                let Some(time) = row.effect_timestamp else {
+                    continue;
+                };
+                let value = match row.kind {
+                    SelfGrantedAbilityKind::ControllerHandPower => StatValue::ControllerHandSize,
+                    SelfGrantedAbilityKind::ControllerLandStats => StatValue::Count(CountFilter {
+                        zone: CountZone::Battlefield,
+                        relation: 0,
+                        kind: 2,
+                        exclude: 0,
+                        subtype: None,
+                        basic: false,
+                        other: false,
+                        cards_only: false,
+                    }),
+                    _ => continue,
+                };
+                let amount = self.stat_value_without_hand(
+                    value,
+                    object,
+                    self.object(id).controller,
+                    departing,
+                );
+                if power_time.is_none_or(|old| time > old) {
+                    stats.power = amount;
+                    power_time = Some(time);
+                }
+                if row.kind == SelfGrantedAbilityKind::ControllerLandStats
+                    && toughness_time.is_none_or(|old| time > old)
+                {
+                    stats.toughness = amount;
+                    toughness_time = Some(time);
                 }
             }
         }
@@ -806,6 +872,56 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         );
         available
     }
+    pub(super) fn conditional_ward_grants(&self, recipient: CardId) -> Vec<GrantedAbilityView> {
+        let mut grants = Vec::new();
+        for &id in self.world.static_sources() {
+            if !self.on_battlefield(id) {
+                continue;
+            }
+            let source = self.reference(id);
+            for (index, group) in self
+                .object(id)
+                .card
+                .static_ability_groups()
+                .iter()
+                .enumerate()
+            {
+                if self
+                    .evaluation
+                    .as_ref()
+                    .is_some_and(|e| !e.group_available(source, index))
+                {
+                    continue;
+                }
+                for fragment in group.fragments {
+                    if let StaticAbilityFragment::ConditionalWard {
+                        condition,
+                        filter,
+                        ability,
+                    } = *fragment
+                        && self
+                            .world
+                            .conditional_ward_applies(source, condition, filter, recipient)
+                    {
+                        let timestamp = self
+                            .world
+                            .roles()
+                            .and_then(|r| r.ability_timestamps.iter().find(|r| r.source == source))
+                            .expect("conditional Ward provider registered")
+                            .timestamp;
+                        grants.push(GrantedAbilityView {
+                            grantor: source,
+                            granting_card: self.object(id).card,
+                            ability,
+                            grantor_controller: self.object(id).controller,
+                            timestamp,
+                        });
+                    }
+                }
+            }
+        }
+        grants
+    }
     pub(super) fn self_grant_available(&self, source: ObjectRef, timestamp: u64) -> bool {
         self.on_battlefield(source.card)
             && self.object_ref(source.card) == source
@@ -850,6 +966,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             self.layered_stats_without_hand(id, None)
         };
         ObjectView {
+            additional_triggers: trigger_multiplicity::additional_triggers(self, id),
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),
@@ -948,6 +1065,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn controls(&self) -> Option<&continuous_control::ControlState> {
         self.world.controls()
     }
+    fn has_enduring_story(&self, player: Player) -> bool {
+        self.world.has_enduring_story(player)
+    }
     fn creatures_died(&self) -> u64 {
         self.world.creatures_died()
     }
@@ -971,6 +1091,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
         self.world.plus_one_placed_this_turn(object, player)
+    }
+    fn named_counter_rows(&self) -> &[live_counters::NamedCounterRow] {
+        self.world.named_counter_rows()
     }
     fn counter_amounts(&self, id: CardId) -> CounterAmounts<'_> {
         self.world.counter_amounts(id)

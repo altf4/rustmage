@@ -3,10 +3,60 @@
   "catalogue_id": 4560,
   "oracle_id": "4a5f76e7-40be-4b06-9935-4a3b2672e1c2",
   "facts_sha256": "611be6f336bc2cc0e82880ebe80ce26075ba06d98a0589462132c97e26026911",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c1fbc70d09597b4c52888fa9c64955efe556c3610f851343b925daa552d08522"
   },
-  "physical_metadata_sha256": "db23752f3534e50ff202aa1bffb328c49df2117aa025d0a1b96284d1e518eb6a"
+  "physical_metadata_sha256": "db23752f3534e50ff202aa1bffb328c49df2117aa025d0a1b96284d1e518eb6a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThranduilTheElvenking.java",
+  "java_sha256": "3861af48bc229e8915d9cf3440f4c92677416921882cb628904244c37773f2be",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+      "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/ActivatedAbilityImpl.java",
+      "sha256": "abda1cc51790a3a40291e5ce3867cc12a0b98019813ac42ac8e7c822d8d4128b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/n/NecroticOoze.java",
+      "sha256": "bc6033543a924fa8ed97462e5ea49d09376504c85d797702326c78d3fd078174"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "Thranduil, the Elvenking",
+    "notes": "Full source, official text and rulings: all activated abilities, self-name substitution, linked ability pair acquired only for same continuous instance. CR113.6/201.5,602.5b/702.177,607.5,400.7 and611.3 support source zones, separate acquisition limits and exact incarnations."
+  }
 }

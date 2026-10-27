@@ -1,0 +1,223 @@
+{
+  "scope": "158 local HOB candidates; 35 gated. Riddles, Desolation, Vow and Thorin integrated after154 release; full193 and final published PR remain open.",
+  "source_head_before_receipt": "e9b406ef",
+  "schema": 157,
+  "reviewed_cohorts": [
+    {
+      "leaf": "9c2a113be766d69dae3ce77dbfa9058bae458280",
+      "cards": [
+        "Riddles in the Dark"
+      ],
+      "tests_passed": 27,
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ]
+    },
+    {
+      "leaf": "5c97ed127ea172aa90c67b28f9f513f3738d111b",
+      "cards": [
+        "Desolation of Smaug"
+      ],
+      "tests_passed": 17,
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ]
+    },
+    {
+      "leaf": "f41748652a467013dfca3b6b5f287f06b48c434c",
+      "cards": [
+        "Vow to Erebor",
+        "Thorin Oakenshield"
+      ],
+      "tests_passed": 63,
+      "reviewers": [
+        "hob_review_contracts",
+        "hob_review_rules"
+      ]
+    }
+  ],
+  "previous_release": {
+    "head": "15701b47a2b530644f1d527c43bf1f69de6f0410",
+    "report": "<cache>/rustmage-validation-9z86ehkz/report/result.json",
+    "terminal": true,
+    "success": true,
+    "native_passed": 938,
+    "python_passed": 8,
+    "terminal_receipt_reviews": [
+      "hob_review_rules: approved exact 15701b47 and all six immutable libraries",
+      "hob_review_contracts: approved exact 15701b47 and all six immutable libraries"
+    ]
+  },
+  "status": "158-card full release passed at exact cc636931; two independent terminal receipt audits and whole193/final published PR acceptance remain open.",
+  "integrated_recording": {
+    "head": "29f5ee09641f2bf54cef2c5a819ec2e3d784a943",
+    "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated158-1",
+    "focused_passed": 372,
+    "compile_seconds": 28.260140454978682,
+    "guard_seconds": 192.3883644110174,
+    "peak_bytes": 2471583744,
+    "oom_events": 0,
+    "candidate_sha256": "0dabbd62d49547c1db489254f4bbd8fe4987353e3411f7f44d6adc482d07f1d4",
+    "candidate_rows": 2673,
+    "previous_schema_audits": {
+      "157": {
+        "old": 2669,
+        "additions": 4,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "156": {
+        "old": 2662,
+        "additions": 11,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "155": {
+        "old": 2641,
+        "additions": 32,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "154": {
+        "old": 2631,
+        "additions": 42,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "153": {
+        "old": 2610,
+        "additions": 63,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      },
+      "152": {
+        "old": 2584,
+        "additions": 89,
+        "changed": 0,
+        "missing": 0,
+        "incomplete": 0
+      }
+    },
+    "recording_exit_101": "Each recording reached expected strict cardinality check 2673 versus old 2669; no ordinary strict-pass claim.",
+    "independent_reviews": [
+      "hob_review_rules: approved merged source and exact candidate adoption",
+      "hob_review_contracts: approved merged source and exact candidate adoption"
+    ]
+  },
+  "full_release": {
+    "head": "cc636931691a217f9486334aa68672ca71942fe8",
+    "report": "<cache>/rustmage-validation-_fdboq98/report/result.json",
+    "terminal": true,
+    "success": true,
+    "seconds": 356.89258858095855,
+    "phases": [
+      {
+        "name": "source pins",
+        "exit": 0,
+        "seconds": 0.7669159880024381
+      },
+      {
+        "name": "format",
+        "exit": 0,
+        "seconds": 1.7692088729818352
+      },
+      {
+        "name": "card format",
+        "exit": 0,
+        "seconds": 1.119981003983412
+      },
+      {
+        "name": "script contracts",
+        "exit": 0,
+        "seconds": 0.6669768919819035
+      },
+      {
+        "name": "clippy",
+        "exit": 0,
+        "seconds": 42.53139153198572
+      },
+      {
+        "name": "native assurance",
+        "exit": 0,
+        "seconds": 176.11177507898537
+      },
+      {
+        "name": "release build",
+        "exit": 0,
+        "seconds": 133.40818986896193
+      },
+      {
+        "name": "simulation sample",
+        "exit": 0,
+        "seconds": 0.11475351598346606
+      },
+      {
+        "name": "Python assurance",
+        "exit": 0,
+        "seconds": 0.2154668319853954
+      }
+    ],
+    "native": {
+      "passed": 960,
+      "compile_seconds": 150.65799730201252,
+      "execution_seconds": 25.345467664999887
+    },
+    "python": {
+      "tests": 8,
+      "success": true,
+      "seconds": 0.027270365972071886,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "inputs": {
+      "files_verified": 11948,
+      "sha256": "cf265e6e37bd3cdeb20b7beafac7def9755fdcb6590117a3ea7ae587e652b571",
+      "changed": [],
+      "active_processes": []
+    },
+    "guard": {
+      "report": "<cache>/rustmage-build-reports/2c7e6140a5354d3ab47f2e645340963e.json",
+      "seconds": 357.17279657296604,
+      "memory_peak_bytes": 3195662336,
+      "memory_max_bytes": 6442450944,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "library": {
+      "path": "<cache>/rustmage-validation-_fdboq98/report/libraries/librustmage.so",
+      "sha256": "990b8fce62603e8435e5da811f111ae542c6a4370a1aafd6f43c3cf2460ff167",
+      "mode": "0555"
+    },
+    "simulation": {
+      "clone_ns": 297.00973,
+      "decisions": 4941,
+      "decisions_per_second": 120330.11511361832,
+      "games": 10,
+      "games_per_second": 243.53393060841594,
+      "initial_state_bytes_excluding_capacity_and_allocator": 21768,
+      "max_decisions_per_game": 655,
+      "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+      "restore_ns": 172.68479,
+      "seconds": 0.04106204
+    },
+    "terminal_independent_reviews": [
+      {
+        "reviewer": "hob_review_contracts",
+        "result": "Approved exact cc636931 nine-gate receipt and all seven immutable libraries."
+      },
+      {
+        "reviewer": "hob_review_rules",
+        "result": "Approved exact cc636931 nine-gate receipt and all seven immutable libraries."
+      }
+    ]
+  }
+}

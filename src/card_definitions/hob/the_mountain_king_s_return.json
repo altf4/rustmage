@@ -3,10 +3,51 @@
   "catalogue_id": 4480,
   "oracle_id": "32ad5b3e-92c0-45be-b2e4-6f1794552f36",
   "facts_sha256": "28cd540cbea2327ac431e2e57cf2b084748c5b229fde49ad9191fa6b12dd7735",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "c5a5f43208cdcda28bea947004be9545bd6646cb3e9fc0f92163f7bf0a6df1de"
-  },
-  "physical_metadata_sha256": "4d755da0d09ac7d4895d1c5d169b574a9fd952b3b2b1daa043a69f0252fdd622"
+  "complete": true,
+  "physical_metadata_sha256": "4d755da0d09ac7d4895d1c5d169b574a9fd952b3b2b1daa043a69f0252fdd622",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheMountainKingsReturn.java",
+  "java_sha256": "b794c9040757d8f311090f3229dbaee05dc2ca50d26bcd487040f82ba3c2e04b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    }
+  ]
 }

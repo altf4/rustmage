@@ -23,6 +23,7 @@ pub enum DamagePreventionKind {
     CombatToRecipient,
     ProtectionEverything,
     ProtectionInstantSorcery,
+    SourceLinkedDamage,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct DamagePreventionView {
@@ -117,6 +118,10 @@ pub(super) enum TokenCompletion {
         item: Box<SpellView>,
         ability: u16,
     },
+    ReflexiveCreated {
+        item: Box<SpellView>,
+        ability: u16,
+    },
     JobAttach(ObjectRef),
     /// Creation precedes attachment; an absent/illegal recipient leaves tokens intact.
     AttachCreatedTo(ObjectRef),
@@ -163,6 +168,11 @@ enum Event {
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
+    AmassSubtype {
+        source: ObjectRef,
+        recipient: ObjectRef,
+        attach: bool,
+    },
     AnimateCreated {
         created: Vec<ObjectRef>,
         spec: AnimationSpec,
@@ -215,7 +225,8 @@ impl ReplacementState {
                         std::mem::size_of::<Counters>() + counters.owned_bytes()
                     }
                     TokenCompletion::TemporaryCopy(item)
-                    | TokenCompletion::Reflexive { item, .. } => {
+                    | TokenCompletion::Reflexive { item, .. }
+                    | TokenCompletion::ReflexiveCreated { item, .. } => {
                         std::mem::size_of::<SpellView>() + item.owned_bytes()
                     }
                     TokenCompletion::RoleReflexive(c) => {
@@ -555,6 +566,21 @@ impl Game {
         }
         if !event.preventable || self.state.damage_prevention_prohibited {
             return out;
+        }
+        if let Some(roles) = &self.state.roles {
+            for row in &roles.source_linked_effects {
+                if row.kind == SourceLinkedEffectKind::PreventDamageBy
+                    && source_linked_effects::active(self, row)
+                    && row.recipient == event.source.reference
+                    && !used.contains(&(row.source, DamagePreventionKind::SourceLinkedDamage))
+                {
+                    out.push(DamagePreventionView {
+                        source: row.source,
+                        source_card: self.state.objects[row.source.card as usize].card,
+                        kind: DamagePreventionKind::SourceLinkedDamage,
+                    });
+                }
+            }
         }
         if event.combat && event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY) {
             out.push(DamagePreventionView {
@@ -1264,6 +1290,17 @@ impl Game {
                         }
                         continue;
                     }
+                    Some(Work::AmassSubtype {
+                        source,
+                        recipient,
+                        attach,
+                    }) => {
+                        self.grant_amass_goblin_type(source, recipient);
+                        if attach {
+                            self.attach_equipment(source, recipient);
+                        }
+                        continue;
+                    }
                     Some(Work::Damage(batch)) => state.active = Some(Event::Damage(batch)),
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
                     Some(Work::Tokens(batch)) => state.active = Some(Event::Tokens(batch)),
@@ -1479,6 +1516,7 @@ impl Game {
                                         | TokenCompletion::CounterSet(_)
                                         | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
+                                        | TokenCompletion::ReflexiveCreated { .. }
                                 );
                                 let created = match &batch.completion {
                                     TokenCompletion::RoleAttach(recipient) => self
@@ -1543,6 +1581,20 @@ impl Game {
                                     && !created.is_empty()
                                 {
                                     self.queue_reflexive(item, *ability, None);
+                                }
+                                if let TokenCompletion::ReflexiveCreated { item, ability } =
+                                    &batch.completion
+                                    && let Some((&first, rest)) = created.split_first()
+                                {
+                                    self.queue_reflexive(item, *ability, Some(first));
+                                    self.state
+                                        .pending_triggers
+                                        .last_mut()
+                                        .unwrap()
+                                        .reflexive_subject
+                                        .as_mut()
+                                        .unwrap()
+                                        .additional_objects = rest.to_vec();
                                 }
                                 if let TokenCompletion::RoleReflexive(c) = &batch.completion
                                     && created.iter().any(|r| {
@@ -1903,4 +1955,94 @@ impl Game {
 pub struct CreatedTokenChoiceView {
     pub source: ObjectRef,
     pub candidates: Vec<ObjectRef>,
+}
+
+impl Game {
+    fn army_recipients(&self, player: Player) -> Vec<ObjectRef> {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == player
+                    && self.is_creature(*id as CardId)
+                    && self.has_subtype(*id as CardId, "Army")
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect()
+    }
+    pub(super) fn ensure_goblin_army(&mut self, player: Player) {
+        // Preserve the allocation-free existence check of the fixed-amount path.
+        if !self.state.objects.iter().enumerate().any(|(id, object)| {
+            object.zone == Zone::Battlefield
+                && object.controller == player
+                && self.is_creature(id as CardId)
+                && self.has_subtype(id as CardId, "Army")
+        }) {
+            self.create_tokens(player, Card::GoblinArmyToken, 1, false);
+        }
+    }
+    pub(super) fn amass_goblins_for(
+        &mut self,
+        item: &SpellView,
+        player: Player,
+        amount: u64,
+    ) -> bool {
+        let armies = self.army_recipients(player);
+        if armies.len() == 1 {
+            self.finish_amass_goblins(item, player, armies[0], amount);
+        } else if armies.len() > 1 {
+            let mut filter = evidence::cost(0).filter;
+            filter.subtype = Some("Army");
+            filter.kinds = 1;
+            let mut chooser = item.clone();
+            chooser.controller = player;
+            return self.start_effect_choice(
+                &chooser,
+                EffectChoiceKind::AmassGoblins(amount),
+                PlayerSet::Controller,
+                filter,
+                1,
+                None,
+            );
+        }
+        false
+    }
+    pub(super) fn finish_amass_goblins(
+        &mut self,
+        item: &SpellView,
+        player: Player,
+        recipient: ObjectRef,
+        amount: u64,
+    ) {
+        // The paused program owns this immutable continuation. Army selection
+        // reuses the ordinary public amass choice without a global last result.
+        let attach = self.state.resolving.as_ref().is_some_and(|resolution| {
+            matches!(
+                resolution
+                    .pc
+                    .checked_sub(1)
+                    .and_then(|pc| resolution.program.get(pc)),
+                Some(Instruction::AmassGoblinsThenAttach(_))
+            )
+        });
+        self.effect_counters_by(
+            vec![(recipient, Counters::of(CounterKind::PlusOne, amount))],
+            Some(player),
+            ResumeMode::Program,
+        );
+        if let Some(state) = self.state.replacements.as_mut() {
+            state.work.push_back(Work::AmassSubtype {
+                source: item.object,
+                recipient,
+                attach,
+            });
+        } else {
+            self.grant_amass_goblin_type(item.object, recipient);
+            if attach {
+                self.attach_equipment(item.object, recipient);
+            }
+        }
+    }
 }

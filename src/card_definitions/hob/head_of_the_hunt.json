@@ -3,10 +3,45 @@
   "catalogue_id": 1974,
   "oracle_id": "0523e271-5e0b-4e4b-9eac-86f915d18952",
   "facts_sha256": "5f86c58d40e0b9da90b7e93f3bf6108bc25f9a75a44352d99fc6843c8a2d5b52",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3a96e6a8bd15f610e33cfb80caaeb7705e16077135926dee37b6df32a26642cc"
   },
-  "physical_metadata_sha256": "e34031628a4255fab9e0801f06ff14ab0a8d3cbdedc7522a66eb25a93cb04752"
+  "physical_metadata_sha256": "e34031628a4255fab9e0801f06ff14ab0a8d3cbdedc7522a66eb25a93cb04752",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HeadOfTheHunt.java",
+  "java_sha256": "f7d434eb3d38379d24dfab37ec89fb97688d241a155dc246e4eb618c19a0cdae",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/WolfToken.java",
+      "sha256": "727ed5c2489fcc65ad9cbd39410559d7480ebf646dc5942ccea6469c9c98bbb4"
+    }
+  ]
 }

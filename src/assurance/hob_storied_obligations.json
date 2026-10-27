@@ -1,0 +1,208 @@
+{
+  "schema": 1,
+  "base_revision": "7074590a8131727b871ac452d4a9714c85d9a5d0",
+  "status": "candidate; independent local core review and final whole-set acceptance remain pending",
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "section": "New Keyword Ability: Storied"
+  },
+  "cards": [
+    {
+      "name": "Bombur, Gentle Dreamer",
+      "oracle": {
+        "oracle_id": "925ce68e-9323-4985-8fef-0d3f36e0d74c",
+        "name": "Bombur, Gentle Dreamer",
+        "layout": "normal",
+        "mana_cost": "{2}{R}",
+        "cmc": 3.0,
+        "type_line": "Legendary Creature — Dwarf Bard",
+        "oracle_text": "Storied (If you control three or more artifacts, legendaries, and/or Sagas, you have an enduring story for the rest of the game.)\nBombur doesn't untap during your untap step unless you have an enduring story.",
+        "power": "5",
+        "toughness": "3",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Storied"
+        ],
+        "reference_printing": {
+          "id": "63c317e7-432c-4817-8db4-3670a1d84be3",
+          "set": "hob",
+          "collector_number": "88",
+          "released_at": "2026-08-14"
+        }
+      },
+      "rust_path": "src/card_definitions/hob/bombur_gentle_dreamer.rs",
+      "provenance_path": "src/card_definitions/hob/bombur_gentle_dreamer.json",
+      "obligations": [
+        {
+          "obligation": "Storied grants a persistent public designation at the live three-permanent threshold",
+          "test": "engine::assurance::hob_storied::hob_storied_paid_consumers_threshold_bonuses_and_persistent_public_designation"
+        },
+        {
+          "obligation": "Does not untap in controller untap step without enduring story, but effect untaps remain legal; prohibition precedes stun replacement",
+          "test": "engine::assurance::hob_storied::hob_storied_bombur_conditional_untap_stun_and_effect_untap"
+        }
+      ]
+    },
+    {
+      "name": "Ori, Keeper of Songs",
+      "oracle": {
+        "oracle_id": "69cc089a-abd3-4edb-bc79-f02daac70837",
+        "name": "Ori, Keeper of Songs",
+        "layout": "normal",
+        "mana_cost": "{2}{W}",
+        "cmc": 3.0,
+        "type_line": "Legendary Creature — Dwarf Bard",
+        "oracle_text": "Storied (If you control three or more artifacts, legendaries, and/or Sagas, you have an enduring story for the rest of the game.)\nAs long as you have an enduring story, Ori gets +1/+0 and has vigilance.",
+        "power": "3",
+        "toughness": "3",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [
+          "Storied"
+        ],
+        "reference_printing": {
+          "id": "c5727af5-a487-4b16-8278-81c3c928c417",
+          "set": "hob",
+          "collector_number": "23",
+          "released_at": "2026-08-14"
+        }
+      },
+      "rust_path": "src/card_definitions/hob/ori_keeper_of_songs.rs",
+      "provenance_path": "src/card_definitions/hob/ori_keeper_of_songs.json",
+      "obligations": [
+        {
+          "obligation": "Storied; printed 3/3 body and +1/+0 with vigilance for the current controller with enduring story",
+          "test": "engine::assurance::hob_storied::hob_storied_paid_consumers_threshold_bonuses_and_persistent_public_designation"
+        },
+        {
+          "obligation": "Printed bonus and Storied suppressed by ability removal, designation persists and returning ability can acquire it",
+          "test": "engine::assurance::hob_storied::hob_storied_suppressed_source_cannot_award_and_returning_ability_can"
+        }
+      ]
+    },
+    {
+      "name": "Óin the Brave",
+      "oracle": {
+        "oracle_id": "a25ba5cc-6ff8-4215-b70d-7e86e15e3c1a",
+        "name": "Óin the Brave",
+        "layout": "normal",
+        "mana_cost": "{1}{R}",
+        "cmc": 2.0,
+        "type_line": "Legendary Creature — Dwarf Warrior",
+        "oracle_text": "Storied (If you control three or more artifacts, legendaries, and/or Sagas, you have an enduring story for the rest of the game.)\nAs long as you have an enduring story, Óin gets +1/+0 and has haste.\n{1}, {T}, Discard a card: Draw a card.",
+        "power": "1",
+        "toughness": "3",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Storied"
+        ],
+        "reference_printing": {
+          "id": "9984b9ef-e81c-48f4-aa33-0504171a2d3c",
+          "set": "hob",
+          "collector_number": "106",
+          "released_at": "2026-08-14"
+        }
+      },
+      "rust_path": "src/card_definitions/hob/oin_the_brave.rs",
+      "provenance_path": "src/card_definitions/hob/oin_the_brave.json",
+      "obligations": [
+        {
+          "obligation": "Storied; printed 1/3 body and +1/+0 with haste for the current controller with enduring story",
+          "test": "engine::assurance::hob_storied::hob_storied_paid_consumers_threshold_bonuses_and_persistent_public_designation"
+        },
+        {
+          "obligation": "Pay one generic mana, tap, and discard a private hand card to draw exactly one; haste enables activation while summoning sick; illegal mana/foreign discard rollback",
+          "test": "engine::assurance::hob_storied::hob_storied_oin_pays_discard_mana_and_tap_with_live_haste_legality"
+        }
+      ]
+    }
+  ],
+  "shared_proofs": [
+    {
+      "obligation": "Distinct artifact/legendary/Saga union, opponent exclusion, tokens, live Storied source required and no past-threshold history",
+      "test": "engine::assurance::hob_storied::hob_storied_distinct_mixed_union_saga_tokens_and_source_requirement"
+    },
+    {
+      "obligation": "Acquisition before legend-rule choice, owned branches and restoration",
+      "test": "engine::assurance::hob_storied::hob_storied_acquires_before_legend_choice_and_owned_branches_restore"
+    },
+    {
+      "obligation": "Current types and continuous legendary grants, rather than physical metadata",
+      "test": "engine::assurance::hob_storied::hob_storied_current_types_and_granted_legendary_feed_the_threshold"
+    },
+    {
+      "obligation": "Actual continuous controller changes can acquire the designation; later control loss cannot remove it",
+      "test": "engine::assurance::hob_storied::hob_storied_continuous_control_counts_actual_controller_and_persists"
+    },
+    {
+      "obligation": "Actual mana sacrifice removing ability suppression, nonacquisition when threshold simultaneously lost, funding purity, raw/index children and restored acquisition",
+      "test": "engine::assurance::hob_storied::hob_storied_real_mana_sacrifice_refreshes_ability_return_but_planning_is_pure"
+    },
+    {
+      "obligation": "Creation followed by storied-source sacrifice inside one immutable typed program, before priority/SBAs",
+      "test": "engine::assurance::hob_storied::hob_storied_transient_threshold_inside_one_typed_resolution"
+    }
+  ],
+  "evidence": {
+    "focused_filters": [
+      {
+        "filter": "hob_storied",
+        "passed": 10,
+        "failed": 0,
+        "ignored": 0,
+        "command_seconds": 131.29430900199804,
+        "scenario_seconds": 0.06
+      },
+      {
+        "filter": "untap",
+        "passed": 11,
+        "failed": 0,
+        "ignored": 0,
+        "command_seconds": 0.115021503996104,
+        "scenario_seconds": 0.01
+      },
+      {
+        "filter": "big_lotus_vista_funding_recomputes_monocolor_after_virtual_sacrifice",
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "command_seconds": 0.11635279998881742
+      },
+      {
+        "filter": "msh_c_paid_tap_discard_draw_and_graveyard_return",
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "command_seconds": 0.11646738601848483
+      }
+    ],
+    "logs": "<cache>/rustmage-authoring/hob-storied/final-{0,1,2,3}.log",
+    "resource_report": "<cache>/rustmage-build-reports/28057e50fa8140dcba583b9ef7949d06.json",
+    "guard_elapsed_seconds": 198.31918478599982,
+    "approximate_build_slot_wait_seconds": 66.677034094,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 2510483456,
+    "oom_kills": 0,
+    "full_validation_runs": 0,
+    "simulation_benchmarks": []
+  },
+  "integration_requirements": [
+    "Regenerate module links and coverage from final assembled inputs.",
+    "Root bumps the truthful new PlayerView.enduring_story public field from observation schema 153 to 154 and updates inherited trace projection.",
+    "Do not publish an intermediate PR or merge; user requires one final PR after all 193 HOB identities are complete."
+  ]
+}

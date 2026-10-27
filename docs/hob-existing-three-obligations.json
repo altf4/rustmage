@@ -1,0 +1,86 @@
+{
+  "scope": "Two complete candidate HOB cards: Master's Councillors and Great Gilded Boat, entirely using accepted typed engine mechanics",
+  "base_revision": "8cc9a582",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "assurance_module": "src/assurance/hob_existing_three.rs",
+  "engine_changes": false,
+  "cards": [
+    {
+      "name": "Master's Councillors",
+      "obligations": [
+        "Costs 1U; 1/3 Human Advisor with vigilance",
+        "Source gets +2/+0 per graveyard containing at least seven cards",
+        "Both own and opposing graveyards contribute independently, and bonuses disappear dynamically when counts fall",
+        "Controller second draw each turn triggers once, including during opponent turn; first and third draws do not trigger",
+        "Any player can be targeted to mill exactly three; captured trigger survives source departure"
+      ],
+      "tests": [
+        "councillors_paid_live_zero_one_two_graveyard_thresholds_and_vigilance",
+        "councillors_second_draw_only_targets_either_player_each_turn_and_packet_survives_source"
+      ],
+      "implementation": "StatValue::Sum of two AtLeast(Count graveyard, cards_only=true, minimum=7) values with controller-relative relations 0 and 1, one Source ScalingModifier of +2/+0, ordinary CardDrawn ordinal=2 and targeted Mill(3)"
+    },
+    {
+      "name": "Great Gilded Boat",
+      "obligations": [
+        "Costs 2U and is initially a noncreature artifact Vehicle",
+        "Crew 2 chooses only own creatures and requires total power at least two",
+        "Actual crew payment taps both one-power creatures; animates to 4/4 until cleanup",
+        "Whenever controller attacks recruits once per declaration, regardless of Boat attacking or being a creature",
+        "An empty attack declaration does not recruit",
+        "Recruit draws before mandatory private discard; land gives no token, nonland gives a 1/1 white Human Soldier"
+      ],
+      "tests": [
+        "boat_paid_crew_two_taps_actual_creatures_and_recruits_once_when_attacking",
+        "boat_uncrewed_recruits_for_other_attackers_but_not_for_empty_declaration"
+      ],
+      "shared_proof": [
+        "hob_recruit_owned_private_discard_branches_can_choose_different_outcomes",
+        "msh_owned_teamwork_and_partial_crew_decisions_survive_branch_and_restore"
+      ]
+    }
+  ],
+  "shared_contracts": "No new owned state, choices, quantities or events: existing central actual/speculative StatValue evaluation, Crew, Recruit, targeting and draw-event capture are reused. New tests prove this definition wiring and affected outcome boundaries.",
+  "author_validation": {
+    "verified_definitions": 5411,
+    "verified_java_blobs": 1502,
+    "rustfmt_check": true,
+    "diff_check": true,
+    "focused_runs": 2,
+    "first_run": {
+      "passed": 3,
+      "failed": 1,
+      "reason": "Opponent-turn test attempted next cast before active opponent passed priority. Fixed test helper to pass priority legally; no card or engine change.",
+      "compile_and_run_seconds": 140.62135754601331,
+      "queue_and_guard_overhead_seconds": 185.8280647500069
+    },
+    "final_run": {
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "both_seats": true,
+      "compile_and_run_seconds": 132.7009409419843,
+      "queue_and_guard_overhead_seconds": 0.04271088703535497,
+      "scenario_execution_seconds": "<0.01 (Cargo reports 0.00s)",
+      "memory_peak_bytes": 2527780864,
+      "memory_max_bytes": 6442450944,
+      "oom_events": 0
+    },
+    "logs": [
+      "<cache>/rustmage-authoring/hob-existing-three/focused-1.log",
+      "<cache>/rustmage-authoring/hob-existing-three/focused-2.log"
+    ],
+    "resource_reports": [
+      "<cache>/rustmage-build-reports/f94596dd454a4fd59bc4d50c498688e0.json",
+      "<cache>/rustmage-build-reports/cce1a9099d3c42cc930a7f8696f8e30a.json"
+    ]
+  },
+  "throughput": {
+    "scope": "Two candidate complete cards; isolated branch creation to final focused terminal report, including authoring and shared build-slot waits",
+    "elapsed_seconds": 696.4734988212585,
+    "candidate_cards_per_hour": 10.337794635668962,
+    "simulation": "No simulation benchmark run"
+  },
+  "acceptance": "Independent nonauthor reviews, full release validation and complete-set game acceptance remain with final integrated whole-set PR. No intermediate PR or merge was created."
+}

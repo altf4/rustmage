@@ -3,10 +3,45 @@
   "catalogue_id": 4472,
   "oracle_id": "89c3c81b-8960-4f79-b2ec-f13560058071",
   "facts_sha256": "c37049a9c70a9aae793512bd91e8523bedc50bc9faec174d38357b09d3c37b7b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bc3f93df54f0593b0201b5109cf285d441886a3e54e3da6073080d1da7e0b75a"
   },
-  "physical_metadata_sha256": "415efb374cd8ff5ccdc6a1cda1ed3b327212c5f72d2e9e9a6d16be7d1b988e92"
+  "physical_metadata_sha256": "415efb374cd8ff5ccdc6a1cda1ed3b327212c5f72d2e9e9a6d16be7d1b988e92",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheMasterOfLakeTown.java",
+  "java_sha256": "f36f8aaa41171a9a31a197ad99c6189f3b4077b7515eaf287a6d65d95f83b596",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LoseLifeTriggeredAbility.java",
+      "sha256": "6d6a10a3d81d3cc3949dd1f70d678487bf79f8ff7564b9c009eecb28f9577d62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedLifeLossValue.java",
+      "sha256": "7b2c3c39eb75e42146911828a50c2f468d1ea2ae7955fec68fe82e37f23a9bd0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ZoneChangeTriggeredAbility.java",
+      "sha256": "2387eb4e53ef69a480b3ad72111ccdd5f994528cb727378c65c941a46c44d7ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ]
 }

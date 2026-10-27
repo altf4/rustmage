@@ -39,10 +39,12 @@ impl Game {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.item.source_card.warp_cost().expect("fixed Warp cost");
             }
-            if a.item
-                .cast
-                .is_some_and(|c| matches!(c.method, CastMethod::Plot | CastMethod::Free))
-            {
+            if a.item.cast.is_some_and(|c| {
+                matches!(
+                    c.method,
+                    CastMethod::ExileLife | CastMethod::Plot | CastMethod::Free
+                )
+            }) {
                 return ManaCost {
                     colored: [0; 6],
                     generic: 0,
@@ -211,6 +213,27 @@ impl Game {
             )
         })
     }
+    /// Announced spells already occupy the stack; retain their actual cast origin.
+    /// During nested mana abilities the enclosing announcement remains authoritative.
+    fn spell_origin_is_nonhand(&self, actor: Player, id: CardId) -> bool {
+        let packet = self
+            .state
+            .announcing
+            .iter()
+            .map(|a| &a.item)
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .iter()
+                    .flat_map(|frames| frames.iter().map(|f| &f.announcement.item)),
+            )
+            .chain(self.state.stack.iter())
+            .find(|s| s.kind == StackKind::Spell && s.card == id);
+        let origin = packet
+            .and_then(|s| s.cast.map(|c| c.origin))
+            .unwrap_or(self.state.objects[id as usize].zone);
+        origin != Zone::Hand || self.state.objects[id as usize].owner != actor
+    }
     pub(super) fn spell_reduction(&self, actor: Player, id: CardId) -> u32 {
         u32::try_from(self.spell_reduction_at_mana_value(
             actor,
@@ -241,6 +264,7 @@ impl Game {
             rule.filter.matches_mana_value(definition, mana_value)
                 && match rule.turn {
                     CostTurn::Any => true,
+                    CostTurn::NonHand => self.spell_origin_is_nonhand(actor, id),
                     CostTurn::Own => self.state.active == actor,
                     CostTurn::Other => self.state.active != actor,
                 }

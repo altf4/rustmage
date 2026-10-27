@@ -1,16 +1,20 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete printed obligations from pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(4, 4),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::CounterKeyword(
+            0,
+            CounterKind::PlusOne,
+            Keywords::MENACE,
+        )],
+    }],
+    extras: &CardExtras {
+        counter_keyword_grants: &[(CounterKind::PlusOne, Keywords::MENACE)],
+        adventure_identity: Some("Great Ugly-Looking Goblin // Clap! Snap!"),
+        adventure_spell: Some(Card(5410)),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

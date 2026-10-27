@@ -21,6 +21,14 @@ pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        if step == Step::Upkeep
+            && let Some(rows) = self.state.delayed_upkeep_tokens.take()
+        {
+            self.state.pending_triggers.extend(*rows);
+        }
+        if step == Step::Draw {
+            self.state.players[self.state.active.index()].drew_in_own_draw_step = false;
+        }
         if matches!(step, Step::Main1 | Step::Main2)
             && let Some(rows) = self.state.delayed_main_mana.take()
         {
@@ -96,6 +104,7 @@ impl Game {
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
+            | TriggerCondition::TreasureManaSpent(event)
             | TriggerCondition::ManaSpent { event, .. }
             | TriggerCondition::InterveningIf { event, .. } => {
                 self.trigger_time_guards_hold(*event, player, source, tapped)
@@ -116,6 +125,7 @@ impl Game {
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
+            | TriggerCondition::TreasureManaSpent(event)
             | TriggerCondition::ManaSpent { event, .. } => {
                 self.trigger_guards_hold(*event, player, source, tapped)
             }

@@ -1,0 +1,74 @@
+{
+  "scope": "Bejeweled Warg complete candidate with passing focused rules proof; independent final review pending",
+  "base_revision": "a1d681dd",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "obligations": [
+    {
+      "printed": "1G 3/2 Wolf with trample",
+      "proof": "hob_bejeweled_paid_body_combat_counter_mode_and_live_target_legality: paid exact1G; base3/2; trample keyword"
+    },
+    {
+      "printed": "Whenever this creature deals combat damage to a player choose one",
+      "proof": "Real paid cast and combat; dying source still offers mode after trample. Negative actual damage packets exclude noncombat, creature recipient and another dealer."
+    },
+    {
+      "printed": "Put a +1/+1 counter on target Wolf you control",
+      "proof": "Self legal, wrong subtype/opposing Wolf rejected transactionally; departed/returned exact target untouched. Filter has kinds0 to retain noncreature Wolf permanents."
+    },
+    {
+      "printed": "Create a Treasure token",
+      "proof": "Exact one untapped artifact Treasure, usable any-color tap/sacrifice mana ability; no counter from this mode."
+    }
+  ],
+  "assurance_module": "src/assurance/hob_bejeweled.rs",
+  "owned_proof": "Modal root produces divergent raw/index branches, parent disposal, restoration and exact same-choice snapshot parity",
+  "shared_proof": [
+    "Existing generic modal/target/counter rules; no new engine state",
+    "Chief Wolf permanent deck admission is unrelated; uses existing Treasure factory5302"
+  ],
+  "remaining": "Integrated final executable acceptance and full-set acceptance remain pending",
+  "validation": {
+    "first_run": {
+      "filter": "engine::assurance::hob_",
+      "passed": 75,
+      "failed": 1,
+      "ignored": 0,
+      "seconds": 134.46235041099135,
+      "log": "<cache>/rustmage-authoring/hob-complete-set/bejeweled-1/focused.log",
+      "failure": "Test helper passed through explicit trample allocation. Corrected legal damage assignment and mode availability; no rules definition changes."
+    },
+    "final_run": {
+      "filter": "engine::assurance::hob_bejeweled::",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "compile_and_execution_seconds": 133.70899250596995,
+      "scenario_execution_seconds": "<0.01",
+      "guard_including_queue_seconds": 262.85542843700387,
+      "memory_peak_bytes": 2542653440,
+      "oom_events": 0,
+      "log": "<cache>/rustmage-authoring/hob-complete-set/bejeweled-2/focused.log",
+      "resource_report": "<cache>/rustmage-build-reports/b555f1051eb34d64ba3be221a58ef1bc.json"
+    },
+    "source_check": {
+      "definitions": 5412,
+      "java_blobs": 1509,
+      "scope": "Before Chief token integration; integrated source check verifies5413 definitions/1512 Java blobs."
+    },
+    "changes_since_first_run": "Test helper only: accept any legal mode, use exact minimum lethal trample allocation, and reject unavailable counter mode after source dies."
+  },
+  "source_hashes": {
+    "src/card_definitions/hob/bejeweled_warg.rs": "aa31097021f8513ff3af6db1f5106828268ae4f48b2d7c3b3be3680a4b653332",
+    "src/card_definitions/hob/bejeweled_warg.json": "4afa225fb5c217ae736b858fee487051b409fcb6815e29f7794722ce5d7631f2",
+    "src/assurance/hob_bejeweled.rs": "c41763c3c40c99eddecb45cf0ef5162d545412bb444871af302d1a88505cc889"
+  },
+  "independent_reviews": {
+    "head": "59e431e9",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both independent nonauthors verified full printed behavior, pinned Java/helpers, exact source hashes and actual4/4 terminal scenario proof; approved with no findings after fixture repair."
+  }
+}

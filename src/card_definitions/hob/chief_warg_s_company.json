@@ -3,10 +3,61 @@
   "catalogue_id": 735,
   "oracle_id": "372d7086-b7dc-4b6d-bdf6-e9ed9c995456",
   "facts_sha256": "91683a41027172f8028ddf6da9f078430fedc0912a5be09b6e41ff680516f40d",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "e11a7d95883677e180651d9eb78b7435963ff4be9fc76c832b8bd165cec7833d"
-  },
-  "physical_metadata_sha256": "8e3627c179236d1d425a7480f07e7a7df2cf1c5c3d8a168da98acf4c13493bd5"
+  "complete": true,
+  "physical_metadata_sha256": "8e3627c179236d1d425a7480f07e7a7df2cf1c5c3d8a168da98acf4c13493bd5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChiefWargsCompany.java",
+  "java_sha256": "7e018a884fde8581b579627c50a88afcb2ad078056b0f48763702d237f4664f9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalRestrictionEffect.java",
+      "sha256": "1fa2a1d2f8bdcfdd9e3b62d643b7c07d1dd174162686bdff05615432d5e28aa8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackSourceEffect.java",
+      "sha256": "b5c6bf1d2d79363d5d967fad55c50eb876bbd703a4f1a734693e20f8c6d7704c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/WolfToken.java",
+      "sha256": "727ed5c2489fcc65ad9cbd39410559d7480ebf646dc5942ccea6469c9c98bbb4"
+    }
+  ]
 }

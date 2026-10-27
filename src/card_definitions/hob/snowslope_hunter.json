@@ -3,10 +3,36 @@
   "catalogue_id": 3948,
   "oracle_id": "fdf7f144-56e4-4f88-b81a-b85473922355",
   "facts_sha256": "9adf5f0941a9030ac40c07dc9b5aa7df87b122865a4818cb2047ad37a2eaa150",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "06cd1394921252b9e45e160f5cae51a3740f58c996c30b6eddbbb4a42d189f93"
-  },
-  "physical_metadata_sha256": "fb8e4ebc6d8b60acae4683238699e64c4735a8ef0dbddd08652c68a226fcd29d"
+  "complete": true,
+  "physical_metadata_sha256": "fb8e4ebc6d8b60acae4683238699e64c4735a8ef0dbddd08652c68a226fcd29d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SnowslopeHunter.java",
+  "java_sha256": "b725378d427eef4c26918f49bc965ae7fb876a89987cd5c98cc3b2d1fda15982",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LimitedTimesPerTurnActivatedAbility.java",
+      "sha256": "11b6039cca03fb60836b3339e38e2b2dccfb7a47bfa599964d14ebf12696cdf7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+      "sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    }
+  ]
 }

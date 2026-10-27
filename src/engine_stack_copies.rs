@@ -207,6 +207,7 @@ impl Game {
                 trigger.source_quantity_lki = None;
                 trigger.event_object = None;
                 trigger.target_controller_lki = None;
+                trigger.target_kinds_lki = None;
                 trigger.is_copy = false;
                 trigger.targets.clear();
                 trigger.controller = source.controller;
@@ -540,6 +541,7 @@ impl Game {
             spec.rule,
             TargetRule::Grouped {
                 constraint: TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::SharedCardType
                     | TargetGroupConstraint::OtherThanGroup(_),
                 ..
             }

@@ -11,6 +11,8 @@ pub(super) struct Announcement {
     pub trigger: bool,
     pub payment: Option<Mana>,
     pub cost: Option<ManaCost>,
+    pub equip_zero_available: bool,
+    pub activation_cost_route: ActivationCostRoute,
     pub total_cost: Option<ManaCost>,
     /// Locked before mana abilities or any nonmana payment changes the source.
     pub activation_discount: u32,
@@ -56,7 +58,7 @@ impl Announcement {
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Miracle => self.miracle_cost,
-            CastMethod::Free | CastMethod::Plot => Some(ManaCost {
+            CastMethod::ExileLife | CastMethod::Free | CastMethod::Plot => Some(ManaCost {
                 colored: [0; 6],
                 generic: 0,
             }),
@@ -64,6 +66,9 @@ impl Announcement {
         })
     }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
+        if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
+            return None;
+        }
         if self
             .item
             .cast
@@ -96,7 +101,10 @@ impl Announcement {
                             .source_card
                             .mana_alternative_replaces_additional(cost)
                     }),
-                    CastMethod::Free | CastMethod::Plot | CastMethod::Miracle => {
+                    CastMethod::ExileLife
+                    | CastMethod::Free
+                    | CastMethod::Plot
+                    | CastMethod::Miracle => {
                         self.fixed_alternative_cost()
                             .is_some_and(|base| self.cost.is_some_and(|cost| cost != base))
                             && self
@@ -119,11 +127,12 @@ impl Announcement {
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedWarpExile => None,
         }
     }
 
-    pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
+    fn cost_route_options(&self) -> impl Iterator<Item = (ManaCost, ActivationCostRoute)> + '_ {
         let options = match self.item.kind {
             StackKind::Spell
                 if self
@@ -156,10 +165,12 @@ impl Announcement {
                     .chain([].iter().copied())
             }
             StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| matches!(c.method, CastMethod::Plot | CastMethod::Free)) =>
+                if self.item.cast.is_some_and(|c| {
+                    matches!(
+                        c.method,
+                        CastMethod::ExileLife | CastMethod::Plot | CastMethod::Free
+                    )
+                }) =>
             {
                 std::iter::once(ManaCost {
                     colored: [0; 6],
@@ -179,6 +190,7 @@ impl Announcement {
             | StackKind::CasualtyCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
+            | StackKind::DelayedTokenCreation { .. }
             | StackKind::DelayedWarpExile => {
                 unreachable!("triggered ability has no activation cost")
             }
@@ -199,16 +211,26 @@ impl Announcement {
                         .capacity("additional mana cost exhausted"),
                 })
         });
+        // Choose the printed base or its replacement before applying the
+        // shared cost modifiers. A route identity survives equal mana totals.
         options
-            .flat_map(move |cost| {
-                std::iter::once(cost).chain(
+            .map(|cost| (cost, ActivationCostRoute::Printed))
+            .chain(self.equip_zero_available.then_some((
+                ManaCost {
+                    colored: [0; 6],
+                    generic: 0,
+                },
+                ActivationCostRoute::FirstEquipZero,
+            )))
+            .flat_map(move |(cost, route)| {
+                std::iter::once((cost, route)).chain(
                     (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
                         .then(|| self.item.source_card.explicit_additional_mana())
                         .flatten()
-                        .map(|extra| Card::add_mana_cost(cost, extra)),
+                        .map(move |extra| (Card::add_mana_cost(cost, extra), route)),
                 )
             })
-            .flat_map(move |cost| {
+            .flat_map(move |(cost, route)| {
                 const ZERO: [ManaCost; 1] = [ManaCost {
                     colored: [0; 6],
                     generic: 0,
@@ -222,7 +244,9 @@ impl Announcement {
                             cost,
                             reduction,
                             self.activation_discount,
-                            if self.power_up_costs.is_some() {
+                            if self.power_up_costs.is_some()
+                                && route == ActivationCostRoute::Printed
+                            {
                                 u64::from(self.item.x.unwrap_or(0))
                                     * u64::from(match self.item.kind {
                                         StackKind::ActivatedAbility { ability } => {
@@ -234,9 +258,10 @@ impl Announcement {
                                 0
                             },
                         )
+                        .map(|cost| (cost, route))
                     })
             })
-            .filter(|cost| {
+            .filter(|(cost, _)| {
                 self.item
                     .cast
                     .is_none_or(|cast| cast.method != CastMethod::GrantedFlashback)
@@ -251,7 +276,7 @@ impl Announcement {
                             generic: self.item.source_card.cost().1,
                         }
             })
-            .filter_map(|cost| {
+            .filter_map(|(cost, route)| {
                 Game::with_tiered_mana(
                     Game::with_flash_surcharge(
                         cost,
@@ -260,17 +285,28 @@ impl Announcement {
                     ),
                     &self.item,
                 )
+                .map(|cost| (cost, route))
             })
-            .chain(extra.and_then(|cost| {
-                Game::with_tiered_mana(
-                    Game::with_flash_surcharge(
-                        cost,
-                        self.item.source_card,
-                        self.item.cast.is_some_and(|c| c.flash_surcharge),
-                    ),
-                    &self.item,
-                )
-            }))
+            .chain(
+                extra
+                    .and_then(|cost| {
+                        Game::with_tiered_mana(
+                            Game::with_flash_surcharge(
+                                cost,
+                                self.item.source_card,
+                                self.item.cast.is_some_and(|c| c.flash_surcharge),
+                            ),
+                            &self.item,
+                        )
+                    })
+                    .map(|cost| (cost, ActivationCostRoute::Printed)),
+            )
+    }
+    pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        self.cost_route_options().map(|(cost, _)| cost)
+    }
+    pub(super) fn activation_route_for_index(&self, index: usize) -> ActivationCostRoute {
+        self.cost_route_options().nth(index).expect("cost option").1
     }
     pub(super) fn needs_evidence(&self) -> bool {
         self.pay_window
@@ -323,6 +359,7 @@ impl Announcement {
                 | StackKind::CasualtyCopy
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
+                | StackKind::DelayedTokenCreation { .. }
                 | StackKind::DelayedWarpExile => false,
             }
     }
@@ -430,6 +467,7 @@ impl Game {
                 return true;
             }
             let mut count = [0usize; 2];
+            let mut seen_kinds = 0u16;
             self.visit_targets_without_hand(
                 spec.rule,
                 actor,
@@ -439,6 +477,21 @@ impl Game {
                 |target| {
                     if target == Target::Card(source.card) {
                         return false;
+                    }
+                    if matches!(
+                        spec.rule,
+                        TargetRule::Grouped {
+                            constraint: TargetGroupConstraint::SharedCardType,
+                            ..
+                        }
+                    ) {
+                        let Target::Card(id) = target else {
+                            return false;
+                        };
+                        let kinds = self.current_kinds(id);
+                        let available = seen_kinds & kinds != 0;
+                        seen_kinds |= kinds;
+                        return available;
                     }
                     let distinct = matches!(
                         spec.rule,
@@ -503,6 +556,7 @@ impl Game {
                 return true;
             }
             let mut count = [0usize; 2];
+            let mut seen_kinds = 0u16;
             self.visit_targets_without_hand(
                 spec.rule,
                 actor,
@@ -510,6 +564,21 @@ impl Game {
                 None,
                 qualification,
                 |target| {
+                    if matches!(
+                        spec.rule,
+                        TargetRule::Grouped {
+                            constraint: TargetGroupConstraint::SharedCardType,
+                            ..
+                        }
+                    ) {
+                        let Target::Card(id) = target else {
+                            return false;
+                        };
+                        let kinds = self.current_kinds(id);
+                        let available = seen_kinds & kinds != 0;
+                        seen_kinds |= kinds;
+                        return available;
+                    }
                     let distinct = matches!(
                         spec.rule,
                         TargetRule::Grouped {
@@ -606,10 +675,32 @@ impl Game {
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
+            TargetGroupConstraint::SharedCardType => object.zone == Zone::Battlefield && chosen.iter().filter(|b| b.group == group).all(|b| {
+                matches!(b.target, Target::Card(other) if self.same_target_object(*b) && self.on_battlefield(other) && self.current_kinds(other) & self.current_kinds(id) != 0)
+            }),
             TargetGroupConstraint::DifferentControllers => object.zone == Zone::Battlefield && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.controller != object.controller))
             }),
         }
+    }
+
+    pub(super) fn shared_type_target_completion(&self, a: &Announcement, target: Target) -> bool {
+        if !matches!(
+            a.spec.rule,
+            TargetRule::Grouped {
+                constraint: TargetGroupConstraint::SharedCardType,
+                ..
+            }
+        ) || a.item.targets.iter().any(|b| b.group == a.group)
+        {
+            return true;
+        }
+        let Target::Card(id) = target else {
+            return false;
+        };
+        self.visit_item_targets(&a.item, a.spec.rule, |other| {
+            matches!(other, Target::Card(other_id) if other_id != id && self.current_kinds(other_id) & self.current_kinds(id) != 0)
+        })
     }
 
     pub(super) fn resolution_target_relations_hold(
@@ -618,6 +709,40 @@ impl Game {
         bound: BoundTarget,
         plan: TargetPlan,
     ) -> bool {
+        if plan.group(bound.group).is_some_and(|g| {
+            matches!(
+                g.rule,
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::SharedCardType,
+                    ..
+                }
+            )
+        }) {
+            let Target::Card(id) = bound.target else {
+                return false;
+            };
+            let kinds = self.current_kinds(id);
+            return item
+                .targets
+                .iter()
+                .filter(|other| other.group == bound.group && other.target != bound.target)
+                .all(|other| {
+                    let Target::Card(other_id) = other.target else {
+                        return false;
+                    };
+                    let other_kinds =
+                        if self.same_target_object(*other) && self.on_battlefield(other_id) {
+                            Some(self.current_kinds(other_id))
+                        } else {
+                            item.target_kinds_lki.as_ref().and_then(|rows| {
+                                rows.iter().find_map(|(reference, kinds)| {
+                                    (Some(*reference) == other.object).then_some(*kinds)
+                                })
+                            })
+                        };
+                    other_kinds.is_some_and(|other| kinds & other != 0)
+                });
+        }
         if let Some(TargetSpec {
             rule:
                 TargetRule::Grouped {
@@ -728,6 +853,7 @@ impl Game {
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
         let cost = a.cost_options().nth(index as usize).unwrap();
+        a.activation_cost_route = a.activation_route_for_index(index as usize);
         a.cost = Some(cost);
         self.continue_announcement_choices(false);
     }
@@ -1056,6 +1182,7 @@ impl Game {
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
+                    | TargetGroupConstraint::SharedCardType
                     | TargetGroupConstraint::ControllerOfPlayerGroup(_)
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
                     TargetGroupConstraint::OtherThanGroup(_)
@@ -1425,6 +1552,7 @@ impl Game {
         }
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
+        item.cast.as_mut().unwrap().treasure_mana_spent |= outcome.treasure_spent;
         item.mana_copy_sources = outcome.copies;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
         item.cast.as_mut().unwrap().spend_any_mana = modifiers.0;
@@ -1441,11 +1569,13 @@ impl Game {
         payment: Mana,
     ) -> SpellView {
         SpellView {
+            additional_triggers: 0,
             gift: None,
             source_move: None,
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            target_kinds_lki: None,
             reflexive_subject: None,
             crew: None,
             cast_event: None,
@@ -1470,6 +1600,7 @@ impl Game {
                 physical_card: None,
                 face: CastFace::Normal,
                 payment,
+                treasure_mana_spent: false,
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
@@ -1503,6 +1634,7 @@ impl Game {
             source_quantity_lki: None,
             event_object: None,
             sacrificed_toughness: None,
+            sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object,
@@ -1557,6 +1689,8 @@ impl Game {
         }
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
+            equip_zero_available: false,
+            activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
@@ -1638,6 +1772,9 @@ impl Game {
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         let casualty = self.casualty_declarations(&item);
         self.state.announcing = Some(Announcement {
+            equip_zero_available: self.item_first_equip_zero_available(&item)
+                && counters == Counters::default(),
+            activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
@@ -1664,6 +1801,11 @@ impl Game {
             pay_window: true,
             production,
         });
+        self.state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .initialize_alternative_life();
         self.continue_announcement_choices(needs_mode);
     }
 
@@ -1682,11 +1824,7 @@ impl Game {
             && matches!(self.state.pending, Pending::Targets { .. })
         {
             if let StackKind::ActivatedAbility { ability } = announcement.item.kind
-                && announcement
-                    .item
-                    .source_card
-                    .activation_target_reduction(ability)
-                    .is_some()
+                && Self::activation_target_sensitive(announcement.item.source_card, ability)
                 && announcement.total_cost.is_none()
             {
                 let base = announcement.cost.unwrap_or_else(|| {
@@ -1787,10 +1925,11 @@ impl Game {
                     || evidence::threshold(spec).is_some()
             }) && let Some(payment) = announcement.payment.take()
             {
-                self.pay_activation(
+                self.pay_activation_route(
                     &mut announcement.item,
                     payment,
                     announcement.counter_payment.clone(),
+                    announcement.activation_cost_route,
                 );
             }
             self.pay_additional_cost(&mut announcement);
@@ -1798,10 +1937,11 @@ impl Game {
         }
         if let Some(payment) = announcement.payment {
             if matches!(announcement.item.kind, StackKind::ActivatedAbility { .. }) {
-                self.pay_activation(
+                self.pay_activation_route(
                     &mut announcement.item,
                     payment,
                     announcement.counter_payment.clone(),
+                    announcement.activation_cost_route,
                 );
             } else {
                 let outcome = self.spend_mana_for(
@@ -1812,6 +1952,8 @@ impl Game {
                 if outcome.haste {
                     self.grant_stack_keywords(announcement.item.object, Keywords::HASTE);
                 }
+                announcement.item.cast.as_mut().unwrap().treasure_mana_spent =
+                    outcome.treasure_spent;
                 announcement.item.mana_copy_sources = outcome.copies;
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
@@ -1846,6 +1988,12 @@ impl Game {
             self.add_announced_mana(&announcement.item, production);
             self.committed_mana_reflexive(&announcement.item);
             if self.restore_mana_announcement() {
+                return;
+            }
+            if let Some(payment) = &self.state.attack_payment {
+                self.state.pending = Pending::AttackPayment {
+                    player: payment.player,
+                };
                 return;
             }
         } else {

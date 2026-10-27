@@ -59,7 +59,27 @@ impl Game {
         definition: Card,
         ability: u16,
     ) -> u32 {
+        let subtype_discount =
+            definition
+                .activation_subtype_discount(ability)
+                .map_or(0, |subtype| {
+                    let controller = self.state.objects[source as usize].controller;
+                    u32::try_from(
+                        self.state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .filter(|(id, object)| {
+                                object.zone == Zone::Battlefield
+                                    && object.controller == controller
+                                    && self.has_subtype(*id as CardId, subtype)
+                            })
+                            .count(),
+                    )
+                    .unwrap_or(u32::MAX)
+                });
         self.power_up_generic_discount(source, definition, ability)
+            .saturating_add(subtype_discount)
             .saturating_add(
                 definition
                     .activation_counter_discount(ability)
@@ -182,6 +202,7 @@ impl Game {
         actor: Player,
         sorcery: bool,
     ) -> bool {
+        let readiness = self.activation_readiness(actor, ability);
         !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && self.printed_abilities_available(card)
             && (ability.mana_production().is_some() || !self.named_activation_prohibited(card))
@@ -198,7 +219,7 @@ impl Game {
                 self.current_kinds(card),
                 || ability_world::CharacteristicWorld::activation_keywords(self, card),
                 self.state.players[actor.index()].life,
-                ability,
+                &readiness,
                 index,
                 actor,
                 sorcery,
@@ -324,8 +345,9 @@ impl Game {
                 }
                 continue;
             }
-            let done = counter_payments(
-                ability.cost,
+            let done = self.visit_activation_counter_payments(
+                actor,
+                ability,
                 self.counter_amounts(card),
                 |counter_payment| {
                     let fundable = || {
@@ -382,10 +404,16 @@ impl Game {
                             return true;
                         }
                     }
+                    // A direct action cannot declare which optional whole-cost
+                    // route it pays; expose the explicit announcement instead.
+                    if self.first_equip_zero_available(actor, ability) {
+                        return false;
+                    }
                     if object
                         .card
                         .activation_target_reduction(index as u16)
                         .is_some()
+                        || self.active_target_equip_reducer(actor, object.card, index as u16)
                     {
                         return self.visit_target_cost_direct_actions(
                             card,
@@ -515,10 +543,12 @@ impl Game {
     ) -> SpellView {
         self.state.passes = 0;
         SpellView {
+            additional_triggers: 0,
             source_move: None,
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
+            target_kinds_lki: None,
             gift: None,
             reflexive_subject: None,
             crew: None,
@@ -580,6 +610,7 @@ impl Game {
             source_quantity_lki: None,
             event_object: None,
             sacrificed_toughness: None,
+            sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,
             card,
             object: self.object_ref(card),
@@ -595,11 +626,25 @@ impl Game {
         payment: Mana,
         counter_payment: Counters,
     ) {
+        self.pay_activation_route(item, payment, counter_payment, ActivationCostRoute::Printed);
+    }
+    pub(super) fn pay_activation_route(
+        &mut self,
+        item: &mut SpellView,
+        payment: Mana,
+        counter_payment: Counters,
+        route: ActivationCostRoute,
+    ) {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             unreachable!()
         };
-        let definition = &item.source_card.activation(ability);
-        self.pay_activation_definition(item, payment, counter_payment, ability, definition);
+        let mut definition = *item.source_card.activation(ability);
+        if route == ActivationCostRoute::FirstEquipZero {
+            assert!(definition.is_equip());
+            assert_eq!(counter_payment, Counters::default());
+            definition.cost = ActivationCost::ZERO;
+        }
+        self.pay_activation_definition(item, payment, counter_payment, ability, &definition);
     }
 
     // The same committed payment routine handles both ordinary authored abilities
@@ -673,6 +718,9 @@ impl Game {
             self.activation_cost_counters(item.object, kind, amount, item.controller);
         }
         self.refresh_local_source_counter_quantities(item);
+        // Costs and real mana activations may briefly reach the threshold before
+        // the same payment sacrifices its source. Speculative planning never does.
+        self.refresh_enduring_stories();
         if cost.exile_self || cost.discard || cost.sacrifice {
             // The local announcement is temporarily outside State while costs
             // commit. Freeze its post-payment source facts before departure too.

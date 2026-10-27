@@ -11,7 +11,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     // Preserve spare sources for later steps once those declarations are exhausted.
     let tap_for_payment = observation.announcing.is_some()
         || observation.plot_payment.is_some()
-        || observation.payment_request.is_some();
+        || observation.payment_request.is_some()
+        || observation.attack_payment.is_some();
     let resolution_mana_score = |payment: crate::Mana, production: crate::Mana| {
         let request = observation.resolution_payment.as_ref().unwrap();
         let pool = observation.players[request.payer.index()].mana;
@@ -186,6 +187,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::PutHandCreature { .. }
             | Action::PutHandPermanent { .. }
             | Action::PutHandLand { .. }
+            | Action::ChooseArmy { .. }
             | Action::SelectLand { .. } => 50,
             Action::FinishLandSelection => -1,
             Action::DeclineHandEntry => -1,
@@ -267,7 +269,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     0
                 }
             }
-            Action::ChooseSearchZones { .. } => 50,
+            Action::ChooseSearchZones { .. } | Action::ChooseHandLibrarySearchZones { .. } => 50,
             Action::Concede => -1000,
             Action::ChooseZoneReplacement { .. } => 50,
             Action::Sacrifice { .. } => 50,
@@ -300,14 +302,19 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceSneak { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnounceExile { .. }
+            | Action::AnnounceExileLife { .. }
+            | Action::AnnounceExileFree { .. }
             | Action::AnnounceFlashback { .. } => 79,
             Action::AnnouncePlot { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
-            | Action::AnnounceBorrowedAbility { .. } => 34,
-            Action::AnnounceMana { .. } | Action::AnnounceBorrowedMana { .. } => -2,
-            Action::PayCosts { .. } | Action::PayPlot { .. } => 100,
+            | Action::AnnounceBorrowedAbility { .. }
+            | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
+            Action::AnnounceMana { .. }
+            | Action::AnnounceBorrowedMana { .. }
+            | Action::AnnounceGraveyardBorrowedMana { .. } => -2,
+            Action::PayCosts { .. } | Action::PayPlot { .. } | Action::PayAttackCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
@@ -319,6 +326,16 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::FinishSearch => 0,
+            Action::ChooseCreatureType { creature_type } => observation
+                .objects
+                .iter()
+                .filter(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == actor
+                        && object.is_creature()
+                        && object.has_subtype(creature_type.name())
+                })
+                .count() as i128,
             Action::ChooseEntryValue {
                 value: crate::EntryChoiceValue::CreatureType(typ),
             } => observation
@@ -443,6 +460,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 production,
                 payment,
                 ..
+            }
+            | Action::ActivateGraveyardBorrowedMana {
+                production,
+                payment,
+                ..
             } => {
                 if observation.resolution_payment.is_some() {
                     return resolution_mana_score(*payment, *production);
@@ -496,7 +518,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AssignDamage { amount, .. } => 50 + *amount,
             Action::Bottom { .. } | Action::Discard { .. } => 50,
             Action::PutTrigger { .. } => 50,
-            Action::ChooseLibraryDestination { .. } | Action::ChooseManaValueParity { .. } => 50,
+            Action::ChooseLibraryDestination { .. }
+            | Action::ChooseManaValueParity { .. }
+            | Action::ChooseLinkedExile { .. } => 50,
             Action::SelectLibrary { .. } => 60,
             Action::FinishLibrarySelection | Action::OrderLibraryBottom { .. } => 50,
             Action::ArrangeLibrary { destination, .. } => {
@@ -544,6 +568,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseToken { .. } => 10,
+            Action::CancelAttackDeclaration | Action::AbortAttackPayment => -100,
             Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
         }
     };

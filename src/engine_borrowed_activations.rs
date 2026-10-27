@@ -27,25 +27,41 @@ pub(super) struct Use {
     pub turn: u32,
     pub exhaust: bool,
 }
-impl BorrowedAbilityView {
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct GraveyardBorrowedAbilityView {
+    pub source: ObjectRef,
+    pub graveyard: ObjectRef,
+    pub definition: Card,
+    pub ability: u16,
+    pub slot: u64,
+    pub used: bool,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct Descriptor {
+    pub source: ObjectRef,
+    pub donor: ObjectRef,
+    pub zone: Zone,
+    pub definition: Card,
+    pub ability: u16,
+    pub slot: u64,
+    pub used: bool,
+}
+impl Descriptor {
     pub(super) fn rules(self) -> &'static ActivatedAbility {
         self.definition.activation(self.ability)
     }
 }
-pub(super) fn abilities<W: CharacteristicWorld + ?Sized>(
-    world: &W,
-    id: CardId,
-) -> Vec<BorrowedAbilityView> {
+pub(super) fn abilities<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> Vec<Descriptor> {
     inventory(world, id, true)
 }
 fn inventory<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
     check_available: bool,
-) -> Vec<BorrowedAbilityView> {
+) -> Vec<Descriptor> {
     let source = world.object(id);
     if source.zone != Zone::Battlefield
-        || !source.card.borrows_exiled_activations()
+        || !source.card.borrows_activations()
         || check_available && !world.printed_abilities_available(id)
     {
         return Vec::new();
@@ -58,7 +74,10 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
         .as_ref()
         .map_or(&[][..], |rows| rows.as_slice())
     {
-        if link.source != world.reference(id) || link.origin != world.ability_origin(id) {
+        if !source.card.borrows_exiled_activations()
+            || link.source != world.reference(id)
+            || link.origin != world.ability_origin(id)
+        {
             continue;
         }
         let card = world.object(link.exiled.card);
@@ -72,9 +91,10 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                 continue;
             }
             let slot = link.first_slot + index as u64;
-            result.push(BorrowedAbilityView {
+            result.push(Descriptor {
                 source: link.source,
-                exiled: link.exiled,
+                donor: link.exiled,
+                zone: Zone::Exile,
                 definition: card.card,
                 ability: index as u16,
                 slot,
@@ -83,15 +103,19 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
         }
         if card.card.mana_color().is_some() {
             let slot = link.first_slot + card.card.activations().len() as u64;
-            result.push(BorrowedAbilityView {
+            result.push(Descriptor {
                 source: link.source,
-                exiled: link.exiled,
+                donor: link.exiled,
+                zone: Zone::Exile,
                 definition: card.card,
                 ability: u16::MAX,
                 slot,
                 used: world.borrowed_activation_used(link.source, slot),
             });
         }
+    }
+    if source.card.graveyard_activation_subtype().is_some() {
+        result.extend(graveyard_borrowing::inventory(world, id));
     }
     result
 }
@@ -121,16 +145,7 @@ impl Game {
                 if width == 0 {
                     continue;
                 }
-                let first_slot = self
-                    .state
-                    .borrowed_links
-                    .as_ref()
-                    .into_iter()
-                    .flat_map(|rows| rows.iter())
-                    .filter(|link| link.source == item.object)
-                    .map(|link| link.first_slot + link.width)
-                    .max()
-                    .unwrap_or(0);
+                let first_slot = graveyard_borrowing::next_slot(self, item.object);
                 (first_slot.checked_add(width)).capacity("borrowed activation capacity exhausted");
                 self.state
                     .borrowed_links
@@ -151,10 +166,10 @@ impl Game {
         card: CardId,
         exiled: ObjectRef,
         index: u16,
-    ) -> BorrowedAbilityView {
+    ) -> Descriptor {
         abilities(self, card)
             .into_iter()
-            .find(|a| a.exiled == exiled && a.ability == index)
+            .find(|a| a.donor == exiled && a.ability == index)
             .expect("legal borrowed activation")
     }
     pub(super) fn borrowed_activation_item(
@@ -164,6 +179,7 @@ impl Game {
         exiled: ObjectRef,
         index: u16,
     ) -> SpellView {
+        self.refresh_graveyard_borrowing();
         let descriptor = self.borrowed_descriptor(card, exiled, index);
         let mut item = self.activation_item(actor, card, index);
         item.source_card = descriptor.definition;
@@ -193,6 +209,7 @@ impl Game {
         }
     }
     pub(super) fn forget_borrowed_source(&mut self, source: ObjectRef) {
+        graveyard_borrowing::forget(&mut self.state.graveyard_borrowing, source);
         if let Some(rows) = &mut self.state.borrowed_links {
             rows.retain(|row| row.source != source);
             if rows.is_empty() {
@@ -207,21 +224,58 @@ impl Game {
         }
     }
     pub(super) fn borrowed_ability_views(&self) -> Vec<BorrowedAbilityView> {
-        self.state
+        let mut sources = Vec::new();
+        for link in self
+            .state
             .borrowed_links
             .as_ref()
-            .map_or_else(Vec::new, |links| {
-                let mut sources = Vec::new();
-                for link in links.iter() {
-                    if !sources.contains(&link.source.card) {
-                        sources.push(link.source.card);
-                    }
-                }
-                sources
-                    .into_iter()
-                    .flat_map(|id| abilities(self, id))
-                    .collect()
+            .into_iter()
+            .flat_map(|links| links.iter())
+        {
+            if !sources.contains(&link.source.card) {
+                sources.push(link.source.card);
+            }
+        }
+        sources
+            .into_iter()
+            .flat_map(|id| abilities(self, id))
+            .filter(|a| a.zone == Zone::Exile)
+            .map(|a| BorrowedAbilityView {
+                source: a.source,
+                exiled: a.donor,
+                definition: a.definition,
+                ability: a.ability,
+                slot: a.slot,
+                used: a.used,
             })
+            .collect()
+    }
+    pub(super) fn graveyard_borrowed_ability_views(
+        &self,
+    ) -> Option<Vec<GraveyardBorrowedAbilityView>> {
+        let rows: Vec<_> = self
+            .state
+            .static_sources
+            .iter()
+            .copied()
+            .filter(|&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .graveyard_activation_subtype()
+                    .is_some()
+            })
+            .flat_map(|id| abilities(self, id))
+            .filter(|a| a.zone == Zone::Graveyard)
+            .map(|a| GraveyardBorrowedAbilityView {
+                source: a.source,
+                graveyard: a.donor,
+                definition: a.definition,
+                ability: a.ability,
+                slot: a.slot,
+                used: a.used,
+            })
+            .collect();
+        (!rows.is_empty()).then_some(rows)
     }
     pub(super) fn visit_borrowed_activations(
         &self,
@@ -230,9 +284,7 @@ impl Game {
         sorcery: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        if !self.state.objects[card as usize]
-            .card
-            .borrows_exiled_activations()
+        if !self.state.objects[card as usize].card.borrows_activations()
             || CharacteristicWorld::activation_prohibited(self, actor, card)
         {
             return false;
@@ -246,6 +298,7 @@ impl Game {
         ready_object.used_abilities = 0;
         for descriptor in &descriptors {
             let ability = descriptor.rules();
+            let readiness = self.activation_readiness(actor, ability);
             if ability.cost.loyalty.is_some() && loyalty_used {
                 continue;
             }
@@ -278,7 +331,7 @@ impl Game {
                     self.current_kinds(card),
                     || CharacteristicWorld::activation_keywords(self, card),
                     self.state.players[actor.index()].life,
-                    ability,
+                    &readiness,
                     0,
                     actor,
                     sorcery,
@@ -286,8 +339,9 @@ impl Game {
             {
                 continue;
             }
-            if activations::counter_payments(
-                ability.cost,
+            if self.visit_activation_counter_payments(
+                actor,
+                ability,
                 self.counter_amounts(card),
                 |counter_payment| {
                     let fundable = self
@@ -327,20 +381,39 @@ impl Game {
                     }
                     if let Some(production) = ability.mana_production() {
                         production.in_world(self, card).visit(|production| {
-                            emit(Action::AnnounceBorrowedMana {
-                                card,
-                                exiled: descriptor.exiled,
-                                ability: descriptor.ability,
-                                counter_payment: counter_payment.clone(),
-                                production,
+                            emit(if descriptor.zone == Zone::Graveyard {
+                                Action::AnnounceGraveyardBorrowedMana {
+                                    card,
+                                    graveyard: descriptor.donor,
+                                    ability: descriptor.ability,
+                                    counter_payment: counter_payment.clone(),
+                                    production,
+                                }
+                            } else {
+                                Action::AnnounceBorrowedMana {
+                                    card,
+                                    exiled: descriptor.donor,
+                                    ability: descriptor.ability,
+                                    counter_payment: counter_payment.clone(),
+                                    production,
+                                }
                             })
                         })
                     } else {
-                        emit(Action::AnnounceBorrowedAbility {
-                            card,
-                            exiled: descriptor.exiled,
-                            ability: descriptor.ability,
-                            counter_payment,
+                        emit(if descriptor.zone == Zone::Graveyard {
+                            Action::AnnounceGraveyardBorrowedAbility {
+                                card,
+                                graveyard: descriptor.donor,
+                                ability: descriptor.ability,
+                                counter_payment,
+                            }
+                        } else {
+                            Action::AnnounceBorrowedAbility {
+                                card,
+                                exiled: descriptor.donor,
+                                ability: descriptor.ability,
+                                counter_payment,
+                            }
                         })
                     }
                 },

@@ -112,6 +112,9 @@ impl Game {
             }
             | Action::ActivateBorrowedMana {
                 card, production, ..
+            }
+            | Action::ActivateGraveyardBorrowedMana {
+                card, production, ..
             } => {
                 // pay_activation_definition replaces this provisional kind with
                 // the exact ordinary/borrowed definition before its first cost.
@@ -243,7 +246,7 @@ impl Game {
     pub(super) fn record_cast_mana_zone_plan(
         &mut self,
         before: &ObjectView,
-        plan: zone_replacements::Plan,
+        plan: &zone_replacements::Plan,
     ) {
         if let Some(capture) = self
             .state

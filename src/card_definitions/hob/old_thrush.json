@@ -3,10 +3,31 @@
   "catalogue_id": 3007,
   "oracle_id": "c8259b0e-131f-44f0-86d4-7c4d711b328d",
   "facts_sha256": "f13b2d9901895b805ef109313d9b89021a75e756819b06df115e0eca8d91e064",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "11b409a9971d14e0047d1ded031add685f21a223afd9b213d186d3675b104f95"
-  },
-  "physical_metadata_sha256": "86315e087442b09dcde43a0267d9e6783555c5581eaf5c343457f4265d0ec1d6"
+  "complete": true,
+  "physical_metadata_sha256": "86315e087442b09dcde43a0267d9e6783555c5581eaf5c343457f4265d0ec1d6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OldThrush.java",
+  "java_sha256": "31291db03da7d5e425ceb7e5547582e817ea8a6d4260bb5404ef6d98d860c78e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/OptionalOneShotEffect.java",
+      "sha256": "f6c73888fb70297406c5b6770f3d996f4a2445ff1dd7320cde42fdd83a02bf50"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutOnLibraryEffect.java",
+      "sha256": "743cf7facece5aca87d59348f3bb7d8655aa46d3852e9e437f6672c29535e782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

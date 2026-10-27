@@ -1,12 +1,32 @@
 {
-  "name": "An Unexpected Party // At the Door",
+  "name": "An Unexpected Party",
   "catalogue_id": 151,
   "oracle_id": "38503d34-f4f9-4eeb-9b1e-4fec1df921b3",
   "facts_sha256": "6ed037183aeb92f7e276247981bbb3c15fff814104c00bc03db1a2b9e07b222f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cb2f798ece3b01c4b5b3b04e8fb966e7ec5b8547a1177a6d13e96e52d435dddc"
   },
-  "physical_metadata_sha256": "6e104982caef45b73ff32a74d772c6808ba98b448f1e6e60637bb7bda54e673a"
+  "physical_metadata_sha256": "d50e71e1bb13123d501774ab45759f3c15e2171a641c7f8daad964ec1ea80134",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AnUnexpectedParty.java",
+  "java_sha256": "ad890fee8e1919e54b5916bc0589dc37af1465a62106ce5bae936fe21b7ea7de",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+      "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Dwarf22Token.java",
+      "sha256": "7e502cfbdf122cf73266739bb9b2c322a05b5ebd7270ef9a92e3e9aa25d9064c"
+    }
+  ]
 }

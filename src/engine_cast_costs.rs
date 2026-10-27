@@ -7,6 +7,7 @@ pub enum CastCostClause {
     Additional,
     Mana,
     Life(u32),
+    AlternativeLife(u32),
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct CastCostRow {
@@ -40,7 +41,19 @@ impl Announcement {
             });
         }
     }
+    pub(super) fn initialize_alternative_life(&mut self) {
+        if self
+            .item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::ExileLife)
+        {
+            self.add_cast_cost_clause(CastCostClause::AlternativeLife(
+                u32::try_from(self.item.mana_value()).expect("spell mana value fits life cost"),
+            ));
+        }
+    }
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
+        self.initialize_alternative_life();
         if self.item.kind == StackKind::Spell
             && (self.item.source_card.has_convoke() || improvise)
             && self.additional_cost().is_some()
@@ -154,7 +167,7 @@ impl Game {
                 };
                 self.state.announcing = Some(a);
             }
-            CastCostClause::Life(amount) => {
+            CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
                 self.lose_life(a.item.controller, i128::from(amount));
                 let c = a.cast_costs.as_mut().unwrap();
                 c.clauses[usize::from(index)].paid = true;

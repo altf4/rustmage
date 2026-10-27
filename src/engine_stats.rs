@@ -29,6 +29,8 @@ impl Game {
         self.register_battlefield_providers(id);
     }
     pub(super) fn register_battlefield_providers(&mut self, id: CardId) {
+        self.register_trigger_multiplier_source(id);
+        self.register_activation_observer(id);
         self.register_zone_rule_card(self.state.objects[id as usize].card);
         self.register_static_base_stats(id);
         self.register_live_static_source(id);
@@ -50,6 +52,7 @@ impl Game {
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
+                    | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
@@ -85,6 +88,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::AttackDeclared { .. }
+                    | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledEquippedCreatureAttacks
@@ -137,13 +141,16 @@ impl Game {
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
+                    | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
+                    | TriggerCondition::CreatureDiesBatch { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::FoodsSacrificed
@@ -187,13 +194,18 @@ impl Game {
                 group.fragments.iter().any(|fragment| {
                     matches!(
                         fragment,
-                        crate::cards::StaticAbilityFragment::LandMana { .. }
+                        crate::cards::StaticAbilityFragment::Storied
+                            | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
+                            | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
+                            | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
+                            | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
+                            | crate::cards::StaticAbilityFragment::ConditionalWard { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
                             | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
@@ -206,10 +218,12 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                             | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
+                            | crate::cards::StaticAbilityFragment::ConditionalAdditionalLandPlays { .. }
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }
                             | crate::cards::StaticAbilityFragment::SourceGraveyardBonus { .. }
+                            | crate::cards::StaticAbilityFragment::ConditionalCreatureModifier { .. }
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
@@ -221,6 +235,7 @@ impl Game {
                 Some(
                     crate::cards::ZoneReplacementRule::ExileInstantSorceryCards
                         | crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens
+                        | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
                 )
             )
             || !self.state.objects[id as usize]
@@ -269,6 +284,8 @@ impl Game {
                 .card
                 .cast_timing_grants()
                 .is_empty()
+            || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::FirstEquipZeroCost { .. } | crate::cards::StaticAbilityFragment::EquipTargetReduction(_))))
+            || self.state.objects[id as usize].card.graveyard_activation_subtype().is_some()
             || self.state.objects[id as usize].card.has_free_hand_cast()
             || self.state.objects[id as usize].card.has_storm_grant()
             || self.state.objects[id as usize]

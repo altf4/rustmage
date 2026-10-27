@@ -1,0 +1,196 @@
+{
+  "cohort": "HOB inherited artifacts five-card independent outcome assurance",
+  "base_revision": "a1ccde52ab631ee3360b249c04701d765daf9483",
+  "scope": "Assurance+ledger only. Five accepted definitions and provenance remain unchanged. No engine, schema, identity or token changes.",
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/c/CrudeBentBlade.java",
+      "sha256": "3aa62aa80b5b5cf7e5bcb6018cb3dc74c4719d67e1646244c368c676784d5d5a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/d/DwarvenMattock.java",
+      "sha256": "72af14e2eecc84ba3eb69e9900639ccab31961e8b783b5a773506e2bda6b0b36"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/r/RaggedShortSpear.java",
+      "sha256": "3792e49a59c22e4bc9610bc52470950f87dc8928f43ead15bebd44c2ad7d3e36"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/t/ThrorsMap.java",
+      "sha256": "e32a66d0907e1e161b5c0056e50bf37d324d9e757caab79da7ccae57ff8553e3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/w/WellWornSpatula.java",
+      "sha256": "9952d52948232c5217bcc5460a00c82b7b30c22da2a08d8ecb36f53f2d8c0b92"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+      "sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeEffect.java",
+      "sha256": "c6d6af5f7c0f53c978e092e82dd8123b8da86ae9d5c3ec21321b28ecea0cd967"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ],
+  "unchanged_definition_provenance_sha256": {
+    "src/card_definitions/hob/crude_bent_blade.rs": "dc134a44726a191b312671eae59a9cb17d0c4ce7f0f91c265ff4debb60122827",
+    "src/card_definitions/hob/crude_bent_blade.json": "e32520bf627b75a63d08dc1466eed579f430bc688245ea0d54aad4190874a52d",
+    "src/card_definitions/hob/dwarven_mattock.rs": "c6f204ac85964aa33017a0deba180c5691c6f547b89fc82550495c4f46e5c04e",
+    "src/card_definitions/hob/dwarven_mattock.json": "93a0261a4b3f054a07299349b0e03d7513a27f6b9607c671f7ccd5fe56b453d5",
+    "src/card_definitions/hob/ragged_short_spear.rs": "2a879d304a5815d43d053f2c00029e50bb9057a9b93d2c21cda4267e6e785a0a",
+    "src/card_definitions/hob/ragged_short_spear.json": "fbc78258ce3df2f64b2e57e2837cb66fafa2e98f8f6125b005c328d68084353e",
+    "src/card_definitions/hob/thror_s_map.rs": "9547cc650c3ac4e17b6b5b88940f1a795bf5183119e0a4503d5de433cc10e8c5",
+    "src/card_definitions/hob/thror_s_map.json": "9dc22584198b3508fd6592635233a16e90d1d9474b0a5ee1666006a9d97f160e",
+    "src/card_definitions/hob/well_worn_spatula.rs": "4ba0109f661b6c47640ffdb1ea91a7abdda6b399bb177c1ba65e37c888304f06",
+    "src/card_definitions/hob/well_worn_spatula.json": "84539dfa807ff2010782cd88cb7559bde07e13510f70e4ac3058d2c51ee9ce07"
+  },
+  "oracle": "Read complete pinned data/standard/cards.json Oracle entries for all5; enumerate ETB/targets/optional choices/attachment grants/activation costs below.",
+  "assertions": {
+    "hob_inherited_artifacts_four_paid_equips_keep_stats_control_restrictions_and_timing": "Both seats4 equipment: real printed equip payments2/3/3/1; exactBear stats4/3,4/4,4/2,3/3; ownerdifferent/currentcontroller matters; opponent recipients/insufficientfunding/nonactive sorcery timing reject transactionally; source departure removes modifier.",
+    "hob_inherited_artifacts_blade_targeted_opponent_chooses_controlled_creature_not_owner": "Both seats paid2B ETB targetsopponent only; opposing controller makes actual public sacrificechoice, can sacrifice creature ownedby sourcecontroller, which goes to its owners graveyard; own creature/land/wrongactor reject; another opponent creature survives; queued source departure doesnotremove effect. Representative owned raw/index root at sacrifice choice.",
+    "hob_inherited_artifacts_blade_empty_opponent_and_stale_equip_target_do_not_redirect": "Both seats emptycreature opponent resolves; later actual equip2 targets exactincarnation; leave/reenter cannot attach to newincarnation, paidmana staysspent.",
+    "hob_inherited_artifacts_mattock_automatic_attachment_only_targets_own_dwarf": "Both seats paid2 ETB automatic attach rejects ownnonDwarf/enemyDwarf; ownDwarf2/2 becomes4/4 without equip3 payment; staleincarnation remains unattached. Separate noDwarf case still entersunattached. Ordinary equip to nonDwarf tested in4-card table.",
+    "hob_inherited_artifacts_mattock_grants_ward_one_to_recipient_and_queued_ward_survives_source": "Both seats actual equip3 grants ward1. OwnShock hasnoWard; opposingShock offers exact1 mana to opposingcaster; pay allows2damage/decline counters; invalidpayment rollback; removedMattock still leaves queued wardvalid.",
+    "hob_inherited_artifacts_spear_optional_discard_precedes_two_private_draws_and_empty_hand_declines": "Both seats paid1R; accept actualdiscard then2draws; decline no discard/draw; emptyhand no draw. Opponenthand/battlefield discardinvalid; hand/draw privacy; representative owned privatechoice root.",
+    "hob_inherited_artifacts_map_search_reveals_only_selected_basic_and_shuffles_even_fail_to_find": "Both seats paid2 automatically searches, no optionalETB; nonland/nonbasic choices reject; chosenbasic entershandrevealedtoopponent, other libraryhidden; exactremainingmultiset+RNG advance proves shuffle. Qualified hidden-zone failure-to-find remainslegal but stillshuffles. Owned private search root.",
+    "hob_inherited_artifacts_map_two_and_tap_loots_at_instant_speed_after_paid_entry": "Both seats real paid2 ETB search then2T activation onopponents turn; insufficient/invalidpayment rollback; artifact justentered maytap; taps as cost, draws1 then discards1 privately; effect survives source departure; alreadytapped cannotreactivate.",
+    "hob_inherited_artifacts_spatula_paid_entry_gains_two_even_after_source_departure": "Both seats paid1 gains exact2onlycontroller, including queued source departure. Stats/equip1 tested4-cardtable."
+  },
+  "shared_contracts": "Reuse assurance::contracts::branch_contract at opponent sacrifice, private rummage and private search roots. No per-action full-contract cloning. Shared targetincarnation, ward, equip and draw/discard use normal legal actions; deliberate external zone changes are bounded response fixtures.",
+  "fixture_preflight": "All named identities admitted, exact metadata and activatedslot0 checked: Blade899 body2B/equip2; Mattock1214 body2/equip3; Spear3340 body1R/equip3; Map4577 body2/2Tloot; Spatula5034 body1/equip1. AxgardCavalry291 Dwarf2/2, BearCub3572/2, HillGiant7,Shock10,Forest4,Island1,GoblinTown1812 nonbasic. ActionSacrifice exactObjectRef, optional discard uses DeclineEffectPayment, ward PayResolutionMana, qualified search FinishSearch; testcode uses Error::WrongActor.",
+  "validation": {
+    "status": "passed9 new outcomes plus29 relevant regressions; root integrated acceptance and independent reviews pending",
+    "sourcecheck": {
+      "definitions": 5414,
+      "source_blobs": 1545,
+      "java_verified": true
+    },
+    "format": "rustfmt edition2024 --check and git diff --check passed after final terminal.",
+    "passed": 38,
+    "failed": 0,
+    "ignored": 0,
+    "counts": {
+      "hob_inherited_artifacts": 9,
+      "hob_equipment": 6,
+      "hob_equip_cost_history": 16,
+      "sos_audit_wu_inkshape_ward_two_paid_or_declined_opposing_spell": 1,
+      "sos_cast_rollback": 6
+    },
+    "focused_compile_and_execution_seconds": 153.06346122396644,
+    "native_command_seconds": 153.52641458890866,
+    "guard_seconds": 153.61893392598722,
+    "scenario_seconds": 0.08,
+    "new_scenario_seconds": 0.01,
+    "terminal": true,
+    "exit": 0,
+    "memory_max_bytes": 6442450944,
+    "peak_memory_bytes": 2667220992,
+    "oom_kills": 0,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "log_directory": "<cache>/rustmage-authoring/hob-inherited-artifacts/run-3dc2f76d44d34db9941c87835e4d09e5",
+    "driver": "driver.py",
+    "outer_log": "outer.log",
+    "group_results": "results.json",
+    "resource_report": "resource.json",
+    "unit": "rustmage-build-c4c4fa977e12423bb0e00bb7958c7c20.service",
+    "definitions_and_provenance_unchanged": true
+  },
+  "integration": "Root registers assurance module. No generated, definition or provenance commits. Root integrated acceptance/two nonauthor reviews remain separate. No PR/push/merge.",
+  "remaining_blockers": [],
+  "measurement": {
+    "inherited_cards_with_new_independent_proofs": 5,
+    "interval": "2026-10-26T14:11:45-07:00 through2026-10-26T14:25:54-07:00",
+    "elapsed_wall_seconds_including_source_reads_and_guard": 849,
+    "observed_inherited_card_proofs_per_wall_hour": 21.20141342756184,
+    "scope": "Assurance authoring, not5 newly implemented/admitted cards. Nine new scenarios reported0.01s,38 selected scenarios aggregate0.08s. No new complete-game simulation throughput claim."
+  },
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "c9f059f814ceca6efb4e8fa997b1214dc1e06688",
+      "result": "Firm complete five Oracle/Java/currenttypeddefs and19pins plus38actualpasses approved; no actionable findings",
+      "proof_sha256": "495c939aad850f5f52855e765b53d22037210c61cd861e4b65b73f04ebba5535"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "c9f059f814ceca6efb4e8fa997b1214dc1e06688",
+      "result": "Firm complete five Oracle/Java/currenttypeddefs and19pins plus38actualpasses approved; no actionable findings",
+      "proof_sha256": "495c939aad850f5f52855e765b53d22037210c61cd861e4b65b73f04ebba5535"
+    }
+  ],
+  "integration_status": "Two independent full source/proof approvals; root registered assurance. Proofmappingnow54of69inherited; no gameplay/admissionchanges. Integratedandwhole193acceptanceopen.",
+  "root_lint_repair": {
+    "reason": "147fullreleaseClippy",
+    "behavior_changed": false,
+    "proof_sha256_after_repair": "12f9c29bf1aa81b68b06b32d250b162b5a794a4a576e27ef9921ae190fcb5e6c",
+    "validation": "Bothindependentreviewersapprovedexactequivalent2linefixes at7c790a9b; combined20proofcasespassednaturalterminal0. Nextrequireddefaultrelease pending; originalsource/evidencehashesremainhistorical."
+  }
+}

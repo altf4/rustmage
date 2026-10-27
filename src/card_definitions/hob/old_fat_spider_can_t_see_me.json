@@ -3,10 +3,39 @@
   "catalogue_id": 3004,
   "oracle_id": "e4402d21-bb7f-4777-bc8d-b24bf2faccb0",
   "facts_sha256": "f996438bb51942613c5b8bfc46f971f3659329391d0804c4de2237917816a9ef",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "21d2cba2d622c5c2fa75e4bc97a9f61db95cdcf88365e7fbdcd869464bcbcc3b"
   },
-  "physical_metadata_sha256": "c100b6a28508768244de431866594753aef127a01a864c021ddf04440a23707a"
+  "physical_metadata_sha256": "c100b6a28508768244de431866594753aef127a01a864c021ddf04440a23707a",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "e4402d21-bb7f-4777-bc8d-b24bf2faccb0",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory xmage_name:null and implementations:[]; full pinned Mage.Sets and Mage source trees contain no class or Oracle name. Historical typed_lift is retained as history, not executable evidence."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PreventDamageByChosenSourceEffect.java",
+      "sha256": "5d1ed2357af15d20ae59d38b4aef93a5a811ee72628b9204c6ab327fbb529180"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf",
+    "section": "CR 400.7, 608.2b, 611.2b, 613, 614, 615 and 714",
+    "notes": "Oracle body is pinned in facts. Source-duration effects use exact identities, target legality and layer-six timestamps. Prevention applies to the frozen damage source and is subject to prevention prohibitions and ordering. XMage helpers are analogues; no card-specific class exists in pinned inventory."
+  }
 }

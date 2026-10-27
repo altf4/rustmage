@@ -31,12 +31,35 @@ pub(crate) struct StaticAbilityGroup {
     pub fragments: &'static [StaticAbilityFragment],
 }
 
+/// Qualifications belong to the ability's actual permanent source, not the
+/// immutable card which supplied a granted program.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum AdditionalTriggerScope {
+    ControlledSubtype(&'static str),
+    EquippedCreature,
+}
+
 #[derive(Clone, Copy, Debug)]
 #[expect(
     dead_code,
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub(crate) enum StaticAbilityFragment {
+    /// Grants its controller the permanent enduring-story designation at threshold.
+    Storied,
+    /// This source continuously acquires activations from matching cards in its controller graveyard.
+    BorrowGraveyardActivations(&'static str),
+    /// Replace each nonexempt controller draw with two draws.
+    DoubleDrawExceptFirst,
+    /// Generic cost per creature declared attacking this source's controller.
+    AttackControllerTax {
+        amount: u32,
+        condition: StatValue,
+    },
+    AdditionalTriggers {
+        scope: AdditionalTriggerScope,
+        condition: StatValue,
+    },
     FreeHandCast,
     GrantInstantSorceryStorm {
         ability: u16,
@@ -82,6 +105,11 @@ pub(crate) enum StaticAbilityFragment {
     NoMaximumHandSize,
     MaximumHandSize(u16),
     AdditionalLandPlays(u16),
+    /// A live earlier-layer condition; allowance consumption stays turn-wide.
+    ConditionalAdditionalLandPlays {
+        condition: StatValue,
+        amount: u16,
+    },
     IntrinsicKeywords(Keywords),
     Changeling,
     /// Predefined Cursed Role sets both axes in layer 7b.
@@ -131,6 +159,12 @@ pub(crate) enum StaticAbilityFragment {
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
+    /// A real Ward instance granted by a live conditional static ability.
+    ConditionalWard {
+        condition: StatValue,
+        filter: CountFilter,
+        ability: u16,
+    },
     AttachmentActivation(u16),
     /// Grants an independent tap mana ability to the attached permanent.
     AttachmentMana(ManaProduction),
@@ -142,6 +176,11 @@ pub(crate) enum StaticAbilityFragment {
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     StaticModifier(u16, StaticModifier),
+    /// Live earlier-layer predicate gates an ordinary creature-group bonus.
+    ConditionalCreatureModifier {
+        condition: StatValue,
+        modifier: StaticModifier,
+    },
     /// Live layer-7c bonus while the exact granting source meets its counter threshold.
     SourceCounterBonus {
         kind: CounterKind,
@@ -164,6 +203,12 @@ pub(crate) enum StaticAbilityFragment {
     Replacement(u16, ReplacementSpec),
     CastTiming(u16, CastFilter),
     CostReduction(u16, SpellReduction),
+    /// Generic reduction for equip activations targeting this exact permanent.
+    EquipTargetReduction(u32),
+    /// Optional replacement of the first equip activation's whole cost.
+    FirstEquipZeroCost {
+        condition: StatValue,
+    },
     TargetCostReduction(u16, TargetSpellReduction),
     CombatRestriction(u16, CombatRestriction),
     /// Source attacks every combat when independently able to attack.
@@ -184,6 +229,7 @@ pub(crate) enum StaticAbilityFragment {
 pub(crate) enum UntapRestriction {
     All,
     ControllerStep,
+    ControllerStepUnless(StatValue),
 }
 
 /// One printed Aura effect, shared across its earlier characteristic layers.

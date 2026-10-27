@@ -1,0 +1,179 @@
+{
+  "scope": "Current meaningful proof for two inherited HOB admission flags; typed behavior unchanged, no newly unlocked candidates",
+  "base_revision": "85ca6d2e",
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "source_read": "Full Oracle/card Java and listed reusable implementations read; source evidence distinguishes draw ordinal, live controlled Treasure count and EOT duration.",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BardTheBowman.java",
+      "sha256": "61b484d27192a930dcc8d14436ee906bcb8099b68fda6780e0ee1c11d07c7d67"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SmaugTheMagnificent.java",
+      "sha256": "7aead9aab502f999c9c20586ea9967d83053ce0b5c9142531949399a4806a30f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+      "sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+      "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ],
+  "obligations": {
+    "Bard the Bowman": {
+      "printed": "Paid1WU1/3reach; own second draw each turn targets any creature, permanent+1/+1 counter and EOT lifelink",
+      "outcomes": [
+        "Paid body and reach both seats",
+        "Actual paid Quick Study draws two on opponent turn; opponent draws excluded",
+        "Any controller creature accepted; land/player rejected transactionally",
+        "Departed source trigger resolves; counter remains after cleanup and actual lifelink damage benefits creature controller",
+        "Global history before provider, third draw excluded, actual begin_turn reset",
+        "Stale incarnation receives no counter/keyword; raw/index shared contract, divergent owned children, parent disposal and restored replay"
+      ]
+    },
+    "Smaug the Magnificent": {
+      "printed": "Paid2RR4/3flyinghaste; attack damages any target using current controlled Treasures; own upkeep creates one Treasure",
+      "outcomes": [
+        "Paid body, flying and real attack despite summoning sickness",
+        "Creature and player targets; real Treasure mana sacrifice and later control transfer affect resolution amount",
+        "Departed source retains ability, zero own Treasures excludes opponent Treasures",
+        "Only own upkeep creates one untapped artifact token, independently usable for colored mana after source departure"
+      ]
+    }
+  },
+  "status": "Both independent nonauthors approved source and actual149-case integrated HOB focused evidence at clean c678c2e6; no gameplay changes or new candidate count. Full release and entire193 remain open.",
+  "attempts": [
+    {
+      "run": "inherited-initial-1",
+      "exit": 101,
+      "seconds": 16.557658937002998,
+      "result": "Test compile failed because Card is a public type alias, not a public tuple constructor. After same guarded process terminated, fixture changed to existing Treasure factory identity. No rules change.",
+      "resource_report": "<cache>/rustmage-build-reports/4b0979ea2d9e445388b0a0f9814f9441.json"
+    },
+    {
+      "run": "inherited-initial-2",
+      "source_head": "e77c8695",
+      "terminal": true,
+      "exit": 0,
+      "passed": 126,
+      "failed": 0,
+      "ignored": 0,
+      "seconds": 151.3050108620082,
+      "scenario_seconds": 0.21,
+      "filter": "engine::assurance::hob_",
+      "scope": "This narrow module-path filter includes all four new scenarios and new core modules but omits HOB-named tests nested beneath other module paths. Follow-up broad filter below covers those.",
+      "resource_report": "<cache>/rustmage-build-reports/595b9512cb4a457fa265104cb2d128e1.json",
+      "peak_bytes": 2565656576,
+      "memory_limit_bytes": 6442450944,
+      "oom_events": 0
+    },
+    {
+      "run": "inherited-initial-3",
+      "source_head": "e77c8695",
+      "terminal": true,
+      "exit": 0,
+      "hob_filter": "hob_",
+      "hob_passed": 145,
+      "cast_rollback_passed": 6,
+      "mana_rollback_passed": 5,
+      "storm_passed": 5,
+      "failed": 0,
+      "ignored": 0,
+      "guard_seconds": 0.83910352102248,
+      "hob_command_seconds": 0.36626638105371967,
+      "hob_scenario_seconds": 0.3,
+      "note": "Cached coherent root integration check, not full release or simulation. The Bee rollback test appears in both the broad HOB filter and mana rollback execution; counts describe executions, not unique scenarios.",
+      "resource_report": "<cache>/rustmage-build-reports/71e98b3ae4d04075ac0d6f9013b7b617.json",
+      "peak_bytes": 31518720,
+      "memory_limit_bytes": 6442450944,
+      "oom_events": 0,
+      "log_directory": "<cache>/rustmage-authoring/hob-complete-set/inherited-initial-3"
+    },
+    {
+      "run": "inherited-initial-4",
+      "source_head": "02c40d0d",
+      "terminal": true,
+      "exit": 0,
+      "hob_filter": "hob_",
+      "hob_passed": 145,
+      "failed": 0,
+      "ignored": 0,
+      "command_seconds": 152.2862816840061,
+      "resource_report": "<cache>/rustmage-build-reports/268b7d4c4d21474e83857a9af3b67370.json",
+      "log": "<cache>/rustmage-authoring/hob-complete-set/inherited-initial-4/focused.log",
+      "scope": "Coherent integration and corrected independent live-count proof; no gameplay implementation change, not full release or whole-set acceptance."
+    }
+  ],
+  "review_findings": [
+    {
+      "reviewer": "hob_review_contracts",
+      "head": "fa532e662a07c6d0e9faf1d8facd5e761553f24d",
+      "severity": "P2 proof",
+      "finding": "Original Smaug test combined sacrifice-one plus transfer-one, leaving count2 and not distinguishing a frozen announcement count.",
+      "correction": "Split independent sacrifice-only expected1 and transfer-only expected3, each with creature/player targets and both seats. No gameplay implementation change.",
+      "status": "Resolved and independently approved by both reviewers on c678c2e6; actual terminal149-case run passed.",
+      "other_review": "Reviewer verified all13 pins, exact approved Bee/caster integration, meaningful other Bard/Smaug outcomes and actual terminal focused evidence. Integration approved except this proof defect."
+    }
+  ],
+  "independent_reviews": {
+    "head": "c678c2e6ab5128e6d9781f082f36f7be00b7a3c9",
+    "reviewers": [
+      "hob_review_contracts",
+      "hob_review_rules"
+    ],
+    "result": "Both approved full printed outcomes, complete listed pinned Java bytes, meaningful assertions and actual149 separate passing test lines,0fail/ignored; resource38fcc84495734acfbd0e2f332503ed27 terminalexit0,peak2565558272/6GiBzeroOOM. Smaug P2 proof finding resolved by independent2to1/2to3 cases."
+  },
+  "integrated_terminal_evidence": {
+    "source_head": "c678c2e6ab5128e6d9781f082f36f7be00b7a3c9",
+    "log": "<cache>/rustmage-authoring/hob-complete-set/inherited-draw-1/focused.log",
+    "hob_passed": 149,
+    "failed": 0,
+    "ignored": 0,
+    "scenario_seconds": 0.22,
+    "compile_and_execution_seconds": 152.40480516600655,
+    "guard_seconds_including_queue": 385.79432398901554,
+    "resource_report": "<cache>/rustmage-build-reports/38fcc84495734acfbd0e2f332503ed27.json",
+    "memory_peak_bytes": 2565558272,
+    "memory_limit_bytes": 6442450944,
+    "oom_events": 0
+  }
+}

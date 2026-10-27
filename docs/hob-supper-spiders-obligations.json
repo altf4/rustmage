@@ -1,0 +1,508 @@
+{
+  "card": "Supper for Spiders",
+  "catalogue_id": 4264,
+  "status": "complete typed leaf; awaiting two independent nonauthor reviews and root integration acceptance",
+  "base": "96dcb190891ef9ba425ceeb99c3a4ca41e65a487",
+  "branch": "codex/hob-supper-spiders",
+  "paths": {
+    "worktree": "<worktree>",
+    "cache": "<cache> = ~/.cache/rustmage-authoring/hob-supper-spiders",
+    "build_reports": "<build-reports> = ~/.cache/rustmage-build-reports",
+    "xmage": "<xmage> externally configured via RUSTMAGE_XMAGE_SOURCE"
+  },
+  "full_oracle": "Put onto the battlefield under your control all creature cards in your opponents' graveyards that were put there from the battlefield this turn. They are Food artifacts with \"{2}, {T}, Sacrifice this artifact: You gain 3 life.\" (They lose all other types and subtypes.)",
+  "sources": {
+    "name": "Supper for Spiders",
+    "catalogue_id": 4264,
+    "oracle_id": "4d891515-39da-492e-ac19-1aa524245449",
+    "facts_sha256": "02bf741638b560a31bfaa5399773f696f4aa612f3760bd61690e40cb1e890cbd",
+    "complete": true,
+    "typed_lift": {
+      "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+      "definition_sha256": "34012c6cf7cbe92a355d86157e2b248b547e4ccde5c1c3675cf77e630bf2af98"
+    },
+    "physical_metadata_sha256": "ebd61419b605a16470144fcd5a3844a94e2e06b179bb713a70f810b450123dde",
+    "xmage_absence": {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "oracle_id": "4d891515-39da-492e-ac19-1aa524245449",
+      "inventory_path": "data/standard/xmage-inventory.json",
+      "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+      "evidence": "Pinned inventory: xmage_name null, implementations/printings empty. Full pinned tree contains no Supper class (case-insensitive path and complete card-class name inventory); no fictitious identity source pin. Full analogous reanimation/history/Food bodies were read independently."
+    },
+    "xmage_dependencies": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RiseOfTheDarkRealms.java",
+        "sha256": "fef633f605a45e4595153ea883e5a01b9d19145794a22db7e24d81085a1c7a87"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/n/NecromanticSelection.java",
+        "sha256": "41c2b43746f35682c41de103f366945ed7dedef9e6824ebf9ce4abbf17edfcbb"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BrenardGingerSculptor.java",
+        "sha256": "b36e383db3d6f74b39d5344da684e8319342b72f4a07cd8a5b7b0dc8e6b1df49"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/watchers/common/CardsPutIntoGraveyardWatcher.java",
+        "sha256": "7adcba89bfd94638c279998a6175725be871324c3f70b3f05ab0b540f107b2a3"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+        "sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+        "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+        "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+        "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+      }
+    ],
+    "rules_authority": {
+      "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+      "section": "Supper for Spiders",
+      "notes": "Official text and rulings: permanent Food artifact-only form, no cleanup expiry. CR205.1a/b,603.6b,611.2e,613.1d/613.7n,707.2: as-entering characteristics, own statics earlier timestamp, retained abilities/colors/supertypes, noncopiable resolution-created form/grant."
+    }
+  },
+  "absence": {
+    "full_pinned_tree_sha256": "08dac8053ac169b29c4ca31f20460412d31a2a5fc4408785b758baa6eee08abf",
+    "case_insensitive_path_match": "Supper: none",
+    "inventory": "null class, empty implementation/printing lists; explicit paired absence provenance",
+    "analogs": "Rise: actual batch reanimation; Necromantic Selection: actual move filtering vs target choice; Brenard: Food ability analogue only, not its token/copy/additive types semantics. Full bodies and referenced Food costs/life/history helpers read."
+  },
+  "rules": {
+    "release_notes": {
+      "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+      "section": "Supper for Spiders",
+      "notes": "Official text and rulings: permanent Food artifact-only form, no cleanup expiry. CR205.1a/b,603.6b,611.2e,613.1d/613.7n,707.2: as-entering characteristics, own statics earlier timestamp, retained abilities/colors/supertypes, noncopiable resolution-created form/grant."
+    },
+    "comprehensive_rules": "Cached official MagicCompRules-20260925.txt (CR205.1a/b,603.6b,611.2e,613.1d/613.7n,614.12,707.2)",
+    "rules_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
+  },
+  "shared_contract": {
+    "history": "Optional private sorted exact BF\u2192GY card history; all successful actual destinations including former noncreature Food; clear on any departure/turn reset; owned bytes accounted; independent from existing all-origin public graveyard history.",
+    "entry": "Private EntryMove.food_return opt-in; prospective entry kinds/subtypes feed actual and funding tap/counter replacements; all actual successful entrants modified before one finish_zone_events batch, after own static timestamp assignment per613.7n. Independent owned continuations retain markers; failed/replaced entry receives no grant.",
+    "form": "AnimationView.food_only true creates permanent source-independent layer4 Artifact/Food-only form; colors, abilities, name, supertype and copiable recipe retained. Existing exact-incarnation animation cleanup handles departure. Food subtype compact bit preserves object-view size and later subtype-only creature animation.",
+    "grant": "Existing self-granted Activated{ability:0} with immutable hidden Supper template grants actual2/tap/sac GainLife3. Explicit recipient helper preserves original lifecycle validation. Food activation is nonmana, so virtual funding entry needs form/retained mana abilities rather than a new nonmana virtual menu.",
+    "wire": "Central integration uses schema163: AnimationView.food_only serialized only when true; legacy constructors initialize false. Existing GrantedSubtypes.added list may contain Food; no new fields or IDs. Leaf originally based on schema161 and its proposed162 was superseded by accepted 176-card schema162.",
+    "ownership": "Head owner coordinated disjoint engine.rs: leaf only State field/init/reset/bytes; BF\u2192GY hook engine_copy_characteristics. No activation payment or zone-plan edits."
+  },
+  "obligations": [
+    {
+      "printed_or_shared": "1B instant, no targets, all eligible opponents cards",
+      "proof": "supper_paid_instant_both_seats_returns_all_and_only_current_opponent_battlefield_history",
+      "outcome": "Both seats pay exact B+generic, cast in End step, return two; own graveyard/mill/discard/noncreature/token excluded; public results and hidden hand/library observations checked."
+    },
+    {
+      "printed_or_shared": "Exact current graveyard incarnation and this-turn BF origin",
+      "proof": "supper_exact_history_clears_on_departure_reentry_and_new_turn_not_old_controller",
+      "outcome": "Clear on departure and turn; current graveyard creature-card test, prior controller irrelevant. Food sac qualifies again despite BF noncreature."
+    },
+    {
+      "printed_or_shared": "Resolution-time membership; empty and countered spell",
+      "proof": "supper_empty_batch_and_resolution_current_membership_and_replaced_death",
+      "outcome": "Empty succeeds; removed incarnation remains exiled; Rest in Peace replacement never creates eligible graveyard history. Actual Negate counter leaves candidates untouched."
+    },
+    {
+      "printed_or_shared": "Food artifacts only, retain abilities/colors/supertypes; indefinite",
+      "proof": "supper_food_form_persists_cleanup_then_later_type_layers_and_zone_change_are_independent",
+      "outcome": "Artifact/Food-only removes printed subtype, cleanup keeps it, later animation adds creature/Golem without removing Food; Witness Protection overrides types/removes granted ability then removal restores; zone change clears form/grant."
+    },
+    {
+      "printed_or_shared": "Retained printed abilities and noncopiable form",
+      "proof": "supper_retains_self_etb_printed_mana_and_legendary_abilities_without_copying_the_food_form",
+      "outcome": "Fili self ETB creates Dwarf while itself Food, legendary preserved; Elf green color and intrinsic mana retained, immediate tap and actual spell payment succeeds; copiable recipe remains printed Creature Elf without Food form."
+    },
+    {
+      "printed_or_shared": "Simultaneous pre-entry effects/observers",
+      "proof": "supper_simultaneous_foods_observe_artifacts_not_creatures_and_keep_self_observers",
+      "outcome": "Returned Archivist sees artifact entries and receives two counters; returned Lifecreed sees no creature entry, life stays20. Shared Elrond simultaneous entry observer regression reused."
+    },
+    {
+      "printed_or_shared": "Prospective type/subtype entry replacements",
+      "proof": "supper_as_entry_food_replaces_angel_subtype_and_creature_tapped_entry_replacements",
+      "outcome": "Giada puts no Angel counters on returned Serra; opposing Authority neither taps Food nor gains life."
+    },
+    {
+      "printed_or_shared": "2,tap,sacrifice gain3; controller vs owner",
+      "proof": "supper_food_cost_is_two_tap_sacrifice_gains_three_and_noncreature_can_repeat_this_turn",
+      "outcome": "Actual acquired activation, two mana spent, immediate despite summoning sickness, exact original owner graveyard, +3 controller life, second Supper returns new incarnation. Control-change case gives +3 to new controller."
+    },
+    {
+      "printed_or_shared": "Private choice/owned pending/rollback",
+      "proof": "supper_suspended_entry_owned_raw_index_restore_and_borrowed_world_share_food_form",
+      "outcome": "Adaptive Automaton mandatory entry choice suspends entire two-card batch before movement; raw/index/restore/parentdrop outcomes equal. Wrong actor/index shared branch contract. Insufficient mana rejected transactionally; late life overflow restores complete action without refunding earlier sacrifice cost."
+    },
+    {
+      "printed_or_shared": "Borrowed entry projection parity",
+      "proof": "supper_borrowed_entry_projection_food_types_and_retained_mana_match_actual",
+      "outcome": "Private funding child tests both seats, pending Automaton choices, correct Artifact/Food types for both entrants, no original Elf/Construct subtype, unchanged live Game; actual retained-mana payment separately proves usable source."
+    }
+  ],
+  "fixtures": [
+    {
+      "index": 4264,
+      "name": "Supper for Spiders",
+      "mana_cost": "{1}{B}",
+      "type_line": "Instant"
+    },
+    {
+      "index": 4,
+      "name": "Forest",
+      "mana_cost": "",
+      "type_line": "Basic Land \u2014 Forest"
+    },
+    {
+      "index": 357,
+      "name": "Bear Cub",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature \u2014 Bear"
+    },
+    {
+      "index": 10,
+      "name": "Shock",
+      "mana_cost": "{R}",
+      "type_line": "Instant"
+    },
+    {
+      "index": 8,
+      "name": "Llanowar Elves",
+      "mana_cost": "{G}",
+      "type_line": "Creature \u2014 Elf Druid"
+    },
+    {
+      "index": 1300,
+      "name": "Elvish Archivist",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature \u2014 Elf Artificer"
+    },
+    {
+      "index": 2492,
+      "name": "Lifecreed Duo",
+      "mana_cost": "{1}{W}",
+      "type_line": "Creature \u2014 Bat Bird"
+    },
+    {
+      "index": 55,
+      "name": "Adaptive Automaton",
+      "mana_cost": "{3}",
+      "type_line": "Artifact Creature \u2014 Construct"
+    },
+    {
+      "index": 3482,
+      "name": "Rest in Peace",
+      "mana_cost": "{1}{W}",
+      "type_line": "Enchantment"
+    },
+    {
+      "index": 5102,
+      "name": "Witness Protection",
+      "mana_cost": "{U}",
+      "type_line": "Enchantment \u2014 Aura"
+    },
+    {
+      "index": 1657,
+      "name": "F\u00edli the Pathfinder",
+      "mana_cost": "{3}{W}",
+      "type_line": "Legendary Creature \u2014 Dwarf Scout"
+    },
+    {
+      "index": 1736,
+      "name": "Giada, Font of Hope",
+      "mana_cost": "{1}{W}",
+      "type_line": "Legendary Creature \u2014 Angel"
+    },
+    {
+      "index": 3797,
+      "name": "Serra Angel",
+      "mana_cost": "{3}{W}{W}",
+      "type_line": "Creature \u2014 Angel"
+    },
+    {
+      "index": 2914,
+      "name": "Negate",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant"
+    },
+    {
+      "index": 5407,
+      "name": "@token/hob-dwarf",
+      "mana_cost": "",
+      "type_line": "Creature \u2014 Dwarf"
+    },
+    {
+      "index": 1740,
+      "name": "Giant's Boulder",
+      "mana_cost": "{1}",
+      "type_line": "Artifact"
+    },
+    {
+      "index": 273,
+      "name": "Authority of the Consuls",
+      "mana_cost": "{W}",
+      "type_line": "Enchantment"
+    }
+  ],
+  "tests": [
+    "supper_paid_instant_both_seats_returns_all_and_only_current_opponent_battlefield_history",
+    "supper_food_cost_is_two_tap_sacrifice_gains_three_and_noncreature_can_repeat_this_turn",
+    "supper_retains_self_etb_printed_mana_and_legendary_abilities_without_copying_the_food_form",
+    "supper_simultaneous_foods_observe_artifacts_not_creatures_and_keep_self_observers",
+    "supper_exact_history_clears_on_departure_reentry_and_new_turn_not_old_controller",
+    "supper_empty_batch_and_resolution_current_membership_and_replaced_death",
+    "supper_food_form_persists_cleanup_then_later_type_layers_and_zone_change_are_independent",
+    "supper_as_entry_food_replaces_angel_subtype_and_creature_tapped_entry_replacements",
+    "supper_suspended_entry_owned_raw_index_restore_and_borrowed_world_share_food_form",
+    "supper_countered_spell_and_control_changed_food_keep_independent_cost_controller_and_owner",
+    "supper_food_failed_payment_and_late_life_capacity_failure_roll_back_the_actual_action",
+    "supper_borrowed_entry_projection_food_types_and_retained_mana_match_actual"
+  ],
+  "receipts": [
+    {
+      "run": 1,
+      "outer": "<cache>/outer-1.log",
+      "driver": "<cache>/driver-1.py",
+      "inputs": "<cache>/inputs-1.json",
+      "groups": [
+        {
+          "filter": "hob_supper_spiders",
+          "exit": 101,
+          "passed": 0,
+          "seconds": 25.784242880006786,
+          "log": "<cache>/focused-1.log"
+        }
+      ],
+      "report": "<build-reports>/a5abe2d928e14d449f241f6a6f1c9776.json",
+      "command": [
+        "python3",
+        "<cache>/driver-1.py"
+      ],
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 56.2823785530054,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2077163520,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "notes": "Compile-only: missing FundingState and CharacteristicWorld imports; no scenarios ran."
+    },
+    {
+      "run": 2,
+      "outer": "<cache>/outer-2.log",
+      "driver": "<cache>/driver-2.py",
+      "inputs": "<cache>/inputs-2.json",
+      "groups": [
+        {
+          "filter": "hob_supper_spiders",
+          "exit": 101,
+          "passed": 0,
+          "seconds": 16.940557944006287,
+          "log": "<cache>/focused-2.log"
+        }
+      ],
+      "report": "<build-reports>/707a1e7a14474096a999b635beefae00.json",
+      "command": [
+        "python3",
+        "<cache>/driver-2.py"
+      ],
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 33.20397511997726,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1997217792,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "notes": "Compile-only: projection proof was outside private funding visibility; moved it to disjoint funding child test module."
+    },
+    {
+      "run": 3,
+      "outer": "<cache>/outer-3.log",
+      "driver": "<cache>/driver-3.py",
+      "inputs": "<cache>/inputs-3.json",
+      "groups": [
+        {
+          "filter": "hob_supper",
+          "exit": 101,
+          "passed": 0,
+          "seconds": 16.80099684104789,
+          "log": "<cache>/focused-3.log"
+        }
+      ],
+      "report": "<build-reports>/98d3d55554724fa5a200f48494e32891.json",
+      "command": [
+        "python3",
+        "<cache>/driver-3.py"
+      ],
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 32.71790642297128,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2001100800,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "notes": "Compile-only: corrected test query name to explicit CharacteristicWorld::kinds; no scenarios ran."
+    },
+    {
+      "run": 4,
+      "outer": "<cache>/outer-4.log",
+      "driver": "<cache>/driver-4.py",
+      "inputs": "<cache>/inputs-4.json",
+      "groups": [
+        {
+          "filter": "hob_supper",
+          "exit": 101,
+          "passed": 11,
+          "seconds": 31.463999238971155,
+          "log": "<cache>/focused-4.log"
+        }
+      ],
+      "report": "<build-reports>/1572e06efb044357874063b4eb54edb6.json",
+      "command": [
+        "python3",
+        "<cache>/driver-4.py"
+      ],
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 51.778760343033355,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2622828544,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "notes": "11 passed, 1 fixture failure: PayCosts does not automatically tap mana sources. Added explicit legal TapMana during payment. No engine code changed for this fix."
+    },
+    {
+      "run": 5,
+      "outer": "<cache>/outer-5.log",
+      "driver": "<cache>/driver-5.py",
+      "inputs": "<cache>/inputs-5.json",
+      "groups": [
+        {
+          "filter": "hob_supper",
+          "exit": 0,
+          "passed": 12,
+          "seconds": 29.593950141046662,
+          "log": "<cache>/focused-5.log"
+        },
+        {
+          "filter": "hob_silvan_reveler",
+          "exit": 0,
+          "passed": 11,
+          "seconds": 0.08632037998177111,
+          "log": "<cache>/graveyard-5.log"
+        },
+        {
+          "filter": "hob_crooked_galion",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.2169136109878309,
+          "log": "<cache>/graveyard-leave-5.log"
+        },
+        {
+          "filter": "hob_fili",
+          "exit": 0,
+          "passed": 5,
+          "seconds": 0.11181166901951656,
+          "log": "<cache>/fili-5.log"
+        },
+        {
+          "filter": "hob_death_return",
+          "exit": 0,
+          "passed": 7,
+          "seconds": 0.148489959014114,
+          "log": "<cache>/death-5.log"
+        },
+        {
+          "filter": "sos_cast_rollback",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.29511923098471016,
+          "log": "<cache>/rollback-5.log"
+        },
+        {
+          "filter": "engine::funding::sacrifice_tests",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.0992217609891668,
+          "log": "<cache>/funding-5.log"
+        },
+        {
+          "filter": "elrond_grouped_return",
+          "exit": 0,
+          "passed": 1,
+          "seconds": 0.066550002025906,
+          "log": "<cache>/entry-group-5.log"
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 45.5960768199875,
+          "log": "<cache>/clippy-5.log"
+        }
+      ],
+      "report": "<build-reports>/914e3022afb14c40a3c691c765590424.json",
+      "command": [
+        "python3",
+        "<cache>/driver-5.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 76.81778841698542,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2609496064,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1,
+      "notes": "12 focused and 50 affected native tests plus strict all-target Clippy passed."
+    }
+  ],
+  "validation": {
+    "source_check": {
+      "definitions": 5417,
+      "source_blobs": 1601,
+      "java_verified": true
+    },
+    "focused": 12,
+    "affected_regressions": 50,
+    "strict_all_target_clippy": "passed -D warnings",
+    "format_and_diff": "standalone rustfmt check + git diff --check; no source edits after successful frozen run",
+    "execution": "Every job naturally terminated. No cancellations, queued/running fixture edits, memory probes or resource-limit changes. Dedicated stable opt0 author target,1 Cargo job/test thread,6GiB guard. Full set release acceptance belongs to integrator."
+  },
+  "integration": {
+    "exclude": "generated coverage/catalogue and local module declarations excluded from commit",
+    "local_registration_needed": [
+      "src/assurance/mod.rs: mod hob_supper_spiders;",
+      "src/engine_funding.rs: #[cfg(test)] #[path = \"assurance/hob_supper_funding.rs\"] mod hob_supper_funding;"
+    ],
+    "ids": "none",
+    "publication": "No PR, push or merge."
+  },
+  "performance": {
+    "focused_native_seconds": 0.06,
+    "all_62_native_execution_log_seconds": 0.72,
+    "successful_guard_seconds": 76.81778841698542,
+    "successful_driver_group_seconds": 76.21445357403718,
+    "guard_overhead_seconds": 0.60333484294824,
+    "peak_memory_bytes": 2609496064,
+    "oom_events": 0,
+    "authoring_elapsed_seconds_since_branch_creation": 1198.814,
+    "complete_card_count": 1,
+    "note": "Native timing is bounded rules scenarios, not complete-game simulation throughput. Full-pool release simulation remains root acceptance."
+  }
+}

@@ -3,10 +3,55 @@
   "catalogue_id": 1678,
   "oracle_id": "c996bc53-184d-4dc3-8244-e8d9528516a0",
   "facts_sha256": "34251f4e08ad4e8e0a3641bfedbb62f5e05b53f1283ecb0f4130831bd8e10a53",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "37588b6fa3bda10c7e3db93ac7a757dcddb0cf87d2b2b3cc00a7e04daf9c1977"
   },
-  "physical_metadata_sha256": "380bb713d057ba5551e996e46d25f0ee5210cb2c32589b4c9987ef06312c3785"
+  "physical_metadata_sha256": "380bb713d057ba5551e996e46d25f0ee5210cb2c32589b4c9987ef06312c3785",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GandalfWanderingWizard.java",
+  "java_sha256": "fd4687e04fe88bcaf3e656fb00799fd3cb8213143ad7e1dbe6cb6c18fd58512c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleIntoLibrarySourceEffect.java",
+      "sha256": "bbb5942769ee34f8ca0539d82c4487bc0f39bcf14787978fe588240bccf4f8d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "implementation": "Direct typed complete Oracle candidate; private SourceOwner player selector and exactsource owner-library shuffle. Draw uses established interruptible shared instruction; no state/wire change. Proofs/reviews pending.",
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sections": [
+      "701.24c",
+      "608.2h",
+      "113.7a"
+    ],
+    "resolution": "Oracle gives shuffle/draw to owner even when controller differs; exact source incarnation alone moves, but owner library is shuffled and owner draws even if source already departed. Pinned XMage instead uses DrawCardSourceControllerEffect and skips shuffle when source missing; those discrepancies are corrected."
+  }
 }

@@ -969,7 +969,21 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if matches!(
+        if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            // The owned selection seat is the amassing player. The resolving
+            // ability retains its original controller, which can be another player.
+            if let Some((player, recipient)) =
+                [Player::P0, Player::P1].into_iter().find_map(|player| {
+                    choice.selected[player.index()]
+                        .first()
+                        .copied()
+                        .map(|recipient| (player, recipient))
+                })
+            {
+                self.finish_amass_goblins(&item, player, recipient, amount);
+            }
+        } else if matches!(
             choice.kind,
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileGreatestManaValue
         ) || matches!(choice.kind, EffectChoiceKind::TapPermanents(_))
@@ -1049,6 +1063,32 @@ impl Game {
                     .any(|i| {
                         matches!(
                             i,
+                            Instruction::PutCountersScaled {
+                                amount: AmountValue::SacrificedPower,
+                                ..
+                            }
+                        )
+                    })
+                {
+                    // Capture before ANY selected permanent leaves (including lords),
+                    // and before linked zone events can suspend this program.
+                    let power = sacrifices
+                        .iter()
+                        .map(|&(_, id)| self.stats(id).power)
+                        .try_fold(0i128, |sum, value| sum.checked_add(value))
+                        .capacity("sacrificed power exhausted");
+                    self.state.resolving.as_mut().unwrap().sacrificed_power = Some(Box::new(power));
+                }
+                if self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .program
+                    .iter()
+                    .any(|i| {
+                        matches!(
+                            i,
                             Instruction::GainLifeScaled(_, AmountValue::SacrificedToughness)
                         )
                     })
@@ -1065,7 +1105,26 @@ impl Game {
                         .item
                         .sacrificed_toughness = Some(Box::new(toughness));
                 }
+                let reflexive_power = self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .program
+                    .iter()
+                    .any(|i| matches!(i, Instruction::ReflexiveSacrificedPower { .. }))
+                    .then(|| {
+                        assert_eq!(sacrifices.len(), 1, "one sacrifice for reflexive power");
+                        let id = sacrifices[0].1;
+                        (self.object_ref(id), self.stats(id).power)
+                    });
                 self.sacrifice_batch(&sacrifices);
+                if let Some((object, power)) = reflexive_power
+                    && (!self.on_battlefield(object.card) || self.object_ref(object.card) != object)
+                {
+                    self.state.resolving.as_mut().unwrap().item.sacrificed_power =
+                        Some(Box::new(power));
+                }
             }
         }
         false

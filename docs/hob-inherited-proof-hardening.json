@@ -1,0 +1,156 @@
+{
+  "scope": "Proof-only strengthening of two inherited HOB admissions and current adventure-evidence reference. No card definition, paired provenance, engine, schema, catalogue identity or admission change.",
+  "base_revision": "32e0feaee84b8020e31ca461cc4137eeedf4c471",
+  "status": "Author focused proof complete; awaiting two independent nonauthor reviews and parent integration acceptance. Historical review records retain their original scope.",
+  "assertion_map": [
+    {
+      "card": "Burn, Burn, Tree and Fern",
+      "oracle": "{3}{R} Enchantment \u2014 Saga. As this Saga enters and after your draw step add lore; sacrifice after IV. I: 6 damage to target opposing creature. II: destroy target opposing artifact. III/IV: add R.",
+      "test": "engine::assurance::hob_inherited_spells::hob_inherited_spells_burn_saga_paid_four_chapters_restrictions_mana_and_final_sacrifice",
+      "prior_gap": "A six-toughness target dying proves lethal damage, but could also pass an excessive amount.",
+      "strengthened_outcome": "Both seats actually pay 3R, chapter I targets an opposing Galewind Moose with one +1/+1 counter (independently asserted 7/7). It remains Battlefield and has EXACTLY6 marked damage. Existing own-target rejection, chapter II artifact destruction, III/IV exact red mana and final Saga sacrifice assertions remain. No new fixture or combat/damage implementation."
+    },
+    {
+      "card": "Dreaded Bat-Cloud",
+      "oracle": "{4}{B} Creature \u2014 Bat 4/2. This spell costs {3} less if a creature died this turn. Flying, deathtouch.",
+      "test": "engine::assurance::hob_inherited_combat::inherited_combat_bat_paid_morbid_any_controller_and_real_flying_deathtouch",
+      "prior_gap": "The any-controller-named scenario only actually killed an opposing creature relative to caster; broader public history evidence existed but no bounded own-death witness.",
+      "strengthened_outcome": "Both seats now independently exercise no creature death (artifact departure only, discounted announcement rejected, paid4B), actual own-creature death, and actual opposing-creature death. Each positive row pays for real Shock on the corresponding Bear Cub, asserts Graveyard and global death history1, then actually pays1B with zero mana remaining for 4/2 Bat. Existing actual flying blocking restriction and deathtouch combat remain in every row."
+    }
+  ],
+  "sources": {
+    "full_oracle_and_current_typed_definitions_read": true,
+    "complete_pinned_classes_and_relevant_helpers_read": true,
+    "pins": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/b/BurnBurnTreeAndFern.java",
+        "sha256": "cc3e2fbc77382e7dc9585388b64457baf76dde020ce260d8554ffe0bcdc3fece"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/d/DreadedBatCloud.java",
+        "sha256": "f52b7a41843ae5aa51fb19f4e34ea9bd65e3ebc7e4283ea81f8258dbe3aed728"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+        "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+        "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/condition/common/MorbidCondition.java",
+        "sha256": "21adfb30d2aa5202e5d00f11e73480be8f0af2557cd5e03e05864b15a8485126"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/watchers/common/CreaturesDiedWatcher.java",
+        "sha256": "c54597f69b5487c4714868ce642f8fc78464db0bb508ed154206096a74ae1ab1"
+      }
+    ],
+    "existing_full_obligation_and_source_maps": [
+      "docs/hob-inherited-spells-obligations.json",
+      "docs/hob-inherited-combat-obligations.json"
+    ],
+    "rules_basis": "Damage amount derives from full Oracle/Java constant6; MorbidCondition reads game-wide CreaturesDiedWatcher.conditionMet without controller restriction. Actual costs and resulting state are asserted instead of inferring outcomes from typed code."
+  },
+  "adventure_reference": {
+    "file": "docs/hob-inherited-adventures-obligations.json",
+    "historical_example": "examples/standard_adventure_milled_selection.py",
+    "limitation": "Legacy example imports removed python/test_adventure_milled_selection.py; unchanged and explicitly not current runnable acceptance.",
+    "current_replacement": "Named native exact-batch selection/owned proofs for Thranduil/Silvan Rally, Glamdring/Gleam of Death and Most Decrepit Old Bird/Speak Secrets; current guarded cargo filter hob_inherited_adventures executes all15 scenarios across both modules.",
+    "claim": "Those15 native scenarios were actually rerun successfully here. The obsolete example was not represented as repaired, executed or independently accepted."
+  },
+  "validation": {
+    "cache": "<cache> = rustmage-authoring/hob-inherited-proof-hardening",
+    "driver": "<cache>/driver-1.py",
+    "outer": "<cache>/outer-1.log",
+    "inputs": "<cache>/inputs-1.json",
+    "results": "<cache>/results-1.json",
+    "fixture_preflight": "Explicit63fixture whitelist plus exact separate non-fixture diagnostic/type/expected-face strings; every fixture must exist and have paired complete provenance. Unknown/unused fixture errors fail closed, never silently skip absent names.",
+    "source_fixed_until_natural_terminal": true,
+    "resource_guard": {
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 94.11266420403263,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2732195840,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "resource_report": "<build-reports>/45c4377cf33f423d82a79c405c164720.json",
+    "groups": [
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 41.67958206497133,
+        "log": "<cache>/spells-1.log",
+        "passed": 13,
+        "filter": "hob_inherited_spells"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.16639234201284125,
+        "log": "<cache>/combat-1.log",
+        "passed": 8,
+        "filter": "hob_inherited_combat"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.16655743698356673,
+        "log": "<cache>/adventures-1.log",
+        "passed": 15,
+        "filter": "hob_inherited_adventures"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.11623021902050823,
+        "log": "<cache>/owned-1.log",
+        "passed": 4,
+        "filter": "engine::assurance::contracts"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 51.39895887201419,
+        "log": "<cache>/clippy-1.log",
+        "filter": "clippy"
+      }
+    ],
+    "profile": "Stable isolated target with test/devopt0 environment, no repository profile changes; one Cargo job/test thread and shared6GiB cgroup.",
+    "provenance_check": {
+      "definitions": 5418,
+      "source_blobs": 1626,
+      "java_verified": true,
+      "catalogue_version": "daa82b8909a9011f8646523ae5aa94a8a6d15016eda97934497856a17bb06e64"
+    },
+    "checks": "Link catalogue, source pins, rustfmt and diff check passed. One guarded run, natural terminal0, no failed/canceled/timed-out/orphaned consuming jobs."
+  },
+  "measurement": {
+    "guard_elapsed_seconds": 94.11266420403263,
+    "native_scenarios": 40,
+    "spells_harness_seconds": 0.13,
+    "combat_harness_seconds": 0.05,
+    "scope": "Focused deterministic scenario timings, not complete-pool gameplay/simulation throughput or full release acceptance. No new card implementation throughput claimed."
+  },
+  "proof_sha256": {
+    "src/assurance/hob_inherited_spells.rs": "ec0d92cefcf4dc21cd21812157d9be5bd4cda42da99b071af671ce5114415801",
+    "src/assurance/hob_inherited_combat.rs": "3d358e823788adf040eca8fc444b6f78176996857933b65368241258a3cb32ea"
+  },
+  "integration": "Commit only two existing proof modules and evidence docs; all modules already registered. No central/generated changes. Parent owns two independent reviews, full integrated release and final single unmerged whole-set PR. No PR/push/merge performed.",
+  "environment_note": "The initial temporary full clone encountered tmpfs inode exhaustion before checkout. The isolated author checkout was created under the author cache on the home filesystem. Existing useful checkouts, active outputs and immutable release libraries were preserved."
+}

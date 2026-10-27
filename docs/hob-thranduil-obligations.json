@@ -1,0 +1,685 @@
+{
+  "card": "Thranduil, the Elvenking",
+  "catalogue_id": 4560,
+  "status": "complete typed leaf; awaiting two independent nonauthor reviews and integration acceptance",
+  "base": "2b4c499eee2ed2705d6b1a53aaaba646ef680814",
+  "branch": "codex/hob-thranduil",
+  "locations": {
+    "worktree": "<worktree>",
+    "cache": "<cache> = ~/.cache/rustmage-authoring/hob-thranduil",
+    "build_reports": "<build-reports> = ~/.cache/rustmage-build-reports",
+    "xmage": "<xmage> via RUSTMAGE_XMAGE_SOURCE"
+  },
+  "oracle": {
+    "cost": "{2}{B}{G}{U}",
+    "type_line": "Legendary Creature \u2014 Elf Noble",
+    "power": 5,
+    "toughness": 6,
+    "body": "Thranduil has all activated abilities of all Elf cards in your graveyard.\nWhenever another legendary Elf you control enters, draw two cards, then discard a card."
+  },
+  "sources": {
+    "name": "Thranduil, the Elvenking",
+    "catalogue_id": 4560,
+    "oracle_id": "4a5f76e7-40be-4b06-9935-4a3b2672e1c2",
+    "facts_sha256": "611be6f336bc2cc0e82880ebe80ce26075ba06d98a0589462132c97e26026911",
+    "complete": true,
+    "typed_lift": {
+      "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+      "definition_sha256": "c1fbc70d09597b4c52888fa9c64955efe556c3610f851343b925daa552d08522"
+    },
+    "physical_metadata_sha256": "db23752f3534e50ff202aa1bffb328c49df2117aa025d0a1b96284d1e518eb6a",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_source": "Mage.Sets/src/mage/cards/t/ThranduilTheElvenking.java",
+    "java_sha256": "3861af48bc229e8915d9cf3440f4c92677416921882cb628904244c37773f2be",
+    "xmage_dependencies": [
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+        "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+        "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+        "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+        "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+        "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/StaticAbility.java",
+        "sha256": "c5313f71366b8ec5dbdf229c5c2e5a54b1945750d5f424192a3964981bc3bf6d"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage/src/main/java/mage/abilities/ActivatedAbilityImpl.java",
+        "sha256": "abda1cc51790a3a40291e5ce3867cc12a0b98019813ac42ac8e7c822d8d4128b"
+      },
+      {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/n/NecroticOoze.java",
+        "sha256": "bc6033543a924fa8ed97462e5ea49d09376504c85d797702326c78d3fd078174"
+      }
+    ],
+    "rules_authority": {
+      "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+      "section": "Thranduil, the Elvenking",
+      "notes": "Full source, official text and rulings: all activated abilities, self-name substitution, linked ability pair acquired only for same continuous instance. CR113.6/201.5,602.5b/702.177,607.5,400.7 and611.3 support source zones, separate acquisition limits and exact incarnations."
+    }
+  },
+  "full_read": "Complete pinned Thranduil class, Ooze analogue, entry trigger, DrawDiscardControllerEffect, FilterControlledPermanent, AnotherPredicate, SimpleStaticAbility, StaticAbility and ActivatedAbilityImpl bodies. Complete Oracle and official full Thranduil release-note section read.",
+  "rules": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "comprehensive_rules": "Official cached MagicCompRules-20260925.txt:201.5b,113.6,400.7,602.5a/b/c/d,607.5/607.5a,611.3,702.177",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
+  },
+  "shared_contract": {
+    "typed_provider": "BorrowGraveyardActivations(\"Elf\") static fragment, explicit source registration and shared layer-six availability; no English interpreter or new IDs.",
+    "inventory": "All actual card donors in current controller-owned GY, current exact generation and subtype over supplied CharacteristicWorld; noncreature Kindred cards and changeling included, tokens excluded. No GY owner/controller conflation. Only real activated tables and intrinsic mana; hidden acquired templates excluded.",
+    "continuity": "Private optional copy-on-write acquisition rows keyed source/provider/copy-origin/controller/donor/definition, active flag, source-local monotonic slot ranges. Inactive ranges retained until source leaves, preventing rebind and use-history collision; share namespace with existing linked-exile borrowing. Actual instruction-boundary and copy-availability refresh; unchanged rows preserve COW storage.",
+    "funding": "Owned borrowing projection plus acquisition rows in memo key; virtual departures/entries/control changes feed same-world inventory including provisional new donors. Opt-in worlds avoid nonconservative current-inventory optimistic bound because sacrifice may introduce new abilities; actual exact reachability still decides legal payment. Ordinary worlds allocate no acquisition registry and scan no graveyard for this rule.",
+    "source_and_costs": "Existing captured activation item keeps donor program with actual permanent source/object/controller/P-T/counters/copiable recipe. Source-zone/timing/tap/sacrifice/discard/targets/once/exhaust/quality/rollback paths reused; new public mana tags integrated into owned replay/accounting and policy.",
+    "wire": "Requires central schema164 or later: AnnounceGraveyardBorrowedAbility, AnnounceGraveyardBorrowedMana, ActivateGraveyardBorrowedMana with graveyard:ObjectRef; optional omitted-empty Observation.graveyard_borrowed_abilities rows{source,graveyard,definition,ability,slot,used}. Existing exile actions/views retain fields and first-link source ordering. Leaf central version remains inherited162; parent adopted163 during authoring and owns integration bump.",
+    "owned_bytes": "Acquisition State initialized rows/Vec header counted; pending actions counter payload accounted in mana allocation and zone replacement owners; funding memo includes exact acquisition records. Whole-state snapshots/rollback retain COW records.",
+    "review_boundaries": "Dawnhand Dissident is the only Elf in frozen pool with an exile/play linked pair and remains gated; no fixture, unrelated admission or new linked-exile card machinery was invented. Fresh acquired-instance identities are established and proved by real exhaust/once/copy/suppression cases. A future Dawnhand admission must separately prove its linked pair using that acquisition identity; this leaf does not claim its gated behavior works."
+  },
+  "obligations": [
+    {
+      "rule": "2BGU legendary5/6 Elf Noble; own entry excluded",
+      "test": "thranduil_paid_body_owns_graveyard_abilities_mana_nonmana_and_not_donor_triggers_both_seats",
+      "outcome": "Both seats pay UBG+2 exactly; current5/6 and legendary/Elf/Noble. No self ETB draw."
+    },
+    {
+      "rule": "All activated abilities from own graveyard Elf CARDS",
+      "test": "thranduil_all_elf_cards_includes_kindred_noncreature_and_sacrifices_actual_recipient",
+      "outcome": "Morcant Eyes is noncreature Kindred Elf; acquired4GG sacrifice ability sacrifices Thranduil, leaves donor, produces3 real2/2Elf tokens including just-sacrificed source in count. Three Tree Mascot changeling also qualifies."
+    },
+    {
+      "rule": "Mana/nonmana and actual source qualifications",
+      "test": "thranduil_paid_body_owns_graveyard_abilities_mana_nonmana_and_not_donor_triggers_both_seats",
+      "outcome": "Own Elf donor mana and Harper nonmana, reject opponent GY/hand/library donor. Mana blocked by recipient summoning sickness, then actual G mana and5-mana unblockable effect. Actual payment-window ActivateGraveyardBorrowedMana pays a separate1G creature cast."
+    },
+    {
+      "rule": "Self-referential abilities, power and counters",
+      "test": "thranduil_self_reference_uses_actual_power_counters_and_recipient_not_donor",
+      "outcome": "Guardian5GG puts3 counters on Thranduil (8/9), none on donor; Topiary mana produces8 green from actual current recipient power, not donor1."
+    },
+    {
+      "rule": "Self discard costs and granted keywords",
+      "test": "thranduil_discard_additional_cost_pays_from_hand_and_grants_actual_source_indestructible",
+      "outcome": "No hand rejects activation; actual additional discard, source tapped and indestructible after resolution. GY donor stays put and receives no keyword."
+    },
+    {
+      "rule": "Source-zone restrictions and stale targets",
+      "test": "thranduil_nonbattlefield_source_zone_abilities_and_stale_targets_do_not_rebind",
+      "outcome": "Graveyard-only Stoic ability exists but cannot activate from BF. Harper target blink and donor exile preserve stale-target failure, do not rebound new incarnation."
+    },
+    {
+      "rule": "Once-per-turn, exhaust, donor/source incarnations and suppression",
+      "test": "thranduil_changeling_mana_once_per_turn_instances_and_exhaust_have_exact_acquisition_lifetimes",
+      "outcome": "Three Tree once limit enforced; donor depart/reentry creates fresh slot and old-ref action rejects. Greenbelt exhaust consumed; Witness Protection removes borrowing; source restoration gets fresh acquisition and real second activation counters."
+    },
+    {
+      "rule": "Current controller graveyard rather than source owner; independent stack ability",
+      "test": "thranduil_live_control_uses_controllers_graveyard_not_owner_and_old_stack_survives_loss",
+      "outcome": "Control record switches donor pool; already-paid old-controller counter ability resolves onto same source. Source Hand/BF reentry has exact new generation, original-owner GY pool, no rebound old-source acquisition."
+    },
+    {
+      "rule": "Copy definition loss/restoration",
+      "test": "thranduil_copy_loss_and_restoration_acquire_fresh_instances_and_leave_graveyard_cards_untouched",
+      "outcome": "Actual shared in-place copy to Bear removes borrowed inventory; expiry restores5/6 Thranduil and fresh acquisition slot without moving source/donor."
+    },
+    {
+      "rule": "Another legendary Elf ETB draw2, then mandatory private discard1",
+      "test": "thranduil_other_legendary_elf_enters_draws_two_then_private_mandatory_discard_sourcegone",
+      "outcome": "Actual paid Elrond entry draws2, hand2/library6 before mandatory discard. Opponent sees no drawn identities, wrong actor rejected, no decline. Source leaves before chosen discard and captured trigger still completes1-card discard."
+    },
+    {
+      "rule": "Entry filters and draw replacements",
+      "test": "thranduil_etb_filters_self_opponent_nonlegend_and_nonelf_and_observes_draw_replacement",
+      "outcome": "Nonlegendary Elf, opposing legendary Elf, own legendary Human do not draw. Bard doubles actual two draws to4 then precisely one mandatory discard ->hand3."
+    },
+    {
+      "rule": "Inherited triggered abilities are excluded; actual borrowed creature activations observed",
+      "test": "thranduil_real_elf_graveyard_mana_source_qualifies_elrond_once_and_keeps_public_donor",
+      "outcome": "GY Elrond observer is not acquired. Live Elrond sees actual Thranduil borrowed mana activation and draws once; second same-turn activation draws no extra."
+    },
+    {
+      "rule": "Owned public action, targets, payment and private pending state",
+      "test": "thranduil_borrowed_activation_owned_target_payment_raw_index_restore_and_public_zone_names",
+      "outcome": "Public graveyard names verified; old exile names absent in new donor view/action. Existing wrong-actor/index/restore contract plus actual independent raw/index/drop-parent target branches and identical final unblockable outcomes."
+    },
+    {
+      "rule": "Transactional late new-acquisition failure",
+      "test": "thranduil_new_acquisition_capacity_failure_rolls_back_actual_mandatory_discard",
+      "outcome": "Valid one-slot range ends at u64MAX. Actual mandatory Elf discard requires another slot and fails capacity; entire action state/revision/hand restore. Restored capacity allows actual discard and acquired ability."
+    },
+    {
+      "rule": "Same-world mana planning after virtual sacrifice",
+      "test": "thranduil_funding_virtual_elf_sacrifice_unlocks_mana_without_live_game_fallback",
+      "outcome": "Lotus Ring sacrifices Elf virtually; Thranduil gains new virtual donor mana while live Game Elf remains BF. Reachable4green is then produced by actual sacrifice and actual borrowed mana. Both seats, snapshot unchanged during projection."
+    }
+  ],
+  "fixtures": [
+    {
+      "index": 4560,
+      "name": "Thranduil, the Elvenking",
+      "mana_cost": "{2}{B}{G}{U}",
+      "type_line": "Legendary Creature \u2014 Elf Noble"
+    },
+    {
+      "index": 4,
+      "name": "Forest",
+      "mana_cost": "",
+      "type_line": "Basic Land \u2014 Forest"
+    },
+    {
+      "index": 8,
+      "name": "Llanowar Elves",
+      "mana_cost": "{G}",
+      "type_line": "Creature \u2014 Elf Druid"
+    },
+    {
+      "index": 1298,
+      "name": "Elvenking's Harper",
+      "mana_cost": "{1}{U}",
+      "type_line": "Creature \u2014 Elf Bard"
+    },
+    {
+      "index": 2234,
+      "name": "Iron-Shield Elf",
+      "mana_cost": "{1}{B}",
+      "type_line": "Creature \u2014 Elf Warrior"
+    },
+    {
+      "index": 2851,
+      "name": "Morcant's Eyes",
+      "mana_cost": "{1}{G}",
+      "type_line": "Kindred Enchantment \u2014 Elf"
+    },
+    {
+      "index": 1871,
+      "name": "Greenbelt Guardian",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature \u2014 Elf Ranger"
+    },
+    {
+      "index": 4568,
+      "name": "Three Tree Mascot",
+      "mana_cost": "{2}",
+      "type_line": "Artifact Creature \u2014 Shapeshifter"
+    },
+    {
+      "index": 4636,
+      "name": "Topiary Lecturer",
+      "mana_cost": "{2}{G}",
+      "type_line": "Creature \u2014 Elf Druid"
+    },
+    {
+      "index": 4156,
+      "name": "Stoic Grove-Guide",
+      "mana_cost": "{4}{B/G}",
+      "type_line": "Creature \u2014 Elf Druid"
+    },
+    {
+      "index": 357,
+      "name": "Bear Cub",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature \u2014 Bear"
+    },
+    {
+      "index": 1299,
+      "name": "Elvish Archdruid",
+      "mana_cost": "{1}{G}{G}",
+      "type_line": "Creature \u2014 Elf Druid"
+    },
+    {
+      "index": 1657,
+      "name": "F\u00edli the Pathfinder",
+      "mana_cost": "{3}{W}",
+      "type_line": "Legendary Creature \u2014 Dwarf Scout"
+    },
+    {
+      "index": 1290,
+      "name": "Elrond, Moon-Reader",
+      "mana_cost": "{2}{U}",
+      "type_line": "Legendary Creature \u2014 Elf Noble"
+    },
+    {
+      "index": 4559,
+      "name": "Thranduil, Sindarin Liege",
+      "mana_cost": "{2}{G/U}{G/U}",
+      "type_line": "Legendary Creature \u2014 Elf Noble"
+    },
+    {
+      "index": 5102,
+      "name": "Witness Protection",
+      "mana_cost": "{U}",
+      "type_line": "Enchantment \u2014 Aura"
+    },
+    {
+      "index": 2914,
+      "name": "Negate",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant"
+    },
+    {
+      "index": 10,
+      "name": "Shock",
+      "mana_cost": "{R}",
+      "type_line": "Instant"
+    },
+    {
+      "index": 11,
+      "name": "Giant Growth",
+      "mana_cost": "{G}",
+      "type_line": "Instant"
+    },
+    {
+      "index": 3482,
+      "name": "Rest in Peace",
+      "mana_cost": "{1}{W}",
+      "type_line": "Enchantment"
+    },
+    {
+      "index": 2566,
+      "name": "Lotus Ring",
+      "mana_cost": "{3}",
+      "type_line": "Artifact \u2014 Equipment"
+    },
+    {
+      "index": 328,
+      "name": "Bard, King of Dale",
+      "mana_cost": "{4}{W}{U}",
+      "type_line": "Legendary Creature \u2014 Human Noble Archer"
+    },
+    {
+      "index": 1901,
+      "name": "Guardian of the Halls",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature \u2014 Elf Soldier"
+    },
+    {
+      "index": 4520,
+      "name": "The Wondrous Wasp",
+      "mana_cost": "{1}{U}",
+      "type_line": "Legendary Creature \u2014 Human Hero"
+    }
+  ],
+  "focused_tests": [
+    "thranduil_paid_body_owns_graveyard_abilities_mana_nonmana_and_not_donor_triggers_both_seats",
+    "thranduil_all_elf_cards_includes_kindred_noncreature_and_sacrifices_actual_recipient",
+    "thranduil_self_reference_uses_actual_power_counters_and_recipient_not_donor",
+    "thranduil_changeling_mana_once_per_turn_instances_and_exhaust_have_exact_acquisition_lifetimes",
+    "thranduil_live_control_uses_controllers_graveyard_not_owner_and_old_stack_survives_loss",
+    "thranduil_nonbattlefield_source_zone_abilities_and_stale_targets_do_not_rebind",
+    "thranduil_discard_additional_cost_pays_from_hand_and_grants_actual_source_indestructible",
+    "thranduil_other_legendary_elf_enters_draws_two_then_private_mandatory_discard_sourcegone",
+    "thranduil_etb_filters_self_opponent_nonlegend_and_nonelf_and_observes_draw_replacement",
+    "thranduil_borrowed_activation_owned_target_payment_raw_index_restore_and_public_zone_names",
+    "thranduil_real_elf_graveyard_mana_source_qualifies_elrond_once_and_keeps_public_donor",
+    "thranduil_copy_loss_and_restoration_acquire_fresh_instances_and_leave_graveyard_cards_untouched",
+    "thranduil_new_acquisition_capacity_failure_rolls_back_actual_mandatory_discard",
+    "thranduil_funding_virtual_elf_sacrifice_unlocks_mana_without_live_game_fallback"
+  ],
+  "receipts": [
+    {
+      "run": 1,
+      "outer": "<cache>/outer-1.log",
+      "driver": "<cache>/driver-1.py",
+      "inputs": "<cache>/inputs-1.json",
+      "resource_report": "<build-reports>/df74062e09af4ce28473fff5602f65e1.json",
+      "groups": [
+        {
+          "filter": "hob_thranduil",
+          "exit": 101,
+          "passed": 0,
+          "seconds": 23.64586543099722,
+          "log": "<cache>/focused-1.log"
+        }
+      ],
+      "notes": "Natural terminal compile-only101: corrected private CharacteristicWorld fragment_available API and Row local hash (Player deliberately not changed). No scenarios ran.",
+      "command": [
+        "python3",
+        "<cache>/driver-1.py"
+      ],
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 24.099585604970343,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2079727616,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    {
+      "run": 2,
+      "outer": "<cache>/outer-2.log",
+      "driver": "<cache>/driver-2.py",
+      "inputs": "<cache>/inputs-2.json",
+      "resource_report": "<build-reports>/c6a6f981d3a547a080f1f53f3f02c3f6.json",
+      "groups": [
+        {
+          "filter": "hob_thranduil",
+          "exit": 101,
+          "passed": 11,
+          "seconds": 29.920823141001165,
+          "log": "<cache>/focused-2.log"
+        }
+      ],
+      "notes": "Natural terminal101,11 passed3 failed. ETB tests mistakenly used Fili (Dwarf) as legendary Elf. Replaced fixtures with actual Elrond Elf; no engine change for these failures.",
+      "command": [
+        "python3",
+        "<cache>/driver-2.py"
+      ],
+      "terminal": true,
+      "exit_code": 101,
+      "seconds": 68.95198032801272,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2638004224,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    {
+      "run": 3,
+      "outer": "<cache>/outer-3.log",
+      "driver": "<cache>/driver-3.py",
+      "inputs": "<cache>/inputs-3.json",
+      "resource_report": "<build-reports>/a078f07b32404b5382a12395a7542934.json",
+      "groups": [
+        {
+          "filter": "hob_thranduil",
+          "exit": 0,
+          "passed": 14,
+          "seconds": 29.65435842302395,
+          "log": "<cache>/focused-3.log"
+        },
+        {
+          "filter": "territory_forge",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.17410677199950442,
+          "log": "<cache>/forge-3.log"
+        },
+        {
+          "filter": "hob_elrond",
+          "exit": 0,
+          "passed": 20,
+          "seconds": 0.3191749660181813,
+          "log": "<cache>/activation-observer-3.log"
+        },
+        {
+          "filter": "engine::funding::sacrifice_tests",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.11287744500441477,
+          "log": "<cache>/funding-3.log"
+        },
+        {
+          "filter": "sos_cast_rollback",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.2981565039954148,
+          "log": "<cache>/rollback-3.log"
+        },
+        {
+          "filter": "hob_recruit",
+          "exit": 0,
+          "passed": 8,
+          "seconds": 0.08902245794888586,
+          "log": "<cache>/discard-3.log"
+        },
+        {
+          "filter": "hob_beorn",
+          "exit": 0,
+          "passed": 13,
+          "seconds": 0.087038271012716,
+          "log": "<cache>/copy-3.log"
+        },
+        {
+          "filter": "hob_crooked_galion",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.19720186199992895,
+          "log": "<cache>/entry-3.log"
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 44.40139505796833,
+          "log": "<cache>/clippy-3.log"
+        }
+      ],
+      "notes": "Natural terminal0:14 focused+77 regressions+Clippy passed. Identified proof gap afterward: added actual ActivateGraveyardBorrowedMana payment-window action to existing paid scenario, without engine changes.",
+      "command": [
+        "python3",
+        "<cache>/driver-3.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 75.9219114370062,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2641981440,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    {
+      "run": 4,
+      "outer": "<cache>/outer-4.log",
+      "driver": "<cache>/driver-4.py",
+      "inputs": "<cache>/inputs-4.json",
+      "resource_report": "<build-reports>/4f741b8a10c5406285dd849c43c6e138.json",
+      "groups": [
+        {
+          "filter": "hob_thranduil",
+          "exit": 0,
+          "passed": 14,
+          "seconds": 29.991972561983857,
+          "log": "<cache>/focused-4.log"
+        },
+        {
+          "filter": "territory_forge",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.19687579799210653,
+          "log": "<cache>/forge-4.log"
+        },
+        {
+          "filter": "hob_elrond",
+          "exit": 0,
+          "passed": 20,
+          "seconds": 0.3049601949751377,
+          "log": "<cache>/activation-observer-4.log"
+        },
+        {
+          "filter": "engine::funding::sacrifice_tests",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.11631609097821638,
+          "log": "<cache>/funding-4.log"
+        },
+        {
+          "filter": "sos_cast_rollback",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.2970898909843527,
+          "log": "<cache>/rollback-4.log"
+        },
+        {
+          "filter": "hob_recruit",
+          "exit": 0,
+          "passed": 8,
+          "seconds": 0.06651542603503913,
+          "log": "<cache>/discard-4.log"
+        },
+        {
+          "filter": "hob_beorn",
+          "exit": 0,
+          "passed": 13,
+          "seconds": 0.09758633398450911,
+          "log": "<cache>/copy-4.log"
+        },
+        {
+          "filter": "hob_crooked_galion",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.18997748201945797,
+          "log": "<cache>/entry-4.log"
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 18.259937526017893,
+          "log": "<cache>/clippy-4.log"
+        }
+      ],
+      "notes": "Natural terminal0:14 focused+77 regressions+Clippy passed. Read-only compatibility audit found unnecessary Forge source sorting in descriptor refactor; restored original first-link insertion order before final run.",
+      "command": [
+        "python3",
+        "<cache>/driver-4.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 49.97864700999344,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2635952128,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    {
+      "run": 5,
+      "outer": "<cache>/outer-5.log",
+      "driver": "<cache>/driver-5.py",
+      "inputs": "<cache>/inputs-5.json",
+      "resource_report": "<build-reports>/ff14ac974258494ca52aae733d3b4c63.json",
+      "groups": [
+        {
+          "filter": "hob_thranduil",
+          "exit": 0,
+          "passed": 14,
+          "seconds": 30.073547416948713,
+          "log": "<cache>/focused-5.log"
+        },
+        {
+          "filter": "territory_forge",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.1401393050327897,
+          "log": "<cache>/forge-5.log"
+        },
+        {
+          "filter": "hob_elrond",
+          "exit": 0,
+          "passed": 20,
+          "seconds": 0.36065048299496993,
+          "log": "<cache>/activation-observer-5.log"
+        },
+        {
+          "filter": "engine::funding::sacrifice_tests",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.11930840299464762,
+          "log": "<cache>/funding-5.log"
+        },
+        {
+          "filter": "sos_cast_rollback",
+          "exit": 0,
+          "passed": 6,
+          "seconds": 0.271009624004364,
+          "log": "<cache>/rollback-5.log"
+        },
+        {
+          "filter": "hob_recruit",
+          "exit": 0,
+          "passed": 8,
+          "seconds": 0.0683228219859302,
+          "log": "<cache>/discard-5.log"
+        },
+        {
+          "filter": "hob_beorn",
+          "exit": 0,
+          "passed": 13,
+          "seconds": 0.09947734902380034,
+          "log": "<cache>/copy-5.log"
+        },
+        {
+          "filter": "hob_crooked_galion",
+          "exit": 0,
+          "passed": 10,
+          "seconds": 0.22528001002501696,
+          "log": "<cache>/entry-5.log"
+        },
+        {
+          "filter": "clippy",
+          "exit": 0,
+          "seconds": 42.915683744009584,
+          "log": "<cache>/clippy-5.log"
+        }
+      ],
+      "notes": "Final natural terminal0:14 focused+77 regressions+strict all-target Clippy passed. No further executable edits.",
+      "command": [
+        "python3",
+        "<cache>/driver-5.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 74.73364408500493,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2652377088,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  ],
+  "validation": {
+    "focused": 14,
+    "affected_regressions": 77,
+    "strict_all_target_clippy": "-D warnings passed",
+    "source_verification": {
+      "definitions": 5417,
+      "source_blobs": 1604,
+      "java_verified": true
+    },
+    "format": "standalone rustfmt --check with skip_children plus git diff --check",
+    "execution_safety": "All5 guarded jobs naturally terminated. No queued/running cancellation or input edits;6GiB/1job/1thread, stable external opt0 cache. Persistent driver and entire outer stdout/stderr captured at launch. Strict24-name complete paired fixture preflight, unknown names fail."
+  },
+  "performance": {
+    "native_execution_log_seconds": 1.01,
+    "focused_native_seconds": 0.09,
+    "final_guard_seconds": 74.73364408500493,
+    "final_groups_seconds": 74.27341915701982,
+    "peak_memory_bytes": 2652377088,
+    "oom_events": 0,
+    "authoring_seconds_since_branch_creation": 2075.704,
+    "complete_cards": 1,
+    "note": "Bounded rules scenario timings, not full-game simulation throughput. Root owns full native/release/set acceptance and schema audit."
+  },
+  "integration": {
+    "central_exclusions": [
+      "generated coverage/catalogue",
+      "src/assurance/mod.rs local test registration",
+      "src/engine_funding.rs trailing local funding test registration only (core changes committed)"
+    ],
+    "registration": [
+      "assurance/mod.rs: mod hob_thranduil;",
+      "engine_funding.rs: #[cfg(test)] #[path=\"assurance/hob_thranduil_funding.rs\"] mod hob_thranduil_funding;"
+    ],
+    "shared_ownership": "Head, Roads, Bilbo and Decree authors coordinated disjoint regions; new borrowed routes/state/view hunks may need ordinary adjacent context reconciliation in engine.rs/programs/cards.rs. No shared activation-payment implementation edits.",
+    "publication": "No PR, push or merge. Parent dispatches two independent nonauthor reviews."
+  }
+}

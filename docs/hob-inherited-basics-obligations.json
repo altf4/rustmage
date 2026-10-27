@@ -1,0 +1,290 @@
+{
+  "scope": "Map five canonical HOB basic-land reprints to existing current full-body/owned rules proofs; no new tests, definitions, candidate flags or gameplay changes",
+  "executable_head": "6358f190cb0f1c0784d9a7587e17a28e90303d79",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "members": [
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "oracle_facts": {
+        "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+        "name": "Plains",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Basic Land \u2014 Plains",
+        "oracle_text": "({T}: Add {W}.)",
+        "colors": [],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "W"
+        ],
+        "reference_printing": {
+          "id": "a4eaecb8-066a-4c72-aa5d-5ed0614ba537",
+          "set": "fra",
+          "collector_number": "281",
+          "released_at": "2026-10-02"
+        }
+      },
+      "canonical_definition": "src/card_definitions/fra/plains.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "mana_color_index": 0,
+      "paired_provenance": "src/card_definitions/fra/plains.json"
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "oracle_facts": {
+        "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+        "name": "Island",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Basic Land \u2014 Island",
+        "oracle_text": "({T}: Add {U}.)",
+        "colors": [],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "U"
+        ],
+        "reference_printing": {
+          "id": "d8184e92-54e6-4ddc-86e8-67f5c5eb079d",
+          "set": "fra",
+          "collector_number": "283",
+          "released_at": "2026-10-02"
+        }
+      },
+      "canonical_definition": "src/card_definitions/fra/island.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "mana_color_index": 1,
+      "paired_provenance": "src/card_definitions/fra/island.json"
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "oracle_facts": {
+        "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+        "name": "Swamp",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Basic Land \u2014 Swamp",
+        "oracle_text": "({T}: Add {B}.)",
+        "colors": [],
+        "color_identity": [
+          "B"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "B"
+        ],
+        "reference_printing": {
+          "id": "30693b85-550d-4c98-8c5b-4fd4e91c9f28",
+          "set": "fra",
+          "collector_number": "285",
+          "released_at": "2026-10-02"
+        }
+      },
+      "canonical_definition": "src/card_definitions/fra/swamp.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "mana_color_index": 2,
+      "paired_provenance": "src/card_definitions/fra/swamp.json"
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "oracle_facts": {
+        "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+        "name": "Mountain",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Basic Land \u2014 Mountain",
+        "oracle_text": "({T}: Add {R}.)",
+        "colors": [],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "R"
+        ],
+        "reference_printing": {
+          "id": "16671d98-6f00-477b-a010-d2905c94eb65",
+          "set": "fra",
+          "collector_number": "287",
+          "released_at": "2026-10-02"
+        }
+      },
+      "canonical_definition": "src/card_definitions/fra/mountain.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "mana_color_index": 3,
+      "paired_provenance": "src/card_definitions/fra/mountain.json"
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "oracle_facts": {
+        "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+        "name": "Forest",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Basic Land \u2014 Forest",
+        "oracle_text": "({T}: Add {G}.)",
+        "colors": [],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "G"
+        ],
+        "all_parts": [
+          {
+            "id": "a0d12fc5-c7bd-4734-9259-98fe65241f60",
+            "component": "combo_piece",
+            "name": "Forest",
+            "type_line": "Basic Land \u2014 Forest"
+          },
+          {
+            "id": "aed8ae06-ae54-4a16-8830-6547164ce6ae",
+            "component": "combo_piece",
+            "name": "Gilt-Leaf Alchemist",
+            "type_line": "Creature \u2014 Elf Druid"
+          }
+        ],
+        "reference_printing": {
+          "id": "613bc075-2fe4-421f-bfec-3786a5e37797",
+          "set": "fra",
+          "collector_number": "289",
+          "released_at": "2026-10-02"
+        }
+      },
+      "canonical_definition": "src/card_definitions/fra/forest.rs",
+      "definition_sha256": "15c79a7f193684de5f44146b90d6dcb225f2b4c2099d0ddce58f16a8d8c283bf",
+      "mana_color_index": 4,
+      "paired_provenance": "src/card_definitions/fra/forest.json"
+    }
+  ],
+  "sources": [
+    {
+      "path": "Mage/src/main/java/mage/cards/basiclands/Plains.java",
+      "sha256": "da74b1b93697ec78ec2fc7665715f40c60e393e43845b88c8f5c491bc38c8eaf"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/basiclands/Island.java",
+      "sha256": "5a9765a9f49e22aa89884834780c0cd7c8e2cc8696daab1d841fd13f40c58c96"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/basiclands/Swamp.java",
+      "sha256": "b292314acab07bf9e658419b7c2cebf25c9cf7fe0267792c1cdfb73d9ebd3855"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/basiclands/Mountain.java",
+      "sha256": "be959d0f5a3db621a31d32104ae445a033cd10907a237a4f8630b3457df13a73"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/basiclands/Forest.java",
+      "sha256": "77b52732425a0d2b9a8f53d2fff7014dab7897b56b23b69792872d8c95955716"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/basiclands/BasicLand.java",
+      "sha256": "4eb89e2e86f2d29dd2bd4990f7f72089edbe07f6c17b0eb9fb48b3493ef79215"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/WhiteManaAbility.java",
+      "sha256": "36c9c240bb0e9509d304d9300d0a157085253b4ab5d9a52cbdf1d051a43221b6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/BlueManaAbility.java",
+      "sha256": "8b0ffaec3d6002607e0a62e142031604a31556313e44830d9ad44026872cdf1f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+      "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+      "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    }
+  ],
+  "proof_map": {
+    "both_seats": "src/engine_sos_green_colorless_tests.rs::sos_original_basic_and_slow_land_play_thresholds_and_exact_colors: all5 legal own-land plays enter untapped, generate expected coloredmana and reject repeated tap; every checked action tests wrongactor atomicity, owned raw/index replay, parentdisposal, restore and stale revisions",
+    "exact_full_mana_and_land_limit": "src/assurance/cards.rs::basic_lands_supply_exact_colors_once_per_untap: all5 generate ONLY the exact one-color mana array fromzero; secondtap andsecondnormal landplay rejected transactionally",
+    "canonical_definition": "All5 Effect::Land, EntryTapped::Never, deck_limitNone; generatedmetadata carries Basic Land subtype and mana_colorSome(0..4), matching Oracle/XMage. Canonical ownership remainsFRA despiteHOB membership.",
+    "historical_shared_audit": "docs/sos-original-green-audit.md S1; paired source pins already present. This mapping reuses actual current native evidence instead of duplicating the same tests."
+  },
+  "terminal_native_evidence": [
+    {
+      "command": [
+        "/home/altf4/.cache/rustmage-authoring/hob-complete-set/target/debug/deps/rustmage-b764cd26223fba2c",
+        "--exact",
+        "engine::assurance::cards::basic_lands_supply_exact_colors_once_per_untap",
+        "--include-ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "orphaned_processes": false,
+      "seconds": 0.017447243037167937,
+      "log": "/home/altf4/.cache/rustmage-validation-luin5lob/report/native-000.log",
+      "test": "engine::assurance::cards::basic_lands_supply_exact_colors_once_per_untap"
+    },
+    {
+      "command": [
+        "/home/altf4/.cache/rustmage-authoring/hob-complete-set/target/debug/deps/rustmage-b764cd26223fba2c",
+        "--exact",
+        "engine::sos_green_colorless_tests::sos_original_basic_and_slow_land_play_thresholds_and_exact_colors",
+        "--include-ignored",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "orphaned_processes": false,
+      "seconds": 0.03372648503864184,
+      "log": "/home/altf4/.cache/rustmage-validation-luin5lob/report/native-730.log",
+      "test": "engine::sos_green_colorless_tests::sos_original_basic_and_slow_land_play_thresholds_and_exact_colors"
+    }
+  ],
+  "full_report": "<cache>/rustmage-validation-luin5lob/report/result.json",
+  "status": "Two independent nonauthor approvals. No new admissions or gameplay changes. Integrated creature assurance registration pending next combined focused check; canonical basics reuse actual6358 full-release shared passes. Whole193 acceptance open.",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "c15b921d90245b8ddf2e03f15bab813d473c176c",
+      "result": "Full Oracle/Rust/Java and pinned helpers plus actual terminal native evidence approved; no actionable findings",
+      "scope": "Current printed obligation proof mapping only, not whole193 acceptance"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "c15b921d90245b8ddf2e03f15bab813d473c176c",
+      "result": "Full Oracle/Rust/Java and pinned helpers plus actual terminal native evidence approved; no actionable findings",
+      "scope": "Current printed obligation proof mapping only, not whole193 acceptance"
+    }
+  ]
+}

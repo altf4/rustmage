@@ -1,0 +1,112 @@
+{
+  "scope": "Celebrate the Mountain-king complete two independent entry triggers, existing recruit and until-source-leaves links; 2-player target scope; no new state/wire/IDs",
+  "base_revision": "15701b47",
+  "oracle_facts": {
+    "oracle_id": "d51136fa-3c13-48a5-83fd-51fe00010a4b",
+    "name": "Celebrate the Mountain-king",
+    "layout": "normal",
+    "mana_cost": "{3}{W}",
+    "cmc": 4.0,
+    "type_line": "Enchantment",
+    "oracle_text": "When this enchantment enters, for each opponent, exile up to one target nonland permanent that player controls until this enchantment leaves the battlefield.\nWhen this enchantment enters, recruit. (Draw a card, then discard a card. If you discarded a nonland card, create a 1/1 white Human Soldier creature token.)",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Recruit"
+    ],
+    "all_parts": [
+      {
+        "id": "6007af81-4541-4b55-90ea-03d365362ae5",
+        "component": "token",
+        "name": "Human Soldier",
+        "type_line": "Token Creature \u2014 Human Soldier"
+      },
+      {
+        "id": "42fbd61d-e1a6-465d-b1a3-f5ee0869d3af",
+        "component": "combo_piece",
+        "name": "Celebrate the Mountain-king",
+        "type_line": "Enchantment"
+      }
+    ],
+    "reference_printing": {
+      "id": "42fbd61d-e1a6-465d-b1a3-f5ee0869d3af",
+      "set": "hob",
+      "collector_number": "7",
+      "released_at": "2026-08-14"
+    }
+  },
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/c/CelebrateTheMountainKing.java",
+      "sha256": "b1bc6936d018825c9926d85577c55afb7cc2358f0c9f66da4380eace439a401b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+      "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/OnLeaveReturnExiledAbility.java",
+      "sha256": "5b62cf341bee369a87d667c2431aa2bdf252f167e84793aca73e04a2ceee1822"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/RecruitEffect.java",
+      "sha256": "2dbb9a4cebf764a6521203efc4bfd4489744ef4b45795518dba5f8e3e7c94817"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanSoldierToken.java",
+      "sha256": "77dcfc2ab7882b2bfd80f1fb1402645cea67260e9df7dba02e1d8d58fcc6716d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ForEachPlayerTargetsAdjuster.java",
+      "sha256": "0983e17113baf50a95495f9aac7c2218adf8b0c7350303f390e2ecdfd2576971"
+    }
+  ],
+  "obligations": {
+    "spell": "Actually paid3W enchantment, two independently ordered entry triggers",
+    "exile": "For the only opponent in this two-player library choose up to one nonland permanent they control, reject own/land/player; exact source and target, sourcegone before resolution no exile; target stale/control change invalidates; linked return occurs without stack on departure under owner, fresh ref/token ceases",
+    "recruit": "Mandatory separate trigger draws then private discard, nonland yields exact 1/1 white Human Soldier token; land and replaced discards correctly handled, sourcegone still resolves; 0 targets does not suppress recruit",
+    "owned": "Raw/index/restore during target and private discard choices; illegal target actions rollback; exact incarnation prevents a stale target from being exiled."
+  },
+  "validation": {
+    "focused_run": "<cache>/rustmage-authoring/hob-celebrate/run-3",
+    "result": "40 passed across five filters, including four Celebrate scenarios; compile and all filters exit 0; no timeout or orphaned processes",
+    "guard_seconds": 67.426500889007,
+    "peak_bytes": 2481147904,
+    "memory_limit_bytes": 6442450944,
+    "oom_events": 0,
+    "history": [
+      "Run 1 failed at compilation because the external assurance module used the private Card tuple constructor; changed fixture to catalogue lookup after termination.",
+      "Run 2 compiled and two Celebrate scenarios passed; two failed because fixture give_priority overwrote the pending trigger-order choice. Removed those fixture calls after termination."
+    ],
+    "review": "Approved by hob_review_rules and hob_review_contracts at 18fd5f5f; both verified printed obligations and terminal evidence. The 40-test total corrects receipt arithmetic."
+  },
+  "fixtures": [
+    "Celebrate the Mountain-king",
+    "Forest",
+    "Island",
+    "Shock",
+    "Bear Cub",
+    "Goldvein Pick",
+    "Rest in Peace"
+  ]
+}

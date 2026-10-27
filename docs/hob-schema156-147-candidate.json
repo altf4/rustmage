@@ -1,0 +1,655 @@
+{
+  "scope": "147localcandidates,46gated,all69inheritedidentities mapped. Schema156 unchanged; new private typedmechanics and exactDragon5416. Whole193/finalpublishedreviews remainopen.",
+  "source_head_before_baseline": "2053fbfb010b960c15802a764430ac2e8308fd95",
+  "status": "Local147/schema156 full release accepted with two independent terminal receipt reviews. 46gated; entire193 behavior/games/performance and one final unmerged PR still open.",
+  "focused_recording": {
+    "passed": 305,
+    "failed": 0,
+    "ignored": 0,
+    "scenario_seconds": 1.85,
+    "profile": "AUTHORopt0 usingnowidleWizardcache; normalrootdefaulttargetuntouched",
+    "measurements": [
+      {
+        "compile": {
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "--no-run",
+            "--message-format=json",
+            "--target-dir",
+            "<cache>/rustmage-authoring/hob-wandering/target"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 27.841096314019524,
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/compile.jsonl"
+        }
+      },
+      {
+        "hob_rules": {
+          "command": [
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "hob_",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 1.869815007026773,
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/focused.log"
+        }
+      },
+      {
+        "record_previous_schema": 156,
+        "result": {
+          "command": [
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
+            "--exact",
+            "--nocapture"
+          ],
+          "exit": 101,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 15.205746708030347,
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs156.log"
+        }
+      },
+      {
+        "record_previous_schema": 155,
+        "result": {
+          "command": [
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
+            "--exact",
+            "--nocapture"
+          ],
+          "exit": 101,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 15.253588020976167,
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs155.log"
+        }
+      },
+      {
+        "record_previous_schema": 154,
+        "result": {
+          "command": [
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
+            "--exact",
+            "--nocapture"
+          ],
+          "exit": 101,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 15.257728641969152,
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs154.log"
+        }
+      },
+      {
+        "record_previous_schema": 153,
+        "result": {
+          "command": [
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
+            "--exact",
+            "--nocapture"
+          ],
+          "exit": 101,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 15.757036752009299,
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs153.log"
+        }
+      },
+      {
+        "record_previous_schema": 152,
+        "result": {
+          "command": [
+            "<cache>/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "engine::assurance::regressions::supported_cards_retain_bounded_cast_and_entry_traces",
+            "--exact",
+            "--nocapture"
+          ],
+          "exit": 101,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 15.656064267037436,
+          "log": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/traces-vs152.log"
+        }
+      }
+    ],
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 106.87714085099287,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2446426112,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "comparison": {
+      "source_head": "2053fbfb010b960c15802a764430ac2e8308fd95",
+      "current_rows": 2662,
+      "baselines": {
+        "156": {
+          "head": "6358f190",
+          "inherited": 2651,
+          "candidate": 2662,
+          "changed": [],
+          "missing": [],
+          "added": [
+            "Along the Crooked Way",
+            "Belladonna Took",
+            "Dancing from Dark to Dawn",
+            "Galion, Elvenking's Butler",
+            "Gandalf, Spark Starter",
+            "Gandalf, Wandering Wizard",
+            "Lake-town Mariners",
+            "The Lonely Mountain",
+            "The Misty Mountains Cold",
+            "The Queen of Dale",
+            "Uncover the Moon-Letters"
+          ],
+          "incomplete_additions": []
+        },
+        "155": {
+          "head": "ed8b0176",
+          "inherited": 2641,
+          "candidate": 2662,
+          "changed": [],
+          "missing": [],
+          "added": [
+            "Along the Crooked Way",
+            "Bard's Company",
+            "Belladonna Took",
+            "Dancing from Dark to Dawn",
+            "Dwarven Mauler",
+            "Galion, Elvenking's Butler",
+            "Gandalf, Spark Starter",
+            "Gandalf, Wandering Wizard",
+            "Goblin Plate Mail",
+            "Great Fierce Bee",
+            "K\u00edli the Resourceful",
+            "Lake-town Mariners",
+            "Mirkwood Nurturer",
+            "Radagast of Rhosgobel",
+            "Stir Up Trouble",
+            "Stone-Giant of High Pass",
+            "The Lonely Mountain",
+            "The Misty Mountains Cold",
+            "The Queen of Dale",
+            "Thranduil's Company",
+            "Uncover the Moon-Letters"
+          ],
+          "incomplete_additions": []
+        },
+        "154": {
+          "head": "faca9756",
+          "inherited": 2631,
+          "candidate": 2662,
+          "changed": [],
+          "missing": [],
+          "added": [
+            "Along the Crooked Way",
+            "Bard's Company",
+            "Bejeweled Warg",
+            "Belladonna Took",
+            "Bifur, Melodic Rider",
+            "Chief Warg's Company",
+            "Dancing from Dark to Dawn",
+            "Dwarven Mauler",
+            "F\u00edli the Pathfinder",
+            "Galion, Elvenking's Butler",
+            "Gandalf, Spark Starter",
+            "Gandalf, Wandering Wizard",
+            "Gnashing of Teeth",
+            "Goblin Plate Mail",
+            "Great Fierce Bee",
+            "K\u00edli the Resourceful",
+            "Lake-town Mariners",
+            "Mirkwood Nurturer",
+            "Radagast of Rhosgobel",
+            "Sound the Trumpets",
+            "Stir Up Trouble",
+            "Stone by Sunlight",
+            "Stone-Giant of High Pass",
+            "The Lonely Mountain",
+            "The Misty Mountains Cold",
+            "The Queen of Dale",
+            "Thranduil's Company",
+            "Through the Forest Gate",
+            "Uncover the Moon-Letters",
+            "Wizard's Staff",
+            "Woodland Weavemaster"
+          ],
+          "incomplete_additions": []
+        },
+        "153": {
+          "head": "3aa780e4",
+          "inherited": 2610,
+          "candidate": 2662,
+          "changed": [],
+          "missing": [],
+          "added": [
+            "Along the Crooked Way",
+            "Bard's Company",
+            "Bejeweled Warg",
+            "Belladonna Took",
+            "Bifur, Melodic Rider",
+            "Bolg's Company",
+            "Bombur, Gentle Dreamer",
+            "Cantankerous Keepers",
+            "Chief Warg's Company",
+            "Dancing from Dark to Dawn",
+            "Down, Down to Goblin-town",
+            "Dwalin, Weaponmaster",
+            "Dwarven Mauler",
+            "D\u00e1in's Company",
+            "F\u00edli the Pathfinder",
+            "Galion, Elvenking's Butler",
+            "Gandalf, Spark Starter",
+            "Gandalf, Wandering Wizard",
+            "Gnashing of Teeth",
+            "Goblin Plate Mail",
+            "Gollum the Abandoned",
+            "Great Fierce Bee",
+            "Great Gilded Boat",
+            "Great Ugly-Looking Goblin",
+            "K\u00edli the Resourceful",
+            "Lake-town Mariners",
+            "Lake-town Toymaker",
+            "Master's Councillors",
+            "Mirkwood Nurturer",
+            "Moment of Glory",
+            "Old Thrush",
+            "Ori, Keeper of Songs",
+            "Plunder the Trollshaws",
+            "Radagast of Rhosgobel",
+            "Snowslope Hunter",
+            "Sound the Trumpets",
+            "Sting, Bilbo's Sword",
+            "Stir Up Trouble",
+            "Stone by Sunlight",
+            "Stone-Giant of High Pass",
+            "The Arkenstone",
+            "The Lonely Mountain",
+            "The Misty Mountains Cold",
+            "The Mountain-king's Return",
+            "The Queen of Dale",
+            "Thranduil's Company",
+            "Through the Forest Gate",
+            "Tidings of War",
+            "Uncover the Moon-Letters",
+            "Wizard's Staff",
+            "Woodland Weavemaster",
+            "\u00d3in the Brave"
+          ],
+          "incomplete_additions": []
+        },
+        "152": {
+          "head": "6751babd",
+          "inherited": 2584,
+          "candidate": 2662,
+          "changed": [],
+          "missing": [],
+          "added": [
+            "Along the Crooked Way",
+            "An Unexpected Party",
+            "Bard's Company",
+            "Bejeweled Warg",
+            "Belladonna Took",
+            "Bifur, Melodic Rider",
+            "Bolg's Company",
+            "Bombur, Gentle Dreamer",
+            "Bothersome Noisemaker",
+            "Cantankerous Keepers",
+            "Chief Warg's Company",
+            "Dancing from Dark to Dawn",
+            "Down, Down to Goblin-town",
+            "Dwalin, Weaponmaster",
+            "Dwarven Mauler",
+            "Dwarven Shortsword",
+            "D\u00e1in's Company",
+            "Eagle of the Great Shelf",
+            "Elvenking's Halls",
+            "Esgaroth Garrison",
+            "Fearsome Goblin Pair",
+            "F\u00edli the Pathfinder",
+            "Galion, Elvenking's Butler",
+            "Gandalf, Spark Starter",
+            "Gandalf, Wandering Wizard",
+            "Gathering of Darkness",
+            "Gnashing of Teeth",
+            "Goblin Plate Mail",
+            "Goblin-town",
+            "Goblin-town Flunkies",
+            "Gollum the Abandoned",
+            "Great Fierce Bee",
+            "Great Gilded Boat",
+            "Great Ugly-Looking Goblin",
+            "Iron Hills",
+            "Iron Hills Blacksmith",
+            "Iron Hills Stalwart",
+            "K\u00edli the Resourceful",
+            "Lake-town",
+            "Lake-town Lookout",
+            "Lake-town Mariners",
+            "Lake-town Toymaker",
+            "Long Lake Nuisance",
+            "Master's Councillors",
+            "Mirkwood",
+            "Mirkwood Nurturer",
+            "Misty Mountains Raider",
+            "Moment of Glory",
+            "My Precious",
+            "Nighthowl Pursuer",
+            "Old Thrush",
+            "Ori, Keeper of Songs",
+            "Patient Instructor",
+            "Plunder the Trollshaws",
+            "Radagast of Rhosgobel",
+            "Rage into the Valley",
+            "Ravening Warg",
+            "Snowslope Hunter",
+            "Sound the Trumpets",
+            "Sting, Bilbo's Sword",
+            "Stir Up Trouble",
+            "Stone by Sunlight",
+            "Stone-Giant of High Pass",
+            "The Arkenstone",
+            "The Lonely Mountain",
+            "The Misty Mountains Cold",
+            "The Mountain-king's Return",
+            "The Queen of Dale",
+            "Thranduil's Company",
+            "Through the Forest Gate",
+            "Tidings of War",
+            "Uncover the Moon-Letters",
+            "Wargling",
+            "Wilderland Scrounger",
+            "Wizard's Staff",
+            "Wood Elves",
+            "Woodland Weavemaster",
+            "\u00d3in the Brave"
+          ],
+          "incomplete_additions": []
+        }
+      },
+      "current_candidates_byte_identical": true,
+      "candidate_sha256": "018e09fc4cb25af51a02b0338c0a5b06b332b3c71cbebc3cb7f1ad9c4d8e0517"
+    },
+    "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated147-2053-1"
+  },
+  "baseline": {
+    "rows": 2662,
+    "sha256": "018e09fc4cb25af51a02b0338c0a5b06b332b3c71cbebc3cb7f1ad9c4d8e0517",
+    "previous_rows": 2651,
+    "previous_sha256": "ccd925a3d0e0869d0aea5ef19085f02147a35fc25909dae9e19d2b1a406dcddf",
+    "adopted_exact_reviewed_bytes": true,
+    "all_five_candidates_identical": true,
+    "prior_audited144_2659rows": "Allfullrowsunchanged; exactlyGandalfWandering/LonelyMountain/Mistyadded"
+  },
+  "independent_adoption_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "2053fbfb010b960c15802a764430ac2e8308fd95",
+      "result": "Firm fullinheritedrowcomparisonacross5historicalbaselines+prior144candidate andintegration/sourceeligibilityapproval; no findings. Adoptionapprovedforexact018e...candidate; default/fullreleasepending."
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "2053fbfb010b960c15802a764430ac2e8308fd95",
+      "result": "Firm fullinheritedrowcomparisonacross5historicalbaselines+prior144candidate andintegration/sourceeligibilityapproval; no findings. Adoptionapprovedforexact018e...candidate; default/fullreleasepending."
+    }
+  ],
+  "required_prior_libraries": [
+    {
+      "path": "<cache>/rustmage-validation-jzygc95p/report/libraries/librustmage.so",
+      "sha256": "b4786860513908fb08049f7f00c7576f1148fcec60e37b81b02ee7ecbc9ff8c0",
+      "mode": "0555",
+      "verified_before_run": true
+    },
+    {
+      "path": "<cache>/rustmage-validation-xyv_qayq/report/libraries/librustmage.so",
+      "sha256": "02cef112bf7dab73af8137541b165f619da64021a907d740839b06da880abc01",
+      "mode": "0555",
+      "verified_before_run": true
+    },
+    {
+      "path": "<cache>/rustmage-validation-y3jor6s1/report/libraries/librustmage.so",
+      "sha256": "2690e37e6a0621aebf264ba78174b5d167d1eddd490cb0ddce9de5c1949e7f2c",
+      "mode": "0555",
+      "verified_before_run": true
+    },
+    {
+      "path": "<cache>/rustmage-validation-luin5lob/report/libraries/librustmage.so",
+      "sha256": "057466e70191ba13c0847be5ba060359d1c47a3897a3cc66e5cf3baeacb28ca0",
+      "mode": "0555",
+      "verified_before_run": true
+    }
+  ],
+  "delivery": "PR522undone; singlelocalbranch, no replacementPR/push/merge. OnebrandnewPRonlyafterwhole193implementedandvalidated, leaveunmerged.",
+  "release_attempts": [
+    {
+      "head": "cb63f5a9212b47803e4ef6782ba305e42036d98f",
+      "report": "<cache>/rustmage-validation-ivx1owvv/report/result.json",
+      "terminal": true,
+      "success": false,
+      "execution_seconds": 45.35216831701109,
+      "passed_gates": [
+        "sourcepins",
+        "format",
+        "cardformat",
+        "scriptcontracts"
+      ],
+      "failed_gate": "Clippy",
+      "findings": [
+        "Proof-onlyunnecessaryto_vec replaceditercopied ondisjointobject/playersfields",
+        "Proof-only3|4|5 rewritten3..=5"
+      ],
+      "gameplay_and_trace_bytes_unchanged": true,
+      "guard": {
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/hob-complete-set/rustmage/scripts/validate.py",
+          "--release",
+          "--python",
+          "smoke",
+          "--target-dir",
+          "<cache>/rustmage-authoring/hob-complete-set/target"
+        ],
+        "terminal": true,
+        "exit_code": 1,
+        "seconds": 45.558107923017815,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2003402752,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "head": "332876ffc9350881508ee067af97cffc30c851df",
+      "terminal": true,
+      "success": true,
+      "seconds": 320.2120903109899,
+      "input_sha256": "8a75fb85ac0d652827e06b6915727d85722e5c0f12fdd20be59aee7f39d9ca94",
+      "files_verified": 11929,
+      "changed": [],
+      "active_processes": [],
+      "simulation": {
+        "clone_ns": 303.37768,
+        "decisions": 4941,
+        "decisions_per_second": 118632.25865376227,
+        "games": 10,
+        "games_per_second": 240.09766981129786,
+        "initial_state_bytes_excluding_capacity_and_allocator": 21752,
+        "max_decisions_per_game": 655,
+        "note": "limited catalogue; native smoke policy and observation construction included; no model, tensor encoding, or JSON; not an XMage parity comparison",
+        "restore_ns": 174.44777,
+        "seconds": 0.041649717
+      },
+      "shared_libraries": {
+        "<cache>/rustmage-validation-ishi6jyj/report/libraries/librustmage.so": "0c19f17012384baf792ed6349c7d5a88367325690fe517de20267851d8d9f981"
+      },
+      "phases": [
+        {
+          "name": "source pins",
+          "exit": 0,
+          "seconds": 0.7166743209818378,
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/00.log"
+        },
+        {
+          "name": "format",
+          "exit": 0,
+          "seconds": 1.7193828860181384,
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/01.log"
+        },
+        {
+          "name": "card format",
+          "exit": 0,
+          "seconds": 1.1192162389634177,
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/02.log"
+        },
+        {
+          "name": "script contracts",
+          "exit": 0,
+          "seconds": 0.7181156169972382,
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/03.log"
+        },
+        {
+          "name": "clippy",
+          "exit": 0,
+          "seconds": 17.312449372024275,
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/04.log"
+        },
+        {
+          "name": "native assurance",
+          "exit": 0,
+          "seconds": 167.05160329304636,
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/05.log"
+        },
+        {
+          "name": "release build",
+          "exit": 0,
+          "seconds": 131.11657553602709,
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/06.log"
+        },
+        {
+          "name": "simulation sample",
+          "exit": 0,
+          "seconds": 0.11516482301522046,
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/07.log"
+        },
+        {
+          "name": "Python assurance",
+          "exit": 0,
+          "seconds": 0.16515993600478396,
+          "log": "<cache>/rustmage-validation-ishi6jyj/report/08.log"
+        }
+      ],
+      "report": "<cache>/rustmage-validation-ishi6jyj/report/result.json",
+      "native": {
+        "passed": 892,
+        "compile_seconds": 144.84490880201338,
+        "execution_seconds": 22.12057538301451
+      },
+      "python": {
+        "suite": "contract",
+        "requested_suite": "smoke",
+        "library": "<cache>/rustmage-validation-ishi6jyj/report/libraries/librustmage.so",
+        "terminal": true,
+        "tests": 8,
+        "success": true,
+        "seconds": 0.02247210795758292,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "runtime_budget_seconds": 5.0,
+        "budget_exceeded": false,
+        "timeout_seconds": 15.0
+      },
+      "guard": {
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/hob-complete-set/rustmage/scripts/validate.py",
+          "--release",
+          "--python",
+          "smoke",
+          "--target-dir",
+          "<cache>/rustmage-authoring/hob-complete-set/target"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 320.6178581530112,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 3066802176,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "independent_reviews": [
+        {
+          "reviewer": "hob_review_contracts",
+          "revision": "332876ffc9350881508ee067af97cffc30c851df",
+          "result": "Firm independent nonauthor terminal receipt approval; all9gates,892native,8Python,strict2662baseline,11929unchangedinputs and all5exact0555libraries independently verified. No findings."
+        },
+        {
+          "reviewer": "hob_review_rules",
+          "revision": "332876ffc9350881508ee067af97cffc30c851df",
+          "result": "Firm independent nonauthor terminal receipt approval; all9gates,892native,8Python,strict2662baseline,11929unchangedinputs and all5exact0555libraries independently verified. No findings."
+        }
+      ],
+      "implementation_throughput": {
+        "new_local_candidates": 78,
+        "elapsed_seconds_since_goal_creation": 22823.532210588455,
+        "cards_per_hour": 12.303091274790905,
+        "scope": "69 inherited to147 local candidates; includes core work, author/proof/review, build queues, acceptance and PR522undo. 46 gated; whole193 and finalpublishedPR remain open."
+      }
+    }
+  ],
+  "focused_lint_repair": {
+    "head": "7c790a9b0d71ebcd2d2eb5fd17900204d6dbb364",
+    "passed": 20,
+    "failed": 0,
+    "ignored": 0,
+    "compile_seconds": 27.886658456001896,
+    "profile": "AUTHORopt0only; normalrootacceptancecacheunchanged",
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-complete-set/repair147-clippy-1/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 28.129905298002996,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2464149504,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "reports": "<cache>/rustmage-authoring/hob-complete-set/repair147-clippy-1",
+    "independent_reviews": [
+      {
+        "reviewer": "hob_review_contracts",
+        "revision": "7c790a9b0d71ebcd2d2eb5fd17900204d6dbb364",
+        "result": "Exact2proofsyntaxfixes semanticallyequivalent; gameplay/provenance/2662baselineunchanged; source/fullreleaseeligibilityrefreshed, nofindings"
+      },
+      {
+        "reviewer": "hob_review_rules",
+        "revision": "7c790a9b0d71ebcd2d2eb5fd17900204d6dbb364",
+        "result": "Exact2proofsyntaxfixes semanticallyequivalent; gameplay/provenance/2662baselineunchanged; source/fullreleaseeligibilityrefreshed, nofindings"
+      }
+    ]
+  }
+}

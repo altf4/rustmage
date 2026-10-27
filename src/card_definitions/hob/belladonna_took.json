@@ -3,10 +3,50 @@
   "catalogue_id": 377,
   "oracle_id": "011da9c5-aa8a-4fa0-b1f2-62b9f3760476",
   "facts_sha256": "24c072ba5bf4d060956d6091f6a2eea7baa385457a1f1ae4ea2c6d83a9c8046a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "983f0b1eb2a2b04ac532ff66ce86203d8303c5197ef8c2fef769ab880e1a536c"
   },
-  "physical_metadata_sha256": "20e89c5949d33a895f705f7452985c8f7dfb740412a224ff85c19e038d0d5eeb"
+  "physical_metadata_sha256": "20e89c5949d33a895f705f7452985c8f7dfb740412a224ff85c19e038d0d5eeb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BelladonnaTook.java",
+  "java_sha256": "a699ac9e11e589bbe77bfd9ffbd2d6980fa184fe2308645c057e963c910c88d7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/IfAbilityHasResolvedXTimesEffect.java",
+      "sha256": "e4ba0c85e674f7ed051face45fc0140a7abcbb76f92754cb65cfccaa4a5da2d2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/AbilityResolvedWatcher.java",
+      "sha256": "9f5cd5721700eb1dae7c7cad6a20a7a07fb79a1a6f1b8091c2bdb4fce13ae2ff"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    }
+  ]
 }

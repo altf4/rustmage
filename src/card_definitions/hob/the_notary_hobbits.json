@@ -3,10 +3,70 @@
   "catalogue_id": 4483,
   "oracle_id": "dc20b29b-856e-4d45-99cd-5e12cfc2324d",
   "facts_sha256": "fc5dd40445a4a26b35489e84896c051acfade2e9f03309383acf3326f723bcb1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "75653d070fae58d5adc669a1906c4c2aadd6f493b98d35d4e118d1805732eb41"
   },
-  "physical_metadata_sha256": "ab6c95971435ce2432cd8e97bbc072053a39f87f1579aaf4bd7d665d983740d3"
+  "physical_metadata_sha256": "ab6c95971435ce2432cd8e97bbc072053a39f87f1579aaf4bd7d665d983740d3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheNotaryHobbits.java",
+  "java_sha256": "ba643bd9095fd0508c83cfac6ee375113765071ff54a13b940c9b50bc3aa0caa",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceMatchesFilterCondition.java",
+      "sha256": "30cc4e1338f78c1c24ceb55906ae9deeb24423c0bd057e236fa20def3c14d9ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/DynamicManaAbility.java",
+      "sha256": "b3d0b50f07f8a0d751bf30a6ecaca74c91fd98a7dd4e3228f71b7543a2d108da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/DynamicManaEffect.java",
+      "sha256": "e2767b7e03907de0266b757f49728816804d3a1376c423024119380c5797ce27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+      "sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    }
+  ],
+  "implementation_notes": [
+    "Token status is immutable for an exact incarnation; SelfNontokenEnters is equivalent to this intervening-if, including source LKI, and prevents token-copy self-entry recursion.",
+    "Source copying uses current copiable values or exact source-departure LKI. Existing CopyOverrides.legendary=false preserves every other copiable exception and is itself copiable.",
+    "Colorless CountSubtype uses current controlled Halfling permanents, including copied abilities and projected funding zones/control/types; zero production remains a legal actual tap ability."
+  ]
 }

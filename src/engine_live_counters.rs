@@ -7,6 +7,17 @@ pub(super) struct NamedCounterRow {
     object: ObjectRef,
     amounts: NamedCounters,
 }
+impl NamedCounterRow {
+    pub(super) fn count(&self, kind: CounterKind) -> u64 {
+        self.amounts
+            .0
+            .binary_search_by_key(&kind, |(kind, _)| *kind)
+            .map_or(0, |index| self.amounts.0[index].1)
+    }
+    pub(super) fn object(&self) -> ObjectRef {
+        self.object
+    }
+}
 pub(super) type Rows = Option<SharedVec<NamedCounterRow>>;
 
 pub(super) fn amounts(rows: &Rows, object: ObjectRef, hot: InitialCounters) -> CounterAmounts<'_> {

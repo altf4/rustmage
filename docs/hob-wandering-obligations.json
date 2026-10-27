@@ -1,0 +1,204 @@
+{
+  "scope": "Gandalf, Wandering Wizard wholecard, private reusable owner-directed source shuffle/Drawselector; no newstate/wire/schema/IDs",
+  "base_revision": "50fddb1eb344387b5be415635fc7fe4d862bf770",
+  "oracle_facts": {
+    "oracle_id": "c996bc53-184d-4dc3-8244-e8d9528516a0",
+    "name": "Gandalf, Wandering Wizard",
+    "layout": "normal",
+    "mana_cost": "{4}{U}",
+    "cmc": 5.0,
+    "type_line": "Legendary Creature \u2014 Avatar Wizard",
+    "oracle_text": "Ward {3} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {3}.)\n{6}: Gandalf's owner shuffles him into their library and draws three cards.",
+    "power": "4",
+    "toughness": "5",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Ward"
+    ],
+    "reference_printing": {
+      "id": "1f8403a2-849c-4a59-b0ed-c8803995028d",
+      "set": "hob",
+      "collector_number": "41",
+      "released_at": "2026-08-14"
+    }
+  },
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/g/GandalfWanderingWizard.java",
+      "sha256": "fd4687e04fe88bcaf3e656fb00799fd3cb8213143ad7e1dbe6cb6c18fd58512c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleIntoLibrarySourceEffect.java",
+      "sha256": "bbb5942769ee34f8ca0539d82c4487bc0f39bcf14787978fe588240bccf4f8d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sections": [
+      "701.24c",
+      "608.2h",
+      "113.7a"
+    ],
+    "resolution": "Oracle gives shuffle/draw to owner even when controller differs; exact source incarnation alone moves, but owner library is shuffled and owner draws even if source already departed. Pinned XMage instead uses DrawCardSourceControllerEffect and skips shuffle when source missing; those discrepancies are corrected."
+  },
+  "obligations": {
+    "body_ward": "Paid4U4/5AvatarWizard; opponentShocktriggersward3pay/decline, underpayrejectatomic, ownShockexempt",
+    "activation": "Actuallypaid6genericnoT/once/sorcery; tapped/summoningsickduringopponentendstepworks; stolenownerreceives3privatecardsandshuffle notactivator; 2stackactivationsbothresolve3draws",
+    "source_and_rng": "Exactsourcegoesownerlibrarythenowner3draw; departedGY/newincarnationexcludedbutownerlibrarystillshufflesanddraws; ownedraw/index,parentdrop,valid/departed/reenteredandrestoreequalsvalid",
+    "continuation": "Existing interruptible DrawSourceOwner integrates privatefirstdrawMiraclechoice, remainingdrawsresumeonDecline,ownedrestore; shortlibraryactualemptydrawloss"
+  },
+  "profile": "Consistentopt0rootauthorloop; no repositoryprofilechange; defaultintegrated/finalreleaseunchanged",
+  "validation": "Firstfocusedrun22passes6new+5Mariners+5miracle+6castrollback, allcommands0/no timeout/orphan; naturalguardterminal0. PairedOracle discrepancy+rulesreferences explicit. Two independent fullnonauthorreviews pending; rootdefault/release andwhole193open.",
+  "fixtures": [
+    "Gandalf, Wandering Wizard",
+    "Shock",
+    "Lorehold, the Historian"
+  ],
+  "preflight": "Strict explicit fixturewhitelist3names, allcomplete; fullOracle+7Java/helperpins byteverified. No syntheticfactory ormetadatachanges.",
+  "attempts": [
+    {
+      "run": "run-1",
+      "profile": "AUTHORtestopt0only",
+      "passed": 22,
+      "failed": 0,
+      "ignored": 0,
+      "new_scenarios": 6,
+      "new_scenario_seconds": 0.04,
+      "compile_seconds": 33.7150224649813,
+      "commands": {
+        "compile": {
+          "command": [
+            "cargo",
+            "test",
+            "--lib",
+            "--no-run",
+            "--message-format=json",
+            "--target-dir",
+            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 33.7150224649813,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-wandering/run-1/compile.jsonl"
+        },
+        "hob_wandering": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "hob_wandering",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.06580041896086186,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-wandering/run-1/0.log"
+        },
+        "hob_mariners": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "hob_mariners",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.06572076096199453,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-wandering/run-1/1.log"
+        },
+        "sos_dragon_miracle": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "sos_dragon_miracle",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.11584544501965865,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-wandering/run-1/2.log"
+        },
+        "sos_cast_rollback": {
+          "command": [
+            "/home/altf4/.cache/rustmage-authoring/hob-wandering/target/debug/deps/rustmage-55e16bd14e329fbf",
+            "sos_cast_rollback",
+            "--nocapture",
+            "--test-threads=1"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 0.26631791301770136,
+          "log": "/home/altf4/.cache/rustmage-authoring/hob-wandering/run-1/3.log"
+        }
+      },
+      "guard": {
+        "command": [
+          "python3",
+          "/home/altf4/.cache/rustmage-authoring/hob-wandering/run-1/run.py"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 34.271067477006,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 2499108864,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      },
+      "reports": "<cache>/rustmage-authoring/hob-wandering/run-1/{compile.jsonl,0..3.log,results.json,resource.json,outer.log}",
+      "source_fixed_until_terminal": true
+    }
+  ],
+  "proof_sha256": "e71da68396917a34fec3e7b99b3945c82855a8865792f0bc1cc8c9ca6a8af9dd",
+  "independent_reviews": [
+    {
+      "reviewer": "hob_review_contracts",
+      "revision": "7788171a8f181abaa672ac47ad0881f6b90e34e1",
+      "result": "Firm completeOracle/Java/all7pins, officialrulesowner/shufflecorrections, typedsource and22actualpassesapproved; no actionable findings",
+      "proof_sha256": "e71da68396917a34fec3e7b99b3945c82855a8865792f0bc1cc8c9ca6a8af9dd"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "revision": "7788171a8f181abaa672ac47ad0881f6b90e34e1",
+      "result": "Firm completeOracle/Java/all7pins, officialrulesowner/shufflecorrections, typedsource and22actualpassesapproved; no actionable findings",
+      "proof_sha256": "e71da68396917a34fec3e7b99b3945c82855a8865792f0bc1cc8c9ca6a8af9dd"
+    }
+  ],
+  "integration_status": "Two independent fullsource/rulesapprovals. Rootregisteredassuranceandregeneratedlinks;147localcandidates46gated,all69inheritedmapped. Nextcoherentdefaultreleasecheckpointandwhole193acceptanceopen."
+}

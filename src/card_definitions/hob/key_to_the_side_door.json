@@ -3,10 +3,51 @@
   "catalogue_id": 2345,
   "oracle_id": "76c036df-44f5-4021-b7fc-656147351341",
   "facts_sha256": "e05ac2042b93094b2092297392186d444764cec4a9854b4a7212276d05d66017",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e53afc933ec54dbdbac8f9d09825bd518b604b2ee24d38cf50b4c833c8fc52da"
   },
-  "physical_metadata_sha256": "da35a4a35a78009fcad980807b377545304be102ac387e1311abb63d3a6fc34b"
+  "physical_metadata_sha256": "da35a4a35a78009fcad980807b377545304be102ac387e1311abb63d3a6fc34b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KeyToTheSideDoor.java",
+  "java_sha256": "b4017282f49116b9965c4c087fe90b0941c88cc6d9e4d3f2f8ed4f82e368db8d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+      "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+      "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/NamePredicate.java",
+      "sha256": "dd549c35b34f063ea5ec3f405a726fbee961e09b9a10f1cacf821f9125db9858"
+    }
+  ],
+  "remaining_obligations": []
 }

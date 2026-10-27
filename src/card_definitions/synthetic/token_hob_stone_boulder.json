@@ -1,0 +1,18 @@
+{
+  "name": "@token/hob-stone-boulder",
+  "catalogue_id": 5413,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "c6d0edd54d0ec09703a60a7dbba8ef39e486bf59018c04191de04a8408ef355b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/StoneBoulderToken.java",
+  "java_sha256": "720ba52eb3f5846766a64ef8964fcec3c21fc2ab16842a64a79d3b44b835ea76",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    }
+  ]
+}

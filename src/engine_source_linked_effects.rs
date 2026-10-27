@@ -5,6 +5,8 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum SourceLinkedEffectKind {
     RemoveAbilities,
+    GrantHexproof,
+    PreventDamageBy,
     PreventUntap,
     Control,
 }
@@ -22,8 +24,9 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
 ) -> bool {
     world.object(row.source.card).zone == Zone::Battlefield
         && world.reference(row.source.card) == row.source
-        && world.object(row.recipient.card).zone == Zone::Battlefield
-        && world.reference(row.recipient.card) == row.recipient
+        && (row.kind == SourceLinkedEffectKind::PreventDamageBy
+            || (world.object(row.recipient.card).zone == Zone::Battlefield
+                && world.reference(row.recipient.card) == row.recipient))
         && (row.kind != SourceLinkedEffectKind::PreventUntap
             || world.object(row.source.card).controller == row.controller)
 }
@@ -75,9 +78,11 @@ impl Game {
     }
     pub(super) fn forget_source_linked_effects(&mut self, reference: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
-            state
-                .source_linked_effects
-                .retain(|row| row.source != reference && row.recipient != reference);
+            state.source_linked_effects.retain(|row| {
+                row.source != reference
+                    && (row.recipient != reference
+                        || row.kind == SourceLinkedEffectKind::PreventDamageBy)
+            });
         }
     }
     pub(super) fn end_control_linked_effects(&mut self, reference: ObjectRef) {

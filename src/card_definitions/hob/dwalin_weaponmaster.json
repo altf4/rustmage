@@ -3,10 +3,52 @@
   "catalogue_id": 1212,
   "oracle_id": "cee583b7-7cc3-40ea-a227-b760839ec291",
   "facts_sha256": "940d4b508bc4ff2151f6f784dd0a5d6a9f229a9ff4db5738ff2898cb3f30995e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a5ccf3875622f9f9dc8e8415d81b46bcb9de3dba550dcef0adbc3e48ed657272"
   },
-  "physical_metadata_sha256": "464e558752c2ef6b79c9f5f231a45d441fbdc41054ba372cfbc4e3f50608a4d1"
+  "physical_metadata_sha256": "464e558752c2ef6b79c9f5f231a45d441fbdc41054ba372cfbc4e3f50608a4d1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DwalinWeaponmaster.java",
+  "java_sha256": "4e35ee64b92d89869f6d6d95edabd9bd3cbcc127a3b7c0b56e00997d7c47641a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ApplyStatusEffect.java",
+      "sha256": "c499abb89f71eba1a970fd9f76c64ce1f40a46ed4af3f2c614476c92dd0ee613"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/the-hobbit-release-notes",
+    "comprehensive_rules": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "rules": [
+      "122.1j",
+      "122.2",
+      "301.5c",
+      "704.5n",
+      "704.5p"
+    ],
+    "note": "Hone is a counter-derived layer-7c effect, independent of Equipment abilities. Creature Equipment continues to contribute while attached until the attachment state-based action."
+  }
 }

@@ -1,0 +1,12 @@
+{
+  "name": "@token/hob-dragon",
+  "catalogue_id": 5416,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "2e23b7237f1648057025f2bc8b9049a6daf3d94f454c03a5bb26b374660502bf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Dragon66Token.java",
+  "java_sha256": "c3b6630d08bb44e2b1f36270a70d492044292336f4ca2c3ea9a5e434e5de40eb",
+  "xmage_dependencies": []
+}

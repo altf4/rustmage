@@ -1,12 +1,43 @@
 {
-  "name": "Kíli the Resourceful",
+  "name": "K\u00edli the Resourceful",
   "catalogue_id": 2433,
   "oracle_id": "840de40b-590e-4bf0-8d16-22b0eff61202",
   "facts_sha256": "c8ff8e190bdd8d7ddc8ab9a88825e0a4351ca29ced3322520825d1a8e0899314",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "41858a09d61d85407cf0435cbc6efe28ce238c85562fe2dff816cc3f4a6c6c97"
   },
-  "physical_metadata_sha256": "45c417e44b4567a25de269d70a42cd0d39769e79c90b62b5aebec2901fc33a1e"
+  "physical_metadata_sha256": "45c417e44b4567a25de269d70a42cd0d39769e79c90b62b5aebec2901fc33a1e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KiliTheResourceful.java",
+  "java_sha256": "03b9f4ad28872f8e37499abf0ea8944869b0940310da7ddaba07b2bcd1fbdcb2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StoriedAbility.java",
+      "sha256": "53a70872b58dc914e94e9795f666e20bc6a2fe7a2db4f555a69def1499a8fbd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/EnduringStoryCondition.java",
+      "sha256": "65a28722b436134cc93b4e712ffb1654e9fed33f6cca4eb29db2ca2facb375de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "remaining_obligations": []
 }

@@ -1,0 +1,225 @@
+{
+  "scope": "Roll-Roll-Roll-Roll whole Saga, existing optional-target and delayed linked return; no new state/wire/IDs",
+  "base_revision": "c4d4f0e4",
+  "oracle_facts": {
+    "oracle_id": "aa913409-7a7a-4e74-82ff-7ff8195585ad",
+    "name": "Roll-Roll-Roll-Roll",
+    "layout": "saga",
+    "mana_cost": "{2}{U}",
+    "cmc": 3.0,
+    "type_line": "Enchantment \u2014 Saga",
+    "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI, II, III, IV \u2014 Exile up to one target creature or land you control. If you do, return it to the battlefield under its owner's control at the beginning of the next end step.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [],
+    "reference_printing": {
+      "id": "a2e4099e-86bd-461f-87fa-7f7850ae7eec",
+      "set": "hob",
+      "collector_number": "54",
+      "released_at": "2026-08-14"
+    }
+  },
+  "source_pins": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/r/RollRollRollRoll.java",
+      "sha256": "d9c49a04fa3c86a08e78e165e16a4c93c51abf4d6a80c56568eff770346f72f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileReturnBattlefieldNextEndStepTargetEffect.java",
+      "sha256": "e99352ec388fe5d84b253f86650b40687823087cf045653115c708eed09ef786"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+      "sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    }
+  ],
+  "obligations": {
+    "chapters": "Paid2U, entry and subsequent draw-step lore trigger all four identical chapters, final sacrifice only after chapter leaves stack",
+    "targets": "Zero or one target own creature or land; mandatory legal finish, opponent/ownartifact/player rejected; current-controller recheck, stale incarnation or gone source",
+    "return": "Exile to next end step under owner including stolen controlled permanent; fresh incarnation, ETB, source-independent delayed packet, token ceases, intervening movement invalidates link, opponent end step accepted",
+    "owned": "Pending target and delayed return raw/index/snapshot/restore and independent branches"
+  },
+  "validation": {
+    "status": "Author focused pass; full independent reviews and integrated acceptance pending.",
+    "passed": 25,
+    "groups": {
+      "hob_roll": 4,
+      "hob_lonely_misty": 12,
+      "hob_mariners": 5,
+      "msh_b_power_up": 1,
+      "sos_ennis_delayed_blink": 1,
+      "msh_c_vehicle_crew": 1,
+      "hob_death_return_nurturer_linked": 1
+    },
+    "results": {
+      "compile": {
+        "command": [
+          "cargo",
+          "test",
+          "--lib",
+          "--no-run",
+          "--message-format=json",
+          "--target-dir",
+          "<cache>/rustmage-authoring/hob-roll/target"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 27.984558949014172,
+        "log": "<cache>/rustmage-authoring/hob-roll/run-3/compile.jsonl"
+      },
+      "hob_roll": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-roll/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_roll",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06564511195756495,
+        "log": "<cache>/rustmage-authoring/hob-roll/run-3/0.log"
+      },
+      "hob_lonely_misty": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-roll/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_lonely_misty",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.16621876996941864,
+        "log": "<cache>/rustmage-authoring/hob-roll/run-3/1.log"
+      },
+      "hob_mariners": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-roll/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_mariners",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06600149400765076,
+        "log": "<cache>/rustmage-authoring/hob-roll/run-3/2.log"
+      },
+      "msh_b_power_up": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-roll/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "msh_b_power_up",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06579206400783733,
+        "log": "<cache>/rustmage-authoring/hob-roll/run-3/3.log"
+      },
+      "sos_ennis_delayed_blink": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-roll/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "sos_ennis_delayed_blink",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.0339037740486674,
+        "log": "<cache>/rustmage-authoring/hob-roll/run-3/4.log"
+      },
+      "msh_c_vehicle_crew": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-roll/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "msh_c_vehicle_crew",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.03371581400278956,
+        "log": "<cache>/rustmage-authoring/hob-roll/run-3/5.log"
+      },
+      "hob_death_return_nurturer_linked": {
+        "command": [
+          "<cache>/rustmage-authoring/hob-roll/target/debug/deps/rustmage-55e16bd14e329fbf",
+          "hob_death_return_nurturer_linked",
+          "--nocapture",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.06630966899683699,
+        "log": "<cache>/rustmage-authoring/hob-roll/run-3/6.log"
+      }
+    },
+    "guard": {
+      "command": [
+        "python3",
+        "<cache>/rustmage-authoring/hob-roll/run-3/run.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 28.563401521008927,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2508644352,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "reports": "<cache>/rustmage-authoring/hob-roll/run-3",
+    "proof_sha256": "9c2668b3136f514bc98c4fd46fe1f8a56445902b15bc92e5c150fdb5c61a153c",
+    "prior_runs": "run-1 passed 22 intended tests but sos_miracle matched zero; run-2 replaced that filter with 3 actual related delayed/linked tests (3 passed). After those runs terminated, expanded opponent-end-step coverage; run-3 reran all 25 intended scenarios."
+  },
+  "fixtures": [
+    "Roll-Roll-Roll-Roll",
+    "Bear Cub",
+    "Forest",
+    "Goldvein Pick",
+    "@token/hob-bear"
+  ]
+}

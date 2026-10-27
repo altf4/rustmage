@@ -317,6 +317,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             sneak_defender: None,
                             face: CastFace::Normal,
                             payment: info.payment,
+                            treasure_mana_spent: info.treasure_mana_spent,
                             offspring: None,
                             kicker: None,
                             teamwork: None,

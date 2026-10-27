@@ -3,10 +3,41 @@
   "catalogue_id": 2180,
   "oracle_id": "66961bcb-f588-47a7-b3f3-12f4ac674477",
   "facts_sha256": "1a31173084076fbfdc1ebef811952fd3e197602838d6c25749cda8b71cc3c12a",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "af77152327a97420b5ae5cb3ce9fdff48e09a481d543144aec026d3d9296dd7c"
-  },
-  "physical_metadata_sha256": "9d1c0d9e8ef24ec0e2d3e0f370f1b9db0e420916184ab76c05b5f0719b82d049"
+  "complete": true,
+  "physical_metadata_sha256": "f0425bf0173495c68b80f4a561e66fc61a130e17713a77271569869856efc09f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InsideInformation.java",
+  "java_sha256": "b53478c2edc886764ab2edef12c83c1a6c40798fabe184e1b776ecefe48988f0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/CostsImpl.java",
+      "sha256": "7b320b5c829830e9cd5f09832910509cc12f1b8bf526c5c358762e17d6969e6a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/Costs.java",
+      "sha256": "af0ae70d995d7e5e409a16d3787fd49dbc9b5d4d18c02462e37f83860a418dd7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffect.java",
+      "sha256": "1ee92b7c009e58f7a3332d5a4704e169f27e7c745d0988ec8342b8cce30b9a50"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+      "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+    }
+  ]
 }

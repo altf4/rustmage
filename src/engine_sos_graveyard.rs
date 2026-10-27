@@ -9,10 +9,13 @@ impl Game {
             .enumerate()
             .filter(|(_, o)| {
                 o.zone == Zone::Battlefield
-                    && o.card
-                        .triggers()
-                        .iter()
-                        .any(|a| a.condition.event() == TriggerCondition::CardsLeaveGraveyard)
+                    && o.card.triggers().iter().any(|a| {
+                        matches!(
+                            a.condition.event(),
+                            TriggerCondition::CardsLeaveGraveyard
+                                | TriggerCondition::CreatureCardLeavesYourGraveyard
+                        )
+                    })
             })
             .map(|(id, _)| self.object_view(id as CardId))
             .collect();
@@ -44,8 +47,26 @@ impl Game {
                 continue;
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::CardsLeaveGraveyard {
-                    self.queue_trigger(source, index);
+                match ability.condition.event() {
+                    TriggerCondition::CardsLeaveGraveyard => {
+                        self.queue_trigger(source, index);
+                    }
+                    TriggerCondition::CreatureCardLeavesYourGraveyard => {
+                        for event in events.iter().filter(|event| {
+                            event.moved
+                                && event.before.zone == Zone::Graveyard
+                                && event.destination != Zone::Graveyard
+                                && event.before.owner == source.controller
+                                && !event.before.is_token()
+                                && !event.before.card.is_emblem()
+                                && event.before.is_creature()
+                        }) {
+                            // Preserve the original pre-event source and its multiplier
+                            // witness; annotate each original before prepare expands it.
+                            self.queue_zone_trigger_from(source, index, event, None);
+                        }
+                    }
+                    _ => (),
                 }
             }
         }

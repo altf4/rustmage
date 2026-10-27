@@ -83,6 +83,8 @@ pub struct CastPaymentEvent {
     pub card: Card,
     pub controller: Player,
     pub payment: Mana,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub treasure_mana_spent: bool,
 }
 impl SpellView {
     /// Mana spent is a fact of an actual cast, never inherited by a spell copy.
@@ -96,6 +98,7 @@ impl SpellView {
                 card: self.source_card,
                 controller: cast.caster,
                 payment: cast.payment,
+                treasure_mana_spent: cast.treasure_mana_spent,
             })
     }
 }
@@ -113,6 +116,11 @@ impl Game {
         source: ObjectRef,
         event: Option<&CastPaymentEvent>,
     ) -> bool {
+        if condition.requires_treasure_mana()
+            && !event.is_some_and(|event| event.treasure_mana_spent)
+        {
+            return false;
+        }
         let Some((minimum, increment)) = condition.mana_spent_rule() else {
             return true;
         };

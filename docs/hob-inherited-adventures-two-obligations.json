@@ -1,0 +1,516 @@
+{
+  "schema": 1,
+  "base_revision": "64fa3fcedd1d3ebf1485df5fd7347246a9d80d36",
+  "scope": "Current rules proofs for seven inherited HOB Adventure admissions; zero newly supported candidates and no gameplay changes.",
+  "new_supported_identities": 0,
+  "oracle_source": "data/standard/cards.json",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BeornReluctantHost.java",
+      "sha256": "5cbbb3fe97356d0884a43722dc5f2718e0dc270604d847f51ab7d222e94193fc"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BofurReliableGuardian.java",
+      "sha256": "bbf1a624add927215db4ff74ee6ea10ac1f51f27019c45076cfa0d85d658f623"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GlamdringFoeHammer.java",
+      "sha256": "9cc8debce73787b81e3564a48539d6710a3dbde634a5e3c56f2a4a3da3676526"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GloinTheMighty.java",
+      "sha256": "7ff00b5d9199d60d5bf1e283e18289cb7d4d8ddfbadea45d39d5ea219f3de723"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GollumSilentSlinker.java",
+      "sha256": "f4417e3d4e173f5af7b0573f807cf8a2ff57532095b08c60133a0beeb6f59e33"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MostDecrepitOldBird.java",
+      "sha256": "4d125953e8b3a776ddaec6c2eb8f6f092f1a5877c62694f6effb4e2e1c5fcbc7"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/v/VelvetwingButterflies.java",
+      "sha256": "f785d3fb2c7dcb583d7642bf62ed3ccd5f250ce2a8d72871d47e68843d18355d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/AdventureSpellCard.java",
+      "sha256": "0267f0994ee62c311d6d160c9709f110715cd736f1528429cbb3de6fff03c592"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAdventureSpellEffect.java",
+      "sha256": "1179b3251b410c7eec5e191159cf7e870e28a4839a833cb30fc4d829985c33c3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+      "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayAdditionalLandsControllerEffect.java",
+      "sha256": "a7b2413a24959fbde172621336f4f48cb1ef76bc4254b922b272bfe2bef30664"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaToManaPoolSourceControllerEffect.java",
+      "sha256": "945e599b5ae2bd4f6bf6f96361ee12b7c9f2fc681847c0e6f18f98aefe8f4fc5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeTargetEffect.java",
+      "sha256": "9f89eae0cab67d969113091a50272e8b91503ec438466324e3790bbe8ac54b65"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+      "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
+      "sha256": "f7d6ad71cd5857b9d0c127469d9b39afd84148a38001a42a309c5c218694382a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofBaseAbility.java",
+      "sha256": "eb33a62a2d3a0cfd4fffee6d99691000ed3d9cadd4937b41d0b53c4e5abacdea"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/NthTargetPointer.java",
+      "sha256": "d3f06450efa592e446dbcab29c913f7946e36b31d5d0a7f6b1d3e5ac824ebc73"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+      "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "source_read": "All seven full Java classes and relevant helpers read; Adventure/Flying/Equip reusable helpers previously read at the same pin and reused.",
+  "source_discrepancy": "Glamdring Java confines recovery to graveyard; Rust exact post-mill references follow current public-destination mill rules. This proof cohort exercises ordinary actual graveyard destinations and outside-stack card characteristics.",
+  "assurance_module": "src/assurance/hob_inherited_adventures_two.rs",
+  "engine_changes": false,
+  "cards": [
+    {
+      "name": "Beorn, Reluctant Host // Till and Tend",
+      "oracle_id": "288da486-393c-4995-ad02-c5093a71970d",
+      "faces": [
+        {
+          "name": "Beorn, Reluctant Host",
+          "mana_cost": "{4}{G}",
+          "type_line": "Legendary Creature \u2014 Human Bear Shapeshifter",
+          "oracle_text": "Trample",
+          "power": "5",
+          "toughness": "5"
+        },
+        {
+          "name": "Till and Tend",
+          "mana_cost": "{1}{G}",
+          "type_line": "Sorcery \u2014 Adventure",
+          "oracle_text": "You may play an additional land this turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "obligations": [
+        "4G5/5 trample normal;1G sorcery inset grants exactly one extra land this turn to its caster; third land rejected; expiry permits only ordinary next-turn land."
+      ],
+      "tests": [
+        "hob_inherited_two_beorn_paid_faces_extra_land_is_controller_only_and_expires"
+      ]
+    },
+    {
+      "name": "Bofur, Reliable Guardian // Concerted Care",
+      "oracle_id": "8a0e35ac-6c03-4922-b3b4-e419419fe3d7",
+      "faces": [
+        {
+          "name": "Bofur, Reliable Guardian",
+          "mana_cost": "{W}",
+          "type_line": "Legendary Creature \u2014 Dwarf Scout",
+          "oracle_text": "Lifelink",
+          "power": "1",
+          "toughness": "1"
+        },
+        {
+          "name": "Concerted Care",
+          "mana_cost": "{1}{W}",
+          "type_line": "Instant \u2014 Adventure",
+          "oracle_text": "Target artifact or creature you control gains hexproof and indestructible until end of turn. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "obligations": [
+        "W1/1 lifelink normal;1W instant inset permits own artifact OR creature and rejects opposing artifact/land; hexproof bars opposing target, own destroy still fails to indestructibility, effects expire; actual native damage gains controller life."
+      ],
+      "tests": [
+        "hob_inherited_two_bofur_both_target_kinds_control_protection_lifelink_and_expiry"
+      ]
+    },
+    {
+      "name": "Glamdring, Foe-hammer // Gleam of Death",
+      "oracle_id": "2802069f-201e-43a7-b5d3-43a95951a2ec",
+      "faces": [
+        {
+          "name": "Glamdring, Foe-hammer",
+          "mana_cost": "{2}",
+          "type_line": "Legendary Artifact \u2014 Equipment",
+          "oracle_text": "Instant and sorcery spells you cast cost {X} less to cast, where X is equipped creature's power.\nEquip {2}"
+        },
+        {
+          "name": "Gleam of Death",
+          "mana_cost": "{3}{U}",
+          "type_line": "Sorcery \u2014 Adventure",
+          "oracle_text": "Mill six cards, then put all instant and sorcery cards from among them into your hand. (Then exile this card. You may cast the artifact later from exile.)"
+        }
+      ],
+      "obligations": [
+        "3U mill exactly six then recover ALL instant/sorcery cards automatically, excluding old graveyard and physical Adventure creature;2 artifact normal and real Equip2 only own creature.",
+        "Reducer uses live layered equipped power/CDA, only own instant/sorcery, generic only, retains blue, clamps negative power to zero; total locks before actual Treasure mana sacrifice changes equipped power."
+      ],
+      "tests": [
+        "hob_inherited_two_glamdring_exact_six_all_recovery_uses_normal_outside_stack_types",
+        "hob_inherited_two_glamdring_paid_equip_live_power_colored_cost_and_locked_real_mana_sacrifice"
+      ]
+    },
+    {
+      "name": "Gl\u00f3in the Mighty // Easy Pickings",
+      "oracle_id": "6505a53b-00db-44c4-8eaa-09a1a01451a4",
+      "faces": [
+        {
+          "name": "Gl\u00f3in the Mighty",
+          "mana_cost": "{3}{R}",
+          "type_line": "Legendary Creature \u2014 Dwarf Warrior",
+          "oracle_text": "At the beginning of your first main phase, add {R}{R}.",
+          "power": "4",
+          "toughness": "3"
+        },
+        {
+          "name": "Easy Pickings",
+          "mana_cost": "{2}{R}",
+          "type_line": "Sorcery \u2014 Adventure",
+          "oracle_text": "Easy Pickings deals 1 damage to each creature your opponents control. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "obligations": [
+        "2R damage one to every opponent creature, excludes own creature/artifact/player;3R4/3 normal; only own first main addsRR, not opponent first/own second; trigger survives source departure and funds actual Shock."
+      ],
+      "tests": [
+        "hob_inherited_two_gloin_paid_opponent_only_damage_and_first_own_main_mana_packet"
+      ]
+    },
+    {
+      "name": "Gollum, Silent Slinker // Meager Meal",
+      "oracle_id": "0296d57e-e5b9-456f-bb21-eb584adefb4c",
+      "faces": [
+        {
+          "name": "Gollum, Silent Slinker",
+          "mana_cost": "{3}{B}",
+          "type_line": "Legendary Creature \u2014 Halfling Horror",
+          "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)",
+          "power": "4",
+          "toughness": "3"
+        },
+        {
+          "name": "Meager Meal",
+          "mana_cost": "{B}",
+          "type_line": "Sorcery \u2014 Adventure",
+          "oracle_text": "Put a +1/+1 counter on up to one target creature. Target player gains 2 life. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "obligations": [
+        "B inset optional zero/one creature in first target group, mandatory player any seat in second group gaining2; counter and life map to correct groups; stale creature leaves valid player effect/resolution permission intact;3B4/3 menace normal rejects a single blocker and allows two."
+      ],
+      "tests": [
+        "hob_inherited_two_meager_meal_optional_creature_mandatory_player_partial_stale_and_menace"
+      ]
+    },
+    {
+      "name": "Most Decrepit Old Bird // Speak Secrets",
+      "oracle_id": "34d34f2c-06ff-4acf-8f2f-ff867774b777",
+      "faces": [
+        {
+          "name": "Most Decrepit Old Bird",
+          "mana_cost": "{U}",
+          "type_line": "Creature \u2014 Bird",
+          "oracle_text": "Flying\nThreshold \u2014 This creature gets +1/+1 as long as there are seven or more cards in your graveyard.",
+          "power": "1",
+          "toughness": "1"
+        },
+        {
+          "name": "Speak Secrets",
+          "mana_cost": "{1}{U}",
+          "type_line": "Sorcery \u2014 Adventure",
+          "oracle_text": "Mill four cards, then put an instant or sorcery card from among them into your hand."
+        }
+      ],
+      "obligations": [
+        "1U mill exactly four, recover mandatory exactly one eligible instant/sorcery from current batch; reject old graveyard, land, Adventure creature; actor-only private choice and representative raw/index/restore.",
+        "No eligible card completes without finding an old spell;U1/1 flying normal becomes2/2 exactly at own graveyard7 and reverts6, opposing graveyard irrelevant."
+      ],
+      "tests": [
+        "hob_inherited_two_bird_exact_four_mandatory_one_private_choice_and_live_threshold",
+        "hob_inherited_two_bird_no_eligible_milled_card_completes_without_finding_old_spell"
+      ]
+    },
+    {
+      "name": "Velvetwing Butterflies // Gaze in Wonder",
+      "oracle_id": "70a702fe-1dd6-4d7b-a85a-45744ecad741",
+      "faces": [
+        {
+          "name": "Velvetwing Butterflies",
+          "mana_cost": "{2}{W}",
+          "type_line": "Creature \u2014 Insect",
+          "oracle_text": "Flying",
+          "power": "2",
+          "toughness": "2"
+        },
+        {
+          "name": "Gaze in Wonder",
+          "mana_cost": "{1}{W}",
+          "type_line": "Instant \u2014 Adventure",
+          "oracle_text": "Tap one or two target creatures. (Then exile this card. You may cast the creature later from exile.)"
+        }
+      ],
+      "obligations": [
+        "1W instant inset targets one OR two creatures (either controller), rejects zero/noncreature/duplicate; both valid tap, partial stale taps remaining;2W2/2 flying normal."
+      ],
+      "tests": [
+        "hob_inherited_two_velvetwing_one_two_and_partial_invalid_targets_then_paid_flying_body"
+      ]
+    }
+  ],
+  "shared_proofs": [
+    "engine::assurance::interactions::trample_with_deathtouch_assigns_one_lethal_and_the_rest_to_defender",
+    "engine::assurance::interactions::deathtouch_kills_larger_blocker_and_lifelink_uses_actual_damage",
+    "engine::assurance::interactions::indestructible_survives_destroy_and_menace_requires_two_blockers",
+    "engine::assurance::interactions::vigilance_flying_and_reach_change_legal_combat"
+  ],
+  "fixture_preflight": [
+    {
+      "name": "@token/b60f6cd3b44b22bd289fe4e2",
+      "catalogue_id": 5302,
+      "complete": true
+    },
+    {
+      "name": "Beorn, Reluctant Host",
+      "catalogue_id": 389,
+      "complete": true
+    },
+    {
+      "name": "Bilbo Baggins, Burglar",
+      "catalogue_id": 407,
+      "complete": true
+    },
+    {
+      "name": "Bofur, Reliable Guardian",
+      "catalogue_id": 475,
+      "complete": true
+    },
+    {
+      "name": "Disenchant",
+      "catalogue_id": 1093,
+      "complete": true
+    },
+    {
+      "name": "Duress",
+      "catalogue_id": 1204,
+      "complete": true
+    },
+    {
+      "name": "Forest",
+      "catalogue_id": 4,
+      "complete": true
+    },
+    {
+      "name": "Glamdring, Foe-hammer",
+      "catalogue_id": 1764,
+      "complete": true
+    },
+    {
+      "name": "Gl\u00f3in the Mighty",
+      "catalogue_id": 1792,
+      "complete": true
+    },
+    {
+      "name": "Goldvein Pick",
+      "catalogue_id": 1824,
+      "complete": true
+    },
+    {
+      "name": "Gollum, Silent Slinker",
+      "catalogue_id": 1829,
+      "complete": true
+    },
+    {
+      "name": "Grizzly Bears",
+      "catalogue_id": 5,
+      "complete": true
+    },
+    {
+      "name": "Island",
+      "catalogue_id": 1,
+      "complete": true
+    },
+    {
+      "name": "Llanowar Elves",
+      "catalogue_id": 8,
+      "complete": true
+    },
+    {
+      "name": "Most Decrepit Old Bird",
+      "catalogue_id": 2860,
+      "complete": true
+    },
+    {
+      "name": "Murder",
+      "catalogue_id": 2879,
+      "complete": true
+    },
+    {
+      "name": "Quick Study",
+      "catalogue_id": 3312,
+      "complete": true
+    },
+    {
+      "name": "Regal Bunnicorn",
+      "catalogue_id": 3444,
+      "complete": true
+    },
+    {
+      "name": "Shock",
+      "catalogue_id": 10,
+      "complete": true
+    },
+    {
+      "name": "Stab",
+      "catalogue_id": 4083,
+      "complete": true
+    },
+    {
+      "name": "Velvetwing Butterflies",
+      "catalogue_id": 4859,
+      "complete": true
+    }
+  ],
+  "action_preflight": "Spell targets use Target::Spell; creature/player Target::Card/Player; targeted groups advance with FinishTargets; mana producer uses ActivateMana with payment/counter_payment/production; snapshots use existing shared branch_contract. Checked against current Action enum, target-group visitor, Treasure typed activation and existing assurance scenarios. After first terminal, CharacteristicWorld import supplied for is_equipment; normal-face helper rejects inset recast with ample mana so the negative is not an affordability artifact.",
+  "validation": {
+    "status": "author proofs passed; independent nonauthor review and integration acceptance pending",
+    "input_policy": "No source changes until queued consuming job reaches natural terminal state.",
+    "earlier_runs": [
+      {
+        "log": "~/.cache/rustmage-authoring/hob-inherited-adventures-two/focused-0-0.log",
+        "terminal": true,
+        "exit": 101,
+        "tests_executed": 0,
+        "seconds": 26.034098678966984,
+        "resource_report": "~/.cache/rustmage-build-reports/cbd9955337d44428875d0a19749e95ac.json",
+        "result": "Missing CharacteristicWorld trait import for test-only is_equipment assertion; no gameplay change. Import added only after natural terminal. Positive sorcery witnesses also added to both mill batches (admitted Duress alongside Shock)."
+      }
+    ],
+    "terminal": true,
+    "proof_sha256": "78598c8ad5b5d9e6d39b10dc9801fa1c99e00d273b0ccac47983a45afde695e8",
+    "new_scenarios_passed": 9,
+    "shared_scenarios_passed": 4,
+    "failed": 0,
+    "ignored": 0,
+    "focused_command": "CARGO_TARGET_DIR=~/.cache/rustmage-authoring/hob-inherited-adventures-two/target python3 scripts/resource_guard.py -- bounded run_command(cargo test --lib engine::assurance::hob_inherited_adventures_two:: -- --include-ignored --test-threads=1, timeout=390)",
+    "logs": "~/.cache/rustmage-authoring/hob-inherited-adventures-two/focused-1-{0..4}.log",
+    "resource_report": "~/.cache/rustmage-build-reports/3c2bf137bd3047c9b846ae5c1ec5ea16.json",
+    "compile_and_focused_seconds": 138.30700684298063,
+    "new_scenarios_execution_seconds": 0.01,
+    "shared_commands_seconds": [
+      0.06578190805157647,
+      0.06510994298150763,
+      0.06566248304443434,
+      0.0650802809977904
+    ],
+    "guard_seconds_including_shared_slot_wait": 359.06030074704904,
+    "memory_peak_bytes": 2578190336,
+    "memory_max_bytes": 6442450944,
+    "oom_kill": 0,
+    "orphaned_processes": false,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "source_check": {
+      "definitions": 5414,
+      "java_blobs_verified": 1535,
+      "catalogue_version": "b5f28e29c62ff7b204c65e03e105d60e07b05dd47f3f3d3f5d35699cdfd86af9"
+    },
+    "format": "Owned Rust rustfmt --edition2024 --check and git diff --check passed.",
+    "integration": "Local-only assurance/mod.rs registration excluded from commit; integrator registers module. No generated links, definitions, gameplay source or historical documentation modified.",
+    "throughput_scope": "Nine bounded rules scenarios execute in0.01s; no whole-pool simulation throughput claim."
+  },
+  "independent_integration_receipts": [
+    {
+      "reviewer": "hob_review_contracts",
+      "reviewed_revision": "d55c9fcdf7526c6e371a77fb0a994ba2d821a4e7",
+      "result": "Approved full cohort, source pins and terminal focused evidence; no remaining actionable findings",
+      "scope": "Local source/focused evidence; integrated traces, full release and final published whole-set reviews remain pending"
+    },
+    {
+      "reviewer": "hob_review_rules",
+      "reviewed_revision": "d55c9fcdf7526c6e371a77fb0a994ba2d821a4e7",
+      "result": "Approved full cohort, source pins and terminal focused evidence; no remaining actionable findings",
+      "scope": "Local source/focused evidence; integrated traces, full release and final published whole-set reviews remain pending"
+    }
+  ],
+  "root_integration": "Registered assurance module and regenerated catalogue on single local whole-set branch. No PR opened, push or merge."
+}
