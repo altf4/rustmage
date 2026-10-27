@@ -111,6 +111,12 @@ impl Game {
         {
             return Some((grant.grantor, Self::attached_tap_spec()));
         }
+        if a.additional_paid
+            && a.additional_cost()
+                .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::DiscardOrLife(_)))
+        {
+            return None;
+        }
         if let Some(f) = &a.forage
             && f.route == Some(ForageRoute::Food)
         {
@@ -121,7 +127,15 @@ impl Game {
         {
             return None;
         }
-        a.additional.map(|r| (r, a.additional_cost().unwrap()))
+        a.additional.map(|r| {
+            let spec = a.additional_cost().unwrap();
+            let spec = if matches!(spec.kind, EffectChoiceKind::DiscardOrLife(_)) {
+                spec.in_zone(self.state.objects[r.card as usize].zone)
+            } else {
+                spec
+            };
+            (r, spec)
+        })
     }
     fn forage_graveyard_count(&self, player: Player) -> usize {
         self.state

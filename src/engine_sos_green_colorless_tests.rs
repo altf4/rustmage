@@ -3316,12 +3316,13 @@ fn sos_original_scientist_skycoach_and_expanse_optional_private_basic_searches()
             "Environmental Scientist",
             "Strixhaven Skycoach",
             "Terramorphic Expanse",
+            "Escape Tunnel",
         ] {
             for choice in 0..=2 {
                 let mut g = setup(p);
                 let basic = named(&mut g, p, "Island", Zone::Library);
                 let nonbasic = named(&mut g, p, "Soulstone Sanctuary", Zone::Library);
-                let source = if name == "Terramorphic Expanse" {
+                let source = if name == "Terramorphic Expanse" || name == "Escape Tunnel" {
                     let id = named(&mut g, p, name, Zone::Hand);
                     checked(&mut g, Action::PlayLand { card: id });
                     original_activate(&mut g, id, 0, &[]);
@@ -3339,7 +3340,7 @@ fn sos_original_scientist_skycoach_and_expanse_optional_private_basic_searches()
                     );
                     id
                 };
-                if name != "Terramorphic Expanse" && choice == 0 {
+                if name != "Terramorphic Expanse" && name != "Escape Tunnel" && choice == 0 {
                     settle(&mut g);
                     assert_eq!(g.object_view(basic).zone, Zone::Library);
                     continue;
@@ -3359,13 +3360,13 @@ fn sos_original_scientist_skycoach_and_expanse_optional_private_basic_searches()
                     g.object_view(basic).zone,
                     if choice != 2 {
                         Zone::Library
-                    } else if name == "Terramorphic Expanse" {
+                    } else if name == "Terramorphic Expanse" || name == "Escape Tunnel" {
                         Zone::Battlefield
                     } else {
                         Zone::Hand
                     }
                 );
-                if choice == 2 && name == "Terramorphic Expanse" {
+                if choice == 2 && (name == "Terramorphic Expanse" || name == "Escape Tunnel") {
                     assert!(g.object_view(basic).tapped);
                 } else if choice == 2 {
                     assert!(
@@ -4185,5 +4186,767 @@ fn sos_original_grapple_artifact_or_creature_targets_and_whole_spell_fizzle() {
                 );
             }
         }
+    }
+}
+
+#[test]
+fn escape_tunnel_unblockable_rechecks_power_after_sacrifice() {
+    for p in [Player::P0, Player::P1] {
+        for increase_power in [false, true] {
+            let mut g = setup(p);
+            let land = named(&mut g, p, "Escape Tunnel", Zone::Hand);
+            checked(&mut g, Action::PlayLand { card: land });
+            let small = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let large = named(&mut g, p, "Hill Giant", Zone::Battlefield);
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: land,
+                    ability: 1,
+                    counter_payment: Counters::default(),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(large),
+                },
+            );
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(small),
+                },
+            );
+            let pay = g
+                .legal_actions()
+                .into_iter()
+                .find(|a| matches!(a, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, pay);
+            assert_eq!(g.object_view(land).zone, Zone::Graveyard);
+            if increase_power {
+                g.state.objects[small as usize].counters.plus_one = 1;
+            }
+            let before = g.snapshot();
+            let mut restored = g.clone();
+            settle(&mut g);
+            assert_eq!(
+                g.keywords(small).contains(Keywords::CANT_BE_BLOCKED),
+                !increase_power
+            );
+            restored.restore(&before).unwrap();
+            settle(&mut restored);
+            assert_eq!(restored.snapshot(), g.snapshot());
+            if !increase_power {
+                g.state.objects[small as usize].counters.plus_one = 1;
+                assert!(g.keywords(small).contains(Keywords::CANT_BE_BLOCKED));
+            }
+        }
+    }
+}
+
+#[test]
+fn fabled_passage_search_counts_lands_after_entry_and_restores() {
+    for p in [Player::P0, Player::P1] {
+        for lands_before in [2, 3] {
+            for find in [false, true] {
+                let mut g = setup(p);
+                for _ in 0..lands_before {
+                    named(&mut g, p, "Forest", Zone::Battlefield);
+                }
+                let basic = named(&mut g, p, "Island", Zone::Library);
+                let nonbasic = named(&mut g, p, "Soulstone Sanctuary", Zone::Library);
+                let passage = named(&mut g, p, "Fabled Passage", Zone::Hand);
+                checked(&mut g, Action::PlayLand { card: passage });
+                original_activate(&mut g, passage, 0, &[]);
+                assert_eq!(g.object_view(passage).zone, Zone::Graveyard);
+                original_until(&mut g, |pending| {
+                    matches!(pending, Pending::EffectSearch { .. })
+                });
+                assert!(g.observe(p.other()).search_choice.is_none());
+                reject(&mut g, Action::ChooseSearch { card: nonbasic });
+                let before = g.snapshot();
+                let mut restored = g.clone();
+                if find {
+                    checked(&mut g, Action::ChooseSearch { card: basic });
+                }
+                checked(&mut g, Action::FinishSearch);
+                settle(&mut g);
+                if find {
+                    assert_eq!(g.object_view(basic).zone, Zone::Battlefield);
+                    assert_eq!(g.object_view(basic).tapped, lands_before < 3);
+                } else {
+                    assert_eq!(g.object_view(basic).zone, Zone::Library);
+                }
+                restored.restore(&before).unwrap();
+                if find {
+                    checked(&mut restored, Action::ChooseSearch { card: basic });
+                }
+                checked(&mut restored, Action::FinishSearch);
+                settle(&mut restored);
+                assert_eq!(restored.snapshot(), g.snapshot());
+            }
+        }
+    }
+}
+
+#[test]
+fn great_arashin_city_entry_and_creature_exile_token() {
+    for p in [Player::P0, Player::P1] {
+        for (own, enemy, tapped) in [
+            (None, None, true),
+            (Some("Forest"), None, false),
+            (Some("Plains"), None, false),
+            (Some("Lush Portico"), None, false),
+            (Some("Island"), None, true),
+            (None, Some("Forest"), true),
+        ] {
+            let mut g = setup(p);
+            if let Some(name) = own {
+                named(&mut g, p, name, Zone::Battlefield);
+            }
+            if let Some(name) = enemy {
+                named(&mut g, p.other(), name, Zone::Battlefield);
+            }
+            let city = named(&mut g, p, "Great Arashin City", Zone::Hand);
+            checked(&mut g, Action::PlayLand { card: city });
+            assert_eq!(g.object_view(city).tapped, tapped);
+        }
+        let mut g = setup(p);
+        let stolen = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+        g.state.objects[stolen as usize].controller = p;
+        let city = named(&mut g, p, "Great Arashin City", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: city });
+        assert!(!g.object_view(city).tapped);
+
+        let mut g = setup(p);
+        named(&mut g, p, "Plains", Zone::Battlefield);
+        let city = named(&mut g, p, "Great Arashin City", Zone::Hand);
+        checked(&mut g, Action::PlayLand { card: city });
+        let before = g.state.players[p.index()].mana[2];
+        let mana_action = g
+            .legal_actions()
+            .into_iter()
+            .find(|action| {
+                matches!(action, Action::ActivateMana { card, ability: 0, production, .. }
+                if *card == city && *production == [0, 0, 1, 0, 0, 0])
+            })
+            .expect("Great Arashin City must offer black mana");
+        checked(&mut g, mana_action);
+        assert_eq!(g.state.players[p.index()].mana[2], before + 1);
+        g.state.objects[city as usize].tapped = false;
+        let creature = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+        let foreign = named(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+        let noncreature = named(&mut g, p, "Island", Zone::Graveyard);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: city,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        for id in [foreign, noncreature] {
+            let object = g.object_ref(id);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        let object = g.object_ref(creature);
+        let action = Action::ChooseAdditionalCost { object };
+        let before_choice = g.snapshot();
+        let revision = g.revision();
+        let index = g
+            .legal_actions()
+            .iter()
+            .position(|candidate| candidate == &action)
+            .unwrap();
+        let mut raw = g.clone();
+        let mut indexed = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        raw.apply(p, action.clone()).unwrap();
+        indexed.apply_index(p, revision, index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        checked(&mut g, action.clone());
+        let after_choice = g.snapshot();
+        g.restore(&before_choice).unwrap();
+        checked(&mut g, action);
+        assert_eq!(g.snapshot(), after_choice);
+        let pay = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        checked(&mut g, pay);
+        assert_eq!(g.object_view(creature).zone, Zone::Exile);
+        assert!(g.object_view(city).tapped);
+        g.move_object(city, Zone::Graveyard);
+        let before = g.snapshot();
+        let mut restored = g.clone();
+        settle(&mut g);
+        let spirit = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.card == Card::from_name("@token/spirit_1_1_white").unwrap()
+            })
+            .map(|(id, _)| id as CardId)
+            .unwrap();
+        assert_eq!(g.stats(spirit).power, 1);
+        assert_eq!(g.stats(spirit).toughness, 1);
+        assert!(!g.keywords(spirit).contains(Keywords::FLYING));
+        assert_eq!(g.object_view(spirit).card.colors(), 1);
+        assert!(g.has_subtype(spirit, "Spirit"));
+        restored.restore(&before).unwrap();
+        settle(&mut restored);
+        assert_eq!(restored.snapshot(), g.snapshot());
+    }
+}
+
+#[test]
+fn meltstrider_resolve_optional_fight_and_source_departure() {
+    for p in [Player::P0, Player::P1] {
+        for choice in 0..3 {
+            let mut g = setup(p);
+            let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let aura = paid(
+                &mut g,
+                p,
+                "Meltstrider's Resolve",
+                None,
+                &[Target::Card(own)],
+            );
+            original_until(&mut g, |pending| matches!(pending, Pending::Targets { .. }));
+            assert_eq!(g.stats(own).toughness, 4);
+            assert!(g.keywords(own).contains(Keywords::MAX_ONE_BLOCKER));
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            if choice == 0 {
+                checked(&mut g, Action::FinishTargets);
+            } else {
+                checked(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(enemy),
+                    },
+                );
+            }
+            if choice == 2 {
+                g.move_object(aura, Zone::Graveyard);
+            }
+            let before = g.snapshot();
+            let mut restored = g.clone();
+            settle(&mut g);
+            if choice == 0 {
+                assert_eq!(g.object_view(own).damage, 0);
+                assert_eq!(g.object_view(enemy).damage, 0);
+            } else {
+                assert_eq!(g.object_view(enemy).damage, 2);
+                // If the Aura leaves, the former enchanted creature still fights
+                // using last-known attachment and no longer has the toughness boost.
+                if choice == 1 {
+                    assert_eq!(g.object_view(own).damage, 3);
+                }
+            }
+            restored.restore(&before).unwrap();
+            settle(&mut restored);
+            assert_eq!(restored.snapshot(), g.snapshot());
+        }
+    }
+}
+
+#[test]
+fn meltstrider_fight_revalidates_target_and_preserves_attachment_incarnations() {
+    for p in [Player::P0, Player::P1] {
+        for change in 0..4 {
+            let mut g = setup(p);
+            let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let aura = paid(
+                &mut g,
+                p,
+                "Meltstrider's Resolve",
+                None,
+                &[Target::Card(own)],
+            );
+            original_until(&mut g, |pending| matches!(pending, Pending::Targets { .. }));
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            match change {
+                0 => {
+                    g.move_object(enemy, Zone::Graveyard);
+                    g.move_object(enemy, Zone::Battlefield);
+                }
+                1 => {
+                    g.move_object(own, Zone::Graveyard);
+                    g.move_object(own, Zone::Battlefield);
+                }
+                2 => {
+                    g.state.objects[enemy as usize].controller = p;
+                }
+                _ => {
+                    g.move_object(aura, Zone::Graveyard);
+                    g.move_object(aura, Zone::Battlefield);
+                }
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(enemy).damage, if change == 3 { 2 } else { 0 });
+        }
+    }
+}
+
+#[test]
+fn meltstrider_enchanted_creature_accepts_only_one_blocker() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let own = named(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let first = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let second = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        paid(
+            &mut g,
+            p,
+            "Meltstrider's Resolve",
+            None,
+            &[Target::Card(own)],
+        );
+        original_until(&mut g, |pending| matches!(pending, Pending::Targets { .. }));
+        checked(&mut g, Action::FinishTargets);
+        settle(&mut g);
+        g.state.objects[own as usize].summoning_sick = false;
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        checked(&mut g, Action::Attack { card: own });
+        checked(&mut g, Action::FinishAttackers);
+        original_until(&mut g, |pending| matches!(pending, Pending::Blockers));
+        checked(
+            &mut g,
+            Action::Block {
+                blocker: first,
+                attacker: own,
+            },
+        );
+        reject(
+            &mut g,
+            Action::Block {
+                blocker: second,
+                attacker: own,
+            },
+        );
+        checked(&mut g, Action::FinishBlockers);
+    }
+}
+
+#[test]
+fn sandman_returns_with_target_land_as_one_entry_and_revalidates() {
+    for p in [Player::P0, Player::P1] {
+        for change in 0..3 {
+            let mut g = setup(p);
+            let source = named(&mut g, p, "Sandman, Shifting Scoundrel", Zone::Graveyard);
+            let land = named(&mut g, p, "Forest", Zone::Graveyard);
+            let foreign = named(&mut g, p.other(), "Forest", Zone::Graveyard);
+            let nonland = named(&mut g, p, "Bear Cub", Zone::Graveyard);
+            checked(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            for invalid in [foreign, nonland] {
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(invalid),
+                    },
+                );
+            }
+            checked(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(land),
+                },
+            );
+            let payment = g
+                .legal_actions()
+                .into_iter()
+                .find(|action| matches!(action, Action::PayCosts { .. }))
+                .unwrap();
+            checked(&mut g, payment);
+            if change == 1 {
+                g.move_object(land, Zone::Hand);
+                g.move_object(land, Zone::Graveyard);
+            }
+            if change == 2 {
+                g.move_object(source, Zone::Hand);
+                g.move_object(source, Zone::Graveyard);
+            }
+            let saved = g.snapshot();
+            let mut restored = g.clone();
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(land).zone,
+                if change == 1 {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(
+                g.object_view(source).zone,
+                if change == 0 {
+                    Zone::Battlefield
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            if change != 1 {
+                assert!(g.object_view(land).tapped);
+            }
+            if change == 0 {
+                assert!(g.object_view(source).tapped);
+                assert_eq!(g.stats(source).power, 1);
+                assert_eq!(g.stats(source).toughness, 1);
+                assert!(
+                    g.keywords(source)
+                        .contains(Keywords::NO_POWER_LE_TWO_BLOCKERS)
+                );
+            }
+            restored.restore(&saved).unwrap();
+            settle(&mut restored);
+            assert_eq!(restored.snapshot(), g.snapshot());
+        }
+    }
+}
+
+#[test]
+fn starting_town_uses_actual_player_turns_extra_skips_and_mana() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        g.state.players[p.index()].turns_started = 0;
+        g.state.players[p.other().index()].turns_started = 0;
+        g.begin_turn();
+        assert_eq!(g.state.players[p.index()].turns_started, 1);
+        // An extra turn for the active player is their second actual turn.
+        g.add_extra_turn(p, false);
+        g.advance_to_actual_turn();
+        g.begin_turn();
+        assert_eq!(g.state.active, p);
+        assert_eq!(g.state.players[p.index()].turns_started, 2);
+        // The opponent's skipped normal turn does not count.
+        g.state.turn_skips = Some(Box::new(if p == Player::P0 { [0, 1] } else { [1, 0] }));
+        g.advance_to_actual_turn();
+        g.begin_turn();
+        assert_eq!(g.state.active, p);
+        assert_eq!(g.state.players[p.index()].turns_started, 3);
+        assert_eq!(g.state.players[p.other().index()].turns_started, 0);
+        for viewer in [p, p.other()] {
+            assert_eq!(g.observe(viewer).players[p.index()].turns_started, 3);
+            assert_eq!(
+                g.observe(viewer).players[p.other().index()].turns_started,
+                0
+            );
+        }
+        let third = named(&mut g, p, "Starting Town", Zone::Hand);
+        g.state.pending = Pending::Priority;
+        g.state.priority = p;
+        g.state.step = Step::Main1;
+        checked(&mut g, Action::PlayLand { card: third });
+        assert!(!g.object_view(third).tapped);
+        let before = g.snapshot();
+        let mana = g.legal_actions().into_iter().find(|action| matches!(action, Action::ActivateMana { card, ability: 1, production, .. } if *card == third && *production == [0, 0, 0, 0, 1, 0])).unwrap();
+        let life = g.state.players[p.index()].life;
+        checked(&mut g, mana);
+        assert_eq!(g.state.players[p.index()].life, life - 1);
+        let mut restored = g.clone();
+        restored.restore(&before).unwrap();
+        assert!(!restored.object_view(third).tapped);
+        for viewer in [p, p.other()] {
+            assert_eq!(restored.observe(viewer).players[p.index()].turns_started, 3);
+        }
+        g.state.active = p;
+        g.begin_turn();
+        assert_eq!(g.state.players[p.index()].turns_started, 4);
+        for viewer in [p, p.other()] {
+            assert_eq!(g.observe(viewer).players[p.index()].turns_started, 4);
+        }
+        let fourth = named(&mut g, p, "Starting Town", Zone::Hand);
+        assert!(g.enters_tapped(fourth));
+        g.state.players[p.index()].turns_started = 1;
+        g.state.active = p.other();
+        assert!(g.enters_tapped(fourth));
+    }
+}
+
+#[test]
+fn starting_town_offers_colorless_and_each_color_for_one_life() {
+    for p in [Player::P0, Player::P1] {
+        let mut base = setup(p);
+        base.state.players[p.index()].turns_started = 1;
+        let town = named(&mut base, p, "Starting Town", Zone::Hand);
+        checked(&mut base, Action::PlayLand { card: town });
+        for color in 0..6 {
+            let mut g = base.clone();
+            let mut production = [0; 6];
+            production[color] = 1;
+            let ability = u16::from(color != 5);
+            let action = g
+                .legal_actions()
+                .into_iter()
+                .find(|action| {
+                    matches!(action,
+                Action::ActivateMana { card, ability: n, production: got, .. }
+                    if *card == town && *n == ability && *got == production)
+                })
+                .unwrap();
+            let mana = g.state.players[p.index()].mana[color];
+            let life = g.state.players[p.index()].life;
+            checked(&mut g, action);
+            assert_eq!(g.state.players[p.index()].mana[color], mana + 1);
+            assert_eq!(
+                g.state.players[p.index()].life,
+                life - if color != 5 { 1 } else { 0 }
+            );
+        }
+        let mut no_life = base.clone();
+        no_life.state.players[p.index()].life = 0;
+        assert!(
+            !no_life.legal_actions().iter().any(|action| matches!(action,
+            Action::ActivateMana { card, ability: 1, .. } if *card == town))
+        );
+    }
+}
+
+#[test]
+fn starting_town_natural_opening_first_turn_counts_once() {
+    for p in [Player::P0, Player::P1] {
+        let town_card = Card::from_name("Starting Town").unwrap();
+        let mut decks = [vec![Card::Forest; 7], vec![Card::Forest; 7]];
+        decks[p.index()] = vec![town_card; 7];
+        let mut g = Game::new(Config {
+            decks,
+            seed: 20261023,
+            starting_player: p,
+            deck_rules: DeckRules::Freeform,
+        })
+        .unwrap();
+        assert_eq!(g.observe(p).players[p.index()].turns_started, 0);
+        checked(&mut g, Action::Keep);
+        checked(&mut g, Action::Keep);
+        checked(&mut g, Action::FinishOpeningHand);
+        checked(&mut g, Action::FinishOpeningHand);
+        assert_eq!(g.observe(p).players[p.index()].turns_started, 1);
+        assert_eq!(
+            g.observe(p.other()).players[p.other().index()].turns_started,
+            0
+        );
+        for _ in 0..16 {
+            if g.state.step == Step::Main1 && g.state.pending == Pending::Priority {
+                break;
+            }
+            checked(&mut g, Action::Pass);
+        }
+        assert_eq!(g.state.step, Step::Main1);
+        let town = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .find(|(_, o)| o.owner == p && o.zone == Zone::Hand && o.card == town_card)
+            .map(|(id, _)| id as CardId)
+            .unwrap();
+        checked(&mut g, Action::PlayLand { card: town });
+        assert!(!g.object_view(town).tapped);
+        assert_eq!(g.observe(p).players[p.index()].turns_started, 1);
+    }
+}
+
+#[test]
+fn multiversal_candidate_choice_then_life_and_subtype_mana() {
+    for p in [Player::P0, Player::P1] {
+        for kind in crate::cards::BasicLandType::ALL {
+            for pay in [false, true] {
+                let mut g = setup(p);
+                let id = named(&mut g, p, "Forest", Zone::Hand);
+                g.state.objects[id as usize].card = Card::from_name("Multiversal Passage").unwrap();
+                checked(&mut g, Action::PlayLand { card: id });
+                assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+                checked(
+                    &mut g,
+                    Action::ChooseEntryValue {
+                        value: EntryChoiceValue::BasicLandType(kind),
+                    },
+                );
+                assert!(matches!(g.state.pending, Pending::EntryLife { .. }));
+                let life = g.state.players[p.index()].life;
+                checked(&mut g, Action::ChooseEntryLife { pay });
+                assert_eq!(g.object_view(id).zone, Zone::Battlefield);
+                assert_eq!(g.object_view(id).tapped, !pay);
+                assert_eq!(
+                    g.state.players[p.index()].life,
+                    life - if pay { 2 } else { 0 }
+                );
+                assert!(g.has_subtype(id, kind.name()));
+                for other in crate::cards::BasicLandType::ALL {
+                    assert_eq!(g.has_subtype(id, other.name()), other == kind);
+                }
+                g.state.objects[id as usize].tapped = false;
+                let mut production = [0; 6];
+                production[kind.index()] = 1;
+                g.state.players[p.index()].mana = [0; 6];
+                assert!(g.can_fund(FundingGoal {
+                    actor: p,
+                    required: production,
+                    generic: 0,
+                    reserve: None,
+                    source: None
+                }));
+                let action = Action::TapGrantedMana {
+                    card: id,
+                    grantor: g.object_ref(id),
+                    production,
+                };
+                let saved = g.snapshot();
+                let mut restored = g.clone();
+                checked(&mut g, action.clone());
+                restored.restore(&saved).unwrap();
+                checked(&mut restored, action);
+                assert_eq!(restored.snapshot(), g.snapshot());
+            }
+        }
+    }
+}
+
+#[test]
+fn multiversal_chooses_type_before_competing_entry_replacements() {
+    for p in [Player::P0, Player::P1] {
+        for intrinsic_first in [false, true] {
+            let mut g = setup(p);
+            let spelunking = named(&mut g, p, "Spelunking", Zone::Battlefield);
+            let land = named(&mut g, p, "Forest", Zone::Hand);
+            g.state.objects[land as usize].card = Card::from_name("Multiversal Passage").unwrap();
+            checked(&mut g, Action::PlayLand { card: land });
+            assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+            checked(
+                &mut g,
+                Action::ChooseEntryValue {
+                    value: EntryChoiceValue::BasicLandType(crate::cards::BasicLandType::Forest),
+                },
+            );
+            assert!(matches!(g.state.pending, Pending::EntryReplacement { .. }));
+            let source = if intrinsic_first {
+                g.object_ref(land)
+            } else {
+                g.object_ref(spelunking)
+            };
+            checked(
+                &mut g,
+                Action::ChooseEntryReplacement {
+                    source,
+                    intrinsic: intrinsic_first,
+                },
+            );
+            assert!(matches!(g.state.pending, Pending::EntryLife { .. }));
+            checked(&mut g, Action::ChooseEntryLife { pay: false });
+            assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(land).tapped, !intrinsic_first);
+            assert!(g.has_subtype(land, "Forest"));
+        }
+    }
+}
+
+#[test]
+fn multiversal_copy_does_not_copy_a_chosen_type_and_restore_recovers_source() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        let copy = named(&mut g, p, "Forest", Zone::Battlefield);
+        let land = named(&mut g, p, "Forest", Zone::Hand);
+        g.state.objects[land as usize].card = Card::from_name("Multiversal Passage").unwrap();
+        checked(&mut g, Action::PlayLand { card: land });
+        checked(
+            &mut g,
+            Action::ChooseEntryValue {
+                value: EntryChoiceValue::BasicLandType(crate::cards::BasicLandType::Island),
+            },
+        );
+        checked(&mut g, Action::ChooseEntryLife { pay: false });
+        assert!(g.has_subtype(land, "Island"));
+        let before = g.snapshot();
+        let recipe = g.copiable_recipe(g.object_ref(land));
+        g.apply_temporary_copy(g.object_ref(copy), recipe, CopyDeadline::EndOfTurn);
+        assert!(!g.has_subtype(copy, "Island"));
+        assert!(!g.has_subtype(copy, "Forest"));
+        assert!(g.has_subtype(land, "Island"));
+        let mut restored = g.clone();
+        restored.restore(&before).unwrap();
+        assert!(restored.has_subtype(copy, "Forest"));
+        assert!(restored.has_subtype(land, "Island"));
+    }
+}
+
+#[test]
+fn multiversal_simultaneous_entries_choose_each_type_before_replacements() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        named(&mut g, p, "Spelunking", Zone::Battlefield);
+        let card = Card::from_name("Multiversal Passage").unwrap();
+        let first = named(&mut g, p, "Forest", Zone::Hand);
+        let second = named(&mut g, p, "Forest", Zone::Hand);
+        for id in [first, second] {
+            g.state.objects[id as usize].card = card;
+        }
+        let moves = [first, second]
+            .into_iter()
+            .map(|id| g.entry_move(id, Zone::Battlefield, false))
+            .collect();
+        g.stage_entries(moves, None);
+        assert!(g.advance_entries());
+        for (id, kind) in [
+            (first, crate::cards::BasicLandType::Forest),
+            (second, crate::cards::BasicLandType::Island),
+        ] {
+            assert!(matches!(g.state.pending, Pending::EntryValue { .. }));
+            assert_eq!(g.observe(p).entry_value.unwrap().object.card, id);
+            checked(
+                &mut g,
+                Action::ChooseEntryValue {
+                    value: EntryChoiceValue::BasicLandType(kind),
+                },
+            );
+            assert!(matches!(g.state.pending, Pending::EntryReplacement { .. }));
+            let source = g.object_ref(id);
+            checked(
+                &mut g,
+                Action::ChooseEntryReplacement {
+                    source,
+                    intrinsic: true,
+                },
+            );
+            assert!(matches!(g.state.pending, Pending::EntryLife { .. }));
+            checked(&mut g, Action::ChooseEntryLife { pay: false });
+        }
+        assert!(matches!(g.state.pending, Pending::EntryTimestamp { .. }));
+        let object = g.object_ref(first);
+        checked(&mut g, Action::ChooseEntryTimestamp { object });
+        assert_eq!(g.object_view(first).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(second).zone, Zone::Battlefield);
+        assert!(g.has_subtype(first, "Forest"));
+        assert!(g.has_subtype(second, "Island"));
+        assert!(!g.object_view(first).tapped);
+        assert!(!g.object_view(second).tapped);
     }
 }

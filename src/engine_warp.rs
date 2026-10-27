@@ -132,6 +132,7 @@ impl Game {
                 source_counter_lki: None,
                 source_quantity_lki: None,
                 event_object: None,
+                manifest_event: None,
                 sacrificed_toughness: None,
                 sacrificed_power: None,
                 card: view.source.card,

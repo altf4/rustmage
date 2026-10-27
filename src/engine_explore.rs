@@ -126,7 +126,13 @@ impl Game {
                 },
                 object: item.object,
                 card: item.source_card,
-                controller: item.controller,
+                controller: if self.on_battlefield(item.card)
+                    && self.object_ref(item.card) == item.object
+                {
+                    self.state.objects[item.card as usize].controller
+                } else {
+                    item.source_facts.controller
+                },
             },
             Subject::Targets => {
                 let Some(bound) = item.targets.first().copied() else {
@@ -175,10 +181,11 @@ impl Game {
         let counter_added = self.on_battlefield(explorer.object.card)
             && self.object_ref(explorer.object.card) == explorer.object;
         if counter_added {
-            self.effect_counter(
+            self.effect_counter_by(
                 explorer.object.card,
                 CounterKind::PlusOne,
                 1,
+                explorer.controller,
                 if revealed.is_some() {
                     replacements::ResumeMode::Pending
                 } else {

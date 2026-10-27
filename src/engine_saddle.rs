@@ -71,6 +71,16 @@ impl ActivatedAbility {
     }
 }
 impl Game {
+    pub(super) fn crew_saddle_power(&self, card: CardId, subject: CardId, subtype: &str) -> i128 {
+        let bonus = if self.has_subtype(subject, subtype)
+            && self.keywords(card).contains(Keywords::CREW_SADDLE_PLUS_TWO)
+        {
+            2
+        } else {
+            0
+        };
+        self.stats(card).power.saturating_add(bonus)
+    }
     pub(super) fn is_saddled(&self, object: ObjectRef) -> bool {
         self.state.saddled.contains(&object)
     }
@@ -92,7 +102,7 @@ impl Game {
         for id in 0..self.state.objects.len() {
             let r = self.object_ref(id as CardId);
             if self.saddle_eligible(source, p, r) {
-                let power = self.stats(r.card).power.max(0);
+                let power = self.crew_saddle_power(r.card, source.card, "Mount").max(0);
                 available = available.saturating_add(u16::try_from(power).unwrap_or(u16::MAX));
                 if available >= minimum {
                     return true;
@@ -129,7 +139,7 @@ impl Game {
             if self.saddle_eligible(a.item.object, a.item.controller, r) {
                 let selected = f.selected.contains(&r);
                 if selected || maximum {
-                    let p = self.stats(r.card).power;
+                    let p = self.crew_saddle_power(r.card, a.item.card, "Mount");
                     if selected || p > 0 {
                         sum.add(p);
                     }
@@ -167,7 +177,7 @@ impl Game {
             {
                 continue;
             }
-            let p = self.stats(object.card).power;
+            let p = self.crew_saddle_power(object.card, a.item.card, "Mount");
             let mut possible = maximum;
             if p < 0 {
                 possible.add(p);
@@ -210,7 +220,7 @@ impl Game {
         )));
         let mut total = PowerSum::default();
         for r in &f.selected {
-            total.add(self.stats(r.card).power);
+            total.add(self.crew_saddle_power(r.card, a.item.card, "Mount"));
         }
         assert!(total.enough(f.minimum));
         // All powers are checked before the simultaneous tap cost. Tap observers

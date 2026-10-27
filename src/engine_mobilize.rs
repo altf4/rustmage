@@ -50,6 +50,7 @@ impl Game {
     fn mobilize_defender_valid(&self, p: Player, d: CombatDefender) -> bool {
         match d {
             CombatDefender::Player(q) => q == p.other(),
+            CombatDefender::Battle(r) => self.battle_can_be_attacked_by(r, p),
             CombatDefender::Planeswalker(r) => {
                 self.state.objects.get(r.card as usize).is_some_and(|o| {
                     o.generation == r.generation
@@ -75,6 +76,14 @@ impl Game {
             return true;
         }
         for (id, o) in self.state.objects.iter().enumerate() {
+            let battle = self.object_ref(id as CardId);
+            if self.battle_can_be_attacked_by(battle, p)
+                && emit(Action::ChooseMobilizeDefender {
+                    defender: CombatDefender::Battle(battle),
+                })
+            {
+                return true;
+            }
             if o.zone == Zone::Battlefield
                 && o.controller == p.other()
                 && self.current_kinds(id as CardId) & 64 != 0
@@ -267,6 +276,7 @@ impl Game {
                 source_counter_lki: None,
                 source_quantity_lki: None,
                 event_object: None,
+                manifest_event: None,
                 sacrificed_toughness: None,
                 sacrificed_power: None,
                 card: source.card,

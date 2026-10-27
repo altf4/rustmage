@@ -46,6 +46,7 @@ impl Game {
             .bounded_mode_count(index)
             .is_some_and(|count| u32::from(count) > a.item.x.unwrap_or(0))
             || !self.teamwork_mode_allowed(&a.item, index)
+            || !self.blight_mode_allowed(&a.item, index)
             || !self.modal_choice_unused(&a.item, index)
             || !self.item_targets_available(&a.item, mode.targets)
         {

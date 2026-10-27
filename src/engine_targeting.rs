@@ -24,6 +24,8 @@ pub(super) struct Announcement {
     pub pay_window: bool,
     pub production: Option<Mana>,
     pub additional: Option<ObjectRef>,
+    /// Explicit chosen life route for a discard-or-life additional cost.
+    pub additional_life: bool,
     #[allow(
         clippy::box_collection,
         reason = "Rare growable tap selections use one pointer in ordinary announcements"
@@ -43,6 +45,9 @@ pub(super) struct Announcement {
     pub cast_costs: Option<Box<CastCostTransaction>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
+    /// None before choice; Some(None) declines the optional tap.
+    pub harmonizer: Option<Option<ObjectRef>>,
+    pub harmonize_discount: u32,
     pub additional_paid: bool,
 }
 
@@ -58,6 +63,10 @@ impl Announcement {
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Miracle => self.miracle_cost,
+            CastMethod::Disguise => Some(ManaCost {
+                colored: [0; 6],
+                generic: 3,
+            }),
             CastMethod::ExileLife | CastMethod::Free | CastMethod::Plot => Some(ManaCost {
                 colored: [0; 6],
                 generic: 0,
@@ -128,7 +137,9 @@ impl Announcement {
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. }
-            | StackKind::DelayedWarpExile => None,
+            | StackKind::DelayedManifestDread
+            | StackKind::DelayedWarpExile
+            | StackKind::SiegeDefeat => None,
         }
     }
 
@@ -151,9 +162,35 @@ impl Announcement {
                 std::iter::once(self.item.source_card.sneak_cost().expect("Sneak cost"))
                     .chain([].iter().copied())
             }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Disguise) =>
+            {
+                std::iter::once(ManaCost {
+                    colored: [0; 6],
+                    generic: 3,
+                })
+                .chain([].iter().copied())
+            }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
                 std::iter::once(self.item.source_card.warp_cost().expect("fixed Warp cost"))
                     .chain([].iter().copied())
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|cast| cast.method == CastMethod::Harmonize) =>
+            {
+                std::iter::once(
+                    self.item
+                        .source_card
+                        .harmonize_cost()
+                        .expect("harmonize cost"),
+                )
+                .chain([].iter().copied())
             }
             StackKind::Spell
                 if self
@@ -191,7 +228,9 @@ impl Announcement {
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. }
-            | StackKind::DelayedWarpExile => {
+            | StackKind::DelayedManifestDread
+            | StackKind::DelayedWarpExile
+            | StackKind::SiegeDefeat => {
                 unreachable!("triggered ability has no activation cost")
             }
         };
@@ -320,6 +359,12 @@ impl Announcement {
             && self.item.source_card.has_bargain()
             && self.item.cast.is_some_and(|c| c.bargain.is_none())
     }
+    pub(super) fn needs_blight(&self) -> bool {
+        self.pay_window
+            && self.item.kind == StackKind::Spell
+            && self.item.source_card.blight().is_some()
+            && self.item.cast.is_some_and(|c| c.blight.is_none())
+    }
     pub(super) fn needs_teamwork(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
@@ -360,7 +405,9 @@ impl Announcement {
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
                 | StackKind::DelayedTokenCreation { .. }
-                | StackKind::DelayedWarpExile => false,
+                | StackKind::DelayedManifestDread
+                | StackKind::DelayedWarpExile
+                | StackKind::SiegeDefeat => false,
             }
     }
 }
@@ -402,6 +449,9 @@ impl Game {
             };
             assert_eq!(spec.min, 0);
             spec.max = usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX);
+            if item.division_total().is_some_and(|total| total > 0) {
+                spec.min = 1;
+            }
             return TargetPlan::Single(spec);
         }
         if let TargetPlan::Single(mut spec) = plan
@@ -632,11 +682,7 @@ impl Game {
                 let Target::Card(id) = bound.target else {
                     return false;
                 };
-                total += u128::from(
-                    self.copiable_recipe(self.object_ref(id))
-                        .definition
-                        .fixed_mana_value(),
-                );
+                total += u128::from(self.object_mana_value(id));
             }
             if !chosen
                 .iter()
@@ -645,11 +691,7 @@ impl Game {
                 let Target::Card(id) = target else {
                     return false;
                 };
-                total += u128::from(
-                    self.copiable_recipe(self.object_ref(id))
-                        .definition
-                        .fixed_mana_value(),
-                );
+                total += u128::from(self.object_mana_value(id));
             }
             return total <= u128::from(maximum);
         }
@@ -835,11 +877,7 @@ impl Game {
                     .iter()
                     .filter(|b| b.group == bound.group)
                     .map(|b| match b.target {
-                        Target::Card(id) => u128::from(
-                            self.copiable_recipe(self.object_ref(id))
-                                .definition
-                                .fixed_mana_value(),
-                        ),
+                        Target::Card(id) => u128::from(self.object_mana_value(id)),
                         _ => u128::MAX,
                     })
                     .fold(0u128, u128::saturating_add);
@@ -902,7 +940,9 @@ impl Game {
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
         // declarations precede targets, mana abilities and payment.
-        if a.needs_teamwork() {
+        if a.needs_blight() {
+            self.state.pending = Pending::BlightIntent { player };
+        } else if a.needs_teamwork() {
             self.state.pending = Pending::TeamworkIntent { player };
         } else if needs_mode || a.item.modes().is_some() && a.item.mode.is_none() {
             self.state.pending = Pending::Modes { player };
@@ -937,6 +977,13 @@ impl Game {
             .is_some_and(|rows| rows.iter().any(|row| !row.declared))
         {
             self.state.pending = Pending::Casualty { player };
+        } else if a.pay_window
+            && a.item
+                .cast
+                .is_some_and(|c| c.method == CastMethod::Harmonize)
+            && a.harmonizer.is_none()
+        {
+            self.state.pending = Pending::Harmonize { player };
         } else {
             let improvise = improvise::potential(
                 self,
@@ -1142,7 +1189,7 @@ impl Game {
     ) -> bool {
         match rule {
             TargetRule::ManaValueAtMost { base, maximum, .. } => {
-                return maximum.is_some_and(|maximum| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.card.fixed_mana_value() <= maximum)))
+                return maximum.is_some_and(|maximum| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) <= maximum)))
                     && self.target_matches_without_hand(*base, controller, source, target, departing, qualification);
             }
             TargetRule::GraveCreatureEnteredThisTurn => {
@@ -1234,7 +1281,7 @@ impl Game {
                             && self.graveyard_entry_this_turn(self.object_ref(id))
                     }
                     TargetPredicate::ManaValueAtMostLifeGained => {
-                        u128::from(object.card.fixed_mana_value())
+                        u128::from(self.object_mana_value(id))
                             <= self.state.players[controller.index()].life_gained_this_turn
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
@@ -1372,7 +1419,8 @@ impl Game {
                     TargetRule::Creature => obj.zone == Zone::Battlefield && self.is_creature(id),
                     TargetRule::Any => {
                         obj.zone == Zone::Battlefield
-                            && (self.is_creature(id) || self.current_kinds(id) & 64 != 0)
+                            && (self.is_creature(id)
+                                || self.current_kinds(id) & (64 | crate::cards::BATTLE_KIND) != 0)
                     }
                     TargetRule::Object {
                         zone,
@@ -1402,7 +1450,7 @@ impl Game {
                             && (!nonland || self.current_kinds(id) & 2 == 0)
                             && (!tapped || obj.tapped)
                             && ((min_mana == 0 && max_mana == u32::MAX) || {
-                                let value = obj.card.fixed_mana_value();
+                                let value = self.object_mana_value(id);
                                 value >= u64::from(min_mana) && value <= u64::from(max_mana)
                             })
                     }
@@ -1609,6 +1657,7 @@ impl Game {
                 offspring: None,
                 kicker: None,
                 teamwork: None,
+                blight: None,
                 bargain: None,
                 evidence: None,
             }),
@@ -1633,6 +1682,7 @@ impl Game {
             source_counter_lki: None,
             source_quantity_lki: None,
             event_object: None,
+            manifest_event: None,
             sacrificed_toughness: None,
             sacrificed_power: None,
             source_attachment: self.state.objects[card as usize].attached_to,
@@ -1706,6 +1756,7 @@ impl Game {
             total_cost: None,
             counter_payment: Counters::default(),
             additional: None,
+            additional_life: false,
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
@@ -1713,6 +1764,8 @@ impl Game {
             cast_costs: None,
             evidence: None,
             convoke: None,
+            harmonizer: None,
+            harmonize_discount: 0,
             additional_paid: false,
             pay_window: false,
             production: None,
@@ -1790,6 +1843,7 @@ impl Game {
             total_cost: None,
             counter_payment: counters,
             additional: None,
+            additional_life: false,
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
@@ -1797,6 +1851,8 @@ impl Game {
             cast_costs: None,
             evidence: None,
             convoke: None,
+            harmonizer: None,
+            harmonize_discount: 0,
             additional_paid: false,
             pay_window: true,
             production,
@@ -1852,7 +1908,14 @@ impl Game {
                         &announcement.item.targets,
                     )
                 };
-                self.state.announcing.as_mut().unwrap().total_cost = Some(total);
+                let discount = announcement.harmonizer.flatten().map_or(0, |reference| {
+                    harmonize::contribution(self, announcement.item.controller, reference)
+                        .expect("chosen Harmonizer remains available before cost determination")
+                });
+                let total = harmonize::reduce(total, discount);
+                let announcement = self.state.announcing.as_mut().unwrap();
+                announcement.harmonize_discount = discount;
+                announcement.total_cost = Some(total);
             }
             if self.state.announcing.as_ref().unwrap().cast_costs.is_none()
                 && self
@@ -1884,6 +1947,7 @@ impl Game {
                 .additional_cost()
                 .is_some_and(|spec| !forage::is_forage_cost(spec))
                 && announcement.additional.is_none()
+                && !announcement.additional_life
             {
                 Pending::AdditionalCost {
                     player: announcement.item.controller,

@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c08fea71878813aabae91f7430abefaa3209fe87976a4409d94e6206bceebcc5"
   },
-  "physical_metadata_sha256": "0556269f276849a8ad80b868eefec01e064c7ef96f67b81225fe3a062a17667c"
+  "physical_metadata_sha256": "0556269f276849a8ad80b868eefec01e064c7ef96f67b81225fe3a062a17667c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BubbleSmuggler.java",
+  "java_sha256": "96d88719abf3dec0bed8c56208bdfdf103a409de1a23519fc35c668029c68836",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsTurnedFaceUpEffect.java",
+      "sha256": "7a29e2d3ac4662bfced14d44eb76f3010ac8a11dd6b2b2fd6971c7de36e5b428"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "rules_tests": "src/engine_manifest.rs"
 }

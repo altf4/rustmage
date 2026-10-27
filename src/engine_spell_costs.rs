@@ -36,6 +36,21 @@ impl Game {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
                 return a.item.source_card.sneak_cost().expect("Sneak cost");
             }
+            if a.item
+                .cast
+                .is_some_and(|c| c.method == CastMethod::Harmonize)
+            {
+                return a.item.source_card.harmonize_cost().expect("Harmonize cost");
+            }
+            if a.item
+                .cast
+                .is_some_and(|c| c.method == CastMethod::Disguise)
+            {
+                return ManaCost {
+                    colored: [0; 6],
+                    generic: 3,
+                };
+            }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.item.source_card.warp_cost().expect("fixed Warp cost");
             }

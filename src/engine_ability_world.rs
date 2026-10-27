@@ -64,6 +64,9 @@ pub(super) trait CharacteristicWorld {
             .flatten()
     }
 
+    fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
+        self.game().battle_protector(object)
+    }
     fn object(&self, id: CardId) -> &Object;
     /// The immutable layer-one definition is materialized in both actual and
     /// speculative objects; physical identity lives separately while copying.
@@ -86,6 +89,31 @@ pub(super) trait CharacteristicWorld {
     }
     fn is_equipment(&self, id: CardId) -> bool {
         self.kinds(id) & 16 != 0 && self.subtypes(id).has(self.definition(id), "Equipment")
+    }
+    fn mana_value(&self, id: CardId) -> u64 {
+        let object = self.object(id);
+        let Some(front) = object.card.face_parent() else {
+            return object.card.fixed_mana_value();
+        };
+        if object.zone != Zone::Battlefield || !front.transforming_double_face() {
+            return object.card.fixed_mana_value();
+        }
+        if let Some(recipe) = self.stored_recipe(id) {
+            return match recipe.face_structure() {
+                copies::CopyFaces::Double {
+                    front: copied_front,
+                    back,
+                    back_up: true,
+                    ..
+                } if copied_front == front && back == object.card => front.fixed_mana_value(),
+                _ => 0,
+            };
+        }
+        if self.temporary_copy_view(self.reference(id)).is_some() {
+            0
+        } else {
+            front.fixed_mana_value()
+        }
     }
     fn recipe(&self, id: CardId) -> CopyRecipe {
         self.stored_recipe(id)
@@ -172,6 +200,9 @@ pub(super) trait CharacteristicWorld {
     }
     fn life(&self, player: Player) -> i128;
     fn gained_life(&self, player: Player) -> bool;
+    fn lost_life(&self, player: Player) -> bool {
+        self.game().state.players[player.index()].life_lost_this_turn > 0
+    }
     fn attacking(&self, id: CardId) -> bool;
 
     /// Effective string name in this actual or speculative object world.
@@ -362,7 +393,27 @@ pub(super) trait CharacteristicWorld {
                 || (self.reference(id) != source && (self.subtypes(id).has(target.card, "Zombie"))))
     }
     fn has_ability_removal(&self) -> bool {
-        self.roles().is_some_and(|state| {
+        self.static_sources().iter().any(|&id| {
+            self.object(id).zone == Zone::Battlefield
+                && self.kinds(id) & 2 != 0
+                && self
+                    .object(id)
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::ChosenBasicLandType
+                            )
+                        })
+                    })
+                && matches!(
+                    self.entry_value(self.reference(id)),
+                    Some(EntryChoiceValue::BasicLandType(_))
+                )
+        }) || self.roles().is_some_and(|state| {
             state
                 .resolved_ability_modifications
                 .iter()
@@ -399,6 +450,29 @@ pub(super) trait CharacteristicWorld {
             })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
+        if self.object(id).zone == Zone::Battlefield
+            && self
+                .object(id)
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::ChosenBasicLandType
+                        )
+                    })
+                })
+            && matches!(
+                self.entry_value(self.reference(id)),
+                Some(EntryChoiceValue::BasicLandType(_))
+            )
+            && self.kinds(id) & 2 != 0
+        {
+            return ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
+                .printed;
+        }
         if self.roles().is_some_and(|state| {
             state.resolved_ability_modifications.iter().any(|row| {
                 row.recipient == self.reference(id)
@@ -460,11 +534,13 @@ pub(super) trait CharacteristicWorld {
             &|id| self.name(id),
             &|id| self.colors(id),
             &|id| self.legendary(id),
+            &|id| self.mana_value(id),
             &|id, kind| self.counter_count(id, kind),
             &|id| self.counter_amounts(id).has_any(),
             self.life(controller),
             game.state.attack_declared && self.attacking(source),
             self.has_enduring_story(controller),
+            self.lost_life(controller),
         )
     }
     fn entered_this_turn(&self, source: ObjectRef) -> bool {
@@ -750,6 +826,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
             self.parent.object(id)
         }
     }
+    fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
+        self.parent.temporary_copy_view(object)
+    }
     fn life(&self, p: Player) -> i128 {
         self.parent.life(p)
     }
@@ -758,6 +837,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn gained_life(&self, p: Player) -> bool {
         self.parent.gained_life(p)
+    }
+    fn lost_life(&self, p: Player) -> bool {
+        self.parent.lost_life(p)
     }
     fn attacking(&self, id: CardId) -> bool {
         self.parent.attacking(id)

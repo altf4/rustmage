@@ -3,10 +3,46 @@
   "catalogue_id": 1294,
   "oracle_id": "54175132-2c44-4749-8dfd-d08dcc63e4b3",
   "facts_sha256": "d3553cb935d698a816dafdf1e9dae718754ec4730588df870f03c9bbad4c1b7f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d3cae15a3d83c9f7c409536aa464ac16afb6f2c6e86530decb437416d92c6c17"
   },
-  "physical_metadata_sha256": "9726b53c771dcc4bc6753bb8a88ea084e74e4a192b163a37775d9ecf9102879b"
+  "physical_metadata_sha256": "d3b275305c87e4788e150ecacc8b5ac37581fe716f885458ca61022ebd6582c8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ElusiveOtter.java",
+  "java_sha256": "1d9c0450c2250a191318f58336bf19bec6390b4e9084d4379b580405adf15aa3",
+  "rules_tests": "src/assurance/requested_elusive_otter.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesWithLessPowerEffect.java",
+      "sha256": "caf997e33d3fcce83ac63fd8c7c993035ce4b65e217ec12aa0076d80c425596c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/DistributeCountersEffect.java",
+      "sha256": "745e7d5d527b57c5dd4a8b5e477a62c2d856ae9731d1d575ec29891351978e62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanentAmount.java",
+      "sha256": "39059e7727fb6a2d73dd37bf6e148419181fa315f60da40642d94c49adff7fb0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    }
+  ],
+  "oracle_face": {
+    "oracle_id": "54175132-2c44-4749-8dfd-d08dcc63e4b3",
+    "index": 0,
+    "sha256": "dfbf404b09d2a664d25ab18d4925411abd58f16f4507ec373bd5121ed4030f00"
+  }
 }

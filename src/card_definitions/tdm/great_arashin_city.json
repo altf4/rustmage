@@ -3,10 +3,51 @@
   "catalogue_id": 1860,
   "oracle_id": "f40f374b-acaf-459d-9ccd-b0b22d1a3f28",
   "facts_sha256": "a3dd31e0d7bd6c3c55e3b600991789f3e3bda23c6af0e93bab17445d52c50e76",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3b481291663db795a127ee4d3cc40b5878eff372dafef7d6b73966b401e4d3c2"
   },
-  "physical_metadata_sha256": "2f7c09ed3e443b85b479156175a6875092cc51b064fa6c6e275c2c892985cfe5"
+  "physical_metadata_sha256": "2f7c09ed3e443b85b479156175a6875092cc51b064fa6c6e275c2c892985cfe5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreatArashinCity.java",
+  "java_sha256": "11c7f48b79572426f3e4e37bb99a487236ad3401d22f06774e0f8b26f40d7500",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouControlPermanentCondition.java",
+      "sha256": "850fb219ff3e25ef2abbb7d0672a728d77699fbbd358ced81cbb17e6b553372a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+      "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+      "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite11Token.java",
+      "sha256": "ae86fa5f2d2e9df5fe94d034fe7a720d7b69c3365f9d5e79585668e94c5db558"
+    }
+  ],
+  "remaining_obligations": []
 }

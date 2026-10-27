@@ -71,6 +71,17 @@ impl Game {
         ability: u16,
         subject: Option<ObjectRef>,
     ) {
+        let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
+        if matches!(condition, TriggerCondition::InterveningIf { .. })
+            && !self.trigger_guards_hold(
+                condition,
+                item.controller,
+                item.object,
+                item.source_tapped,
+            )
+        {
+            return;
+        }
         let mut reflexive = item.clone();
         reflexive.id = self.next_stack_id();
         reflexive.kind = StackKind::TriggeredAbility { ability };
@@ -89,6 +100,27 @@ impl Game {
             })
         {
             reflexive.source_counter_lki = Some(facts);
+        }
+        if let TriggerCondition::InterveningIf {
+            guard:
+                StepGuard::Expression {
+                    value: StatValue::SourceCounters(kind),
+                    ..
+                },
+            ..
+        } = condition
+        {
+            let count = self
+                .source_counter_quantity_live(reflexive.object, kind)
+                .unwrap_or(0);
+            let facts = reflexive
+                .source_counter_lki
+                .get_or_insert_with(Default::default);
+            if let Some(fact) = facts.iter_mut().find(|fact| fact.kind == kind) {
+                fact.count = count;
+            } else {
+                facts.push(card_quantities::SourceCounterQuantityView { kind, count });
+            }
         }
         reflexive.reflexive_subject = subject.map(|object| {
             Box::new(ReflexiveSubjectView {

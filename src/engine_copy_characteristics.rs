@@ -3,6 +3,9 @@ use super::*;
 
 impl Game {
     pub(super) fn copiable_recipe(&self, object: ObjectRef) -> CopyRecipe {
+        if self.is_face_down(object) {
+            return CopyRecipe::new(self.state.objects[object.card as usize].card);
+        }
         let recipe = self
             .copy_recipe(object)
             .unwrap_or_else(|| CopyRecipe::new(self.state.objects[object.card as usize].card));

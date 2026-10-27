@@ -35,6 +35,123 @@ impl SbaBatch {
     }
 }
 impl Game {
+    /// Track attacked permanent types at each continuous-effect boundary.
+    fn refresh_combat_defender_types(&mut self) {
+        let mut current = Vec::<(ObjectRef, u16)>::new();
+        for attack in &self.state.attackers {
+            let Some(CombatDefender::Battle(object) | CombatDefender::Planeswalker(object)) =
+                attack.defender
+            else {
+                continue;
+            };
+            if current.iter().any(|(prior, _)| *prior == object) {
+                continue;
+            }
+            let kinds =
+                if self.on_battlefield(object.card) && self.object_ref(object.card) == object {
+                    self.current_kinds(object.card) & (64 | crate::cards::BATTLE_KIND)
+                } else {
+                    0
+                };
+            current.push((object, kinds));
+        }
+        let removed: Vec<_> = current
+            .iter()
+            .filter_map(|&(object, kinds)| {
+                let old = self
+                    .state
+                    .combat_defender_types
+                    .as_ref()?
+                    .iter()
+                    .find(|(prior, _)| *prior == object)?
+                    .1;
+                let walker = old & 64 != 0;
+                let battle = old & crate::cards::BATTLE_KIND != 0;
+                let now_walker = kinds & 64 != 0;
+                let now_battle = kinds & crate::cards::BATTLE_KIND != 0;
+                let remove = if walker && battle {
+                    (!now_walker && !now_battle)
+                        || (now_walker
+                            && !now_battle
+                            && self.battle_protector(object)
+                                != Some(self.state.objects[object.card as usize].controller))
+                } else {
+                    (walker && !now_walker) || (battle && !now_battle)
+                };
+                remove.then_some(object)
+            })
+            .collect();
+        for attack in &mut self.state.attackers {
+            if matches!(attack.defender, Some(CombatDefender::Battle(r) | CombatDefender::Planeswalker(r)) if removed.contains(&r))
+            {
+                attack.defender = None;
+            }
+        }
+        current.retain(|(object, _)| !removed.contains(object));
+        self.state.combat_defender_types = (!current.is_empty()).then(|| current.into());
+    }
+    pub(super) fn refresh_combat_battle_types(&mut self) {
+        self.refresh_combat_defender_types();
+        if self.state.attackers.is_empty() && self.state.blocking.is_empty() {
+            self.state.battle_combat_types = None;
+            return;
+        }
+        if self.state.battle_combat_types.as_ref().is_some_and(|old| {
+            old.len() == self.state.attackers.len() + self.state.blocking.len()
+                && old
+                    .iter()
+                    .zip(
+                        self.state
+                            .attackers
+                            .iter()
+                            .map(|a| a.card)
+                            .chain(self.state.blocking.iter().copied()),
+                    )
+                    .all(|(&(prior, value), id)| {
+                        prior == self.object_ref(id)
+                            && value == (self.current_kinds(id) & crate::cards::BATTLE_KIND != 0)
+                    })
+        }) {
+            return;
+        }
+        // A combat creature that becomes a Battle leaves combat, even if
+        // it remains a creature. Track each exact combat incarnation.
+        let combat_types: Vec<_> = self
+            .state
+            .attackers
+            .iter()
+            .map(|a| a.card)
+            .chain(self.state.blocking.iter().copied())
+            .map(|id| {
+                (
+                    self.object_ref(id),
+                    self.current_kinds(id) & crate::cards::BATTLE_KIND != 0,
+                )
+            })
+            .collect();
+        let newly_battles: Vec<_> = combat_types
+            .iter()
+            .filter_map(|&(object, battle)| {
+                (battle
+                    && self.state.battle_combat_types.as_ref().is_some_and(|old| {
+                        old.iter()
+                            .any(|&(prior, was_battle)| prior == object && !was_battle)
+                    }))
+                .then_some(object)
+            })
+            .collect();
+        for object in newly_battles {
+            self.remove_from_combat(object.card, object);
+        }
+        let retained: Vec<_> = combat_types
+            .into_iter()
+            .filter(|(object, _)| {
+                self.state.attackers.iter().any(|a| a.card == object.card)
+                    || self.state.blocking.contains(&object.card)
+            })
+            .collect();
+        self.state.battle_combat_types = (!retained.is_empty()).then(|| retained.into());
+    }
     fn collect_sba_batch(&self) -> SbaBatch {
         let mut batch = SbaBatch {
             resume: self.state.pending.clone(),
@@ -68,13 +185,20 @@ impl Game {
             if object.zone != Zone::Battlefield {
                 continue;
             }
+            if self.battle_zero_defense_sba(id) {
+                batch.deaths.push(id);
+            }
             if self.saga_sacrifice_required(id) {
                 batch.deaths.push(id);
             }
             if self.current_kinds(id) & 64 != 0 && object.counters.loyalty == 0 {
                 batch.deaths.push(id);
             }
-            if ability_world::CharacteristicWorld::is_aura(self, id) {
+            if self.current_kinds(id) & crate::cards::BATTLE_KIND != 0
+                && object.attached_to.is_some()
+            {
+                batch.detached.push(self.object_ref(id));
+            } else if ability_world::CharacteristicWorld::is_aura(self, id) {
                 // CR303.4d/704.5p: a creature Aura first becomes unattached;
                 // the next SBA sees the unattached Aura and puts it away.
                 if self.is_creature(id) && object.attached_to.is_some() {
@@ -156,6 +280,38 @@ impl Game {
         }
         loop {
             self.refresh_controllers();
+            // An ineligible protector is replaced even during combat. A missing
+            // protector is chosen only while no creature is attacking the Battle.
+            let protectors: Vec<_> = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(id, o)| {
+                    let id = id as CardId;
+                    if o.zone != Zone::Battlefield
+                        || self.current_kinds(id) & crate::cards::BATTLE_KIND == 0
+                    {
+                        return None;
+                    }
+                    let reference = self.object_ref(id);
+                    let expected = if self.has_subtype(id, "Siege") {
+                        o.controller.other()
+                    } else {
+                        o.controller
+                    };
+                    let prior = self.battle_protector(reference);
+                    let attacking = self.state.attackers.iter().any(|a| {
+                        matches!(a.defender, Some(CombatDefender::Battle(r) | CombatDefender::Planeswalker(r)) if r == reference)
+                    });
+                    ((prior.is_some() && prior != Some(expected)) || (prior.is_none() && !attacking))
+                        .then_some((reference, expected))
+                })
+                .collect();
+            for (reference, player) in protectors {
+                self.set_battle_protector(reference, player);
+            }
+            self.refresh_combat_battle_types();
             // CR506.4: a permanent that stops being a creature leaves combat.
             let no_longer_creatures: Vec<_> = self
                 .state
@@ -179,7 +335,16 @@ impl Game {
                     Some(CombatDefender::Planeswalker(r))
                         if !self.on_battlefield(r.card)
                             || self.object_ref(r.card) != r
-                            || self.current_kinds(r.card) & 64 == 0 =>
+                            || self.current_kinds(r.card) & (64 | crate::cards::BATTLE_KIND)
+                                == 0 =>
+                    {
+                        Some(r)
+                    }
+                    Some(CombatDefender::Battle(r))
+                        if !self.on_battlefield(r.card)
+                            || self.object_ref(r.card) != r
+                            || self.current_kinds(r.card) & (64 | crate::cards::BATTLE_KIND)
+                                == 0 =>
                     {
                         Some(r)
                     }
@@ -192,7 +357,8 @@ impl Game {
                 .iter_mut()
                 .chain(&mut self.state.selected_attackers)
             {
-                if let Some(CombatDefender::Planeswalker(r)) = attack.defender
+                if let Some(CombatDefender::Planeswalker(r) | CombatDefender::Battle(r)) =
+                    attack.defender
                     && invalid_defenders.contains(&r)
                 {
                     attack.defender = None;

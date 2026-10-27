@@ -1,0 +1,11 @@
+{
+  "name": "@token/spirit_1_1_white",
+  "catalogue_id": 5421,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "922eeb301eb90d4df749d6e8644f74f8e5e39c52e724c903a04649c72401c841",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite11Token.java",
+  "java_sha256": "ae86fa5f2d2e9df5fe94d034fe7a720d7b69c3365f9d5e79585668e94c5db558"
+}

@@ -3,10 +3,38 @@
   "catalogue_id": 2877,
   "oracle_id": "17770eeb-ecbf-4510-af2d-acececfbe146",
   "facts_sha256": "d0dda4f3aa4a8e9f366146aa6c4bbadcecf2739f84c115122d5da6a36e904be0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fc07be62c047a5e1ac4063e4fa653f53331450da60cbcc96eb1bb66abf8d0a65"
   },
-  "physical_metadata_sha256": "5272ea29026340b79ecaad5454f05a218a9b60c33d07f6b9db813b001efdb504"
+  "physical_metadata_sha256": "5272ea29026340b79ecaad5454f05a218a9b60c33d07f6b9db813b001efdb504",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MultiversalPassage.java",
+  "java_sha256": "4327a7011b2ef3021992c2dc627b68e601eca11724d7d1c0066b054125b07050",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseBasicLandTypeEffect.java",
+      "sha256": "0cdb38e26538f461883d299c796c1c0a806b5735cb7b213d44d760d1cef2b526"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceUnlessPaysEffect.java",
+      "sha256": "b7552cdecc20c75a2b82111cfa50f8af64ebd3b108dc8a71c7f7e5e3bc59bfc8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    }
+  ],
+  "remaining_obligations": [
+    "Validate basic-land-type replacement, derived mana, copies, interactions and projected entry against full rules."
+  ]
 }

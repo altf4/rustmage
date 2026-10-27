@@ -7,7 +7,14 @@ pub(super) struct EntryMove {
     pub choice: Option<EntryChoiceValue>,
     pub gift: Option<Box<GiftContext>>,
     pub before: ObjectView,
+    /// Original source-zone view when this entry is projected using another face.
+    pub source_before: Option<Box<ObjectView>>,
+    /// Physical card hidden behind face-down entry characteristics.
+    pub manifest_original: Option<Card>,
+    pub manifest_known: bool,
     pub controller: Player,
+    /// Protector selected as this Battle enters, before replacement effects.
+    pub battle_protector: Option<Player>,
     pub destination: Zone,
     pub tapped: bool,
     pub attachment: Option<ObjectRef>,
@@ -27,6 +34,7 @@ pub(super) struct EntryMove {
     /// After this successful entry event, attach this Equipment to an exact recipient.
     pub attach_equipment_to: Option<ObjectRef>,
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
+    pub ghost_vacuum_after: Option<ObjectRef>,
     /// Source-independent type replacement and Food activation as this card enters.
     pub food_return: Option<Card>,
     /// Set artifact card type as it enters, preserving abilities (CR205.1a/611.2e).
@@ -72,6 +80,24 @@ pub(super) struct EntryBatch {
     pub tap_next: usize,
 }
 impl EntryMove {
+    pub(super) fn choose_projected_battle_protector(&mut self, kinds: u16, siege: bool) {
+        self.battle_protector =
+            if self.destination == Zone::Battlefield && kinds & crate::cards::BATTLE_KIND != 0 {
+                Some(if siege {
+                    self.controller.other()
+                } else {
+                    self.controller
+                })
+            } else {
+                None
+            };
+    }
+    pub(super) fn choose_battle_protector(&mut self) {
+        self.choose_projected_battle_protector(
+            self.entry_kinds(),
+            Game::entry_choice_subtypes(self).has(self.before.card, "Siege"),
+        );
+    }
     pub(super) fn entry_kinds(&self) -> u16 {
         if self.food_return.is_some() {
             16
@@ -85,8 +111,12 @@ impl EntryMove {
         EntryMove {
             choice: None,
             gift: None,
+            manifest_original: None,
+            manifest_known: false,
             controller: before.controller,
+            battle_protector: None,
             before,
+            source_before: None,
             destination,
             tapped,
             attachment: None,
@@ -99,6 +129,7 @@ impl EntryMove {
             blank_with_haste_after: None,
             attach_equipment_to: None,
             return_modification: None,
+            ghost_vacuum_after: None,
             food_return: None,
             artifact_return: false,
             attacking: None,
@@ -134,6 +165,11 @@ impl EntryBatch {
                     m.counters.owned_bytes()
                         + m.before.counters.owned_bytes()
                         + m.before.temporary_copy_bytes()
+                        + m.source_before.as_ref().map_or(0, |v| {
+                            std::mem::size_of::<ObjectView>()
+                                + v.counters.owned_bytes()
+                                + v.temporary_copy_bytes()
+                        })
                 })
                 .sum::<usize>()
             + self
@@ -286,18 +322,33 @@ impl Game {
         );
         let mut tap_events = Vec::new();
         for (index, movement) in moves.iter_mut().enumerate() {
+            movement.choose_battle_protector();
+            if movement.before.kinds & crate::cards::BATTLE_KIND != 0
+                && let Some(view) = self.preview_battle_entry(movement)
+            {
+                movement.choose_projected_battle_protector(view.kinds, view.has_subtype("Siege"));
+            }
             if movement.destination != Zone::Battlefield {
                 continue;
             }
-            let intrinsic_tapped = match movement.before.card.entry_tapped() {
-                EntryTapped::ChosenXAtMost(maximum) => movement.x <= maximum,
-                _ => self.self_entry_requires_tapped(movement.before.id, movement.controller),
+            let intrinsic_tapped = if movement.manifest_original.is_some() {
+                false
+            } else {
+                match movement.before.card.entry_tapped() {
+                    EntryTapped::ChosenXAtMost(maximum) => movement.x <= maximum,
+                    _ => self.self_entry_requires_tapped(movement.before.id, movement.controller),
+                }
             };
             let mut effects = self.entry_tap_effects(movement);
             if effects.is_empty() {
                 movement.tapped |= intrinsic_tapped
                     || self.opponent_entry_kinds_require_tapped(
-                        movement.entry_kinds(),
+                        if movement.ghost_vacuum_after.is_some() {
+                            self.ghost_entry_preview(movement)
+                                .map_or_else(|| movement.entry_kinds(), |view| view.kinds)
+                        } else {
+                            movement.entry_kinds()
+                        },
                         movement.controller,
                     );
             } else {
@@ -340,6 +391,11 @@ impl Game {
                 movement.controller,
                 movement.x,
             );
+            if movement.destination == Zone::Battlefield && movement.battle_protector.is_none() {
+                movement
+                    .counters
+                    .remove(CounterKind::Defense, movement.before.card.printed_defense());
+            }
             self.apply_cast_entry_counters(movement);
             if movement.destination == Zone::Battlefield && movement.cast_origin.is_some() {
                 for &(kind, amount) in movement.before.card.cast_entry_counters() {
@@ -436,6 +492,10 @@ impl Game {
                     }))
         });
         if batch.choices.is_empty()
+            && !batch
+                .moves
+                .iter()
+                .any(|movement| movement.manifest_original.is_some())
             && batch.tap_events.is_empty()
             && !counter_replacements
             && !self.entry_needs_timestamp_choice(&batch)
@@ -491,6 +551,9 @@ impl Game {
         for rule in before.card.entry_counter_rules() {
             if self.step_guard(rule.guard, controller, before.reference, before.tapped) {
                 let amount = match rule.amount {
+                    EntryCounterAmount::ControlledCreatureDeaths => {
+                        self.state.players[controller.index()].controlled_creatures_died_this_turn
+                    }
                     EntryCounterAmount::GreatestOtherCreaturePower => self
                         .state
                         .objects
@@ -599,8 +662,18 @@ impl Game {
         } else {
             None
         };
-        self.capture_event_object_facts(moves.iter().map(|(movement, _)| &movement.before));
-        self.capture_source_quantities(moves.iter().map(|(movement, _)| &movement.before));
+        self.capture_event_object_facts(moves.iter().map(|(movement, _)| {
+            movement
+                .source_before
+                .as_deref()
+                .unwrap_or(&movement.before)
+        }));
+        self.capture_source_quantities(moves.iter().map(|(movement, _)| {
+            movement
+                .source_before
+                .as_deref()
+                .unwrap_or(&movement.before)
+        }));
         let mut events = Vec::new();
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();
@@ -611,20 +684,61 @@ impl Game {
         let mut ability_results = Vec::new();
         let mut food_results = Vec::new();
         let mut artifact_results = Vec::new();
+        let mut ghost_results = Vec::new();
         for (movement, counters) in moves {
-            let rules = self.freeze_zone_rules(&movement.before, movement.destination, None);
-            let plan = self.plan_zone_move(&movement.before, movement.destination, rules);
+            let entering_face = movement
+                .source_before
+                .as_ref()
+                .map(|_| movement.before.card);
+            let before_battle = movement.before.kinds & crate::cards::BATTLE_KIND != 0;
+            let manifest_face = movement.before.card;
+            let mut before = movement.source_before.map_or(movement.before, |v| *v);
+            let rules = self.freeze_zone_rules(&before, movement.destination, None);
+            let plan = self.plan_zone_move(&before, movement.destination, rules);
+            if movement.manifest_original.is_some() {
+                if plan.destination == Zone::Battlefield {
+                    self.state.objects[before.id as usize].card = manifest_face;
+                } else {
+                    before = self.object_view(before.id);
+                }
+            }
             let mut event = self.commit_planned_zone_move(
-                movement.before,
+                before,
                 plan,
                 movement.tapped,
                 counters,
-                Some(movement.controller),
+                EntryIdentity {
+                    controller: Some(movement.controller),
+                    face: entering_face,
+                },
                 ZoneObservers {
                     graveyard: graveyard_observers.clone(),
                     returned_hand: returned_hand_observers.clone(),
                 },
             );
+            if event.moved && event.destination == Zone::Battlefield {
+                if let Some(protector) = movement.battle_protector {
+                    self.set_battle_protector(event.after, protector);
+                } else if before_battle {
+                    self.clear_battle_protector(event.after);
+                }
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some(original) = movement.manifest_original
+            {
+                let known_to = self.face_down_knowledge_mask(movement.controller);
+                self.state
+                    .manifest
+                    .get_or_insert_with(Default::default)
+                    .permanents
+                    .push(manifest::FaceDownPermanent {
+                        object: event.after,
+                        underlying: original,
+                        known: movement.manifest_known,
+                        known_to,
+                    });
+            }
             if event.moved
                 && event.destination == Zone::Battlefield
                 && let Some(value) = movement.choice
@@ -645,6 +759,12 @@ impl Game {
             }
             if event.moved && event.destination == Zone::Battlefield && movement.artifact_return {
                 artifact_results.push(event.after);
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some(source) = movement.ghost_vacuum_after
+            {
+                ghost_results.push((event.after, source));
             }
             event.cast_event = movement.cast_event;
             event.was_cast = movement.cast_origin.is_some();
@@ -688,9 +808,13 @@ impl Game {
                 if event.destination == Zone::Battlefield
                     && let Some(defender) = movement.attacking
                     && self.is_creature(event.after.card)
+                    && self.current_kinds(event.after.card) & crate::cards::BATTLE_KIND == 0
                     && self.attacking_return_combat(movement.controller)
                     && match defender {
                         CombatDefender::Player(p) => p == movement.controller.other(),
+                        CombatDefender::Battle(r) => {
+                            self.battle_can_be_attacked_by(r, movement.controller)
+                        }
                         CombatDefender::Planeswalker(r) => {
                             self.on_battlefield(r.card)
                                 && self.object_ref(r.card) == r
@@ -718,6 +842,7 @@ impl Game {
                 && event.moved
                 && event.destination == Zone::Battlefield
             {
+                self.state.objects[event.after.card as usize].cast_for_warp = event.was_cast;
                 self.register_warp_exile(&event, controller);
             }
             events.push(event);
@@ -755,6 +880,30 @@ impl Game {
                 {
                     self.retimestamp_hand_size_source(event.after);
                 }
+            }
+        }
+        if !ghost_results.is_empty() {
+            let timestamp = self.next_role_timestamp();
+            let roles = self.state.roles.get_or_insert_with(Default::default);
+            for (recipient, source) in ghost_results {
+                roles
+                    .creature_types
+                    .push(subtypes::CreatureTypesEffectView {
+                        recipient,
+                        source,
+                        types: &["Spirit"],
+                        additional: true,
+                        timestamp,
+                    });
+                roles.base_stats.push(base_stats::BaseStatsEffectView {
+                    recipient,
+                    source,
+                    power: Some(1),
+                    toughness: Some(1),
+                    timestamp,
+                    static_source: false,
+                    permanent: true,
+                });
             }
         }
         // CR613.7n: entrant own statics receive earlier relative timestamps
@@ -912,7 +1061,7 @@ impl Game {
                 let batch = self.state.entry_batch.as_mut().unwrap();
                 let index = batch.counter_order[batch.counter_next];
                 batch.counter_next += 1;
-                let m = &batch.moves[index];
+                let m = batch.moves[index].clone();
                 if m.destination != Zone::Battlefield || m.skipped || m.counters.is_empty() {
                     continue;
                 }
@@ -922,12 +1071,33 @@ impl Game {
                     card: m.before.card,
                     owner: m.before.owner,
                     controller: m.controller,
-                    subtypes: Self::entry_choice_subtypes(m),
-                    kind: m.entry_kinds(),
+                    protector: m.battle_protector,
+                    subtypes: if m.ghost_vacuum_after.is_some() {
+                        self.ghost_entry_preview(&m).map_or_else(
+                            || Self::entry_choice_subtypes(&m),
+                            |view| view.granted_subtypes,
+                        )
+                    } else {
+                        Self::entry_choice_subtypes(&m)
+                    },
+                    kind: if m.ghost_vacuum_after.is_some() {
+                        self.ghost_entry_preview(&m)
+                            .map_or_else(|| m.entry_kinds(), |view| view.kinds)
+                    } else {
+                        m.entry_kinds()
+                    },
+                    power: if m.ghost_vacuum_after.is_some()
+                        || replacements::entry_power_sensitive(self, m.controller, m.before.card)
+                    {
+                        self.ghost_entry_preview(&m)
+                            .map_or(m.before.power, |view| view.power)
+                    } else {
+                        m.before.power
+                    },
                     amount: m.counters.clone(),
                     effect: true,
                     entry_index: Some(index),
-                    private: !visible(m, m.before.owner.other(), &self.state.known_hand),
+                    private: !visible(&m, m.before.owner.other(), &self.state.known_hand),
                 };
                 self.stage_counter_placements(vec![p], replacements::ResumeMode::Entry);
                 if self.advance_replacements(false) {
@@ -940,7 +1110,19 @@ impl Game {
             let mut batch = *self.state.entry_batch.take().unwrap();
             self.state.pending = batch.resume.clone().unwrap();
             let replacement_resume = batch.replacement_resume.take();
+            let selected = self
+                .state
+                .manifest
+                .as_ref()
+                .and_then(|state| state.choice.as_ref())
+                .and_then(|choice| choice.selected);
+            let completes_manifest = batch.moves.iter().any(|movement| {
+                movement.manifest_original.is_some() && Some(movement.before.reference) == selected
+            });
             self.commit_entries(batch);
+            if completes_manifest {
+                self.finish_manifest_entry();
+            }
             if let Some(outer) = replacement_resume {
                 self.state.replacements = Some(outer);
                 if self.advance_replacements(true) {
@@ -970,6 +1152,18 @@ impl Game {
         let index = batch.choices[batch.next];
         batch.moves[index].attachment = Some(target);
         batch.next += 1;
+    }
+    pub(super) fn current_entry_value_index(&self) -> Option<usize> {
+        let batch = self.state.entry_batch.as_ref()?;
+        if let Some(event) = batch.tap_events.get(batch.tap_next) {
+            let movement = &batch.moves[event.index];
+            if movement.choice.is_none()
+                && movement.before.card.entry_choice() == Some(EntryChoiceKind::BasicLandType)
+            {
+                return Some(event.index);
+            }
+        }
+        batch.choices.get(batch.next).copied()
     }
     pub(super) fn can_pay_entry_life(&self) -> bool {
         if let Some((movement, cost)) = self.entry_tap_payment() {
@@ -1093,6 +1287,7 @@ impl Game {
             && !m.before.card.is_emblem()
             && !m.skipped
             && (m.artifact_return
+                || m.ghost_vacuum_after.is_some()
                 || m.food_return.is_some()
                 || m.return_modification.is_some()
                 || m.before.card.base_stat_setter().is_some()
@@ -1304,8 +1499,13 @@ impl Game {
                             && !movement.skipped
                             && movement.controller == source.controller
                             && movement.before.reference != self.object_ref(id)
-                            && Self::entry_choice_subtypes(movement)
-                                .has(movement.before.card, subtype)
+                            && if movement.ghost_vacuum_after.is_some() {
+                                self.ghost_entry_preview(movement)
+                                    .is_some_and(|view| view.has_subtype(subtype))
+                            } else {
+                                Self::entry_choice_subtypes(movement)
+                                    .has(movement.before.card, subtype)
+                            }
                         {
                             movement.counters.add(
                                 CounterKind::PlusOne,

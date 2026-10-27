@@ -3,10 +3,46 @@
   "catalogue_id": 3688,
   "oracle_id": "8bcbae66-1854-480e-a449-33e5389610ab",
   "facts_sha256": "16ad47469dad2303ccf9cdad23d6c126f775f2a9b0aced17ad30304ff9c4f0d3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e9680c1f248eb7c4cfba8dfc5a7baa8eb25913ef657fc834aff8e1fe069230e6"
   },
-  "physical_metadata_sha256": "ab1fb6f5e3746108fff31744ac7a05ac26b73fd3ab7b1649046baf844304a165"
+  "physical_metadata_sha256": "ab1fb6f5e3746108fff31744ac7a05ac26b73fd3ab7b1649046baf844304a165",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SaplingNursery.java",
+  "java_sha256": "5c30973b7764166448bb8e045b39aef547d12ecb8415cb49ef1f1790e4284f73",
+  "rules_tests": "src/engine_requested_sapling_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceCost.java",
+      "sha256": "1cd064f3443f1a13cffbc141dbc6ddd71762a8a7a6b4c4d2aad6b432bf870d73"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreefolkReachToken.java",
+      "sha256": "da80eba7dfa2d3cd4c2c766ef7f35b8d73f3233bf581c2bbe5599790bd4680f3"
+    }
+  ]
 }

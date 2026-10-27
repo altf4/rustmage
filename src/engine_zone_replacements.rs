@@ -170,6 +170,13 @@ impl Game {
             self.state.zone_rules.get_or_insert_default();
         }
     }
+    pub(super) fn record_zone_reveal(&mut self, card: Card, owner: Player, from: Zone) {
+        self.state
+            .zone_rules
+            .get_or_insert_default()
+            .reveals
+            .push(ZoneRevealView { card, owner, from });
+    }
     pub(super) fn clear_zone_reveals(&mut self) {
         if let Some(rules) = &mut self.state.zone_rules {
             rules.reveals.clear();

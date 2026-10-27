@@ -35,6 +35,9 @@ impl Game {
                             | TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::SelfDamaged
                             | TriggerCondition::AtStep { .. }
+                            | TriggerCondition::SelfTurnedFaceUp
+                            | TriggerCondition::PermanentYouControlTurnedFaceUp
+                            | TriggerCondition::YouManifestDread
                     )
             }) {
                 out.push((giver.clone(), None));

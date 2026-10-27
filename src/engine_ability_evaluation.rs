@@ -312,6 +312,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let object = world.object(i as CardId);
             LayerSixObject {
                 printed: true,
+                granted_keywords: Keywords::NONE,
                 keywords: if object.zone == Zone::Stack {
                     game.effective_spell_card(i as CardId).keywords()
                 } else {
@@ -334,6 +335,34 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             continue;
         }
         let source = world.reference(id);
+        if world.kinds(id) & 2 != 0
+            && object.card.static_ability_groups().iter().any(|group| {
+                group
+                    .fragments
+                    .iter()
+                    .any(|fragment| matches!(fragment, StaticAbilityFragment::ChosenBasicLandType))
+            })
+            && let Some(EntryChoiceValue::BasicLandType(kind)) = world.entry_value(source)
+        {
+            let mut production = [0; 6];
+            production[kind.index()] = 1;
+            effects.push(LayerSixEffect {
+                provider: Some(id),
+                started_earlier: true,
+                timestamp: timestamp(world, source),
+                recipients: vec![id],
+                action: LayerSixAction::RemovePrintedAndGrant(vec![LayerSixGrant {
+                    recipient: id,
+                    keywords: Keywords::NONE,
+                    abilities: Vec::new(),
+                    mana: vec![GrantedManaAbility {
+                        source,
+                        production: ManaProduction::Fixed(production),
+                        sacrifice: false,
+                    }],
+                }]),
+            });
+        }
         for (group, origin) in object.card.static_ability_groups().iter().enumerate() {
             let removes = origin
                 .fragments

@@ -48,8 +48,10 @@ impl Game {
                     card: o.card,
                     owner: o.owner,
                     controller: o.controller,
+                    protector: self.battle_protector(self.object_ref(id)),
                     subtypes: self.granted_subtypes(id),
                     kind: self.current_kinds(id),
+                    power: self.stats(id).power,
                     amount: Counters {
                         lore: 1,
                         ..Counters::default()

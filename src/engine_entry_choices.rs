@@ -58,7 +58,7 @@ impl Game {
             return crate::CardName::lands().any(|name| emit(EntryChoiceValue::CardName(name)));
         }
         let batch = self.state.entry_batch.as_ref().unwrap();
-        let movement = &batch.moves[batch.choices[batch.next]];
+        let movement = &batch.moves[self.current_entry_value_index().unwrap()];
         match movement.before.card.entry_choice().unwrap() {
             EntryChoiceKind::LandCardName => {
                 crate::CardName::lands().any(|name| emit(EntryChoiceValue::CardName(name)))
@@ -72,6 +72,9 @@ impl Game {
             EntryChoiceKind::Color => ChoiceColor::ALL
                 .into_iter()
                 .any(|c| emit(EntryChoiceValue::Color(c))),
+            EntryChoiceKind::BasicLandType => crate::cards::BasicLandType::ALL
+                .into_iter()
+                .any(|kind| emit(EntryChoiceValue::BasicLandType(kind))),
             EntryChoiceKind::CreatureType => crate::CREATURE_TYPES.iter().any(|name| {
                 emit(EntryChoiceValue::CreatureType(
                     crate::cards::CreatureType::from_name(name).unwrap(),
@@ -90,7 +93,7 @@ impl Game {
             return;
         }
         let batch = self.state.entry_batch.as_ref().unwrap();
-        let index = batch.choices[batch.next];
+        let index = self.current_entry_value_index().unwrap();
         let movement = &batch.moves[index];
         assert!(movement.before.card.entry_choice().unwrap().matches(value));
         let counter = movement.before.card.chosen_entry_counters();
@@ -136,7 +139,7 @@ impl Game {
             return None;
         }
         let batch = self.state.entry_batch.as_ref()?;
-        let movement = &batch.moves[*batch.choices.get(batch.next)?];
+        let movement = &batch.moves[self.current_entry_value_index()?];
         if !entries::visible_mask(
             movement,
             self.information_mask(viewer),

@@ -328,7 +328,7 @@ impl Game {
                 (object.zone == Zone::Battlefield
                     && damaged[object.controller.index()]
                     && self.current_kinds(id) & 2 == 0
-                    && object.card.fixed_mana_value() == x
+                    && self.object_mana_value(id) == x
                     && !self.keywords(id).contains(Keywords::INDESTRUCTIBLE))
                 .then_some(id)
             })

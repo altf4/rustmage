@@ -3,10 +3,36 @@
   "catalogue_id": 1341,
   "oracle_id": "a139eb7f-3853-490c-a839-35d0e5aed7b5",
   "facts_sha256": "59180c40d507c827fea171967f3a5404ba582799c5ad030171713c30196d3a0c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d7e713a07809670a3101edaec207b010773deb0062ec7740885690e2c954a5a8"
   },
-  "physical_metadata_sha256": "68bd6a4bf6ea3f5340221534bdd1b567971e1ac0e64c6e362beb7b454eef07a8"
+  "physical_metadata_sha256": "68bd6a4bf6ea3f5340221534bdd1b567971e1ac0e64c6e362beb7b454eef07a8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EnlightenedConfidant.java",
+  "java_sha256": "bee96b5fe3cf9966fbb14937418e7944c91e8e20cc0d5ba8624fa6cc72833d59",
+  "rules_tests": "src/assurance/requested_confidant.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+      "sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+      "sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerGainedLifeCount.java",
+      "sha256": "06b6225a857a623e5651806f49b75b4b55e99570818c8bccd12791342a322e58"
+    }
+  ]
 }

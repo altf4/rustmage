@@ -3,10 +3,41 @@
   "catalogue_id": 4705,
   "oracle_id": "be0a3925-8e0d-4ef6-85cb-c9f5eef6b4bb",
   "facts_sha256": "1795db1ea38de1f498041c7b48e3a42953b61850d2680049583fdef6f934e21e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9c54f6ef4985296b0e95dca41d4b793e5e27a27084b06b6806f632865bbee0b4"
   },
-  "physical_metadata_sha256": "06e4bbc0507edda74b6753abd6225b20ad28dba09bd33f24a78e085f0df0b9c7"
+  "physical_metadata_sha256": "06e4bbc0507edda74b6753abd6225b20ad28dba09bd33f24a78e085f0df0b9c7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TurnInsideOut.java",
+  "java_sha256": "6bddef23f26278b7f52fe631c76058535db78472440f621ed9f465a18fdb6ca7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/WhenTargetDiesDelayedTriggeredAbility.java",
+      "sha256": "06ed400e2766a16d28d9e0895026249164e27f66fc03481e105d4a574c6fc137"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestEffect.java",
+      "sha256": "3e10e9e875387a4e22f4a16410900548e2925071fb537a86a83ec8aef6a5b80e"
+    }
+  ],
+  "rules_tests": "src/engine_manifest.rs"
 }

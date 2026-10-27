@@ -1,0 +1,12 @@
+{
+  "name": "@fixture/battle-reserved-5433",
+  "catalogue_id": 5433,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "c23b17a509cdb1b3346d3c35710a9df179d0eeb3883e8c26cee0f9024a74322f",
+  "notes": "Synthetic test-only fixture exercising generic Battle rules; not an actual XMage card.",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/abilities/common/SiegeAbility.java",
+  "java_sha256": "334075669549d60d0cc7d53d2c731f1b784129ec3abad6a4c620010d309ce4cd"
+}

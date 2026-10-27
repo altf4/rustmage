@@ -12,6 +12,8 @@ pub struct AnimationView {
     pub timestamp: u64,
     pub artifact: bool,
     #[serde(skip_serializing_if = "is_false")]
+    pub land: bool,
+    #[serde(skip_serializing_if = "is_false")]
     /// Preserve existing card types; artifact may still be added independently.
     pub preserve_card_types: bool,
     /// Replace all card types/subtypes with Artifact — Food, without removing abilities.
@@ -33,6 +35,7 @@ fn is_false(value: &bool) -> bool {
 #[derive(Clone, Copy)]
 pub(super) enum AnimationTypeMode {
     AddCreature,
+    AddCreatureAndLand,
     PreserveCardTypes,
 }
 fn aura_effects<W: CharacteristicWorld + ?Sized>(
@@ -152,7 +155,7 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
         } else {
             1
         };
-        changes.push((row.timestamp, added, true));
+        changes.push((row.timestamp, added | if row.land { 2 } else { 0 }, true));
     }
     if world
         .game()
@@ -262,6 +265,7 @@ pub(super) enum SubtypeChange {
     Add(&'static [&'static str]),
     All,
     LandOnly,
+    BasicLand(crate::cards::BasicLandType),
     FoodOnly,
 }
 #[inline]
@@ -415,6 +419,7 @@ impl Game {
             object,
             timestamp,
             artifact: spec.artifact,
+            land: matches!(type_mode, AnimationTypeMode::AddCreatureAndLand),
             preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),
             food_only: false,
             artifact_noncreature: false,
@@ -451,6 +456,7 @@ impl Game {
                 object: self.object_ref(id),
                 timestamp: self.next_role_timestamp(),
                 artifact: false,
+                land: false,
                 preserve_card_types: false,
                 food_only: false,
                 artifact_noncreature: false,
@@ -489,6 +495,7 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         object,
         timestamp,
         artifact: true,
+        land: false,
         preserve_card_types: false,
         food_only: true,
         artifact_noncreature: false,

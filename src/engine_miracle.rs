@@ -204,9 +204,7 @@ impl Game {
         let choice = self.state.miracle.as_mut().unwrap().choice.take().unwrap();
         if reveal {
             let (grant, ability) = choice.grant.unwrap();
-            if !self.state.known_hand.contains(&choice.object) {
-                self.state.known_hand.push(choice.object);
-            }
+            self.remember_public_hand(choice.object);
             let mut source = self.cast_preview(
                 choice.player,
                 choice.object.card,
@@ -245,6 +243,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
             paid: None,
             casts_remaining: None,
             pending_cast: None,

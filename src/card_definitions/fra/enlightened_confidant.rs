@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 1),
     keywords: Keywords::LIFELINK,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::LIFELINK)],
+    }],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InterveningIf {
+            event: &TriggerCondition::AtStep {
+                step: TriggerStep::End,
+                relation: CastRelation::You,
+                guard: StepGuard::Always,
+            },
+            guard: StepGuard::GainedLife,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::SurveilOneReturnByLifeGained],
+    }],
     ..CardRules::EMPTY
 };

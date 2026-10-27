@@ -3,10 +3,31 @@
   "catalogue_id": 1644,
   "oracle_id": "4b96d003-d3b4-4181-9f50-06a3e6eb1916",
   "facts_sha256": "a764e8a296f6266f4c597bd378337170927067a1e332ce509effb9534ea151de",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0e591fa82ac6127e7a2c3dfcb045bf80562459382dd8bc1589963609d00dc673"
   },
-  "physical_metadata_sha256": "a3749352f44611410d50c2cadbc9d25025130d37da48dc5f24f1bdc4f9887fdf"
+  "physical_metadata_sha256": "a3749352f44611410d50c2cadbc9d25025130d37da48dc5f24f1bdc4f9887fdf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FullBore.java",
+  "java_sha256": "8b971f0c21a507b5dff4caa154aee8d3134600aea04f0cb003fcf5d78c678fa9",
+  "rules_tests": "src/assurance/requested_full_bore.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

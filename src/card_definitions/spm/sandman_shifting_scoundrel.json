@@ -3,10 +3,41 @@
   "catalogue_id": 3677,
   "oracle_id": "8b205480-b1fb-490c-b1c9-cf5cc3c5acdb",
   "facts_sha256": "15fd3bccaab78d3faf06ad2596ba4468eba046d70eb8c6c68d4cdee53a80da2b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "882d82aa139b84586286f9e19b5966bad85288d13ed27f1ff98d5144b28efc4e"
   },
-  "physical_metadata_sha256": "dab2250791e3c104f2b6e33994b525d6b6d2fbbfc706d9d80345d67dc397b026"
+  "physical_metadata_sha256": "dab2250791e3c104f2b6e33994b525d6b6d2fbbfc706d9d80345d67dc397b026",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SandmanShiftingScoundrel.java",
+  "java_sha256": "22cb59f221a21b1fb4c4fc3733878af3afa1257bc9cc59b18e4099ae1eed0f2c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+      "sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+      "sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DauntAbility.java",
+      "sha256": "c993aad0af01a2479b23a8752136b1fda361fc28da3e1b921be9d6d945906a02"
+    }
+  ],
+  "remaining_obligations": []
 }

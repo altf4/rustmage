@@ -32,7 +32,8 @@ impl Game {
             .iter_mut()
             .chain(&mut self.state.selected_attackers)
         {
-            if attack.defender == Some(CombatDefender::Planeswalker(reference)) {
+            if matches!(attack.defender, Some(CombatDefender::Planeswalker(r) | CombatDefender::Battle(r)) if r == reference)
+            {
                 attack.defender = None;
             }
         }
@@ -45,6 +46,9 @@ impl Game {
         {
             return;
         }
+        let previous = self.state.objects[object.card as usize].controller;
+        self.remember_face_down_controller(object, previous);
+        self.remember_face_down_controller(object, controller);
         self.end_control_linked_effects(object);
         self.remember_hideaway_controller(object, controller);
         self.remove_from_combat(object.card, object);
@@ -74,8 +78,7 @@ impl Game {
                     o.zone == Zone::Battlefield
                         && o.controller == item.controller
                         && self.has_subtype(other as CardId, "Villain")
-                        && o.card.fixed_mana_value()
-                            > self.state.objects[id as usize].card.fixed_mana_value()
+                        && self.object_mana_value(other as CardId) > self.object_mana_value(id)
                 });
             let effect = TemporaryControlView {
                 object: self.object_ref(id),

@@ -92,6 +92,7 @@ impl Game {
         self.counter_amounts(id).get(kind)
     }
     pub(super) fn set_counters(&mut self, id: CardId, counters: Counters) {
+        let before_defense = self.counter_count(id, CounterKind::Defense);
         let before = self.counter_amounts(id).keyword_amounts();
         let after = CounterAmounts::from(&counters).keyword_amounts();
         let hot = counters.hot();
@@ -108,6 +109,9 @@ impl Game {
                 after,
                 None,
             );
+        }
+        if before_defense > 0 && self.counter_count(id, CounterKind::Defense) == 0 {
+            self.queue_siege_defeat(object);
         }
     }
     pub(super) fn add_counter(&mut self, id: CardId, kind: CounterKind, amount: u64) {

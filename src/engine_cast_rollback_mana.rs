@@ -136,6 +136,16 @@ impl Game {
             active: None,
         }));
         self.state = rollback.before.clone();
+        self.restore_public_hand_knowledge(
+            &rollback.replay.as_ref().unwrap().current,
+            &rollback.public_hand_cards,
+            &rollback.obscured_hand_cards,
+        );
+        self.restore_public_face_down(
+            &rollback.replay.as_ref().unwrap().current,
+            &rollback.public_face_down,
+            &rollback.obscured_face_down,
+        );
         let player = rollback.player;
         self.state.cast_rollback = Some(rollback);
         self.state.pending = Pending::ManaRollback { player };
@@ -245,7 +255,14 @@ impl Game {
             let mut rollback = self.state.cast_rollback.take().unwrap();
             let replay = rollback.replay.take().unwrap();
             self.state.pending = rollback.before.pending.clone();
-            self.complete_cast_rollback_restore(&replay.current, rollback.spell);
+            self.complete_cast_rollback_restore(
+                &replay.current,
+                rollback.spell,
+                &rollback.public_hand_cards,
+                &rollback.obscured_hand_cards,
+                &rollback.public_face_down,
+                &rollback.obscured_face_down,
+            );
         }
     }
     fn prepare_frozen_mana_spend(

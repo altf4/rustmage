@@ -3,10 +3,36 @@
   "catalogue_id": 2125,
   "oracle_id": "109cdefd-e8cc-4ac7-b6ba-2cfdef8d780f",
   "facts_sha256": "1afec812cc364ca5af0ee5346e58ae09adbf967c9d772ec6ea9596a687fc2818",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "95d0127545dab30063e1ff37585b29d7b6c0967cc0cdfd7afe2a02832abe8ca8"
   },
-  "physical_metadata_sha256": "95418c2d9a2904e02f65f2a36ce6338fbaeec0aac2a837cf950ee7988b056ed9"
+  "physical_metadata_sha256": "95418c2d9a2904e02f65f2a36ce6338fbaeec0aac2a837cf950ee7988b056ed9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IcetillExplorer.java",
+  "java_sha256": "db5ae43b479fd8230005c2d321fdb2657f1d9704f480abb79fac16ec7c1cb4d2",
+  "rules_tests": "src/assurance/requested_icetill.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayAdditionalLandsControllerEffect.java",
+      "sha256": "a7b2413a24959fbde172621336f4f48cb1ef76bc4254b922b272bfe2bef30664"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/PlayFromGraveyardControllerEffect.java",
+      "sha256": "72cc948dd1f65f347eb25cc2f8b19dab87326c3aa0ae77945c2fd4b6e142c6a4"
+    }
+  ]
 }

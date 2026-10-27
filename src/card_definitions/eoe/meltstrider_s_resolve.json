@@ -3,10 +3,41 @@
   "catalogue_id": 2711,
   "oracle_id": "6f9bc0c6-1792-4771-a839-95a22d9c699a",
   "facts_sha256": "4cb34caa729a9c5373f40a7dce3c73cdc3172d62b6bafcbfe0999e3e23602dcc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "762e71a364177dd76a792c3e9a5fc94f2b3465a5818c1dd6def93794de1aed3e"
   },
-  "physical_metadata_sha256": "c9a915c6bed7f00ea6ed2d6c3dac6802831d71c905b85d6630777f4b37c3b08e"
+  "physical_metadata_sha256": "c9a915c6bed7f00ea6ed2d6c3dac6802831d71c905b85d6630777f4b37c3b08e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MeltstridersResolve.java",
+  "java_sha256": "38346a21ac2c43a1ca7e4437647484fe1adf36abc425ba8b4e72931dcba38d95",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightEnchantedTargetEffect.java",
+      "sha256": "ca2d5bcf82f4e441657f4fb71353584dc88f9f9fb6d48621e4eef92c5f0ed780"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByMoreThanOneAttachedEffect.java",
+      "sha256": "ec044941982f10f2cc27d4a6f6d8c915c81d289f29080b932391e37d087d5d12"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+      "sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    }
+  ],
+  "remaining_obligations": []
 }

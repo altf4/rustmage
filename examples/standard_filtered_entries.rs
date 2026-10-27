@@ -169,7 +169,9 @@ fn classify(s: &SpellView) -> Option<usize> {
         | StackKind::DelayedReturn
         | StackKind::DelayedTokenCreation { .. }
         | StackKind::DelayedSacrifice
-        | StackKind::DelayedWarpExile => {
+        | StackKind::DelayedWarpExile
+        | StackKind::DelayedManifestDread
+        | StackKind::SiegeDefeat => {
             panic!("no delayed producer in this fixture")
         }
         StackKind::TriggeredAbility { .. } => index(s.source_card),

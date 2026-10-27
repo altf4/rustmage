@@ -41,6 +41,7 @@ impl Card {
                             | StaticAbilityFragment::SourcePlusOnePlacedKeywords(..)
                             | StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | StaticAbilityFragment::ChosenCreatureType
+                            | StaticAbilityFragment::ChosenBasicLandType
                             | StaticAbilityFragment::AttachedSubtype(..)
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)

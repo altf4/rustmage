@@ -103,7 +103,10 @@ impl Game {
         for id in 0..self.state.objects.len() {
             let r = self.object_ref(id as CardId);
             if self.crew_eligible(source, actor, r) {
-                sum.add(self.stats(r.card).power.max(0));
+                sum.add(
+                    self.crew_saddle_power(r.card, source.card, "Vehicle")
+                        .max(0),
+                );
                 if sum.enough(minimum) {
                     return true;
                 }
@@ -138,7 +141,7 @@ impl Game {
             let r = self.object_ref(id as CardId);
             if self.crew_eligible(a.item.object, a.item.controller, r) {
                 let selected = p.selected.contains(&r);
-                let power = self.stats(r.card).power;
+                let power = self.crew_saddle_power(r.card, a.item.card, "Vehicle");
                 if selected || maximum && power > 0 {
                     sum.add(power)
                 }
@@ -173,7 +176,7 @@ impl Game {
             let r = self.object_ref(id as CardId);
             if self.crew_eligible(a.item.object, a.item.controller, r) && !p.selected.contains(&r) {
                 let mut possible = maximum;
-                let power = self.stats(r.card).power;
+                let power = self.crew_saddle_power(r.card, a.item.card, "Vehicle");
                 if power < 0 {
                     possible.add(power)
                 }

@@ -3,10 +3,41 @@
   "catalogue_id": 300,
   "oracle_id": "de1ae205-ca5b-4d26-8194-ca85f1406e53",
   "facts_sha256": "0eb111a1c7563889de1fab500c8543ba53e09274f79208cb4b863643b93cd83f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e53ecedcaf8e686a4334c3d06b88409450c54637519c6bd6f5d4184bd3f6bae0"
   },
-  "physical_metadata_sha256": "4ca9a25a9cc065ccb0303e2d9f413aa75e82464e878a7713bd2a5a53112d2a28"
+  "physical_metadata_sha256": "4ca9a25a9cc065ccb0303e2d9f413aa75e82464e878a7713bd2a5a53112d2a28",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BaSingSe.java",
+  "java_sha256": "4327b6f16e75eba037fddaa39ed0f250daa82dd3d3a4549b44df992beb60fcce",
+  "rules_tests": "src/assurance/requested_earthbend.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EarthbendTargetEffect.java",
+      "sha256": "3616d4a8198ed274d2437068d7467a2e796f421ac9a7fd88f97f1a1e1e7070e8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouControlABasicLandCondition.java",
+      "sha256": "9e2adfdf4ca20bb60b7390837d6d81f9a357830655f7e27d443a33dadef8022f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+    }
+  ]
 }

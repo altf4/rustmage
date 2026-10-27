@@ -140,6 +140,41 @@ impl Game {
         }
     }
 
+    pub(super) fn trigger_item_guards_hold(
+        &self,
+        item: &SpellView,
+        condition: TriggerCondition,
+    ) -> bool {
+        if let TriggerCondition::InterveningIf {
+            guard:
+                StepGuard::Expression {
+                    value: StatValue::SourceCounters(kind),
+                    minimum,
+                    maximum,
+                },
+            event,
+        } = condition
+            && !(self.on_battlefield(item.object.card)
+                && self.object_ref(item.object.card) == item.object)
+        {
+            let value = i128::from(
+                item.source_counter_lki
+                    .as_ref()
+                    .and_then(|rows| rows.iter().find(|row| row.kind == kind))
+                    .map_or(0, |row| row.count),
+            );
+            return minimum.is_none_or(|min| value >= min)
+                && maximum.is_none_or(|max| value <= max)
+                && self.trigger_guards_hold(
+                    *event,
+                    item.controller,
+                    item.object,
+                    item.source_tapped,
+                );
+        }
+        self.trigger_guards_hold(condition, item.controller, item.object, item.source_tapped)
+    }
+
     pub(super) fn step_guard(
         &self,
         guard: StepGuard,
@@ -159,6 +194,14 @@ impl Game {
     ) -> bool {
         let p = &self.state.players[player.index()];
         let (value, minimum, maximum) = match guard {
+            StepGuard::ClassLevelAtLeast(level) => {
+                return self.on_battlefield(source.card)
+                    && self.object_ref(source.card) == source
+                    && self.state.objects[source.card as usize].class_level >= level;
+            }
+            StepGuard::UnsolvedLifeGainedAtLeast(n) => {
+                return !self.case_solved(source) && p.life_gained_this_turn >= n;
+            }
             StepGuard::Always => return true,
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
@@ -230,6 +273,9 @@ impl Game {
                     && maximum.is_none_or(|max| value <= max);
             }
             StepGuard::GainedLife => return p.life_gained_this_turn > 0,
+            StepGuard::GainedAndLostLife => {
+                return p.life_gained_this_turn > 0 && p.life_lost_this_turn > 0;
+            }
             StepGuard::Attacked => return p.attacked_this_turn,
             StepGuard::CreatureDied => return self.state.creatures_died_this_turn > 0,
             StepGuard::OpponentLostLife => {

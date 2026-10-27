@@ -273,7 +273,11 @@ impl Game {
         self.state.stack_copy_data.as_mut().unwrap().delayed = retained;
         self.release_stack_copy_state();
     }
-    fn allocate_spell_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
+    pub(super) fn allocate_spell_copy(
+        &mut self,
+        template: &SpellView,
+        controller: Player,
+    ) -> SpellView {
         assert_eq!(template.kind, StackKind::Spell);
         let (card, generation) = if let Some(slot) = self.replay_frozen_mana_copy_slot() {
             slot
@@ -296,6 +300,7 @@ impl Game {
             tapped: false,
             summoning_sick: false,
             flashback: false,
+            cast_for_warp: false,
             damage: 0,
             damaged_this_turn: false,
             dealt_damage_this_turn: false,
@@ -304,6 +309,7 @@ impl Game {
             gained_keywords: Keywords::NONE,
             counters: InitialCounters::default(),
             used_abilities: 0,
+            class_level: 1,
             attached_to: None,
         };
         if card as usize == self.state.objects.len() {

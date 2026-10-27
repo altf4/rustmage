@@ -55,6 +55,7 @@ impl Game {
             objects: objects.clone(),
         }));
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,

@@ -3,10 +3,26 @@
   "catalogue_id": 1421,
   "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54",
   "facts_sha256": "a0ecb913d25a8f80488b27c0bf8cc42ecc8cb7078e39a0ae3cef4b9474057b55",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d80513a7e26f8c3e82bbd0d80117178ba4776ea23da3cdc4abeb3d93779e3c0d"
   },
-  "physical_metadata_sha256": "3b6e69d3b940e2c85d89b9ef7ee4a1e84c5d923b0bc2f0cdaa0970ebecde94f5"
+  "physical_metadata_sha256": "3b6e69d3b940e2c85d89b9ef7ee4a1e84c5d923b0bc2f0cdaa0970ebecde94f5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FabledPassage.java",
+  "java_sha256": "10532cb675a21c66ef0de87553f4810e10f0a1942ae5b7fc17e553dfb2e89964",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    }
+  ],
+  "remaining_obligations": []
 }

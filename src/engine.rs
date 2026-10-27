@@ -144,6 +144,8 @@ pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
 pub use teamwork::TeamworkChoiceView;
+#[path = "engine_blight.rs"]
+mod blight;
 #[path = "engine_gift.rs"]
 mod gift;
 #[path = "engine_teamwork.rs"]
@@ -155,6 +157,8 @@ mod observation_schema;
 pub const OBSERVATION_SCHEMA: u32 = observation_schema::VERSION;
 #[path = "engine_cast_payments.rs"]
 mod cast_payments;
+#[path = "engine_earthbend.rs"]
+mod earthbend;
 #[path = "engine_mobilize.rs"]
 mod mobilize;
 #[path = "engine_plot.rs"]
@@ -164,6 +168,7 @@ mod tiered;
 #[path = "engine_warp.rs"]
 mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
+pub use earthbend::EarthbendReturnView;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
 pub use plot::{PlotPaymentView, PlottedCard};
 pub use return_links::{DelayedReturnView, ReturnCardView, ReturnLinkView};
@@ -177,6 +182,8 @@ pub use characteristic_layers::AnimationView;
 mod subtypes;
 pub use subtypes::GrantedSubtypes;
 
+#[path = "engine_battles.rs"]
+mod battles;
 #[path = "engine_replacements.rs"]
 mod replacements;
 #[path = "engine_sagas.rs"]
@@ -204,6 +211,11 @@ mod cast_mana_recording;
 #[path = "engine_cast_rollback_mana.rs"]
 mod cast_rollback_mana;
 pub use cast_rollback_mana::ManaRollbackView;
+#[path = "engine_manifest.rs"]
+mod manifest;
+pub use manifest::{
+    FaceDownPermanentView, FaceUpPaymentView, ManifestChoiceView, ManifestDreadEvent,
+};
 #[path = "engine_evidence.rs"]
 mod evidence;
 pub use evidence::{EvidenceEventView, EvidenceView};
@@ -246,6 +258,8 @@ pub use power_up::PowerUpUseView;
 mod connive;
 #[path = "engine_convoke.rs"]
 mod convoke;
+#[path = "engine_harmonize.rs"]
+mod harmonize;
 #[path = "engine_improvise.rs"]
 mod improvise;
 #[path = "engine_storied.rs"]
@@ -498,7 +512,7 @@ define_actions! {
     KeepPermanentType { object: ObjectRef },
     ChooseZoneReplacement { effect: ZoneReplacementKind },
     FinishStackTargets,
-    AllocateTargetAmount { amount: u16 },
+    AllocateTargetAmount { amount: u32 },
     RestoreStackTarget { index: u32 },
     SetStackTarget { index: u32, target: Target },
     ChooseCollectEvidence { collect: bool },
@@ -511,7 +525,9 @@ define_actions! {
     ChooseCreatedToken { object: ObjectRef },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
+    ChooseHarmonizer { object: Option<ObjectRef> },
     BeginImprovise,
+    BeginOrderedCosts,
     ChooseImproviser { object: ObjectRef },
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
@@ -524,6 +540,8 @@ define_actions! {
     FinishLandSelection,
     DeclineHandEntry,
     ChooseHandDefender { defender: CombatDefender },
+    ChooseBlight { pay: bool },
+    PayBlight { object: ObjectRef },
     ChooseTeamwork { pay: bool },
     ChooseTeammate { object: ObjectRef },
     FinishTeamwork,
@@ -546,7 +564,9 @@ define_actions! {
     ChooseAdditionalCost {
         object: ObjectRef,
     },
+    ChooseAdditionalLife,
     ChooseExplore { object: ObjectRef, graveyard: bool },
+    ChooseManifest { object: ObjectRef },
     ChooseCasualty { pay: bool },
     ChooseCastCost {clause:u16},
     PayCasualty {object:ObjectRef},
@@ -632,6 +652,8 @@ define_actions! {
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
+    AnnounceDisguise { card: CardId },
+    AnnounceDisguiseGraveyard { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceSneak { card: CardId,
         #[serde(skip_serializing_if = "Option::is_none")]
         permission: Option<(ObjectRef, PermanentType)> },
@@ -640,10 +662,14 @@ define_actions! {
     AnnounceBack { card: CardId },
     AnnouncePlot { card: CardId },
     PayPlot { payment: Mana },
+    BeginFaceUp { object: ObjectRef, cost: ManaCost },
+    PayFaceUp { payment: Mana },
+    AbortFaceUpPayment,
     AnnouncePlotted { card: CardId },
     AnnounceFlashback {
         card: CardId,
     },
+    AnnounceHarmonize { card: CardId },
     AnnounceGraveyardBorrowedAbility { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters },
     AnnounceGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
     ActivateGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, payment: Mana, production: Mana },
@@ -713,6 +739,7 @@ define_actions! {
         card: CardId,
         defender: ObjectRef,
     },
+    AttackBattle { card: CardId, defender: ObjectRef },
     FinishAttackers,
     CancelAttackDeclaration,
     PayAttackCost { payment: Mana },
@@ -846,6 +873,7 @@ struct Object {
     summoning_sick: bool,
     // Exact current stack incarnation was cast using flashback (CR702.34a).
     flashback: bool,
+    cast_for_warp: bool,
     damage: i128,
     damaged_this_turn: bool,
     dealt_damage_this_turn: bool,
@@ -854,6 +882,8 @@ struct Object {
     gained_keywords: Keywords,
     counters: InitialCounters,
     used_abilities: u64,
+    // Class levels belong to this permanent incarnation, not its copiable values.
+    class_level: u8,
     attached_to: Option<ObjectRef>,
 }
 
@@ -880,6 +910,8 @@ impl Object {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct PlayerState {
+    /// Actual begun turns, capped after the first three; skipped turns do not count.
+    turns_started: u8,
     /// Persistent public designation; never reset by turn or zone changes.
     enduring_story: bool,
     turn_facts: TurnFactsView,
@@ -898,6 +930,7 @@ struct PlayerState {
     cards_discarded_this_turn: u64,
     card_left_graveyard_this_turn: bool,
     controlled_creature_died_this_turn: bool,
+    controlled_creatures_died_this_turn: u64,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
     life_lost_this_turn: u128,
@@ -924,9 +957,11 @@ pub enum CastMethod {
     ExileLife,
     GrantedFlashback,
     Flashback,
+    Harmonize,
     Miracle,
     Plot,
     Warp,
+    Disguise,
     Sneak,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -971,6 +1006,8 @@ pub struct CastInfo {
     /// Whether this cast declared the optional teamwork cost. Copied with the spell.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub teamwork: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blight: Option<bool>,
     /// Exact cast declaration; its reserved sacrifice is held by the announcement.
     pub bargain: Option<bool>,
     pub evidence: Option<bool>,
@@ -1099,6 +1136,8 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub event_object: Option<Box<EventObjectView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub manifest_event: Option<Box<ManifestDreadEvent>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sacrificed_toughness: Option<Box<i128>>,
     /// Last-known power of the successfully sacrificed permanent for a reflexive ability.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1173,6 +1212,10 @@ impl SpellView {
                 .event_object
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<EventObjectView>())
+            + self.manifest_event.as_ref().map_or(0, |event| {
+                std::mem::size_of::<ManifestDreadEvent>()
+                    + event.graveyard_cards.len() * std::mem::size_of::<ObjectRef>()
+            })
             + self
                 .captured_artifact_copy
                 .as_ref()
@@ -1306,10 +1349,12 @@ impl SpellView {
             }
             StackKind::DelayedSacrifice
             | StackKind::DelayedWarpExile
+            | StackKind::SiegeDefeat
             | StackKind::CopyEndStepSacrifice
             | StackKind::CasualtyCopy
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. } => None,
+            StackKind::DelayedManifestDread => None,
         }
     }
     pub(crate) fn bounded_mode_count(&self, mode: usize) -> Option<u8> {
@@ -1444,6 +1489,9 @@ impl SpellView {
                 TargetPlan::NONE,
                 &[Instruction::ResolveDelayedTokenCreation],
             )),
+            StackKind::DelayedManifestDread => {
+                Some((TargetPlan::NONE, &[Instruction::ManifestDread]))
+            }
             StackKind::DelayedReturn => {
                 Some((TargetPlan::NONE, &[Instruction::ResolveDelayedReturn]))
             }
@@ -1453,6 +1501,7 @@ impl SpellView {
             StackKind::DelayedWarpExile => {
                 Some((TargetPlan::NONE, &[Instruction::ExileWarpedPermanent]))
             }
+            StackKind::SiegeDefeat => Some((TargetPlan::NONE, &[Instruction::ResolveSiegeDefeat])),
         }
     }
 }
@@ -1494,10 +1543,12 @@ pub enum StackKind {
     ActivatedAbility { ability: u16 },
     DelayedSacrifice,
     DelayedWarpExile,
+    SiegeDefeat,
     CopyEndStepSacrifice,
     CasualtyCopy,
     DelayedReturn,
     DelayedTokenCreation { token: Card, amount: u64 },
+    DelayedManifestDread,
 }
 
 /// The object being attacked; this is not a spell/ability target.
@@ -1505,6 +1556,7 @@ pub enum StackKind {
 pub enum CombatDefender {
     Player(Player),
     Planeswalker(ObjectRef),
+    Battle(ObjectRef),
 }
 
 /// A selected or committed attack. A departed defender becomes `None` while
@@ -1657,10 +1709,16 @@ enum Pending {
     PlotPayment {
         player: Player,
     },
+    FaceUpPayment {
+        player: Player,
+    },
     Improvise {
         player: Player,
     },
     Convoke {
+        player: Player,
+    },
+    Harmonize {
         player: Player,
     },
     EvidenceIntent {
@@ -1670,6 +1728,12 @@ enum Pending {
         player: Player,
     },
     Mobilize {
+        player: Player,
+    },
+    BlightIntent {
+        player: Player,
+    },
+    BlightPayment {
         player: Player,
     },
     TeamworkIntent {
@@ -1685,6 +1749,9 @@ enum Pending {
         player: Player,
     },
     Explore {
+        player: Player,
+    },
+    Manifest {
         player: Player,
     },
     TargetLibrary {
@@ -1900,6 +1967,8 @@ struct State {
     #[allow(clippy::box_collection)]
     suspected: Option<Box<Vec<ObjectRef>>>,
     #[allow(clippy::box_collection)]
+    solved_cases: Option<Box<Vec<ObjectRef>>>,
+    #[allow(clippy::box_collection)]
     death_exile_replacements: Option<Box<Vec<ExileDeathReplacementView>>>,
     roles: Option<Box<roles::RoleState>>,
     hand_size: Option<Box<hand_size::HandSizeState>>,
@@ -1911,12 +1980,18 @@ struct State {
     // Cold pointer keeps games without delayed returns allocation-free.
     #[allow(clippy::box_collection)]
     delayed_returns: Option<Box<Vec<return_links::DelayedReturn>>>,
+    // Sparse delayed obligations keep the common state compact.
+    #[allow(clippy::box_collection)]
+    earthbend_returns: Option<Box<Vec<earthbend::EarthbendReturn>>>,
     mobilize: Option<Box<mobilize::MobilizePlan>>,
     saddled: Vec<ObjectRef>,
     saddle_payment: Option<Box<saddle::SaddlePayment>>,
     crew: Option<Box<crew::CrewState>>,
     objects: SharedVec<Object>,
     named_counters: Option<SharedVec<live_counters::NamedCounterRow>>,
+    battle_protectors: Option<SharedVec<(ObjectRef, Player)>>,
+    battle_combat_types: Option<SharedVec<(ObjectRef, bool)>>,
+    combat_defender_types: Option<SharedVec<(ObjectRef, u16)>>,
     creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
     tap_history: tap_history::Rows,
     counter_placement_history: counter_placement_history::Rows,
@@ -1998,6 +2073,7 @@ struct State {
     warp: Option<Box<warp::WarpState>>,
     known_hand: Vec<ObjectRef>,
     explore_data: Option<Box<explore::ExploreState>>,
+    manifest: Option<Box<manifest::ManifestState>>,
     evidence_data: Option<Box<evidence::EvidenceState>>,
     last_target_library_move: Option<Box<TargetLibraryMovement>>,
     players: [PlayerState; 2],
@@ -2085,14 +2161,20 @@ pub struct ObjectView {
     pub name: &'static str,
     pub owner: Player,
     pub controller: Player,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub battle_protector: Option<Player>,
     pub zone: Zone,
     pub tapped: bool,
     pub summoning_sick: bool,
+    pub cast_for_warp: bool,
     pub damage: i128,
     pub damaged_this_turn: bool,
     pub dealt_damage_this_turn: bool,
     pub counters: Counters,
     pub used_abilities: u64,
+    /// Current Class level on the battlefield.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub class_level: Option<u8>,
     /// Exhaust uses persist across turns for this exact permanent incarnation.
     pub exhausted_abilities: u64,
     pub entered_this_turn: bool,
@@ -2146,6 +2228,12 @@ impl ObjectView {
 }
 
 #[derive(Default)]
+struct EntryIdentity {
+    controller: Option<Player>,
+    face: Option<Card>,
+}
+
+#[derive(Default)]
 struct ZoneObservers {
     graveyard: Option<std::sync::Arc<[ObjectView]>>,
     returned_hand: Option<std::sync::Arc<[ObjectView]>>,
@@ -2184,6 +2272,8 @@ pub struct PlayerView {
     pub turn_cast_grants: Option<PlayerCastGrantsView>,
     pub hexproof_until_end_turn: bool,
     pub turns_to_skip: u64,
+    /// Actual turns begun, capped at four (four means four or more).
+    pub turns_started: u8,
     /// Additional land plays granted until the current turn ends.
     pub extra_land_plays_remaining: u64,
     pub no_maximum_hand_size: bool,
@@ -2389,6 +2479,12 @@ pub struct LegalActionSpace {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Observation {
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub face_down_permanents: Vec<FaceDownPermanentView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub face_down_spells: Vec<FaceDownPermanentView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub manifest_choice: Option<ManifestChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creature_type_choice: Option<CreatureTypeChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2442,6 +2538,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub self_granted_abilities: Option<Vec<SelfGrantedAbilityView>>,
     pub suspected: Vec<ObjectRef>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub solved_cases: Vec<ObjectRef>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub zone_replacement_choice: Option<ZoneReplacementChoiceView>,
     pub zone_reveals: Vec<ZoneRevealView>,
@@ -2460,6 +2558,7 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delayed_upkeep_tokens: Option<Vec<SpellView>>,
     pub delayed_returns: Vec<DelayedReturnView>,
+    pub earthbend_returns: Vec<EarthbendReturnView>,
     /// Exact public exile objects awaiting immediate return after departure events.
     pub immediate_blink_return: Option<Vec<ReturnLinkView>>,
     pub mobilize_choice: Option<MobilizeChoiceView>,
@@ -2505,6 +2604,12 @@ pub struct Observation {
     pub warped_cards: Vec<WarpedCard>,
     pub delayed_warp_exiles: Vec<DelayedWarpExileView>,
     pub plot_payment: Option<PlotPaymentView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub face_up_payment: Option<FaceUpPaymentView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_manifest_dread: Option<ManifestDreadEvent>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_turned_face_up: Option<ObjectRef>,
     pub triggered_this_turn: Vec<TriggerUse>,
     pub ability_resolutions: Vec<AbilityResolutionView>,
     pub role_choices: Vec<RoleGroupView>,
@@ -2642,6 +2747,7 @@ impl Game {
         }
         let mut objects = Vec::with_capacity(config.decks.iter().map(Vec::len).sum());
         let mut players = std::array::from_fn(|_| PlayerState {
+            turns_started: 0,
             enduring_story: false,
             turn_facts: TurnFactsView::default(),
             hexproof_until_end_turn: false,
@@ -2658,6 +2764,7 @@ impl Game {
             cards_discarded_this_turn: 0,
             card_left_graveyard_this_turn: false,
             controlled_creature_died_this_turn: false,
+            controlled_creatures_died_this_turn: 0,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
             life_lost_this_turn: 0,
@@ -2686,6 +2793,7 @@ impl Game {
                     tapped: false,
                     summoning_sick: false,
                     flashback: false,
+                    cast_for_warp: false,
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
@@ -2694,6 +2802,7 @@ impl Game {
                     gained_keywords: Keywords::NONE,
                     counters: InitialCounters::default(),
                     used_abilities: 0,
+                    class_level: 1,
                     attached_to: None,
                 });
                 players[p.index()].library.push(id);
@@ -2720,6 +2829,9 @@ impl Game {
                 replacements: None,
                 objects: objects.into(),
                 named_counters: None,
+                battle_protectors: None,
+                battle_combat_types: None,
+                combat_defender_types: None,
                 combat_rules: None,
                 attack_payment: None,
                 creature_damage_history: None,
@@ -2778,6 +2890,7 @@ impl Game {
                 temporary_abilities: None,
                 self_granted_abilities: None,
                 suspected: None,
+                solved_cases: None,
                 death_exile_replacements: None,
                 roles: None,
                 hand_size: None,
@@ -2787,9 +2900,11 @@ impl Game {
                 warp: None,
                 known_hand: Vec::new(),
                 explore_data: None,
+                manifest: None,
                 evidence_data: None,
                 delayed_sacrifices: None,
                 delayed_returns: None,
+                earthbend_returns: None,
                 mobilize: None,
                 saddled: Vec::new(),
                 saddle_payment: None,
@@ -2881,17 +2996,22 @@ impl Game {
             | Pending::Replacement { player }
             | Pending::CreatedToken { player }
             | Pending::PlotPayment { player }
+            | Pending::FaceUpPayment { player }
             | Pending::EvidenceIntent { player }
             | Pending::Evidence { player }
             | Pending::Endure { player, .. }
+            | Pending::Harmonize { player }
             | Pending::Convoke { player }
             | Pending::Improvise { player }
             | Pending::Mobilize { player }
+            | Pending::BlightIntent { player }
+            | Pending::BlightPayment { player }
             | Pending::TeamworkIntent { player }
             | Pending::TeamworkPayment { player }
             | Pending::Saddle { player }
             | Pending::Crew { player }
             | Pending::Explore { player }
+            | Pending::Manifest { player }
             | Pending::Bargain { player }
             | Pending::ResolutionX { player }
             | Pending::SourceCounterAmount { player }
@@ -3044,6 +3164,7 @@ impl Game {
             if (self.state.resolving.is_some()
                 || self.miracle_choice_pending()
                 || self.plot_payment().is_some()
+                || self.face_up_payment().is_some()
                 || self.state.attack_payment.is_some()
                 || self.state.announcing.is_some()
                 || self.state.entry_batch.is_some())
@@ -3157,6 +3278,9 @@ impl Game {
             } else if let Action::ChooseSourceCounterAmount { amount } = &action {
                 self.source_counter_choice()
                     .is_some_and(|domain| *amount <= domain.maximum)
+            } else if let Action::AllocateTargetAmount { amount } = &action {
+                self.target_amount_choice()
+                    .is_some_and(|d| *amount >= d.minimum && *amount <= d.maximum)
             } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
@@ -3192,6 +3316,7 @@ impl Game {
                     && self.state.replacements.is_none()
                     && self.state.announcing.is_none()
                     && self.plot_payment().is_none()
+                    && self.face_up_payment().is_none()
                     && self.state.attack_payment.is_none()
                 {
                     self.state_based_actions();
@@ -3219,6 +3344,8 @@ impl Game {
                 self.current_cast_costs_fundable()
             } else if let Some(payment) = &self.state.attack_payment {
                 self.attack_tax_fundable(payment.player, payment.generic)
+            } else if self.face_up_payment().is_some() {
+                self.face_up_payment_fundable()
             } else {
                 self.current_cast_costs_fundable()
             };
@@ -3230,6 +3357,13 @@ impl Game {
                 .attack_payment
                 .as_ref()
                 .is_some_and(|p| !self.attack_tax_fundable(p.player, p.generic))
+        {
+            self.finish_cast_rollback(false);
+        }
+        if matches!(self.state.pending, Pending::FaceUpPayment { .. })
+            && self.state.entry_batch.is_none()
+            && self.state.replacements.is_none()
+            && !self.face_up_payment_fundable()
         {
             self.finish_cast_rollback(false);
         }
@@ -3343,6 +3477,11 @@ impl Game {
                     return true;
                 }
             }
+            Pending::Harmonize { .. } => {
+                if self.visit_harmonize_actions(&mut emit) {
+                    return true;
+                }
+            }
             Pending::Convoke { .. } | Pending::Improvise { .. } => {
                 if self.visit_convoke_actions(&mut emit) {
                     return true;
@@ -3358,6 +3497,14 @@ impl Game {
                     return true;
                 }
             }
+            Pending::BlightIntent { .. } => {
+                for pay in [false, true] {
+                    if self.blight_intent_fundable(pay) && emit(Action::ChooseBlight { pay }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::BlightPayment { .. } => return self.visit_blight_payments(&mut emit),
             Pending::TeamworkIntent { .. } => {
                 for pay in [false, true] {
                     if self.teamwork_intent_fundable(pay) && emit(Action::ChooseTeamwork { pay }) {
@@ -3598,6 +3745,9 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                if self.additional_life_available() && emit(Action::ChooseAdditionalLife) {
+                    return true;
+                }
                 if self.graveyard_symbol_selection_complete()
                     && emit(Action::FinishGraveyardSymbolCost)
                 {
@@ -3624,6 +3774,11 @@ impl Game {
             }
             Pending::PlotPayment { .. } => {
                 if self.visit_plot_payment(&mut emit) {
+                    return true;
+                }
+            }
+            Pending::FaceUpPayment { .. } => {
+                if emit(Action::AbortFaceUpPayment) || self.visit_face_up_payment(&mut emit) {
                     return true;
                 }
             }
@@ -3802,6 +3957,43 @@ impl Game {
                     {
                         return true;
                     }
+                    if obj.zone == Zone::Battlefield && obj.controller == actor {
+                        let object = self.object_ref(card);
+                        if self.face_up_payment_available(actor, object) {
+                            let row = self
+                                .state
+                                .manifest
+                                .as_ref()
+                                .unwrap()
+                                .permanents
+                                .iter()
+                                .find(|row| row.object == object)
+                                .unwrap();
+                            for cost in row
+                                .underlying
+                                .cost_options()
+                                .filter(|_| {
+                                    row.underlying.is_creature()
+                                        && !row.underlying.info().mana_cost.is_empty()
+                                })
+                                .chain(row.underlying.disguise_cost())
+                            {
+                                if self.can_fund_face_up(
+                                    FundingGoal {
+                                        actor,
+                                        required: cost.colored,
+                                        generic: cost.generic,
+                                        reserve: None,
+                                        source: None,
+                                    },
+                                    object,
+                                ) && emit(Action::BeginFaceUp { object, cost })
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
                     if obj.zone == Zone::Hand && self.hand_play_prohibited() {
                         continue;
                     }
@@ -3843,6 +4035,19 @@ impl Game {
                             .warp_cost()
                             .is_some_and(|cost| self.warp_cast_fundable(actor, card, cost))
                         && emit(Action::AnnounceWarp { card })
+                    {
+                        return true;
+                    }
+                    if !casting_prohibited
+                        && obj.card.disguise_cost().is_some()
+                        && (sorcery
+                            || self.cast_timing_granted(
+                                actor,
+                                Card::from_name("@face-down/disguise")
+                                    .expect("pinned catalogue identity"),
+                            ))
+                        && self.disguise_cast_fundable(actor, card)
+                        && emit(Action::AnnounceDisguise { card })
                     {
                         return true;
                     }
@@ -4003,6 +4208,20 @@ impl Game {
                             }
                         }
                     }
+                    if obj.zone == Zone::Graveyard
+                        && obj.card.harmonize_cost().is_some()
+                        && self.permitted_cast_available(
+                            actor,
+                            card,
+                            CastMethod::Harmonize,
+                            CastFace::Normal,
+                            sorcery,
+                            false,
+                        )
+                        && emit(Action::AnnounceHarmonize { card })
+                    {
+                        return true;
+                    }
                     let flashback =
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
                     if flashback && obj.card.flashback_additional().is_some() {
@@ -4150,6 +4369,9 @@ impl Game {
                             .any(|cost| {
                                 if !self.spell_cost_option_available(actor, card, cost) {
                                     return false;
+                                }
+                                if obj.card.blight().is_some() {
+                                    return self.blight_initial_fundable(actor, card, cost);
                                 }
                                 if obj.card.teamwork().is_some() {
                                     return self.teamwork_initial_fundable(actor, card, cost);
@@ -4389,6 +4611,15 @@ impl Game {
                     {
                         return true;
                     }
+                    for (i, _) in s.objects.iter().enumerate() {
+                        let defender = self.object_ref(i as CardId);
+                        if self.battle_can_be_attacked_by(defender, actor)
+                            && self.can_attack_defender(card, CombatDefender::Battle(defender))
+                            && emit(Action::AttackBattle { card, defender })
+                        {
+                            return true;
+                        }
+                    }
                     for &defender in &walkers {
                         if self.can_attack_defender(card, CombatDefender::Planeswalker(defender))
                             && emit(Action::AttackPlaneswalker { card, defender })
@@ -4464,6 +4695,21 @@ impl Game {
                         object: choice.revealed.object,
                         graveyard,
                     }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::Manifest { .. } => {
+                let choice = self
+                    .state
+                    .manifest
+                    .as_ref()
+                    .unwrap()
+                    .choice
+                    .as_ref()
+                    .unwrap();
+                for &object in &choice.candidates {
+                    if emit(Action::ChooseManifest { object }) {
                         return true;
                     }
                 }
@@ -4595,9 +4841,21 @@ impl Game {
             }
             Pending::TargetAmount { .. } => {
                 let choice = self.target_amount_choice().unwrap();
-                for amount in choice.minimum..=choice.maximum {
-                    if emit(Action::AllocateTargetAmount { amount }) {
-                        return true;
+                if choice.maximum - choice.minimum <= 64 {
+                    for amount in choice.minimum..=choice.maximum {
+                        if emit(Action::AllocateTargetAmount { amount }) {
+                            return true;
+                        }
+                    }
+                } else {
+                    for amount in [
+                        choice.minimum,
+                        choice.minimum + (choice.maximum - choice.minimum) / 2,
+                        choice.maximum,
+                    ] {
+                        if emit(Action::AllocateTargetAmount { amount }) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -4611,6 +4869,11 @@ impl Game {
                     .filter(|bound| bound.group == announcement.group)
                     .count();
                 if count >= usize::from(announcement.spec.min)
+                    && (count > 0
+                        || announcement
+                            .item
+                            .division_total()
+                            .is_none_or(|total| total == 0))
                     && self.announcement_target_fundable(announcement, None, None, None, None, true)
                     && emit(Action::FinishTargets)
                 {
@@ -4827,6 +5090,11 @@ impl Game {
             permission,
             permanent_type,
             ..
+        }
+        | Action::AnnounceDisguiseGraveyard {
+            permission,
+            permanent_type,
+            ..
         } = &action
         {
             self.consume_graveyard_type(*permission, *permanent_type);
@@ -4883,6 +5151,7 @@ impl Game {
                 self.announce_attached_ability(grantor, ability)
             }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::ChooseAdditionalLife => self.choose_additional_life(),
             Action::FinishGraveyardSymbolCost => self.finish_graveyard_symbol_cost(),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
             Action::ChooseEntryReplacement { source, intrinsic } => {
@@ -5186,6 +5455,11 @@ impl Game {
                 item.cast.as_mut().unwrap().method = CastMethod::Sneak;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceDisguise { card } | Action::AnnounceDisguiseGraveyard { card, .. } => {
+                let mut item = self.cast_disguised_item(actor, card);
+                item.cast.as_mut().unwrap().method = CastMethod::Disguise;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnounceWarp { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Warp;
@@ -5193,12 +5467,25 @@ impl Game {
             }
             Action::AnnouncePlot { card } => self.begin_plot(actor, card),
             Action::PayPlot { payment } => self.finish_plot(payment),
+            Action::BeginFaceUp { object, cost } => self.begin_face_up(actor, object, cost),
+            Action::PayFaceUp { payment } => self.finish_face_up(payment),
+            Action::AbortFaceUpPayment => self.finish_cast_rollback(false),
             Action::AnnouncePlotted { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 item.cast.as_mut().unwrap().method = CastMethod::Plot;
                 if item.source_card.x_symbols() > 0 {
                     item.x = Some(0);
                 }
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceHarmonize { card } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                item.cast.as_mut().unwrap().method = CastMethod::Harmonize;
+                if item.source_card.x_symbols() > 0 {
+                    item.x = Some(0);
+                }
+                // Reuse the exact-object leave-stack exile replacement.
+                self.state.objects[card as usize].flashback = true;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceFlashback { card } => {
@@ -5292,7 +5579,9 @@ impl Game {
             }
             Action::ChooseEndure { put_counters } => self.choose_endure(put_counters),
             Action::BeginConvoke => self.begin_convoke(),
+            Action::ChooseHarmonizer { object } => self.choose_harmonizer(object),
             Action::BeginImprovise => self.begin_improvise(),
+            Action::BeginOrderedCosts => self.begin_ordered_costs(),
             Action::ChooseImproviser { object } => self.choose_improviser(object),
             Action::ChooseConvoker {
                 object,
@@ -5442,6 +5731,7 @@ impl Game {
             Action::FinishEvidence => self.finish_evidence(),
             Action::DeclineEvidence => self.decline_evidence(),
             Action::ChooseExplore { graveyard, .. } => self.finish_explore(graveyard),
+            Action::ChooseManifest { object } => self.choose_manifest(object),
             Action::ChooseCasualty { pay } => self.choose_casualty(pay),
             Action::ChooseCastCost { clause } => self.choose_cast_cost(clause),
             Action::PayCasualty { object } => self.pay_casualty_clause(object),
@@ -5452,6 +5742,8 @@ impl Game {
                 self.continue_announcement_choices(false);
             }
             Action::ChooseMobilizeDefender { defender } => self.choose_mobilize_defender(defender),
+            Action::ChooseBlight { pay } => self.choose_blight(pay),
+            Action::PayBlight { object } => self.pay_blight(object),
             Action::ChooseTeamwork { pay } => self.choose_teamwork(pay),
             Action::ChooseTeammate { object } => self.choose_teammate(object),
             Action::FinishTeamwork => self.finish_teamwork(),
@@ -5588,6 +5880,13 @@ impl Game {
                 self.state.selected_attackers.push(Attacker {
                     card,
                     defender: Some(CombatDefender::Planeswalker(defender)),
+                    blocked: false,
+                })
+            }
+            Action::AttackBattle { card, defender } => {
+                self.state.selected_attackers.push(Attacker {
+                    card,
+                    defender: Some(CombatDefender::Battle(defender)),
                     blocked: false,
                 })
             }
@@ -6078,7 +6377,7 @@ impl Game {
                     plan,
                     tapped,
                     counters,
-                    None,
+                    EntryIdentity::default(),
                     ZoneObservers {
                         graveyard: graveyard_observers.clone(),
                         returned_hand: returned_hand_observers.clone(),
@@ -6129,6 +6428,14 @@ impl Game {
                             || self.has_subtype(id as CardId, "Island"))
                 })
             }
+            EntryTapped::UnlessControlsEitherSubtype(first, second) => {
+                !self.state.objects.iter().enumerate().any(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == controller
+                        && (self.has_subtype(id as CardId, first)
+                            || self.has_subtype(id as CardId, second))
+                })
+            }
             EntryTapped::UnlessControlsSubtype(subtype) => {
                 !self.state.objects.iter().enumerate().any(|(id, object)| {
                     object.zone == Zone::Battlefield
@@ -6145,6 +6452,10 @@ impl Game {
             }
             EntryTapped::Always | EntryTapped::ChosenXAtMost(_) => true,
             EntryTapped::OpponentsTurn => controller != self.state.active,
+            EntryTapped::DuringFirstThreeTurns => {
+                controller != self.state.active
+                    || !(1..=3).contains(&self.state.players[controller.index()].turns_started)
+            }
             EntryTapped::UnlessLowLife => self.state.players.iter().all(|p| p.life > 13),
             EntryTapped::UnlessBasic => !self.state.objects.iter().enumerate().any(|(id, o)| {
                 o.zone == Zone::Battlefield
@@ -6247,7 +6558,10 @@ impl Game {
             plan,
             tapped,
             counters,
-            entry_controller,
+            EntryIdentity {
+                controller: entry_controller,
+                face: None,
+            },
             ZoneObservers {
                 graveyard: graveyard_observers,
                 returned_hand: returned_hand_observers,
@@ -6261,14 +6575,23 @@ impl Game {
         plan: zone_replacements::Plan,
         tapped: bool,
         counters: Counters,
-        entry_controller: Option<Player>,
+        entry: EntryIdentity,
         observers: ZoneObservers,
     ) -> ZoneChange {
+        let EntryIdentity {
+            controller: entry_controller,
+            face: entering_face,
+        } = entry;
         let ZoneObservers {
             graveyard: graveyard_observers,
             returned_hand: returned_hand_observers,
         } = observers;
         let id = before.id;
+        // A public exile can be followed by another move within this action.
+        // Capture it before its exact exile reference and visibility are lost.
+        if before.zone == Zone::Exile {
+            self.capture_public_hand_exiles();
+        }
         self.capture_mana_copy_source_departure(&before);
         if before.zone == Zone::Stack {
             self.capture_stack_copy_departure(id);
@@ -6368,6 +6691,35 @@ impl Game {
                 evidence_collected: false,
             };
         }
+        // An undone public move cannot erase knowledge acquired during the cast.
+        // Keep only cards that were already in the checkpoint hand; library and
+        // newly created objects are handled separately by irreversible replay.
+        if before.zone == Zone::Hand
+            && matches!(
+                destination,
+                Zone::Graveyard | Zone::Battlefield | Zone::Stack
+            )
+            && !(destination == Zone::Stack
+                && before.card
+                    == Card::from_name("@face-down/disguise").expect("pinned catalogue identity"))
+            && let Some(rollback) = &mut self.state.cast_rollback
+            && rollback
+                .before
+                .objects
+                .get(id as usize)
+                .is_some_and(|original| {
+                    original.zone == Zone::Hand
+                        && original.generation == before.reference.generation
+                })
+            && !rollback.obscured_hand_cards.contains(&id)
+            && !rollback.public_hand_cards.contains(&id)
+        {
+            rollback.public_hand_cards.push(id);
+        }
+        if destination == Zone::Library {
+            self.obscure_rollback_hand_card(id);
+            self.obscure_rollback_face_down(id);
+        }
         if destination == Zone::Exile
             && !before.is_token()
             && !before.card.is_emblem()
@@ -6406,6 +6758,7 @@ impl Game {
         if before.zone == Zone::Battlefield {
             self.forget_prepared(before.reference);
             self.clear_suspected_reference(before.reference);
+            self.forget_solved_case(before.reference);
             self.forget_graveyard_type_source(before.reference);
         }
         if before.zone == Zone::Battlefield
@@ -6413,6 +6766,11 @@ impl Game {
             && before.is_creature()
         {
             self.state.players[before.controller.index()].controlled_creature_died_this_turn = true;
+            let deaths = &mut self.state.players[before.controller.index()]
+                .controlled_creatures_died_this_turn;
+            *deaths = deaths
+                .checked_add(1)
+                .capacity("controlled creature death history exhausted");
             self.state.creatures_died_this_turn = self
                 .state
                 .creatures_died_this_turn
@@ -6594,7 +6952,8 @@ impl Game {
                 .iter_mut()
                 .chain(&mut self.state.selected_attackers)
             {
-                if attack.defender == Some(CombatDefender::Planeswalker(before.reference)) {
+                if matches!(attack.defender, Some(CombatDefender::Planeswalker(r) | CombatDefender::Battle(r)) if r == before.reference)
+                {
                     attack.defender = None;
                 }
             }
@@ -6606,6 +6965,29 @@ impl Game {
         }
         // Every departure observer above used the old complete layer-one facts.
         // The new incarnation carries the underlying physical definition only.
+        let disguised_spell = if before.zone == Zone::Stack {
+            self.take_face_down_spell(before.reference)
+        } else {
+            None
+        };
+        if let Some(row) = disguised_spell
+            && destination != Zone::Battlefield
+        {
+            // A face-down spell that leaves the stack is publicly revealed.
+            self.remember_revealed_disguise(before.id);
+            self.record_zone_reveal(row.underlying, before.owner, Zone::Stack);
+        }
+        let manifested_physical = if before.zone == Zone::Battlefield {
+            self.take_face_down_physical(before.reference)
+        } else {
+            None
+        };
+        if let Some(physical) = manifested_physical {
+            // CR708.9: reveal the physical card even when its destination is
+            // hidden (for example, a library).
+            self.record_zone_reveal(physical, before.owner, Zone::Battlefield);
+        }
+        self.clear_battle_protector(before.reference);
         self.forget_temporary_copy(before.reference);
         self.forget_copy_grant_origin(before.reference);
         let obj = &mut self.state.objects[id as usize];
@@ -6614,7 +6996,17 @@ impl Game {
         if before.zone == Zone::Stack && destination == Zone::Battlefield && obj.is_spell_copy() {
             obj.copy_kind = CopyKind::Token;
         }
-        obj.card = if destination == Zone::Battlefield && before.zone == Zone::Stack {
+        obj.card = if let Some(physical) = manifested_physical {
+            physical.front_face()
+        } else if let Some(row) = disguised_spell
+            && destination != Zone::Battlefield
+        {
+            row.underlying.front_face()
+        } else if let Some(face) = entering_face
+            && destination == Zone::Battlefield
+        {
+            face
+        } else if destination == Zone::Battlefield && before.zone == Zone::Stack {
             before.card
         } else if !obj.is_token() && !obj.is_spell_copy() {
             obj.card.front_face()
@@ -6629,6 +7021,7 @@ impl Game {
             obj.owner
         };
         obj.flashback = false;
+        obj.cast_for_warp = false;
         obj.generation = generation;
         obj.tapped = tapped;
         obj.summoning_sick = destination == Zone::Battlefield;
@@ -6640,6 +7033,7 @@ impl Game {
         obj.gained_keywords = Keywords::NONE;
         obj.counters = counters.hot();
         obj.used_abilities = 0;
+        obj.class_level = 1;
         obj.attached_to = None;
         // This ordered index enumerates library cards, not transient tokens.
         // Tokens still enter the actual zone and cease only at the next SBA;
@@ -6648,6 +7042,23 @@ impl Game {
             self.state.players[obj.owner.index()].library.push(id);
         }
         let entry_identity = (obj.controller, obj.card);
+        if let Some(row) = disguised_spell
+            && destination == Zone::Battlefield
+        {
+            self.state
+                .manifest
+                .get_or_insert_with(Default::default)
+                .permanents
+                .push(manifest::FaceDownPermanent {
+                    object: ObjectRef {
+                        card: id,
+                        generation,
+                    },
+                    underlying: row.underlying,
+                    known: row.known,
+                    known_to: row.known_to,
+                });
+        }
         self.advance_copy_recipe(
             before.reference,
             ObjectRef {
@@ -6675,6 +7086,13 @@ impl Game {
         } else if destination == Zone::Graveyard {
             self.register_graveyard_sources(id);
         }
+        if (manifested_physical.is_some() || disguised_spell.is_some()) && destination == Zone::Hand
+        {
+            let reference = self.object_ref(id);
+            if !self.state.known_hand.contains(&reference) {
+                self.state.known_hand.push(reference);
+            }
+        }
         if revealed_top && before.zone == Zone::Library && destination == Zone::Hand {
             let reference = self.object_ref(id);
             if !self.state.known_hand.contains(&reference) {
@@ -6685,6 +7103,18 @@ impl Game {
             self.reveal_and_shuffle_zone_card(&before);
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
+        // A Siege's protector must be an opponent; this library is two-player.
+        if destination == Zone::Battlefield
+            && self.current_kinds(id) & crate::cards::BATTLE_KIND != 0
+        {
+            let controller = self.state.objects[id as usize].controller;
+            let protector = if self.has_subtype(id, "Siege") {
+                controller.other()
+            } else {
+                controller
+            };
+            self.set_battle_protector(self.object_ref(id), protector);
+        }
         if let Some((ability, mut source)) = plan.reflexive {
             debug_assert_eq!(destination, Zone::Exile);
             // CR603.2d: an object's trigger multipliers do not apply to the
@@ -6795,6 +7225,11 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        let active = self.state.active.index();
+        self.state.players[active].turns_started = self.state.players[active]
+            .turns_started
+            .saturating_add(1)
+            .min(4);
         self.begin_player_control_turn();
         self.expire_temporary_copies(false);
         self.reset_copy_turn_uses();
@@ -6842,6 +7277,7 @@ impl Game {
             player.cards_discarded_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
             player.controlled_creature_died_this_turn = false;
+            player.controlled_creatures_died_this_turn = 0;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
             player.life_lost_this_turn = 0;
@@ -6974,6 +7410,7 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        self.expire_manifest_deaths();
         self.state.delayed_attack_this_turn = None;
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
@@ -7130,6 +7567,15 @@ impl Game {
                 Target::Card(id) => {
                     let creature = self.is_creature(id);
                     let planeswalker = self.current_kinds(id) & 64 != 0;
+                    let defense_removed = if self.current_kinds(id) & crate::cards::BATTLE_KIND != 0
+                    {
+                        u128::try_from(event.amount)
+                            .expect("positive damage")
+                            .min(u128::from(self.counter_count(id, CounterKind::Defense)))
+                            as u64
+                    } else {
+                        0
+                    };
                     let obj = &mut self.state.objects[id as usize];
                     if planeswalker {
                         let removed = u128::try_from(event.amount)
@@ -7147,6 +7593,9 @@ impl Game {
                     obj.damaged_this_turn = true;
                     obj.deathtouch_since_sba |=
                         creature && event.source.keywords.contains(Keywords::DEATHTOUCH);
+                    if defense_removed > 0 {
+                        self.pay_counters(id, &Counters::of(CounterKind::Defense, defense_removed));
+                    }
                 }
                 Target::Stack(_) | Target::Spell(_) => {
                     unreachable!("damage cannot target stack objects")
@@ -7227,17 +7676,53 @@ impl Game {
         }
     }
 
+    /// The protector belongs to the Battle incarnation, not its controller.
+    pub(super) fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
+        self.state
+            .battle_protectors
+            .as_ref()?
+            .iter()
+            .find(|(reference, _)| *reference == object)
+            .map(|(_, player)| *player)
+    }
+    pub(super) fn clear_battle_protector(&mut self, object: ObjectRef) {
+        if let Some(rows) = &mut self.state.battle_protectors {
+            rows.retain(|(prior, _)| *prior != object);
+            if rows.is_empty() {
+                self.state.battle_protectors = None;
+            }
+        }
+    }
+    pub(super) fn set_battle_protector(&mut self, object: ObjectRef, player: Player) {
+        if self
+            .battle_protector(object)
+            .is_some_and(|old| old != player)
+        {
+            self.remove_from_combat(object.card, object);
+        }
+        let rows = self.state.battle_protectors.get_or_insert_default();
+        rows.retain(|(reference, _)| *reference != object);
+        rows.push((object, player));
+    }
+    pub(super) fn battle_can_be_attacked_by(&self, object: ObjectRef, attacker: Player) -> bool {
+        self.on_battlefield(object.card)
+            && self.object_ref(object.card) == object
+            && self.current_kinds(object.card) & crate::cards::BATTLE_KIND != 0
+            && self.battle_protector(object) == Some(attacker.other())
+    }
+
     fn combat_defender_target(&self, defender: Option<CombatDefender>) -> Option<Target> {
         match defender? {
             CombatDefender::Player(player) => Some(Target::Player(player)),
-            CombatDefender::Planeswalker(reference) => self
+            CombatDefender::Battle(reference) | CombatDefender::Planeswalker(reference) => self
                 .state
                 .objects
                 .get(reference.card as usize)
                 .filter(|o| {
                     o.zone == Zone::Battlefield
                         && o.generation == reference.generation
-                        && self.current_kinds(reference.card) & 64 != 0
+                        && self.current_kinds(reference.card) & (64 | crate::cards::BATTLE_KIND)
+                            != 0
                 })
                 .map(|_| Target::Card(reference.card)),
         }
@@ -7358,6 +7843,9 @@ impl Game {
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
         Observation {
+            face_down_permanents: self.face_down_views(viewer),
+            face_down_spells: self.face_down_spell_views(viewer),
+            manifest_choice: self.manifest_choice_view(viewer),
             creature_type_choice: self.creature_type_tokens_view(),
             attack_payment: s.attack_payment.as_ref().map(|p| AttackPaymentView {
                 player: p.player,
@@ -7441,6 +7929,7 @@ impl Game {
                 .resolving
                 .as_ref()
                 .and_then(|r| r.immediate_blink_return.as_deref().cloned()),
+            earthbend_returns: self.earthbend_views(),
             delayed_returns: self
                 .state
                 .delayed_returns
@@ -7493,6 +7982,10 @@ impl Game {
                 None
             },
             x_choice: if owns_choice { self.x_choice() } else { None },
+            solved_cases: s
+                .solved_cases
+                .as_ref()
+                .map_or_else(Vec::new, |v| v.as_ref().clone()),
             suspected: s
                 .suspected
                 .as_ref()
@@ -7574,6 +8067,7 @@ impl Game {
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
                 Pending::PlotPayment { .. } => "plot_payment",
+                Pending::FaceUpPayment { .. } => "face_up_payment",
                 Pending::Role { .. } => "role_rule",
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Retarget { .. } => "retarget",
@@ -7588,14 +8082,18 @@ impl Game {
                 Pending::Kicker { .. } => "kicker",
                 Pending::Gift { .. } => "gift",
                 Pending::Endure { .. } => "endure",
+                Pending::Harmonize { .. } => "harmonize",
                 Pending::Convoke { .. } => "convoke",
                 Pending::Improvise { .. } => "improvise",
                 Pending::Mobilize { .. } => "mobilize",
+                Pending::BlightIntent { .. } => "blight_intent",
+                Pending::BlightPayment { .. } => "blight_payment",
                 Pending::TeamworkIntent { .. } => "teamwork_intent",
                 Pending::TeamworkPayment { .. } => "teamwork_payment",
                 Pending::Saddle { .. } => "saddle",
                 Pending::Crew { .. } => "crew",
                 Pending::Explore { .. } => "explore",
+                Pending::Manifest { .. } => "manifest",
                 Pending::ResolutionX { .. } => "resolution_x",
                 Pending::SourceCounterAmount { .. } => "source_counter_amount",
                 Pending::X { .. } => "x",
@@ -7656,6 +8154,7 @@ impl Game {
                 enduring_story: s.players[i].enduring_story,
                 turn_cast_grants: self.player_cast_grants_view(i),
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
+                turns_started: s.players[i].turns_started,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
                 extra_land_plays_remaining: s.players[i].extra_land_plays_remaining,
                 no_maximum_hand_size: self.no_maximum_hand_size(if i == 0 {
@@ -7767,6 +8266,12 @@ impl Game {
                 .plot_payment()
                 .filter(|p| self.shares_information(viewer, p.controller))
                 .copied(),
+            face_up_payment: self
+                .face_up_payment()
+                .filter(|p| self.shares_information(viewer, p.controller))
+                .copied(),
+            last_manifest_dread: s.manifest.as_ref().and_then(|m| m.last_event.clone()),
+            last_turned_face_up: s.manifest.as_ref().and_then(|m| m.last_face_up),
             triggered_this_turn: s.triggered_this_turn.clone(),
             ability_resolutions: s
                 .ability_resolutions
@@ -8126,14 +8631,30 @@ impl Game {
             + s.turn_skips
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<[u64; 2]>())
+            + s.combat_defender_types.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<(ObjectRef, u16)>>()
+                    + rows.len() * std::mem::size_of::<(ObjectRef, u16)>()
+            })
+            + s.battle_combat_types.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<(ObjectRef, bool)>>()
+                    + rows.len() * std::mem::size_of::<(ObjectRef, bool)>()
+            })
+            + s.battle_protectors.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<(ObjectRef, Player)>>()
+                    + rows.len() * std::mem::size_of::<(ObjectRef, Player)>()
+            })
             + s.zone_rules.as_ref().map_or(0, |r| r.bytes())
             + self.temporary_control_bytes()
             + self.control_bytes()
             + self_granted::owned_bytes(&s.self_granted_abilities)
             + self.temporary_ability_bytes()
             + self.suspected_bytes()
+            + self.state.solved_cases.as_ref().map_or(0, |v| {
+                std::mem::size_of::<Vec<ObjectRef>>() + v.len() * std::mem::size_of::<ObjectRef>()
+            })
             + self.death_exile_bytes()
             + self.mobilize_bytes()
+            + self.earthbend_bytes()
             + self.return_links_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
@@ -8258,6 +8779,7 @@ impl Game {
                 .map_or(0, |_| std::mem::size_of::<TargetLibraryMovement>())
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
             + s.explore_data.as_ref().map_or(0, |d| d.bytes())
+            + s.manifest.as_ref().map_or(0, |d| d.bytes())
             + s.evidence_data.as_ref().map_or(0, |d| d.bytes())
             + (s.free_tokens.len()
                 + s.static_sources.len()
@@ -8466,6 +8988,8 @@ pub use death_exile::ExileDeathReplacementView;
 mod temporary_abilities;
 pub use temporary_abilities::TemporaryAbilityView;
 
+#[path = "engine_case.rs"]
+mod case;
 #[path = "engine_suspect.rs"]
 mod suspect;
 
@@ -8605,3 +9129,7 @@ mod death_return;
 
 #[path = "engine_attacking_exile.rs"]
 mod attacking_exile;
+
+#[cfg(test)]
+#[path = "engine_requested_sapling_tests.rs"]
+mod engine_requested_sapling_tests;

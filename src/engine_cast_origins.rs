@@ -1,6 +1,9 @@
 //! Live casting-origin and mana-type permissions, shared by real and funding worlds.
 use super::*;
 use crate::cards::StaticAbilityFragment;
+fn is_false(value: &bool) -> bool {
+    !*value
+}
 impl Card {
     pub(super) fn has_cast_origin_abilities(self) -> bool {
         self.static_ability_groups().iter().any(|g| {
@@ -222,6 +225,23 @@ impl Game {
                                 false,
                             )
                     };
+                    if permanent_type == PermanentType::Creature
+                        && !casting_prohibited
+                        && (sorcery
+                            || self.cast_timing_granted(
+                                actor,
+                                Card::from_name("@face-down/disguise")
+                                    .expect("pinned catalogue identity"),
+                            ))
+                        && self.disguise_mana_fundable(actor, card)
+                        && emit(Action::AnnounceDisguiseGraveyard {
+                            card,
+                            permission,
+                            permanent_type,
+                        })
+                    {
+                        return true;
+                    }
                     if permanent_type != PermanentType::Land
                         && !object.card.is_land()
                         && !casting_prohibited
@@ -321,6 +341,8 @@ pub struct ResolutionPaidCast {
 }
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
+    #[serde(skip_serializing_if = "is_false")]
+    pub siege_transformed: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paid: Option<ResolutionPaidCast>,
     /// Successful spells still permitted by this immediate casting instruction.
@@ -357,6 +379,7 @@ impl Game {
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
             paid: Some(ResolutionPaidCast {
                 kinds,
                 exile_instants_sorceries,
@@ -390,6 +413,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
             paid: None,
             casts_remaining: None,
             pending_cast: None,
@@ -419,6 +443,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
             paid: None,
             casts_remaining: None,
             pending_cast: None,
@@ -477,6 +502,9 @@ impl Game {
                 CastFace::Omen,
                 CastFace::Back,
             ] {
+                if free.siege_transformed && face != CastFace::Back {
+                    continue;
+                }
                 let physical = self.state.objects[object.card as usize].card;
                 let definition = match face {
                     CastFace::Normal => Some(physical),
@@ -632,6 +660,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
             paid: None,
             casts_remaining: Some(maximum_casts),
             pending_cast: None,

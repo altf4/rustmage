@@ -394,6 +394,7 @@ fn hob_sacrifice_funding_borrowed_activation_needs_projected_haste_before_cost()
                 object: source,
                 timestamp,
                 artifact: true,
+                land: false,
                 preserve_card_types: false,
                 food_only: false,
                 artifact_noncreature: false,

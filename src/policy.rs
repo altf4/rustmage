@@ -165,6 +165,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     400
                 }
             }
+            Action::ChooseManifest { .. } => 60,
             Action::AnnounceAdventure { .. }
             | Action::AnnounceOmen { .. }
             | Action::AnnounceBack { .. } => 30,
@@ -181,8 +182,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     35
                 }
             }
-            Action::BeginConvoke | Action::BeginImprovise => 40,
-            Action::ChooseConvoker { .. } | Action::ChooseImproviser { .. } => 50,
+            Action::BeginConvoke | Action::BeginImprovise | Action::BeginOrderedCosts => 40,
+            Action::ChooseConvoker { .. }
+            | Action::ChooseImproviser { .. }
+            | Action::ChooseHarmonizer { .. } => 50,
             Action::ChooseMobilizeDefender { .. } | Action::ChooseHandDefender { .. } => 50,
             Action::PutHandCreature { .. }
             | Action::PutHandPermanent { .. }
@@ -191,6 +194,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::SelectLand { .. } => 50,
             Action::FinishLandSelection => -1,
             Action::DeclineHandEntry => -1,
+            Action::ChooseBlight { pay } => i128::from(*pay) * 40,
+            Action::PayBlight { .. } => 50,
             Action::ChooseTeamwork { pay } => i128::from(*pay) * 40,
             Action::ChooseTeammate { .. } => 50,
             Action::FinishTeamwork => 100,
@@ -247,6 +252,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ChooseCastCost { .. }
             | Action::PayCasualty { .. }
             | Action::ChooseAdditionalCost { .. }
+            | Action::ChooseAdditionalLife
             | Action::ChooseCreatureCounterCost { .. } => 60,
             Action::ChooseForageRoute { .. } | Action::ChooseForage { .. } => 60,
             Action::DeclineForage => -10,
@@ -299,13 +305,16 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
+            | Action::AnnounceDisguise { .. }
+            | Action::AnnounceDisguiseGraveyard { .. }
             | Action::AnnounceSneak { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnounceExile { .. }
             | Action::AnnounceExileLife { .. }
             | Action::AnnounceExileFree { .. }
-            | Action::AnnounceFlashback { .. } => 79,
-            Action::AnnouncePlot { .. } => 40,
+            | Action::AnnounceFlashback { .. }
+            | Action::AnnounceHarmonize { .. } => 79,
+            Action::AnnouncePlot { .. } | Action::BeginFaceUp { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
@@ -314,7 +323,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::AnnounceMana { .. }
             | Action::AnnounceBorrowedMana { .. }
             | Action::AnnounceGraveyardBorrowedMana { .. } => -2,
-            Action::PayCosts { .. } | Action::PayPlot { .. } | Action::PayAttackCost { .. } => 100,
+            Action::PayCosts { .. }
+            | Action::PayPlot { .. }
+            | Action::PayFaceUp { .. }
+            | Action::PayAttackCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
             Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
@@ -514,7 +526,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                         .unwrap_or(70)
                 }
             }
-            Action::Attack { .. } | Action::AttackPlaneswalker { .. } | Action::Block { .. } => 60,
+            Action::Attack { .. }
+            | Action::AttackPlaneswalker { .. }
+            | Action::AttackBattle { .. }
+            | Action::Block { .. } => 60,
             Action::AssignDamage { amount, .. } => 50 + *amount,
             Action::Bottom { .. } | Action::Discard { .. } => 50,
             Action::PutTrigger { .. } => 50,
@@ -568,7 +583,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseToken { .. } => 10,
-            Action::CancelAttackDeclaration | Action::AbortAttackPayment => -100,
+            Action::CancelAttackDeclaration
+            | Action::AbortAttackPayment
+            | Action::AbortFaceUpPayment => -100,
             Action::Pass | Action::FinishAttackers | Action::FinishBlockers => 0,
         }
     };

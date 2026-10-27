@@ -22,11 +22,7 @@ impl Game {
                 self.on_battlefield(id)
                     && self.object_ref(id) != item.object
                     && self.is_creature(id)
-                    && parity.matches(
-                        self.copiable_recipe(self.object_ref(id))
-                            .definition
-                            .fixed_mana_value(),
-                    )
+                    && parity.matches(self.object_mana_value(id))
                     && !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)
             })
             .collect();

@@ -101,6 +101,11 @@ impl Game {
 
     pub(super) fn can_attack_any_defender(&self, actor: Player, attacker: CardId) -> bool {
         self.can_attack_defender(attacker, CombatDefender::Player(actor.other()))
+            || self.state.objects.iter().enumerate().any(|(id, _)| {
+                let reference = self.object_ref(id as CardId);
+                self.battle_can_be_attacked_by(reference, actor)
+                    && self.can_attack_defender(attacker, CombatDefender::Battle(reference))
+            })
             || self.state.objects.iter().enumerate().any(|(id, object)| {
                 object.zone == Zone::Battlefield
                     && object.controller == actor.other()

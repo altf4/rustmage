@@ -10,6 +10,7 @@ pub(super) struct CostContext {
     active: Option<u16>,
     casualty: Vec<CasualtyDeclaration>,
     additional: Option<AdditionalCost>,
+    additional_life: bool,
     forage: Option<ForageRoute>,
     selected: Vec<ObjectRef>,
     exact: bool,
@@ -49,6 +50,7 @@ impl CostContext {
             active: c.active,
             casualty: a.casualty.as_deref().cloned().unwrap_or_default(),
             additional: a.additional_cost(),
+            additional_life: a.additional_life,
             forage: a.forage.as_ref().and_then(|v| v.route),
             selected,
             exact,
@@ -231,6 +233,11 @@ impl FundingState<'_> {
                         && zone == Zone::Graveyard
                         && CharacteristicWorld::kinds(&n, r.card) & 1 != 0
                     {
+                        let controller = before.controller;
+                        n.controlled_creatures_died[controller.index()] = n
+                            .controlled_creatures_died[controller.index()]
+                        .checked_add(1)
+                        .capacity("virtual controlled death history exhausted");
                         n.creatures_died = n
                             .creatures_died
                             .checked_add(1)
@@ -346,6 +353,19 @@ impl FundingState<'_> {
                         return true;
                     }
                 }
+                CastCostClause::Blight { amount, selected } => {
+                    for resource in &self.resources {
+                        let reference = self.reference(resource.id);
+                        if selected.is_some_and(|wanted| wanted != reference) {
+                            continue;
+                        }
+                        if self.visit_blight_cost_projection(reference, amount, &mut |next| {
+                            next.complete_cost_rows(&later, &rest)
+                        }) {
+                            return true;
+                        }
+                    }
+                }
                 CastCostClause::Mana => {
                     if self.complete_convoke_clause(c, &later, &rest) {
                         return true;
@@ -355,6 +375,7 @@ impl FundingState<'_> {
                     if amount == 0 || self.life >= i128::from(amount) {
                         let mut next = self.clone();
                         next.life -= i128::from(amount);
+                        next.life_lost[next.actor.index()] |= amount > 0;
                         if next.complete_cost_rows(&later, &rest) {
                             return true;
                         }
@@ -376,6 +397,19 @@ impl FundingState<'_> {
                         if self.cost_departures(&[r], Zone::Graveyard, &mut |w| {
                             w.complete_cost_rows(&later, &rest)
                         }) {
+                            return true;
+                        }
+                    }
+                }
+                CastCostClause::Harmonize(object) => {
+                    if harmonize::contribution(self, c.actor, object).is_some()
+                        && let Some(index) = self.resources.iter().position(|r| {
+                            r.id == object.card && r.object.generation == object.generation
+                        })
+                    {
+                        let mut next = self.clone();
+                        next.resources[index].object.tapped = true;
+                        if next.complete_cost_rows(&later, &rest) {
                             return true;
                         }
                     }
@@ -769,6 +803,20 @@ impl FundingState<'_> {
         let Some(mut spec) = c.additional else {
             return true;
         };
+        if let EffectChoiceKind::DiscardOrLife(life) = spec.kind {
+            if !c.exact && self.life >= i128::from(life) {
+                let mut next = self.clone();
+                next.life -= i128::from(life);
+                next.life_lost[next.actor.index()] |= life > 0;
+                if next.complete_cost_rows(later, remaining) {
+                    return true;
+                }
+            }
+            if c.additional_life {
+                return false;
+            }
+            spec.kind = EffectChoiceKind::Discard;
+        }
         let mut amount = 1usize;
         let mut destination = Zone::Graveyard;
         let mut evidence_min = None;
@@ -1022,6 +1070,21 @@ impl Game {
         world.set_teamwork_prefix(selected, exact);
         world.cost_completion()
     }
+    pub(in crate::engine) fn blight_subject_fundable(&self, object: ObjectRef) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let mut world = self.cast_cost_world(a);
+        let costs = world.cast_costs.as_mut().unwrap();
+        let active = costs.active.unwrap();
+        let row = &mut costs.clauses[usize::from(active)];
+        let CastCostClause::Blight { amount, .. } = row.clause else {
+            return false;
+        };
+        row.clause = CastCostClause::Blight {
+            amount,
+            selected: Some(object),
+        };
+        world.cost_completion()
+    }
     pub(in crate::engine) fn cast_cost_world(&self, a: &Announcement) -> FundingState<'_> {
         let goal = FundingGoal {
             actor: a.item.controller,
@@ -1131,6 +1194,15 @@ impl Game {
             a.cast_costs = Some(Box::default());
             a.initialize_cast_costs(improvise::potential(self, a.item.source_card));
         }
+        if a.item
+            .cast
+            .is_some_and(|c| c.method == CastMethod::Harmonize)
+        {
+            return self.harmonize_choice_fundable(&a, None)
+                || (0..self.state.objects.len()).any(|id| {
+                    self.harmonize_choice_fundable(&a, Some(self.object_ref(id as CardId)))
+                });
+        }
         a.cost_options().any(|cost| {
             let mut choice = a.clone();
             choice.cost = Some(cost);
@@ -1168,6 +1240,7 @@ impl Game {
                 active: None,
                 casualty: Vec::new(),
                 additional: None,
+                additional_life: false,
                 forage: None,
                 selected: Vec::new(),
                 exact: false,
@@ -1212,8 +1285,10 @@ impl Game {
                 && a.item.controller == goal.actor
                 && a.item.source_card == spell.card
         });
-        let ordered_additional = additional.is_some()
-            && (spell.card.has_convoke() || improvise::potential(self, spell.card));
+        let ordered_additional = additional
+            .is_some_and(|a| matches!(a.kind, EffectChoiceKind::DiscardOrLife(_)))
+            || additional.is_some()
+                && (spell.card.has_convoke() || improvise::potential(self, spell.card));
         if !ordered_additional
             && extra.is_empty()
             && current.is_none_or(|a| a.casualty.is_none() && a.cast_costs.is_none())
@@ -1324,6 +1399,7 @@ impl Game {
                     active: None,
                     casualty: casualty.to_vec(),
                     additional,
+                    additional_life: current.is_some_and(|a| a.additional_life),
                     forage: chosen_route,
                     selected: selected.to_vec(),
                     exact,
@@ -1373,6 +1449,7 @@ impl Game {
             active: None,
             casualty: Vec::new(),
             additional: Some(spec),
+            additional_life: false,
             forage: None,
             selected: selected.to_vec(),
             exact: false,
@@ -1385,5 +1462,70 @@ impl Game {
             teamwork_exact: false,
         })));
         world.reachable(&goal, &mut HashSet::new())
+    }
+}
+
+impl FundingState<'_> {
+    /// Enumerate the exact pre-SBA counter worlds produced by paying a blight cost.
+    /// This remains unconnected to casting until blight intent and prohibitions exist.
+    fn visit_blight_cost_projection(
+        &self,
+        subject: ObjectRef,
+        amount: u16,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let Some(row) = self.resources.iter().find(|r| r.id == subject.card) else {
+            return false;
+        };
+        if amount == 0
+            || row.object.zone != Zone::Battlefield
+            || row.object.generation != subject.generation
+            || row.object.controller != self.actor
+            || CharacteristicWorld::kinds(self, subject.card) & 1 == 0
+        {
+            return false;
+        }
+        if replacements::counters_prohibited(self, subject) {
+            return false;
+        }
+        let placement = replacements::CounterPlacement {
+            placed_by: self.actor,
+            object: subject,
+            card: row.object.card,
+            owner: row.object.owner,
+            controller: row.object.controller,
+            protector: CharacteristicWorld::battle_protector(self, subject),
+            subtypes: self.subtypes(subject.card),
+            kind: CharacteristicWorld::kinds(self, subject.card),
+            power: characteristic_query::CharacteristicQuery::in_world(self)
+                .stats(subject.card)
+                .power,
+            amount: Counters::of(CounterKind::MinusOne, u64::from(amount)),
+            effect: false,
+            entry_index: None,
+            private: false,
+        };
+        replacements::counter_outcomes(
+            self,
+            &placement,
+            &mut Vec::new(),
+            &|placement| placement.clone(),
+            &mut |placed| {
+                let mut next = self.clone();
+                let mut counters =
+                    CharacteristicWorld::counter_amounts(&next, subject.card).to_owned();
+                for kind in CounterKind::ALL {
+                    counters.add(kind, placed.get(kind));
+                }
+                let resource = next
+                    .resources
+                    .iter_mut()
+                    .find(|r| r.id == subject.card)
+                    .unwrap();
+                resource.object.counters = counters.hot();
+                live_counters::set(&mut next.named_counters, subject, counters.named);
+                emit(&next)
+            },
+        )
     }
 }

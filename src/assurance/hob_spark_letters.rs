@@ -25,7 +25,12 @@ fn divide(g: &mut Game, targets: &[Target], shares: &[u16]) {
     }
     for &amount in shares {
         if matches!(g.state.pending, Pending::TargetAmount { .. }) {
-            act(g, Action::AllocateTargetAmount { amount });
+            act(
+                g,
+                Action::AllocateTargetAmount {
+                    amount: u32::from(amount),
+                },
+            );
         }
     }
     if g.legal_actions().contains(&Action::FinishTargets) {

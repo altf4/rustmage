@@ -3,10 +3,30 @@
   "catalogue_id": 1929,
   "oracle_id": "9b0af3ad-1b4d-4480-af91-fe9baee5d1c5",
   "facts_sha256": "b5eb01f8ca171ac537b866048098a1c1d912ca47c688798d59e7d876c413cf42",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e62ecdda4c05da082bfcd4f38382322091ecf9c38bb02d627dcee71fcc75b8b0"
   },
-  "physical_metadata_sha256": "2d8cbf6ab5f47c5cd1c7655dd9d02693f2ec43642d4bdab70b40f0492b0fc420"
+  "physical_metadata_sha256": "2d8cbf6ab5f47c5cd1c7655dd9d02693f2ec43642d4bdab70b40f0492b0fc420",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HaliyaGuidedByLight.java",
+  "java_sha256": "73f0864d894c89a9dcadaadeded1d030852a4b57abf390cd09c8e69a268680fe",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+      "sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouGainedLifeCondition.java",
+      "sha256": "06cb6119ec0f7d00b3abe52e2b8df92be8c337fe2ce31ca0d213e9d04fbb89d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ]
 }

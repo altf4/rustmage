@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3be44b3f2cfeb6fef355c1563439210f4dfe20d5f41398b862457d0c99df47ee"
   },
-  "physical_metadata_sha256": "4442009897e90a787ca885cc5980a3266023769e56ad095ea0ad6ee49085c377"
+  "physical_metadata_sha256": "4442009897e90a787ca885cc5980a3266023769e56ad095ea0ad6ee49085c377",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ConcealedWeapon.java",
+  "java_sha256": "cf6fae09b90e3bd38f6f5c0b4972ccc1335a2c7d172e28d28171f7d5c0e4d3b5",
+  "rules_tests": "src/engine_manifest.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    }
+  ]
 }
