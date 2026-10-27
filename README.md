@@ -21,9 +21,10 @@ The engine is available through a native Rust API and in-process Python bindings
 Your application supplies the bot, learning algorithm, and reward function;
 Rustmage supplies the game rules and state transitions.
 
-Six full sets are implemented: **Foundations**, **Lorwyn Eclipsed**,
-**Teenage Mutant Ninja Turtles**, **The Big Score**, **Secrets of Strixhaven**,
-and **Marvel Super Heroes**, with accepted rules and interaction assurance.
+Seven full sets are implemented across accepted branches: **Foundations**,
+**Lorwyn Eclipsed**, **Teenage Mutant Ninja Turtles**, **The Big Score**,
+**Secrets of Strixhaven**, **Marvel Super Heroes**, and **The Hobbit**, with
+accepted rules and interaction assurance.
 The long-term goal is complete Standard coverage; implementation of the wider
 card pool is still in progress. Standard games reject cards whose rules have not
 been implemented.
@@ -41,13 +42,13 @@ To explore the project:
 
 ## Standard set tracker
 
-**6 / 20 sets complete · 30%**
+**7 / 20 sets complete · 35%**
 
-`██████░░░░░░░░░░░░░░`
+`███████░░░░░░░░░░░░░`
 
-**2,868 / 5,164 unique Standard cards implemented across accepted branches · 56%**
+**2,992 / 5,164 unique Standard cards implemented across accepted branches · 58%**
 
-`███████████░░░░░░░░░`
+`████████████░░░░░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
@@ -58,18 +59,19 @@ Accepted [Lorwyn Eclipsed](https://github.com/altf4/rustmage/pull/463)
 and [TMNT](https://github.com/altf4/rustmage/pull/465) implementations are merged into
 `codex/portable-set-skill`; [BIG](https://github.com/altf4/rustmage/pull/470) is merged
 into `main`, alongside [Secrets of Strixhaven](https://github.com/altf4/rustmage/pull/477)
-and [Marvel Super Heroes](https://github.com/altf4/rustmage/pull/516). Marvel uses
+[Marvel Super Heroes](https://github.com/altf4/rustmage/pull/516), and
+[The Hobbit](https://github.com/altf4/rustmage/pull/523). Marvel uses
 [bounded card and interaction assurance](docs/msh-bounded-assurance-rebuild.json);
-its earlier full-game receipts are historical. The totals below combine accepted
-coverage by unique identity. The current `main`
-[coverage report](data/standard/coverage.json) separately admits 2,578 cards;
-its lower count does not undo accepted set milestones. Counts refreshed 2026-10-25.
+its earlier full-game receipts are historical.
+The totals below combine accepted coverage by unique identity. The current `main`
+[coverage report](https://github.com/altf4/rustmage/blob/main/data/standard/coverage.json) separately admits 2,702 cards;
+its lower count does not undo accepted set milestones. Counts refreshed 2026-10-26.
 
 <!-- Refresh supported counts from the union of accepted implementation branches,
      using their pinned set membership and coverage reports. Deduplicate by physical
      identity; never demote an accepted set using a checkout that lacks its merged
      integration branch. Keep current-main admission separate from accepted coverage.
-     This refresh unions main at 6751babd with codex/portable-set-skill at 91b4d6de.
+     This refresh unions main at 0986d146 and codex/portable-set-skill at 91b4d6de.
      Reconcile set acceptance with its rules/game evidence and published PR. -->
 
 | Set | Code | Supported cards | Implementation status |
@@ -91,7 +93,7 @@ its lower count does not undo accepted set milestones. Counts refreshed 2026-10-
 | Secrets of Strixhaven | SOS | 271/271 (100%) | ✅ Complete |
 | Tarkir: Dragonstorm | TDM | 127/276 (46%) | ⏳ Partial |
 | The Big Score | BIG | 30/30 (100%) | ✅ Complete |
-| The Hobbit | HOB | 69/193 (36%) | ⏳ Partial |
+| The Hobbit | HOB | 193/193 (100%) | ✅ Complete |
 | The Lost Caverns of Ixalan | LCI | 105/291 (36%) | ⏳ Partial |
 | Wilds of Eldraine | WOE | 150/281 (53%) | ⏳ Partial |
 
