@@ -284,23 +284,42 @@ fn hob_hunt_ability_suppression_reacquisition_and_token_doubling_are_current() {
     }
 }
 #[test]
-fn hob_hunt_reflexive_can_be_countered_and_staff_multiplies_actual_packets() {
+fn hob_hunt_reflexive_is_not_multiplied_but_staff_still_doubles_ordinary_triggers() {
     for p in [Player::P0, Player::P1] {
         for counter in [false, true] {
             let mut g = scenario(p);
             let h = head(&mut g, p);
             let staff = put(&mut g, p, "Wizard's Staff", Zone::Battlefield);
             assert!(g.attach_equipment(g.object_ref(staff), g.object_ref(h)));
+            assert_eq!(g.object_view(h).additional_triggers, 1);
+            // The same object's ordinary granted prowess still triggers twice.
+            let spell = put(&mut g, p, "Goldvein Pick", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
+            cast(&mut g, spell, None);
+            assert_eq!(
+                g.state.pending_triggers.len()
+                    + g.state.ordering_triggers.len()
+                    + g.state
+                        .stack
+                        .iter()
+                        .filter(|item| matches!(item.kind, StackKind::TriggeredAbility { .. }))
+                        .count(),
+                2
+            );
+            finish(&mut g);
+            assert_eq!(stats(&g, h), (6, 5));
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
             let v = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
             g.move_object(v, Zone::Graveyard);
             packet(&mut g);
-            assert_eq!(g.state.stack.len() + g.state.ordering_triggers.len(), 2);
+            assert_eq!(g.state.stack.len() + g.state.ordering_triggers.len(), 1);
             if counter {
                 let id = g.state.stack.last().unwrap().id;
                 assert!(g.counter_stack_item(id, false));
             }
+            assert_eq!(g.object_view(h).additional_triggers, 1);
             finish(&mut g);
-            assert_eq!(wolves(&g, p).len(), if counter { 1 } else { 2 });
+            assert_eq!(wolves(&g, p).len(), if counter { 0 } else { 1 });
         }
     }
 }

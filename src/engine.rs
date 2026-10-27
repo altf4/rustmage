@@ -6516,8 +6516,12 @@ impl Game {
             self.reveal_and_shuffle_zone_card(&before);
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
-        if let Some((ability, source)) = plan.reflexive {
+        if let Some((ability, mut source)) = plan.reflexive {
             debug_assert_eq!(destination, Zone::Exile);
+            // CR603.2d: an object's trigger multipliers do not apply to the
+            // reflexive ability created by its replacement ability. Preserve
+            // the real source and its ordinary triggers; this witness is owned.
+            source.additional_triggers = 0;
             self.queue_trigger(&source, usize::from(ability));
         }
         ZoneChange {

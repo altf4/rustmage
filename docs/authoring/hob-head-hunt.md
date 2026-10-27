@@ -17,7 +17,8 @@ conflict. Existing exact `@token/hob-wolf`5412 is green2/2Wolf, reused unchanged
 Rules authority: official2026-09-25 CR cached at
 `<cache>/rustmage-authoring/rules/MagicCompRules-20260925.txt`, SHA256
 8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca.
-CR113.7a/400.7 (independent old-source packet/new incarnation),603.12
+CR113.7a/400.7 (independent old-source packet/new incarnation),603.2d
+(object-trigger multipliers exclude created reflexive abilities),603.12
 (reflexive trigger),604.2 (static effect while present/available),614.6
 (replaced death event does not occur),616.1 (affected controller chooses among
 competing replacements),733.1 (selective failed-cast mana reversal) apply.
@@ -33,7 +34,7 @@ competing replacements),733.1 (selective failed-cast mana reversal) apply.
 | RIP and Colossus competition | actual Lotus Ring tap/sacrifice mana payment; choose Head=>Exile+Wolf, choose RIP=>Exile/noWolf, choose self-shuffle=>library/noWolf; indestructible doesn't stop sacrifice |
 | Simultaneous source departure | Head+opponent Bear die in one batch: HeadGY, BearExile, Wolf for old Head; opposing Heads both replaced withExile and each old source creates oneWolf |
 | Removal/reacquisition and copied source | paid Witness Protection suppresses replacement, removal restores; in-place copied Bear provides Head ability; blink/new Bear incarnation cannot overwrite queued old Head program/source |
-| Trigger interaction | real independent reflexive can be countered; Wizard's Staff makes2packets; counter1=>oneWolf; Doubling Season makes2tokens from one packet |
+| Trigger interaction | real independent reflexive can be countered; Staff does not multiply it (onepacket, counter=>zeroWolves); same equipped Head's ordinary granted prowess still doubles; Doubling Season makes2tokens from one packet |
 | Funding parity | projected Bolg sacrifice usesExile, no virtual death count or prematurely available Wolf; parent snapshot unchanged; actual paid mana matches and has one deferred packet |
 | Retained/reversed mana | actual Lotus Ring sacrifice during Candy Grapple cost proposal, foreign Aura attachment makes casualty1 unpayable; keep event=>same exile and exactlyone opposing Wolf; reverse=>source restored and noWolf; both seats/owned failure root |
 | Transaction/privacy/ownership | representative competing replacement and copied packet roots check wrong actor, invalid index, stale revision, raw/index, snapshots, both observations, restore and ancestor disposal; only affected controller sees replacement-choice view |
@@ -46,8 +47,9 @@ current control/types and copied providers participate. A selected source snapsh
 is carried only in an ephemeral Plan until actual successful movement commits.
 The post-success hook queues the existing ordinary reflexive triggered program;
 no token is made inline, and no packet is queued for a nonselected/prevented move.
-Frozen source availability, ability origin, program, controller and additional
-trigger count survive source departure or a later incarnation.
+Frozen source availability, ability origin, program and controller survive source
+departure or a later incarnation. Created reflexive packets exclude object-trigger
+multipliers under CR603.2d; the repair below clears only the owned witness count.
 
 **Public schema change:** ZoneReplacementKind adds
 `ExileReflexive { source: ObjectRef, ability: u16 }`. Equal exile destinations
@@ -55,8 +57,9 @@ remain distinct because choosing a Head has a different consequence from choosin
 RIP or another Head. Existing Exile/RevealShuffle/Battlefield values serialize
 unchanged. Pick/choice owned-byte accounting uses sizeof and includes the larger
 kind automatically. No new hot State fields, persistent provider histories or
-public keys are introduced. Root tentatively reserved schema162 for the next
-cohort; the exact next version must be coordinated with other accepted leaves.
+public keys are introduced. Root has now adopted central schema162. This vocabulary must advance the next
+coordinated schema (currently163); the exact version must be coordinated again if
+other leaves integrate first.
 The central schema file is intentionally untouched here. Integration must adopt
 the new public vocabulary and audit inherited rows before admission.
 
@@ -101,7 +104,7 @@ Prior receipts preserved under the same cache:
  after terminal. No card/engine rule repair. Compile30.67s,guard67.373459s,
  peak2568613888,noOOM/timeout/orphans.
 
-Final exact-source receipt `<cache>/rustmage-authoring/hob-head-hunt/run-5f8d524bfb844a21b5341aabfdf68a03`:
+Initial leaf receipt `<cache>/rustmage-authoring/hob-head-hunt/run-5f8d524bfb844a21b5341aabfdf68a03` (superseded by review repair below):
 original session97026 naturally terminal exit0, resource terminal=true/exit0;
 guard42.057303s including queue,compile29.76s,peak2556039168 bytes;
 oom/oom_kill0, no timeout/orphans. Eight positive groups:
@@ -111,7 +114,7 @@ oom/oom_kill0, no timeout/orphans. Eight positive groups:
 sum0.80s; bounded rules scenarios only, not a full-game production benchmark.
 Source pin checker5417definitions/1600blobs, rustfmt and diff check pass.
 
-Exact final source/receipt SHA256:
+Initial leaf source/receipt SHA256:
 
 ```text
 cfcdfb48a2486bd17c58c626a64ae66c9a1bc15ced3d302f3703c669a337c95a  src/cards.rs
@@ -146,3 +149,70 @@ f14a7d1b0ecbc7e063cb2622f317b74068295001d331569c32d5741d09fffad4  <cache>/rustma
 Remaining gates: two independent nonauthor reviews, coordinated schema adoption/
 inherited audits, integration and root full release acceptance. No known printed
 obligation or engine behavior blocker remains in this candidate.
+
+
+## Blocking review P1: created reflexive multiplier repair
+
+Base leaf3f3e2e6bceb1ac1bfc47ca9dd5c200fc08a8b68a had a rules bug and an
+incorrect assertion: it passed the source object's additional-trigger count into
+ordinary queue_trigger, so Wizard's Staff incorrectly doubled the newly created
+reflexive. Its initial70passes were not evidence for that erroneous expectation.
+Independent review identified CR603.2d: object-trigger multipliers apply to the
+object's own triggered abilities, not delayed/reflexive abilities created by its
+abilities. This repair corrects both implementation and the mistaken fixture.
+
+At the post-success replacement hook, Plan's owned frozen source witness now has
+additional_triggers set to0 before constructing its created reflexive packet.
+The actual object, its live multiplier query, the global ordinary trigger path,
+source availability/controller/program and all replacement selection/LKI facts
+are unchanged. This excludes Staff and every other object-trigger multiplier
+without preventing token-creation replacements such as Doubling Season.
+
+The corrected both-seat scenario pays2for Goldvein Pick on the same Staff-equipped
+Head. Its ordinary granted prowess produces2packets and changes4/3to6/5. The live
+Head still reports1additional trigger. A later opposing death produces exactly
+one created reflexive; resolve=>oneWolf, counter=>zeroWolves. The real retained/
+reversed mana failure now also equips the opposing Head with Staff: retain the
+approved mana event=>one restored reflexive/oneWolf, reverse=>noWolf/source
+restored. This discriminates against redoubling in journal restoration. Existing
+simultaneous source departure, opposing Heads, multiple chosen sources, RIP/
+Colossus choices, copies, suppression, funding, owned roots and ordinary trigger
+multiplicity regressions all reran in the same coherent family.
+
+Repair receipt:
+`<cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a`.
+Original session23989 naturally terminal exit0; resource terminal=true/exit0,
+guard35.629996s including queue,compile29.78s,peak2560102400 bytes; shared6GiB,
+1Cargo job/test thread, oom/oom_kill0, no timeouts/orphans. Same8positive groups:
+10own +3mana rollback +10funding +14ordinary multiplicity +14Balin +11library
++2RIP +6castrollback = **70executions/70unique,0failures/ignored**. Native reported
+execution total0.83s, not a complete-game performance claim. Persistent driver,
+complete outer.log redirection and per-group results retained from launch;
+inputs fixed to natural terminal, no cancellation/relaunch. Source pins5417/1600,
+rustfmt and diff check pass. No failed job in this repair iteration.
+
+The repair itself adds no wire fields or vocabulary. The original Head
+ExileReflexive vocabulary remains unadmitted; central162 was adopted elsewhere,
+so root must coordinate next163 adoption and inherited audits. Central schema
+file and generated artefacts remain excluded. Fresh TWO independent nonauthor
+reviews are required on this corrected leaf before integration.
+
+Repair exact source/receipt SHA256:
+
+```text
+83deded0f8f71c813e5e32442f420a6482590f9be08743fdaeb9a5fb9fb2029f  src/engine.rs
+af021c1b161872c9d0a815d8712e0dfa3a0c311638210047fd30f086e68ad5da  src/assurance/hob_head_hunt.rs
+8bd6badb7b88759f0863e4253cb4495d3431b491eed8a2bc6b055e75cb84c7d9  src/assurance/hob_head_hunt_rollback.rs
+112981cbfbcf7ad5e8b47cc8bcd8e8450f6dfd10b5fdbf35de1c4d25be887969  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/resource.json
+5fd8b82d3ffc6f57265177d8fa24fd2d479da554682b21e744a9dae54d1a1721  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/results.json
+b99b516ff4bd448b5338f013a9248f2cee075db910d4540b6e1e9bf8396a1434  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/driver.py
+87ce0ec8fa0cd2a0cc79a0e4a5c508a8b7b49abb0955163549a1ce073cba48d3  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/outer.log
+1bf577d4532698e769e33c2b85671ee962a0937291b9884faed15b3a1dbe41ca  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/0-hob_hunt_.log
+45112690950895ccf1d03a3972bdcd980bd3a204e66befad101778e9946cb84f  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/1-sos_mana_rollback_.log
+b939bcb8c266e13e5a9c124d7bfce0be877175f119c14aec46b39c44b72433cc  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/2-hob_sacrifice_funding_.log
+1cee2a6416d93edbabd7494da307cb901d04b09fd176e39e5c3c1fdaf9323090  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/3-hob_extra_triggers_.log
+f8f5579986be986e9551838eb7a818214958f18d2cbc2ca1b28d7095577ee564  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/4-hob_balin_.log
+26ccb636dd4e2e74ae593cba93f9187469741c6e989bc70e90761b5b201314e4  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/5-big_library_tests.log
+0720a7c75d414eb29343251c5871ad4150d8ea0fdf6b5d1d7df34451a8e06477  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/6-big_rest_in_peace.log
+fe8a865d34a5fc6cd4e664f314cb8c74c8770c900feab5b9addb15858fc61560  <cache>/rustmage-authoring/hob-head-hunt/run-05c65c6cd34349acade402b48f96c85a/7-cast_rollback.log
+```

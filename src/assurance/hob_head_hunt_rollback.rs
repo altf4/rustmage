@@ -7,6 +7,9 @@ fn hob_hunt_mana_rollback_keeps_exact_reflexive_packet_once_or_reverses_it_entir
             let (mut g, silver, enemy, prison) = setup(p);
             let h = put(&mut g, p.other(), "Head of the Hunt", Zone::Battlefield);
             let source = g.object_ref(h);
+            let staff = put(&mut g, p.other(), "Wizard's Staff", Zone::Battlefield);
+            assert!(g.attach_equipment(g.object_ref(staff), source));
+            assert_eq!(g.object_view(h).additional_triggers, 1);
             let fodder = put(&mut g, p, "Fanatical Firebrand", Zone::Battlefield);
             g.state.objects[fodder as usize].growth.power = -1;
             let ring = put(&mut g, p, "Lotus Ring", Zone::Battlefield);
