@@ -38,7 +38,7 @@
       "note": "No admitted second draw-replacement provider for an ordering fixture; zero-match filter excluded."
     }
   ],
-  "status": "173-card full release passed at exact 96dcb190; independent terminal receipt audits and whole193/final published PR acceptance remain open.",
+  "status": "173-card full release and independent terminal receipt audits passed; whole193/final published PR acceptance remains open.",
   "integrated_recording": {
     "head": "c059f99a6c6a5287dcf15151ae033d8f506251a5",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated173-1",
@@ -688,6 +688,9 @@
       "restore_ns": 213.49115,
       "seconds": 0.041640062
     },
-    "terminal_independent_reviews": "Pending two independent receipt audits."
+    "terminal_independent_reviews": [
+      "hob_review_rules: approved exact 96dcb190 and all thirteen immutable libraries",
+      "hob_review_contracts: approved exact 96dcb190 and all thirteen immutable libraries"
+    ]
   }
 }
