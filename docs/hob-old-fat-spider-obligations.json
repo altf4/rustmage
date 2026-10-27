@@ -1,0 +1,65 @@
+{
+  "card": "Old Fat Spider Can't See Me",
+  "base": "5b359ef7",
+  "oracle": {
+    "mana": "{2}{U}",
+    "type": "Enchantment — Saga",
+    "obligations": [
+      "I: target creature you control gains hexproof for as long as this Saga remains on battlefield.",
+      "II: prevent damage by up to one target creature for as long as this Saga remains on battlefield.",
+      "III and IV: draw a card.",
+      "Entry lore, precombat main lore, final-chapter sacrifice."
+    ]
+  },
+  "source": "Pinned Oracle facts and explicit inventory absence; git grep of exact pinned XMage revision returns no name/class. Saga, target ability and damage prevention analogues are pinned with official comprehensive rules reference in paired provenance. Source checker passed after recording required analogues and rules authority.",
+  "implementation": "Uses typed chapter triggers and source-linked exact incarnations. Hexproof is a timestamped layer-six grant; prevention enters the affected-player damage replacement choices and respects unpreventable damage. A departed damage-source incarnation remains referenced until the Saga leaves, while a new incarnation is distinct.",
+  "wire": "Leaf changes schema 160 to 161 for GrantHexproof, PreventDamageBy and SourceLinkedDamage public enum values. Root must advance to 162 if another 161 cohort lands first.",
+  "coverage": [
+    "Paid Saga and four chapters, own-creature target and opponent hexproof legality, optional zero or one target, owner-hidden chapter draws and final sacrifice for both seats.",
+    "Real combat, activated ability from departed source, noncombat source-specific damage, source blink/new incarnation, two independent Saga providers and prevention ordering; unpreventable damage, source departure and stale targets.",
+    "Hexproof later ability-removal timestamp and restoration; owned branch/restore at target and damage prevention choices."
+  ],
+  "limits": [
+    "No card-specific XMage class exists; pinned helpers are analogues, not asserted as the card implementation.",
+    "Review source-linked prevention retention for old damage sources against CR and source incarnation lifecycle. Full integration validation and two independent reviews remain."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "result": "3 initial card scenarios passed.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/59063dd733c241a899c8e204b19fe912.json"
+    },
+    {
+      "run": 2,
+      "result": "6 Saga, 4 Roll, 3 Killian, 5 damage-replacement pass; source_linked filter matched zero.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/de262390455448f899d3215491218e4a.json"
+    },
+    {
+      "run": 3,
+      "result": "8 Saga, 4 Roll, 3 Killian, 5 damage-replacement pass; source_linked filter matched zero.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/633d6a35659441be9c9f5e9077de9a5a.json"
+    },
+    {
+      "run": 4,
+      "result": "Final inputs: 8 Saga, 4 Roll, 3 Killian, 5 damage-replacement pass; source_linked filter matched zero.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/8b3ed541af4f4d5ea610bba77159f1ba.json"
+    },
+    {
+      "run": 5,
+      "result": "1 linked-control Civil War and 4 ability-removal tests pass; damage_prevention filter matched zero.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/d6b776bfe1fb45a1956fe630537fe95d.json"
+    }
+  ],
+  "receipts": "/home/altf4/.cache/rustmage-authoring/hob-old-fat-spider",
+  "source_sha256": {
+    "data/observation-schema.txt": "ed0f61e6f6796d3d9f1ec1eb3851c8743e8b78c793741b0b4ba541e9e8a0313c",
+    "src/cards.rs": "a7ced60013cab0a8b03e8800b599915ff1962f07505adbbeef7c8e73dd5084ad",
+    "src/engine_ability_evaluation.rs": "ad76c7a41b4a1a598aa1d954350aec28b485d66a0be982788db6b64ddbdaf8b5",
+    "src/engine_programs.rs": "c311f18e9f679f5b6d25d741f69a8a0ae19b1f9b74c14f9e5e782dee1c98a096",
+    "src/engine_replacements.rs": "7433443690366704ed6b56b08aa375c270f229947a07818154622882d92f144d",
+    "src/engine_source_linked_effects.rs": "23165c2c8eda137b68e0bc5f67ed0e5e2e720ebeb632ebb608bf9e776ea5fad9",
+    "src/card_definitions/hob/old_fat_spider_can_t_see_me.rs": "c3d96e0212ad2442e5409306f6dd00f67776687f49153cb3888e5ec7344a8f30",
+    "src/card_definitions/hob/old_fat_spider_can_t_see_me.json": "a5d8b1e9e802d3683242d6d05493ae76b77ba65a3adec52a7a6efe969291b130",
+    "src/assurance/hob_old_fat_spider.rs": "b10854429091863a352c787e5b99009dfac8bb5361a872ad3bb8c87e1d6c9f66"
+  }
+}

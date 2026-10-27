@@ -5038,6 +5038,15 @@ impl Game {
                         SourceLinkedEffectKind::RemoveAbilities,
                     );
                 }
+                Instruction::GrantTargetHexproofUntilSourceLeaves => {
+                    self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::GrantHexproof);
+                }
+                Instruction::PreventTargetDamageUntilSourceLeaves => {
+                    self.resolve_source_linked_effect(
+                        &item,
+                        SourceLinkedEffectKind::PreventDamageBy,
+                    );
+                }
                 Instruction::PreventTargetUntapWhileSourceControlled => {
                     self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::PreventUntap);
                 }

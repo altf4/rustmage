@@ -23,6 +23,7 @@ pub enum DamagePreventionKind {
     CombatToRecipient,
     ProtectionEverything,
     ProtectionInstantSorcery,
+    SourceLinkedDamage,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct DamagePreventionView {
@@ -560,6 +561,21 @@ impl Game {
         }
         if !event.preventable || self.state.damage_prevention_prohibited {
             return out;
+        }
+        if let Some(roles) = &self.state.roles {
+            for row in &roles.source_linked_effects {
+                if row.kind == SourceLinkedEffectKind::PreventDamageBy
+                    && source_linked_effects::active(self, row)
+                    && row.recipient == event.source.reference
+                    && !used.contains(&(row.source, DamagePreventionKind::SourceLinkedDamage))
+                {
+                    out.push(DamagePreventionView {
+                        source: row.source,
+                        source_card: self.state.objects[row.source.card as usize].card,
+                        kind: DamagePreventionKind::SourceLinkedDamage,
+                    });
+                }
+            }
         }
         if event.combat && event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY) {
             out.push(DamagePreventionView {

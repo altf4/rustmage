@@ -281,6 +281,8 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                                 matches!(fragment, StaticAbilityFragment::HarnessedTrigger(_))
                             })
                         })
+            }) || r.source_linked_effects.iter().any(|row| {
+                row.kind == SourceLinkedEffectKind::GrantHexproof && source_linked_effects::active(world, row)
             }) || r.keyword_effects.iter().any(|row| {
                 (matches!(
                     world.object(row.recipient.card).zone,
@@ -431,17 +433,24 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             }
         }
         for row in &state.source_linked_effects {
-            if row.kind == SourceLinkedEffectKind::RemoveAbilities
-                && source_linked_effects::active(world, row)
-            {
-                effects.push(LayerSixEffect {
-                    provider: None,
-                    started_earlier: false,
-                    timestamp: row.timestamp,
-                    recipients: vec![row.recipient.card],
-                    action: LayerSixAction::Remove,
-                });
+            if !source_linked_effects::active(world, row) {
+                continue;
             }
+            let action = match row.kind {
+                SourceLinkedEffectKind::RemoveAbilities => LayerSixAction::Remove,
+                SourceLinkedEffectKind::GrantHexproof => LayerSixAction::Grant {
+                    keywords: Keywords::HEXPROOF,
+                    abilities: Vec::new(),
+                },
+                _ => continue,
+            };
+            effects.push(LayerSixEffect {
+                provider: None,
+                started_earlier: false,
+                timestamp: row.timestamp,
+                recipients: vec![row.recipient.card],
+                action,
+            });
         }
         for row in &state.keyword_effects {
             let object = world.object(row.recipient.card);
