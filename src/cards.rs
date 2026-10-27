@@ -400,10 +400,12 @@ pub enum EntryChoiceValue {
     CardName(crate::CardName),
     Color(ChoiceColor),
     CreatureType(CreatureType),
+    ManaValueParity(crate::engine::ManaValueParity),
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EntryChoiceKind {
     CardNameAfterOpponentHand,
+    ManaValueParity,
     LandCardName,
     Color,
     CreatureType,
@@ -418,7 +420,8 @@ impl EntryChoiceKind {
             (
                 Self::CardNameAfterOpponentHand,
                 EntryChoiceValue::CardName(_)
-            ) | (Self::Color, EntryChoiceValue::Color(_))
+            ) | (Self::ManaValueParity, EntryChoiceValue::ManaValueParity(_))
+                | (Self::Color, EntryChoiceValue::Color(_))
                 | (Self::CreatureType, EntryChoiceValue::CreatureType(_))
         )
     }
@@ -2689,6 +2692,7 @@ pub(crate) enum CastFilter {
     NotOwnedByYou,
     HasX,
     SourceChosenColor,
+    SourceChosenManaValueParity,
     PermanentAdventure,
     Any,
     Creature,
@@ -2742,6 +2746,7 @@ impl CastFilter {
             // Contextual cast observers use Game::cast_filter_matches instead.
             Self::NotOwnedByYou
             | Self::SourceChosenColor
+            | Self::SourceChosenManaValueParity
             | Self::Targeted { .. }
             | Self::InstantSorceryOrdinal(_)
             | Self::NonCreatureOrdinal(_) => false,

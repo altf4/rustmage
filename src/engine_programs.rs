@@ -1172,6 +1172,10 @@ impl Game {
             CastFilter::NotOwnedByYou => {
                 spell_owner.is_some_and(|owner| owner != source.controller)
             }
+            CastFilter::SourceChosenManaValueParity => {
+                matches!(source.entry_choice, Some(EntryChoiceValue::ManaValueParity(parity))
+                    if parity.matches(mana_value))
+            }
             CastFilter::SourceChosenColor => {
                 matches!(source.entry_choice, Some(EntryChoiceValue::Color(color)) if card.colors() & (1 << color.index()) != 0)
             }

@@ -1,13 +1,13 @@
 //! Resolution-owned parity choice and one frozen, untargeted destruction batch.
 use super::*;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ManaValueParity {
     Odd,
     Even,
 }
 impl ManaValueParity {
-    fn matches(self, value: u64) -> bool {
+    pub(super) fn matches(self, value: u64) -> bool {
         (value % 2 == 1) == (self == Self::Odd)
     }
 }

@@ -1,0 +1,60 @@
+{
+  "card": "Gollum, Riddle Master",
+  "base": "eb9f6ffd",
+  "oracle": {
+    "mana": "{1}{B}",
+    "type": "Legendary Creature — Halfling Horror",
+    "stats": "3/1",
+    "obligations": [
+      "As Gollum enters choose odd or even; zero is even.",
+      "Whenever an opponent casts a spell with mana value of the chosen quality, select one mode not previously chosen for this ability incarnation.",
+      "Counter, opponent loses two and controller gains two, or draw a card."
+    ]
+  },
+  "source": "Pinned facts and explicit absence inventory, plus git grep of exact XMage revision for card identity/class. Demonic Pact, Ashling parity, parity predicate and mode-history hint are pinned analogues, not a card implementation. Official comprehensive rules and check_sources verification recorded in paired provenance.",
+  "implementation": "As-enters public parity choice is owned by entry transaction and funding worlds. Opponent cast filter checks the actual spell stack mana value including X; existing lifetime ModalOnce history freezes choices when triggers are placed and keys them by source incarnation.",
+  "wire": "New EntryChoiceKind/EntryChoiceValue parity vocabulary advances leaf schema 162 to 163; root coordinates if another public cohort advances first.",
+  "coverage": [
+    "Actual paid card, both seats and both entry choices, choice-owner validation, entry rollback, and raw/index/restore branch contract.",
+    "Actual X=0 and X=1 spells, zero-mana Mox, nonmatching parity, own-cast exclusion, opponent spell copy not cast, actual Adventure face with different front mana value.",
+    "All three modes, repeated-mode rejection, exhausted history, reentry resets history, stacked concurrent choices reserved before resolution, controller change after trigger, source reincarnation, and counter replacement."
+  ],
+  "limits": [
+    "XMage card class absent; pinned sources are comparable helpers only.",
+    "Owned branch helper checks representative entry and mode boundaries; the copy effect test uses the existing captured-copy mechanic directly. Two nonauthor reviews and integrated release validation remain."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "result": "1 passed, one test failed because it treated the copy helper return (retarget pause) as copy success; corrected and verified resulting copied spell.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/5e932940baf84e9580274a136ad57537.json"
+    },
+    {
+      "run": 2,
+      "result": "3 card scenarios passed, including Adventure.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/dee5fdf1063d4d2185477c8b05763cdc.json"
+    },
+    {
+      "run": 3,
+      "result": "5 card, 3 riddles, 6 modal, 12 entry-choice and 15 Adventure tests passed.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/3a80255f1e7d4991b077457379db587c.json"
+    },
+    {
+      "run": 4,
+      "result": "Final source: 6 card, 3 riddles, 6 modal, 12 entry-choice and 15 Adventure tests passed.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/3bf0556f91be442db2e16e43966f1ac5.json"
+    }
+  ],
+  "receipts": "/home/altf4/.cache/rustmage-authoring/hob-gollum-riddle",
+  "source_sha256": {
+    "data/observation-schema.txt": "a0712feefe5a1f6d8376363fb8530f5b668989067683e5e475d385e4bc063257",
+    "src/cards.rs": "531725dd86c3de347f00d2f2f0a3029792d703dae8d4cdcfcb1316fd23d3afb6",
+    "src/engine_entry_choices.rs": "988fca5160db91d46b45d86d1b67ee6dd8fbff9d6bd2be4a0ddc61a089b78bec",
+    "src/engine_funding_entries.rs": "64f2a6350ea5f82078ef8bd62f76e755c19301923e4a87a0cc1689153e8949d7",
+    "src/engine_mana_value_parity.rs": "5f84e40e78089ae39f46aed7454869d2e869e04b606143671674d8f67e910537",
+    "src/engine_programs.rs": "539fe1ff35f14bb89a0591c3e74ae56746ad6f48df5da709b5c93abc4946594c",
+    "src/card_definitions/hob/gollum_riddle_master.rs": "73a517ad75139bd2ad4e45a8ce0fc1da6d44f55e01e940c0fc07285960a3747e",
+    "src/card_definitions/hob/gollum_riddle_master.json": "7dc8e864632658968fd502d9127ed6b8ef9a25d4955e606f3d907d80d50d72a0",
+    "src/assurance/hob_gollum_riddle.rs": "8c6ad8e1a8b26f18af19877756b00f43571a27c56f77f26d7af1749918affbf8"
+  }
+}

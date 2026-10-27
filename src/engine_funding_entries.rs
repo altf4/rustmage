@@ -666,6 +666,11 @@ impl FundingState<'_> {
         {
             let mut choices = Vec::new();
             match kind {
+                crate::cards::EntryChoiceKind::ManaValueParity => choices.extend(
+                    [ManaValueParity::Odd, ManaValueParity::Even]
+                        .into_iter()
+                        .map(EntryChoiceValue::ManaValueParity),
+                ),
                 crate::cards::EntryChoiceKind::Color => choices.extend(
                     crate::cards::ChoiceColor::ALL
                         .into_iter()

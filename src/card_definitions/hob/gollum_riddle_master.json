@@ -3,10 +3,44 @@
   "catalogue_id": 1828,
   "oracle_id": "514b451b-814d-45fb-a2ba-8fe6f0bdad60",
   "facts_sha256": "794e5512b3a2956c81d1cfd10da0127189125db784f4a02e62ce426e76ed0378",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c6dba137fddf1b0f956f26d8ca3a904375191206e85b55df07dce4a1683c1232"
   },
-  "physical_metadata_sha256": "b45641880ef65ab7b88ef334fa755142b76763ab9be9629c2616dbec89822e56"
+  "physical_metadata_sha256": "b45641880ef65ab7b88ef334fa755142b76763ab9be9629c2616dbec89822e56",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "514b451b-814d-45fb-a2ba-8fe6f0bdad60",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "Pinned inventory has xmage_name:null and implementations:[]; the full pinned Mage.Sets and Mage source trees contain no Gollum Riddle Master identity class. Historical typed_lift is not executable evidence."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/d/DemonicPact.java",
+      "sha256": "a44b6f3897f3202a1451c448fca49ad0dfd2bfebc44319bb50084c7c3c5fbb2d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/a/AshlingsPrerogative.java",
+      "sha256": "1b8b1bbd38d4576742ccdd4eb51e3b00eb3844d8b88168a2ee57f210c223a917"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValueParityPredicate.java",
+      "sha256": "09fc9639126db8b3a71d2bb3484c18b5e1674dad5ae95fc8d9d7bdb13842981d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/common/ModesAlreadyUsedHint.java",
+      "sha256": "5aedbaf1b02deb4abeb43229898bea6e1563ecb1ede9a2cf77ed9e3ccac4b737"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf",
+    "section": "CR 107.3, 109.3, 202.3, 400.7, 603, 700.2",
+    "notes": "Oracle body is pinned in facts; chosen parity is an as-enters choice, triggering uses the cast spell mana value including X, and modal selections are tracked by ability incarnation. XMage helpers are analogues, not a card class."
+  }
 }
