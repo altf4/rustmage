@@ -50,7 +50,7 @@
       "note": "Paid resolution casting and nonhand reduction use actual chosen face and origin."
     }
   ],
-  "status": "181-card full release passed at exact 76cd9e8c; independent terminal receipt audits and whole193/final published PR acceptance remain open.",
+  "status": "181-card full release passed at exact 76cd9e8c and was independently audited by hob_review_rules and hob_review_contracts, including all sixteen immutable libraries; whole193 and final published PR acceptance remain open.",
   "integration_attempts": [
     {
       "head": "57f96ab6",

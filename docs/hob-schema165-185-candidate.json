@@ -1,0 +1,61 @@
+{
+  "scope": "185 local HOB candidates; 8 gated. Entire 193-card set and final published PR remain open.",
+  "schema": 165,
+  "schema_changes": [
+    "Thranduil graveyard-borrowed actions and views",
+    "Decree free exile cast action and permission",
+    "Last Light Quest counter and private hand/library search choice and optional view"
+  ],
+  "prior_release": {
+    "head": "76cd9e8ce64886e6029f4d36220c75177e54a5d9",
+    "report": "<cache>/rustmage-validation-kpa9uzkw/report/result.json",
+    "native_passed": 1191,
+    "python_passed": 8,
+    "all_nine_pass": true,
+    "terminal_receipt_reviews": [
+      "hob_review_rules: approved exact release and all sixteen immutable libraries",
+      "hob_review_contracts: approved exact release and all sixteen immutable libraries"
+    ]
+  },
+  "cohorts": [
+    {
+      "card": "Thranduil, the Elvenking",
+      "leaf": "debc5bfb3f23455592b0f50c4c14662d529a13df",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "native_tests": 91
+    },
+    {
+      "card": "Thranduil\u2019s Decree",
+      "leaf": "0c95dde88f651058e58976baf0348a632dc8ae47",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 66
+    },
+    {
+      "card": "Down in the Valley",
+      "leaf": "aa45f4e5115b4b1b80c365948c3f287aa6317d69",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 55,
+      "executions": 56
+    },
+    {
+      "card": "Last Light of Durin\u2019s Day",
+      "leaf": "7e4404e54a61c117c450a12426dbccbc65171360",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 40,
+      "note": "No admitted noncreature Dragon fixture exists; generic noncreature entry and actual Changeling are separately tested."
+    }
+  ],
+  "status": "Integrated recording, independent combined review, full release, whole-set games and final published PR remain open."
+}

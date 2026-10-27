@@ -3343,6 +3343,10 @@ mod notary_tests;
 #[cfg(test)]
 #[path = "assurance/hob_supper_funding.rs"]
 mod hob_supper_funding;
+
+#[cfg(test)]
+#[path = "assurance/hob_thranduil_funding.rs"]
+mod hob_thranduil_funding;
 impl Game {
     pub(super) fn attack_tax_fundable(&self, player: Player, generic: u32) -> bool {
         let goal = FundingGoal {

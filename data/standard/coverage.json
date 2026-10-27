@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "fc170b0b9b577b0f5156de38a65508f6b62ac76010c82d36dbe1eb3af904ddd6",
+  "catalogue_version": "0283b3519a26df0060ea94dea46b455c85fb3e9e8781e2aee881f4ca1d6daba8",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2690,
-  "implemented_total": 2696,
+  "implemented_standard_cards": 2694,
+  "implemented_total": 2700,
   "token_definitions": 132,
   "emblem_definitions": 3,
   "adventure_definitions": 45,
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 176,
-      "gated": 12
+      "complete": 180,
+      "gated": 8
     },
     "hoc": {
       "total": 5,
@@ -9340,8 +9340,8 @@
     {
       "name": "Down in the Valley",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/down_in_the_valley.rs",
       "set": "hob"
     },
@@ -19804,8 +19804,8 @@
     {
       "name": "Last Light of Durin's Day",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/last_light_of_durin_s_day.rs",
       "set": "hob"
     },
@@ -36668,8 +36668,8 @@
     {
       "name": "Thranduil's Decree",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/thranduil_s_decree.rs",
       "set": "hob"
     },
@@ -36684,8 +36684,8 @@
     {
       "name": "Thranduil, the Elvenking",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/thranduil_the_elvenking.rs",
       "set": "hob"
     },

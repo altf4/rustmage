@@ -16,7 +16,7 @@ Existing ExilePlayPermission gains omitted-false `without_paying_mana_cost` and 
 
 Public Action::AnnounceExileFree {card,face,flash_surcharge} selects only this route. Actual and preview configuration clears unrelated paid-exile spending/replacement/stash flags, preserving independent Inside Information/life and paid routes. It uses existing CastMethod::Free (X0), target/extra-cost/funding flow and cast rollback checkpoint. A private shared preview wrapper adds explicit independent-free configuration; existing permission callers retain their original configuration. Policy gives the new cast action the existing cast-announcement priority.
 
-These are new public field/expiry/action values: central163 was accepted at authoring; root must coordinate164 or later plus inherited-row audits. This leaf does not edit central schema or old trace baselines.
+These are new public field/expiry/action values: central 163 was accepted at authoring; central 164 was accepted before integration, so root must coordinate 165 or later plus inherited-row audits. This leaf does not edit central schema or old trace baselines.
 
 ## Obligations and assertion map
 
