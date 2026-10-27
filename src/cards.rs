@@ -1463,6 +1463,8 @@ pub(crate) enum Instruction {
     ReturnSourceWithCounterAndEquipment(CounterKind),
     /// Return the exact death-event card, then modify only its actual entrant.
     ReturnSourceBlankWithHaste,
+    /// Return this exact Aura from your graveyard already attached to its target.
+    ReturnSourceAuraAttached,
     ReturnSourceToBattlefield {
         tapped: bool,
     },

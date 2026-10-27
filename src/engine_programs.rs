@@ -2918,6 +2918,19 @@ impl Game {
                 Instruction::ReturnSourceWithCounterAndEquipment(counter) => {
                     self.return_source_with_equipment(&item, counter);
                 }
+                Instruction::ReturnSourceAuraAttached => {
+                    if self.object_ref(item.card) == item.object
+                        && self.state.objects[item.card as usize].zone == Zone::Graveyard
+                        && self.state.objects[item.card as usize].owner == item.controller
+                        && let Some(target) = item.targets.first().and_then(|bound| bound.object)
+                        && self.aura_can_enchant(item.source_card, item.controller, target)
+                    {
+                        let mut movement = self.entry_move(item.card, Zone::Battlefield, false);
+                        movement.controller = item.controller;
+                        movement.attachment = Some(target);
+                        self.stage_entries(vec![movement], None);
+                    }
+                }
                 Instruction::ReturnSourceToBattlefield { tapped } => {
                     if self.object_ref(item.card) == item.object
                         && self.state.objects[item.card as usize].zone == Zone::Graveyard
