@@ -53,7 +53,7 @@
     ],
     "status": "Provisional 24-game prototype passed with the full-pool gate temporarily disabled; subsequent full-pool gated verification and separate benchmark passed and are recorded below."
   },
-  "status": "All 193 candidates linked, full release, gated game verification and named benchmark passed with independent local audits; single new PR and two independent nonauthor published-head reviews remain open.",
+  "status": "All 193 candidates linked; local release, gated games and named benchmark passed with independent audits. Published CI timed out during release compilation; a bounded wall-clock adjustment requires fresh CI and final published-head reviews.",
   "preliminary_clippy": {
     "head": "18be28ac0586027c962f364228c2b9449888c738",
     "report": "<cache>/rustmage-authoring/hob-complete-set/final-clippy/first.log",
@@ -1093,5 +1093,12 @@
     "elapsed_wall_seconds_approx": 42701,
     "new_candidates_per_hour_approx": 10.45,
     "scope": "Whole-goal elapsed wall time including parallel authoring, shared mechanics, reviews, waits, integration and validation; approximate rate for this task only."
-  }
+  },
+  "published_ci_attempts": [
+    {
+      "head": "e5b637b72db8b877ccc671ac1d78a518e6b8ee1c",
+      "run": "https://github.com/altf4/rustmage/actions/runs/40445446561",
+      "result": "Source pins, format, card format, script contracts, Clippy and all native assurance passed. The 540-second total validation budget expired after 180.968 seconds of release compilation; no compiler or rules failure was reported. Increased the CI job/step/total wall-clock allowances for the complete cold run without changing the resource guard memory or concurrency caps."
+    }
+  ]
 }
