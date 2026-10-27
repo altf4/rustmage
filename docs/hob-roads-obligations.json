@@ -11,15 +11,16 @@
     ]
   },
   "source": "Complete Oracle body and pinned XMage absence plus analog helper sources recorded in paired provenance; source verification passed for 5417 definitions and 1604 source blobs.",
-  "implementation": "Exact-incarnation linked exile choice; a player-duration delayed trigger packet survives the Saga and fires once per nonempty attack declaration; generic scaled effect reads the Plains count at resolution. Public Action::ChooseLinkedExile, pending decision linked_exile and Observation.delayed_attack_this_turn require schema 163 or the next central schema.",
+  "implementation": "Exact-incarnation linked exile choice; a player-duration delayed trigger packet survives the Saga and fires once per nonempty attack declaration; generic scaled effect reads the Plains count at resolution. Public Action::ChooseLinkedExile, pending decision linked_exile and Observation.delayed_attack_this_turn require schema 164 or the next central schema after accepted 163.",
   "coverage": [
     "Actual paid cast, 0/1/2 basic Plains choices, Forest rejection, private search and publicly visible exile, individually selected return, both seats and owned branch/restore.",
     "Chapter IV before and after Saga departure, two attacks, opponent and player target rejection, current Plains count including nonbasic Hallowed Fountain, Plains departure before resolution, cleanup expiry and owned branch/restore.",
-    "Search, attack declaration and trigger multiplicity regressions."
+    "Search, attack declaration and trigger multiplicity regressions.",
+    "Both seats: actual two Saga links and Saga reentry; reject cross-source and stale exiled incarnations transactionally and return each valid linked card to its owner. Transfer Saga control before IV resolves; only frozen trigger controller attacks create a trigger, actor is checked, changed-control and blinked targets fail, and a separate legal target grows."
   ],
   "limitations": [
-    "No specific actual replacement interaction, invalidated target during resolution, cross-Saga link isolation, or controller change scenario is proven by these tests; independent review should examine these paths.",
-    "Independent nonauthor reviews, central catalogue/module regeneration and release validation remain. Schema 163 is a leaf proposal requiring central reconciliation."
+    "No specific actual replacement interaction is proven by these tests; independent review should examine this path.",
+    "Independent nonauthor reviews, central catalogue/module regeneration and release validation remain. Public vocabulary requires central schema 164 or later."
   ],
   "runs": [
     {
@@ -41,6 +42,26 @@
         "/home/altf4/.cache/rustmage-build-reports/ace9434dfe47486eaebbbcc3031500e8.json",
         "/home/altf4/.cache/rustmage-build-reports/1e79857c53804778838af00a7a0f7ce6.json"
       ]
+    },
+    {
+      "run": 4,
+      "result": "Compile failed: missing test-only ResumeMode import; no tests ran. Corrected after natural termination.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/77a179c53e4b43409d49607bc70dfe19.json"
+    },
+    {
+      "run": 5,
+      "result": "4 card tests passed including reviewer-requested interactions",
+      "report": "/home/altf4/.cache/rustmage-build-reports/24f411554ff142a287a0eb14c48eb5ed.json"
+    },
+    {
+      "run": 6,
+      "result": "29 search, 26 Desert Were-Worm, 13 Dáin and 13 trigger-multiplicity tests passed",
+      "reports": [
+        "/home/altf4/.cache/rustmage-build-reports/2e3d178e5be845b6981a0f095c554f00.json",
+        "/home/altf4/.cache/rustmage-build-reports/fe4d38d368ce4098aa25dc8abfe1d24e.json",
+        "/home/altf4/.cache/rustmage-build-reports/32e80b6865cc482da6ab77f5b5febd70.json",
+        "/home/altf4/.cache/rustmage-build-reports/8f6e4e110a6f4a2a9dfa5ffe5f32c716.json"
+      ]
     }
   ],
   "receipts": "/home/altf4/.cache/rustmage-authoring/hob-roads",
@@ -53,6 +74,6 @@
     "src/policy.rs": "19819e1abb70b4e18c844dbb984ffa15cc1ff2321b6310f361ed8f633d13fe72",
     "src/card_definitions/hob/roads_go_ever_ever_on.rs": "e78c2b89aa55325a5b9e25b2cebcbf5e4ca404c8e260f6cb9f859d27d4437ee5",
     "src/card_definitions/hob/roads_go_ever_ever_on.json": "2f6778e0c502b6771516982156cb57196fa5f6d96680e299177a7e288c84d471",
-    "src/assurance/hob_roads.rs": "10dfba21834d3f531980f12f05d07852c0c1b2db6aadc319e18bf0cfb022d318"
+    "src/assurance/hob_roads.rs": "5af10c5416a724002bfd9695a0d6c8a75fb5991ffbf0edcb3bbb346592d23273"
   }
 }
