@@ -351,12 +351,13 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
-            AmountValue::ReflexiveSacrificedPower => item
-                .sacrificed_power
-                .as_deref()
-                .copied()
-                .unwrap_or(0)
-                .max(0) as u128,
+            AmountValue::ReflexiveSacrificedPower | AmountValue::SacrificeCostPower => {
+                item.sacrificed_power
+                    .as_deref()
+                    .copied()
+                    .unwrap_or(0)
+                    .max(0) as u128
+            }
             AmountValue::TargetCreaturePower => {
                 let r = self.state.resolving.as_ref().unwrap();
                 r.target_card_facts

@@ -401,6 +401,7 @@ impl Game {
             | AmountValue::ColorsSpent
             | AmountValue::SacrificedPower
             | AmountValue::ReflexiveSacrificedPower
+            | AmountValue::SacrificeCostPower
             | AmountValue::TargetCreaturePower
             | AmountValue::SourceLastKnownPower
             | AmountValue::SacrificedToughness

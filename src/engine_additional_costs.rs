@@ -674,6 +674,16 @@ impl Game {
                 }) {
                     a.item.sacrificed_toughness = Some(Box::new(self.stats(object.card).toughness));
                 }
+                if a.item.program().is_some_and(|(_, program)| {
+                    program.iter().any(|i| {
+                        matches!(
+                            i,
+                            Instruction::DrawScaled(_, AmountValue::SacrificeCostPower)
+                        )
+                    })
+                }) {
+                    a.item.sacrificed_power = Some(Box::new(self.stats(object.card).power));
+                }
                 self.sacrifice_batch(&[(a.item.controller, object.card)]);
             }
         }

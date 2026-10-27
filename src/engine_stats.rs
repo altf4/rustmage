@@ -141,6 +141,7 @@ impl Game {
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
+                    | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies

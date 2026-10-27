@@ -17,6 +17,9 @@ pub struct AnimationView {
     /// Replace all card types/subtypes with Artifact — Food, without removing abilities.
     #[serde(skip_serializing_if = "is_false")]
     pub food_only: bool,
+    /// Set artifact card type, retaining instant/sorcery types per CR205.1a.
+    #[serde(skip_serializing_if = "is_false")]
+    pub artifact_noncreature: bool,
     pub colors: Option<u8>,
     pub creature_types: Option<&'static [&'static str]>,
     pub all_creature_types: bool,
@@ -132,6 +135,10 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, mut res
     for row in animations(world, id) {
         if row.food_only {
             changes.push((row.timestamp, 16, false));
+            continue;
+        }
+        if row.artifact_noncreature {
+            changes.push((row.timestamp, 16 | (result & (4 | 8)), false));
             continue;
         }
         let added = if row.preserve_card_types {
@@ -291,6 +298,11 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         if row.food_only {
             return Some((row.timestamp, SubtypeChange::FoodOnly));
         }
+        // Artifact-only form filters correlated subtypes against final layer-four
+        // card types in the shared subtype projection; later animation may restore them.
+        if row.artifact_noncreature {
+            return None;
+        }
         // A subtype-only form cannot give creature types to a noncreature/nonkindred.
         if row.preserve_card_types && world.kinds(id) & (1 | 128) == 0 {
             return None;
@@ -405,6 +417,7 @@ impl Game {
             artifact: spec.artifact,
             preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),
             food_only: false,
+            artifact_noncreature: false,
             colors: None,
             creature_types: match spec.creature_types {
                 AnimationCreatureTypes::Named(t) => Some(t),
@@ -440,6 +453,7 @@ impl Game {
                 artifact: false,
                 preserve_card_types: false,
                 food_only: false,
+                artifact_noncreature: false,
                 colors: Some(colors),
                 creature_types: Some(types),
                 all_creature_types: false,
@@ -477,6 +491,7 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         artifact: true,
         preserve_card_types: false,
         food_only: true,
+        artifact_noncreature: false,
         colors: None,
         creature_types: None,
         all_creature_types: false,
@@ -525,5 +540,15 @@ impl Game {
             })
             .collect();
         self.stage_entries(moves, None);
+    }
+}
+
+/// CR611.2e form, shared by actual entry and speculative funding.
+pub(super) fn artifact_noncreature_form(object: ObjectRef, timestamp: u64) -> AnimationView {
+    AnimationView {
+        food_only: false,
+        artifact_noncreature: true,
+        preserve_card_types: false,
+        ..food_form(object, timestamp)
     }
 }

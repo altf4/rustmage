@@ -743,7 +743,7 @@ impl FundingState<'_> {
             }
             return false;
         }
-        if m.before.card.aura().is_some() && m.attachment.is_none() {
+        if !m.artifact_return && m.before.card.aura().is_some() && m.attachment.is_none() {
             let mut any = false;
             for r in &self.resources {
                 let target = self.reference(r.id);
@@ -912,7 +912,8 @@ impl FundingState<'_> {
     }
     fn entry_has_timestamp(m: &entries::EntryMove) -> bool {
         let card = m.before.card;
-        m.food_return.is_some()
+        m.artifact_return
+            || m.food_return.is_some()
             || m.return_modification.is_some()
             || CounterAmounts::from(&m.counters)
                 .keyword_amounts()
@@ -1026,6 +1027,14 @@ impl FundingState<'_> {
                 CounterAmounts::from(&m.counters).keyword_amounts(),
                 Some(timestamp),
             );
+            if m.artifact_return {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .animations
+                    .push(characteristic_layers::artifact_noncreature_form(
+                        source, timestamp,
+                    ));
+            }
             if m.food_return.is_some() {
                 let timestamp = p.roles.next_timestamp();
                 p.roles

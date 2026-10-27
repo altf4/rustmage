@@ -535,6 +535,9 @@ impl Game {
                         TriggerCondition::ReturnDeath(filter) => {
                             self.return_death_matches(filter, source, event)
                         }
+                        TriggerCondition::SelfCreatureDies => {
+                            source.reference == event.before.reference && event.before.is_creature()
+                        }
                         TriggerCondition::SelfNontokenDies => {
                             source.reference == event.before.reference && !event.before.is_token()
                         }
@@ -742,6 +745,7 @@ impl Game {
                     | TriggerCondition::SelfDamaged
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
+                    | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
@@ -3019,6 +3023,27 @@ impl Game {
                 }
                 Instruction::ReturnOpponentsBattlefieldGraveyardCardsAsFood => {
                     self.return_opponents_battlefield_graveyard_as_food(&item);
+                }
+                Instruction::ReturnSourceAsArtifact => {
+                    let returned = item
+                        .source_move
+                        .as_ref()
+                        .filter(|event| {
+                            event.before == item.object
+                                && event.origin == Zone::Battlefield
+                                && event.destination == Zone::Graveyard
+                        })
+                        .map(|event| event.after);
+                    if let Some(returned) = returned
+                        && self.object_ref(returned.card) == returned
+                        && self.state.objects[returned.card as usize].zone == Zone::Graveyard
+                        && !self.state.objects[returned.card as usize].is_token()
+                    {
+                        let mut movement = self.entry_move(returned.card, Zone::Battlefield, false);
+                        movement.controller = item.controller;
+                        movement.artifact_return = true;
+                        self.stage_entries(vec![movement], None);
+                    }
                 }
                 Instruction::ReturnSourceToBattlefield { tapped } => {
                     if self.object_ref(item.card) == item.object

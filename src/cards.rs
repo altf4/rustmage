@@ -1493,6 +1493,8 @@ pub(crate) enum Instruction {
     /// Return this exact Aura from your graveyard already attached to its target.
     ReturnSourceAuraAttached,
     ReturnOpponentsBattlefieldGraveyardCardsAsFood,
+    /// Return the exact death incarnation with its noncreature artifact form as it enters.
+    ReturnSourceAsArtifact,
     ReturnSourceToBattlefield {
         tapped: bool,
     },
@@ -2082,6 +2084,8 @@ pub(crate) enum AmountValue {
     SacrificedPower,
     /// Power saved on a successful sacrifice's separate reflexive packet.
     ReflexiveSacrificedPower,
+    /// Current power frozen immediately before paying a sacrifice additional cost.
+    SacrificeCostPower,
     /// Frozen at the beginning of resolution, before target destruction.
     TargetCreaturePower,
     /// Exact pre-event source facts for a death trigger, never a new incarnation.
@@ -3195,6 +3199,8 @@ pub(crate) enum TriggerCondition {
     SelfDiesWithCounters,
     SelfDies,
     SelfNontokenDies,
+    /// Frozen source was a creature immediately before its actual death.
+    SelfCreatureDies,
     /// Token status is immutable for an incarnation, including through source LKI.
     SelfNontokenEnters,
     SelfLeaves,

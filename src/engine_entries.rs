@@ -29,6 +29,8 @@ pub(super) struct EntryMove {
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
     /// Source-independent type replacement and Food activation as this card enters.
     pub food_return: Option<Card>,
+    /// Set artifact card type as it enters, preserving abilities (CR205.1a/611.2e).
+    pub artifact_return: bool,
     pub attacking: Option<CombatDefender>,
     pub skipped: bool,
     pub reveal_hand: bool,
@@ -73,6 +75,8 @@ impl EntryMove {
     pub(super) fn entry_kinds(&self) -> u16 {
         if self.food_return.is_some() {
             16
+        } else if self.artifact_return {
+            16 | (self.before.kinds & (4 | 8))
         } else {
             self.before.kinds
         }
@@ -96,6 +100,7 @@ impl EntryMove {
             attach_equipment_to: None,
             return_modification: None,
             food_return: None,
+            artifact_return: false,
             attacking: None,
             skipped: false,
             reveal_hand: false,
@@ -371,7 +376,9 @@ impl Game {
             .filter(|(i, m)| {
                 m.destination == Zone::Battlefield
                     && (m.before.card.entry_choice().is_some()
-                        || m.before.card.aura().is_some() && m.attachment.is_none()
+                        || !m.artifact_return
+                            && m.before.card.aura().is_some()
+                            && m.attachment.is_none()
                         || matches!(m.before.card.entry_tapped(), EntryTapped::PayLife(_))
                             && m.life_paid.is_none()
                             && !tap_events.iter().any(|event| event.index == *i))
@@ -603,6 +610,7 @@ impl Game {
         let mut keyword_results = Vec::new();
         let mut ability_results = Vec::new();
         let mut food_results = Vec::new();
+        let mut artifact_results = Vec::new();
         for (movement, counters) in moves {
             let rules = self.freeze_zone_rules(&movement.before, movement.destination, None);
             let plan = self.plan_zone_move(&movement.before, movement.destination, rules);
@@ -634,6 +642,9 @@ impl Game {
                 && let Some(definition) = movement.food_return
             {
                 food_results.push((event.after, definition));
+            }
+            if event.moved && event.destination == Zone::Battlefield && movement.artifact_return {
+                artifact_results.push(event.after);
             }
             event.cast_event = movement.cast_event;
             event.was_cast = movement.cast_origin.is_some();
@@ -751,6 +762,12 @@ impl Game {
         // before the one simultaneous event batch freezes entry observers.
         for (recipient, definition) in food_results {
             self.apply_food_return(recipient, definition);
+        }
+        for recipient in artifact_results {
+            let timestamp = self.next_role_timestamp();
+            self.state.roles.get_or_insert_default().animations.push(
+                characteristic_layers::artifact_noncreature_form(recipient, timestamp),
+            );
         }
         self.refresh_controllers();
         if let Some(item) = &batch.temporary_copy {
@@ -1075,7 +1092,8 @@ impl Game {
                     .any(|n| *n > 0))
             && !m.before.card.is_emblem()
             && !m.skipped
-            && (m.food_return.is_some()
+            && (m.artifact_return
+                || m.food_return.is_some()
                 || m.return_modification.is_some()
                 || m.before.card.base_stat_setter().is_some()
                 || !m.before.card.live_static_effects().is_empty()

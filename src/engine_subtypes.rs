@@ -74,6 +74,8 @@ pub struct GrantedSubtypes {
     /// None retains printed types (including changeling); Some replaces only
     /// creature types, preserving e.g. Equipment, Aura, Forest and Lesson.
     creature_types: Option<&'static [&'static str]>,
+    /// Opt-in correlation after a card-type-setting effect; final layer-four types.
+    card_types: Option<u16>,
 }
 impl GrantedSubtypes {
     pub(super) fn food_only() -> Self {
@@ -81,6 +83,7 @@ impl GrantedSubtypes {
             added: SUPPRESS_PRINTED | ADDED_FOOD,
             chosen: None,
             creature_types: Some(&[]),
+            card_types: None,
         }
     }
     fn flag(self, bit: u32) -> bool {
@@ -96,6 +99,12 @@ impl GrantedSubtypes {
     /// Membership supplied by this overlay, excluding retained printed types.
     /// Use ObjectView::has_subtype for the full effective characteristic.
     pub fn contains(self, subtype: &str) -> bool {
+        if self
+            .card_types
+            .is_some_and(|kinds| kinds & subtype_card_types(subtype) == 0)
+        {
+            return false;
+        }
         (self.added & Self::copy_type_bit(subtype) != 0)
             || (self.flag(ALL_CREATURE_TYPES) && crate::cards::is_creature_type(subtype))
             || self.chosen.is_some_and(|t| t.name() == subtype)
@@ -108,6 +117,12 @@ impl GrantedSubtypes {
                 .is_some_and(|i| self.added & (1 << i) != 0)
     }
     pub(crate) fn has(self, card: Card, subtype: &str) -> bool {
+        if self
+            .card_types
+            .is_some_and(|kinds| kinds & subtype_card_types(subtype) == 0)
+        {
+            return false;
+        }
         // Preserve the ordinary-card hot path: no taxonomy lookup, and printed
         // membership short-circuits the additional-type mask as before.
         if self.flag(LAND_ONLY) {
@@ -205,15 +220,87 @@ impl Serialize for GrantedSubtypes {
                 out.end()
             }
         }
-        let mut out = serializer.serialize_struct("GrantedSubtypes", 6)?;
+        let mut out = serializer.serialize_struct(
+            "GrantedSubtypes",
+            6 + usize::from(self.card_types.is_some()),
+        )?;
         out.serialize_field("suppress_printed", &self.flag(SUPPRESS_PRINTED))?;
         out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
         out.serialize_field("all_creature_types", &self.flag(ALL_CREATURE_TYPES))?;
         out.serialize_field("chosen", &self.chosen)?;
         out.serialize_field("added", &Added(self.added & ADDED_MASK))?;
         out.serialize_field("creature_types", &self.creature_types)?;
+        if let Some(kinds) = self.card_types {
+            out.serialize_field("card_types", &kinds)?;
+        }
         out.end()
     }
+}
+
+// CR205.3g-k,m,q. Creature names come from the pinned complete type inventory.
+// Any remaining printed subtype in this permanent pool is a planeswalker type.
+fn subtype_card_types(subtype: &str) -> u16 {
+    if crate::cards::is_creature_type(subtype) {
+        return 1 | 128;
+    }
+    if LAND_TYPES.contains(&subtype) {
+        return 2;
+    }
+    if [
+        "Attraction",
+        "Blood",
+        "Bobblehead",
+        "Book",
+        "Clue",
+        "Contraption",
+        "Equipment",
+        "Food",
+        "Fortification",
+        "Gold",
+        "Heartwood",
+        "Incubator",
+        "Infinity",
+        "Junk",
+        "Lander",
+        "Map",
+        "Mutagen",
+        "Powerstone",
+        "Spacecraft",
+        "Stone",
+        "Treasure",
+        "Vehicle",
+        "Vibranium",
+    ]
+    .contains(&subtype)
+    {
+        return 16;
+    }
+    if [
+        "Aura",
+        "Background",
+        "Cartouche",
+        "Case",
+        "Class",
+        "Curse",
+        "Plan",
+        "Role",
+        "Room",
+        "Rune",
+        "Saga",
+        "Shard",
+        "Shrine",
+    ]
+    .contains(&subtype)
+    {
+        return 32;
+    }
+    if ["Adventure", "Arcane", "Lesson", "Omen", "Trap"].contains(&subtype) {
+        return 4 | 8;
+    }
+    if subtype == "Siege" {
+        return 256;
+    }
+    64
 }
 
 /// A resolution-created replacement, lasting for this exact incarnation only.
@@ -344,6 +431,14 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                 }
             }
         }
+    }
+    if world.roles().is_some_and(|roles| {
+        roles
+            .animations
+            .iter()
+            .any(|row| row.object == reference && row.artifact_noncreature)
+    }) {
+        mask.card_types = Some(kinds(id, target));
     }
     if kinds(id, target) & 16 == 0 {
         mask.set_flag(ADDED_FOOD, false);
@@ -530,6 +625,9 @@ impl Game {
                 Some(ReturnKind::HeroFinality) => result.insert("Hero"),
                 _ => {}
             }
+        }
+        if m.artifact_return {
+            result.card_types = Some(m.entry_kinds());
         }
         result
     }

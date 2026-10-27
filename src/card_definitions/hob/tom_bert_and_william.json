@@ -3,10 +3,76 @@
   "catalogue_id": 4623,
   "oracle_id": "0ea58cfe-b37c-49a6-a3be-7e60065b8238",
   "facts_sha256": "f4b07afc18f8db1fdaab1da2eb48aa39c05076bed914cf4d920bd44ee7125ca3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ba10b9d3f64fcce91f3be5a44847d42b1c51f5bd15ef1665f2c2feca7d5b33af"
   },
-  "physical_metadata_sha256": "f0c89ff701c716268879b038263ef0bf921a1420fb106d4ee9d92a0a83de8ff3"
+  "physical_metadata_sha256": "f0c89ff701c716268879b038263ef0bf921a1420fb106d4ee9d92a0a83de8ff3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TomBertAndWilliam.java",
+  "java_sha256": "d6472ecc35383fde70fc8151e7f3616e733cce468eb543ace96662a9b48d5918",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ZoneChangeTriggeredAbility.java",
+      "sha256": "2387eb4e53ef69a480b3ad72111ccdd5f994528cb727378c65c941a46c44d7ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SacrificeCostCreaturesPower.java",
+      "sha256": "4bfce77ee2feec0f550125de1fcc86ce1a31a5fa17024b776321e7e8d66b39a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+      "sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CanBeSacrificedPredicate.java",
+      "sha256": "66d9ed795337db25bde47c82a196d6be997bc30a5df7d82774868b7cbcbbc592"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ],
+  "implementation_notes": [
+    "Full Oracle and XMage card/helpers read. StaticFilters controlled-another-creature declaration and CardUtil return lookup inspected as utility sections.",
+    "CR110.2a returns under the triggered ability controller, preserving owner. CR400.7e binds only the exact graveyard incarnation. Creature qualification is frozen predeath; later artifact deaths do not trigger.",
+    "CR611.2e requires artifact-only continuous typing as the nontoken enters, unlike XMage post-entry application. CR205.1a replaces prior card types, retaining exceptional instant/sorcery types; subtypes correlate with final layer-four card types. Supertypes/colors/abilities remain. Permanent noncopiable form clears on departure.",
+    "Sacrifice current power is captured at additional-cost commitment in the existing owned packet, independently of resolution choices. Negative power draws zero; discard remains mandatory."
+  ]
 }
