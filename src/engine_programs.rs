@@ -2794,6 +2794,20 @@ impl Game {
                             .capacity("player poison counters exhausted");
                     }
                 }
+                Instruction::ExileAttackingCreatures(players) => {
+                    self.exile_attacking_creatures(players, &item)
+                }
+                Instruction::MayPlayer { player, skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    let mut players = self.program_players(player, &item);
+                    if let Some(player) = players.next() {
+                        assert!(players.next().is_none(), "single-player optional effect");
+                        self.state.pending = Pending::EffectOptional { player, skip_to };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
                 Instruction::MayTargetController { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
@@ -3698,14 +3712,23 @@ impl Game {
                 Instruction::Search(spec)
                 | Instruction::SearchTargetController(spec)
                 | Instruction::SearchTargetPlayer(spec)
+                | Instruction::SearchTargetPlayerMovedCount(spec)
                 | Instruction::SearchRequired(spec)
                 | Instruction::SearchDifferentNames(spec) => {
+                    let mut spec = spec;
+                    if matches!(instruction, Instruction::SearchTargetPlayerMovedCount(_)) {
+                        spec.maximum = resolution.moved_count.unwrap_or(0);
+                    }
                     let player = if matches!(instruction, Instruction::SearchTargetController(_)) {
                         let Some(player) = self.resolution_target_controller() else {
                             continue;
                         };
                         player
-                    } else if matches!(instruction, Instruction::SearchTargetPlayer(_)) {
+                    } else if matches!(
+                        instruction,
+                        Instruction::SearchTargetPlayer(_)
+                            | Instruction::SearchTargetPlayerMovedCount(_)
+                    ) {
                         let Some(player) = self.program_players(PlayerSet::Targeted, &item).next()
                         else {
                             continue;
@@ -3720,9 +3743,10 @@ impl Game {
                             crate::SearchFilter::Any,
                             "required searches must not require finding a hidden quality"
                         );
-                        usize::from(spec.maximum)
-                            .min(self.state.players[player.index()].library.len())
-                            as u16
+                        spec.maximum.min(
+                            u64::try_from(self.state.players[player.index()].library.len())
+                                .expect("library length"),
+                        )
                     } else {
                         0
                     };

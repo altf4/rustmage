@@ -11,7 +11,7 @@ pub(super) struct SearchResult {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct SearchChoice {
     pub spec: SearchSpec,
-    pub minimum: u16,
+    pub minimum: u64,
     pub different_names: bool,
     pub selected: Vec<CardId>,
     pub battlefield: Option<Vec<CardId>>,

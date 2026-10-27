@@ -2201,8 +2201,8 @@ pub struct LibraryChoiceView {
 #[derive(Clone, Debug, Serialize)]
 pub struct SearchChoiceView {
     pub filter: crate::SearchFilter,
-    pub minimum: u16,
-    pub maximum: u16,
+    pub minimum: u64,
+    pub maximum: u64,
     pub destination: crate::SearchDestination,
     pub tapped: bool,
     pub reveal: bool,
@@ -4628,12 +4628,15 @@ impl Game {
                         }
                     }
                 } else {
-                    if choice.selected.len() >= usize::from(choice.minimum)
+                    if u64::try_from(choice.selected.len()).expect("search length")
+                        >= choice.minimum
                         && emit(Action::FinishSearch)
                     {
                         return true;
                     }
-                    if choice.selected.len() < usize::from(choice.spec.maximum) {
+                    if u64::try_from(choice.selected.len()).expect("search length")
+                        < choice.spec.maximum
+                    {
                         for &card in &s.players[player.index()].library {
                             if choice.spec.filter.matches(s.objects[card as usize].card)
                                 && !choice.selected.contains(&card)
@@ -8382,3 +8385,6 @@ mod graveyard_symbol_cost;
 
 #[path = "engine_death_return.rs"]
 mod death_return;
+
+#[path = "engine_attacking_exile.rs"]
+mod attacking_exile;

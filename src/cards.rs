@@ -698,7 +698,7 @@ pub enum SearchDestination {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub(crate) struct SearchSpec {
     pub filter: SearchFilter,
-    pub maximum: u16,
+    pub maximum: u64,
     pub destination: SearchDestination,
     pub tapped: bool,
     pub reveal: bool,
@@ -1600,6 +1600,15 @@ pub(crate) enum Instruction {
     SearchTargetController(SearchSpec),
     /// The legal player target in the currently selected target group searches.
     SearchTargetPlayer(SearchSpec),
+    /// Search up to the saved actual result of the preceding move instruction.
+    SearchTargetPlayerMovedCount(SearchSpec),
+    /// Single-player optional effect, including zero-card searches.
+    MayPlayer {
+        player: PlayerSet,
+        skip: usize,
+    },
+    /// Freeze the current controlled attacking creatures, then save successful moves.
+    ExileAttackingCreatures(PlayerSet),
     MayTargetController {
         skip: usize,
     },
