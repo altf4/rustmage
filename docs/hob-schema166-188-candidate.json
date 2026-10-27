@@ -1,0 +1,50 @@
+{
+  "scope": "188 local HOB candidates; 5 gated. Entire 193-card set and final published PR remain open.",
+  "schema": 166,
+  "schema_changes": [
+    "D\u00e1in optional additional exact created-token reflexive references",
+    "Gandalf optional current-subtype exile-play requirement and hidden permission privacy"
+  ],
+  "prior_release": {
+    "head": "d91c1231d8b3f5db9030b7098e7a2f292852fe53",
+    "report": "<cache>/rustmage-validation-atfxyz8t/report/result.json",
+    "all_nine_pass": true,
+    "native_passed": 1232,
+    "python_passed": 8,
+    "receipt_reviews": [
+      "hob_review_rules: approved release and all seventeen immutable libraries",
+      "hob_review_contracts: approved release and all seventeen immutable libraries"
+    ]
+  },
+  "cohorts": [
+    {
+      "card": "Thorin, Mountain-king",
+      "leaf": "053b5aa823316496a838cf45f05a17910ce3a91d",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 69
+    },
+    {
+      "card": "D\u00e1in Ironfoot",
+      "leaf": "069e7f3aff1d50872ed9b0b0ac237029473a6fc3",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 36
+    },
+    {
+      "card": "Gandalf, Goblins\u2019 Bane // Flameshape",
+      "leaf": "b489e1baf1a502b6885d5bc4ca5a5ba99170b88b",
+      "reviewers": [
+        "hob_review_rules",
+        "hob_review_contracts"
+      ],
+      "unique_tests": 99
+    }
+  ],
+  "integration_note": "Reflexive constructor preserves both D\u00e1in additional_objects and Thorin opt-in damage-actor capture. Gandalf hidden permission filtering is intentional privacy tightening and historical observations require full-row audit.",
+  "status": "Integrated recording, independent combined review, full release, whole-set games and final published PR remain open."
+}

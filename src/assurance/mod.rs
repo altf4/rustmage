@@ -275,8 +275,10 @@ mod hob_elrond;
 
 mod hob_bard;
 mod hob_bilbo;
+mod hob_dain_ironfoot;
 mod hob_down_valley;
 mod hob_eagles_rescue;
+mod hob_gandalf_flameshape;
 mod hob_getaway_barrel;
 mod hob_gollum_riddle;
 mod hob_head_hunt;
@@ -290,5 +292,6 @@ mod hob_roads;
 mod hob_settle_wreckage;
 mod hob_silvan_reveler;
 mod hob_supper_spiders;
+mod hob_thorin_mountain_king;
 mod hob_thranduil;
 mod hob_thranduil_decree;

@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "0283b3519a26df0060ea94dea46b455c85fb3e9e8781e2aee881f4ca1d6daba8",
+  "catalogue_version": "b80f68745f6823907ea37b225da68a0d37bba9d50dae3c508e49941a11d21856",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 2694,
-  "implemented_total": 2700,
+  "implemented_standard_cards": 2697,
+  "implemented_total": 2703,
   "token_definitions": 132,
   "emblem_definitions": 3,
-  "adventure_definitions": 45,
+  "adventure_definitions": 46,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -81,8 +81,8 @@
     },
     "hob": {
       "total": 188,
-      "complete": 180,
-      "gated": 8
+      "complete": 183,
+      "gated": 5
     },
     "hoc": {
       "total": 5,
@@ -9980,8 +9980,8 @@
     {
       "name": "Dáin Ironfoot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/dain_ironfoot.rs",
       "set": "hob"
     },
@@ -13610,10 +13610,10 @@
       "set": "eoe"
     },
     {
-      "name": "Gandalf, Goblins' Bane // Flameshape",
+      "name": "Gandalf, Goblins' Bane",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/gandalf_goblins_bane_flameshape.rs",
       "set": "hob"
     },
@@ -36532,8 +36532,8 @@
     {
       "name": "Thorin, Mountain-king",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/hob/thorin_mountain_king.rs",
       "set": "hob"
     },
