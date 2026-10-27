@@ -10,6 +10,20 @@ impl Game {
         let recipients = self.battlefield_group(item, filters);
         self.grant_keyword_effects(&recipients, item.object, keywords);
     }
+    pub(super) fn grow_permanent_group(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        power: i32,
+        toughness: i32,
+    ) {
+        for id in self.battlefield_group(item, filters) {
+            self.state.objects[id as usize].growth += Stats {
+                power: i128::from(power),
+                toughness: i128::from(toughness),
+            };
+        }
+    }
     pub(super) fn grow_permanent_group_scaled(
         &mut self,
         item: &SpellView,

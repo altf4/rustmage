@@ -676,15 +676,13 @@ impl Game {
             return;
         }
         // All entries in a simultaneous batch see the same post-event sources.
-        if sources.is_empty() {
-            return;
-        }
         let entered = self.object_view(event.after.card);
         // This prohibition concerns the event, irrespective of which permanent
         // would observe it. Death/attack/step events take their separate paths.
         if entered.kinds & entry_suppression != 0 {
             return;
         }
+        self.temporary_land_entry_triggers(event, &entered);
         for source in sources {
             let same = source.reference == event.after;
             let yours = source.controller == entered.controller;
@@ -4714,6 +4712,14 @@ impl Game {
                     self.return_granted_source(&item, counter, role)
                 }
                 Instruction::GrantSelfAbility(kind) => self.grant_self_ability(&item, kind),
+                Instruction::GrantSourcePermanentTrigger(ability) => {
+                    if self.on_battlefield(item.object.card)
+                        && self.object_ref(item.object.card) == item.object
+                    {
+                        let timestamp = self.next_role_timestamp();
+                        self.grant_source_permanent_trigger(&item, ability, timestamp);
+                    }
+                }
                 Instruction::GrantPermanentSelfAbility(kind) => {
                     self.grant_permanent_self_ability(&item, kind)
                 }
@@ -4748,6 +4754,13 @@ impl Game {
                     for (id, delta) in affected {
                         self.state.objects[id as usize].growth += delta;
                     }
+                }
+                Instruction::GrowPermanentGroup {
+                    filters,
+                    power,
+                    toughness,
+                } => {
+                    self.grow_permanent_group(&item, filters, power, toughness);
                 }
                 Instruction::GrowPermanentGroupScaled {
                     filters,

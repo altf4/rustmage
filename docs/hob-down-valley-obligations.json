@@ -1,0 +1,82 @@
+{
+  "card": "Down in the Valley",
+  "base": "57f96ab6",
+  "oracle": {
+    "mana": "{2}{G}",
+    "types": "Enchantment — Saga",
+    "obligations": [
+      "I search for a basic land, reveal, put it into hand and shuffle.",
+      "II this exact Saga gains landfall creating a 1/1 green Elf creature token when a land its controller controls enters.",
+      "III and IV each give the Elf permanents controlled at resolution +1/+0 and vigilance until end of turn."
+    ]
+  },
+  "source": "Full Oracle and exact pinned XMage class and helpers in paired JSON; source verification passed for 5417 definitions and 1613 source blobs.",
+  "implementation": "Private typed permanent trigger grant reuses existing temporary-ability storage and public observation representation; exact incarnation, layer suppression and timestamp apply. Generic granted land-entry dispatch follows entry suppression and queues normal trigger packets. Group modifier affects noncreature Elf permanents too. No new public state, action, vocabulary or wire schema.",
+  "coverage": [
+    "Both seats paid cast, private basic-land search, transactional invalid choice, known revealed hand and owned branch/restore; own and opposing land entries, exact token characteristics.",
+    "Both seats chapter III/IV current recipients, later entrants, actual Kindred Elf enchantment, later creature copy, stacked bonus/vigilance and cleanup.",
+    "Both seats suppression then recovery, two simultaneous lands, source leaves with triggers queued, blink/new incarnation loses previous grant, copied Saga, actual Bifur additional trigger and owned branching.",
+    "Nearby Dancing, Saga, search and multiplicity regressions."
+  ],
+  "limitations": [
+    "No dedicated land-entry replacement or prevention interaction is exercised by these card-specific tests; entry suppression and replacement use existing shared paths.",
+    "Source is review-ready; two independent nonauthor reviews, central regenerated catalogue/module registration and release validation remain."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "result": "Compile failure: test used private Card tuple constructor; no tests ran. Corrected after terminal.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/1370057c3096459cac3287333d33d43e.json"
+    },
+    {
+      "run": 2,
+      "result": "0/1: fixture selected Elf with inherent vigilance; corrected after terminal.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/add9dc84258944b4ad3effa5c66a457b.json"
+    },
+    {
+      "run": 3,
+      "result": "1/2: fixture tried adding creature type to ordinary noncreature land; replaced with actual Kindred Elf after terminal.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/bec0f30926d74fd8b3698f183060b494.json"
+    },
+    {
+      "run": 4,
+      "result": "2/2 card tests passed.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/b39f59d9baca42c39b62ca21e3cdf0b4.json"
+    },
+    {
+      "run": 5,
+      "result": "2/3: unsupported synthetic additional Dwarf subtype fixture; corrected after terminal.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/bed4c0b8a314409b9e4b4bfac241ca5d.json"
+    },
+    {
+      "run": 6,
+      "result": "2/3: Bifur storied prerequisite absent from fixture; corrected after terminal.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/76b99dfe5b9a4134a416b34ff5650569.json"
+    },
+    {
+      "run": 7,
+      "result": "3/3 expanded card tests passed, 2.4 GiB peak.",
+      "report": "/home/altf4/.cache/rustmage-build-reports/d8e4f07181ef4f72a351cdc5f548d17a.json"
+    },
+    {
+      "run": 8,
+      "result": "6 Dancing, 13 trigger multiplicity, 4 recruit/amass/Saga and 30 search tests passed.",
+      "reports": [
+        "/home/altf4/.cache/rustmage-build-reports/d77477a946c14eeb940ad6af69c4eea5.json",
+        "/home/altf4/.cache/rustmage-build-reports/64ed764fae824206af20db1006d7de13.json",
+        "/home/altf4/.cache/rustmage-build-reports/4f90fbbc433e47859ebae961fbfd85bf.json",
+        "/home/altf4/.cache/rustmage-build-reports/52fd875496924433a0028833f477a1f0.json"
+      ]
+    }
+  ],
+  "receipts": "/home/altf4/.cache/rustmage-authoring/hob-down-valley",
+  "source_sha256": {
+    "src/card_definitions/hob/down_in_the_valley.rs": "79c137da71f440fbdae185f01fa9e0fea0f75cc25612e196289f5bef631ef227",
+    "src/card_definitions/hob/down_in_the_valley.json": "80248d9484c91d785bc664d5fe059bd19b5fa0aad5c70cda862f6448437ce1f3",
+    "src/cards.rs": "e7b19278a40b7d5f0ed0cc78328545a94a86582ae20f05058cc86674e0d134f1",
+    "src/engine_battlefield_groups.rs": "e0b4d123aee2a6432665834fd461efe9493e6063ef729b8990b05fe0be706f8b",
+    "src/engine_programs.rs": "f47a72b652fe4a9d0fa11f43effe595da8ff6751cae64eed5465984a3aecef4b",
+    "src/engine_temporary_abilities.rs": "e02699f2fa02185094f7ce7a395f2827bceb0206b47ff8fa38a188fef1b4b382",
+    "src/assurance/hob_down_valley.rs": "2f04f04aefdaca2dd639fd26b000b6553bdc5edd6384a760019f9c6b73b2079d"
+  }
+}

@@ -1739,6 +1739,8 @@ pub(crate) enum Instruction {
     /// Bestow a real self-owned static ability, rather than a resolved stat modifier.
     GrantSelfAbility(crate::engine::SelfGrantedAbilityKind),
     GrantPermanentSelfAbility(crate::engine::SelfGrantedAbilityKind),
+    /// Grant the exact source a triggered template until it changes zones.
+    GrantSourcePermanentTrigger(u16),
     GrantKeywords {
         subject: Subject,
         keywords: Keywords,
@@ -1764,6 +1766,11 @@ pub(crate) enum Instruction {
         toughness: i32,
     },
     /// Freeze a non-targeted permanent set and one scalar at resolution.
+    GrowPermanentGroup {
+        filters: &'static [BattlefieldFilter],
+        power: i32,
+        toughness: i32,
+    },
     GrowPermanentGroupScaled {
         filters: &'static [BattlefieldFilter],
         exclude_source: bool,
