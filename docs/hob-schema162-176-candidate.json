@@ -49,7 +49,7 @@
       "note": "Atomic pre-entry attachment; no admitted Eagle-specific entry-choice fixture."
     }
   ],
-  "status": "176-card full release passed at exact 2b4c499e; independent terminal receipt audits and whole193/final published PR acceptance remain open.",
+  "status": "176-card full release and independent terminal receipt audits passed; whole193/final published PR acceptance remains open.",
   "integrated_recording": {
     "head": "eb9f6ffd0ec89c67fdff93a352252862184aaa36",
     "reports": "<cache>/rustmage-authoring/hob-complete-set/integrated176-1",
@@ -759,6 +759,9 @@
       "restore_ns": 173.31671,
       "seconds": 0.041771558
     },
-    "terminal_independent_reviews": "Pending two independent receipt audits."
+    "terminal_independent_reviews": [
+      "hob_review_rules: approved exact 2b4c499e and all fourteen immutable libraries",
+      "hob_review_contracts: approved exact 2b4c499e and all fourteen immutable libraries"
+    ]
   }
 }
