@@ -3776,6 +3776,10 @@ impl Game {
                     self.start_zone_search(&item, filter, counter, haste_at);
                     return;
                 }
+                Instruction::SearchHandAndOrLibrary(filter) => {
+                    self.start_hand_library_search(item.controller, filter);
+                    return;
+                }
                 Instruction::Search(spec)
                 | Instruction::SearchTargetController(spec)
                 | Instruction::SearchTargetPlayer(spec)

@@ -1,3 +1,6 @@
+#[path = "engine_hand_library_search.rs"]
+mod hand_library_search;
+pub use hand_library_search::HandLibrarySearchView;
 #[path = "engine_zone_search.rs"]
 mod zone_search;
 pub use zone_search::ZoneSearchView;
@@ -728,6 +731,7 @@ define_actions! {
         card: CardId,
     },
     ChooseSearchZones { library:bool, graveyard:bool },
+    ChooseHandLibrarySearchZones { hand: bool, library: bool },
     FinishSearch,
     ChooseSearchBattlefield { card: CardId },
     ChooseSearchDestination { destination: crate::SearchDestination },
@@ -1770,6 +1774,9 @@ enum Pending {
     EffectSearch {
         player: Player,
     },
+    HandLibrarySearch {
+        player: Player,
+    },
     LibraryGraveyardSearch {
         player: Player,
     },
@@ -2353,6 +2360,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zone_search: Option<ZoneSearchView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub hand_library_search: Option<HandLibrarySearchView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_choice: Option<SourceCounterChoiceView>,
     /// Frozen relevant public events; present only with a public historical observer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2875,6 +2884,7 @@ impl Game {
             | Pending::RevealedDiscard { player, .. }
             | Pending::RecoverMilled { player, .. }
             | Pending::EffectSearch { player }
+            | Pending::HandLibrarySearch { player }
             | Pending::LibraryGraveyardSearch { player }
             | Pending::EquipmentAttachment { player }
             | Pending::EffectLibrarySelection { player }
@@ -3233,6 +3243,7 @@ impl Game {
         // result. Cache capacity affects work only, never the admitted action set.
         let mut spell_funding_cache: [Option<(Mana, u32, Card, bool)>; 8] = [None; 8];
         match s.pending {
+            Pending::HandLibrarySearch { .. } => return self.visit_hand_library_search(&mut emit),
             Pending::LibraryGraveyardSearch { .. } => return self.visit_zone_search(&mut emit),
             Pending::ZoneReplacement { .. } => {
                 if self.zone_choice_actions(&mut emit) {
@@ -5646,18 +5657,25 @@ impl Game {
                 self.run_program();
             }
             Action::RecoverMilled { object } => self.recover_milled(object),
+            Action::ChooseHandLibrarySearchZones { hand, library } => {
+                self.choose_hand_library_zones(hand, library)
+            }
             Action::ChooseSearchZones { library, graveyard } => {
                 self.choose_search_zones(library, graveyard)
             }
             Action::ChooseSearch { card } => {
-                if self.has_zone_search() {
+                if self.has_hand_library_search() {
+                    self.choose_hand_library_card(card)
+                } else if self.has_zone_search() {
                     self.choose_zone_search_card(card)
                 } else {
                     self.choose_search(card)
                 }
             }
             Action::FinishSearch => {
-                if self.has_zone_search() {
+                if self.has_hand_library_search() {
+                    self.finish_hand_library_search()
+                } else if self.has_zone_search() {
                     self.finish_zone_search()
                 } else {
                     self.finish_search(actor)
@@ -7263,6 +7281,7 @@ impl Game {
             player_control: self.player_control_view(),
             library_cast_look: self.library_cast_look_view(viewer),
             zone_search: self.zone_search_view(viewer),
+            hand_library_search: self.hand_library_search_view(viewer),
             turn_facts: self.turn_facts_view(),
             paradigms: self.paradigm_views(),
             resolved_spell_names: self.resolved_spell_name_views(),
@@ -7516,6 +7535,7 @@ impl Game {
                 Pending::RevealedDiscard { .. } => "revealed_discard",
                 Pending::RecoverMilled { .. } => "recover_milled",
                 Pending::MilledSelection { .. } => "milled_selection",
+                Pending::HandLibrarySearch { .. } => "hand_library_search",
                 Pending::LibraryGraveyardSearch { .. } => "library_graveyard_search",
                 Pending::EffectSearch { .. } => {
                     if s.resolving

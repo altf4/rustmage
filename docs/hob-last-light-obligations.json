@@ -1,0 +1,168 @@
+{
+  "card": "Last Light of Durin's Day",
+  "status": "complete leaf; pending two independent nonauthor reviews and integrated acceptance",
+  "base": "76cd9e8ce64886e6029f4d36220c75177e54a5d9",
+  "source": {
+    "oracle_id": "539583f4-21c8-4b61-a2c5-f612fadc3ffa",
+    "oracle_body": "Whenever a Mountain you control enters, put a quest counter on this enchantment. If it has six or more quest counters on it, sacrifice it. If you do, search your hand and/or library for a Dragon card and put it onto the battlefield. If you search your library this way, shuffle. Mountaincycling {2}.",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_class": "Mage.Sets/src/mage/cards/l/LastLightOfDurinsDay.java",
+    "full_class_and_nine_pinned_dependencies_read": true,
+    "rules": "Cached MagicCompRules-20260925: CR701.23a/b/e/g;304.4;307.4;702 cycling;122 counters. Search chooses hidden zones, permits failing stated quality, does not reveal an unentered found card."
+  },
+  "shared_mechanics": [
+    "CounterKind::Quest appended after Hone; existing counter allocation order and old JSON values unchanged; sparse named storage reused.",
+    "Private owned HandLibrarySearch box in existing ChoiceState; fixed-size exact selected ObjectRef, chosen zones and filter. Storage included in bytes/abandon cleanup.",
+    "SearchHandAndOrLibrary instruction; existing ChooseSearch/FinishSearch dispatch routes to continuation. Qualified hidden card choices permit zero and reuse entry batching/shuffle_after for atomic movement and suspended pre-entry choices.",
+    "Existing SubtypeEntersYou, PutCounters, SourceCounters live expression and SacrificeSourceOrSkip are composed without engine changes to those paths. Mountaincycling reuses Hand-origin cycling/discard/Search instruction."
+  ],
+  "public_wire": {
+    "requires_central_schema_at_least": 165,
+    "leaf_schema_unchanged": 164,
+    "delta": [
+      "CounterKind::Quest string variant",
+      "Action::ChooseHandLibrarySearchZones { hand, library }",
+      "Pending::HandLibrarySearch with phase hand_library_search",
+      "Optional omitted-when-empty Observation.hand_library_search: player/filter/choosing_zones/hand/library; cards and selected only to entitled viewer"
+    ],
+    "legacy": "Existing search action/view/Pending shape unchanged; new optional observation absent outside this continuation."
+  },
+  "assertion_map": [
+    {
+      "test": "engine::assurance::hob_last_light::last_light_paid_quest_trigger_uses_actual_subtype_control_and_resolution_threshold",
+      "obligation": "Paid {1}{R} enchantment. Each actual controlled Mountain entry, including a foreign-owned land, gives one counter only when its trigger resolves. Other lands and opposing controlled Mountains are excluded. The six-counter threshold is checked at resolution."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_hidden_zone_modes_find_zero_or_dragon_and_shuffle_only_searched_library",
+      "obligation": "Hand only, library only, and both zones; finding zero even with eligible cards present; chosen own Dragon enters without a cast or mana payment. Wrong-quality and opposing cards are rejected. Hand, library and selected identity remain private. Shuffle occurs exactly when the library is searched."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_changeling_is_dragon_card_and_search_is_not_cast_or_creature_only",
+      "obligation": "Admitted Barkform Harvester qualifies through intrinsic Changeling. The immutable printed program has only a Dragon subtype predicate, without a creature-card restriction."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_counter_replacement_and_sacrifice_replacement_still_search",
+      "obligation": "Doubling Season modifies Quest counter placement and reaches six from four. Rest in Peace changes the sacrifice destination to exile, which still completes the sacrifice and permits searching."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_source_departure_reentry_and_control_loss_prevent_sacrifice_payoff",
+      "obligation": "An absent source, a new source incarnation, and a source controlled by another player cannot pay the sacrifice. No search follows; the new incarnation is untouched."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_owned_zone_and_selection_branches_privacy_stale_and_restore",
+      "obligation": "Raw/index equivalence, restore, wrong actor and out-of-range rollback at zone choice, card choice and selected-card phases. Independent children survive parent disposal. A selected card that leaves and returns is stale. The opponent never sees its hidden selected identity."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_mountaincycling_paid_discard_private_search_reveal_shuffle_and_no_quest",
+      "obligation": "Unpayable activation is rejected transactionally. Generic two mana plus discard is paid. Private Mountain-only search reveals the chosen Mountain in hand and shuffles. Moving a Mountain into hand does not produce a quest counter."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_simultaneous_token_mountains_make_distinct_triggers_without_second_search",
+      "obligation": "Two actual token Mountain entries use the existing per-entrant trigger collector. The source sacrifices successfully once, searches once, and any old-source trigger finishes harmlessly."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_counter_capacity_failure_is_transactional_and_named_wire_is_canonical",
+      "obligation": "Incrementing a Quest counter at u64 maximum fails on the actual resolving Pass and preserves revision, snapshot and both observations. Quest counters round-trip through canonical sparse named-counter JSON."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_shared_hidden_search_preserves_noncreature_cards_and_suspended_entry_shuffle",
+      "obligation": "Explicit generic Any-filter helper roots: noncreature Prophetic Prism enters; instant Shock stays private in hand under CR304.4. Secluded Courtyard pre-entry choice suspends library shuffling, with raw/index, parent disposal and restore determinism."
+    },
+    {
+      "test": "engine::assurance::hob_last_light::last_light_cycling_in_opponents_combat_can_fail_find_and_discard_replacement_is_paid",
+      "obligation": "Cycling for two mana is legal in opposing combat. Rest in Peace replaces the discard with exile but the cost is paid. Finding zero is legal despite an eligible Mountain and still shuffles."
+    }
+  ],
+  "bounded_fixture_gap": "Frozen pool has no printed noncreature Dragon. Noncreature Changeling Kindred Crib Swap/Firdoch Core/Nameless Inversion remain gated, not admitted here. Actual admitted Changeling Dragon identity and subtype-only printed instruction are proved; the same continuation is separately exercised with admitted noncreature permanent and instant through an explicit Any-filter generic helper root. No claim that gated cards are playable.",
+  "preflight": {
+    "strict_fixture_count": 11,
+    "every_fixture_named_and_paired_complete": true,
+    "unknown_or_incomplete_fails": true,
+    "source_check": {
+      "definitions": 5417,
+      "source_blobs": 1613,
+      "java_verified": true
+    },
+    "linker": "passed; generated outputs local only; integrator regenerates"
+  },
+  "runs": [
+    {
+      "run": 1,
+      "driver": "<cache>/rustmage-authoring/hob-last-light/driver-1.py",
+      "outer": "<cache>/rustmage-authoring/hob-last-light/outer-1.log",
+      "report": "<build-reports>/cb0af66b831d420a88577afa4276f1db.json",
+      "terminal": true,
+      "exit": 1,
+      "reason": "Nine focused and six Hone scenarios passed; author selected nonexistent library_graveyard regression filter. Driver rejected zero executed tests. No core/card failure. Naturally terminal, no cancellation; subsequent selector corrected to actual vision_quest and hob_elven_passage."
+    },
+    {
+      "run": 2,
+      "driver": "<cache>/rustmage-authoring/hob-last-light/driver-2.py",
+      "outer": "<cache>/rustmage-authoring/hob-last-light/outer-2.log",
+      "results": "<cache>/rustmage-authoring/hob-last-light/results-2.json",
+      "inputs": "<cache>/rustmage-authoring/hob-last-light/inputs-2.json",
+      "report": "<build-reports>/5a25da3e035d478ba11c81560c1d01cb.json",
+      "terminal": true,
+      "exit": 0,
+      "native": {
+        "focused": 11,
+        "affected": 29,
+        "total": 40,
+        "failed": 0,
+        "ignored_intended": 0
+      },
+      "all_target_clippy": "passed -D warnings",
+      "seconds": 75.48388138500741,
+      "memory_peak_bytes": 2649894912,
+      "memory_max_bytes": 6442450944,
+      "oom_events": 0,
+      "groups": [
+        {
+          "filter": "hob_last_light",
+          "passed": 11,
+          "seconds": 29.97055738704512
+        },
+        {
+          "filter": "hob_hone",
+          "passed": 6,
+          "seconds": 0.08104959799675271
+        },
+        {
+          "filter": "vision_quest",
+          "passed": 1,
+          "seconds": 0.06096210301620886
+        },
+        {
+          "filter": "hob_elven_passage",
+          "passed": 7,
+          "seconds": 0.08926284895278513
+        },
+        {
+          "filter": "hob_inherited_remaining",
+          "passed": 11,
+          "seconds": 0.12114618497435004
+        },
+        {
+          "filter": "engine::assurance::contracts",
+          "passed": 4,
+          "seconds": 0.048847257043235004
+        },
+        {
+          "filter": "clippy",
+          "passed": null,
+          "seconds": 44.6646584260161
+        }
+      ]
+    }
+  ],
+  "execution": "All Cargo through required resource guard, one job/thread,6GiB. Stable isolated target and opt-level0 author env only; repository profiles unchanged. Persistent complete outer redirects from launch. Every input fixed until corresponding process naturally terminal. No cancellation, active output deletion, unmanaged build, PR, push or merge.",
+  "performance": {
+    "implementation_seconds_from_isolated_clone_to_receipt": 682.456,
+    "complete_cards": 1,
+    "guarded_runs": 2,
+    "final_native_scenario_seconds_sum": 0.16,
+    "focused_scenario_seconds": 0.03,
+    "full_set_simulation_throughput": "not measured in leaf; parent integrated acceptance owns it"
+  },
+  "integration": "Parent owns generated catalogue/module registration/schema165+ and full release acceptance. Leaf excludes generated central artifacts and local assurance module registration. Decree/Down authors confirmed disjoint counter/search regions; engine.rs nearby action/observation hunks require normal adjacent reconciliation."
+}

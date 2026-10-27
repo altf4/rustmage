@@ -1608,6 +1608,8 @@ pub(crate) enum Instruction {
         haste_at: Option<u32>,
     },
     Search(SearchSpec),
+    /// Choose hidden hand/library search zones, then find up to one card.
+    SearchHandAndOrLibrary(SearchFilter),
     /// Remember the exact result of the immediately following library search.
     CaptureSearchResult,
     /// Optionally behold a subtype, then untap the searched-for permanent.
@@ -2374,10 +2376,11 @@ pub enum CounterKind {
     Finality,
     Shield,
     Hone,
+    Quest,
 }
 impl CounterKind {
     /// Stable allocation order for mixed counter costs; existing kinds stay first.
-    pub const ALL: [Self; 32] = [
+    pub const ALL: [Self; 33] = [
         Self::PlusOne,
         Self::MinusOne,
         Self::Stun,
@@ -2410,6 +2413,7 @@ impl CounterKind {
         Self::Finality,
         Self::Shield,
         Self::Hone,
+        Self::Quest,
     ];
     pub(crate) fn is_named(self) -> bool {
         matches!(
@@ -2441,6 +2445,7 @@ impl CounterKind {
                 | Self::Finality
                 | Self::Shield
                 | Self::Hone
+                | Self::Quest
         )
     }
 }

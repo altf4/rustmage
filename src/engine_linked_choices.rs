@@ -45,6 +45,7 @@ pub struct LinkedExileView {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ChoiceState {
     pub hand: Option<Box<super::hand_choices::HandInteraction>>,
+    pub hand_library_search: Option<Box<super::hand_library_search::HandLibrarySearch>>,
     pub zone_search: Option<Box<super::zone_search::ZoneSearch>>,
     pub library_cast: Option<Box<super::library_cast_look::LibraryCastLook>>,
     pub deployment: Option<Box<super::library_hand_exchange::HandDeployment>>,
@@ -59,6 +60,9 @@ pub(super) struct ChoiceState {
 impl ChoiceState {
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.hand_library_search.as_ref().map_or(0, |_| {
+                std::mem::size_of::<super::hand_library_search::HandLibrarySearch>()
+            })
             + self
                 .zone_search
                 .as_ref()
@@ -82,6 +86,7 @@ impl Game {
         if let Some(data) = self.state.linked_choices.as_mut() {
             data.hand = None;
             data.zone_search = None;
+            data.hand_library_search = None;
             data.library_cast = None;
             data.deployment = None;
             data.piles = None;
